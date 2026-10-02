@@ -1,0 +1,20 @@
+{
+  "name": "neon-kart-3d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node --check src/game.js && node --check src/vehicle-controls.js && node --check build.mjs && node --check src/mouse-look.js && node --check scripts/package-dist.mjs && node --check tests/dist.test.mjs",
+    "serve": "python3 -m http.server 4173 --directory dist",
+    "test": "node tests/mouse-look.test.mjs && node tests/vehicle-controls.test.mjs && node tests/gameplay.test.mjs",
+    "test:dist": "node tests/dist.test.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  },
+  "license": "AGPL-3.0-only"
+}

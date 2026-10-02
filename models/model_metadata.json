@@ -1,0 +1,45 @@
+{
+  "name": "Neon Kart",
+  "source": "Original model authored in Blender 4.3.2",
+  "forward_blender": "-Y",
+  "up_blender": "+Z",
+  "forward_glb": "+Z",
+  "up_glb": "+Y",
+  "bounds_blender": {
+    "min": [
+      -1.2230000495910645,
+      -1.7200000286102295,
+      -2.622683181741081e-10
+    ],
+    "max": [
+      1.2230000495910645,
+      1.7079999446868896,
+      2.120999336242676
+    ]
+  },
+  "dimensions_blender": [
+    2.446000099182129,
+    3.427999973297119,
+    2.120999336504944
+  ],
+  "recolor_materials": [
+    "Body",
+    "Helmet"
+  ],
+  "wheel_nodes": [
+    "Wheel_FL_pivot",
+    "Wheel_FR_pivot",
+    "Wheel_RL_pivot",
+    "Wheel_RR_pivot"
+  ],
+  "wheel_axle_glb": "+X",
+  "ground_blender_z": 0,
+  "mesh_objects": 155,
+  "export_mesh_batches": 33,
+  "wheel_nodes_blender": [
+    "Wheel_FL",
+    "Wheel_FR",
+    "Wheel_RL",
+    "Wheel_RR"
+  ]
+}

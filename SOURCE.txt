@@ -1,0 +1,20 @@
+Neon Kart v1.0.0 — Original stable baseline
+License: AGPL-3.0-only for original game code and models.
+See LICENSE, NOTICE and THIRD-PARTY-NOTICES.txt in this directory.
+
+For every standalone deployment, the corresponding source and editable Blender
+models are provided locally, without a GitHub or ChatGPT login:
+  source.html — source and license page
+  source.zip  — complete project source and build instructions
+
+The source archive contains the original editable models, exported GLBs, game
+source, build/modeling scripts, tests, pinned dependency metadata, notices and
+documentation. Extract it, then run npm ci and npm run build in its root.
+Build dependencies are fetched from npm. Playing the prebuilt dist does not
+require npm, a CDN, ChatGPT, or any account.
+
+Upstream repository (access depends on its current visibility):
+https://github.com/JerryZRic/neon-kart/tree/v1.0.0
+
+Keep source.html, source.zip, LICENSE, NOTICE and THIRD-PARTY-NOTICES.txt
+alongside the game when deploying or redistributing this dist.

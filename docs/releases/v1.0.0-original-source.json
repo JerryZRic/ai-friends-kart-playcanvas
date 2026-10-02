@@ -1,0 +1,149 @@
+{
+  "site_version": 5,
+  "source_commit": "27e465a74e2248bc2584b77e3987ea2bb88d39dd",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 43,
+      "sha256": "fbf370896cb901963d61e695cd33fb5631eeae8717d88349a3077b5461d7c6f2"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4444,
+      "sha256": "1684d365a1c53c660cfaab2f85e17c4cee324e9cb6dcc23da55a23a4ba1af0ff"
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.txt",
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "path": "build.mjs",
+      "bytes": 342,
+      "sha256": "a803912d1ac6a8489fd6d213a56744df5a0353f8e6f7c0f5104fd64ad1d6b319"
+    },
+    {
+      "path": "dist/assets/arch.glb",
+      "bytes": 212332,
+      "sha256": "02d5846dff35d97535b979348a255aaaf7d38b0e1b971ca6a0428b4807d496ae"
+    },
+    {
+      "path": "dist/assets/kart.glb",
+      "bytes": 1179824,
+      "sha256": "ba1b4f018004eeabf860922ad570c338c281a671c9af56cdc839592df7ae59a0"
+    },
+    {
+      "path": "dist/assets/palm.glb",
+      "bytes": 105300,
+      "sha256": "bce1b487f8f7e821bf361c4e4c0ae60dd0ed03eb16f783e85c74db7bf8c52b03"
+    },
+    {
+      "path": "dist/assets/rock.glb",
+      "bytes": 10148,
+      "sha256": "751119ac92b808fd4cf99cd4f639d2e17db832306a7fc8e59e1e61adcc9beb11"
+    },
+    {
+      "path": "dist/game.js",
+      "bytes": 615999,
+      "sha256": "cf9044865e982f6f7d19a7b450a2afbcd6d31a0e44ea00f4f600d04aa3e2e7c4"
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 11423,
+      "sha256": "a395376a17152593ad4d166522ed30f705d11341016d05fd5bd0036eb099aadc"
+    },
+    {
+      "path": "models/build_models.py",
+      "bytes": 18439,
+      "sha256": "dfa012736a29c3beef6764c4379eb63a8e041bf7dcd5dc2d4d13da462d126cac"
+    },
+    {
+      "path": "models/create_props.py",
+      "bytes": 14851,
+      "sha256": "fed042414ccf355574fc52ce88acc7698aa339a573b27bce79ced0bda0ff9482"
+    },
+    {
+      "path": "models/kart.blend",
+      "bytes": 2458200,
+      "sha256": "f3fb5d3d93883f21dc209886eb993e15061dda71f7a67f47a91873ebd81385d4"
+    },
+    {
+      "path": "models/model_metadata.json",
+      "bytes": 859,
+      "sha256": "18c686f1a3519605b3fc01fe919c39d06a99c1e955c01898a1a3f22e9e87fe94"
+    },
+    {
+      "path": "models/props.blend",
+      "bytes": 1271920,
+      "sha256": "7a8a24de9d9aa6c8ae183d046d615c59fae0fa9120b7b641e3104ba4fd18d0f3"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 14888,
+      "sha256": "b27ff28849ddc591793e3ca9aaf4fdd0fad5de0c70892df3301f878119a3c956"
+    },
+    {
+      "path": "package.json",
+      "bytes": 487,
+      "sha256": "8333ed3801e07e4d92dffa86edd52185210eb7efbda9a70a37494cb6ad967cc7"
+    },
+    {
+      "path": "src/game.js",
+      "bytes": 27623,
+      "sha256": "b5c03b37bedc20418d39f3cd8255d40d7a65afdd73c41c2320f2df4a65951d7e"
+    },
+    {
+      "path": "src/index.html",
+      "bytes": 11423,
+      "sha256": "a395376a17152593ad4d166522ed30f705d11341016d05fd5bd0036eb099aadc"
+    },
+    {
+      "path": "src/mouse-look.js",
+      "bytes": 3961,
+      "sha256": "be094d9dc20db975960536688157e514bcde496aeabfa04302a9c69d62532d5d"
+    },
+    {
+      "path": "src/vehicle-controls.js",
+      "bytes": 1983,
+      "sha256": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1"
+    },
+    {
+      "path": "tests/gameplay.test.mjs",
+      "bytes": 9052,
+      "sha256": "3f1cf2743bae079e1032879be68941f335df1760514f367ce04981c86ee65756"
+    },
+    {
+      "path": "tests/mouse-look.test.mjs",
+      "bytes": 5497,
+      "sha256": "5527fd66d08cb0f59a253024e72b0e239db3135d413ba748aa2324e4559e1256"
+    },
+    {
+      "path": "tests/three-test.mjs",
+      "bytes": 229,
+      "sha256": "3154aff151160be1c0ede49db8b3374b21300bec27d1471d4d2b0212c0635e23"
+    },
+    {
+      "path": "tests/vehicle-controls.test.mjs",
+      "bytes": 3094,
+      "sha256": "8ee877e6cce461361f441c741084e6ad5cf8268814549804ea64bd65925afebf"
+    }
+  ],
+  "purpose": "Byte-level provenance for the original stable game source before public-release metadata changes. Private deployment configuration is excluded.",
+  "release_tag": "v1.0.0",
+  "model_metadata_sanitization": [
+    {
+      "path": "models/kart.blend",
+      "changed_field": "render output path only",
+      "before_sha256": "f3fb5d3d93883f21dc209886eb993e15061dda71f7a67f47a91873ebd81385d4",
+      "after_sha256": "745f413157d2479233bdf3c9e51ce14cea47da2f1b23f0238d0f48f619817e8a",
+      "bytes_unchanged_outside_field": true
+    },
+    {
+      "path": "models/props.blend",
+      "changed_field": "render output path only",
+      "before_sha256": "7a8a24de9d9aa6c8ae183d046d615c59fae0fa9120b7b641e3104ba4fd18d0f3",
+      "after_sha256": "9b0c0d933919d18abdf27d7ce75a2eb1fc12a007d9a7ff79529f3ced8f8e4a9d",
+      "bytes_unchanged_outside_field": true
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+name: Publish static game to GitHub Pages
+
+# Preparing this workflow does not enable Pages or publish anything.
+# Run it manually only after the repository owner approves publication.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish dist and its source archive to the public web'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: ${{ inputs.publish }}
+    permissions:
+      contents: read
+      pages: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the selected ref
+        uses: actions/checkout@v6
+      - name: Check distribution paths and source package
+        run: node tests/dist.test.mjs
+      - name: Configure already-enabled Pages
+        uses: actions/configure-pages@v5
+      - name: Upload only the static distribution
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: package
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish approved distribution
+        id: deployment
+        uses: actions/deploy-pages@v4
