@@ -36,3 +36,8 @@ its baked driver, plus a steering pivot. The six character GLBs under
 assets/drivers/ are third-party models expressly excluded from the AGPL grant.
 They are separately supplied for this non-commercial demo under their own
 applicable terms. See MODEL-NOTICE.txt; no new or broader model rights are granted.
+
+PlayCanvas edition (2026): engine migration to PlayCanvas Engine + TypeScript + Vite.
+Current corresponding source: https://github.com/JerryZRic/ai-friends-kart-playcanvas
+The prior edition and original upstream notices above are preserved as provenance.
+This edition does not bundle Three.js. PlayCanvas and fflate retain their MIT terms.

@@ -6,7 +6,7 @@ export const DRIVERS = Object.freeze([
   { id: 'claude', label: 'CLAUDE', color: '#eeac8e' },
   { id: 'grok', label: 'GROK', color: '#b89bdb' },
   { id: 'glm', label: 'GLM', color: '#9cddad' },
-].map(Object.freeze));
+].map(driver => Object.freeze(driver)));
 export const DEFAULT_DRIVER_ID = 'whale';
 export function getDriver(id) { return DRIVERS.find(driver => driver.id === id) || DRIVERS[0]; }
 export function raceOrder(selectedId = DEFAULT_DRIVER_ID) {

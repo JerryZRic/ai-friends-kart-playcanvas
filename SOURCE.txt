@@ -1,31 +1,21 @@
-AI Friends Kart — Six-character non-commercial demo v1.2.0
-Code and original open kart/track/prop assets: AGPL-3.0-only.
-Six runtime characters: separate rights/restrictions; see MODEL-NOTICE.txt.
+AI Friends Kart — PlayCanvas edition
+Game code and original kart/track/prop assets: AGPL-3.0-only.
+Six runtime characters: separate noncommercial rights/restrictions; see MODEL-NOTICE.txt.
 
-source.zip contains public code, tests, build/modeling scripts, pinned metadata,
-documentation, original open GLBs and their original editable Blender sources.
-It does not duplicate the six large character .glb.gz runtime archives or include any new character
-Blender projects, raw originals, separate textures, previews or work files.
-
-The exact six runtime character paths/sizes/hashes appear in
-  docs/runtime-models.json
-They are served separately beside the game at assets/drivers/<id>-driver.glb.gz.
-A full repository clone includes them. Source-ZIP users can copy those public
-files into dist/assets/drivers/ or explicitly run npm run models:fetch, which
-only downloads the fixed public paths and verifies their hashes. Without those
-files the code still builds; the game reports original-driver fallback slots.
-
-Build: npm ci, npm run build. Dependencies come from npm. Serve the whole dist
-folder over HTTP(S). Playing uses no third-party model service or account.
-Optional local replacements remain memory-only, never uploaded or persisted.
-
-The owner identifies the character models as Tripo Free/non-commercial outputs.
-Exact applicable redistribution terms have not been independently established;
-publication is not a claim of full rights clearance or a new model license.
-AGPL does not relicense these character models. Read MODEL-NOTICE.txt.
-
-Current public source: https://github.com/JerryZRic/ai-friends-kart-web
+Complete corresponding code, tests, build scripts, pinned dependency metadata,
+original GLBs and original editable kart/prop Blender sources: source.zip beside this game.
+Current public repository: https://github.com/JerryZRic/ai-friends-kart-playcanvas
+Previous edition: https://github.com/JerryZRic/ai-friends-kart-web
 Original upstream: https://github.com/JerryZRic/neon-kart/tree/v1.0.0
 
+The source ZIP excludes six large character .glb.gz files; the repository includes them.
+The exact separately served paths/sizes/hashes are in docs/runtime-models.json.
+After extracting source.zip, npm ci; npm run models:fetch; npm run build.
+Without character files the game builds with explicit original-driver fallbacks.
+Run npm run preview and open its HTTP URL. Do not use file://.
+All runtime dependencies/assets are served beside the game. No ChatGPT login, CDN,
+model API, telemetry or external service is required for gameplay.
+Local replacements remain only in page memory and are never uploaded or persisted.
+
 Keep source.html, source.zip, LICENSE, NOTICE, SOURCE.txt, MODEL-NOTICE.txt and
-THIRD-PARTY-NOTICES.txt together with the deployed game.
+THIRD-PARTY-NOTICES.txt beside the deployed game.

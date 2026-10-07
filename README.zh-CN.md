@@ -1,19 +1,25 @@
-# AI Friends Kart · 六角色非商业试玩
+# AI Friends Kart · PlayCanvas 移植版
 
-六个带骨骼角色自动加载，选择 WHALE、GEMINI、GPT、CLAUDE、GROK 或 GLM 后即可比赛，其余五位作为 AI 对手。不需要手动导入模型。仍可选用本地 GLB 替换角色。
+新建的独立 HTML 项目，底层使用 **PlayCanvas Engine + TypeScript + Vite**。旧版 AI Friends Kart 和稳定版 Neon Kart 保持不变；Windows 打包暂缓。
 
-游戏代码、原创赛车/赛道/道具与原始开放资产遵循 AGPL-3.0-only。六个角色模型的权利与代码分开：项目所有者将其标识为 Tripo Free 输出，仅供非商业使用；具体适用的转分发条款尚未独立核实。公开试玩不代表全部权利已确认，也不授予新的商用、再许可或通用转分发权。AGPL 不会自动覆盖角色模型。详见 [模型声明](MODEL-NOTICE.txt)。本试玩没有广告、支付或模型销售。
+[GitHub Pages 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [完整说明](README.md) · [迁移与测试记录](docs/MIGRATION-PARITY.md)
 
-仅发布六个最终运行 GLB，不发布新的角色 Blender 工程、高模原件、独立贴图、预览或工作文件。原项目早已公开的两个赛车/道具 Blender 文件保留，供原创 AGPL 资产的对应源码使用。
+六个骨骼角色 WHALE、GEMINI、GPT、CLAUDE、GROK、GLM 自动加载，可任选一个与其余五个 AI 比赛。保留原日落海岸赛道、三圈比赛、漂移加速、道具、碰撞、倒车、暂停/重开、双追逐视角、鼠标环顾/回正/后视、小地图、音效和触屏按钮。界面沿用简体中文与英文品牌文字，不含运行时语言切换。
 
-完整仓库包含模型，将整个 dist 目录放到 HTTP(S) 静态服务器即可。初次角色下载约 49.2 MiB（51.6 MB），同时最多两个下载/解析；按清单验证大小与 SHA-256，全部完成或失败后才开放开始按钮。失败槽位明确显示原创替身，不会把缺失角色标成六个就绪；显示真实下载字节进度；解压校验、模型准备独立显示，不伪造解析百分比。暂时性网络错误、60 秒下载超时、HTTP 408/429 与 5xx 最多自动重试三次，采用带随机抖动的指数退避并显示倒计时与次数。永久性 HTTP 错误、完整性或模型错误不自动重试。加载结束后可点“重试”，仅重试失败资源，已成功角色在本次页面中保留；重复点击不会并发启动加载。
+## 运行
 
-源码 ZIP 不重复六个大 GLB，包含代码、测试、脚本、原创开放资产、原始 Blender 源码及运行模型清单。仅解压 ZIP 可以构建代码，但完整六角色体验/测试还需将公开试玩的 assets/drivers/ 六文件放到 dist/assets/drivers/，或运行 npm run models:fetch。该脚本只从固定公开路径下载并验证，不上传，不覆盖校验不匹配的文件。
+Node.js 22.12+：`npm ci` → `npm run check` → `npm test` → `npm run build` → `npm run test:dist` → `npm run preview`。通过显示的 HTTP 地址打开，不能直接双击 file:// HTML。完整 dist 目录不依赖 ChatGPT 登录、外部模型服务或运行时 CDN。
 
-Node.js 22+：npm ci → npm run check → npm test → npm run build → npm run test:dist。npm run serve 为可选开发服务器。不支持 file:// 直接打开。
+角色首次下载约 51.6 MB，最多两个并发。显示真实下载字节及独立解压/准备阶段；临时网络错误有有限指数退避重试，也可手动只重试失败资源。失败槽位明确使用原创替身。
 
-W 油门，S 刹车/倒车，A/D 转向，空格刹车，Shift 漂移，E 道具，Z/C 视角，鼠标右键回看，Q 回正，Esc 暂停，P 继续。
+W/↑ 油门，S/↓ 刹车后倒车，A/D 或 ←/→ 转向，空格刹车，左 Shift+转向漂移，松开加速；E 道具，Z/C 视角，右键后视，点击赛道后鼠标环顾，Q 回正，Esc 暂停/释放，P 暂停/继续。
 
-可选本地替换：选角色后选择兼容 GLB，每个 ≤32 MiB；文件仅在当前页面内存中读取，不上传、不保存。恢复默认会返回自动加载的角色。具体要求见 [骨骼与动画约定](docs/local-import.md)。
+可本地导入符合契约的 GLB，每个最多 32 MiB；只保留当前页面内存，不上传、不持久化，失败保留旧外观。[本地模型契约](docs/local-import.md)
 
-完整权利说明、构建和验证边界见 [English README](README.md)。
+## 权利与验证
+
+代码、原创赛道/赛车/道具仍是 AGPL-3.0-only；六个角色权利另行说明，用户标注为 Tripo Free 非商业模型，确切转分发条款未独立核实，本项目不增加任何角色授权或商业权利。[角色声明](MODEL-NOTICE.txt)
+
+源码下载 source.zip 包含代码、测试、原创资产及其原始 Blender 文件，不含角色工程/高模/私人参考，也不重复打包六个大型角色文件。源码包解压后可运行 `npm run models:fetch` 获取清单校验的公开运行文件。
+
+自动化测试不能替代真实 GPU 试玩：当前云浏览器禁用 WebGL，画面、GPU 性能和浏览器原生鼠标锁定仍需在支持 WebGL2 的浏览器验证。

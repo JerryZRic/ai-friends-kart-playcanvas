@@ -1,9 +1,6 @@
 import assert from 'node:assert/strict';
-import * as THREE from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {MAX_IMPORT_BYTES, validateGLB, resolveImportSlot, createLocalDriverStore, parseLocalGLB} from '../src/local-driver-import.js';
+import {MAX_IMPORT_BYTES, validateGLB, resolveImportSlot, createLocalDriverStore, parseLocalGLB} from '../src/assets.ts';
 import {DRIVERS, raceOrder} from '../src/driver-roster.js';
-import {validateDriverContract, createImportedRacer, disposeDriverAsset, DRIVER_CLIPS, WHEEL_CENTER} from '../src/animated-driver.js';
 import {encodeGLB, syntheticDriverGLB, localFile, deferred} from './helpers/synthetic-driver.mjs';
 
 const tests=[];
@@ -13,7 +10,7 @@ const minimal=()=>encodeGLB({asset:{version:'2.0'}});
 const file=(name='driver.glb', extra={})=>localFile(minimal(),name,extra);
 function fixture(options={}) {
   const disposed=[], changes=[], busy=[]; let serial=0;
-  const store=createLocalDriverStore({parse:async()=>({serial:++serial}), validate:()=>true, dispose:asset=>disposed.push(asset), onChange:change=>changes.push(change), onBusy:(value,pending)=>busy.push([value,pending]), ...options});
+  const store=createLocalDriverStore(null, {parse:async()=>({serial:++serial}), validate:()=>true, dispose:asset=>disposed.push(asset), onChange:change=>changes.push(change), onBusy:(value,pending)=>busy.push([value,pending]), ...options});
   return {store,disposed,changes,busy};
 }
 function mutateWord(buffer, offset, value) { const copy=buffer.slice(0);new DataView(copy).setUint32(offset,value,true);return copy; }
@@ -117,36 +114,16 @@ await test('clear and closed-session disposal invalidate in-flight candidates ex
   const late=deferred(), g=fixture({parse:()=>late.promise});const work=g.store.importFile(file(),'glm');await tick();g.store.dispose();g.store.dispose();const asset={closed:true};late.resolve(asset);assert.equal((await work).status,'stale');assert.deepEqual(g.disposed,[asset]);await assert.rejects(g.store.importFile(file(),'glm'),/closed/);assert.equal(g.store.busy,false);
 });
 
-let compatible;
-await test('original synthetic GLB passes actual GLTFLoader and rig contract without network',async()=>{
-  const originalFetch=globalThis.fetch;let requests=0;globalThis.fetch=async()=>{requests++;throw new Error('No network is permitted in local-model import tests');};
-  try {const bytes=syntheticDriverGLB();validateGLB(bytes);compatible=await parseLocalGLB(bytes);assert.equal(validateDriverContract(compatible),true);await assert.rejects(parseLocalGLB(syntheticDriverGLB({mutate:g=>{g.buffers[0].uri='https://example.invalid/blocked.bin';}})),/external resources/);assert.equal(requests,0);assert.deepEqual(compatible.animations.map(a=>a.name),[...DRIVER_CLIPS]);}
-  finally {globalThis.fetch=originalFetch;}
-});
-await test('incompatible geometry, skins, animation contracts and grip motion fail clearly',async()=>{
-  const parser=new GLTFLoader();
+await test('invalid hierarchy and unsupported compressed formats are rejected before engine parse',()=>{
   for(const mutate of [
-    gltf=>{delete gltf.nodes[5].skin;},
-    gltf=>{gltf.animations.pop();},
-    gltf=>{gltf.nodes[3].name='NoGrip';},
-    gltf=>{gltf.nodes[2].translation=[0,0,0];},
-  ]){const asset=await parser.parseAsync(syntheticDriverGLB({mutate}),'');assert.throws(()=>validateDriverContract(asset));disposeDriverAsset(asset);}
-  const malformed=await parser.parseAsync(syntheticDriverGLB(),'');let mesh;malformed.scene.traverse(n=>{if(n.isSkinnedMesh)mesh=n;});mesh.geometry.attributes.skinWeight.setX(0,-1);assert.throws(()=>validateDriverContract(malformed),/indices or weights/);disposeDriverAsset(malformed);
-  const duration=await parser.parseAsync(syntheticDriverGLB(),'');duration.animations.find(c=>c.name==='SteeringRange').duration=1;assert.throws(()=>validateDriverContract(duration),/two seconds/);disposeDriverAsset(duration);
+    gltf=>{gltf.nodes[0].children.push(0)},
+    gltf=>{gltf.nodes[1].children.push(5)},
+    gltf=>{gltf.nodes[0].children.push(9999)},
+    gltf=>{gltf.nodes[0].translation=[0,1]},
+    gltf=>{gltf.nodes[0].rotation=[0,null,0,1]},
+    gltf=>{gltf.scenes[0].nodes=[1]},
+    gltf=>{gltf.extensionsRequired=['KHR_draco_mesh_compression']},
+  ])assert.throws(()=>validateGLB(syntheticDriverGLB({mutate})));
 });
-await test('six actor clones keep bones, steering phases, pause, repeated reset and teardown independent',()=>{
-  const scene=new THREE.Group(),wheel=new THREE.Group();wheel.name='SteeringPivot';wheel.position.copy(WHEEL_CENTER);scene.add(wheel);
-  const chassis={scene};const controllers=DRIVERS.map(slot=>createImportedRacer(compatible,chassis,slot));
-  assert.equal(new Set(controllers.map(c=>c.mixer)).size,6);assert.equal(new Set(controllers.map(c=>c.model.getObjectByName('WheelBone'))).size,6);
-  for(let i=0;i<controllers.length;i++)controllers[i].update(.2,-1+i*.4);
-  assert.equal(new Set(controllers.map(c=>c.getState().steering.toFixed(6))).size,6);
-  const states=controllers.map(c=>c.getState());for(const c of controllers)c.update(.5,1,true);assert.deepEqual(controllers.map(c=>c.getState()),states);
-  for(let n=0;n<20;n++)for(const c of controllers){c.reset();assert.equal(c.getState().steering,0);assert.equal(c.getState().rangeTime,1);c.update(.1,n%2?1:-1);}
-  controllers[0].dispose();controllers[0].dispose();assert.equal(controllers[0].getState().status,'disposed');for(const c of controllers.slice(1))assert.equal(c.getState().status,'ready');for(const c of controllers)c.dispose();
-});
-await test('asset cleanup disposes shared geometries, materials, textures and image bitmaps once',()=>{
-  const counts={geometry:0,material:0,texture:0,image:0};const geometry=new THREE.BoxGeometry(), material=new THREE.MeshBasicMaterial(),texture=new THREE.Texture();
-  texture.image={close(){counts.image++;}};texture.addEventListener('dispose',()=>counts.texture++);geometry.addEventListener('dispose',()=>counts.geometry++);material.addEventListener('dispose',()=>counts.material++);material.map=texture;material.alphaMap=texture;
-  const scene=new THREE.Group();scene.add(new THREE.Mesh(geometry,material),new THREE.Mesh(geometry,material));disposeDriverAsset({scene,scenes:[scene]});assert.deepEqual(counts,{geometry:1,material:1,texture:1,image:1});disposeDriverAsset(compatible);
-});
-console.log(JSON.stringify({status:'passed',suite:'client-only local driver import',tests,note:'Real GLTF parsing and CPU animation checks use original in-memory synthetic geometry. No third-party driver, browser, WebGL renderer, network server or upload.'},null,2));
+
+console.log(JSON.stringify({status:'passed',suite:'PlayCanvas local import validation and session lifecycle',tests,note:'CPU GLB security and injected parser/store tests. Browser picker, GPU decoding, actual model rig evaluation and rendering are tested separately.'},null,2));

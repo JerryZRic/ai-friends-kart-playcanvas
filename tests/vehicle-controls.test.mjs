@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import * as THREE from 'three';
+import {Vec3, Quat} from 'playcanvas';
 import { keyCode, driveInput, driveSpeed, lateralInput, steeringYaw } from '../src/vehicle-controls.js';
 const tests=[];
 function test(name,fn){fn();tests.push(name)}
@@ -16,8 +16,8 @@ test('W and S together brake instead of oscillating',()=>assert.equal(run(20,dri
 test('handbrake slows acceleration into a drift and brakes when off throttle',()=>{assert.equal(run(42,driveInput({KeyW:true,ShiftLeft:true}),2),42*.76);assert.equal(run(20,driveInput({ShiftLeft:true}),2),0)});
 test('A/D lateral travel and yaw are left/right in every forward camera heading',()=>{
   for(let i=0;i<360;i++){
-    const angle=i*Math.PI/180,t=new THREE.Vector3(Math.sin(angle),0,Math.cos(angle)),left=new THREE.Vector3(t.z,0,-t.x),right=t.clone().cross(new THREE.Vector3(0,1,0));
-    for(const steer of [-1,1]){const world=left.clone().multiplyScalar(lateralInput(steer,42,42,false,.1));assert.equal(Math.sign(world.dot(right)),steer);const turned=t.clone().applyAxisAngle(new THREE.Vector3(0,1,0),steeringYaw(steer,42,false));assert.equal(Math.sign(turned.dot(right)),steer)}
+    const angle=i*Math.PI/180,t=new Vec3(Math.sin(angle),0,Math.cos(angle)),left=new Vec3(t.z,0,-t.x),right=new Vec3().cross(t,new Vec3(0,1,0));
+    for(const steer of [-1,1]){const world=left.clone().mulScalar(lateralInput(steer,42,42,false,.1));assert.equal(Math.sign(world.dot(right)),steer);const turned=new Quat().setFromAxisAngle(new Vec3(0,1,0),steeringYaw(steer,42,false)*180/Math.PI).transformVector(t);assert.equal(Math.sign(turned.dot(right)),steer)}
   }
 });
 test('reverse steering reverses travel and yaw; stationary steering never slides',()=>{assert.ok(lateralInput(-1,-11,42,false,.1)<0);assert.ok(lateralInput(1,-11,42,false,.1)>0);assert.equal(Math.abs(lateralInput(1,0,42,false,.1)),0);assert.equal(Math.abs(steeringYaw(1,0,false)),0);assert.ok(steeringYaw(-1,-11,false)<0)});

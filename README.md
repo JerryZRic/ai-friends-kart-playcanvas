@@ -1,22 +1,20 @@
-# AI Friends Kart · six-character demo
+# AI Friends Kart · PlayCanvas edition
 
-A non-commercial kart-racing demo on the original Neon Kart sunset circuit. Six rigged characters load automatically: choose WHALE, GEMINI, GPT, CLAUDE, GROK or GLM, then race against the other five. No local model import is required. Optional local replacements remain supported.
+A separate **PlayCanvas Engine + TypeScript + Vite** HTML migration of [AI Friends Kart](https://github.com/JerryZRic/ai-friends-kart-web). The old game and stable Neon Kart project are unchanged. Windows packaging is deferred.
 
 [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [粵語](README.yue.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
 
-## Rights are separate
+## Play
 
-The game code, original UI, kart, props, track and original editable assets are **AGPL-3.0-only**. Original notices remain in [NOTICE](NOTICE); Three.js, fflate and esbuild retain their MIT terms.
+[Open the GitHub Pages demo](https://jerryzric.github.io/ai-friends-kart-playcanvas/)
 
-The six character GLBs are separate third-party assets. The owner identifies them as Tripo Free outputs restricted to non-commercial use. Exact applicable redistribution terms have not been independently established here. Publication is not a claim that every right is cleared. No new license, commercial permission, Creative Commons grant or broad redistribution permission is created by this repository. **AGPL does not relicense the characters.** Read [MODEL-NOTICE.txt](MODEL-NOTICE.txt) before reuse. This demo contains no advertisements, payments or commercial model sales.
+Six rigged characters load automatically: WHALE, GEMINI, GPT, CLAUDE, GROK and GLM. Choose any driver and race against the other five around the original sunset coast circuit. Three laps, drift boosts, three item types, collisions, reverse, pause, restart, two chase cameras, full mouse orbit, rear view, minimap, sound and touch controls are retained. Optional session-only local GLB replacement remains supported.
 
-Only final runtime GLBs are included. No new character Blender projects, raw high-poly originals, separate textures, previews, videos or private source references are published. The two unchanged, already-public original kart/prop Blender sources remain included to preserve complete corresponding source for those AGPL assets.
+The runtime UI is Simplified Chinese with English branding, as in the previous edition. These six-language README files are documentation, not a runtime language selector.
 
-## Run or build
+## Build and run
 
-The prebuilt `dist/` folder is a complete static website. Serve the entire folder over HTTP(S); do not open it directly as `file://`. The full repository includes the six losslessly gzip-compressed runtime models. All game dependencies and models are served alongside the site; no account, model service or CDN is required.
-
-With Node.js 22 or later:
+Use Node.js 22.12 or later:
 
 ```sh
 npm ci
@@ -24,54 +22,38 @@ npm run check
 npm test
 npm run build
 npm run test:dist
-npm run serve
+npm run preview
 ```
 
-`serve` is an optional development server on port 4173. The workflow is manual and its `publish` input defaults to false.
+Open the preview HTTP address. For development, `npm run dev`. Do not open the HTML as `file://`. Vite uses relative paths; the complete `dist/` can be served under a GitHub Pages repository subpath or any ordinary HTTP(S) static server. All runtime code and models are local to the distribution: no ChatGPT login, runtime CDN or model-service account is needed.
 
-The site serves `.glb.gz` archives and losslessly restores their original GLB bytes in the browser. Compressed and decoded identities are both checked, including hosts that already decode gzip over HTTP. Initial character loading transfers approximately 49.2 MiB (51.6 MB). At most two files load/parse at once. Each file's length and SHA-256 are checked against [docs/runtime-models.json](docs/runtime-models.json). Start remains unavailable until loading settles. If a model fails or times out, its slot explicitly reports an original-driver fallback; the UI never claims six ready when some failed. The loading panel shows actual streamed download bytes, then separate decompression and model-preparation stages (no simulated parsing percentage). Transient network failures, 60-second download timeouts, HTTP 408/429 and 5xx responses retry up to three times with exponential backoff and jitter; countdowns and attempt counts are visible. Permanent HTTP errors, invalid models and integrity failures do not auto-retry. Use Retry after loading settles to retry only failed assets; successfully prepared models remain cached for this page session. Repeated clicks cannot start overlapping loads.
-
-## Source ZIP and separately served models
-
-`dist/source.zip` is the complete public code/build/test/original-open-asset source package, including original Blender source and the six-model manifest. It deliberately does **not** duplicate the large character GLBs. A full repository clone includes them; a source-ZIP-only extraction rebuilds the code with original fallbacks but needs the separately served models for the six-character experience and full runtime-asset tests.
-
-After extracting the ZIP, copy the six verified `.glb.gz` files from the public demo's `assets/drivers/` directory into `dist/assets/drivers/`, or explicitly run:
-
-```sh
-npm run models:fetch
-```
-
-This retrieves only the authorized public runtime paths at `https://jerryzric.github.io/ai-friends-kart-web/`, checks each manifest hash and refuses to overwrite mismatched local files. It may fail before that public site is deployed. It performs no upload. Then run the build/tests above. `npm run test:dist` verifies the code-only source rebuild and separately verifies the full distribution's runtime model hashes.
+The full repository contains six final `.glb.gz` runtime files in `public/assets/drivers/` (51.6 MB total transfer). Each compressed and decoded identity is checked against [docs/runtime-models.json](docs/runtime-models.json). At most two characters download/parse concurrently. The UI shows actual download bytes, separate decompression/preparation stages, bounded exponential retry countdowns, and manual retry of failed files while retaining successful models. Missing models are labeled original-driver fallbacks, never claimed ready.
 
 ## Controls
 
-- W / ↑: throttle; S / ↓: brake/reverse
-- A / D or ← / →: steer; Space: brake
-- Left Shift + steering: drift; release to boost
-- E: item; Z / C: camera; right mouse: rear view
-- Click track: mouse look; Q: recenter; Esc: pause/release; P: resume
-- Menu buttons preserve native Enter/Space behavior; Start focuses the canvas
+- W / ↑: throttle; S / ↓: brake then reverse; Space: brake
+- A / D or ← / →: steer; Left Shift + steer: drift; release to boost
+- E: use item; Z / C: camera; right mouse: rear view
+- Click track: mouse look; Q: recenter; Esc: pause/release; P: pause/resume
+- Touch buttons provide throttle, steering, reverse, brake and drift; tap item to use
+- Menu buttons retain native keyboard operation
 
-Each driver retains its full skinned hierarchy, textures, animations, independent skeleton and mixer. The wheel and authored grip motion use ±18° steering. All six participate in the race; choosing a driver makes the other five AI opponents.
+## Local replacements
 
-## Optional local replacement
+Select a slot, choose a compatible GLB, or multi-select files containing exactly one slot-name token. Imports are at most 32 MiB each, two at a time, memory-only and never uploaded or persisted. Newer selections supersede older pending work. Failure/cancel preserves the previous driver; Restore default returns to the bundled character or explicit fallback. See [the rig/security contract](docs/local-import.md).
 
-Select a slot and use **Local replacement GLB**. A single file replaces that selected slot; multiple files use exactly one filename token among whale/gemini/gpt/claude/grok/glm. Files must meet the [rig and animation contract](docs/local-import.md) and be at most 32 MiB. **Restore default** returns to the automatically loaded character, or the explicit original fallback if that download failed.
+## Rights and corresponding source
 
-User-selected bytes are read with `File.arrayBuffer()` and parsed entirely in page memory. They are never uploaded or persisted. Refresh clears replacements. Cancel/failure preserves the prior appearance; imports are menu-only, bounded to two reads/parses, and prevent race start until settled. Acquire appropriate rights for any replacement.
+Code, original UI/circuit/kart/props and original editable sources are **AGPL-3.0-only**. Read [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain MIT licenses; no Three.js runtime is bundled.
 
-## Original chassis source
+The six character GLBs have **separate rights**. The owner identifies Tripo Free/non-commercial restrictions; exact redistribution terms have not been independently established. This repository does not grant new model rights, commercial permission or a Creative Commons license. AGPL does not relicense characters. Read [MODEL-NOTICE.txt](MODEL-NOTICE.txt). There are no ads, payments or commercial model sales.
 
-The clean chassis derives only from original `models/kart.blend`, removing the baked original driver and adding a wheel pivot. It can be regenerated, without overwriting that source:
+Only already-public sanitized final character runtime files are reused. No character Blender projects, high-poly originals, private references, work exports or account metadata are included. The original already-public kart/prop Blender sources are retained for AGPL corresponding-source completeness.
 
-```sh
-blender --background --disable-autoexec --python-exit-code 1 --python models/export_original_chassis.py -- --source models/kart.blend --output build-chassis
-```
+The deployed `source.zip` contains complete public code, tests, build files, pinned metadata, original assets/editable sources and notices, excluding the six large character archives. After extracting source.zip, run `npm ci`, `npm run models:fetch`, and `npm run build`. The fetch script downloads only fixed public manifest paths and verifies hashes; it will not overwrite mismatched local files. Without those models, code still builds and reports explicit original-driver fallbacks.
 
-Review the generated preservation report and copy its final GLB to `dist/assets/`. Blender byte output may differ across versions. Identical code/source inputs and pinned build dependencies produce the same web/source package.
+## Verification and limits
 
-## Verification
+See [migration parity and test evidence](docs/MIGRATION-PARITY.md). Tests distinguish engine-independent logic, real PlayCanvas CPU/null-device rig loading, UI integration mocks and static distribution checks from GPU/browser gameplay. Headless asset tests substitute texture decoding only; they do not certify appearance, pointer-lock support or GPU performance. The available cloud browser has WebGL disabled, so actual GPU gameplay must be checked in a WebGL2-capable browser.
 
-Automated checks cover original controls/race logic, camera math, six actual runtime GLB identities and CPU skinning, 121 sampled steering poses per model, independent controllers, bundled loading/integrity/timeouts, optional local-import races, artifact safety and deterministic source rebuilds. Browser rendering, native picker/pointer lock and GPU performance require separate visual tests. CPU image fixtures do not decode texture pixels.
-
-[Original public upstream v1.0.0](https://github.com/JerryZRic/neon-kart/tree/v1.0.0) · [Current public repository](https://github.com/JerryZRic/ai-friends-kart-web)
+GitHub Pages deployment is manual: choose **Build and publish PlayCanvas game**, Run workflow, check **Publish**, and run on main. Settings → Pages must use GitHub Actions. The workflow checks, tests and builds the exact selected commit before publication.

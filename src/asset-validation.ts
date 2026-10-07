@@ -1,25 +1,14 @@
-import { LoadingManager } from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRIVERS } from './driver-roster.js';
-import { validateDriverContract, disposeDriverAsset } from './animated-driver.js';
-
 export const MAX_IMPORT_BYTES = 32 * 1024 * 1024;
-const slotIds = new Set(DRIVERS.map(driver => driver.id));
-function requireSlot(id) {
-  if (!slotIds.has(id)) throw new Error('Unknown driver slot');
-  return id;
-}
-
-// Inspect bytes before Three.js can resolve any resource. A selected GLB must
+// Inspect bytes before PlayCanvas can resolve any resource. A selected GLB must
 // carry every dependency; no remote, relative, file: or supplied blob: URI.
-export function validateGLB(buffer) {
+export function validateGLB(buffer: ArrayBuffer): any {
   if (!(buffer instanceof ArrayBuffer)) throw new Error('Expected a GLB ArrayBuffer');
   if (buffer.byteLength > MAX_IMPORT_BYTES) throw new Error('GLB exceeds the 32 MiB limit');
   if (buffer.byteLength < 20) throw new Error('Truncated GLB header');
   const view = new DataView(buffer);
   if (view.getUint32(0, true) !== 0x46546c67 || view.getUint32(4, true) !== 2) throw new Error('Select a binary glTF 2.0 (.glb) file');
   if (view.getUint32(8, true) !== buffer.byteLength) throw new Error('GLB declared length does not match the file');
-  let offset = 12, json = null, binaryLength = null, binaryStart = null;
+  let offset = 12, json: any = null, binaryLength = null, binaryStart = null;
   while (offset < buffer.byteLength) {
     if (offset + 8 > buffer.byteLength) throw new Error('Truncated GLB chunk header');
     const length = view.getUint32(offset, true), type = view.getUint32(offset + 4, true);
@@ -36,12 +25,18 @@ export function validateGLB(buffer) {
     offset += 8 + length;
   }
   if (!json || typeof json !== 'object' || Array.isArray(json) || json.asset?.version !== '2.0') throw new Error('Missing glTF 2.0 asset metadata');
+  // Declarations must obey the same self-contained decoder policy as extension payloads.
+  for (const key of ['extensionsRequired', 'extensionsUsed']) {
+    if (json[key] !== undefined && (!Array.isArray(json[key]) || !json[key].every(name => typeof name === 'string'))) throw new Error('Invalid glTF extension declaration');
+    if ((json[key] || []).some(name => /^(?:KHR_draco_mesh_compression|EXT_meshopt_compression|KHR_texture_basisu|KHR_gaussian_splatting|EXT_gaussian_splatting)$/i.test(name))) throw new Error('Compressed extension requires an external decoder and is not allowed in local GLB files');
+  }
   // Check every nested URI, including optional extensions, not only core images.
   const todo = [json];
   while (todo.length) {
     const object = todo.pop();
     for (const [key, value] of Object.entries(object)) {
-      if (key.toLowerCase() === 'uri' && (typeof value !== 'string' || !/^data:/i.test(value))) throw new Error('External resource URI rejected: embed every buffer and image in the GLB');
+      if (/^(?:KHR_draco_mesh_compression|EXT_meshopt_compression|KHR_texture_basisu|KHR_gaussian_splatting|EXT_gaussian_splatting)$/i.test(key)) throw new Error('Compressed extension requires an external decoder and is not allowed in local GLB files');
+      if (key.toLowerCase() === 'uri' && (typeof value !== 'string' || !/^data:/i.test(String(value)))) throw new Error('External resource URI rejected: embed every buffer and image in the GLB');
       if (value && typeof value === 'object') todo.push(value);
     }
   }
@@ -50,6 +45,28 @@ export function validateGLB(buffer) {
   }
   for (const [key, limit] of Object.entries({ buffers: 8, bufferViews: 8192, accessors: 8192, nodes: 4096, meshes: 1024, skins: 128, images: 16, animations: 64 })) {
     if ((json[key]?.length || 0) > limit) throw new Error(`Too many glTF ${key}`);
+  }
+  // Reject invalid/cyclic hierarchies before the engine recursively instantiates them.
+  const parents = new Map<number, number>(), visiting = new Set<number>(), visited = new Set<number>();
+  function visitNode(index: number) {
+    if (!Number.isInteger(index) || !json.nodes?.[index]) throw new Error('Invalid GLB node reference');
+    if (visiting.has(index)) throw new Error('Cyclic GLB node hierarchy');
+    if (visited.has(index)) return;
+    visiting.add(index);
+    const node = json.nodes[index];
+    for (const [key, length] of [['translation', 3], ['rotation', 4], ['scale', 3], ['matrix', 16]] as const) {
+      if (node[key] !== undefined && (!Array.isArray(node[key]) || node[key].length !== length || !node[key].every(Number.isFinite))) throw new Error('Driver node transform contains non-finite or invalid values');
+    }
+    if (node.children !== undefined && !Array.isArray(node.children)) throw new Error('Invalid GLB children array');
+    for (const child of node.children || []) {
+      if (parents.has(child)) throw new Error('GLB node has more than one parent');
+      parents.set(child, index); visitNode(child);
+    }
+    visiting.delete(index); visited.add(index);
+  }
+  for (let i = 0; i < (json.nodes?.length || 0); i++) visitNode(i);
+  for (const scene of json.scenes || []) for (const index of scene.nodes || []) {
+    if (!Number.isInteger(index) || !json.nodes?.[index] || parents.has(index)) throw new Error('Invalid GLB scene root');
   }
   for (const entry of [...(json.buffers || []), ...(json.images || [])]) {
     if (entry.uri !== undefined && !/^data:[^,]*;base64,/i.test(entry.uri)) throw new Error('Embedded URI must use base64 data');
@@ -136,105 +153,3 @@ function imageDimensions(bytes) {
   throw new Error('Embedded image is not a supported PNG, JPEG or WebP');
 }
 
-export function resolveImportSlot(filename, selectedId, multiple = false) {
-  requireSlot(selectedId);
-  if (!multiple) return selectedId;
-  const tokens = String(filename).toLowerCase().replace(/\.glb$/i, '').split(/[^a-z0-9]+/);
-  const found = DRIVERS.filter(driver => tokens.includes(driver.id));
-  if (found.length !== 1) throw new Error('For multiple files, name each GLB with exactly one slot ID: whale, gemini, gpt, claude, grok, glm');
-  return found[0].id;
-}
-
-export async function parseLocalGLB(buffer) {
-  const manager = new LoadingManager();
-  manager.setURLModifier(url => {
-    // Embedded bufferView images are converted to temporary blob URLs inside
-    // GLTFLoader. User-supplied blob URIs have already been rejected above.
-    if (!/^(?:data:|blob:)/i.test(url)) throw new Error('Local import cannot request external resources');
-    return url;
-  });
-  return new GLTFLoader(manager).parseAsync(buffer, '');
-}
-
-// This store owns parsed asset resources. Controllers only borrow them. Before
-// replacing an asset, onChange releases its controllers synchronously; only then
-// can the previous geometries/materials/textures be disposed.
-export function createLocalDriverStore({ parse = parseLocalGLB, validate = validateDriverContract, dispose = disposeDriverAsset, onBusy = () => {}, onChange = () => {}, canImport = () => true, maxConcurrent = 2 } = {}) {
-  const assets = new Map(), versions = new Map(), queue = [];
-  const limit = Math.max(1, Math.min(2, Math.floor(maxConcurrent) || 2));
-  let active = 0, pending = 0, closed = false;
-  const notifyBusy = () => onBusy(pending > 0, pending);
-  function pump() {
-    while (active < limit && queue.length) {
-      active++;
-      const task = queue.shift();
-      task().finally(() => { active--; pump(); });
-    }
-  }
-  function stale(id, version) { return closed || versions.get(id) !== version; }
-  function importFile(file, slotId) {
-    try { requireSlot(slotId); if (closed) throw new Error('Local import session is closed'); if (!canImport()) throw new Error('Import drivers from the menu after the race'); }
-    catch (error) { return Promise.reject(error); }
-    const version = (versions.get(slotId) || 0) + 1;
-    versions.set(slotId, version);
-    pending++; notifyBusy();
-    return new Promise((resolve, reject) => {
-      queue.push(async () => {
-        let asset = null;
-        try {
-          if (stale(slotId, version)) { resolve({ status: 'stale', slotId }); return; }
-          if (!file || typeof file.name !== 'string' || !/\.glb$/i.test(file.name) || typeof file.arrayBuffer !== 'function') throw new Error('Select a .glb file');
-          if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > MAX_IMPORT_BYTES) throw new Error('GLB must be nonempty and at most 32 MiB');
-          const buffer = await file.arrayBuffer();
-          if (stale(slotId, version)) { resolve({ status: 'stale', slotId }); return; }
-          if (buffer.byteLength !== file.size) throw new Error('GLB file size changed while reading');
-          validateGLB(buffer);
-          asset = await parse(buffer);
-          if (stale(slotId, version)) { dispose(asset); asset = null; resolve({ status: 'stale', slotId }); return; }
-          await validate(asset);
-          if (stale(slotId, version) || !canImport()) { dispose(asset); asset = null; resolve({ status: 'stale', slotId }); return; }
-          const previous = assets.get(slotId);
-          assets.set(slotId, asset);
-          try { onChange({ slotId, asset, previous }); }
-          catch (error) { if (previous) assets.set(slotId, previous); else assets.delete(slotId); throw error; }
-          asset = null;
-          if (previous) dispose(previous);
-          resolve({ status: 'imported', slotId });
-        } catch (error) { if (asset) dispose(asset); reject(error); }
-        finally { pending--; notifyBusy(); }
-      });
-      pump();
-    });
-  }
-  return {
-    importFile,
-    importFiles(files, selectedId) {
-      const chosen = Array.from(files || []);
-      return Promise.allSettled(chosen.map(file => {
-        try { return importFile(file, resolveImportSlot(file.name, selectedId, chosen.length > 1)); }
-        catch (error) { return Promise.reject(error); }
-      }));
-    },
-    get: id => assets.get(id),
-    has: id => assets.has(id),
-    get busy() { return pending > 0; },
-    get pending() { return pending; },
-    clear(slotId) {
-      requireSlot(slotId);
-      if (closed || !canImport()) return false;
-      versions.set(slotId, (versions.get(slotId) || 0) + 1);
-      const previous = assets.get(slotId);
-      assets.delete(slotId);
-      try { onChange({ slotId, asset: undefined, previous }); }
-      catch (error) { if (previous) assets.set(slotId, previous); throw error; }
-      if (previous) dispose(previous);
-      return true;
-    },
-    dispose() {
-      if (closed) return;
-      closed = true;
-      for (const [slotId, previous] of assets) { onChange({ slotId, asset: undefined, previous }); dispose(previous); }
-      assets.clear();
-    },
-  };
-}

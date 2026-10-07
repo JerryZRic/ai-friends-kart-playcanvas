@@ -1,6 +1,6 @@
 Six character runtime models — separate rights notice
 
-The six lossless .glb.gz runtime archives under dist/assets/drivers/ are supplied for this
+The six lossless .glb.gz runtime archives under public/assets/drivers/ (served from dist/assets/drivers/) are supplied for this
 non-commercial AI Friends Kart demo. They are distinct from the AGPL-3.0-only
 game code and original kart, props, track and UI.
 
@@ -29,6 +29,6 @@ The corresponding-source ZIP intentionally does not duplicate the large
 character GLBs. They are separately served at assets/drivers/<id>-driver.glb.gz
 beside the demo. A full repository clone includes them. Rebuilding only the
 code/source ZIP works without them; for the six-character demo, copy those six
-files into dist/assets/drivers/ or run the documented manifest-verified fetch
+files into public/assets/drivers/ or run the documented manifest-verified fetch
 script. The original kart/prop Blender source files were already public and
 remain included for their AGPL corresponding-source completeness.

@@ -1,6 +1,5 @@
 node_modules/
-.sites-runtime/
-*.blend1
-qa/
+dist/
 .openai/
-build-chassis/
+.sites-runtime/
+*.log

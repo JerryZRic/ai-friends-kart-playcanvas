@@ -1,50 +1,39 @@
-name: Publish static game to GitHub Pages
-
-# Preparing this workflow does not enable Pages or publish anything.
-# Run it manually only after the repository owner approves publication.
+name: Build and publish PlayCanvas game
 on:
   workflow_dispatch:
     inputs:
       publish:
-        description: 'Publish dist and its source archive to the public web'
+        description: Publish the PlayCanvas HTML game and corresponding source
         required: true
         type: boolean
         default: false
-
 permissions:
   contents: read
-
 concurrency:
   group: github-pages
   cancel-in-progress: false
-
 jobs:
-  package:
+  build:
     if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: read
-    runs-on: ubuntu-latest
     steps:
-      - name: Check out the selected ref
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-      - name: Install pinned build dependencies
-        run: npm ci
-      - name: Check game and local-import logic
-        run: npm run check && npm test
-      - name: Check distribution paths and source package
-        run: node tests/public-artifact.test.mjs
-      - name: Configure already-enabled Pages
-        uses: actions/configure-pages@v5
-      - name: Upload only the static distribution
-        uses: actions/upload-pages-artifact@v4
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check && npm test && npm run build
+      - run: npm run test:dist
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
-
   deploy:
-    needs: package
+    needs: build
     permissions:
       pages: write
       id-token: write
@@ -53,6 +42,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publish approved distribution
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
