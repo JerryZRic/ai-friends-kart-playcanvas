@@ -49,11 +49,11 @@ export const sourceFiles = [
   'LICENSE', 'NOTICE', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'MODEL-NOTICE.txt',
   'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md',
   'src/game.js', 'src/index.html', 'src/vehicle-controls.js', 'src/mouse-look.js',
-  'src/bundled-drivers.js', 'src/driver-roster.js', 'src/animated-driver.js', 'src/local-driver-import.js',
+  'src/asset-download.js', 'src/bundled-drivers.js', 'src/driver-roster.js', 'src/animated-driver.js', 'src/local-driver-import.js',
   'models/kart.blend', 'models/props.blend', 'models/build_models.py', 'models/create_props.py', 'models/model_metadata.json', 'models/export_original_chassis.py',
   'dist/assets/kart.glb', 'dist/assets/palm.glb', 'dist/assets/rock.glb', 'dist/assets/arch.glb', 'dist/assets/kart-r12-chassis.glb',
   'tests/three-test.mjs', 'tests/gameplay.test.mjs', 'tests/vehicle-controls.test.mjs', 'tests/mouse-look.test.mjs', 'tests/dist.test.mjs',
-  'tests/bundled-drivers.test.mjs', 'tests/runtime-drivers.test.mjs', 'tests/local-driver-import.test.mjs', 'tests/public-artifact.test.mjs', 'tests/helpers/synthetic-driver.mjs',
+  'tests/asset-download.test.mjs', 'tests/bundled-drivers.test.mjs', 'tests/runtime-drivers.test.mjs', 'tests/local-driver-import.test.mjs', 'tests/public-artifact.test.mjs', 'tests/helpers/synthetic-driver.mjs',
   'scripts/verify-runtime-assets.mjs', 'scripts/fetch-runtime-models.mjs', 'docs/runtime-models.json', 'scripts/package-dist.mjs', 'docs/github-pages.md', 'docs/local-import.md', 'docs/releases/v1.0.0.md', 'docs/releases/v1.0.0-original-source.json',
 ].sort();
 

@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "check": "node --check src/game.js && node --check src/vehicle-controls.js && node --check src/mouse-look.js && node --check src/local-driver-import.js && node --check src/animated-driver.js && node --check src/driver-roster.js && node --check build.mjs && node --check scripts/package-dist.mjs && node --check src/bundled-drivers.js && node --check scripts/fetch-runtime-models.mjs && node --check scripts/verify-runtime-assets.mjs",
+    "check": "node --check src/game.js && node --check src/vehicle-controls.js && node --check src/mouse-look.js && node --check src/local-driver-import.js && node --check src/animated-driver.js && node --check src/driver-roster.js && node --check build.mjs && node --check scripts/package-dist.mjs && node --check src/bundled-drivers.js && node --check scripts/fetch-runtime-models.mjs && node --check scripts/verify-runtime-assets.mjs && node --check src/asset-download.js",
     "serve": "python3 -m http.server 4173 --directory dist",
-    "test": "node tests/mouse-look.test.mjs && node tests/vehicle-controls.test.mjs && node tests/local-driver-import.test.mjs && node tests/bundled-drivers.test.mjs && node tests/runtime-drivers.test.mjs && node tests/gameplay.test.mjs",
+    "test": "node tests/asset-download.test.mjs && node tests/mouse-look.test.mjs && node tests/vehicle-controls.test.mjs && node tests/local-driver-import.test.mjs && node tests/bundled-drivers.test.mjs && node tests/runtime-drivers.test.mjs && node tests/gameplay.test.mjs",
     "test:dist": "node tests/public-artifact.test.mjs",
     "models:fetch": "node scripts/fetch-runtime-models.mjs"
   },

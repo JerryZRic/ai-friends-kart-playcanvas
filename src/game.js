@@ -7,6 +7,7 @@ import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roste
 import { CHASSIS_ASSET, createImportedRacer } from './animated-driver.js';
 import { createLocalDriverStore } from './local-driver-import.js';
 import { loadBundledDrivers } from './bundled-drivers.js';
+import { fetchWithRetry } from './asset-download.js';
 
 const $=id=>document.getElementById(id), canvas=$('game'), map=$('map').getContext('2d');
 const scene=new THREE.Scene();scene.fog=new THREE.Fog('#eabbb2',210,650);
@@ -45,16 +46,135 @@ let grid=[];for(let row=0;row<2;row++)for(let col=0;col<16;col++){let s=sample(r
 const loader=new GLTFLoader();
 function simplify(root){root.updateMatrixWorld(true);let groups=new Map();root.traverse(m=>{if(m.isMesh){let material=m.material;if(Array.isArray(material))return;let key=material.name;let geo=m.geometry.clone().applyMatrix4(m.matrixWorld);if(geo.index)geo=geo.toNonIndexed();for(const attr of Object.keys(geo.attributes)){if(attr!=='position'&&attr!=='normal'&&!(attr==='color'&&material.vertexColors))geo.deleteAttribute(attr)}if(!groups.has(key))groups.set(key,{material,geos:[]});groups.get(key).geos.push(geo)}});let g=new THREE.Group();for(let [name,{material,geos}] of groups){let mesh=new THREE.Mesh(mergeGeometries(geos),material);mesh.name=name;mesh.castShadow=true;mesh.receiveShadow=true;g.add(mesh)}return g;}
 function cloneKart(color){let g=kartTemplate.clone(true);g.traverse(m=>{if(m.isMesh){m.material=m.material.clone();if(/body|paint|helmet/i.test(m.material.name)&&!/visor/i.test(m.material.name))m.material.color.set(color);m.castShadow=true;}});scene.add(g);return g;}
-function instanceProp(root,transforms){root.updateMatrixWorld(true);root.traverse(m=>{if(!m.isMesh)return;let geo=m.geometry.clone().applyMatrix4(m.matrixWorld);let im=new THREE.InstancedMesh(geo,m.material,transforms.length);transforms.forEach((t,i)=>im.setMatrixAt(i,t));im.castShadow=true;im.receiveShadow=true;scene.add(im)})}
+function instanceProp(root,transforms,target=scene){root.updateMatrixWorld(true);root.traverse(m=>{if(!m.isMesh)return;let geo=m.geometry.clone().applyMatrix4(m.matrixWorld);let im=new THREE.InstancedMesh(geo,m.material,transforms.length);transforms.forEach((t,i)=>im.setMatrixAt(i,t));im.castShadow=true;im.receiveShadow=true;target.add(im)})}
 const tempObj=new THREE.Object3D();function transform(p,scale=1,rot=0){tempObj.position.copy(p);tempObj.rotation.set(0,rot,0);tempObj.scale.setScalar(scale);tempObj.updateMatrix();return tempObj.matrix.clone()}
 const itemMat=mat('#aa76e4',{emissive:'#a45edf',emissiveIntensity:.55,metalness:.18,roughness:.25});const itemEdge=new THREE.LineBasicMaterial({color:'#fff6ba'}),itemGeo=new THREE.BoxGeometry(1.25,1.25,1.25);
 for(let j=0;j<15;j++)for(let lateral of [-4.2,0,4.2]){let d=45+j*LENGTH/15;let g=new THREE.Group(),box=new THREE.Mesh(itemGeo,itemMat);g.add(box,new THREE.LineSegments(new THREE.EdgesGeometry(itemGeo),itemEdge));let core=new THREE.Mesh(new THREE.OctahedronGeometry(.35),new THREE.MeshBasicMaterial({color:'#ffffe0'}));g.add(core);let p=sample(d,lateral).p;p.y+=1.25;g.position.copy(p);scene.add(g);boxes.push({d,lateral,mesh:g,cool:0,base:p.y})}
 const shieldMesh=new THREE.Mesh(new THREE.SphereGeometry(2.4,24,16),new THREE.MeshPhysicalMaterial({color:'#84e8fa',transparent:true,opacity:.18,roughness:.1,metalness:.2,side:THREE.DoubleSide,depthWrite:false}));scene.add(shieldMesh);shieldMesh.visible=false;
 const flameMat=new THREE.MeshBasicMaterial({color:'#a6f9ff',transparent:true,opacity:.8,depthWrite:false});let flames=[];for(let side of [-1,1]){let f=new THREE.Mesh(new THREE.ConeGeometry(.22,1.5,7),flameMat);f.rotation.x=-Math.PI/2;scene.add(f);flames.push({mesh:f,side})}
 const particles=new THREE.InstancedMesh(new THREE.SphereGeometry(.065,4,3),new THREE.MeshBasicMaterial({color:'#ffc36c'}),160);particles.instanceMatrix.setUsage(THREE.DynamicDrawUsage);scene.add(particles);particles.count=0;
-async function boot(){try{const [kart,palm,rock,arch]=await Promise.all(['kart','palm','rock','arch'].map(name=>loader.loadAsync('assets/'+name+'.glb')));kartTemplate=simplify(kart.scene);chassisAsset=await loader.loadAsync(CHASSIS_ASSET).catch(()=>null);let palms=[],rocks=[];for(let i=0;i<94;i++){let d=i/94*LENGTH,side=i%2?1:-1;let s=sample(d,side*(HALF+6+(i%4)*3));s.p.y=.4;palms.push(transform(s.p,.82+(i%4)*.09,i*2.4))}instanceProp(simplify(palm.scene),palms);for(let i=0;i<36;i++){let a=i/36*Math.PI*2;let p=new THREE.Vector3(Math.cos(a)*(100+(i%3)*10)-12,.35,Math.sin(a)*(90+(i%4)*7));rocks.push(transform(p,.6+(i%3)*.23,i))}instanceProp(simplify(rock.scene),rocks);let gantry=arch.scene;let s=sample(1);gantry.position.copy(s.p);gantry.rotation.y=Math.atan2(s.t.x,s.t.z);gantry.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});scene.add(gantry);addSigns();setupRacers();if(chassisAsset){const loaded=await loadBundledDrivers({onProgress:progress=>{$('loading').textContent='正在加载角色 '+progress.completed+' / '+progress.total+' · 成功 '+progress.loaded+(progress.failed?' · 失败 '+progress.failed:'');}});bundledDrivers=loaded.drivers;bundledFailures=loaded.failures;}else bundledFailures=new Map(DRIVERS.map(slot=>[slot.id,'Original chassis could not load']));ready=true;state='menu';setupRacers();updateDriverUI();$('startText').textContent=bundledFailures.size?'开始比赛（含原创替身）':'开始比赛';$('loading').textContent=bundledFailures.size?'角色加载失败：'+[...bundledFailures.keys()].join('、')+'；这些槽位明确使用原创替身，刷新可重试。':'6 / 6 角色已就绪 · 非商业试玩';window.neonKart={getState:()=>({state,pos,lane,speed,elapsed,charge,boost,held,lap:Math.max(1,Math.min(3,Math.floor(pos/LENGTH)+1)),length:LENGTH,rank:finishRank||rank(),camera:view,mouseLook:{...orbit.get(),...mouseLook.get()},modelsLoaded:ready,allDriversLoaded:bundledDrivers.size===6,bundledLoaded:[...bundledDrivers.keys()],bundledFailures:[...bundledFailures.keys()],selectedDriverId,importedSlots:DRIVERS.filter(d=>localDrivers.has(d.id)).map(d=>d.id),importing:localDrivers.busy,driverStates:DRIVERS.map(d=>({id:d.id,appearance:localDrivers.has(d.id)?'local-import':bundledDrivers.has(d.id)?'bundled-model':'original-fallback',...(controllers.get(d.id)?.getState()||{})})),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),start:reset,pause,useItem,selectDriver,importDrivers,clearDriver:()=>localDrivers.clear(selectedDriverId)};}catch(e){console.error(e);$('loading').textContent='模型加载失败，请刷新重试';let el=document.createElement('div');el.className='error';el.textContent='未能加载 3D 模型，请检查网络后刷新。';document.body.append(el)}}
+const courseAssets=new Map();
+const courseFiles=[
+  {id:'kart',label:'原创卡丁车',path:'assets/kart.glb'},
+  {id:'palm',label:'海岛棕榈',path:'assets/palm.glb'},
+  {id:'rock',label:'海岸岩石',path:'assets/rock.glb'},
+  {id:'arch',label:'起点拱门',path:'assets/arch.glb'},
+  {id:'chassis',label:'角色底盘',path:CHASSIS_ASSET},
+];
+let courseBuilt=false,loadingBusy=false,loadingPromise=null,loadingTimer=null,loadingError=null;
+let loadingSnapshot={phase:'course',records:[],receivedBytes:0,totalBytes:0,completed:0,total:courseFiles.length,loaded:0,failed:0};
+const retryDeadlines=new Map();
+const formatBytes=bytes=>bytes<1048576?(bytes/1024).toFixed(0)+' KiB':(bytes/1048576).toFixed(1)+' MiB';
+function setLoadingSnapshot(snapshot){
+  const previous=loadingSnapshot;
+  loadingSnapshot={...snapshot,records:snapshot.records.map(record=>({...record}))};
+  for(const record of loadingSnapshot.records){
+    const key=loadingSnapshot.phase+':'+record.id;
+    const old=previous.phase===loadingSnapshot.phase?previous.records.find(item=>item.id===record.id):null;
+    if(record.stage==='waiting'){
+      if(old?.stage!=='waiting'||old.attempt!==record.attempt||!retryDeadlines.has(key))retryDeadlines.set(key,Date.now()+Math.max(0,record.retryInMs||0));
+    }else retryDeadlines.delete(key);
+  }
+  renderLoadingUI();
+}
+function renderLoadingUI(){
+  const status=loadingSnapshot,course=status.phase==='course';
+  const stageNames={queued:'等待下载',downloading:'下载中',decompressing:'校验 / 解压中',preparing:'解析 / 准备 3D 模型',ready:'已就绪',failed:'加载失败'};
+  const progress=$('loadingProgress'),hasTotal=status.totalBytes>0;
+  $('loadingSection').setAttribute('aria-busy',String(loadingBusy));
+  $('loadingProgressLabel').textContent=(course?'赛道':'角色')+'下载进度（仅下载字节）';
+  if(hasTotal){progress.max=status.totalBytes;progress.value=Math.min(status.receivedBytes,status.totalBytes);}
+  else progress.removeAttribute?.('value');
+  $('loadingBytes').textContent=formatBytes(status.receivedBytes)+(hasTotal?' / '+formatBytes(status.totalBytes)+' · '+Math.floor(Math.min(1,status.receivedBytes/status.totalBytes)*100)+'%':' · 正在确定下载大小');
+  $('loadingDetails').textContent=status.records.map(record=>{
+    const name=course?courseFiles.find(file=>file.id===record.id)?.label:getDriver(record.id).label;
+    let detail=stageNames[record.stage]||record.stage;
+    if(record.stage==='waiting'){
+      const seconds=Math.max(0,Math.ceil(((retryDeadlines.get(status.phase+':'+record.id)||Date.now())-Date.now())/1000));
+      detail=seconds+' 秒后自动重试（第 '+(record.attempt+1)+' / '+record.maxAttempts+' 次）';
+    }else if(record.stage==='downloading')detail+=' · '+formatBytes(record.receivedBytes)+(record.totalBytes?' / '+formatBytes(record.totalBytes):'');
+    if(record.stage==='failed'&&record.error)detail+=' · '+record.error;
+    return name+'：'+detail;
+  }).join('\n');
+  if(loadingBusy){
+    const preparing=status.records.some(record=>record.stage==='preparing'||record.stage==='decompressing');
+    const downloading=status.records.some(record=>record.stage==='downloading'||record.stage==='queued'||record.stage==='waiting');
+    $('loading').textContent=(course?'正在准备赛道':'正在加载角色')+' · 已就绪 '+status.loaded+' / '+status.total+(preparing&&!downloading?' · 下载完成，正在处理模型':'');
+  }else if(loadingError&&courseBuilt){
+    $('loading').textContent='模型准备失败：'+loadingError+'；请重试';
+  }else if(!courseBuilt){
+    $('loading').textContent='赛道资源加载失败，请检查网络后重试';
+  }else if(bundledFailures.size){
+    $('loading').textContent='角色加载失败：'+[...bundledFailures.keys()].map(id=>getDriver(id).label).join('、')+'；可重试，或使用原创替身开始比赛';
+  }else $('loading').textContent='6 / 6 角色已就绪 · 非商业试玩';
+  const canRetry=!loadingBusy&&!localDrivers.busy&&(loadingError||!courseBuilt||bundledFailures.size>0)&&(state==='loading'||state==='menu'||state==='finished');
+  $('retryLoading').classList[!loadingBusy&&(loadingError||!courseBuilt||bundledFailures.size>0)?'remove':'add']('hidden');
+  $('retryLoading').disabled=!canRetry;
+  $('retryLoading').textContent=courseBuilt?(loadingError?'重试模型准备':'重试失败角色（'+bundledFailures.size+'）'):'重试赛道资源';
+}
+async function loadCourseAssets(){
+  const records=courseFiles.map(file=>({...file,stage:courseAssets.has(file.id)?'ready':'queued',receivedBytes:courseAssets.get(file.id)?.bytes||0,totalBytes:courseAssets.get(file.id)?.bytes||0,attempt:1,maxAttempts:4,error:null}));
+  const report=()=>setLoadingSnapshot({phase:'course',records,receivedBytes:records.reduce((sum,record)=>sum+record.receivedBytes,0),totalBytes:records.every(record=>record.totalBytes>0)?records.reduce((sum,record)=>sum+record.totalBytes,0):0,completed:records.filter(record=>record.stage==='ready'||record.stage==='failed').length,total:records.length,loaded:records.filter(record=>record.stage==='ready').length,failed:records.filter(record=>record.stage==='failed').length});
+  report();
+  await Promise.all(records.map(async record=>{
+    if(courseAssets.has(record.id))return;
+    try{
+      record.stage='downloading';report();
+      const buffer=await fetchWithRetry(record.path,{
+        maxAttempts:4,
+        onAttempt:({attempt,maxAttempts})=>{Object.assign(record,{stage:'downloading',attempt,maxAttempts,receivedBytes:0,retryInMs:0});report();},
+        onProgress:({receivedBytes,totalBytes})=>{Object.assign(record,{stage:'downloading',receivedBytes,totalBytes});report();},
+        onRetry:({attempt,maxAttempts,retryInMs})=>{Object.assign(record,{stage:'waiting',attempt,maxAttempts,retryInMs});report();},
+      });
+      Object.assign(record,{stage:'preparing',receivedBytes:buffer.byteLength,totalBytes:buffer.byteLength});report();
+      await new Promise(resolve=>setTimeout(resolve,0));
+      const asset=await loader.parseAsync(buffer,'assets/');
+      courseAssets.set(record.id,{asset,bytes:buffer.byteLength});record.stage='ready';
+    }catch(error){record.stage='failed';record.error=error instanceof Error?error.message:'无法加载资源';}
+    report();
+  }));
+  if(records.some(record=>record.stage==='failed'))throw new Error('Original course assets could not load');
+}
+function buildCourse(){
+  if(courseBuilt)return;
+  // Assemble props off-scene, then publish once. Driver retries never rebuild it.
+  const group=new THREE.Group();group.name='original-course-props';
+  const kart=courseAssets.get('kart').asset,palm=courseAssets.get('palm').asset,rock=courseAssets.get('rock').asset,arch=courseAssets.get('arch').asset;
+  const template=simplify(kart.scene);let palms=[],rocks=[];
+  for(let i=0;i<94;i++){let d=i/94*LENGTH,side=i%2?1:-1;let s=sample(d,side*(HALF+6+(i%4)*3));s.p.y=.4;palms.push(transform(s.p,.82+(i%4)*.09,i*2.4))}
+  instanceProp(simplify(palm.scene),palms,group);
+  for(let i=0;i<36;i++){let a=i/36*Math.PI*2;let p=new THREE.Vector3(Math.cos(a)*(100+(i%3)*10)-12,.35,Math.sin(a)*(90+(i%4)*7));rocks.push(transform(p,.6+(i%3)*.23,i))}
+  instanceProp(simplify(rock.scene),rocks,group);
+  const gantry=arch.scene.clone(true);const s=sample(1);gantry.position.copy(s.p);gantry.rotation.y=Math.atan2(s.t.x,s.t.z);gantry.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});group.add(gantry);addSigns(group);
+  kartTemplate=template;chassisAsset=courseAssets.get('chassis').asset;scene.add(group);courseBuilt=true;
+}
+function boot(){
+  if(loadingPromise)return loadingPromise;
+  if(localDrivers.busy||!['loading','menu','finished'].includes(state)||(ready&&!bundledFailures.size&&!loadingError))return Promise.resolve(false);
+  loadingBusy=true;ready=false;loadingError=null;$('loadingDetailGroup').open=true;const returnState=state==='finished'?'finished':'menu';state='loading';
+  $('startText').textContent=courseBuilt?'正在重试角色':'正在准备赛道';updateDriverUI();
+  loadingTimer=setInterval(()=>renderLoadingUI(),250);
+  loadingPromise=(async()=>{
+    try{
+      if(!courseBuilt){await loadCourseAssets();buildCourse();setupRacers();}
+      const loaded=await loadBundledDrivers({existingDrivers:bundledDrivers,onStatus:status=>setLoadingSnapshot({phase:'drivers',...status}),onProgress:()=>updateDriverUI()});
+      bundledDrivers=loaded.drivers;bundledFailures=loaded.failures;
+      setupRacers();ready=true;state=returnState;
+      $('startText').textContent=bundledFailures.size?'开始比赛（含原创替身）':returnState==='finished'?'再来一场':'开始比赛';
+      window.neonKart={getState:()=>({state,pos,lane,speed,elapsed,charge,boost,held,lap:Math.max(1,Math.min(3,Math.floor(pos/LENGTH)+1)),length:LENGTH,rank:finishRank||rank(),camera:view,mouseLook:{...orbit.get(),...mouseLook.get()},modelsLoaded:ready,allDriversLoaded:bundledDrivers.size===6,bundledLoaded:[...bundledDrivers.keys()],bundledFailures:[...bundledFailures.keys()],loading:{...loadingSnapshot,records:loadingSnapshot.records.map(record=>({...record})),busy:loadingBusy,courseBuilt,error:loadingError},selectedDriverId,importedSlots:DRIVERS.filter(d=>localDrivers.has(d.id)).map(d=>d.id),importing:localDrivers.busy,driverStates:DRIVERS.map(d=>({id:d.id,appearance:localDrivers.has(d.id)?'local-import':bundledDrivers.has(d.id)?'bundled-model':'original-fallback',...(controllers.get(d.id)?.getState()||{})})),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),start:reset,pause,useItem,selectDriver,importDrivers,retryLoading:boot,clearDriver:()=>localDrivers.clear(selectedDriverId)};
+      return true;
+    }catch(error){
+      console.error(error);loadingError=error instanceof Error?error.message:'未知准备错误';$('startText').textContent='资源加载未完成';
+      if(courseBuilt)for(const slot of DRIVERS)if(!bundledDrivers.has(slot.id))bundledFailures.set(slot.id,error instanceof Error?error.message:'无法加载角色');
+      return false;
+    }finally{
+      loadingBusy=false;loadingPromise=null;clearInterval(loadingTimer);loadingTimer=null;$('loadingDetailGroup').open=!ready||bundledFailures.size>0;updateDriverUI();renderLoadingUI();
+    }
+  })();
+  return loadingPromise;
+}
 function makeTextTexture(text,bg='#183b45',fg='#edffd0',size=512){let c=document.createElement('canvas');c.width=size;c.height=128;let x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,size,128);x.fillStyle=fg;x.font='900 56px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText(text,size/2,65);let t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
-function addSigns(){let s=sample(1);let banner=new THREE.Mesh(new THREE.PlaneGeometry(13,2.1),new THREE.MeshBasicMaterial({map:makeTextTexture('NEON KART'),side:THREE.DoubleSide}));banner.position.copy(s.p);banner.position.y+=7.1;banner.rotation.y=Math.atan2(s.t.x,s.t.z)+Math.PI;scene.add(banner);for(let d of [145,320,550,740]){let s=sample(d,-HALF-2.5);let board=new THREE.Mesh(new THREE.BoxGeometry(6.2,1.6,.2),[mat('#ecb081'),mat('#ecb081'),mat('#ecb081'),mat('#ecb081'),new THREE.MeshBasicMaterial({map:makeTextTexture('› › ›', '#ed806d','#fff8de')}),new THREE.MeshBasicMaterial({map:makeTextTexture('› › ›', '#ed806d','#fff8de')})]);board.position.copy(s.p);board.position.y+=2;board.rotation.y=Math.atan2(s.t.x,s.t.z)+Math.PI;scene.add(board)}}
+function addSigns(target=scene){let s=sample(1);let banner=new THREE.Mesh(new THREE.PlaneGeometry(13,2.1),new THREE.MeshBasicMaterial({map:makeTextTexture('NEON KART'),side:THREE.DoubleSide}));banner.position.copy(s.p);banner.position.y+=7.1;banner.rotation.y=Math.atan2(s.t.x,s.t.z)+Math.PI;target.add(banner);for(let d of [145,320,550,740]){let s=sample(d,-HALF-2.5);let board=new THREE.Mesh(new THREE.BoxGeometry(6.2,1.6,.2),[mat('#ecb081'),mat('#ecb081'),mat('#ecb081'),mat('#ecb081'),new THREE.MeshBasicMaterial({map:makeTextTexture('› › ›', '#ed806d','#fff8de')}),new THREE.MeshBasicMaterial({map:makeTextTexture('› › ›', '#ed806d','#fff8de')})]);board.position.copy(s.p);board.position.y+=2;board.rotation.y=Math.atan2(s.t.x,s.t.z)+Math.PI;target.add(board)}}
 function tone(freq=500,d=.1){if(muted)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.start();o.stop(audio.currentTime+d)}catch{}}
 function toast(s){$('toast').textContent=s;toastTime=2.1;$('toast').style.opacity=1}
 function rank(){return 1+bots.filter(b=>b.total>pos).length}
@@ -72,13 +192,14 @@ function racerFor(slot){
   const mesh=cloneKart(slot.color);mesh.userData.driverId=slot.id;return mesh;
 }
 function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:MAX*(.84+i*.018),slow:0,mesh:racerFor(slot)}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
-function reset(){if(!ready||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=0;held=null;drifting=false;steerVis=0;finishRank=0;sparks=[];for(let k in keys)keys[k]=false;boxes.forEach(b=>b.cool=0);setupRacers();state='countdown';document.body.classList.remove('menu');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
-const canImport=()=>ready&&(state==='menu'||state==='finished');
-const localDrivers=createLocalDriverStore({canImport,onBusy:()=>updateDriverUI(),onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
+function reset(){if(!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=0;held=null;drifting=false;steerVis=0;finishRank=0;sparks=[];for(let k in keys)keys[k]=false;boxes.forEach(b=>b.cool=0);setupRacers();state='countdown';document.body.classList.remove('menu');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
+const localDrivers=createLocalDriverStore({canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
   const editable=canImport();
   for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':ready?'加载失败 · 原创替身':'加载中');}
-  $('start').disabled=!ready||localDrivers.busy;
+  $('start').disabled=!ready||loadingBusy||localDrivers.busy;
+  $('retryLoading').disabled=loadingBusy||localDrivers.busy||!['loading','menu','finished'].includes(state);
   $('importButton').disabled=!editable||!chassisAsset;
   $('driverFiles').disabled=!editable||!chassisAsset;
   $('clearDriver').disabled=!editable||localDrivers.busy||!localDrivers.has(selectedDriverId);
@@ -103,6 +224,7 @@ $('importButton').onclick=()=>{if(canImport()&&chassisAsset)$('driverFiles').cli
 $('driverFiles').addEventListener('change',event=>{const files=Array.from(event.target.files||[]),slotId=selectedDriverId;event.target.value='';void importDrivers(files,slotId);});
 $('clearDriver').onclick=()=>{if(localDrivers.clear(selectedDriverId)){importStatusVersion++;$('importStatus').textContent=bundledDrivers.has(selectedDriverId)?'该槽位已恢复默认角色':'该槽位恢复原创替身（默认模型加载失败）';}};
 $('start').onclick=reset;
+$('retryLoading').onclick=()=>{void boot();};
 function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();$('count').textContent='已暂停';$('count').classList.add('paused');$('pause').textContent='▶';updateLookHint();}else if(state==='paused'){state=countdown>0?'countdown':'running';$('count').textContent='';$('count').classList.remove('paused');$('pause').textContent='Ⅱ';updateLookHint()}}$('pause').onclick=pause;
 $('camera').onclick=()=>{view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{muted=!muted;$('sound').textContent=muted?'♪':'♫';$('sound').setAttribute('aria-label',muted?'开启音效':'关闭音效');tone()};

@@ -4,13 +4,7 @@ import { parseLocalGLB, validateGLB } from './local-driver-import.js';
 import { validateDriverContract, disposeDriverAsset } from './animated-driver.js';
 
 export const RUNTIME_MODELS = Object.freeze(manifest.assets.map(record => Object.freeze({ ...record })));
-async function fetchRuntimeAsset(path, { signal } = {}) {
-  // These are fixed same-origin distribution files. No user-selected file or
-  // selected-file bytes are ever sent to this path or any other destination.
-  const response = await fetch(path, { credentials: 'omit', redirect: 'error', signal });
-  if (!response.ok) throw new Error(`Model download failed (${response.status})`);
-  return response.arrayBuffer();
-}
+import { fetchWithRetry, fetchStream } from './asset-download.js';
 
 async function checkIdentity(buffer, bytes, sha256, label) {
   if (!(buffer instanceof ArrayBuffer) || buffer.byteLength !== bytes) throw new Error(`${label} size differs from its public manifest`);
@@ -38,35 +32,43 @@ export async function decodeRuntimeBuffer(buffer, record) {
   return decoded;
 }
 
-export async function loadBundledDrivers({ fetchAsset = fetchRuntimeAsset, parse = parseLocalGLB, validate = validateDriverContract, onProgress = () => {}, maxConcurrent = 2, timeoutMs = 60000 } = {}) {
-  const drivers = new Map(), failures = new Map();
-  let next = 0, completed = 0;
+const assetByteSizes = new WeakMap();
+export async function loadBundledDrivers({ fetchAsset = fetchStream, parse = parseLocalGLB, validate = validateDriverContract, onProgress = () => {}, onStatus = () => {}, existingDrivers = new Map(), maxConcurrent = 2, timeoutMs = 60000, maxAttempts = 4, random, wait, signal } = {}) {
+  const drivers = new Map(existingDrivers), failures = new Map();
+  const states = new Map(RUNTIME_MODELS.map(record => [record.id, { id: record.id, stage: drivers.has(record.id) ? 'ready' : 'queued', receivedBytes: drivers.has(record.id) ? (assetByteSizes.get(drivers.get(record.id)) || record.bytes) : 0, totalBytes: assetByteSizes.get(drivers.get(record.id)) || record.bytes, attempt: 0, maxAttempts, retryInMs: 0 }]));
+  const pending = RUNTIME_MODELS.filter(record => !drivers.has(record.id));
+  let next = 0, completed = RUNTIME_MODELS.length - pending.length;
+  const emit = () => { const records = [...states.values()].map(value => ({ ...value })); onStatus({ records, receivedBytes: records.reduce((sum, record) => sum + record.receivedBytes, 0), totalBytes: records.every(record => record.totalBytes != null) ? records.reduce((sum, record) => sum + record.totalBytes, 0) : null, completed, total: RUNTIME_MODELS.length, loaded: drivers.size, failed: failures.size }); };
+  const update = (id, patch) => { Object.assign(states.get(id), patch); emit(); };
   const limit = Math.max(1, Math.min(2, Math.floor(maxConcurrent) || 2));
+  emit();
   async function worker() {
-    while (next < RUNTIME_MODELS.length) {
-      const record = RUNTIME_MODELS[next++];
-      let asset = null;
+    while (next < pending.length && !signal?.aborted) {
+      const record = pending[next++]; let asset = null;
       try {
-        const abort = new AbortController();
-        let timer;
-        const deadline = Math.max(1, Math.min(180000, Number.isFinite(timeoutMs) ? timeoutMs : 60000));
-        let buffer;
-        try {
-          buffer = await Promise.race([
-            fetchAsset(record.path, { signal: abort.signal }),
-            new Promise((_, reject) => { timer = setTimeout(() => { abort.abort(); reject(new Error('Runtime model download timed out; refresh to retry')); }, deadline); }),
-          ]);
-        } finally { clearTimeout(timer); }
-
+        const buffer = await fetchWithRetry(record.path, {
+          fetchAsset, timeoutMs, maxAttempts, random, wait, signal, expectedBytes: record.bytes, decodedBytes: record.decodedBytes,
+          onAttempt: value => update(record.id, { ...value, stage: 'downloading', receivedBytes: 0, retryInMs: 0 }),
+          onProgress: value => update(record.id, value),
+          onRetry: value => update(record.id, { ...value, stage: 'waiting' }),
+        });
+        update(record.id, { stage: 'decompressing', receivedBytes: buffer.byteLength, totalBytes: buffer.byteLength });
+        // Yield a frame/task so the stage can paint before synchronous decompression.
+        await new Promise(resolve => setTimeout(resolve, 0));
         const decoded = await decodeRuntimeBuffer(buffer, record);
-        asset = await parse(decoded);
-        await validate(asset);
-        drivers.set(record.id, asset); asset = null;
+        if (signal?.aborted) throw signal.reason || new DOMException('Aborted', 'AbortError');
+        update(record.id, { stage: 'preparing' });
+        await new Promise(resolve => setTimeout(resolve, 0));
+        asset = await parse(decoded); await validate(asset);
+        if (signal?.aborted) throw signal.reason || new DOMException('Aborted', 'AbortError');
+        assetByteSizes.set(asset, buffer.byteLength); drivers.set(record.id, asset); asset = null;
+        update(record.id, { stage: 'ready' });
       } catch (error) {
         if (asset) disposeDriverAsset(asset);
-        failures.set(record.id, error instanceof Error ? error.message : 'Unable to load model');
+        const message = error instanceof Error ? error.message : 'Unable to load model';
+        failures.set(record.id, message); update(record.id, { stage: 'failed', error: message, retryInMs: 0 });
       } finally {
-        completed++;
+        completed++; emit();
         onProgress({ id: record.id, completed, total: RUNTIME_MODELS.length, loaded: drivers.size, failed: failures.size });
       }
     }

@@ -60,7 +60,7 @@ await test('failed rig validation releases parsed geometry/material resources',a
 });
 await test('stalled downloads time out, abort, settle all six and leave explicit failure results',async()=>{
   const signals=[],late=[];let attempts=0,parses=0;
-  const pending=loadBundledDrivers({timeoutMs:15,parse:async buffer=>{parses++;return parse(buffer)},validate,fetchAsset:async(path,{signal})=>{attempts++;signals.push(signal);const delayed=deferred();late.push([path,delayed]);return delayed.promise;}});
+  const pending=loadBundledDrivers({timeoutMs:15,maxAttempts:1,parse:async buffer=>{parses++;return parse(buffer)},validate,fetchAsset:async(path,{signal})=>{attempts++;signals.push(signal);const delayed=deferred();late.push([path,delayed]);return delayed.promise;}});
   let watchdog;const result=await Promise.race([pending,new Promise((_,reject)=>{watchdog=setTimeout(()=>reject(new Error('Unbounded model download blocked readiness')),1500);})]).finally(()=>clearTimeout(watchdog));
   assert.equal(attempts,6);assert.equal(result.drivers.size,0);assert.equal(result.failures.size,6);assert.ok(signals.every(signal=>signal.aborted));for(const [path,delayed]of late)delayed.resolve(buffers.get(path));await new Promise(resolve=>setTimeout(resolve,5));assert.equal(parses,0);assert.equal(result.drivers.size,0);
 });
@@ -69,5 +69,22 @@ await test('default download route is read-only same-origin paths, omits credent
   globalThis.fetch=async(path,options)=>{calls.push([path,options]);assert.ok(buffers.has(path));return {ok:true,status:200,arrayBuffer:async()=>buffers.get(path)};};
   try{const result=await loadBundledDrivers({parse,validate});assert.equal(result.drivers.size,6);for(const [path,options]of calls){assert.equal(options.credentials,'omit');assert.equal(options.redirect,'error');assert.equal(options.body,undefined);assert.ok(!options.method||options.method==='GET');assert.ok(options.signal instanceof AbortSignal);}}
   finally{globalThis.fetch=original;}
+});
+await test('status measures stream bytes and separates decompression/preparation; manual retry keeps successful assets',async()=>{
+  const first=RUNTIME_MODELS[0];const retained=new Map(RUNTIME_MODELS.slice(1).map(r=>[r.id,{id:r.id}]));const statuses=[],calls=[];
+  const result=await loadBundledDrivers({existingDrivers:retained,parse,validate,onStatus:v=>statuses.push(v),fetchAsset:async(path,{onProgress})=>{calls.push(path);onProgress({receivedBytes:123,totalBytes:first.bytes});return buffers.get(path)}});
+  assert.deepEqual(calls,[first.path]);assert.equal(result.drivers.size,6);assert.equal(result.drivers.get('gemini'),retained.get('gemini'));
+  const phases=statuses.map(v=>v.records[0].stage);for(const phase of ['downloading','decompressing','preparing','ready'])assert.ok(phases.includes(phase));
+  assert.ok(statuses.some(v=>v.records[0].receivedBytes===123));assert.equal(statuses.at(-1).completed,6);assert.equal(statuses.at(-1).receivedBytes,statuses.at(-1).totalBytes);
+});
+await test('transient slot retry resets partial attempt bytes and has finite status countdown',async()=>{
+  const retained=new Map(RUNTIME_MODELS.slice(1).map(r=>[r.id,{id:r.id}]));const statuses=[];let calls=0;
+  const result=await loadBundledDrivers({existingDrivers:retained,parse,validate,wait:async()=>{},random:()=>.5,onStatus:v=>statuses.push(v),fetchAsset:async(path,{onProgress})=>{calls++;onProgress({receivedBytes:30,totalBytes:RUNTIME_MODELS[0].bytes});if(calls===1)throw new TypeError('Interrupted');return buffers.get(path)}});
+  assert.equal(result.drivers.size,6);assert.equal(calls,2);assert.ok(statuses.some(v=>v.records[0].stage==='waiting'&&v.records[0].retryInMs===1000));assert.ok(statuses.some(v=>v.records[0].attempt===2&&v.records[0].receivedBytes===0));
+});
+await test('manual retry preserves decoded transport byte basis for cached successful models',async()=>{
+  const loaded=await loadBundledDrivers({fetchAsset:async path=>decodedBuffers.get(path),parse,validate});const snapshots=[];
+  const again=await loadBundledDrivers({existingDrivers:loaded.drivers,onStatus:v=>snapshots.push(v),fetchAsset:()=>{throw new Error('Should not fetch cached asset')}});
+  assert.equal(again.drivers.size,6);assert.equal(snapshots[0].totalBytes,RUNTIME_MODELS.reduce((sum,r)=>sum+r.decodedBytes,0));assert.equal(snapshots[0].receivedBytes,snapshots[0].totalBytes);
 });
 console.log(JSON.stringify({status:'passed',suite:'automatic public model loader',tests,note:'Real authorized file bytes and SHA256 verification; mocked fetch/parse for lifecycle tests. No network requests, local server, browser or GPU.'},null,2));
