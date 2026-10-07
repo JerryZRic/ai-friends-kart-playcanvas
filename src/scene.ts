@@ -85,10 +85,12 @@ export function createCoastScene(app: pc.Application) {
   sun.setEulerAngles(53, -39, 0);
   app.root.addChild(sun);
 
+  // Let PlayCanvas inject the same device precision into both shader stages.
+  // A fragment-only default can make shared uniforms fail WebGL2 linking.
   const skyMaterial = new pc.ShaderMaterial({
     uniqueName: 'coast-gradient-sky', attributes: { aPosition: pc.SEMANTIC_POSITION },
     vertexGLSL: 'attribute vec3 aPosition; uniform mat4 matrix_model; uniform mat4 matrix_viewProjection; varying vec3 vPos; void main(){vPos=aPosition; gl_Position=matrix_viewProjection*matrix_model*vec4(aPosition,1.);}',
-    fragmentGLSL: 'precision mediump float; varying vec3 vPos; void main(){float t=smoothstep(-.03,.7,normalize(vPos).y);gl_FragColor=vec4(mix(vec3(.976,.804,.71),vec3(.38,.463,.71),t),1.);}',
+    fragmentGLSL: ' varying vec3 vPos; void main(){float t=smoothstep(-.03,.7,normalize(vPos).y);gl_FragColor=vec4(mix(vec3(.976,.804,.71),vec3(.38,.463,.71),t),1.);}',
   });
   skyMaterial.cull = pc.CULLFACE_FRONT;
   skyMaterial.depthWrite = false;
@@ -99,7 +101,7 @@ export function createCoastScene(app: pc.Application) {
   const oceanMaterial = new pc.ShaderMaterial({
     uniqueName: 'coast-water', attributes: { aPosition: pc.SEMANTIC_POSITION },
     vertexGLSL: `attribute vec3 aPosition;uniform mat4 matrix_model;uniform mat4 matrix_viewProjection;uniform mat4 matrix_view;uniform float time;varying vec3 wp;varying float depth;void main(){vec3 p=aPosition;p.y+=sin(p.x*.038+time*.4)*.18+cos(p.z*.045+time*.3)*.13;vec4 w=matrix_model*vec4(p,1.);wp=w.xyz;depth=-(matrix_view*w).z;gl_Position=matrix_viewProjection*w;}`,
-    fragmentGLSL: `precision mediump float;varying vec3 wp;varying float depth;uniform float time;void main(){float a=sin(wp.x*.22+wp.z*.34+time*.9);float b=sin(wp.x*.13-wp.z*.17+time*.5);float glint=pow(max(0.,a*b),14.);vec3 col=mix(vec3(.08,.41,.5),vec3(.12,.61,.63),.5+.2*a);col+=vec3(.4,.5,.43)*glint*.45;col=mix(col,vec3(.918,.733,.698),smoothstep(140.,650.,depth));gl_FragColor=vec4(col,1.);}`,
+    fragmentGLSL: `varying vec3 wp;varying float depth;uniform float time;void main(){float a=sin(wp.x*.22+wp.z*.34+time*.9);float b=sin(wp.x*.13-wp.z*.17+time*.5);float glint=pow(max(0.,a*b),14.);vec3 col=mix(vec3(.08,.41,.5),vec3(.12,.61,.63),.5+.2*a);col+=vec3(.4,.5,.43)*glint*.45;col=mix(col,vec3(.918,.733,.698),smoothstep(140.,650.,depth));gl_FragColor=vec4(col,1.);}`,
   });
   oceanMaterial.cull = pc.CULLFACE_NONE;
   oceanMaterial.setParameter('time', 0);
