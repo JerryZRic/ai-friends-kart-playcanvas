@@ -1,0 +1,3 @@
+Runtime character GLBs for the noncommercial demo.
+These assets are separate from the AGPL code license.
+Blender projects are not included.
