@@ -1,7 +1,7 @@
 # Standalone static hosting and GitHub Pages
 
 The contents of `dist/` are a complete static site. Three.js is bundled into
-`game.js`; the four GLBs are local. There is no ChatGPT/Sites runtime, login,
+`game.js`; the five original GLBs and six character GLBs are local. There is no ChatGPT/Sites runtime, login,
 API, CDN, external font, or server-side dependency. Use an HTTP(S) server;
 `file:` URLs are unsuitable for module and GLB loading. A WebGL-capable browser
 is still required.
@@ -12,23 +12,24 @@ is still required.
 dist/
 ├── index.html            # Game entry point
 ├── game.js               # Game + bundled Three.js
-├── assets/               # kart.glb, palm.glb, rock.glb, arch.glb
+├── assets/               # original assets and six runtime character GLBs
 ├── .nojekyll             # Disable Jekyll for branch-based Pages hosting
 ├── source.html           # Visible Source / License link destination
 ├── source.zip            # Corresponding project source, including Blender files
 ├── SOURCE.txt
 ├── LICENSE               # GNU AGPL v3 full text
+├── MODEL-NOTICE.txt      # Separate character-model restrictions
 ├── NOTICE
 └── THIRD-PARTY-NOTICES.txt
 ```
 
 All runtime and source-download links are relative. The same files work at `/`,
-`/neon-kart/`, or another nested directory without changing a base URL. The
+`/ai-friends-kart-web/`, or another nested directory without changing a base URL. The
 server must resolve directory URLs to `index.html` and redirect a directory URL
 without a trailing slash to one with it, as GitHub Pages does. Do not move only
 `index.html`: deploy the entire contents of `dist/`, including dotfiles.
 
-`npm run build` preserves the stable gameplay bundle and GLB bytes, regenerates
+`npm run build` bundles the current game code, preserves original GLB bytes, regenerates
 the source package from an explicit allowlist, and adds only a small visible
 Source / License link to the distribution HTML. `src/index.html` is unchanged.
 The source ZIP omits dependency caches and generated runtime files except the
@@ -55,7 +56,7 @@ After the owner has reviewed the repository and approved public hosting:
    **Publish dist and its source archive to the public web**.
 4. Wait for both jobs to succeed. Use the actual page URL reported by the
    deployment job. For this repository the usual project-site URL is
-   `https://jerryzric.github.io/neon-kart/`; this is an expected address, not a
+   `https://jerryzric.github.io/ai-friends-kart-web/`; this is an expected address, not a
    claim that a deployment already exists.
 
 Pages availability for a private repository depends on the GitHub plan. A
@@ -96,11 +97,14 @@ npm run serve
 
 The distribution test verifies same-origin relative HTML links, local runtime
 and model paths, embedded GLB buffers/images, the exact packaging-only HTML
-change, and the self-contained source archive. It serves the files on a
-loopback HTTP server at root, `/neon-kart/`, and `/preview/nested/game/` and
-checks every distribution file. These are static HTTP/path checks, not a WebGL
-or pointer-lock gameplay test. No Pages deployment was performed to validate
-the package.
+change, and the self-contained source archive. It checks root and nested URL
+resolution without starting a network server. It extracts the complete source,
+rebuilds with already-installed pinned dependencies and compares every code/original-asset `dist/` byte. The six large runtime characters are separately checked against their manifest and intentionally excluded from the source ZIP. Game tests use original synthetic geometry, mocked DOM/WebGL rendering,
+and real Three.js CPU animation. Native file-picker behavior, browser rendering,
+GPU performance, pointer lock and deployed HTTP responses need separate checks.
+
+Local imports use memory-only file reads. They are never added to the static
+website, source archive or repository. A deployment includes the original open assets and exactly six final runtime character GLBs served as lossless .glb.gz archives with separate rights and restrictions. The source ZIP does not duplicate those character files. Read MODEL-NOTICE.txt before reuse.
 
 ## Official references
 

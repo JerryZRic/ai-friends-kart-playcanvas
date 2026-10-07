@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "description": "Six final runtime drivers, losslessly gzip-compressed for the non-commercial demo. Character rights are separate from the AGPL game code and original assets. See MODEL-NOTICE.txt.",
+  "assets": [
+    {
+      "id": "whale",
+      "path": "assets/drivers/whale-driver.glb.gz",
+      "bytes": 7888160,
+      "sha256": "1bb498c06caab6797756af42cc4a092e9f51dfe661fa97f13639e2e359ff5bc8",
+      "decodedBytes": 13572628,
+      "decodedSha256": "50610733ba5a4eb73b47bddb22c96fad2883e7c8f4e56cdd229f6d77318b8703"
+    },
+    {
+      "id": "gemini",
+      "path": "assets/drivers/gemini-driver.glb.gz",
+      "bytes": 9977393,
+      "sha256": "74a8c3827f4168117b01af7288e24a662f01a18a72b04464cc0044e8815b7a0d",
+      "decodedBytes": 16200556,
+      "decodedSha256": "bf5519ce507441012124ae9b0dba542a9f11d434a7ea4da03cdca6ef5ccb11c3"
+    },
+    {
+      "id": "gpt",
+      "path": "assets/drivers/gpt-driver.glb.gz",
+      "bytes": 7716185,
+      "sha256": "b89e0bf70b457785ee9e59887b552cd73143be05eee783d8aefafc1c8b0b5388",
+      "decodedBytes": 13839372,
+      "decodedSha256": "c6817f6f72f4ff58a801cd18e3deaef84003f7bbe6b88004bfb734b9da2f2efb"
+    },
+    {
+      "id": "claude",
+      "path": "assets/drivers/claude-driver.glb.gz",
+      "bytes": 7572632,
+      "sha256": "0d60bb2a3da169fb5a2a7aee4573597bfe57966284b48a2169afcb039c2a0269",
+      "decodedBytes": 11241728,
+      "decodedSha256": "08ad20d0a29495f49d69c1bd7b9948e5a6ca56148ac41ec342e62c0640a9b523"
+    },
+    {
+      "id": "grok",
+      "path": "assets/drivers/grok-driver.glb.gz",
+      "bytes": 9013413,
+      "sha256": "c0af0d6d75f1ce030f0af777a1b312db91ead5d5411eaf89304f1e461a9d5b7b",
+      "decodedBytes": 14850864,
+      "decodedSha256": "382f56fa39cb26e8a243ab0faa8a413062c2416e3fdbb775317ec2f84f400a2c"
+    },
+    {
+      "id": "glm",
+      "path": "assets/drivers/glm-driver.glb.gz",
+      "bytes": 9459423,
+      "sha256": "0b690d9993b94d9797bab23ea7d63e313a6253b12008d44c7b8d9f4e67be67fe",
+      "decodedBytes": 16631232,
+      "decodedSha256": "ccbea7de68001e680de8e945b955392d28e958db4e02d3f549ecd6b905141e62"
+    }
+  ]
+}

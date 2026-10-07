@@ -28,8 +28,14 @@ jobs:
     steps:
       - name: Check out the selected ref
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install pinned build dependencies
+        run: npm ci
+      - name: Check game and local-import logic
+        run: npm run check && npm test
       - name: Check distribution paths and source package
-        run: node tests/dist.test.mjs
+        run: node tests/public-artifact.test.mjs
       - name: Configure already-enabled Pages
         uses: actions/configure-pages@v5
       - name: Upload only the static distribution

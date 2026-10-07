@@ -17,10 +17,22 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
 A PARTICULAR PURPOSE. See LICENSE for the complete license terms.
 
 Third-party software retains its own license and copyright notices. Three.js
-and esbuild are MIT-licensed; see THIRD-PARTY-NOTICES.txt. Blender is an external
+fflate and esbuild are MIT-licensed; see THIRD-PARTY-NOTICES.txt. Blender is an external
 authoring tool and is not included in this repository.
 
 Complete corresponding source for this release:
 https://github.com/JerryZRic/neon-kart/tree/v1.0.0
 
 Include this notice, LICENSE and THIRD-PARTY-NOTICES.txt with redistributed copies.
+
+Six-character edition modifications (2026): automatic bounded runtime GLB
+loading, six selectable rigged actors, local replacement validation, memory-only
+import lifecycle and independent animation controllers. Corresponding code and
+original-asset source are provided in source.zip and at
+https://github.com/JerryZRic/ai-friends-kart-web
+
+The included kart-r12-chassis.glb derives only from the original kart, without
+its baked driver, plus a steering pivot. The six character GLBs under
+assets/drivers/ are third-party models expressly excluded from the AGPL grant.
+They are separately supplied for this non-commercial demo under their own
+applicable terms. See MODEL-NOTICE.txt; no new or broader model rights are granted.
