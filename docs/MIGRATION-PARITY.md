@@ -2,6 +2,14 @@
 
 This inventory compares the released **AI Friends Kart Web 1.2.0** feature set with this separate PlayCanvas project. The original project is retained separately; the migration does not overwrite it. This document records source and automated evidence separately from browser evidence. A passing CPU test is not a rendered-gameplay sign-off.
 
+The dev free-mode level-0 Coast now intentionally has a new route: broad S
+sections, variable road width and gentle slopes. Original curve fixtures remain
+unchanged and are checked against an explicit historical `CoastCircuit` using
+`ORIGINAL_TRACK_POINTS` and its legacy seam convention. They do not describe the
+current playable route. The current route is checked separately in
+`coast-level0-geometry.test.ts`; original model/Blender byte-identity checks are
+still required. See [free-mode architecture](free-mode.md).
+
 ## Verification labels
 
 - **Passed**: a named check was actually executed successfully against this migration
@@ -14,7 +22,7 @@ This inventory compares the released **AI Friends Kart Web 1.2.0** feature set w
 | Feature group | Original scope that must be retained | Migration evidence and status |
 | --- | --- | --- |
 | Rendering engine | Complete 3D sunset-coast game, not a selection-only or driving-only prototype | PlayCanvas 2.23.1 installed; runtime imports exclude Three.js. Engine-dependency assertion **passed**. Visual parity **blocked** pending a GPU browser |
-| Circuit and environment | Closed elevated coast circuit, road, striped curbs, rails/posts/supports, start checkerboard, original arch/kart/palm/rock assets, signs, islands, mountains, sky/sun, ocean | 1,800-step centripetal spline table and 32 fixed original position/tangent fixtures **passed**, including negative/multiple-lap wrapping and left-positive track lanes. Original asset hashes **passed**. Native PlayCanvas scene construction and off-scene preparation rollback **passed** on a NullGraphicsDevice; rendering remains unverified |
+| Circuit and environment | Closed elevated coast circuit, road, striped curbs, rails/posts/supports, start checkerboard, original arch/kart/palm/rock assets, signs, islands, mountains, sky/sun, ocean | Historical 1,800-step curve and 32 original position/tangent fixtures remain independently checked. Current dev level 0 uses a new 16-point shared spline, knot-aligned metre table, periodic tangent, variable-width geometry, slope-conforming markings, curvature-directed signs and rock-clearance filtering. New geometry/invariant tests **passed** on a NullGraphicsDevice. Original asset hashes **passed**; rendering remains unverified |
 | Six selectable racers | WHALE, GEMINI, GPT, CLAUDE, GROK, GLM; selected player plus the other five AI racers; stable labels/colors/order | Roster/order checks **passed**. All six exact compressed/decoded identities, original skin/vertex counts, clips and markers **passed**. Real engine animation, independent clones and all six live-game selections also **passed** |
 | Rigged models | Full original geometry, UVs, materials/textures, independent skin hierarchies; sampled authored steering, wheel ±18°, pause freeze, neutral reset | Six original payloads unchanged and structurally checked. Real PlayCanvas parser/skin/animation checks **passed**: 121 poses for each model, 54,208 finite CPU-deformed vertex samples, independent clones, unchanged material objects, pause/reset/disposal. Maximum grip drift was 0.199 mm, below the 2 mm limit. Texture decoding/rendering and visual grip inspection **blocked** |
 | Loading and retry | Five original course files plus six models; streamed actual byte progress; separate decompression/preparation; size/SHA-256 checks; bounded two-file model work; 60-second attempts; up to four attempts for transient network/408/429/5xx; permanent/parse/integrity failures do not auto-retry | Engine-independent stream/retry suite and 13 bundled/course-loader groups **passed**. No percentage is claimed for parsing. Model failures must be explicit per-slot original-driver fallbacks; course failure must prevent starting |
@@ -26,9 +34,10 @@ This inventory compares the released **AI Friends Kart Web 1.2.0** feature set w
 | UI and language scope | Responsive zh-CN game UI with English branding; six README languages: English, Simplified Chinese, Traditional Chinese, Cantonese, Japanese, Korean | Original UI IDs, loading placement, native progress/live region, picker and six touch controls **passed**. All six updated README language files and license references **passed**. The original game has no runtime language switch |
 | Licenses and publication | Original AGPL code/open assets and editable sources; separate character-model restriction notice; dependency notices; local relative URLs and nested Pages hosting; downloadable source without duplicated restricted models | Exact five original GLBs and two Blender hashes **passed**; six model identities **passed**. Five source/dist groups **passed**, including privacy/allowlist checks, deterministic source ZIP, source-only/full byte-identical offline rebuilds, manifest-only model restoration and root/nested Pages links. Deployment is verified separately |
 
-## Exact retained content
+## Historical route and exact retained assets
 
-- Circuit length: 985.3759899870129 game units; road half-width 7.2; maximum standard forward speed 42; reverse cap 11
+- Historical baseline circuit: 985.3759899870129 game units, fixed road half-width 7.2. This curve remains reproducible in its original fixture test; it is no longer the playable dev level-0 layout
+- Current Coast level 0: approximately 1,056.4 metres; smooth half-width 6.2–8.2 metres, nominal start half-width 7.2; minimum turn radius above 35 metres and grade below 5%. Maximum standard forward speed 42 and reverse cap 11 remain unchanged
 - Original files: kart.glb, palm.glb, rock.glb, arch.glb, kart-r12-chassis.glb; the original kart.blend and props.blend editable source files
 - Driver order: whale, gemini, gpt, claude, grok, glm
 - Character compressed total: 51,627,206 bytes, about 49.2 MiB. All compressed and decoded sizes and SHA-256 values are independently pinned in the migration tests
@@ -52,7 +61,8 @@ Asset payload identity does not establish visual parity or prove a graphics driv
 | runtime-drivers.test.mjs | Replaced by playcanvas-rig.test.ts; real parser, 121 sampled poses per model and independent skin palettes passed | Only image pixel decoding uses 1×1 placeholder textures; no texture-pixel/GPU claim |
 | gameplay.test.mjs | Replaced by gameplay.test.ts using the real game module, scene, meshes and six rigs on a NullGraphicsDevice; integration passed | DOM, loading failures and texture pixels are mocked; neither GPU drawing nor native browser behavior is asserted |
 | public-artifact.test.mjs | Replaced by scripts/verify-dist.mjs; all 5 artifact/source groups passed | Original absolute allowlist and game.js layout cannot be copied unchanged |
-| migration.test.ts | New engine, original-curve fixture, roster, asset identity, glTF structure, UI hook and language/license checks | File/CPU evidence only |
+| migration.test.ts | Engine, explicit historical original-curve fixture, roster, asset identity, glTF structure, UI hook and language/license checks | File/CPU evidence only; current dev geometry belongs to coast-level0-geometry.test.ts |
+| closed-circuit.test.ts / coast-level0-geometry.test.ts | Shared metre sampler, periodic frame, finite inputs, current S-route curvature/grade/clearance, variable-width native meshes, slope markings, staggered pickups and preserved geometry budget | Procedural geometry/NullGraphicsDevice evidence; no GPU/browser visual claim |
 
 The npm test output counts top-level test files for the legacy script-style suites; their JSON output lists individual behavioral groups. Do not confuse those counts with browser scenarios.
 

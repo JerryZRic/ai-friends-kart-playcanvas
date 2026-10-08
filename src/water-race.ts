@@ -2,7 +2,7 @@
 import { raceOrder } from './driver-roster.js';
 import { characterTuning } from './character-profiles';
 import { newWaterState, stepWaterMotion, WATER_HANDLING, type WaterInput, type WaterState } from './waterpark-motion';
-import { WATER_RACE_LENGTH } from './waterpark-design';
+import { WATER_RACE_LENGTH, waterparkCurvature } from './waterpark-design';
 import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
 import { advancePickup, resetPickup } from './item-pickups';
 export const WATER_LAPS=3, WATER_CHECKPOINTS=8, WATER_COUNTDOWN=3;
@@ -44,7 +44,7 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
  if(player.finishTime===null&&player.checkpoint===WATER_LAPS*WATER_CHECKPOINTS-1){
   const predicted={...player,motion:{...player.motion}};
   tickEffects(predicted,dt);
-  predicted.motion=stepWaterMotion(predicted.motion,input,dt,{...characterTuning(player.id,'waterpark'),finishDistance:Infinity});
+  predicted.motion=stepWaterMotion(predicted.motion,input,dt,{...characterTuning(player.id,'waterpark'),finishDistance:Infinity,curvature:waterparkCurvature(player.total)});
   predicted.speed=predicted.motion.speed;
   const travel=waterTravelSpeed(predicted)*dt;
   if(player.total<=line&&travel>0&&player.total+travel>=line){
@@ -57,17 +57,17 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
  const previous=active.map(actor=>({actor,previous:actor.total,previousLane:actor.lateral,onPickup:()=>{actor.pickups++;actor.reaction=RULES.reaction;}}));
  for(const racer of active){
   tickEffects(racer,dt);tickBrain(racer,dt);const wasWarning=racer.warning;racer.warning=Math.max(0,racer.warning-dt);
-  const tuning=characterTuning(racer.id,'waterpark');
+  const tuning=characterTuning(racer.id,'waterpark'),curvature=waterparkCurvature(racer.total),bend=curvature*22;
   let control=input;
   if(racer!==race.racers[0]){
-   if(racer.decisionIn<=0){racer.targetLane=planLane(racer,active,boxes,WATER_RACE_LENGTH,racer.phase,.1);racer.decisionIn=.2;}
+   if(racer.decisionIn<=0){racer.targetLane=planLane(racer,active,boxes,WATER_RACE_LENGTH,racer.phase,bend);racer.decisionIn=.2;}
    const steer=Math.max(-1,Math.min(1,(racer.targetLane-racer.lateral)*1.3-racer.motion.lateralSpeed*.5));
    control={throttle:true,brake:false,steer};
    if(wasWarning>0&&racer.warning===0){useWaterItem(race,racer);racer.warning=0;}
-   else if(racer.warning===0&&chooseItem(racer,active,WATER_RACE_LENGTH,.1))racer.warning=.5;
+   else if(racer.warning===0&&chooseItem(racer,active,WATER_RACE_LENGTH,bend))racer.warning=.5;
   }
   const old=racer.total;
-  const next=stepWaterMotion(racer.motion,control,dt,{...tuning,finishDistance:Infinity});
+  const next=stepWaterMotion(racer.motion,control,dt,{...tuning,finishDistance:Infinity,curvature});
   racer.speed=next.speed;racer.motion=next;
   next.distance=racer===player&&playerCrossing?line:old+waterTravelSpeed(racer)*dt;
   racer.total=next.distance;racer.lateral=next.lane;

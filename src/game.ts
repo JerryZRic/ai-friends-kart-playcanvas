@@ -16,7 +16,7 @@ import {createPerformancePanel} from './waterpark-performance-ui';
 import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roster.js';
 import { COURSE_FILES, loadCourseAssets, loadBundledDrivers, createImportedRacer, createLocalDriverStore, instantiateRenderEntity, type DriverAsset } from './assets';
 import { createCoastScene, eachMesh, placeKart, color, type Spark } from './scene';
-import { LENGTH, HALF, sample, clamp, damp, scaled, degrees, UP } from './track';
+import { LENGTH, halfWidthAt, sample, clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
 mountRaceHud({subtitle:'SUNSET COAST GRAND PRIX',canvasLabel:'真实 3D 卡丁车赛道'});
@@ -289,8 +289,8 @@ function emit(p: pc.Vec3, type = 'spark') {
 function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(cur!==old)tone(cur>0?500:1000,.15);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
 elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,onPickup:()=>{b.pickups++;b.reaction=RULES.reaction+b.phase*.08}}));for(const box of boxes)advancePickup(box,dt);const tuning=characterTuning(selectedDriverId,'coast'),input=driveInput(keys),steer=input.steer;let now=sample(pos),next=sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
 let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(1.6,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(charge>.6&&!input.brake&&!input.reverse){boost=Math.max(boost,Math.min(2.5,charge*1.5));toast('漂移加速！');tone(850,.2)}charge=0}drifting=wantDrift;
-let limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1);if(Math.abs(lane)>6.3)limit*=.58;if(hit>0||slow>0)limit*=RULES.slowFactor;speed=driveSpeed(speed,input,dt*(input.throttle&&!input.reverse&&!input.brake&&speed>=0&&speed<limit?tuning.multipliers.acceleration:1),limit);lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering+curvature*speed*dt*.43;lane=clamp(lane,-6.75,6.75);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
-let previous=pos;pos+=speed*dt;playerFinishedAt=crossingTime(previous,pos,LENGTH*3,elapsed,dt)??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
+let limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1);if(Math.abs(lane)>halfWidthAt(pos)-.9)limit*=.58;if(hit>0||slow>0)limit*=RULES.slowFactor;speed=driveSpeed(speed,input,dt*(input.throttle&&!input.reverse&&!input.brake&&speed>=0&&speed<limit?tuning.multipliers.acceleration:1),limit);lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering+curvature*speed*dt*.43;lane=clamp(lane,-(halfWidthAt(pos)-.45),halfWidthAt(pos)-.45);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
+let previous=pos;pos+=speed*dt;lane=clamp(lane,-(halfWidthAt(pos)-.45),halfWidthAt(pos)-.45);playerFinishedAt=crossingTime(previous,pos,LENGTH*3,elapsed,dt)??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
 const human=playerCombatant(), racers: Combatant[]=[human,...bots.filter(b=>b.total<LENGTH*3)];
 for(const b of bots){tickEffects(b,dt);tickBrain(b,dt);}
 for(const b of bots){
@@ -298,7 +298,8 @@ for(const b of bots){
   if(b.decisionIn<=0){
     b.decisionIn=.22+b.phase*.03;
     const a=sample(b.total).t,z=sample(b.total+22).t,bend=a.x*z.z-a.z*z.x;
-    b.targetLane=planLane(b,racers,boxes,LENGTH,b.phase,bend);
+    const safeLane=Math.min(halfWidthAt(b.total),halfWidthAt(b.total+22))-.8;
+    b.targetLane=clamp(planLane(b,racers,boxes,LENGTH,b.phase,bend),-safeLane,safeLane);
     if(chooseItem(b,racers,LENGTH,bend))useCombatItem(b,racers);
   }
 }
@@ -307,13 +308,13 @@ for(const b of bots){
   if(b.total>=LENGTH*3)continue;
   const tuning=characterTuning(b.id,'coast');
   if(b.driving)b.speed=driveSpeed(b.speed,{throttle:true},dt*tuning.multipliers.acceleration,tuning.maxSpeed*(.9+b.phase*.008));
-  const travel=racingSpeed(b,tuning.maxSpeed)*dt, before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);if(b.total>=LENGTH*3)b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);b.lateral=moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering);
+  const travel=racingSpeed(b,tuning.maxSpeed)*dt, before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);if(b.total>=LENGTH*3)b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);b.lateral=clamp(moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering),-(halfWidthAt(b.total)-.8),halfWidthAt(b.total)-.8);
   if(b.total>=LENGTH*3){b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b);continue;}
 }
 for(const b of bots){
   if(b.total>=LENGTH*3)continue;
   if(b.bump<=0&&b.shield<=0&&racers.some(r=>r.id!==b.id&&Math.abs(nearbyGap(b.total,r.total,LENGTH))<2.9&&Math.abs(b.lateral-r.lateral)<1.85)){b.slow=Math.max(b.slow,.55);b.bump=.8;}
-  if(Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-6.75,6.75);tone(110,.1)}
+  if(Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-(halfWidthAt(pos)-.45),halfWidthAt(pos)-.45);tone(110,.1)}
 }
 human.total=pos;human.lateral=lane;
 collectPickups([{actor:human,previous,previousLane,onPickup:()=>{tone(1200,.12);toast('获得道具 · E 使用')}},...botPrevious.filter(r=>r.actor.total<LENGTH*3)],boxes,LENGTH);

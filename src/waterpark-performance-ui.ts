@@ -1,5 +1,5 @@
 import {PerformanceCapture} from './waterpark-performance';
-export const PERFORMANCE_BUILD='shared-race-interface-20261008-1';
+export const PERFORMANCE_BUILD='level0-courses-20261008-1';
 const CONTEXT_SAMPLE_INTERVAL_MS=250;
 export type PerformancePanelOptions={mount?:HTMLElement;scene?:string};
 type RefractionControl={getEnabled:()=>boolean;setEnabled:(enabled:boolean)=>void};

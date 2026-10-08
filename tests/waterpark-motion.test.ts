@@ -105,3 +105,20 @@ test('zero and invalid motion deltas do not release a stored slide or advance ef
  const s={...newWaterState(),speed:18,drifting:true,charge:1,slideBoost:2,bankHit:true};
  for(const dt of [0,-1,NaN,Infinity])assert.deepEqual(stepWaterMotion(s,{throttle:true,brake:false,steer:1},dt),s);
 });
+
+test('water bend current is gently bounded, points outside either turn and applies to reverse safely',async()=>{
+ const {waterTurnCurrent}=await import('../src/waterpark-motion');
+ assert.ok(waterTurnCurrent(20,.02)<0,'a left (+lane) turn pushes toward the right bank');
+ assert.ok(waterTurnCurrent(20,-.02)>0,'a right turn pushes toward the left bank');
+ assert.equal(waterTurnCurrent(-20,.02),waterTurnCurrent(20,.02));
+ assert.equal(waterTurnCurrent(0,.02),0);assert.equal(waterTurnCurrent(20,0),0);
+ assert.ok(Math.abs(waterTurnCurrent(1000,1000))<=WATER_HANDLING.maxTurnCurrent);
+ assert.equal(waterTurnCurrent(NaN,.02),0);assert.equal(waterTurnCurrent(20,NaN),0);
+ const moving={...newWaterState(),speed:18};
+ const left=stepWaterMotion(moving,{throttle:true,brake:false,steer:0},1/120,{curvature:.02});
+ const right=stepWaterMotion(moving,{throttle:true,brake:false,steer:0},1/120,{curvature:-.02});
+ assert.ok(left.lateralSpeed<0&&right.lateralSpeed>0);assert.equal(left.speed,right.speed);assert.equal(left.distance,right.distance);
+ assert.ok(Math.abs(left.lateralSpeed+right.lateralSpeed)<1e-12);
+ const corrected=stepWaterMotion(moving,{throttle:true,brake:false,steer:.1},1/120,{curvature:.02});
+ assert.ok(corrected.lateralSpeed>0,'a small steering correction can overcome the beginner current');
+});

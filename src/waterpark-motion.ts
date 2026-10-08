@@ -4,18 +4,24 @@ import {RULES} from './npc-tactics';
 export const WATER_HANDLING=Object.freeze({
  maxSpeed:22,acceleration:8.6,brake:15,drag:.18,lateralAcceleration:11,lateralDrag:3.1,bankLimit:9.8,
  reverseRatio:.3,reverseAcceleration:.65,slideSpeedRatio:.76,slideLateralDrag:1.65,
- slideSteering:1.14,slideMinSpeedRatio:.4,slideMinCharge:.6,slideMaxCharge:1.6,
+ turnCurrent:.05,maxTurnCurrent:1.1,slideSteering:1.14,slideMinSpeedRatio:.4,slideMinCharge:.6,slideMaxCharge:1.6,
 });
 /** Optional additions keep the original sample's throttle/brake/steer API valid. */
 export type WaterInput={throttle:boolean;brake:boolean;steer:number;reverse?:boolean;drift?:boolean};
 export type WaterState={distance:number;lane:number;speed:number;lateralSpeed:number;elapsed:number;finished:boolean;bankHit:boolean;drifting:boolean;charge:number;slideBoost:number};
-export type WaterMotionOptions={maxSpeed?:number;acceleration?:number;steering?:number;finishDistance?:number};
+export type WaterMotionOptions={maxSpeed?:number;acceleration?:number;steering?:number;finishDistance?:number;curvature?:number};
 export function newWaterState():WaterState{return{distance:0,lane:0,speed:0,lateralSpeed:0,elapsed:0,finished:false,bankHit:false,drifting:false,charge:0,slideBoost:0};}
 const approach=(value:number,target:number,amount:number)=>value<target?Math.min(target,value+amount):Math.max(target,value-amount);
 /** Signed travel, including the earned slide boost. Boost never accelerates reverse. */
 export function waterMotionTravelSpeed(state:WaterState,maxSpeed:number=WATER_HANDLING.maxSpeed){
  if(state.finished)return 0;
  return Math.max(-Math.min(11,maxSpeed*WATER_HANDLING.reverseRatio),Math.min(maxSpeed,state.speed))*(state.speed>0&&state.slideBoost>0?RULES.boostFactor:1);
+}
+/** A gentle outside current, shared by players and NPCs, preserves water inertia.
+ * Curvature is positive toward +lane, so the outside push has the opposite sign. */
+export function waterTurnCurrent(speed:number,curvature=0){
+ if(!Number.isFinite(speed)||!Number.isFinite(curvature)||speed===0||curvature===0)return 0;
+ return Math.max(-WATER_HANDLING.maxTurnCurrent,Math.min(WATER_HANDLING.maxTurnCurrent,-curvature*speed*speed*WATER_HANDLING.turnCurrent));
 }
 export function stepWaterMotion(state:WaterState,input:WaterInput,delta:number,options?:WaterMotionOptions):WaterState{
  const dt=Math.min(.05,Math.max(0,Number.isFinite(delta)?delta:0));
@@ -53,7 +59,7 @@ export function stepWaterMotion(state:WaterState,input:WaterInput,delta:number,o
  // direction naturally; Shift opens a controlled, more persistent water slide.
  const authority=Math.max(-1,Math.min(1,s.speed/6));
  const lateralDrag=s.drifting?WATER_HANDLING.slideLateralDrag:WATER_HANDLING.lateralDrag;
- s.lateralSpeed=(s.lateralSpeed+steer*(options?.steering??WATER_HANDLING.lateralAcceleration)*authority*(s.drifting?WATER_HANDLING.slideSteering:1)*dt)*Math.exp(-lateralDrag*dt);
+ s.lateralSpeed=(s.lateralSpeed+(steer*(options?.steering??WATER_HANDLING.lateralAcceleration)*authority*(s.drifting?WATER_HANDLING.slideSteering:1)+waterTurnCurrent(s.speed,options?.curvature))*dt)*Math.exp(-lateralDrag*dt);
  s.lane+=s.lateralSpeed*dt;
  if(Math.abs(s.lane)>WATER_HANDLING.bankLimit){
   s.lane=Math.sign(s.lane)*WATER_HANDLING.bankLimit;s.lateralSpeed*=-.2;s.speed*=.96;s.bankHit=true;

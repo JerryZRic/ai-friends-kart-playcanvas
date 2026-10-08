@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import { createCoastScene, material, meshEntity } from './scene';
+import { createCoastScene, coastGroundHeightAt, material, meshEntity } from './scene';
 import { createWaterparkScene } from './waterpark-scene';
 import { sample } from './track';
 import type { GameSettings } from './game-settings';
@@ -25,7 +25,9 @@ function addCoastPalms(app: pc.Application, root: pc.Entity) {
   }
   for (let i = 0; i < 26; i++) {
     const place = sample(i * 37 + 9, (i % 2 ? -1 : 1) * (16 + i % 3 * 4)).p;
-    const palm = new pc.Mat4().setTRS(new pc.Vec3(place.x, .2, place.z), pc.Quat.IDENTITY, new pc.Vec3(1, .8 + i % 4 * .12, 1));
+    const ground = coastGroundHeightAt(place.x, place.z);
+    if (ground === null) continue;
+    const palm = new pc.Mat4().setTRS(new pc.Vec3(place.x, ground - .2, place.z), pc.Quat.IDENTITY, new pc.Vec3(1, .8 + i % 4 * .12, 1));
     add(trunk, 0, new pc.Mat4().mul2(palm, new pc.Mat4().setTranslate(0, 4, 0)));
     for (let j = 0; j < 7; j++) {
       const angle = j * Math.PI * 2 / 7 + i;

@@ -1,28 +1,72 @@
 /** Original geometry shared by native PlayCanvas and offline review renders. No racing physics. */
 import * as pc from 'playcanvas';
+import {ClosedCircuit} from './closed-circuit';
 export type MeshData = { name: string; color: string; positions: number[]; indices: number[]; uvs: number[]; water?: boolean };
 export const SAMPLE_LENGTH=285, WATER_HALF_WIDTH=12, SAMPLE_SECONDS=18;
-export const WATER_RACE_RADIUS = 76, WATER_RACE_STRAIGHT = 92;
-export const WATER_RACE_LENGTH = 2 * WATER_RACE_STRAIGHT + 2 * Math.PI * WATER_RACE_RADIUS;
+/** Two broad S sequences, unequal recovery straights and a forgiving wide return.
+ * Distances stay in metres; the 285m art study deliberately keeps its own path. */
+export const WATER_RACE_POINTS = Object.freeze([
+ [0,0],[4,43],[-6,94],[12,144],[62,181],[122,166],[146,114],
+ [142,48],[156,4],[143,-60],[94,-108],[32,-100],[-2,-53],
+].map(([x,z])=>Object.freeze([x,0,z] as const)));
+export const waterCircuit = new ClosedCircuit(WATER_RACE_POINTS,{arcSteps:4160});
+export const WATER_RACE_LENGTH = waterCircuit.length;
+export const WATER_RACE_BRIDGE_DISTANCE = WATER_RACE_LENGTH-30;
+export const WATER_RACE_TOWER_DISTANCE = WATER_RACE_LENGTH*.30;
+export const WATER_RACE_TOWER_LANE = -36;
+/** Authored decisions on S exits, with recovery pickups down the middle. Every
+ * line stays reachable by the existing shared AI's ±5.2m planning envelope. */
+export const WATER_RACE_PICKUPS:readonly Readonly<{d:number;lateral:number}>[] = Object.freeze([
+ [.055,0],[.13,-4.5],[.205,4.5],[.285,-3],[.285,3],[.385,0],
+ [.47,4.5],[.545,-4.5],[.625,4.5],[.71,-3],[.71,3],[.81,0],[.89,-4.5],[.96,0],
+].map(([fraction,lateral])=>Object.freeze({d:fraction*WATER_RACE_LENGTH,lateral})));
+export const WATER_RACE_SECTIONS=Object.freeze([
+ {name:'Start straight',from:0,to:.025},
+ {name:'Palm S',from:.025,to:.25},
+ {name:'Tower sweep',from:.25,to:.46},
+ {name:'Garden S',from:.46,to:.65},
+ {name:'Wide return',from:.65,to:.88},
+ {name:'Bridge straight',from:.88,to:1},
+].map(section=>Object.freeze({...section,from:section.from*WATER_RACE_LENGTH,to:section.to*WATER_RACE_LENGTH})));
 export type WaterparkSampler = typeof sampleWaterpark;
 export type WaterparkGeometryOptions = {race?: boolean; sampler?: WaterparkSampler; extent?: {start: number; end: number}};
+export function sampleWaterparkLoop(distance:number,lateral=0){return waterCircuit.sample(distance,lateral);}
+export function waterparkBridgeDistance(options:WaterparkGeometryOptions={}){return options.race?WATER_RACE_BRIDGE_DISTANCE:183;}
 
-/** A clockwise stadium with continuous position and unit tangent, including
- * the finish seam. Offset banks stay inside the 76m bend radius. Distances are
- * deliberately unbounded so riders, cameras and trailing wakes all wrap alike. */
-export function sampleWaterparkLoop(distance: number, lateral = 0) {
- const d = ((Number.isFinite(distance) ? distance : 0) % WATER_RACE_LENGTH + WATER_RACE_LENGTH) % WATER_RACE_LENGTH;
- const l = Number.isFinite(lateral) ? lateral : 0, r = WATER_RACE_RADIUS, straight = WATER_RACE_STRAIGHT;
- let x = 0, z = d, angle = 0;
- if (d >= straight && d < straight + Math.PI * r) {
-  angle = (d - straight) / r; x = r * (1 - Math.cos(angle)); z = straight + r * Math.sin(angle);
- } else if (d >= straight + Math.PI * r && d < 2 * straight + Math.PI * r) {
-  angle = Math.PI; x = 2 * r; z = 2 * straight + Math.PI * r - d;
- } else if (d >= 2 * straight + Math.PI * r) {
-  angle = Math.PI + (d - 2 * straight - Math.PI * r) / r; x = r * (1 - Math.cos(angle)); z = r * Math.sin(angle);
+// The canal's two promenade boundaries are simple and star-shaped around this
+// central garden. A filled island plus radial exterior apron avoids offset folds
+// and gaps, even where the route changes bend direction. No grass crosses water.
+const terrainRows=Math.ceil(WATER_RACE_LENGTH/2),terrainFrames=Array.from({length:terrainRows},(_,i)=>waterCircuit.sample(i/terrainRows*WATER_RACE_LENGTH));
+const raceBends=terrainFrames.map((_,i)=>waterCircuit.curvature(i/terrainRows*WATER_RACE_LENGTH,7));
+const innerLand=terrainFrames.map(frame=>frame.p.clone().add(frame.n.clone().mulScalar(18.15)));
+const outerLand=terrainFrames.map(frame=>frame.p.clone().add(frame.n.clone().mulScalar(-18.15)));
+export const WATER_RACE_LAND_CENTER=Object.freeze({
+ x:(Math.min(...innerLand.map(p=>p.x))+Math.max(...innerLand.map(p=>p.x)))/2,
+ z:(Math.min(...innerLand.map(p=>p.z))+Math.max(...innerLand.map(p=>p.z)))/2,
+});
+export function createWaterparkRaceLand(options:WaterparkGeometryOptions={}):MeshData{
+ const {sample,start,end}=waterparkLayout({...options,race:true}),custom=!!options.sampler||!!options.extent;
+ const rows=custom?Math.ceil((end-start)/2):terrainRows;
+ if(rows<4||sample(start).p.distance(sample(end).p)>1e-5||sample(start).n.distance(sample(end).n)>1e-5)throw new Error('Race land requires a closed sampler over its extent');
+ const inner=custom?Array.from({length:rows},(_,i)=>sample(start+i/rows*(end-start),18.15).p):innerLand;
+ const outer=custom?Array.from({length:rows},(_,i)=>sample(start+i/rows*(end-start),-18.15).p):outerLand;
+ const center=new pc.Vec3((Math.min(...inner.map(p=>p.x))+Math.max(...inner.map(p=>p.x)))/2,2.25,(Math.min(...inner.map(p=>p.z))+Math.max(...inner.map(p=>p.z)))/2);
+ const data:MeshData={name:'Mint green planted banks',color:'#92cc88',positions:[],indices:[],uvs:[]};
+ const raised=(p:pc.Vec3)=>new pc.Vec3(p.x,2.25,p.z),apron=(p:pc.Vec3)=>new pc.Vec3(center.x+(p.x-center.x)*1.55,2.25,center.z+(p.z-center.z)*1.55);
+ for(let i=0;i<rows;i++){
+  const next=(i+1)%rows,a=raised(inner[i]),b=raised(inner[next]),c=raised(outer[i]),d=raised(outer[next]);
+  const first=data.positions.length/3;
+  for(const p of[center,a,b,apron(c),c,apron(d),d])data.positions.push(p.x,p.y,p.z);
+  data.indices.push(first,first+1,first+2,first+3,first+5,first+4,first+4,first+5,first+6);
  }
- const t = new pc.Vec3(Math.sin(angle), 0, Math.cos(angle)), n = new pc.Vec3(Math.cos(angle), 0, -Math.sin(angle));
- return {p: new pc.Vec3(x + n.x * l, 0, z + n.z * l), t, n, angle};
+ return data;
+}
+
+/** Signed look-ahead bend in radians/metre. A fixed table avoids per-racer spline allocations. */
+export function waterparkCurvature(distance:number){
+ const u=((Number.isFinite(distance)?distance:0)%WATER_RACE_LENGTH+WATER_RACE_LENGTH)%WATER_RACE_LENGTH/WATER_RACE_LENGTH*terrainRows;
+ const i=Math.floor(u),f=u-i;
+ return raceBends[i]*(1-f)+raceBends[(i+1)%terrainRows]*f;
 }
 
 export function waterparkLayout(options: WaterparkGeometryOptions = {}) {
@@ -65,12 +109,14 @@ export function createWaterparkDesign(options: WaterparkGeometryOptions = {}):Me
  for(let l=-12;l<12;l++)ribbon(water,l,l+1,0,trackStart,trackEnd,1.3);
  for(const s of[-1,1]){
  ribbon(cream,s*12,s*13.1,.28);wall(cream,s*12,-.4,.28);ribbon(sand,s*13.1,s*17.3,.28);wall(navy,s*17.3,.28,.85);wall(sand,s*17.4,.85,1.9);wall(aqua,s*17.25,1.9,2.65);
- ribbon(cream,s*17.05,s*18.15,2.7);ribbon(grass,s*18.15,s*65,2.25);
+ ribbon(cream,s*17.05,s*18.15,2.7);
+ if(!closed)ribbon(grass,s*18.15,s*65,2.25);
  for(let d=closed?0:-30;d<trackEnd;d+=5)ribbon(coral,s*12,s*12.65,.295,d,Math.min(trackEnd,d+2.4),1.2);
  for(const y of[3.1,3.65])wall(white,s*18.05,y,y+.07);
- for(let d=closed?0:-25;d<trackEnd-2;d+=4){const p=sample(d,s*18.05).p;white.add(cylinder,v(p.x,3.16,p.z),v(.1,1.15,.1));}
+ for(let d=closed?0:-25;d<trackEnd-2;d+=closed?5.5:4){const p=sample(d,s*18.05).p;white.add(cylinder,v(p.x,3.16,p.z),v(.1,1.15,.1));}
  }
- function palm(d:number,l:number,h:number,seed:number){const b=sample(d,l).p;
+ if(closed){const land=createWaterparkRaceLand(options);grass.data.positions.push(...land.positions);grass.data.indices.push(...land.indices);}
+ function palm(d:number,l:number,h:number,seed:number){if(closed)l=Math.sign(l)*(22+(Math.abs(l)-23)*.25);const b=sample(d,l).p;
  for(let j=0;j<7;j++){const f=j/7;trunk.add(cylinder,v(b.x+Math.sin(seed)*f*f*1.3,2.25+h*f+h/14,b.z+f*f*.5),v(.53-f*.22,h/6.5,.53-f*.22),v(0,0,-Math.sin(seed)*9*f));}
  for(let j=0;j<3;j++)grass.add(new pc.SphereGeometry({latitudeBands:5,longitudeBands:8}),v(b.x+Math.sin(j*2)*1.2,2.65,b.z+Math.cos(j*2)*1.1),v(2.2,1.2,1.8));
  const top=v(b.x+Math.sin(seed)*1.3,2.25+h,b.z+.5);
@@ -82,13 +128,13 @@ export function createWaterparkDesign(options: WaterparkGeometryOptions = {}):Me
  function parasol(d:number,l:number,phase:number){const p=sample(d,l).p;white.add(cylinder,v(p.x,3.9,p.z),v(.14,3.4,.14));
  for(let i=0;i<12;i++){const b=i%2===0?roseFabric:ivoryFabric,a=i/12*Math.PI*2+phase,c=(i+1)/12*Math.PI*2+phase,tip=v(p.x,6.15,p.z),a1=v(p.x+Math.cos(a)*2.8,5.15,p.z+Math.sin(a)*2.8),b1=v(p.x+Math.cos(c)*2.8,5.15,p.z+Math.sin(c)*2.8);b.quad(tip,tip,a1,b1);b.quad(a1,b1,v(a1.x,4.82,a1.z),v(b1.x,4.82,b1.z));}
  sand.add(cylinder,v(p.x,3.1,p.z),v(1.65,.18,1.65));}
- for(const s of[-1,1])for(let d=23;d<trackEnd-25;d+=25)parasol(d,s*(21.5+d%3),d*.2);
- const tx=-15,tz=130;purple.add(cylinder,v(tx,10,tz),v(12,16,12));
+ for(const s of[-1,1])for(let d=23;d<trackEnd-25;d+=closed?33:25)parasol(d,s*(21.5+d%3),d*.2);
+ const tower=closed?sample(WATER_RACE_TOWER_DISTANCE,WATER_RACE_TOWER_LANE).p:v(-15,0,130),tx=tower.x,tz=tower.z;purple.add(cylinder,v(tx,10,tz),v(12,16,12));
  for(const y of[4,10.5,17.8]){cream.add(cylinder,v(tx,y,tz),v(13.2,.55,13.2));aqua.add(cylinder,v(tx,y+1,tz),v(12.8,1.5,12.8));}
  for(let i=0;i<10;i++){const a=i*Math.PI/5;dark.add(box,v(tx+Math.sin(a)*6.01,14,tz+Math.cos(a)*6.01),v(1.5,2.2,.12),v(0,a*180/Math.PI,0));}
  dark.add(cylinder,v(tx,20,tz),v(10.8,3.6,10.8));for(let i=0;i<12;i++){const a=i*Math.PI/6;white.add(cylinder,v(tx+Math.sin(a)*5.45,20,tz+Math.cos(a)*5.45),v(.3,3.8,.3));}
  pink.add(new pc.ConeGeometry({baseRadius:7.7,peakRadius:1.3,height:3.7,capSegments:24}),v(tx,23.6,tz));white.add(sphere,v(tx,25.4,tz),v(1.4,.7,1.4));
- const bridge=sample(183),yaw=bridge.angle*180/Math.PI,bp=(l:number,y:number,z=0)=>v(bridge.p.x+bridge.n.x*l+bridge.t.x*z,y,bridge.p.z+bridge.n.z*l+bridge.t.z*z);
+ const bridge=sample(waterparkBridgeDistance(options)),yaw=bridge.angle*180/Math.PI,bp=(l:number,y:number,z=0)=>v(bridge.p.x+bridge.n.x*l+bridge.t.x*z,y,bridge.p.z+bridge.n.z*l+bridge.t.z*z);
  for(const s of[-1,1]){cream.add(box,bp(s*14.7,3.25),v(3.3,6.5,6),v(0,yaw,0));aqua.add(box,bp(s*14.7,1.1),v(3.55,1.6,6.25),v(0,yaw,0));}
  cream.add(box,bp(0,7.5),v(33,1.3,6.5),v(0,yaw,0));
  // Curved arch soffit creates a readable bridge silhouette rather than a flat slab.

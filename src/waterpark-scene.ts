@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import {createWaterparkDesign, sampleCamera, waterparkLayout, type WaterparkGeometryOptions} from './waterpark-design';
+import {createWaterparkDesign, sampleCamera, waterparkLayout, waterparkBridgeDistance, type WaterparkGeometryOptions} from './waterpark-design';
 import {createWaterparkWaterMaterial} from './waterpark-water';
 import {createWaterparkEnvironmentDetails, type EnvironmentMesh} from './waterpark-environment';
 import {createWaterparkMaterials, waterparkSurfaceUvs} from './waterpark-materials';
@@ -15,7 +15,7 @@ export function createWaterparkScene(app: pc.Application, options: WaterparkGeom
   const surfaces = createWaterparkMaterials(app.graphicsDevice);
   const bedMaterials = createWaterparkBedMaterials(app.graphicsDevice, surfaces.environment);
   const waterMaterial = createWaterparkWaterMaterial(app);
-  waterMaterial.setParameter('bridgeShadow', new Float32Array([183, 3.5, .6, 2]));
+  waterMaterial.setParameter('bridgeShadow', new Float32Array([waterparkBridgeDistance(options), 3.5, .6, 2]));
   const meshes: pc.Mesh[] = [];
   let triangles = 0;
   for (const data of [...createWaterparkDesign(options), ...createWaterparkEnvironmentDetails(options), ...createWaterparkBedDesign(options)]) {

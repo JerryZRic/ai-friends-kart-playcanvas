@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import {waterparkLayout, type WaterparkGeometryOptions, type MeshData} from './waterpark-design';
+import {waterparkLayout, waterparkBridgeDistance, type WaterparkGeometryOptions, type MeshData} from './waterpark-design';
 import type {WaterparkSurface} from './waterpark-materials';
 
 export type EnvironmentMesh = MeshData & {surface: WaterparkSurface; depthBand: 'near' | 'middle' | 'far'};
@@ -100,7 +100,7 @@ export function createWaterparkEnvironmentDetails(options: WaterparkGeometryOpti
   }
 
   // Sparse bridge ribs and arch keystones give readable scale in the underpass.
-  const bridge = sample(183), yaw = bridge.angle * 180 / Math.PI;
+  const bridge = sample(waterparkBridgeDistance(options)), yaw = bridge.angle * 180 / Math.PI;
   const bp = (l: number, y: number, z: number) => v(bridge.p.x + bridge.n.x * l + bridge.t.x * z, y, bridge.p.z + bridge.n.z * l + bridge.t.z * z);
   for (const front of [-1, 1]) {
     stone.add(box, bp(0, 6.87, front * 3.29), v(.75, .64, .18), v(0, yaw, 0));
@@ -110,12 +110,13 @@ export function createWaterparkEnvironmentDetails(options: WaterparkGeometryOpti
   // Only four restrained, untextured background volumes. No high frequency
   // window grid: broad setback bands keep the landmark tower legible.
   for (const [d, lateral, width, height] of [[104, 57, 17, 13], [152, -61, 21, 10], [240, 61, 20, 16], [304, -55, 24, 11]]) {
-    place(distant, box, d, lateral, 2.25 + height / 2, v(width, height, 11));
+    const lane=lateral;
+    place(distant, box, d, lane, 2.25 + height / 2, v(width, height, 11));
     for (const y of [height * .38, height * .72]) {
-      place(windows, box, d - 5.54, lateral, 2.25 + y, v(width * .8, 1.15, .08));
-      place(distant, box, d - 5.85, lateral, 1.62 + y, v(width * .91, .22, 1));
+      place(windows, box, d - 5.54, lane, 2.25 + y, v(width * .8, 1.15, .08));
+      place(distant, box, d - 5.85, lane, 1.62 + y, v(width * .91, .22, 1));
     }
-    place(distant, box, d + .8, lateral, 2.25 + height + .85, v(width * .63, 1.7, 7.5));
+    place(distant, box, d + .8, lane, 2.25 + height + .85, v(width * .63, 1.7, 7.5));
   }
   return batches.map(b => b.data);
 }

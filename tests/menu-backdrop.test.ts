@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
 import { sample as sampleCoast, LENGTH as COAST_LENGTH } from '../src/track';
-import { sampleWaterparkLoop, WATER_RACE_LENGTH } from '../src/waterpark-design';
+import { sampleWaterparkLoop, WATER_RACE_LENGTH, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE } from '../src/waterpark-design';
 import { DEFAULT_SETTINGS } from '../src/game-settings';
-import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose } from '../src/menu-camera';
+import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors } from '../src/menu-camera';
 import { createMenuWorld, mountMenuBackdrop } from '../src/menu-backdrop';
+import {coastGroundHeightAt} from '../src/scene';
 
 const maps = ['waterpark', 'coast'] as const;
 
@@ -42,7 +43,8 @@ test('orbit and dolly remain continuous, above scenery and stable in portrait', 
   for (const map of maps) {
     const first = menuCameraPose(map, 0), later = menuCameraPose(map, 20), portrait = menuCameraPose(map, 0, .5);
     assert.notDeepEqual(first.position, later.position);
-    assert.ok(portrait.position[1] > first.position[1]);
+    assert.ok(portrait.position[1] > 25);
+    assert.notDeepEqual(portrait.target, first.target, 'portrait reframes a real route section instead of cropping empty infield');
     for (let time = 0; time < 65; time += .5) {
       const a = menuCameraPose(map, time), b = menuCameraPose(map, time + 1 / 30);
       assert.ok([...a.position, ...a.target].every(Number.isFinite));
@@ -158,13 +160,15 @@ test('camera frusta retain real track and waterpark landmarks on desktop and por
         const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
         const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(p => camera.camera.frustum.containsPoint(p));
 
-        assert.ok(visible.length >= 15, `${map}: at least one readable course section`);
+        assert.ok(visible.length >= (aspect >= 1 ? 115 : 20), `${map}: landscape retains the full loop and portrait a readable course section`);
         if (map === 'waterpark') {
-          const tower = new pc.Vec3(-15, 15, 130), bridge = sampleWaterparkLoop(183).p; bridge.y = 8;
+          const tower = sampleWaterparkLoop(WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE).p; tower.y = 15;
+          const bridge = sampleWaterparkLoop(WATER_RACE_BRIDGE_DISTANCE).p; bridge.y = 8;
           assert.ok(camera.camera.frustum.containsPoint(tower));
-          assert.ok(camera.camera.frustum.containsPoint(bridge));
+          if (aspect >= 1) assert.ok(camera.camera.frustum.containsPoint(bridge));
           const viewProjection = new pc.Mat4().mul2(camera.camera.projectionMatrix, new pc.Mat4().invert(world.camera.getWorldTransform()));
-          const towerScreens = [-23, -7].flatMap(x => [3, 26].flatMap(y => [122, 138].map(z => {
+          const towerScreens = [-8, 8].flatMap(dx => [2, 27].flatMap(y => [-8, 8].map(dz => {
+            const x = tower.x + dx, z = tower.z + dz;
             const p = viewProjection.transformVec4(new pc.Vec4(x, y, z, 1)); return {x: p.x / p.w, y: p.y / p.w};
           })));
           assert.ok(towerScreens.every(p => Math.abs(p.x) < .95 && Math.abs(p.y) < .95), 'full tower silhouette has viewport margin');
@@ -173,5 +177,68 @@ test('camera frusta retain real track and waterpark landmarks on desktop and por
       }
       world.destroy();
     }
+  } finally { app.destroy(); }
+});
+
+
+test('route-derived camera fitting retains the current anchors with margin and handles invalid input', () => {
+  for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
+    for (const time of [0, 15, 29, 180]) {
+      const pose = menuCameraPose(map, time, aspect);
+      const position = new pc.Vec3(...pose.position), target = new pc.Vec3(...pose.target);
+      const forward = target.clone().sub(position).normalize();
+      const right = new pc.Vec3().cross(forward, pc.Vec3.UP).normalize(), up = new pc.Vec3().cross(right, forward);
+      const tanV = Math.tan(pose.fov * Math.PI / 360);
+      for (const point of menuCameraAnchors(map, aspect)) {
+        const delta = new pc.Vec3(...point).sub(position), depth = delta.dot(forward);
+        assert.ok(depth > 0);
+        assert.ok(Math.abs(delta.dot(right) / (depth * tanV * aspect)) < .9, `${map}: horizontal framing margin`);
+        assert.ok(Math.abs(delta.dot(up) / (depth * tanV)) < .9, `${map}: vertical framing margin`);
+      }
+    }
+  }
+  for (const value of [NaN, Infinity, -Infinity, 0, -2]) for (const map of maps) {
+    const pose = menuCameraPose(map, value, value);
+    assert.ok([...pose.position, ...pose.target, pose.fov].every(Number.isFinite));
+  }
+});
+
+
+test('public framing data cannot mutate the bounded internal viewport cache', () => {
+  const before = menuCameraPose('coast', 9, 16 / 9);
+  const points = menuCameraAnchors('coast', 16 / 9);
+  points[0][0] = 100000; points.length = 0;
+  const disposable = menuCameraPose('coast', 9, 16 / 9); disposable.target[0] = -100000;
+  assert.deepEqual(menuCameraPose('coast', 9, 16 / 9), before);
+  for (let i = 0; i < 40; i++) menuCameraPose(i % 2 ? 'coast' : 'waterpark', 9, .3 + i / 40);
+  assert.deepEqual(menuCameraPose('coast', 9, 16 / 9), before, 'resizing replaces cached framing without changing the result');
+});
+
+
+test('procedural coastal preview palms are planted in actual island caps and never over ocean', () => {
+  const app = fixture();
+  try {
+    const world = createMenuWorld(app, 'coast', DEFAULT_SETTINGS);
+    const trunks = (app.root.findComponents('render') as pc.RenderComponent[])
+      .filter(component => component.entity.name === 'Menu coastal palms')
+      .flatMap(component => component.meshInstances)
+      .find(instance => (instance.material as pc.StandardMaterial).diffuse.toString(false) === '#a17b60')!;
+    assert.ok(trunks);
+    const positions: number[] = []; trunks.mesh.getPositions(positions);
+    const stride = new pc.CylinderGeometry({radius: .35, height: 8, capSegments: 6}).positions.length;
+    assert.equal(positions.length % stride, 0);
+    const count = positions.length / stride;
+    const expected = Array.from({length: 26}, (_, i) => sampleCoast(i * 37 + 9, (i % 2 ? -1 : 1) * (16 + i % 3 * 4)).p)
+      .filter(point => coastGroundHeightAt(point.x, point.z) !== null).length;
+    assert.equal(count, expected); assert.ok(count > 0 && count < 26);
+    for (let offset = 0; offset < positions.length; offset += stride) {
+      const points = positions.slice(offset, offset + stride);
+      const min = [0, 1, 2].map(axis => Math.min(...points.filter((_, i) => i % 3 === axis)));
+      const max = [0, 1, 2].map(axis => Math.max(...points.filter((_, i) => i % 3 === axis)));
+      const ground = coastGroundHeightAt((min[0] + max[0]) / 2, (min[2] + max[2]) / 2);
+      assert.notEqual(ground, null, 'trunk center lies over solid ground');
+      assert.ok(Math.abs(min[1] - (ground! - .2)) < .00001, 'trunk base uses the actual cap height');
+    }
+    world.destroy();
   } finally { app.destroy(); }
 });

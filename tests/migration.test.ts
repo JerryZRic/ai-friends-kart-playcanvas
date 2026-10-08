@@ -6,7 +6,7 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { Vec3 } from 'playcanvas';
 import { DRIVERS, raceOrder, DEFAULT_DRIVER_ID } from '../src/driver-roster.js';
-import { circuit, LENGTH, HALF, MAX_SPEED, sample } from '../src/track.ts';
+import { CoastCircuit, ORIGINAL_TRACK_POINTS, HALF, MAX_SPEED } from '../src/track.ts';
 
 const read = (name: string) => readFileSync(new URL('../' + name, import.meta.url));
 const json = (name: string) => JSON.parse(read(name).toString());
@@ -49,7 +49,11 @@ test('all six stable selections retain exact IDs, paint colors, labels and selec
   }
 });
 
-test('entire original circuit and left-positive lane convention match fixed engine-independent fixtures', () => {
+test('historical migration circuit remains independently reproducible from unchanged original fixtures', () => {
+  // The requested new level-0 layout has its own invariant/geometry tests.
+  // This historical baseline must never be silently rewritten to match it.
+  const circuit = new CoastCircuit(ORIGINAL_TRACK_POINTS, {legacySeamTangent: true});
+  const LENGTH = circuit.length, sample = (distance: number, lateral = 0) => circuit.sample(distance, lateral);
   const original = json('tests/helpers/original-track.json');
   assert.equal(circuit.arcs.length, 1801);
   assert.ok(Math.abs(LENGTH - original.length) < 1e-8);

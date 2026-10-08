@@ -5,7 +5,7 @@ import {bindRaceControls} from './race-controls';
 import {chaseCamera} from './race-camera';
 import {createPerformancePanel} from './waterpark-performance-ui';
 import {createWaterparkScene} from './waterpark-scene';
-import {sampleWaterparkLoop as sampleWaterpark,WATER_RACE_LENGTH} from './waterpark-design';
+import {sampleWaterparkLoop as sampleWaterpark,WATER_RACE_LENGTH,WATER_RACE_PICKUPS} from './waterpark-design';
 import {sampleWaterSurface,waterSurfaceRotation} from './waterpark-surface';
 import {createWaterMount} from './water-mount';
 import {WATER_HANDLING} from './waterpark-motion';
@@ -47,7 +47,7 @@ try {
   let controls:ReturnType<typeof bindRaceControls>,view=0,snapCamera=true,lastRearView=false;
   const npcMounts=new Map<string,ReturnType<typeof createWaterMount>>();
   const pickups:RacingPickup[]=[];
-  for(let d=45;d<WATER_RACE_LENGTH;d+=75)for(const lane of [-4,0,4]){
+  for(const {d,lateral:lane} of WATER_RACE_PICKUPS){
     const entity=new pc.Entity('水上道具箱');world.root.addChild(entity);
     const models={} as Record<ItemDisplay,pc.Entity>;
     for(const kind of ['boost','shield','pulse','mystery'] as const){models[kind]=createItemModel(app,kind);models[kind].setLocalScale(1.2,1.2,1.2);entity.addChild(models[kind]);}world.reflection.exclude(entity);

@@ -85,12 +85,18 @@ the adapter API and ownership boundaries.
 
 ## Water circuit
 
-The full circuit is a closed stadium: two 92 m straights and two radius-76 m
-semicircles, approximately 661.52 m per lap. Position and tangent are continuous
-at the joints and lap seam, and banks, floor, camera and wakes follow the same
-sampler. Eight sequential forward checkpoints per lap prevent credit from
-re-crossing a seam or skipping gates. The separate art-study page retains its
-original short demonstration route.
+The water circuit is an authored asymmetric loop of approximately 760 m, with
+linked S bends, recovery straights, a broad return and a bridge near the finish
+approach. Its 24 m waterway stays beginner-friendly; fourteen staggered item
+placements create optional lines through the exits and open sections. The
+approximately 1,056 m coast course has broad S transitions, unequal straights,
+gentle slopes and smoothly varying 12.4–16.4 m road width.
+
+Both use the shared metre-distance `ClosedCircuit` sampler. Rendered surfaces,
+barriers, racers, pickups, minimap and map previews follow the same geometry.
+Water's eight sequential forward gates per lap still prevent reverse/seam or
+skipped-gate credit. The separate art-study page retains its original 285 m
+route. See [level-0 course design](level-zero-courses.md).
 
 Race simulation and countdown use update deltas, not independent timer loops.
 Pausing or going into the background freezes gameplay clocks and item effects.
@@ -131,5 +137,5 @@ framebuffer completeness, appearance or hardware performance. Target-device
 visual and frame-rate checks remain necessary, especially with all six models.
 
 Every dev publication includes the complete corresponding source and notices.
-Six character archives retain their exact authorized hashes and remain separate
+All twelve driving/portrait character archives retain their exact authorized hashes and remain separate
 from the code license. No new model redistribution terms are introduced.

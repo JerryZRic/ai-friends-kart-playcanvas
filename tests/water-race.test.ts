@@ -1,6 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {newWaterRace,advanceWaterRace,advanceWaterCheckpoints,waterStandings,waterTravelSpeed,resetWaterPickups,useWaterItem,WATER_CHECKPOINTS,WATER_LAPS} from '../src/water-race';
-import {WATER_RACE_LENGTH} from '../src/waterpark-design';
+import {WATER_RACE_LENGTH,waterparkCurvature,WATER_RACE_PICKUPS} from '../src/waterpark-design';
+import {stepWaterMotion,waterTurnCurrent} from '../src/waterpark-motion';
+import {characterTuning} from '../src/character-profiles';
 import type {RacingPickup} from '../src/npc-tactics';
 const input={throttle:true,brake:false,steer:0};
 function boxes():RacingPickup[]{return Array.from({length:24},(_,i)=>({d:45+Math.floor(i/3)*75,lateral:(i%3-1)*4,display:'boost',cool:0,mesh:{enabled:true},models:{boost:{enabled:true},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}}}));}
@@ -10,14 +12,14 @@ test('race finish times and rank are identical at 30, 60 and 120 Hz',()=>{const 
 test('countdown and effects use simulation time; invalid deltas and finished frames do nothing',()=>{const r=newWaterRace('glm');advanceWaterRace(r,input,2.5);assert.equal(r.elapsed,0);assert.equal(r.racers[0].total,0);advanceWaterRace(r,input,.6);assert.ok(Math.abs(r.elapsed-.1)<.009);const snapshot=structuredClone(r);advanceWaterRace(r,input,NaN);advanceWaterRace(r,input,-1);advanceWaterRace(r,input,1e12);assert.deepEqual(r,snapshot);const done=run(60),saved=structuredClone(done);advanceWaterRace(done,input,3);assert.deepEqual(done,saved);});
 test('reverse, seam oscillation and checkpoint skips cannot earn laps',()=>{const r={checkpoint:0},gap=WATER_RACE_LENGTH/WATER_CHECKPOINTS;advanceWaterCheckpoints(r,0,WATER_RACE_LENGTH);assert.equal(r.checkpoint,0);advanceWaterCheckpoints(r,gap+1,gap-1);assert.equal(r.checkpoint,0);advanceWaterCheckpoints(r,gap-1,gap+1);assert.equal(r.checkpoint,1);advanceWaterCheckpoints(r,gap+1,gap-1);advanceWaterCheckpoints(r,gap-1,gap+1);assert.equal(r.checkpoint,1);for(let gate=2;gate<=WATER_CHECKPOINTS*WATER_LAPS;gate++)advanceWaterCheckpoints(r,gate*gap-1,gate*gap+1);assert.equal(r.checkpoint,24);});
 test('inventory starts empty and player cannot create items during countdown or after finish',()=>{const race=newWaterRace('gpt');for(const r of race.racers)assert.equal(r.held,null);race.racers[0].held='boost';useWaterItem(race,race.racers[0]);assert.equal(race.racers[0].held,'boost');advanceWaterRace(race,input,3.1);useWaterItem(race,race.racers[0]);assert.equal(race.racers[0].held,null);assert.ok(race.racers[0].boost>0);});
-test('contact impulses are local, shield-aware and cannot use a finisher as an obstacle',()=>{const r=newWaterRace('whale');r.countdown=0;const [a,b]=r.racers;a.total=b.total=20;a.lateral=b.lateral=0;a.motion={...a.motion,distance:20,lane:0,speed:10};b.motion={...b.motion,distance:20,lane:0,speed:10};a.shield=2;advanceWaterRace(r,input,1/120);assert.ok(a.bump>0&&b.bump>0);assert.equal(a.motion.lateralSpeed,0);assert.ok(Math.abs(b.motion.lateralSpeed)>1);const finished=newWaterRace('whale');finished.countdown=0;finished.racers[1].finishTime=1;finished.racers[1].total=finished.racers[0].total;finished.racers[1].lateral=finished.racers[0].lateral;advanceWaterRace(finished,input,1/120);assert.equal(finished.racers[0].bump,0);});
+test('contact impulses are local, shield-aware and cannot use a finisher as an obstacle',()=>{const r=newWaterRace('whale');r.countdown=0;const [a,b]=r.racers;a.total=b.total=20;a.lateral=b.lateral=0;a.motion={...a.motion,distance:20,lane:0,speed:10};b.motion={...b.motion,distance:20,lane:0,speed:10};a.shield=2;const expected=stepWaterMotion(a.motion,input,1/120,{...characterTuning(a.id,'waterpark'),finishDistance:Infinity,curvature:waterparkCurvature(a.total)});advanceWaterRace(r,input,1/120);assert.ok(a.bump>0&&b.bump>0);assert.equal(a.motion.lateralSpeed,expected.lateralSpeed);assert.ok(Math.abs(b.motion.lateralSpeed)>1);const finished=newWaterRace('whale');finished.countdown=0;finished.racers[1].finishTime=1;finished.racers[1].total=finished.racers[0].total;finished.racers[1].lateral=finished.racers[0].lateral;advanceWaterRace(finished,input,1/120);assert.equal(finished.racers[0].bump,0);});
 test('player finish immediately freezes the whole race with truthful pending times',()=>{const race=newWaterRace('gpt');race.countdown=0;const player=race.racers[0];player.checkpoint=23;player.total=WATER_RACE_LENGTH*3-.03;player.motion={...player.motion,distance:player.total,speed:20};advanceWaterRace(race,input,1/60);assert.ok(player.finishTime!==null);assert.ok(player.finishTime!<1/60);assert.equal(race.finished,true);assert.equal(race.elapsed,player.finishTime);assert.ok(race.racers.slice(1).every(r=>r.finishTime===null));const finished=structuredClone(race);advanceWaterRace(race,{...input,steer:1},1);assert.deepEqual(race,finished);assert.equal(waterStandings(race)[0].id,player.id);});
 test('all six profiles drive actual player and NPC acceleration, caps and steering equally',async()=>{const {CHARACTER_PROFILES,characterTuning}=await import('../src/character-profiles');const {WATER_HANDLING}=await import('../src/waterpark-motion');const dt=1/120;
  for(const profile of CHARACTER_PROFILES){
   const race=newWaterRace(profile.id);race.countdown=0;for(const [i,r] of race.racers.entries()){r.total=i*40;r.motion.distance=r.total;}
   advanceWaterRace(race,{...input,steer:1},dt);
   for(const racer of race.racers){const tuning=characterTuning(racer.id,'waterpark');assert.ok(Math.abs(racer.speed-tuning.acceleration*dt*Math.exp(-WATER_HANDLING.drag*dt))<1e-10,`${racer.id} acceleration as ${racer===race.racers[0]?'player':'NPC'}`);}
-  const player=race.racers[0],tuning=characterTuning(profile.id,'waterpark');const expectedLateral=tuning.steering*Math.min(1,player.speed/6)*dt*Math.exp(-WATER_HANDLING.lateralDrag*dt);assert.ok(Math.abs(player.motion.lateralSpeed-expectedLateral)<1e-10,`${profile.id} steering`);
+  const player=race.racers[0],tuning=characterTuning(profile.id,'waterpark');const expectedLateral=(tuning.steering*Math.min(1,player.speed/6)+waterTurnCurrent(player.speed,waterparkCurvature(0)))*dt*Math.exp(-WATER_HANDLING.lateralDrag*dt);assert.ok(Math.abs(player.motion.lateralSpeed-expectedLateral)<1e-10,`${profile.id} steering`);
   for(const racer of race.racers){racer.motion.speed=1000;racer.boost=racer.slow=0;}
   advanceWaterRace(race,input,dt);for(const racer of race.racers)assert.equal(racer.speed,characterTuning(racer.id,'waterpark').maxSpeed,`${racer.id} cap`);
  }
@@ -113,4 +115,28 @@ test('throttle, water slide, brake and reverse replays stay deterministic at com
   return {racers:race.racers,elapsed:race.elapsed,seed:race.seed,pickups};
  };
  const expected=replay(120);assert.deepEqual(replay(60),expected);assert.deepEqual(replay(30),expected);
+});
+
+test('all six drivers complete the authored S course while NPCs keep moving and collect real staggered pickups',()=>{
+ const reports=[];
+ for(const selected of ['whale','gemini','gpt','claude','grok','glm']){
+  const race=newWaterRace(selected),pickups:RacingPickup[]=WATER_RACE_PICKUPS.map(({d,lateral})=>({d,lateral,display:'boost',cool:0,mesh:{enabled:true},models:{boost:{enabled:true},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}}}));
+  resetWaterPickups(race,pickups);let npcBankHits=0,minNpcSpeed=Infinity;
+  for(let frame=0;frame<60*180&&!race.finished;frame++){
+   const player=race.racers[0],steer=Math.max(-1,Math.min(1,-player.lateral*.6-player.motion.lateralSpeed*.4));
+   advanceWaterRace(race,{...input,steer},1/60,pickups);
+   for(const racer of race.racers.slice(1))if(race.elapsed>10&&racer.finishTime===null&&!race.finished){
+    minNpcSpeed=Math.min(minNpcSpeed,racer.speed);if(racer.motion.bankHit)npcBankHits++;
+    assert.ok(Number.isFinite(racer.total)&&Math.abs(racer.lateral)<=9.8);
+   }
+  }
+  assert.equal(race.finished,true,`${selected} completes three laps using throttle and gentle course correction`);
+  assert.equal(race.racers[0].checkpoint,24);assert.ok(race.racers[0].finishTime!<180);
+  assert.equal(npcBankHits,0,'curvature-aware AI stays clear of banks');assert.ok(minNpcSpeed>4,'no NPC stalls or wall traps');
+  assert.ok(race.racers.slice(1).every(racer=>racer.total>WATER_RACE_LENGTH*WATER_LAPS*.75));
+  assert.ok(race.racers.slice(1).some(racer=>racer.pickups>0&&racer.uses>0));
+  assert.ok(race.racers.every(racer=>racer.uses<=racer.pickups));
+  reports.push({selected,seconds:Number(race.elapsed.toFixed(2)),npcBankHits,minNpcSpeed:Number(minNpcSpeed.toFixed(2))});
+ }
+ console.log(JSON.stringify({waterLevelZero:reports}));
 });

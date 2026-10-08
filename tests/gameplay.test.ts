@@ -5,6 +5,7 @@ import { gunzipSync } from 'node:zlib';
 import * as pc from 'playcanvas';
 import { CHARACTER_PROFILES, characterTuning } from '../src/character-profiles';
 import { parseLocalGLB, COURSE_FILES, RUNTIME_MODELS } from '../src/assets';
+import {halfWidthAt,laneLimitAt} from '../src/track';
 import { itemImage, type ItemDisplay, type ItemKind } from '../src/item-models';
 import { resetPickup, setPickupDisplay } from '../src/item-pickups';
 
@@ -221,6 +222,28 @@ test('native game integration preserves race, camera, items, menu and safety flo
       }
       qa.set({state:'menu'});game.selectDriver('whale');
     });
+    await t.test('level-0 variable-width course is completable by all six profiles with bounded racers',()=>{
+      for(const profile of CHARACTER_PROFILES){
+        qa.set({state:'menu'});game.selectDriver(profile.id);game.start();
+        key('keydown','KeyW');
+        let frames=0;
+        while(game.getState().state!=='finished'&&frames++<60*210){
+          const state=game.getState();
+          key('keyup','KeyA');key('keyup','KeyD');
+          if(state.lane>1.2)key('keydown','KeyD');else if(state.lane< -1.2)key('keydown','KeyA');
+          if(frames%180===0)key('keydown','KeyE');
+          qa.update(1/60);
+          const next=game.getState();
+          assert.ok(Math.abs(next.lane)<=laneLimitAt(next.pos)+1e-8,`${profile.id} remains inside current road width`);
+          for(const bot of qa.bots())assert.ok(Math.abs(bot.lateral)<=halfWidthAt(bot.total)-.8+1e-8,`${bot.id} stays inside road`);
+        }
+        key('keyup','KeyW');key('keyup','KeyA');key('keyup','KeyD');key('keyup','KeyE');
+        const result=game.getState();assert.equal(result.state,'finished',profile.id);
+        assert.equal(result.standings.length,6);assert.ok(result.elapsed<207);
+        assert.equal(result.pos,result.length*3);
+      }
+      qa.set({state:'menu'});game.selectDriver('whale');
+    });
     await t.test('30/60/120 Hz frames preserve countdown overflow and clocks; huge stalls pause safely',()=>{
       for(const hz of [30,60,120]){
         game.start();qa.set({noBots:true});
@@ -343,6 +366,9 @@ test('native game integration preserves race, camera, items, menu and safety flo
     await t.test('NPCs show held items, wait after pickup and then use a safe boost', () => {
       race();
       const box = qa.boxes()[1], [bot] = parkBots();
+      // Isolate one lifecycle: staggered routes may offer another legitimate box
+      // immediately after the boost is consumed. That is covered separately.
+      for(const other of qa.boxes())if(other!==box){other.cool=100;other.mesh.enabled=false;}
       resetPickup(box); setPickupDisplay(box, 'boost');
       qa.set({ pos: 0, lane: -5, speed: 0 });
       Object.assign(bot, { total: box.d, lateral: box.lateral, targetLane: box.lateral, speed: 36, decisionIn: 0, reaction: 0, cooldown: 0 });

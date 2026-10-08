@@ -1,10 +1,43 @@
 import * as pc from 'playcanvas';
-import { HALF, LENGTH, sample, scaled, degrees } from './track';
+import { HALF, LENGTH, COAST_TURN_SIGNS, COAST_PICKUPS, halfWidthAt, isRoadsideClear, sample, scaled, degrees } from './track';
 import { instantiateRenderEntity, type DriverAsset } from './assets';
 import { createItemModel, type ItemDisplay } from './item-models';
 import { resetPickup, type PickupState } from './item-pickups';
 
 export const color = (hex: string) => new pc.Color().fromString(hex);
+/** The actual generated terrain, shared by race and menu prop placement. */
+export const COAST_ISLANDS = Object.freeze([
+  Object.freeze({x: -12, z: 5, radius: 135, sx: 1.05, sz: 1.03, heightOffset: 0}),
+  Object.freeze({x: 70, z: -50, radius: 85, sx: 1.02, sz: .85, heightOffset: .04}),
+  Object.freeze({x: -90, z: 68, radius: 65, sx: 1, sz: 1.1, heightOffset: .08}),
+]);
+/** Highest supporting cap, or null over water. The inscribed-radius guard
+ * stays inside the real 64-sided cylinder, not only its idealized ellipse. */
+export function coastGroundHeightAt(x: number, z: number): number | null {
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return null;
+  let height: number | null = null;
+  const inset = Math.cos(Math.PI / 64);
+  for (const island of COAST_ISLANDS) for (const [radiusScale, cap] of [[1, 0], [.94, .6]]) {
+    const radius = island.radius * radiusScale;
+    const normalized = Math.hypot((x - island.x) / (radius * island.sx), (z - island.z) / (radius * island.sz));
+    if (normalized <= inset) height = Math.max(height ?? -Infinity, cap + island.heightOffset);
+  }
+  return height;
+}
+/** Original sampling density/model scales; unsupported offshore roots are
+ * omitted rather than adding islands or changing the road to accommodate them. */
+export function coastPalmPlacements() {
+  const placements: {index: number; position: pc.Vec3; scale: number}[] = [];
+  for (let i = 0; i < 94; i++) {
+    const distance = i / 94 * LENGTH;
+    const p = sample(distance, (i % 2 ? 1 : -1) * (halfWidthAt(distance) + 6 + i % 4 * 3)).p;
+    const ground = coastGroundHeightAt(p.x, p.z);
+    if (ground === null) continue;
+    p.y = ground - .2; // Same shallow root embed used by the original grass cap.
+    placements.push({index: i, position: p, scale: .82 + i % 4 * .09});
+  }
+  return placements;
+}
 export function material(hex: string, options: { emissive?: string; opacity?: number; metalness?: number; roughness?: number; unlit?: boolean } = {}) {
   const m = new pc.StandardMaterial();
   m.diffuse = color(hex);
@@ -110,13 +143,15 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   const ocean = meshEntity('Animated ocean', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(1050, 1050), widthSegments: 130, lengthSegments: 130 })), oceanMaterial, root);
   ocean.setPosition(0, -1.8, 0);
   const sand = material('#edcca0'), grass = material('#bbd395');
-  function land(x: number, z: number, radius: number, sx: number, sz: number) {
+  function land(x: number, z: number, radius: number, sx: number, sz: number, heightOffset = 0) {
     for (const [r, y, h, m] of [[radius, -2, 4, sand], [radius * .94, -.4, 2, grass]] as const) {
       const entity = meshEntity('Island', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.CylinderGeometry({ radius: r, height: h, capSegments: 64 })), m, root);
-      entity.setPosition(x, y, z); entity.setLocalScale(sx, 1, sz);
+      entity.setPosition(x, y + heightOffset, z); entity.setLocalScale(sx, 1, sz);
     }
   }
-  land(-12, 5, 135, 1.05, 1.03); land(70, -50, 85, 1.02, .85); land(-90, 68, 65, 1, 1.1);
+  // Overlapping caps previously occupied exactly y=0 / y=.6. Tiny fixed
+  // offsets remove coincident terrain faces without moving road or props.
+  for (const island of COAST_ISLANDS) land(island.x, island.z, island.radius, island.sx, island.sz, island.heightOffset);
   const mountains = new MeshBuilder();
   for (let i = 0; i < 17; i++) {
     const a = i / 17 * Math.PI * 2, r = 420 + Math.sin(i * 3) * 70;
@@ -124,11 +159,13 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   }
   mountains.entity(app, 'Distant mountains', material('#a2adc0'), root);
 
+  // Nominal edge offsets preserve existing curb/rail thickness as the road widens.
+  const edgeLane = (distance: number, nominal: number) => Math.sign(nominal) * (halfWidthAt(distance) + Math.abs(nominal) - HALF);
   function ribbon(inner: number, outer: number, height: number, mat: pc.Material) {
     const builder = new MeshBuilder();
     for (let i = 0; i < 720; i++) {
       const points: pc.Vec3[] = [];
-      for (const [d, lateral] of [[i, inner], [i, outer], [i + 1, inner], [i + 1, outer]]) { const p = sample(d / 720 * LENGTH, lateral).p; p.y += height; points.push(p); }
+      for (const [d, lateral] of [[i, inner], [i, outer], [i + 1, inner], [i + 1, outer]]) { const distance = d / 720 * LENGTH, p = sample(distance, edgeLane(distance, lateral)).p; p.y += height; points.push(p); }
       builder.quad(points[0], points[1], points[2], points[3]);
     }
     return builder.entity(app, 'Circuit ribbon', mat, root);
@@ -136,7 +173,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   ribbon(-HALF, HALF, 0, material('#455461', { roughness: .94 }));
   const curbs = [new MeshBuilder(), new MeshBuilder()];
   for (let i = 0; i < 720; i++) for (const side of [-1, 1]) {
-    const vertices = [[i, HALF], [i, HALF + .75], [i + 1, HALF], [i + 1, HALF + .75]].map(([d, lateral]) => { const p = sample(d / 720 * LENGTH, side * lateral).p; p.y += .045; return p; });
+    const vertices = [[i, HALF], [i, HALF + .75], [i + 1, HALF], [i + 1, HALF + .75]].map(([d, lateral]) => { const distance = d / 720 * LENGTH, p = sample(distance, edgeLane(distance, side * lateral)).p; p.y += .045; return p; });
     curbs[Math.floor(i / 3) % 2].quad(vertices[0], vertices[1], vertices[2], vertices[3]);
   }
   curbs[0].entity(app, 'Coral kerbs', material('#e9776a'), root);
@@ -146,7 +183,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const tube = new MeshBuilder();
     const count = 500, sides = 5;
     for (let i = 0; i <= count; i++) {
-      const s = sample(i / count * LENGTH, side * (HALF + .95));
+      const distance = i / count * LENGTH, s = sample(distance, side * (halfWidthAt(distance) + .95));
       for (let j = 0; j < sides; j++) {
         const angle = j / sides * Math.PI * 2;
         const p = scaled(s.p.clone(), s.n, Math.cos(angle) * .075); p.y += .74 + Math.sin(angle) * .075;
@@ -157,17 +194,23 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     tube.entity(app, 'Coastal guardrail', material(side < 0 ? '#d1eced' : '#f9ebd8', { metalness: .3 }), root);
   }
   const dashes = new MeshBuilder(), posts = new MeshBuilder(), supports = new MeshBuilder(), grid = new MeshBuilder();
+  // Sampled quads follow both grade and bend instead of cutting flat planes
+  // into an uphill road. Counts remain fixed independently of course length.
+  function surfaceQuad(builder: MeshBuilder, distance: number, lane: number, halfLength: number, halfWidth: number, height: number) {
+    const points = [[-halfLength, -halfWidth], [-halfLength, halfWidth], [halfLength, -halfWidth], [halfLength, halfWidth]]
+      .map(([d, lateral]) => { const p = sample(distance + d, lane + lateral).p; p.y += height; return p; });
+    builder.quad(points[0], points[1], points[2], points[3]);
+  }
   for (let i = 0; i < 240; i++) {
-    const s = sample(i / 240 * LENGTH), yaw = Math.atan2(s.t.x, s.t.z);
+    const distance = i / 240 * LENGTH, s = sample(distance);
     if (i % 2 === 0) {
-      for (const lateral of [-2.4, 2.4]) { const p = scaled(s.p.clone(), s.n, lateral); p.y += .012; dashes.add(new pc.PlaneGeometry({ halfExtents: new pc.Vec2(.055, 1.05) }), p, new pc.Vec3(1, 1, 1), yaw); }
-      for (const side of [-1, 1]) { const p = scaled(s.p.clone(), s.n, side * (HALF + .95)); p.y += .34; posts.add(new pc.CylinderGeometry({ radius: .09, height: .78, capSegments: 5 }), p); }
+      for (const lateral of [-2.4, 2.4]) surfaceQuad(dashes, distance, lateral, 1.05, .055, .012);
+      for (const side of [-1, 1]) { const p = scaled(s.p.clone(), s.n, side * (halfWidthAt(distance) + .95)); p.y += .34; posts.add(new pc.CylinderGeometry({ radius: .09, height: .78, capSegments: 5 }), p); }
     }
     if (i % 7 === 0) supports.add(new pc.CylinderGeometry({ radius: 1.3, height: s.p.y + 2, capSegments: 8 }), new pc.Vec3(s.p.x, (s.p.y - 2) / 2 - .1, s.p.z));
   }
   for (let row = 0; row < 2; row++) for (let col = 0; col < 16; col++) if ((row + col) % 2 === 0) {
-    const s = sample(row * .75, col * .9 - HALF + .45); s.p.y += .02;
-    grid.add(new pc.PlaneGeometry({ halfExtents: new pc.Vec2(.45, .375) }), s.p, new pc.Vec3(1, 1, 1), Math.atan2(s.t.x, s.t.z));
+    surfaceQuad(grid, row * .75, col * .9 - HALF + .45, .375, .45, .02);
   }
   dashes.entity(app, 'Lane markings', material('#e7e4ca'), root);
   posts.entity(app, 'Guardrail supports', material('#b5d3d9'), root, true);
@@ -201,8 +244,8 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   }
   const edgeMesh = new pc.Mesh(app.graphicsDevice); edgeMesh.setPositions(edges.positions); edgeMesh.setNormals(pc.calculateNormals(edges.positions, edges.indices)); edgeMesh.setIndices(edges.indices); edgeMesh.update();
   const boxes: ItemBox[] = [];
-  for (let j = 0; j < 15; j++) for (const lateral of [-4.2, 0, 4.2]) {
-    const d = 45 + j * LENGTH / 15, p = sample(d, lateral).p; p.y += 1.25;
+  for (const {d, lateral} of COAST_PICKUPS) {
+    const p = sample(d, lateral).p; p.y += 1.25;
     const entity = new pc.Entity('Energy item box'); root.addChild(entity); entity.setPosition(p);
     meshEntity('Translucent pickup glass', itemMesh, itemMat, entity);
     meshEntity('Luminous edges', edgeMesh, edgeMaterial, entity);
@@ -237,12 +280,13 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     let batchId: number | null = null;
     const prop = (id: string) => { const mount = new pc.Entity(id + ' placement'); mount.addChild(instantiateRenderEntity(assets.get(id)!)); props.addChild(mount); return mount; };
     try {
-    for (let i = 0; i < 94; i++) {
-      const p = sample(i / 94 * LENGTH, (i % 2 ? 1 : -1) * (HALF + 6 + i % 4 * 3)).p; p.y = .4;
-      const entity = prop('palm'); entity.setPosition(p); entity.setEulerAngles(0, degrees(i * 2.4), 0); const scale = .82 + i % 4 * .09; entity.setLocalScale(scale, scale, scale);
+    for (const {index, position, scale} of coastPalmPlacements()) {
+      const entity = prop('palm'); entity.setPosition(position); entity.setEulerAngles(0, degrees(index * 2.4), 0); entity.setLocalScale(scale, scale, scale);
     }
     for (let i = 0; i < 36; i++) {
-      const a = i / 36 * Math.PI * 2, entity = prop('rock'); entity.setPosition(Math.cos(a) * (100 + i % 3 * 10) - 12, .35, Math.sin(a) * (90 + i % 4 * 7)); entity.setEulerAngles(0, degrees(i), 0); const scale = .6 + i % 3 * .23; entity.setLocalScale(scale, scale, scale);
+      const a = i / 36 * Math.PI * 2, x = Math.cos(a) * (100 + i % 3 * 10) - 12, z = Math.sin(a) * (90 + i % 4 * 7), scale = .6 + i % 3 * .23;
+      if (!isRoadsideClear(x, z, 4.4 * scale)) continue;
+      const entity = prop('rock'); entity.setPosition(x, .35, z); entity.setEulerAngles(0, degrees(i), 0); entity.setLocalScale(scale, scale, scale);
     }
     const arch = prop('arch'); const s = sample(1); arch.setPosition(s.p); arch.setEulerAngles(0, degrees(Math.atan2(s.t.x, s.t.z)), 0);
     eachMesh(props, mesh => { mesh.castShadow = true; mesh.receiveShadow = true; });
@@ -250,8 +294,10 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const batch = app.batcher.addGroup('Coastal props', false, 80); batchId = batch.id;
     for (const render of props.findComponents('render') as pc.RenderComponent[]) render.batchGroupId = batch.id;
     sign(props, 1, 0, 7.1, 13, 2.1, textMaterial('NEON KART', '#183b45', '#edffd0'));
-    const arrow = textMaterial('› › ›', '#ed806d', '#fff8de');
-    for (const distance of [145, 320, 550, 740]) sign(props, distance, -HALF - 2.5, 2, 6.2, 1.6, arrow);
+    const arrows = [textMaterial('‹ ‹ ‹', '#ed806d', '#fff8de'), textMaterial('› › ›', '#ed806d', '#fff8de')];
+    for (const {distance, left} of COAST_TURN_SIGNS) {
+      sign(props, distance, (left ? -1 : 1) * (halfWidthAt(distance) + 2.5), 2, 6.2, 1.6, arrows[left ? 0 : 1]);
+    }
     root.addChild(props);
     app.batcher.generate([batch.id]);
     return props;

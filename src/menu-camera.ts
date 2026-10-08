@@ -1,5 +1,7 @@
 import type { GameSettings } from './game-settings';
 import type { MapId } from './map-profiles';
+import {sample as sampleCoast,LENGTH as COAST_LENGTH} from './track';
+import {sampleWaterparkLoop,WATER_RACE_LENGTH,WATER_RACE_BRIDGE_DISTANCE,WATER_RACE_TOWER_DISTANCE,WATER_RACE_TOWER_LANE} from './waterpark-design';
 
 export const MENU_SCENE_SECONDS = 30;
 export const MENU_FADE_SECONDS = 1.15;
@@ -34,21 +36,72 @@ export function menuBackdropQuality(settings: GameSettings, width: number, heigh
   };
 }
 
-/** Slow orbital motion and a separate radial dolly, without cuts within a shot.
- * Portrait moves back to retain the same landmarks beside the title controls. */
+type Point = [number, number, number];
+const route = (map: MapId) => map === 'coast'
+  ? {sample: sampleCoast, length: COAST_LENGTH, lane: 9}
+  : {sample: sampleWaterparkLoop, length: WATER_RACE_LENGTH, lane: 14};
+const portraitWeight = (aspect: number) => smooth((1 - Math.max(.2, Number.isFinite(aspect) ? aspect : 16 / 9)) / .55);
+
+/** The route remains the source of truth after layout changes. Wide previews
+ * show the full course; narrow previews focus on a real S section or the tower
+ * sweep instead of cropping to empty infield. The study scene is not sampled. */
+function buildCameraAnchors(map: MapId, aspect = 16 / 9): Point[] {
+  const {sample, length, lane} = route(map), portrait = portraitWeight(aspect);
+  const focus = map === 'coast' ? length * .71 : WATER_RACE_TOWER_DISTANCE;
+  const span = length * (1 - portrait * .74), points: Point[] = [];
+  for (let i = 0; i <= 96; i++) for (const lateral of [-lane, lane]) {
+    const p = sample(focus - span / 2 + i / 96 * span, lateral).p;
+    points.push([p.x, p.y + 1, p.z]);
+  }
+  if (map === 'waterpark') {
+    const tower = sampleWaterparkLoop(WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE).p;
+    for (const x of [-8, 8]) for (const y of [2, 27]) for (const z of [-8, 8]) points.push([tower.x + x, y, tower.z + z]);
+    if (portrait < .5) {
+      const bridge = sampleWaterparkLoop(WATER_RACE_BRIDGE_DISTANCE);
+      for (const lateral of [-18, 18]) for (const forward of [-4, 4]) points.push([
+        bridge.p.x + bridge.n.x * lateral + bridge.t.x * forward, 10,
+        bridge.p.z + bridge.n.z * lateral + bridge.t.z * forward,
+      ]);
+    }
+  }
+  return points;
+}
+
+// Route sampling runs only when the viewport changes, not every animation frame.
+// Bound the cache even while repeatedly resizing a window or switching maps.
+const frameCache = new Map<MapId, {aspect: number; points: Point[]; target: Point}>();
+function cameraFrame(map: MapId, aspect: number) {
+  const cached = frameCache.get(map);
+  if (cached?.aspect === aspect) return cached;
+  const points = buildCameraAnchors(map, aspect);
+  const min = [0, 1, 2].map(axis => Math.min(...points.map(point => point[axis])));
+  const max = [0, 1, 2].map(axis => Math.max(...points.map(point => point[axis])));
+  const target = min.map((value, axis) => (value + max[axis]) / 2) as Point;
+  const frame = {aspect, points, target}; frameCache.set(map, frame);
+  return frame;
+}
+export function menuCameraAnchors(map: MapId, aspect = 16 / 9): Point[] {
+  return cameraFrame(map, aspect).points.map(point => [...point] as Point);
+}
+
+/** Fit actual route/landmark anchors with viewport margin. Slow orbital motion
+ * and a separate radial dolly are continuous within each thirty-second shot. */
 export function menuCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
-  const portrait = Math.max(0, Math.min(1, 1 - aspect));
-  if (map === 'waterpark') {
-    const angle = -1.92 + time * .012;
-    const radius = (110 + Math.sin(time * .075) * 7) * (1 + portrait * .8);
-    const target: [number, number, number] = [22 - portrait * 30, 6, 113 + portrait * 6];
-    return { position: [target[0] + Math.cos(angle) * radius, 39 + Math.sin(time * .055) * 3 + portrait * 24,
-      target[2] + Math.sin(angle) * radius] as [number, number, number], target, fov: 53 };
+  const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 16 / 9;
+  const {points, target} = cameraFrame(map, safeAspect);
+  const angle = (map === 'coast' ? -2.16 : -1.92) + time * .0065;
+  const pitch = map === 'coast' ? .59 : .55;
+  const direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
+  const right = [-Math.sin(angle), 0, Math.cos(angle)];
+  const up = [-Math.cos(angle) * Math.sin(pitch), Math.cos(pitch), -Math.sin(angle) * Math.sin(pitch)];
+  const fov = 53, tanV = Math.tan(fov * Math.PI / 360), tanH = tanV * safeAspect;
+  let distance = 55;
+  for (const point of points) {
+    const relative = point.map((value, axis) => value - target[axis]);
+    const dot = (axis: number[]) => relative.reduce((sum, value, index) => sum + value * axis[index], 0);
+    distance = Math.max(distance, dot(direction) + Math.max(Math.abs(dot(right)) / tanH, Math.abs(dot(up)) / tanV) / .86);
   }
-  const angle = -2.16 + time * .011;
-  const radius = (225 + Math.sin(time * .07) * 13) * (1 + portrait * .2);
-  const target: [number, number, number] = [-8, 3, -30];
-  return { position: [target[0] + Math.cos(angle) * radius, 92 + Math.sin(time * .06) * 5 + portrait * 17,
-    target[2] + Math.sin(angle) * radius] as [number, number, number], target, fov: 53 };
+  distance += 8 + Math.sin(time * .075) * 5;
+  return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target: [...target] as Point, fov};
 }
