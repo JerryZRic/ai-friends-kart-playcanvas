@@ -149,6 +149,32 @@ test('native game integration preserves race, camera, items, menu and safety flo
       assert.equal(element('item').dataset.held, kind);
       assert.match(element('item').attributes['aria-label'], /^使用/);
     };
+    const parkBots = () => {
+      const bots = qa.bots();
+      for (const [index, bot] of bots.entries()) Object.assign(bot, {
+        total: 400 + index * 30, lateral: 5, targetLane: 5, speed: 0,
+        held: null, boost: 0, shield: 0, slow: 0, pulseFlash: 0, bump: 0, finishedAt: null,
+        decisionIn: 1000, reaction: 1000, cooldown: 1000, pickups: 0, uses: 0,
+      });
+      return bots;
+    };
+    const sceneEntities = () => {
+      const entities: pc.Entity[] = [];
+      const visit = (entity: pc.Entity) => {
+        entities.push(entity);
+        for (const child of entity.children) visit(child as pc.Entity);
+      };
+      visit(app.root);
+      return entities;
+    };
+    const botFX = (bot): pc.Entity[] => [bot.fx.shield, ...bot.fx.flames.map(flame => flame.mesh), ...Object.values(bot.fx.inventory)] as pc.Entity[];
+    const assertBotFXHidden = (bot) => {
+      for (const entity of botFX(bot)) {
+        assert.equal(entity.enabled, false, `${entity.name} is hidden immediately`);
+        for (const render of entity.findComponents('render') as pc.RenderComponent[])
+          for (const mesh of render.meshInstances) assert.equal(worldLayer.meshInstances.includes(mesh), false, `${entity.name} leaves the native render layer`);
+      }
+    };
     await t.test('all native boxes have transparent front glass and one enclosed model', () => {
       for (const box of qa.boxes()) {
         assertBoxVisible(box);
@@ -199,20 +225,271 @@ test('native game integration preserves race, camera, items, menu and safety flo
       qa.set({ held: 'pulse' }); qa.update(0); assertHeldImage('pulse');
       qa.set({ held: null }); qa.update(0); assertEmptyImage();
     });
-    await t.test('full inventory leaves the box intact and current bots do not collect pickups', () => {
+    await t.test('NPCs collect depicted and mystery boxes without overwriting either racer inventory', () => {
       race();
-      const box = qa.boxes()[0], bot = qa.bots()[0];
-      resetPickup(box); setPickupDisplay(box, 'shield');
+      const box = qa.boxes()[0], [bot] = parkBots();
       qa.set({ pos: 0, lane: 0, speed: 0, held: null });
-      bot.total = box.d; bot.lateral = box.lateral; bot.speed = 0;
-      qa.update(0);
-      assertBoxVisible(box); assert.equal(game.getState().held, null);
+      Object.assign(bot, { total: box.d, lateral: box.lateral, targetLane: box.lateral });
+      const cases: [ItemDisplay, ItemKind, number][] = [
+        ['boost', 'boost', .9], ['shield', 'shield', 0], ['pulse', 'pulse', .1],
+        ['mystery', 'boost', 0], ['mystery', 'shield', .5], ['mystery', 'pulse', .99],
+      ];
+      for (const [index, [display, reward, random]] of cases.entries()) {
+        resetPickup(box); setPickupDisplay(box, display); bot.held = null;
+        withRandom(() => random, () => qa.update(0));
+        assert.equal(bot.held, reward, `NPC receives ${reward} from ${display}`);
+        assert.equal(bot.pickups, index + 1); assert.equal(bot.uses, 0);
+        assert.ok(bot.reaction >= .65, 'a real pickup starts the human-readable reaction delay');
+        assert.equal(game.getState().held, null, 'NPC pickup does not change the player HUD');
+        assertEmptyImage(); assertBoxHidden(box);
+        const snapshot = game.getState().bots.find(racer => racer.id === bot.id);
+        assert.equal(snapshot.held, reward); assert.equal(snapshot.pickups, bot.pickups);
+        assert.equal(snapshot.mesh, undefined, 'public bot snapshots do not expose native scene objects');
+        qa.update(0); assert.equal(bot.held, reward); assert.equal(bot.pickups, index + 1);
+      }
+      resetPickup(box); setPickupDisplay(box, 'shield'); bot.held = 'boost';
+      qa.update(0); assert.equal(bot.held, 'boost'); assertBoxVisible(box);
       qa.set({ noBots: true, pos: box.d + game.getState().length, lane: box.lateral, held: 'boost' });
       qa.update(0);
       assert.equal(game.getState().held, 'boost'); assertHeldImage('boost'); assertBoxVisible(box);
       game.useItem(); qa.update(0);
-      assert.equal(game.getState().held, 'shield', 'pickup collision also works on later laps');
+      assert.equal(game.getState().held, 'shield', 'player pickup collision also works on later laps');
       assertBoxHidden(box); assertHeldImage('shield');
+    });
+    await t.test('the shared swept pickup resolver awards the earliest arrival exactly once', () => {
+      race();
+      const box = qa.boxes()[1], [bot] = parkBots();
+      resetPickup(box); setPickupDisplay(box, 'pulse');
+      qa.set({ pos: box.d - 6, lane: box.lateral, speed: 42, held: null });
+      Object.assign(bot, { total: box.d - 4, lateral: box.lateral, targetLane: box.lateral, speed: 40 });
+      qa.update(.2);
+      assert.equal(bot.held, 'pulse', 'NPC crossing first wins even though the player is resolved in the same frame');
+      assert.equal(bot.pickups, 1); assert.equal(game.getState().held, null); assertBoxHidden(box);
+      resetPickup(box); setPickupDisplay(box, 'shield');
+      Object.assign(bot, { total: box.d - 5, held: null, pickups: 0 });
+      qa.set({ pos: box.d, lane: box.lateral, speed: 0, held: null, hit: 0 });
+      qa.update(.2);
+      assert.equal(game.getState().held, 'shield', 'player already in the box wins before an approaching NPC');
+      assert.equal(bot.held, null); assert.equal(bot.pickups, 0); assertBoxHidden(box);
+      qa.update(0); assert.equal(bot.held, null); assert.equal(game.getState().held, 'shield');
+    });
+    await t.test('NPCs show held items, wait after pickup and then use a safe boost', () => {
+      race();
+      const box = qa.boxes()[1], [bot] = parkBots();
+      resetPickup(box); setPickupDisplay(box, 'boost');
+      qa.set({ pos: 0, lane: -5, speed: 0 });
+      Object.assign(bot, { total: box.d, lateral: box.lateral, targetLane: box.lateral, speed: 36, decisionIn: 0, reaction: 0, cooldown: 0 });
+      qa.update(0); qa.draw(0);
+      assert.equal(bot.held, 'boost'); assert.equal(bot.boost, 0); assert.equal(bot.uses, 0);
+      for (const kind of ['boost', 'shield', 'pulse'] as ItemKind[]) {
+        const inventory = bot.fx.inventory[kind] as pc.Entity;
+        assert.equal(inventory.parent, app.root, 'inventory marker uses an independent native scene entity');
+        assert.equal(inventory.enabled, kind === 'boost');
+        assert.ok(inventory.findComponents('render').length > 0, 'held NPC items have real native geometry');
+      }
+      qa.step(.4);
+      assert.equal(bot.held, 'boost', 'NPC cannot consume a pickup before the reaction delay');
+      assert.equal(bot.boost, 0); assert.equal(bot.uses, 0);
+      qa.step(1);
+      assert.equal(bot.held, null); assert.equal(bot.uses, 1); assert.ok(bot.boost > 0);
+      assert.ok(bot.fx.flames.every(flame => flame.mesh.enabled));
+      assert.ok(Object.values(bot.fx.inventory).every((entity: pc.Entity) => !entity.enabled));
+    });
+    await t.test('NPC pulses select the nearest player or bot, respect shields and wrap across laps', () => {
+      race();
+      const [shooter, other] = parkBots(), length = game.getState().length;
+      const arm = () => Object.assign(shooter, { held: 'pulse', boost: 0, shield: 0, slow: 0, reaction: 0, cooldown: 0, decisionIn: 0 });
+      qa.set({ pos: 125, lane: -4, speed: 0, slow: 0, shield: 0, held: null });
+      Object.assign(shooter, { total: 100, lateral: 0, targetLane: 0 });
+      Object.assign(other, { total: 115, lateral: 4, targetLane: 4, slow: 0 });
+      arm(); qa.update(0);
+      assert.equal(shooter.held, null); assert.equal(shooter.uses, 1);
+      assert.equal(other.slow, 3, 'a closer NPC is selected instead of always attacking the player');
+      assert.equal(game.getState().slow, 0);
+      other.slow = 0; other.total = 130;
+      qa.set({ pos: 110 }); arm(); qa.update(0);
+      assert.equal(game.getState().slow, 3, 'the player is a valid nearest target');
+      assert.equal(other.slow, 0); assert.equal(shooter.uses, 2);
+      qa.set({ slow: 0, shield: 6 }); arm(); qa.update(0);
+      assert.equal(shooter.held, 'pulse', 'NPC holds its pulse instead of firing at an active shield');
+      assert.equal(game.getState().slow, 0); assert.equal(other.slow, 0); assert.equal(shooter.uses, 2);
+      qa.set({ pos: length + 5, shield: 0, slow: 0 });
+      shooter.total = length - 10; other.total = 300; arm(); qa.update(0);
+      assert.equal(game.getState().slow, 3, 'forward targeting sees through the lap boundary');
+      assert.equal(shooter.held, null); assert.equal(shooter.uses, 3);
+      qa.set({ pos: 300, shield: 0, slow: 0 }); shooter.total = 100; other.total = 500;
+      arm(); qa.update(0);
+      assert.equal(shooter.held, 'pulse', 'NPC does not waste a pulse with no nearby forward target');
+      assert.equal(shooter.boost, 0); assert.equal(shooter.uses, 3);
+    });
+    await t.test('player pulse shares nearest-target, shield-blocking and lap-relative rules', () => {
+      race();
+      const [nearest, farther] = parkBots(), length = game.getState().length;
+      qa.set({ pos: 100, lane: 0, speed: 0, held: 'pulse', boost: 0 });
+      Object.assign(nearest, { total: 115, shield: 6, slow: 0 });
+      Object.assign(farther, { total: 130, slow: 0 });
+      game.useItem();
+      assert.equal(game.getState().held, null); assert.equal(game.getState().boost, 0);
+      assert.equal(nearest.slow, 0, 'shield blocks the nearest target');
+      assert.equal(farther.slow, 0, 'blocked pulses do not skip through to a farther target');
+      qa.set({ pos: length - 10, held: 'pulse' }); nearest.total = length + 5; nearest.shield = 0;
+      game.useItem(); assert.equal(nearest.slow, 3); assert.equal(farther.slow, 0);
+      nearest.total = 500; farther.total = 650; nearest.slow = 0;
+      qa.set({ pos: 100, held: 'pulse', boost: 0 }); game.useItem();
+      assert.equal(game.getState().boost, 1.9, 'manual no-target pulse preserves the legacy boost fallback');
+    });
+    await t.test('all five NPCs earn and use items during an unassisted simulated race', () => {
+      let seed = 0x71a5c0de;
+      const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 0x100000000; };
+      withRandom(random, () => {
+        race();
+        for (let frame = 0; frame < 60 * 60; frame++) qa.update(1 / 60);
+        qa.draw(0);
+      });
+      assert.equal(game.getState().state, 'running');
+      for (const bot of game.getState().bots) {
+        assert.ok(bot.pickups > 0, `${bot.id} naturally steers to and wins a shared box: ${JSON.stringify(bot)}`);
+        assert.ok(bot.uses > 0, `${bot.id} naturally finds a valid use for its earned item: ${JSON.stringify(bot)}`);
+        assert.ok(bot.uses <= bot.pickups, 'AI never fabricates inventory');
+        assert.ok(Number.isFinite(bot.total) && bot.total > 1000 && bot.total < game.getState().length * 3);
+        assert.ok(Math.abs(bot.lateral) <= 5.2, 'lane planning keeps racers inside its safe road bounds');
+      }
+    });
+    await t.test('NPC shield and boost decisions react to traffic instead of consuming on a fixed timer', () => {
+      race();
+      const [bot, traffic] = parkBots();
+      qa.set({ pos: 0, lane: -5, speed: 0, held: null });
+      Object.assign(bot, { total: 100, lateral: 0, targetLane: 0, speed: 36, held: 'shield', reaction: 0, cooldown: 0, decisionIn: 0 });
+      qa.update(0);
+      assert.equal(bot.held, 'shield'); assert.equal(bot.shield, 0); assert.equal(bot.uses, 0);
+      qa.set({ pos: 80, held: 'pulse' }); bot.decisionIn = 0; qa.update(0);
+      assert.equal(bot.held, null); assert.equal(bot.shield, 6); assert.equal(bot.uses, 1, 'nearby armed pursuer triggers a defensive shield');
+      qa.draw(0); assert.equal(bot.fx.shield.enabled, true);
+      qa.set({ pos: 0, held: null });
+      Object.assign(bot, { held: 'boost', reaction: 0, cooldown: 0, decisionIn: 0, boost: 0 });
+      Object.assign(traffic, { total: 110, lateral: 0, targetLane: 0 }); qa.update(0);
+      assert.equal(bot.held, 'boost'); assert.equal(bot.boost, 0, 'NPC waits when a kart blocks the boost path');
+      traffic.total = 150; bot.decisionIn = 0; qa.update(0);
+      assert.equal(bot.held, null); assert.equal(bot.boost, 3.3); assert.equal(bot.uses, 2);
+    });
+    await t.test('boost and pulse slow alter real NPC travel with the shared bounded speed rules', () => {
+      race();
+      const [normal, boosted, slowed] = parkBots();
+      qa.set({ pos: 0, lane: -5, speed: 0 });
+      Object.assign(normal, { total: 200, speed: 40 });
+      Object.assign(boosted, { total: 400, speed: 40, boost: 3.3 });
+      Object.assign(slowed, { total: 600, speed: 40, slow: 3 });
+      qa.update(.25);
+      assert.ok(Math.abs((normal.total - 200) - 10) < 1e-6);
+      assert.ok(Math.abs((boosted.total - 400) - 13.4) < 1e-6);
+      assert.ok(Math.abs((slowed.total - 600) - 5.5) < 1e-6);
+      assert.equal(boosted.boost, 3.05); assert.equal(slowed.slow, 2.75);
+    });
+    await t.test('pause freezes NPC decisions and native FX, then reset disposes effects immediately', () => {
+      race();
+      const [bot] = parkBots();
+      qa.set({ pos: 0, lane: 0, speed: 0, held: 'shield', boost: 3, shield: 4, slow: 2 });
+      Object.assign(bot, { total: 200, lateral: 0, targetLane: 0, held: 'pulse', speed: 36, boost: 3, shield: 4, slow: 2, decisionIn: .2, reaction: .4, cooldown: .8, pulseFlash: .6 });
+      qa.draw(0);
+      assert.equal(bot.fx.shield.enabled, true); assert.ok(bot.fx.flames.every(flame => flame.mesh.enabled));
+      assert.equal(bot.fx.inventory.pulse.enabled, true);
+      const fields = ['total', 'lateral', 'held', 'boost', 'shield', 'slow', 'bump', 'decisionIn', 'reaction', 'cooldown', 'pulseFlash', 'pickups', 'uses'];
+      const snapshot = () => Object.fromEntries(fields.map(field => [field, bot[field]]));
+      const before = snapshot(), elapsed = game.getState().elapsed;
+      const effects = botFX(bot), transforms = effects.map(entity => ({
+        position: entity.getLocalPosition().clone(), rotation: entity.getLocalRotation().clone(), scale: entity.getLocalScale().clone(), enabled: entity.enabled,
+      }));
+      game.pause(); qa.step(1);
+      assert.deepEqual(snapshot(), before); assert.equal(game.getState().elapsed, elapsed);
+      assert.equal(game.getState().boost, 3); assert.equal(game.getState().shield, 4); assert.equal(game.getState().slow, 2);
+      effects.forEach((entity, index) => {
+        assert.equal(entity.enabled, transforms[index].enabled);
+        assert.ok(entity.getLocalPosition().equals(transforms[index].position), `${entity.name} position stays frozen`);
+        assert.ok(entity.getLocalRotation().equals(transforms[index].rotation), `${entity.name} rotation stays frozen`);
+        assert.ok(entity.getLocalScale().equals(transforms[index].scale), `${entity.name} animation stays frozen`);
+      });
+      game.pause(); qa.step(1 / 60);
+      assert.ok(bot.total > before.total); assert.ok(bot.boost < before.boost); assert.ok(bot.reaction < before.reaction);
+      const oldEffects = qa.bots().flatMap(botFX); game.start();
+      assert.equal(game.getState().state, 'countdown'); assert.equal(game.getState().held, null); assertEmptyImage();
+      assert.equal(game.getState().boost, 0); assert.equal(game.getState().shield, 0); assert.equal(game.getState().slow, 0);
+      assert.equal(qa.world.shield.enabled, false); assert.ok(qa.world.flames.every(flame => !flame.mesh.enabled));
+      for (const entity of oldEffects) assert.equal(entity.parent, null, 'reset destroys every independently parented old NPC effect');
+      for (const newBot of qa.bots()) {
+        assert.equal(newBot.held, null); assert.equal(newBot.boost, 0); assert.equal(newBot.shield, 0); assert.equal(newBot.slow, 0);
+        assert.equal(newBot.pickups, 0); assert.equal(newBot.uses, 0); assertBotFXHidden(newBot);
+      }
+    });
+    await t.test('finishing clears inventories and all combat FX before the next render', () => {
+      race();
+      const [bot] = parkBots();
+      qa.set({ pos: game.getState().length * 3 - .1, lane: 0, speed: 42, held: 'pulse', boost: 3, shield: 4, slow: 0 });
+      Object.assign(bot, { held: 'shield', boost: 3, shield: 4, slow: 2, pulseFlash: .6 }); qa.draw(0);
+      assert.equal(bot.fx.shield.enabled, true); assert.equal(qa.world.shield.enabled, true);
+      qa.update(.1);
+      assert.equal(game.getState().state, 'finished'); assert.equal(game.getState().held, null); assertEmptyImage();
+      assert.equal(game.getState().boost, 0); assert.equal(game.getState().shield, 0); assert.equal(game.getState().slow, 0);
+      assert.equal(qa.world.shield.enabled, false); assert.ok(qa.world.flames.every(flame => !flame.mesh.enabled));
+      for (const racer of qa.bots()) {
+        assert.equal(racer.held, null);
+        for (const field of ['boost', 'shield', 'slow', 'bump', 'pulseFlash', 'reaction', 'cooldown', 'decisionIn']) assert.equal(racer[field], 0, `${field} is cleared at finish`);
+        assertBotFXHidden(racer);
+      }
+      const finished = game.getState(); qa.step(1);
+      assert.equal(game.getState().elapsed, finished.elapsed); assert.equal(game.getState().pos, finished.pos);
+      for (const racer of qa.bots()) assertBotFXHidden(racer);
+    });
+    await t.test('NPC shields prevent contact slowdown and unshielded contact has a bounded recovery timer', () => {
+      race();
+      const [bot] = parkBots();
+      qa.set({ pos: 100, lane: 0, speed: 0, shield: 6 });
+      Object.assign(bot, { total: 101, lateral: 0, targetLane: 0, shield: 0, slow: 0, bump: 0 });
+      qa.update(0);
+      assert.equal(bot.slow, .55); assert.equal(bot.bump, .8);
+      Object.assign(bot, { shield: 6, slow: 0, bump: 0 }); qa.update(0);
+      assert.equal(bot.slow, 0, 'active NPC shield prevents collision slowdown'); assert.equal(bot.bump, 0);
+      qa.set({ pos: 0 }); bot.shield = 0; bot.slow = .55; bot.bump = .8; qa.update(1);
+      assert.equal(bot.slow, 0); assert.equal(bot.bump, 0, 'unshielded contact immunity expires on the race clock');
+    });
+    await t.test('finish ranking preserves earlier NPC finishes and resolves crossing order within one frame', () => {
+      race();
+      const finish = game.getState().length * 3, [bot] = parkBots();
+      qa.set({ pos: 0, lane: -5, speed: 0 });
+      Object.assign(bot, { total: finish - 1, lateral: 4, targetLane: 4, speed: 40, held: 'shield', shield: 3, pulseFlash: .6 });
+      qa.draw(0); qa.update(.1);
+      assert.equal(bot.total, finish); assert.ok(Number.isFinite(bot.finishedAt)); assert.equal(game.getState().state, 'running');
+      assert.equal(bot.held, null); assert.equal(bot.shield, 0); assertBotFXHidden(bot);
+      const npcFinishTime = bot.finishedAt;
+      qa.set({ pos: finish - .1, lane: -5, speed: 42 }); qa.update(.1);
+      assert.equal(game.getState().state, 'finished'); assert.equal(game.getState().rank, 2, 'a finished NPC stays ahead when player reaches the cap');
+      assert.equal(bot.finishedAt, npcFinishTime);
+      for (const [playerDistance, botDistance, expectedRank] of [[1, 3, 1], [3, 1, 2]]) {
+        race(); const [opponent] = parkBots();
+        qa.set({ pos: finish - playerDistance, lane: -5, speed: 40 });
+        Object.assign(opponent, { total: finish - botDistance, lateral: 4, targetLane: 4, speed: 40 });
+        qa.update(.1);
+        assert.equal(game.getState().state, 'finished');
+        assert.equal(game.getState().rank, expectedRank, 'within-frame finish time decides order, rather than array order or capped distance');
+      }
+    });
+    await t.test('repeated race resets and QA bot removal do not leak independent effect entities', () => {
+      game.start();
+      const entityCount = sceneEntities().length, renderCount = app.root.findComponents('render').length;
+      for (let repeat = 0; repeat < 5; repeat++) {
+        const oldActors = qa.bots().map(bot => bot.mesh), oldEffects = qa.bots().flatMap(botFX);
+        game.start();
+        assert.equal(qa.bots().length, 5); assert.equal(qa.controllers.size, 6);
+        assert.equal(sceneEntities().length, entityCount); assert.equal(app.root.findComponents('render').length, renderCount);
+        for (const entity of [...oldActors, ...oldEffects]) assert.equal(entity.parent, null);
+        for (const bot of qa.bots()) assertBotFXHidden(bot);
+      }
+      const removedActors = qa.bots().map(bot => bot.mesh), removedEffects = qa.bots().flatMap(botFX);
+      qa.set({ noBots: true });
+      assert.equal(qa.bots().length, 0);
+      for (const entity of [...removedActors, ...removedEffects]) assert.equal(entity.parent, null, 'QA bot removal also releases actors and their native effects');
+      game.start();
+      assert.equal(sceneEntities().length, entityCount); assert.equal(app.root.findComponents('render').length, renderCount);
+      assert.equal(qa.controllers.size, 6);
     });
     await t.test('pause freezes pickup cooldown and reset restores all boxes and clears the HUD immediately', () => {
       race(); qa.set({ noBots: true });

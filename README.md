@@ -19,6 +19,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 - **Arcade driving:** manual throttle, braking, reverse, handbrake drift and drift boost
 - **Three items:** turbo boost, energy shield and tracking pulse
 - **Visible pickups:** translucent boxes show original 3D items; 25% show a mystery question mark. Pickups vanish immediately and respawn after eight racing seconds. The HUD displays a shaded projection of the same 3D model. [Details](docs/item-pickups.md)
+- **Tactical NPCs:** rivals collect real boxes, steer toward safe pickups, and choose when to boost, defend or pulse another kart. Held 3D items and use effects show their intentions. [Rules](docs/npc-tactics.md)
 - **Two chase cameras**, mouse orbit, recentering and temporary rear view
 - Pause/restart, sound effects, keyboard controls and on-screen touch controls
 - Optional session-only local GLB driver replacement, with no upload
