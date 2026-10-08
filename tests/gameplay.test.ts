@@ -4,20 +4,24 @@ import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import * as pc from 'playcanvas';
 import { parseLocalGLB, COURSE_FILES, RUNTIME_MODELS } from '../src/assets';
+import { itemImage, type ItemDisplay, type ItemKind } from '../src/item-models';
+import { resetPickup, setPickupDisplay } from '../src/item-pickups';
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
  * This validates engine integration; it does NOT claim GPU/browser visual QA. */
-test('native game integration preserves race, camera, items, menu and safety flows', async () => {
+test('native game integration preserves race, camera, items, menu and safety flows', async (t) => {
   const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error;
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
   class Element {
-    id: string; tagName = 'CANVAS'; width = 1280; height = 800; disabled = false; value: any = ''; textContent: any = ''; innerHTML = ''; style: any = {}; dataset: any = {}; attributes: any = {}; listeners: Record<string, Function[]> = {}; open = false;
+    id: string; tagName = 'CANVAS'; width = 1280; height = 800; disabled = false; hidden = false; alt = ''; value: any = ''; textContent: any = ''; innerHTML = ''; style: any = {}; dataset: any = {}; attributes: any = {}; listeners: Record<string, Function[]> = {}; open = false;
     classList = { add() {}, remove() {} };
     constructor(id: string) { this.id = id; }
     getContext() { return new Proxy({}, { get: () => () => {} }); }
     getBoundingClientRect() { return { left: 0, top: 0, width: this.width, height: this.height }; }
+    get src() { return this.attributes.src || ''; }
+    set src(value: string) { this.attributes.src = value; }
     setAttribute(name, value) { this.attributes[name] = value; }
     removeAttribute(name) { delete this.attributes[name]; }
     addEventListener(name, fn) { (this.listeners[name] ||= []).push(fn); }
@@ -94,6 +98,147 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
     const race = () => { game.start(); qa.step(3.3); assert.equal(game.getState().state, 'running'); };
+    const worldLayer = app.scene.layers.getLayerById(pc.LAYERID_WORLD)!;
+    const displays: ItemDisplay[] = ['boost', 'shield', 'pulse', 'mystery'];
+    const withRandom = <T>(random: () => number, action: () => T): T => {
+      const original = Math.random; Math.random = random;
+      try { return action(); } finally { Math.random = original; }
+    };
+    const assertBoxVisible = (box) => {
+      assert.equal(box.mesh.enabled, true);
+      assert.equal(box.cool, 0);
+      assert.deepEqual(Object.keys(box.models).sort(), [...displays].sort());
+      for (const kind of displays) {
+        const model = box.models[kind] as pc.Entity;
+        assert.equal(model.parent, box.mesh, `${kind} model belongs to the pickup parent`);
+        assert.equal(model.enabled, kind === box.display, `${kind} is enabled only when depicted`);
+        assert.ok(model.findComponents('render').length > 0, `${kind} has native geometry`);
+      }
+      for (const render of box.mesh.findComponents('render') as pc.RenderComponent[]) {
+        for (const mesh of render.meshInstances) {
+          assert.equal(worldLayer.meshInstances.includes(mesh), render.entity.enabled,
+            `${render.entity.name} matches native layer membership`);
+        }
+      }
+    };
+    const assertBoxHidden = (box) => {
+      assert.equal(box.mesh.enabled, false, 'pickup parent is disabled without waiting for draw');
+      const renders = box.mesh.findComponents('render') as pc.RenderComponent[];
+      assert.ok(renders.length > 2, 'assertions include glass, frame and enclosed model geometry');
+      for (const render of renders) {
+        assert.equal(render.entity.enabled, false, `${render.entity.name} is effectively disabled`);
+        for (const mesh of render.meshInstances) {
+          assert.equal(worldLayer.meshInstances.includes(mesh), false,
+            `${render.entity.name} is removed from the actual render layer immediately`);
+        }
+      }
+    };
+    const assertEmptyImage = () => {
+      assert.equal(element('itemImage').hidden, true);
+      assert.equal(element('itemImage').src, '');
+      assert.equal(Object.hasOwn(element('itemImage').attributes, 'src'), false, 'empty slot removes the previous image source');
+      assert.equal(element('itemImage').alt, '');
+      assert.equal(element('item').dataset.held, 'empty');
+      assert.equal(element('item').attributes['aria-label'], '等待道具');
+    };
+    const assertHeldImage = (kind: ItemKind) => {
+      assert.equal(element('itemImage').hidden, false);
+      assert.equal(element('itemImage').src, itemImage(kind), 'HUD uses the artwork for the awarded model');
+      assert.ok(element('itemImage').src.length > 0);
+      assert.match(element('itemImage').alt, /模型/);
+      assert.equal(element('item').dataset.held, kind);
+      assert.match(element('item').attributes['aria-label'], /^使用/);
+    };
+    await t.test('all native boxes have transparent front glass and one enclosed model', () => {
+      for (const box of qa.boxes()) {
+        assertBoxVisible(box);
+        const glass = box.mesh.findByName('Translucent pickup glass') as pc.Entity;
+        assert.ok(glass?.render);
+        const material = glass.render!.meshInstances[0].material as pc.StandardMaterial;
+        assert.equal(material.opacity, .16);
+        assert.equal(material.blendType, pc.BLEND_NORMAL);
+        assert.equal(material.depthWrite, false);
+        assert.equal(material.cull, pc.CULLFACE_BACK);
+        assert.equal(material.twoSidedLighting, false);
+      }
+      const box = qa.boxes()[0];
+      for (const display of displays) {
+        setPickupDisplay(box, display);
+        assertBoxVisible(box);
+      }
+      const html = readFileSync('index.html', 'utf8');
+      assert.match(html, /<img\b[^>]*id="itemImage"[^>]*\balt=""[^>]*\bhidden/);
+    });
+    await t.test('depicted and mystery rewards remove every native mesh before draw and update the HUD', () => {
+      race(); qa.set({ noBots: true }); assertEmptyImage();
+      const box = qa.boxes()[0], sources = new Set<string>();
+      const cases: [ItemDisplay, ItemKind, number][] = [
+        ['boost', 'boost', .9], ['shield', 'shield', 0], ['pulse', 'pulse', .1],
+        ['mystery', 'boost', 0], ['mystery', 'shield', .5], ['mystery', 'pulse', .99],
+      ];
+      for (const [display, reward, random] of cases) {
+        resetPickup(box); setPickupDisplay(box, display); assertBoxVisible(box);
+        qa.set({ pos: box.d, lane: box.lateral, speed: 0, held: null, boost: 0, shield: 0 });
+        withRandom(() => random, () => qa.update(0)); // No draw between collision and assertions.
+        assert.equal(game.getState().held, reward, `${display} awards ${reward}`);
+        assert.equal(box.cool, 8);
+        assertBoxHidden(box); assertHeldImage(reward); sources.add(element('itemImage').src);
+        qa.update(0);
+        assert.equal(game.getState().held, reward, 'another update cannot overwrite an occupied slot');
+        if (reward === 'boost') key('keydown', 'KeyE');
+        else element('item').click();
+        key('keyup', 'KeyE');
+        assert.equal(game.getState().held, null); assertEmptyImage();
+        qa.update(0);
+        assert.equal(game.getState().held, null, 'using the reward while still overlapping cannot claim again');
+        assert.equal(box.cool, 8); assertBoxHidden(box);
+      }
+      assert.equal(sources.size, 3, 'each usable item has a distinct model image');
+      // An externally updated inventory must also replace, rather than retain, its prior image.
+      qa.set({ pos: 0, held: 'shield' }); qa.update(0); assertHeldImage('shield');
+      qa.set({ held: 'pulse' }); qa.update(0); assertHeldImage('pulse');
+      qa.set({ held: null }); qa.update(0); assertEmptyImage();
+    });
+    await t.test('full inventory leaves the box intact and current bots do not collect pickups', () => {
+      race();
+      const box = qa.boxes()[0], bot = qa.bots()[0];
+      resetPickup(box); setPickupDisplay(box, 'shield');
+      qa.set({ pos: 0, lane: 0, speed: 0, held: null });
+      bot.total = box.d; bot.lateral = box.lateral; bot.speed = 0;
+      qa.update(0);
+      assertBoxVisible(box); assert.equal(game.getState().held, null);
+      qa.set({ noBots: true, pos: box.d + game.getState().length, lane: box.lateral, held: 'boost' });
+      qa.update(0);
+      assert.equal(game.getState().held, 'boost'); assertHeldImage('boost'); assertBoxVisible(box);
+      game.useItem(); qa.update(0);
+      assert.equal(game.getState().held, 'shield', 'pickup collision also works on later laps');
+      assertBoxHidden(box); assertHeldImage('shield');
+    });
+    await t.test('pause freezes pickup cooldown and reset restores all boxes and clears the HUD immediately', () => {
+      race(); qa.set({ noBots: true });
+      const box = qa.boxes()[0]; resetPickup(box); setPickupDisplay(box, 'boost');
+      qa.set({ pos: box.d, lane: box.lateral, speed: 0 }); qa.update(0);
+      assertHeldImage('boost'); assertBoxHidden(box);
+      game.pause();
+      const elapsed = game.getState().elapsed;
+      qa.step(9);
+      assert.equal(game.getState().elapsed, elapsed);
+      assert.equal(box.cool, 8); assert.equal(box.display, 'boost'); assertBoxHidden(box);
+      game.useItem(); assert.equal(game.getState().held, 'boost', 'paused item use is ignored'); assertHeldImage('boost');
+      game.pause(); qa.set({ pos: 0, lane: 0, speed: 0 });
+      qa.update(7.5); assert.equal(box.cool, .5); assertBoxHidden(box);
+      withRandom(() => 0, () => qa.update(.5));
+      assert.equal(box.display, 'mystery', 'respawn selects a fresh depicted reward'); assertBoxVisible(box);
+      assertHeldImage('boost');
+      game.useItem();
+      qa.set({ pos: box.d, lane: box.lateral, boost: 0 });
+      withRandom(() => .5, () => qa.update(0));
+      assert.equal(game.getState().held, 'shield'); assertBoxHidden(box); assertHeldImage('shield');
+      // Starting a race must restore parents now, even before the countdown draws a frame.
+      game.start();
+      assert.equal(game.getState().state, 'countdown'); assert.equal(game.getState().held, null); assertEmptyImage();
+      for (const pickup of qa.boxes()) { assert.ok(displays.includes(pickup.display)); assertBoxVisible(pickup); }
+    });
     race(); qa.step(1); assert.equal(game.getState().speed, 0);
     key('keydown', 'KeyW'); qa.step(3); assert.ok(game.getState().speed > 35); key('keyup', 'KeyW');
     qa.set({ held: 'shield', speed: 42, noBots: true }); key('keydown', 'Space'); qa.step(2); key('keyup', 'Space');

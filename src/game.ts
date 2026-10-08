@@ -1,4 +1,6 @@
 import * as pc from 'playcanvas';
+import { itemImage, type ItemKind } from './item-models';
+import { advancePickup, claimPickup, resetPickup } from './item-pickups';
 import { keyCode, driveInput, driveSpeed, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
 import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roster.js';
@@ -23,7 +25,7 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 const world = createCoastScene(app);
 const { camera, boxes, shield: shieldMesh, flames, particles } = world;
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
-  charge = 0, boost = 0, shield = 0, hit = 0, held: 'boost' | 'shield' | 'pulse' | null = null,
+  charge = 0, boost = 0, shield = 0, hit = 0, held: ItemKind | null = null,
   drifting = false, steerVis = 0, finishRank = 0, toastTime = 0, view = 0, muted = true,
   audio: AudioContext | null = null, clock = 0;
 type RacerEntity = pc.Entity & { userData?: { driverId: string } };
@@ -154,7 +156,7 @@ function racerFor(slot): RacerEntity {
   entity.userData = { driverId: slot.id }; app.root.addChild(entity); return entity;
 }
 function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:MAX*(.84+i*.018),slow:0,mesh:racerFor(slot)}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
-function reset(){if(!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=0;held=null;drifting=false;steerVis=0;finishRank=0;sparks=[];for(let k in keys)keys[k]=false;boxes.forEach(b=>b.cool=0);setupRacers();state='countdown';document.body.classList.remove('menu');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+function reset(){if(!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=0;held=null;drifting=false;steerVis=0;finishRank=0;sparks=[];for(let k in keys)keys[k]=false;boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';document.body.classList.remove('menu');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
 const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
@@ -213,7 +215,16 @@ function updateLookHint(){
   $('lookHint').textContent=state==='paused'?'已暂停 · 单击赛道继续并环顾 · P 继续':lookStatus==='locked'?'移动鼠标环顾 · Q 回正 · 右键回看 · Esc 暂停并释放鼠标':lookStatus==='drag'?'按住鼠标左键拖动环顾 · Q 回正 · Esc 暂停':'单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停';
 }
 mouseLook=bindMouseLook(canvas,document,{orbit,isActive:()=>state==='running'||state==='countdown',activate:()=>{if(state==='paused')pause()},onRelease:release,onStatus:status=>{lookStatus=status;updateLookHint()},canMove:()=>!keys.RearView});
-function updateHUD(){$('rank').innerHTML=(finishRank||rank())+' <small>/ 6</small>';$('lap').innerHTML=Math.max(1,Math.min(3,Math.floor(pos/LENGTH)+1))+' <small>/ 3</small>';$('timer').textContent=Math.floor(elapsed/60)+':'+String(Math.floor(elapsed%60)).padStart(2,'0');$('speed').textContent=(speed<-.1?'R ':'')+Math.round(Math.abs(speed)*3.6);$('charge').style.width=Math.min(100,charge/1.4*100)+'%';$('chargeLabel').textContent=boost>0?'涡轮加速中！':shield>0?'能量护盾保护中':charge>=.6?'松开 Shift，释放漂移加速':Math.abs(speed)<.1?'按住 W 油门起步':'左 Shift + A / D 手刹漂移';$('itemName').textContent=held?({boost:'ϟ 涡轮加速',shield:'◉ 能量护盾',pulse:'✦ 追踪脉冲'})[held]:'◇ 等待道具';$('itemHelp').textContent=held?'点击这里或按 E 使用':'驶过彩色能量方块'}
+let shownItem: ItemKind | null | undefined;
+function updateItemImage(){
+  if(shownItem===held)return;shownItem=held;const image=$('itemImage');
+  image.hidden=!held;
+  if(held){image.src=itemImage(held);image.alt=({boost:'涡轮加速模型',shield:'能量护盾模型',pulse:'追踪脉冲模型'})[held];}
+  else{image.removeAttribute('src');image.alt='';}
+  $('item').dataset.held=held||'empty';
+  $('item').setAttribute('aria-label',held?({boost:'使用涡轮加速',shield:'使用能量护盾',pulse:'使用追踪脉冲'})[held]:'等待道具');
+}
+function updateHUD(){updateItemImage();$('rank').innerHTML=(finishRank||rank())+' <small>/ 6</small>';$('lap').innerHTML=Math.max(1,Math.min(3,Math.floor(pos/LENGTH)+1))+' <small>/ 3</small>';$('timer').textContent=Math.floor(elapsed/60)+':'+String(Math.floor(elapsed%60)).padStart(2,'0');$('speed').textContent=(speed<-.1?'R ':'')+Math.round(Math.abs(speed)*3.6);$('charge').style.width=Math.min(100,charge/1.4*100)+'%';$('chargeLabel').textContent=boost>0?'涡轮加速中！':shield>0?'能量护盾保护中':charge>=.6?'松开 Shift，释放漂移加速':Math.abs(speed)<.1?'按住 W 油门起步':'左 Shift + A / D 手刹漂移';$('itemName').textContent=held?({boost:'ϟ 涡轮加速',shield:'◉ 能量护盾',pulse:'✦ 追踪脉冲'})[held]:'◇ 等待道具';$('itemHelp').textContent=held?'点击这里或按 E 使用':'撞箱拾取 · 问号为随机道具'}
 function finish(){finishRank=rank();state='finished';clearInputs();mouseLook.release();document.body.classList.add('menu');$('overlay').classList.remove('hidden');$('title').innerHTML=finishRank===1?'GOLDEN<br><em>FINISH.</em>':'ONE MORE<br><em>RIDE?</em>';$('subtitle').textContent=finishRank===1?'冠军冲线，漂亮的超越':'追逐日落，再快一点点';$('desc').textContent='日落海岸 · 三圈大奖赛';$('results').classList.remove('hidden');$('results').textContent='第 '+finishRank+' / 6 名 · '+elapsed.toFixed(2)+' 秒';$('startText').textContent='再来一场';updateDriverUI();tone(1000,.4)}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
@@ -225,7 +236,7 @@ let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>MAX*
 let limit=boost>0?MAX*1.34:MAX;if(Math.abs(lane)>6.3)limit*=.58;if(hit>0)limit*=.55;speed=driveSpeed(speed,input,dt,limit);lane+=lateralInput(steer,speed,MAX,drifting,dt)+curvature*speed*dt*.43;lane=clamp(lane,-6.75,6.75);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
 let previous=pos;pos+=speed*dt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
 for(let b of bots){b.slow=Math.max(0,b.slow-dt);b.total+=b.speed*(b.slow>0?.42:1)*dt;b.lateral=damp(b.lateral,Math.sin(b.total/51+b.phase)*4.5,1.6,dt);if(Math.abs(b.total-pos)<2.9&&Math.abs(b.lateral-lane)<1.85&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane+=lane>b.lateral?.55:-.55;tone(110,.1)}}
-for(let b of boxes){b.cool=Math.max(0,b.cool-dt);let dist=((b.d-pos)%LENGTH+LENGTH)%LENGTH;if((dist<1.8||dist>LENGTH-1.8)&&b.cool===0&&Math.abs(b.lateral-lane)<1.25&&!held){held=(['boost','shield','pulse'] as const)[Math.floor(Math.random()*3)];b.cool=8;tone(1200,.12);toast('获得道具 · E 使用')}}
+for(const b of boxes){advancePickup(b,dt);const dist=((b.d-pos)%LENGTH+LENGTH)%LENGTH;if((dist<1.8||dist>LENGTH-1.8)&&Math.abs(b.lateral-lane)<1.25){const reward=claimPickup(b,held!==null);if(reward){held=reward;tone(1200,.12);toast('获得道具 · E 使用')}}}
 if(pos>=LENGTH*3)finish();updateHUD()}
 
 /* NATIVE_DRAW */

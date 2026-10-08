@@ -18,6 +18,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 - **Three-lap races** against five AI opponents on a sunset coastal circuit, with ocean scenery, collisions, lap/rank tracking and a minimap
 - **Arcade driving:** manual throttle, braking, reverse, handbrake drift and drift boost
 - **Three items:** turbo boost, energy shield and tracking pulse
+- **Visible pickups:** translucent boxes show original 3D items; 25% show a mystery question mark. Pickups vanish immediately and respawn after eight racing seconds. The HUD displays a shaded projection of the same 3D model. [Details](docs/item-pickups.md)
 - **Two chase cameras**, mouse orbit, recentering and temporary rear view
 - Pause/restart, sound effects, keyboard controls and on-screen touch controls
 - Optional session-only local GLB driver replacement, with no upload

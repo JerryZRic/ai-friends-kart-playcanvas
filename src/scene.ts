@@ -1,6 +1,8 @@
 import * as pc from 'playcanvas';
 import { HALF, LENGTH, sample, scaled, degrees } from './track';
 import { instantiateRenderEntity, type DriverAsset } from './assets';
+import { createItemModel, type ItemDisplay } from './item-models';
+import { resetPickup, type PickupState } from './item-pickups';
 
 export const color = (hex: string) => new pc.Color().fromString(hex);
 export function material(hex: string, options: { emissive?: string; opacity?: number; metalness?: number; roughness?: number; unlit?: boolean } = {}) {
@@ -63,7 +65,7 @@ export function placeKart(entity: pc.Entity, distance: number, lateral: number, 
   entity.setRotation(yaw);
   return s;
 }
-export interface ItemBox { d: number; lateral: number; mesh: pc.Entity; cool: number; base: number }
+export interface ItemBox extends PickupState { d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity> }
 export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 
 export function createCoastScene(app: pc.Application) {
@@ -173,9 +175,10 @@ export function createCoastScene(app: pc.Application) {
   grid.entity(app, 'Checkered starting line', material('#fffcde'), root);
 
   const itemMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.BoxGeometry({ halfExtents: new pc.Vec3(.625, .625, .625) }));
-  const itemMat = material('#aa76e4', { emissive: '#663783', metalness: .18, roughness: .25 });
-  const coreMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: .35, latitudeBands: 4, longitudeBands: 4 }));
-  const coreMat = material('#ffffe0', { unlit: true });
+  const itemMat = material('#b9e7f8', { opacity: .16, metalness: .05, roughness: .2 });
+  // Only the front shell overlays the opaque contents. No transparent depth writes,
+  // double-sided blending or custom shaders that can hide the enclosed model.
+  itemMat.cull = pc.CULLFACE_BACK; itemMat.twoSidedLighting = false; itemMat.update();
   const edges = new MeshBuilder();
   const edgeMaterial = material('#fff6ba', { unlit: true });
   // Twelve thin native boxes draw a crisp luminous outline, batched into one mesh.
@@ -189,10 +192,13 @@ export function createCoastScene(app: pc.Application) {
   for (let j = 0; j < 15; j++) for (const lateral of [-4.2, 0, 4.2]) {
     const d = 45 + j * LENGTH / 15, p = sample(d, lateral).p; p.y += 1.25;
     const entity = new pc.Entity('Energy item box'); root.addChild(entity); entity.setPosition(p);
-    meshEntity('Purple cube', itemMesh, itemMat, entity);
+    meshEntity('Translucent pickup glass', itemMesh, itemMat, entity);
     meshEntity('Luminous edges', edgeMesh, edgeMaterial, entity);
-    meshEntity('Energy core', coreMesh, coreMat, entity);
-    boxes.push({ d, lateral, mesh: entity, cool: 0, base: p.y });
+    const models = Object.fromEntries((['boost', 'shield', 'pulse', 'mystery'] as ItemDisplay[]).map(kind => {
+      const model = createItemModel(app, kind); entity.addChild(model); return [kind, model];
+    })) as Record<ItemDisplay, pc.Entity>;
+    const box: ItemBox = { d, lateral, mesh: entity, cool: 0, base: p.y, display: 'mystery', models };
+    resetPickup(box); boxes.push(box);
   }
   const shield = meshEntity('Energy shield', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 2.4, latitudeBands: 16, longitudeBands: 24 })), material('#84e8fa', { opacity: .18, roughness: .1, metalness: .2, emissive: '#123f45' }), root);
   shield.enabled = false;
