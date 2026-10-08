@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {newWaterState,stepWaterMotion,WATER_HANDLING}from'../src/waterpark-motion';
+import{resolveMap}from'../src/map-profiles';
+test('maps explicitly select independent vehicle identities and safe default',()=>{assert.equal(resolveMap('coast').vehicle,'kart');assert.equal(resolveMap('waterpark').vehicle,'water-mount');assert.equal(resolveMap('bad').id,'coast');});
+test('water sample completes once, remains stopped, and resets deterministically',()=>{let s=newWaterState();for(let i=0;i<1800&&!s.finished;i++)s=stepWaterMotion(s,{throttle:true,brake:false,steer:0},1/60);assert.equal(s.finished,true);assert.equal(s.distance,285);assert.ok(s.elapsed>14&&s.elapsed<21);assert.equal(s.speed,0);assert.deepEqual(stepWaterMotion(s,{throttle:true,brake:false,steer:1},1),s);assert.deepEqual(newWaterState(),newWaterState());});
+test('water steering has inertia, brakes take priority and banks stay bounded',()=>{let s=newWaterState();for(let i=0;i<400;i++)s=stepWaterMotion(s,{throttle:true,brake:false,steer:1},1/60);assert.ok(Math.abs(s.lane)<=WATER_HANDLING.bankLimit);const speed=s.speed;s=stepWaterMotion(s,{throttle:true,brake:true,steer:0},1/60);assert.ok(s.speed<speed);assert.ok(Number.isFinite(stepWaterMotion(s,{throttle:false,brake:false,steer:NaN},NaN).lane));});

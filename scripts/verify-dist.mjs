@@ -39,7 +39,7 @@ function scanContent(path, bytes) {
   if (path.endsWith('.glb.gz')) bytes = gunzipSync(bytes, { maxOutputLength: 32 * 1024 * 1024 });
   for (const pattern of privatePatterns) assert.ok(!pattern.test(bytes.toString('utf8')), `Private data pattern in ${path}: ${pattern.source}`);
 }
-const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
+const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
 const allowedRoots = ['src/', 'tests/', 'scripts/', 'docs/', 'models/', '.github/', 'public/'];
 const expectedSource = [...rootAllowlist].filter(existsSync);
 for (const root of allowedRoots) for (const path of inventory(root)) {
@@ -69,7 +69,7 @@ check('source ZIP has safe exact members, current content and deterministic comp
 
 check('dist contains only runtime bundle/maps, approved public assets and legal/source files', () => {
   const publicFiles = inventory('public');
-  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
+  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
   for (const path of files) {
     assert.ok(allowed.has(path) || /^assets\/[A-Za-z0-9_-]+-[A-Za-z0-9_-]+\.(?:js|css)(?:\.map)?$/.test(path), `Unexpected distribution path: ${path}`);
     if (path !== 'source.zip') scanContent(path, read('dist/' + path));

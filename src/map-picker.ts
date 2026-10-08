@@ -1,0 +1,4 @@
+import {MAP_PROFILES} from './map-profiles';
+// Loaded alongside the original game, without changing its circuit, physics or loader.
+const panel=document.querySelector('.panel');
+if(panel){const section=document.createElement('nav');section.setAttribute('aria-label','地图选择');section.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:14px 0';for(const profile of Object.values(MAP_PROFILES)){const link=document.createElement('a');link.href=profile.entry;link.textContent=`${profile.label} · ${profile.vehicle==='kart'?'卡丁车':'坐骑样段'}`;link.style.cssText='font:600 11px system-ui;color:#e5ffff;background:#173d4bcc;border:1px solid #b8dce955;padding:9px 12px;border-radius:6px;text-decoration:none';if(profile.id==='coast')link.setAttribute('aria-current','page');section.append(link);}panel.insertBefore(section,panel.querySelector('p'));}
