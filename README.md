@@ -1,23 +1,81 @@
-# AI Friends Kart · PlayCanvas edition
+# AI Friends Kart · PlayCanvas
 
-A separate **PlayCanvas Engine + TypeScript + Vite** HTML migration of [AI Friends Kart](https://github.com/JerryZRic/ai-friends-kart-web). The old game and stable Neon Kart project are unchanged. Windows packaging is deferred.
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [粵語](README.yue.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-[简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [粵語](README.yue.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
+[![Engine: PlayCanvas](https://img.shields.io/badge/engine-PlayCanvas-orange)](https://playcanvas.com/)
+[![Platforms: Web / Windows](https://img.shields.io/badge/platforms-Web%20%2F%20Windows-blue)](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)
+[![Code: AGPL-3.0-only](https://img.shields.io/badge/code-AGPL--3.0--only-blue)](LICENSE)
 
-## Play
+A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.
 
-[Open the GitHub Pages demo](https://jerryzric.github.io/ai-friends-kart-playcanvas/)
+**[Play in your browser](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Download the Windows playtest](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**
 
-Six rigged characters load automatically: WHALE, GEMINI, GPT, CLAUDE, GROK and GLM. Choose any driver and race against the other five around the original sunset coast circuit. Three laps, drift boosts, three item types, collisions, reverse, pause, restart, two chase cameras, full mouse orbit, rear view, minimap, sound and touch controls are retained. Optional session-only local GLB replacement remains supported.
+> The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
-The runtime UI is Simplified Chinese with English branding, as in the previous edition. These six-language README files are documentation, not a runtime language selector.
+## Features
 
-## Build and run
+- **Six selectable drivers:** WHALE, GEMINI, GPT, CLAUDE, GROK and GLM, with bundled rigged character models
+- **Three-lap races** against five AI opponents on a sunset coastal circuit, with ocean scenery, collisions, lap/rank tracking and a minimap
+- **Arcade driving:** manual throttle, braking, reverse, handbrake drift and drift boost
+- **Three items:** turbo boost, energy shield and tracking pulse
+- **Two chase cameras**, mouse orbit, recentering and temporary rear view
+- Pause/restart, sound effects, keyboard controls and on-screen touch controls
+- Optional session-only local GLB driver replacement, with no upload
 
-Use Node.js 22.12 or later:
+## Play in a browser
+
+Open the **[GitHub Pages game](https://jerryzric.github.io/ai-friends-kart-playcanvas/)** in a browser with **WebGL2** enabled. Wait for the characters to load, choose a driver and start the race.
+
+The first character download is approximately **51.6 MB** in total. At most two models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models are explicitly labeled as original-driver fallbacks.
+
+No ChatGPT login, model-service account or runtime CDN is required. The game and character assets are served from the same distribution.
+
+## Windows playtest
+
+**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** This is a prerelease playtest, not a production release.
+
+1. Download [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007).
+2. Extract the **entire ZIP** into a folder.
+3. Run **AI Friends Kart.exe**. Keep the adjacent DLLs, `resources` and `locales` folders together.
+4. Press **F11** to toggle fullscreen.
+
+All six characters are bundled for offline play. Node.js, installation and administrator privileges are not required. Do not disable Windows security protections to run the game.
+
+The archive includes `Game-Corresponding-Source.zip`, `Desktop-Source` with the desktop wrapper/build instructions, and license notices. Desktop packaging is supplied in that release; this repository's npm scripts build the web game.
+
+## Controls
+
+| Input | Action |
+| --- | --- |
+| `W` / `↑` | Throttle; release to coast |
+| `A` / `←`, `D` / `→` | Steer left/right |
+| `S` / `↓` | Brake, then reverse while held |
+| `Space` | Brake without reversing |
+| `Left Shift` + steering | Drift; release Shift for a charged drift boost |
+| `E` | Use the collected item |
+| `Z` / `C` | Switch chase camera |
+| Hold right mouse button | Temporary rear view |
+| Click the track, then move the mouse | Orbit the camera |
+| `Q` | Recenter the camera |
+| `Esc` | Pause and release the pointer |
+| `P` / pause button | Pause/resume |
+
+If pointer capture is unavailable, hold the left mouse button and drag to look around. Touch buttons provide throttle, steering, reverse, brake and drift; tap the item panel to use an item. Menu buttons support native keyboard operation.
+
+## Development and build
+
+Requires **Node.js 22.12 or later** and npm.
 
 ```sh
+git clone https://github.com/JerryZRic/ai-friends-kart-playcanvas.git
+cd ai-friends-kart-playcanvas
 npm ci
+npm run dev
+```
+
+Open the HTTP address printed by Vite. To check and build a production distribution:
+
+```sh
 npm run check
 npm test
 npm run build
@@ -25,35 +83,45 @@ npm run test:dist
 npm run preview
 ```
 
-Open the preview HTTP address. For development, `npm run dev`. Do not open the HTML as `file://`. Vite uses relative paths; the complete `dist/` can be served under a GitHub Pages repository subpath or any ordinary HTTP(S) static server. All runtime code and models are local to the distribution: no ChatGPT login, runtime CDN or model-service account is needed.
+Serve the complete **`dist/`** over HTTP(S); do not open `index.html` as `file://`. Relative paths support both a domain root and a repository subdirectory. Keep the license notices, `source.html` and `source.zip` alongside the game.
 
-The full repository contains six final `.glb.gz` runtime files in `public/assets/drivers/` (51.6 MB total transfer). Each compressed and decoded identity is checked against [docs/runtime-models.json](docs/runtime-models.json). At most two characters download/parse concurrently. The UI shows actual download bytes, separate decompression/preparation stages, bounded exponential retry countdowns, and manual retry of failed files while retaining successful models. Missing models are labeled original-driver fallbacks, never claimed ready.
+A full clone includes the six `.glb.gz` files in `public/assets/drivers/`. The smaller deployed `source.zip` includes code, tests, build files and original editable assets but omits these six character archives. To restore them after extracting that source package:
 
-## Controls
+```sh
+npm ci
+npm run models:fetch
+npm run build
+```
 
-- W / ↑: throttle; S / ↓: brake then reverse; Space: brake
-- A / D or ← / →: steer; Left Shift + steer: drift; release to boost
-- E: use item; Z / C: camera; right mouse: rear view
-- Click track: mouse look; Q: recenter; Esc: pause/release; P: pause/resume
-- Touch buttons provide throttle, steering, reverse, brake and drift; tap item to use
-- Menu buttons retain native keyboard operation
+The fetch script uses fixed public paths and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json); it refuses to overwrite mismatched local files. Without character files, the code can still build and uses explicitly labeled original-driver fallbacks.
 
-## Local replacements
+### GitHub Pages
 
-Select a slot, choose a compatible GLB, or multi-select files containing exactly one slot-name token. Imports are at most 32 MiB each, two at a time, memory-only and never uploaded or persisted. Newer selections supersede older pending work. Failure/cancel preserves the previous driver; Restore default returns to the bundled character or explicit fallback. See [the rig/security contract](docs/local-import.md).
+The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) is **manual**. In repository **Settings → Pages**, select **GitHub Actions**. Run the workflow on `main` with **Publish** checked. It checks, tests and builds the selected commit before publishing. A normal push does not deploy the game.
 
-## Rights and corresponding source
+### Project layout
 
-Code, original UI/circuit/kart/props and original editable sources are **AGPL-3.0-only**. Read [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain MIT licenses; no Three.js runtime is bundled.
+- `src/`: PlayCanvas scene, track, race logic, input, camera and character loading
+- `public/assets/`: bundled runtime assets, including the six compressed drivers
+- `models/`: editable sources for the original kart and props
+- `tests/`: logic, loading, UI and engine-level checks
+- `scripts/`: source packaging, runtime-model fetching and distribution checks
+- `docs/`: model manifest, local-import contract and technical verification notes
 
-The six character GLBs have **separate rights**. The owner identifies Tripo Free/non-commercial restrictions; exact redistribution terms have not been independently established. This repository does not grant new model rights, commercial permission or a Creative Commons license. AGPL does not relicense characters. Read [MODEL-NOTICE.txt](MODEL-NOTICE.txt). There are no ads, payments or commercial model sales.
+## Local driver replacements
 
-Only already-public sanitized final character runtime files are reused. No character Blender projects, high-poly originals, private references, work exports or account metadata are included. The original already-public kart/prop Blender sources are retained for AGPL corresponding-source completeness.
+Select a driver slot and import a compatible GLB, or multi-select filenames containing exactly one slot-name token each. Files are limited to **32 MiB each**, with at most two processed concurrently. Imports stay in page memory: they are neither uploaded nor persisted. Failure/cancellation preserves the previous driver; **Restore default** restores the bundled character or an explicit fallback.
 
-The deployed `source.zip` contains complete public code, tests, build files, pinned metadata, original assets/editable sources and notices, excluding the six large character archives. After extracting source.zip, run `npm ci`, `npm run models:fetch`, and `npm run build`. The fetch script downloads only fixed public manifest paths and verifies hashes; it will not overwrite mismatched local files. Without those models, code still builds and reports explicit original-driver fallbacks.
+See [the rig and import contract](docs/local-import.md) for accepted models and validation rules.
 
-## Verification and limits
+## Verification
 
-See [migration parity and test evidence](docs/MIGRATION-PARITY.md). Tests distinguish engine-independent logic, real PlayCanvas CPU/null-device rig loading, UI integration mocks and static distribution checks from GPU/browser gameplay. Headless asset tests substitute texture decoding only; they do not certify appearance, pointer-lock support or GPU performance. The available cloud browser has WebGL disabled, so actual GPU gameplay must be checked in a WebGL2-capable browser.
+Automated checks cover engine-independent race/input logic, real PlayCanvas CPU/null-device rig loading, mocked UI integration and static distribution checks. They do not establish GPU appearance, native pointer-lock behavior or performance. See [test coverage and limits](docs/MIGRATION-PARITY.md) and [the ocean shader regression notes](docs/WATER-REGRESSION.md).
 
-GitHub Pages deployment is manual: choose **Build and publish PlayCanvas game**, Run workflow, check **Publish**, and run on main. Settings → Pages must use GitHub Actions. The workflow checks, tests and builds the exact selected commit before publication.
+## License and model rights
+
+**Code and original game assets:** AGPL-3.0-only, including the original UI, circuit, kart, props and editable sources. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain their MIT licenses.
+
+**Six character models:** separate rights apply. The project owner identifies them as Tripo Free outputs with non-commercial restrictions; the exact redistribution terms have not been independently established. Inclusion here grants no new model license, Creative Commons license or commercial permission. AGPL does not relicense the characters. Before reuse or redistribution, establish the applicable rights and obtain any required permissions. See [MODEL-NOTICE.txt](MODEL-NOTICE.txt).
+
+The project contains final character runtime files, not character Blender projects or high-poly authoring sources. Original kart/prop editable files remain included as corresponding source. The demo has no ads, payments or commercial model sales.
