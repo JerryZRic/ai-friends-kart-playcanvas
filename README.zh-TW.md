@@ -87,7 +87,7 @@ npm run preview
 
 請透過 HTTP(S) 提供完整的 **`dist/`** 目錄，不要以 `file://` 直接開啟 `index.html`。相對路徑同時支援網域根目錄與儲存庫子目錄。請將授權聲明、`source.html` 和 `source.zip` 與遊戲一併保留。
 
-完整複製儲存庫時，會包含 `public/assets/drivers/` 中的六個 `.glb.gz` 檔案。部署時提供的精簡版 `source.zip` 包含程式碼、測試、建置檔案與原創可編輯資產，但不含這六個角色壓縮檔。解壓縮該原始碼套件後，可用以下方式還原角色檔案：
+完整複製儲存庫時，會包含 `public/assets/drivers/` 中的六個駕駛模型壓縮檔，以及 `public/assets/portraits/` 中的六個獨立站姿肖像壓縮檔。部署時提供的精簡版 `source.zip` 包含程式碼、測試、兩份校驗清單、建置檔案與原創可編輯資產，但不含這兩組角色壓縮檔。解壓縮後，可用以下方式還原：
 
 ```sh
 npm ci
@@ -95,7 +95,7 @@ npm run models:fetch
 npm run build
 ```
 
-下載腳本使用固定的公開路徑，並驗證[執行時模型清單](docs/runtime-models.json)中記錄的壓縮檔與解壓後雜湊值；若本機檔案不符，腳本會拒絕覆寫。即使沒有角色檔案，程式碼仍可建置，並使用明確標示的原創車手替代模型。
+下載腳本使用獨立 `/dev/` 預覽的固定公開路徑，並驗證[駕駛模型清單](docs/runtime-models.json)及[站姿肖像清單](docs/portrait-models.json)中的壓縮檔與解壓後雜湊值；若本機檔案不符，腳本會拒絕覆寫。保留不變的穩定版根目錄不含新肖像。程式碼仍可單獨建置；完整畫面需還原兩組模型。
 
 ### GitHub Pages
 
@@ -126,6 +126,6 @@ npm run build
 
 **程式碼與原創遊戲資產：** 採 AGPL-3.0-only 授權，包括原創介面、賽道、卡丁車、場景物件及可編輯原始檔。詳見 [LICENSE](LICENSE)、[NOTICE](NOTICE) 和 [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。PlayCanvas 與 fflate 保留各自的 MIT 授權。
 
-**六個角色模型：** 適用獨立的權利條件。專案擁有者表示，這些模型是 Tripo Free 方案產出，受非商業使用限制；確切的再散布條款尚未經獨立確認。本專案收錄模型不代表授予新的模型授權、Creative Commons 授權或商業使用許可。AGPL 不會為角色模型重新授權。重複使用或再散布之前，請確認適用的權利條件，並取得所有必要許可。詳見 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
+**六個角色的駕駛與獨立站姿肖像模型：** 適用獨立的權利條件。專案擁有者表示，這些模型是 Tripo Free 方案產出，受非商業使用限制；確切的再散布條款尚未經獨立確認。本專案收錄模型不代表授予新的模型授權、Creative Commons 授權或商業使用許可。AGPL 不會為角色模型重新授權。重複使用或再散布之前，請確認適用的權利條件，並取得所有必要許可。詳見 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
 
 本專案包含可供遊戲執行的最終角色檔案，不含角色的 Blender 專案或高多邊形製作原始檔。原創卡丁車／場景物件的可編輯檔案仍作為對應原始碼一併提供。本展示遊戲沒有廣告、付費功能或商業模型銷售。

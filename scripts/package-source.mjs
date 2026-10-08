@@ -9,7 +9,7 @@ const files = [...rootFiles];
 function visit(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = `${dir}/${entry.name}`;
-    if (path === 'public/assets/drivers') continue;
+    if (path === 'public/assets/drivers' || path === 'public/assets/portraits') continue;
     if (entry.isSymbolicLink()) throw new Error(`Symlink is not source: ${path}`);
     if (entry.isDirectory()) visit(path);
     else if (entry.isFile()) files.push(path);
@@ -29,4 +29,4 @@ for (const page of ['index.html', 'coast.html', 'waterpark.html']) {
   const html = readFileSync(`${outputDir}/${page}`, 'utf8');
   if (!html.includes('source-license')) writeFileSync(`${outputDir}/${page}`, html.replace('</body>', '<a id="source-license" href="source.html" style="position:fixed;right:12px;bottom:6px;z-index:20;color:#dbe8e8;background:#102b37d9;padding:3px 7px;font:10px/1.4 Arial" aria-label="Source code and license / 源码与许可证">Source / License · 源码与许可证</a></body>'));
 }
-console.log(`Packaged ${Object.keys(archive).length} public source files; six character archives served separately.`);
+console.log(`Packaged ${Object.keys(archive).length} public source files; runtime drivers and standing portraits served separately.`);

@@ -9,7 +9,7 @@ are unchanged. See [the isolated deployment procedure](dev-preview.md).
 - Free mode: choose Sunset Coast (kart) or Sunny Waterpark (water mount), then
   confirm the rotating 3D map preview and choose one of the same six distributed characters
 - Start: real resource loading, then countdown and three laps against five NPCs
-- Pause: resume, restart or return to the menu
+- Pause: resume, restart, change map or return to the menu
 - Results: actual finishing order/times where available, replay, change character,
   change map or return to the main menu; unfinished competitors are identified
 - Exit: a resting page with a return button and instructions to close the tab;
@@ -20,9 +20,13 @@ and lighting. A slow orbit and radial dolly move the camera; the cover changes m
 behind a smooth dark fade every 30 seconds. The map picker stays on the selected
 track. No character models are downloaded for either track preview.
 
-Character selection shows the selected distributed rigged GLB, loaded on demand,
-with drag and arrow-key rotation. Stale selections are cancelled and a bounded
-session cache avoids repeated downloads. Attribute differences and the existing
+Character selection shows the original standing figure from before the driving-rig
+edits, with drag and arrow-key rotation. These six web-optimized portrait assets
+preserve their original textures and poses, including the approved center Gemini.
+Only the selected portrait downloads (about 6.7–7.3 MiB); static figures render
+again only when needed. Stale selections are cancelled and a bounded two-entry,
+36 MiB decoded-byte cache avoids repeated downloads. The seated racing rigs remain
+unchanged. See [portrait provenance and validation](PORTRAIT-ASSETS.md). Attribute differences and the existing
 race links remain unchanged. The six symbols are selection buttons, not model
 previews. Story content and background music are not included.
 
@@ -50,6 +54,35 @@ APIs. Opponents must collect a real available box before using its item. Pickup
 claims are resolved by crossing time rather than always giving the player first
 choice. There are no invisible random inventory grants.
 
+## One shared race interface
+
+Coast and Waterpark are map/vehicle adapters within the same free-mode game.
+Their scene construction and physical handling differ; the player-facing race
+interface is implemented once:
+
+- `race-hud.ts` mounts one canonical HUD, touch controls and pause dialog
+- `race-ui.css` is the single race stylesheet used by both entry pages
+- `race-shell.ts` renders rank, laps, timer, signed speed, charge, held-item
+  models, toasts, countdown, pause/resume and results. It also owns race navigation,
+  geometry-fitted minimaps and optional tone audio
+- `race-controls.ts` handles keyboard/touch sources, focus, rear view, pointer
+  lock, interruption and disposal for both maps
+- `race-camera.ts` provides the same chase-camera geometry and orbit behavior
+- The same settings/performance popover is mounted in each race toolbar;
+  water-only refraction controls appear only where supported
+
+W/Up is throttle; S/Down brakes then reverses; Space brakes; A/D or arrows steer;
+Shift with steering charges a slide boost. E uses the collected item, Z/C changes
+camera, Q recenters, right mouse looks back, and Esc/P pauses. Water retains its
+own inertia and damping. Release Shift to spend a charged slide; braking,
+reversing and interrupted input cannot accidentally spend a stale charge.
+
+Both races show results at the player's finish, using the map's actual ordering
+and interpolated finish time. Competitors who have not crossed are shown with
+their progress rather than invented finish times. Replay clears old results and
+effects before a new countdown. See [the race-shell contract](race-shell.md) for
+the adapter API and ownership boundaries.
+
 ## Water circuit
 
 The full circuit is a closed stadium: two 92 m straights and two radius-76 m
@@ -74,6 +107,9 @@ storage falls back safely. Settings apply when entering the next race.
 - Detailed: pixel-ratio cap 1.7, higher-resolution shadows
 - Optional water refraction; the water performance panel retains its A/B switch
   and locks it during a capture
+- Optional race sound effects default to muted and use a separate local
+  preference shared across maps. This does not add background music or change
+  the versioned quality/refraction settings schema
 
 Reflections/refraction capture static scenery rather than rendering six riders
 again. Refraction is bounded color/depth rendering, not a new fluid simulation.
@@ -83,6 +119,12 @@ those earlier reports must not be treated as six-rider circuit measurements.
 ## Validation boundaries
 
 Run `npm run check`, `npm test`, `npm run build` and `npm run test:dist`.
+`race-shell.test.ts` checks both maps' shared HUD, image caching, pause/resume,
+replay, result formatting, navigation, minimap bounds, toast expiration and
+blocked storage/audio. `race-hud.test.ts` checks common markup and unique IDs;
+`shared-race-architecture.test.ts` prevents entrypoints from bypassing the shared
+shell, controls and camera. Input/camera and real-entry integration tests cover
+interruption, native menu controls and return-to-race behavior.
 CPU integration uses actual PlayCanvas meshes, rigs and race modules on a
 NullGraphicsDevice. DOM/network fixtures do not establish GPU shader output,
 framebuffer completeness, appearance or hardware performance. Target-device

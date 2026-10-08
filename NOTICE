@@ -33,7 +33,8 @@ https://github.com/JerryZRic/ai-friends-kart-web
 
 The included kart-r12-chassis.glb derives only from the original kart, without
 its baked driver, plus a steering pivot. The six character GLBs under
-assets/drivers/ are third-party models expressly excluded from the AGPL grant.
+assets/drivers/ and their six standing-portrait derivatives under assets/portraits/
+are third-party character assets expressly excluded from the AGPL grant.
 They are separately supplied for this non-commercial demo under their own
 applicable terms. See MODEL-NOTICE.txt; no new or broader model rights are granted.
 

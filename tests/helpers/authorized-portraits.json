@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "description": "Six original standing-character portraits, web-optimized before deterministic lossless gzip compression. Separate from seated driving rigs. Character rights are outside the AGPL game license; non-commercial demonstration only. See MODEL-NOTICE.txt.",
+  "assets": [
+    {
+      "id": "whale",
+      "path": "assets/portraits/whale-portrait.glb.gz",
+      "bytes": 7472158,
+      "sha256": "f908ba91e74c71306d8e1b384c39e403d3641f6b370a576c7ef44e348523503f",
+      "decodedBytes": 13053096,
+      "decodedSha256": "ab485dc88b75b47a685dc8c6dcf5290270a2e55f8946352225682d174ca4c644"
+    },
+    {
+      "id": "gemini",
+      "path": "assets/portraits/gemini-portrait.glb.gz",
+      "bytes": 7575291,
+      "sha256": "0fee5cd161073e239632d1d5bd518a35c6403b62e6b4ec7c520a1e6a7549dc75",
+      "decodedBytes": 12666284,
+      "decodedSha256": "9409254f5e8afd484206308cf912e842355b1453196ab7ce27156f50dc7b77b3"
+    },
+    {
+      "id": "gpt",
+      "path": "assets/portraits/gpt-portrait.glb.gz",
+      "bytes": 7029876,
+      "sha256": "22398f4092835381797263f928f56abd6bd067558d0b4cb0f481c0b10b8260e3",
+      "decodedBytes": 12488804,
+      "decodedSha256": "0760a5f52cffdb08704ab4b27c71c4a7d92085d8137cd172db433404cf6d082e"
+    },
+    {
+      "id": "claude",
+      "path": "assets/portraits/claude-portrait.glb.gz",
+      "bytes": 7561969,
+      "sha256": "793c6f05a4da86c8b740d4a0954d9072dc6c4bb4264b9f9c76b9b882d1281473",
+      "decodedBytes": 12901164,
+      "decodedSha256": "5d3d7b050e46a7d3d12436e5c92523299a3e00287b03c34101687b1ae00efbc2"
+    },
+    {
+      "id": "grok",
+      "path": "assets/portraits/grok-portrait.glb.gz",
+      "bytes": 7495140,
+      "sha256": "0088fabe28d9e2b22d01f1b77c07b097bf0bb2d4582f8b9c4f99cf3672728464",
+      "decodedBytes": 12972692,
+      "decodedSha256": "326d9a0df1051f95fa4382c158443019f39a22f7319fe696723de5ca48844847"
+    },
+    {
+      "id": "glm",
+      "path": "assets/portraits/glm-portrait.glb.gz",
+      "bytes": 7431563,
+      "sha256": "3c180652b59ace41d6db24a7c7405ce247ec27976ce3d2e6a879e61263efed1d",
+      "decodedBytes": 13063704,
+      "decodedSha256": "2155a920eb35afe7340b26ea8af030fbe77003f742d4980b9251513b8f1bebfb"
+    }
+  ]
+}

@@ -91,7 +91,7 @@ npm run preview
 
 Serve the complete **`dist/`** over HTTP(S); do not open `index.html` as `file://`. Relative paths support both a domain root and a repository subdirectory. Keep the license notices, `source.html` and `source.zip` alongside the game.
 
-A full clone includes the six `.glb.gz` files in `public/assets/drivers/`. The smaller deployed `source.zip` includes code, tests, build files and original editable assets but omits these six character archives. To restore them after extracting that source package:
+A full clone includes six driving-model archives in `public/assets/drivers/` and six separate standing-portrait archives in `public/assets/portraits/`. The smaller deployed `source.zip` includes code, tests, both checksum manifests, build files and original editable assets but omits both sets of character archives. To restore them after extracting that source package:
 
 ```sh
 npm ci
@@ -99,7 +99,7 @@ npm run models:fetch
 npm run build
 ```
 
-The fetch script uses fixed public paths and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json); it refuses to overwrite mismatched local files. Without character files, the code can still build and uses explicitly labeled original-driver fallbacks.
+The fetch script uses fixed public paths under this isolated `/dev/` preview and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json) and [the portrait manifest](docs/portrait-models.json); it refuses to overwrite mismatched local files. The preserved stable root does not contain the new portraits. Code builds without these archives; restore both sets for the complete visuals.
 
 ### GitHub Pages
 
@@ -128,6 +128,6 @@ Automated checks cover engine-independent race/input logic, real PlayCanvas CPU/
 
 **Code and original game assets:** AGPL-3.0-only, including the original UI, circuit, kart, props and editable sources. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain their MIT licenses.
 
-**Six character models:** separate rights apply. The project owner identifies them as Tripo Free outputs with non-commercial restrictions; the exact redistribution terms have not been independently established. Inclusion here grants no new model license, Creative Commons license or commercial permission. AGPL does not relicense the characters. Before reuse or redistribution, establish the applicable rights and obtain any required permissions. See [MODEL-NOTICE.txt](MODEL-NOTICE.txt).
+**Six characters, including driving models and standing portraits:** separate rights apply. The project owner identifies them as Tripo Free outputs with non-commercial restrictions; the exact redistribution terms have not been independently established. Inclusion here grants no new model license, Creative Commons license or commercial permission. AGPL does not relicense the characters. Before reuse or redistribution, establish the applicable rights and obtain any required permissions. See [MODEL-NOTICE.txt](MODEL-NOTICE.txt).
 
 The project contains final character runtime files, not character Blender projects or high-poly authoring sources. Original kart/prop editable files remain included as corresponding source. The demo has no ads, payments or commercial model sales.

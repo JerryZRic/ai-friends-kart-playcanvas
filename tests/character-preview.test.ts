@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
-import { parseLocalGLB, disposeDriverAsset, RUNTIME_MODELS, type DriverAsset } from '../src/assets';
-import { createPreviewBufferCache, loadCharacterPreviewBuffer, createCharacterPreviewModel, createCharacterPreviewSession, characterPreviewCamera, type CharacterPreviewModel } from '../src/character-preview';
+import { parseLocalGLB, disposeDriverAsset, type DriverAsset } from '../src/assets';
+import { PORTRAIT_MODELS, createPreviewBufferCache, loadCharacterPreviewBuffer, createCharacterPreviewModel, createCharacterPreviewSession, characterPreviewCamera, type CharacterPreviewModel } from '../src/character-preview';
 
-/** Native skinning, animation and bounds checks. Image decoding uses a 1px
+/** Original standing mesh ownership and bounds checks. Image decoding uses a 1px
  * texture on NullGraphicsDevice; these checks make no browser-rendering claim. */
 function headlessApp() {
   const canvas = {id: 'preview-test', width: 1, height: 1, addEventListener() {}, removeEventListener() {}, getBoundingClientRect() { return {left: 0, top: 0, width: 1, height: 1}; }} as any;
@@ -40,29 +40,31 @@ test('preview downloads only the selected manifest entry, verifies it and reuses
   const cache = createPreviewBufferCache(), requests: string[] = [], signal = new AbortController().signal;
   const load = async (path: string) => {requests.push(path); return bytes(`public/${path}`);};
   const first = await loadCharacterPreviewBuffer('whale', signal, () => {}, cache, load);
-  assert.equal(first.byteLength, RUNTIME_MODELS[0].decodedBytes);
+  assert.equal(first.byteLength, PORTRAIT_MODELS[0].decodedBytes);
   assert.equal(await loadCharacterPreviewBuffer('whale', signal, () => {}, cache, load), first);
-  assert.deepEqual(requests, [RUNTIME_MODELS[0].path]);
+  assert.deepEqual(requests, [PORTRAIT_MODELS[0].path]);
   await assert.rejects(loadCharacterPreviewBuffer('unknown', signal, () => {}, cache, load));
   const stopped = new AbortController(); stopped.abort();
   await assert.rejects(loadCharacterPreviewBuffer('gemini', stopped.signal, () => {}, cache, load), {name: 'AbortError'});
   assert.equal(requests.length, 1);
 });
 
-test('all six character portraits use independent real skins, idle animation, preserved transforms and fitting cameras', async () => {
+test('all six original standing portraits preserve authored geometry, transforms and fitting cameras without driving rigs', async () => {
   const app = headlessApp();
   try {
-    for (const record of RUNTIME_MODELS) {
+    for (const record of PORTRAIT_MODELS) {
       const asset = await parseLocalGLB(app, bytes(`public/${record.path}`, true));
       const authored = asset.resource.instantiateRenderEntity();
       const transform = [...authored.getLocalTransform().data]; authored.destroy();
       const a = createCharacterPreviewModel(app, asset), b = createCharacterPreviewModel(app, asset);
       assert.deepEqual([...a.model.getLocalTransform().data], transform, `${record.id}: authored root preserved`);
       const meshes = (a.model.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances);
-      const skin = meshes.find(mesh => mesh.skinInstance)!.skinInstance;
-      const other = (b.model.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances).find(mesh => mesh.skinInstance)!.skinInstance;
-      assert.ok(skin.bones.length > 0); assert.notEqual(skin, other); assert.notEqual(skin.bones[0], other.bones[0]);
-      assert.equal(a.model.anim!.baseLayer.activeState, 'PreviewIdle');
+      const other = (b.model.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances);
+      assert.ok(meshes.length > 0); assert.equal(meshes.length, other.length);
+      assert.notEqual(meshes[0], other[0], 'each portrait owns independent mesh instances');
+      assert.equal(meshes.every(mesh => !mesh.skinInstance), true, 'standing originals have no driving rig');
+      assert.equal(a.model.anim, undefined); assert.equal(a.animated, false);
+      assert.equal(asset.animations.length, 0);
       assert.ok(a.bounds.halfExtents.y > .1 && a.bounds.halfExtents.y < 4, `${record.id}: reasonable posed height`);
       assert.equal(a.bounds.getMin().y, 0, `${record.id}: placed on ground`);
       assert.equal(a.bounds.center.x, 0); assert.equal(a.bounds.center.z, 0);
@@ -74,8 +76,8 @@ test('all six character portraits use independent real skins, idle animation, pr
         assert.ok(camera.nearClip < camera.distance - camera.radius);
         assert.ok(camera.farClip > camera.distance + camera.radius);
       }
-      const originalAngle = b.angle; a.rotate(94); a.update(.1); skin.updateMatrixPalette(skin.rootBone, 99);
-      assert.equal(a.angle, 94); assert.equal(b.angle, originalAngle); assert.ok([...skin.matrixPalette].every(Number.isFinite));
+      const originalAngle = b.angle; a.rotate(94); a.update(.1);
+      assert.equal(a.angle, 94); assert.equal(b.angle, originalAngle);
       a.destroy(); a.destroy(); b.update(.1); b.destroy(); disposeDriverAsset(asset);
       assert.equal(app.root.children.length, 0, `${record.id}: no scene leak`);
       assert.equal(app.assets.list().length, 0, `${record.id}: container and texture resources released`);

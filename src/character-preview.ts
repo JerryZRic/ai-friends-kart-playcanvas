@@ -1,8 +1,12 @@
 import * as pc from 'playcanvas';
-import { RUNTIME_MODELS, decodeRuntimeBuffer, parseLocalGLB, instantiateRenderEntity, validateDriverContract, disposeDriverAsset, type DriverAsset } from './assets';
+import { decodeRuntimeBuffer, parseLocalGLB, instantiateRenderEntity, disposeDriverAsset, type DriverAsset } from './assets';
 import { fetchWithRetry } from './asset-download.js';
 import { resolveCharacter } from './character-profiles';
 import { readGameSettings } from './game-settings';
+import portraitManifest from '../docs/portrait-models.json';
+
+/** Original standing figures are a distinct, non-commercial asset collection. */
+export const PORTRAIT_MODELS = Object.freeze(portraitManifest.assets.map(record => Object.freeze({...record})));
 
 /** Only verified CPU bytes survive menu navigation. No app, texture, mesh or rig
  * is cached across WebGL contexts. Two entries / 36 MiB is a hard upper bound. */
@@ -36,7 +40,7 @@ export type PreviewState = { stage: 'loading' | 'preparing' | 'ready' | 'failed'
 
 /** Fetch exactly one manifest record; never invokes the all-driver race loader. */
 export async function loadCharacterPreviewBuffer(id: string, signal: AbortSignal, onState: (state: PreviewState) => void = () => {}, cache = previewBuffers, fetchAsset?: any) {
-  const record = RUNTIME_MODELS.find(record => record.id === id);
+  const record = PORTRAIT_MODELS.find(record => record.id === id);
   if (!record) throw new Error('Unknown preview character');
   aborted(signal);
   const cached = cache.get(id);
@@ -66,20 +70,20 @@ export function characterPreviewCamera(bounds: pc.BoundingBox, aspect = 1, fov =
   return { target, position: target.clone().add(new pc.Vec3(0, .045, 1).normalize().mulScalar(distance)), distance, radius, fov, nearClip: Math.max(.01, distance - radius * 1.3), farClip: distance + radius * 3 };
 }
 
-/** Uses the real authored skin and idle track. The identity mount preserves the
- * GLB root fitting transform and rotates the whole skeleton, never a mesh clone. */
+/** Preserve the original standing figure and its authored root transform.
+ * Portraits do not need a driving skeleton, seat pose, grip points or clips. */
 export function createCharacterPreviewModel(app: pc.AppBase, asset: DriverAsset) {
-  validateDriverContract(asset);
   const root = new pc.Entity('Selected character preview', app), centered = new pc.Entity('Preview center', app);
   const model = instantiateRenderEntity(asset);
   root.addChild(centered); centered.addChild(model); app.root.addChild(root);
   let destroyed = false;
   try {
-    const idle = asset.animations.map(asset => asset.resource).find(track => track instanceof pc.AnimTrack && ['Idle', 'DriveIdle'].includes(track.name)) as pc.AnimTrack | undefined;
-    if (!idle) throw new Error('Character has no idle animation');
-    model.addComponent('anim', {activate: false, enabled: false});
-    model.anim!.assignAnimation('PreviewIdle', idle);
-    model.anim!.baseLayer.play('PreviewIdle'); model.anim!.update(0);
+    const idle = asset.animations.map(asset => asset.resource).find(track => track instanceof pc.AnimTrack && track.name === 'Idle') as pc.AnimTrack | undefined;
+    if (idle) {
+      model.addComponent('anim', {activate: false, enabled: false});
+      model.anim!.assignAnimation('PreviewIdle', idle);
+      model.anim!.baseLayer.play('PreviewIdle'); model.anim!.update(0);
+    }
     const meshes = allMeshes(model);
     const bounds = new pc.BoundingBox(); let first = true;
     for (const mesh of meshes) {
@@ -96,10 +100,10 @@ export function createCharacterPreviewModel(app: pc.AppBase, asset: DriverAsset)
     let angle = -16;
     root.setLocalEulerAngles(0, angle, 0);
     return {
-      root, model, bounds,
+      root, model, bounds, animated: !!idle,
       get angle() { return angle; },
       rotate(degrees: number) { if (!destroyed && Number.isFinite(degrees)) { angle = degrees % 360; root.setLocalEulerAngles(0, angle, 0); } },
-      update(dt: number) { if (!destroyed) model.anim!.update(Math.max(0, Math.min(.1, Number.isFinite(dt) ? dt : 0))); },
+      update(dt: number) { if (!destroyed && idle) model.anim!.update(Math.max(0, Math.min(.1, Number.isFinite(dt) ? dt : 0))); },
       destroy() { if (destroyed) return; destroyed = true; root.destroy(); },
     };
   } catch (error) { root.destroy(); throw error; }
@@ -196,10 +200,10 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
     try {
       model?.update(reducedMotion ? 0 : dt);
       app.update(reducedMotion ? 0 : dt); app.render(); app.fire('frameend'); needsFrame = false;
-      if (model && !reducedMotion) frame = requestAnimationFrame(draw);
+      if (model?.animated && !reducedMotion) frame = requestAnimationFrame(draw);
     } catch (error) { console.warn('Character preview could not render.', error); unavailable(); }
   }
-  function resume() { if (app && canDraw() && !frame && (needsFrame || (model && !reducedMotion))) frame = requestAnimationFrame(draw); }
+  function resume() { if (app && canDraw() && !frame && (needsFrame || (model?.animated && !reducedMotion))) frame = requestAnimationFrame(draw); }
   function refresh() { needsFrame = true; resume(); }
   function resize() {
     if (!app || disposed) return;

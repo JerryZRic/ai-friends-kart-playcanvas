@@ -91,7 +91,7 @@ npm run preview
 
 通过 HTTP(S) 提供完整 **`dist/`** 目录，不要以 `file://` 方式打开 `index.html`。相对路径同时支持域名根目录和仓库子目录。许可声明、`source.html` 与 `source.zip` 应与游戏一同部署。
 
-完整克隆包含 `public/assets/drivers/` 下的六个 `.glb.gz` 文件。线上较小的 `source.zip` 包含代码、测试、构建文件及原创可编辑资产，但不重复打包这六个角色压缩文件。解压该源码包后可这样恢复：
+完整克隆包含 `public/assets/drivers/` 下的六个驾驶模型压缩档，以及 `public/assets/portraits/` 下的六个独立站姿肖像压缩档。线上较小的 `source.zip` 包含代码、测试、两份校验清单、构建文件及原创可编辑资产，但不重复打包这两组角色档案。解压该源码包后可这样恢复：
 
 ```sh
 npm ci
@@ -99,7 +99,7 @@ npm run models:fetch
 npm run build
 ```
 
-下载脚本使用固定公开路径，按[运行时清单](docs/runtime-models.json)校验压缩及解压后的哈希，并拒绝覆盖不匹配的本地文件。没有角色文件时，代码仍可构建，并使用明确标注的原创替身。
+下载脚本使用独立 `/dev/` 预览的固定公开路径，按[驾驶模型清单](docs/runtime-models.json)及[站姿肖像清单](docs/portrait-models.json)校验压缩及解压后的哈希，并拒绝覆盖不匹配的本地文件。保留不变的稳定版根目录不包含新肖像。没有角色档案时，代码仍可构建；完整画面需要还原两组模型。
 
 ### GitHub Pages
 
@@ -129,6 +129,6 @@ npm run build
 
 **代码及原创游戏资产：** AGPL-3.0-only，包括原创界面、赛道、卡丁车、道具及可编辑源文件。见 [LICENSE](LICENSE)、[NOTICE](NOTICE) 和 [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。PlayCanvas 与 fflate 保留各自的 MIT 许可。
 
-**六个角色模型：** 权利单独处理。项目所有者将其标注为带有非商业限制的 Tripo Free 输出；确切再分发条款尚未独立核实。纳入本仓库不授予新的模型许可、Creative Commons 许可或商业使用权。AGPL 不会重新授权角色。复用或再分发前，请确认适用权利并取得所需许可，详见 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
+**六个角色的驾驶与独立站姿肖像模型：** 权利单独处理。项目所有者将其标注为带有非商业限制的 Tripo Free 输出；确切再分发条款尚未独立核实。纳入本仓库不授予新的模型许可、Creative Commons 许可或商业使用权。AGPL 不会重新授权角色。复用或再分发前，请确认适用权利并取得所需许可，详见 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
 
 仓库包含最终角色运行文件，不包含角色 Blender 工程或高模制作源文件。原创卡丁车/道具的可编辑文件仍作为对应源码提供。本演示没有广告、付款或商业模型销售。

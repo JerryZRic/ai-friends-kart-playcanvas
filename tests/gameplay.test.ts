@@ -17,29 +17,50 @@ test('native game integration preserves race, camera, items, menu and safety flo
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
   class Element {
-    id: string; tagName = 'CANVAS'; width = 1280; height = 800; disabled = false; hidden = false; alt = ''; value: any = ''; textContent: any = ''; innerHTML = ''; style: any = {}; dataset: any = {}; attributes: any = {}; listeners: Record<string, Function[]> = {}; open = false;
-    classList = { add() {}, remove() {} };
+    id: string; tagName = 'CANVAS'; width = 1280; height = 800; disabled = false; hidden = false; alt = ''; value: any = ''; textContent: any = ''; style: any = {}; dataset: any = {}; attributes: any = {}; listeners: Record<string, Function[]> = {}; open = false;
+    children: Element[] = []; parentNode: Element | null = null; captured = new Set<number>(); private markup = '';
+    classes = new Set<string>();
+    classList = {add: (...names: string[]) => names.forEach(name => this.classes.add(name)), remove: (...names: string[]) => names.forEach(name => this.classes.delete(name)), contains: (name: string) => this.classes.has(name), toggle: (name: string, force?: boolean) => {const add=force ?? !this.classes.has(name);if(add)this.classes.add(name);else this.classes.delete(name);return add;}};
     constructor(id: string) { this.id = id; }
+    get innerHTML() { return this.markup; }
+    set innerHTML(value: string) {
+      this.markup=value;this.textContent=value.replace(/<[^>]*>/g,'');this.children=[];
+      // Register actual template IDs without replacing a previously created canvas
+      // used by NullGraphicsDevice. Dynamic performance controls share this DOM.
+      for(const match of value.matchAll(/<([a-z][\w-]*)\b([^>]*\bid="([^"]+)"[^>]*)>/gi)) {
+        const child=element(match[3]) as Element;child.tagName=match[1].toUpperCase();
+        child.hidden=/\shidden(?:\s|>|$)/.test(match[2]);child.disabled=/\sdisabled(?:\s|>|$)/.test(match[2]);
+        for(const attribute of match[2].matchAll(/([\w-]+)="([^"]*)"/g))child.setAttribute(attribute[1],attribute[2]);
+        this.append(child);
+      }
+    }
+    append(...children: Element[]) { for(const child of children){child.parentNode=this;this.children.push(child);} }
+    querySelector(selector: string) { return selector.startsWith('#') ? elements.get(selector.slice(1)) ?? null : null; }
+    remove() { if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(child=>child!==this);this.parentNode=null; }
+    closest(selector: string) { return selector.split(',').some(tag=>tag.toUpperCase()===this.tagName||tag==='[contenteditable]'&&'contenteditable' in this.attributes)?this:null; }
     getContext() { return new Proxy({}, { get: () => () => {} }); }
     getBoundingClientRect() { return { left: 0, top: 0, width: this.width, height: this.height }; }
     get src() { return this.attributes.src || ''; }
     set src(value: string) { this.attributes.src = value; }
-    setAttribute(name, value) { this.attributes[name] = value; }
+    setAttribute(name, value) { this.attributes[name] = value;if(name==='class')this.classes=new Set(String(value).split(/\s+/));if(name==='alt')this.alt=value;if(name.startsWith('data-'))this.dataset[name.slice(5)]=value; }
     removeAttribute(name) { delete this.attributes[name]; }
-    addEventListener(name, fn) { (this.listeners[name] ||= []).push(fn); }
-    removeEventListener() {}
-    setPointerCapture() {}
+    addEventListener(name, fn, options?) { (this.listeners[name] ||= []).push(fn);options?.signal?.addEventListener('abort',()=>this.removeEventListener(name,fn),{once:true}); }
+    removeEventListener(name, fn) { this.listeners[name]=(this.listeners[name]||[]).filter(listener=>listener!==fn); }
+    setPointerCapture(id: number) { this.captured.add(id); }
+    hasPointerCapture(id: number) { return this.captured.has(id); }
+    releasePointerCapture(id: number) { this.captured.delete(id);this.emit('lostpointercapture',{pointerId:id}); }
     focus() { g.document.activeElement = this; }
-    click() { if (!this.disabled) (this as any).onclick?.(); }
-    emit(name, e = {}) { this.listeners[name]?.forEach(fn => fn(e)); }
+    click() { if (!this.disabled) {(this as any).onclick?.();this.emit('click');} }
+    emit(name, e = {}) { this.listeners[name]?.slice().forEach(fn => fn({target:this,preventDefault(){},...e})); }
   }
   const element = (id: string) => { if (!elements.has(id)) elements.set(id, new Element(id)); return elements.get(id); };
   const touch = ['ArrowLeft', 'ArrowRight', 'ShiftLeft', 'Space', 'KeyS', 'KeyW'].map(key => { const e = element('touch-' + key); e.dataset.key = key; return e; });
   g.HTMLCanvasElement = Element;
   g.window = { devicePixelRatio: 1, addEventListener() {}, removeEventListener() {} };
-  g.document = { getElementById: element, createElement: () => new Element('texture'), body: element('body'), documentElement: { clientWidth: 1280, clientHeight: 800 }, hidden: false, querySelectorAll: () => touch, addEventListener: (name, fn) => (docEvents[name] ||= []).push(fn), removeEventListener() {} };
+  g.document = { getElementById: element, createElement: (tag: string) => {const created=new Element('');created.tagName=tag.toUpperCase();return created;}, body: element('body'), documentElement: { clientWidth: 1280, clientHeight: 800 }, hidden: false, querySelectorAll: () => touch, addEventListener: (name, fn) => (docEvents[name] ||= []).push(fn), removeEventListener: (name, fn) => {docEvents[name]=(docEvents[name]||[]).filter(listener=>listener!==fn);} };
   g.innerWidth = 1280; g.innerHeight = 800; g.devicePixelRatio = 1;
   g.addEventListener = (name, fn) => (events[name] ||= []).push(fn);
+  g.removeEventListener = (name, fn) => {events[name]=(events[name]||[]).filter(listener=>listener!==fn);};
   const canvas = element('game'), device = new pc.NullGraphicsDevice(canvas), app = new pc.AppBase(canvas);
   const options = new pc.AppOptions(); options.graphicsDevice = device;
   options.componentSystems = [pc.RenderComponentSystem, pc.AnimComponentSystem, pc.CameraComponentSystem, pc.LightComponentSystem];
@@ -204,7 +225,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       for(const hz of [30,60,120]){
         game.start();qa.set({noBots:true});
         for(let frame=0;frame<hz*4;frame++)qa.advanceFrame(1/hz);
-        assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-.9)<1e-7);
+        assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-1)<1e-7);
         const elapsed=game.getState().elapsed;qa.advanceFrame(1e6);
         assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,elapsed);
         game.pause();qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-elapsed-1/hz)<1e-7);
@@ -215,9 +236,9 @@ test('native game integration preserves race, camera, items, menu and safety flo
       assert.equal(game.getState().elapsed,before.elapsed);assert.equal(game.getState().state,'paused');
       element('resumeRace').click();assert.equal(game.getState().state,'countdown');
       game.pause();element('restartRace').click();assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);
-      qa.update(3.2);assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-.1)<1e-8);
+      qa.update(3.2);assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-.2)<1e-8);
       qa.set({pos:game.getState().length*3-.1,speed:20,noBots:true});qa.update(.1);
-      const result=game.getState();assert.equal(result.state,'finished');assert.ok(result.elapsed<.2);
+      const result=game.getState();assert.equal(result.state,'finished');assert.ok(result.elapsed>.2&&result.elapsed<.3);
       assert.equal(result.standings[0].finishedAt,result.elapsed);assert.equal(result.pos,result.length*3);
       assert.match(element('results').textContent,/WHALE（你）/);assert.doesNotThrow(()=>JSON.stringify(result));
     });
@@ -238,7 +259,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
         setPickupDisplay(box, display);
         assertBoxVisible(box);
       }
-      const html = readFileSync('coast.html', 'utf8');
+      const html = (readFileSync('coast.html', 'utf8')+readFileSync('src/race-hud.ts','utf8'));
       assert.match(html, /<img\b[^>]*id="itemImage"[^>]*\balt=""[^>]*\bhidden/);
     });
     await t.test('depicted and mystery rewards remove every native mesh before draw and update the HUD', () => {
@@ -585,7 +606,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     qa.orbit.move(200, 100); qa.draw(.1); key('keydown', 'Escape'); assert.equal(game.getState().state, 'paused'); key('keydown', 'Escape'); assert.equal(game.getState().state, 'paused'); assert.ok(Object.values(qa.keys).every(v => !v));
     const pausedTime = game.getState().elapsed; qa.step(1); assert.equal(game.getState().elapsed, pausedTime); game.pause(); assert.equal(game.getState().state, 'running');
     events.blur.forEach(fn => fn()); assert.equal(game.getState().state, 'paused'); game.pause(); g.document.hidden = true; docEvents.visibilitychange.forEach(fn => fn()); assert.equal(game.getState().state, 'paused'); g.document.hidden = false; game.pause();
-    for (const button of touch) { button.emit('pointerdown', { pointerId: 1, preventDefault() {} }); assert.equal(qa.keys[button.dataset.key], true); button.emit('pointercancel'); assert.equal(qa.keys[button.dataset.key], false); }
+    for (const button of touch) { button.emit('pointerdown', { pointerId: 1, preventDefault() {} }); assert.equal(qa.keys[button.dataset.key], true); button.emit('pointercancel', {pointerId: 1}); assert.equal(qa.keys[button.dataset.key], false); }
     race(); assert.equal(qa.orbit.get().targetYaw, 0); qa.set({ pos: game.getState().length * 3 - .1, speed: 42, noBots: true }); key('keydown', 'KeyW'); qa.step(.2); assert.equal(game.getState().state, 'finished'); assert.equal(game.getState().lap, 3); assert.equal(game.getState().rank, 1);
     for (const id of ['whale', 'gemini', 'gpt', 'claude', 'grok', 'glm']) { assert.equal(game.selectDriver(id), true); assert.equal(qa.player().userData.driverId, id); assert.equal(qa.bots().length, 5); assert.equal(qa.controllers.size, 6); }
     // Native button Enter/Space never triggers global shortcuts or consumes focus.

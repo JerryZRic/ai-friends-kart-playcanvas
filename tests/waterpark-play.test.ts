@@ -9,7 +9,7 @@ import {parseLocalGLB} from '../src/assets';
 /** Real entrypoint, meshes, rig and physics on NullGraphicsDevice. Browser DOM
  * events/image pixels and network scheduling are substituted; no GPU claim. */
 test('waterpark entry preserves partial loading, pause/freeze, focus, touch, restart and exit lifecycles', async () => {
-  const g=globalThis as any, names=['window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace'];
+  const g=globalThis as any, names=['window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace','__waterparkControls'];
   const saved=new Map(names.map(name=>[name,Object.getOwnPropertyDescriptor(g,name)]));
   const errors:unknown[]=[];const originalError=console.error;console.error=(...args)=>errors.push(args);
   const elements=new Map<string,Element>();
@@ -17,10 +17,13 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     id:string; tagName:string; width=1280;height=800;disabled=false;hidden=false;removed=false;textContent='';value='';style={};dataset:any={};attributes:any={};children:Element[]=[];
     classes=new Set<string>();classList={add:(value:string)=>this.classes.add(value),remove:(value:string)=>this.classes.delete(value),contains:(value:string)=>this.classes.has(value),toggle:(value:string,force?:boolean)=>{const add=force??!this.classes.has(value);if(add)this.classes.add(value);else this.classes.delete(value);return add;}};
     constructor(id:string,tagName='DIV'){super();this.id=id;this.tagName=tagName;}
+    getContext(){return new Proxy({}, {get:()=>()=>{}});}
+    closest(selector:string){return selector.split(',').some(s=>s.trim().toUpperCase()===this.tagName)?this:null;}
+    removeAttribute(name:string){delete this.attributes[name];}
     setAttribute(name:string,value:string){this.attributes[name]=value;}
     set innerHTML(html:string){
       for(const match of html.matchAll(/<([a-z]+)\b([^>]*\bid="([^"]+)"[^>]*)>/g)){
-        const child=new Element(match[3],match[1].toUpperCase());
+        const child=elements.get(match[3])??new Element(match[3],match[1].toUpperCase());
         child.disabled=/\bdisabled\b/.test(match[2]);child.hidden=/\bhidden\b/.test(match[2]);
         for(const attribute of match[2].matchAll(/([\w-]+)="([^"]*)"/g))child.setAttribute(attribute[1],attribute[2]);
         this.append(child);
@@ -30,18 +33,21 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     remove(){this.removed=true;elements.delete(this.id);}
     getBoundingClientRect(){return{left:0,top:0,width:this.width,height:this.height};}
     append(element:Element){elements.set(element.id,element);this.children.push(element);}
-    setPointerCapture(_id:number){}
+    captured=new Set<number>();
+    setPointerCapture(id:number){this.captured.add(id);}
+    hasPointerCapture(id:number){return this.captured.has(id);}
+    releasePointerCapture(id:number){this.captured.delete(id);this.emit('lostpointercapture',{pointerId:id});}
     focus(){g.document.activeElement=this;}
     click(){if(!this.disabled)this.emit('click');}
     emit(type:string,data:any={}){const event=new Event(type,{cancelable:true});Object.assign(event,data);this.dispatchEvent(event);return event;}
   }
-  const element=(id:string)=>{if(!elements.has(id))elements.set(id,new Element(id,id==='water-game'?'CANVAS':['start','pause','retry'].includes(id)?'BUTTON':'DIV'));return elements.get(id)!;};
-  const touch=['KeyW','KeyS','KeyA','KeyD'].map(key=>{const e=element('touch-'+key);e.tagName='BUTTON';e.dataset.key=key;return e;});
+  const element=(id:string)=>{if(!elements.has(id))elements.set(id,new Element(id,id==='game'?'CANVAS':['start','pause','retry'].includes(id)?'BUTTON':'DIV'));return elements.get(id)!;};
+  const touch=['KeyW','KeyS','KeyA','KeyD','ShiftLeft','Space'].map(key=>{const e=element('touch-'+key);e.tagName='BUTTON';e.dataset.key=key;return e;});
   const windowTarget=new EventTarget(),documentTarget=new EventTarget();
   g.window=Object.assign(windowTarget,{devicePixelRatio:1});
   g.document=Object.assign(documentTarget,{hidden:false,activeElement:null,body:new Element('body','BODY'),documentElement:{clientWidth:1280,clientHeight:800},getElementById:element,querySelectorAll:()=>touch,createElement:(tag:string)=>new Element('',tag.toUpperCase())});
   g.innerWidth=1280;g.innerHeight=800;g.devicePixelRatio=1;
-  const canvas=element('water-game'),app=new pc.AppBase(canvas as any),options=new pc.AppOptions();
+  const canvas=element('game'),app=new pc.AppBase(canvas as any),options=new pc.AppOptions();
   options.graphicsDevice=new pc.NullGraphicsDevice(canvas as any);
   options.componentSystems=[pc.RenderComponentSystem,pc.AnimComponentSystem,pc.CameraComponentSystem,pc.LightComponentSystem];
   options.resourceHandlers=[pc.ContainerHandler,pc.RenderHandler,pc.MaterialHandler,pc.TextureHandler];options.devtools=false;app.init(options);
@@ -60,11 +66,11 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   };
   let source=readFileSync('src/waterpark-play.ts','utf8');
   source=source.replace('loadBundledDrivers,type DriverAsset','loadBundledDrivers as unusedLoader,type DriverAsset');
-  source=source.replace("const canvas=$<HTMLCanvasElement>('water-game');","const loadBundledDrivers=(globalThis as any).__waterparkLoad;\nconst canvas=$<HTMLCanvasElement>('water-game');");
+  source=source.replace("const canvas=$<HTMLCanvasElement>('game');","const loadBundledDrivers=(globalThis as any).__waterparkLoad;\nconst canvas=$<HTMLCanvasElement>('game');");
   source=source.replace(/new pc\.Application\(canvas,.*?\);/,'(globalThis as any).__waterparkApp;');
-  source=source.replace('const input=createWaterparkInput(),events=new AbortController();','const input=createWaterparkInput(),events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
+  source=source.replace('const events=new AbortController();','const events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
   source=source.replace('app.start(); void load();','void load();');
-  source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); const npcMounts=");
+  source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); Object.defineProperty(globalThis,'__waterparkControls',{configurable:true,get:()=>({keys:controls.keys,orbit:controls.orbit,mouseLook:controls.mouseLook,view,mode,world})}); const npcMounts=");
   const copy=new URL('../src/.waterpark-play-test.ts',import.meta.url);writeFileSync(copy,source);
   const emit=(target:EventTarget,type:string,data:any={})=>{const event=new Event(type,{cancelable:true});Object.assign(event,data);target.dispatchEvent(event);return event;};
   const key=(type:string,code:string,target:any=canvas)=>{const event=new Event(type,{cancelable:true});Object.defineProperty(event,'target',{value:target});Object.assign(event,{code,repeat:false});windowTarget.dispatchEvent(event);return event;};
@@ -99,7 +105,34 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.equal(element('start').disabled,true);element('start').click();assert.equal(attempts,1);
     release();await settle();assert.equal(element('start').disabled,true);assert.match(element('load').textContent,/5\/6/);
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
-    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(180);assert.equal(element('time').textContent,'0.00');
+    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(180);assert.equal(element('timer').textContent,'0:00');
+    // The actual water entry adapts the same controls, not a test reimplementation.
+    const controls=g.__waterparkControls;
+    step(1,0);assert.equal(controls.view,0);
+    key('keydown','KeyZ');key('keyup','KeyZ');step(1,0);
+    assert.equal(g.__waterparkControls.view,1,'Z selects the high chase camera');
+    assert.ok(Math.abs(controls.world.camera.getPosition().y-7.9)<1e-5);
+    key('keydown','KeyC');key('keyup','KeyC');step(1,0);
+    assert.equal(g.__waterparkControls.view,0,'C returns to the low chase camera');
+    assert.ok(Math.abs(controls.world.camera.getPosition().y-4.6)<1e-5);
+    canvas.emit('pointerdown',{pointerId:11,pointerType:'mouse',button:0,clientX:0,clientY:0});
+    canvas.emit('pointermove',{pointerId:11,pointerType:'mouse',buttons:1,clientX:90,clientY:20});
+    step(10);
+    const orbitBeforeRear=controls.orbit.get(),forwardBeforeRear=controls.world.camera.forward.clone();
+    assert.ok(orbitBeforeRear.targetYaw>0&&orbitBeforeRear.targetPitch>0,'fallback mouse drag really moves the water camera');
+    canvas.emit('pointerdown',{pointerId:12,pointerType:'mouse',button:2,clientX:90,clientY:20});step(1,0);
+    assert.equal(controls.keys.RearView,true);assert.ok(controls.world.camera.forward.dot(forwardBeforeRear)<-.8,'RMB points the live camera behind the mount');
+    canvas.emit('pointermove',{pointerId:11,pointerType:'mouse',buttons:3,clientX:140,clientY:40});
+    assert.deepEqual(controls.orbit.get(),orbitBeforeRear,'rear view cannot overwrite the saved orbit');
+    emit(documentTarget,'mouseup',{button:2});step(1,0);assert.equal(controls.keys.RearView,false);
+    assert.ok(controls.world.camera.forward.dot(forwardBeforeRear)>.9,'releasing RMB restores the previous look direction');
+    canvas.emit('pointerup',{pointerId:11,pointerType:'mouse',button:0});
+    key('keydown','KeyQ');key('keyup','KeyQ');step(30);
+    assert.ok(Math.abs(controls.orbit.get().yaw)<1e-4&&Math.abs(controls.orbit.get().pitch)<1e-4,'Q recenters the water camera');
+    const itemPlayer=g.__waterparkRace.racers[0];itemPlayer.held='shield';step(1,0);
+    assert.equal(element('item').disabled,false);
+    key('keydown','KeyE');key('keyup','KeyE');step(1,0);
+    assert.equal(itemPlayer.held,null);assert.equal(itemPlayer.shield,6);assert.equal(element('item').disabled,true,'E consumes the water inventory through the real entry');
     element('perf-start').click();assert.equal(element('perf-result').textContent,'');
     element('perf-start').click(); // A duplicate click on the disabled control is harmless.
     element('perf-toggle').click();assert.equal(element('perf-body').hidden,true);
@@ -112,26 +145,36 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     element('perf-start').click();assert.equal(element('perf-result').textContent,'');
     assert.equal(element('perf-export').disabled,true,'starting again clears the prior export');
     element('perf-cancel').click();assert.equal(element('perf-export').disabled,true);
-    key('keydown','KeyA');step(30);key('keydown','Escape');
-    const pausedTime=element('time').textContent,pausedPose=snapshot();step(90);
-    assert.equal(element('time').textContent,pausedTime);assert.deepEqual(snapshot(),pausedPose,'mount and world poses freeze while paused');
+    key('keydown','KeyA');key('keydown','ShiftLeft');step(30);
+    touch[0].emit('pointerdown',{pointerId:19,pointerType:'touch',button:0});
+    const pausePlayer=g.__waterparkRace.racers[0];pausePlayer.motion.charge=1;pausePlayer.motion.drifting=true;pausePlayer.motion.slideBoost=0;
+    key('keydown','Escape');
+    assert.ok(Object.values(controls.keys).every(value=>!value),'pause clears keyboard and touch sources');
+    assert.equal(touch[0].hasPointerCapture(19),false,'pause releases held touch capture');
+    assert.equal(pausePlayer.motion.charge,0);assert.equal(pausePlayer.motion.drifting,false);
+    pausePlayer.held='boost';key('keydown','KeyE');key('keyup','KeyE');assert.equal(pausePlayer.held,'boost','paused E cannot use an item');pausePlayer.held=null;
+    const pausedTime=element('timer').textContent,pausedPose=snapshot();step(90);
+    assert.equal(element('timer').textContent,pausedTime);assert.deepEqual(snapshot(),pausedPose,'mount and world poses freeze while paused');
     assert.equal(element('pause').attributes['aria-label'],'继续');
     assert.equal(key('keydown','ArrowLeft',element('start')).defaultPrevented,false,'menu arrows are not captured');
-    element('start').click();assert.equal(g.document.activeElement,canvas);
-    key('keydown','KeyR');step(1);assert.equal(element('speed').textContent,'0');assert.ok(Number(element('time').textContent)<.1);
+    element('resumeRace').click();assert.equal(g.document.activeElement,canvas);
+    const resumeSpeed=pausePlayer.motion.speed;step(1);
+    assert.ok(pausePlayer.motion.speed<resumeSpeed,'resume cannot revive a stale throttle hold');
+    assert.equal(pausePlayer.motion.slideBoost,0,'resume cannot release a paused slide charge');
+    element('restartRace').click();step(1);assert.equal(element('speed').textContent,'0');assert.equal(element('timer').textContent,'0:00');
     const accelerate=touch[0];accelerate.emit('pointerdown',{pointerId:1,pointerType:'touch',button:0});
     key('keydown','KeyW');key('keyup','KeyW');step(240);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
     accelerate.emit('pointercancel',{pointerId:1});emit(windowTarget,'blur');
-    const blurTime=element('time').textContent;step(10);assert.equal(element('time').textContent,blurTime);
-    element('start').click();key('keydown','KeyR');key('keydown','KeyW');step(320,.5);
+    const blurTime=element('timer').textContent;step(10);assert.equal(element('timer').textContent,blurTime);
+    element('resumeRace').click();element('restartRace').click();key('keydown','KeyW');step(800,.2);
     assert.match(element('message').textContent,/三圈/);assert.equal(element('speed').textContent,'0');
     failLast=false;element('retry').click();await settle();assert.equal(attempts,3);assert.match(element('load').textContent,/六位/);
     element('driver-glm').click();assert.equal(element('start').disabled,false);
     element('start').click();key('keydown','KeyW');step(30);
-    emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('time').textContent;step(30);assert.equal(element('time').textContent,cachedTime);
-    element('start').click();step(200);assert.ok(Number(element('time').textContent)>Number(cachedTime));
-    const preStallTime=element('time').textContent;step(1,1.2);assert.equal(element('time').textContent,preStallTime,'long suspension pauses rather than advances race');assert.equal(element('pause').attributes['aria-label'],'继续');element('start').click();
-    element('pause').click();element('restart').click();step(1);assert.equal(element('time').textContent,'0.00');assert.equal(element('speed').textContent,'0');
+    emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('timer').textContent;step(30);assert.equal(element('timer').textContent,cachedTime);
+    element('resumeRace').click();step(260);assert.notEqual(element('timer').textContent,cachedTime);
+    const preStallTime=element('timer').textContent;step(1,1.2);assert.equal(element('timer').textContent,preStallTime,'long suspension pauses rather than advances race');assert.equal(element('pause').attributes['aria-label'],'继续');element('resumeRace').click();
+    element('pause').click();element('restartRace').click();step(1);assert.equal(element('timer').textContent,'0:00');assert.equal(element('speed').textContent,'0');
     const actualPlayer=g.__waterparkRace.racers[0];actualPlayer.speed=actualPlayer.motion.speed=20;actualPlayer.boost=2;actualPlayer.slow=0;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*1.34*3.6),'HUD reports actual boosted travel speed');actualPlayer.boost=0;actualPlayer.slow=2;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*.55*3.6),'HUD reports actual slowed travel speed');actualPlayer.finishTime=1;step(1,0);assert.equal(element('speed').textContent,'0','finished rider always displays zero');
     const performanceRoot=element('performance'),performanceStart=element('perf-start');
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,1);

@@ -1,15 +1,21 @@
 /** Deterministic fixed-step race rules. Rendering, wall time and loading cannot advance a race. */
 import { raceOrder } from './driver-roster.js';
 import { characterTuning } from './character-profiles';
-import { newWaterState, stepWaterMotion, type WaterInput, type WaterState } from './waterpark-motion';
+import { newWaterState, stepWaterMotion, WATER_HANDLING, type WaterInput, type WaterState } from './waterpark-motion';
 import { WATER_RACE_LENGTH } from './waterpark-design';
-import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap, racingSpeed, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
+import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
 import { advancePickup, resetPickup } from './item-pickups';
 export const WATER_LAPS=3, WATER_CHECKPOINTS=8, WATER_COUNTDOWN=3;
 export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number};
 export type WaterRace={racers:WaterRacer[];countdown:number;elapsed:number;finished:boolean;remainder:number;seed:number;announcements:string[]};
-/** Actual forward travel speed, shared by movement, HUD, wake and rider animation. */
-export function waterTravelSpeed(racer:WaterRacer){return racer.finishTime!==null?0:racingSpeed(racer,characterTuning(racer.id,'waterpark').maxSpeed);}
+/** Actual signed travel speed shared by movement, HUD, wake and rider animation.
+ * Item and slide boosts use one multiplier, and neither accelerates reverse. */
+export function waterTravelSpeed(racer:WaterRacer){
+ if(racer.finishTime!==null)return 0;
+ const max=characterTuning(racer.id,'waterpark').maxSpeed;
+ const speed=Math.max(-Math.min(11,max*WATER_HANDLING.reverseRatio),Math.min(max,racer.speed));
+ return speed*(speed>0&&(racer.boost>0||racer.motion.slideBoost>0)?RULES.boostFactor:1)*(racer.slow>0?RULES.slowFactor:1);
+}
 export function newWaterRace(selected:string):WaterRace {
  return {racers:raceOrder(selected).map((d,i)=>({...newBrain(i,(i%3-1)*4),id:d.id,total:-5*Math.floor(i/3)||0,lateral:(i%3-1)*4,speed:0,held:null,boost:0,shield:0,slow:0,motion:{...newWaterState(),distance:-5*Math.floor(i/3)||0,lane:(i%3-1)*4},checkpoint:0,finishTime:null,phase:i,warning:0})),countdown:WATER_COUNTDOWN,elapsed:0,finished:false,remainder:0,seed:47291,announcements:[]};
 }
@@ -31,7 +37,21 @@ export function resetWaterPickups(race:WaterRace,boxes:readonly RacingPickup[]){
 function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPickup[]){
  if(race.finished)return;
  if(race.countdown>0){const waiting=Math.min(dt,race.countdown);race.countdown-=waiting;dt-=waiting;if(race.countdown<1e-9)race.countdown=0;if(dt<1e-9)return;}
- const beforeTime=race.elapsed;race.elapsed+=dt;
+ const beforeTime=race.elapsed,player=race.racers[0],line=WATER_RACE_LENGTH*WATER_LAPS;
+ let playerCrossing=false;
+ // Stop the whole simulation at the player's interpolated crossing, just like
+ // coast. Clip this tick before effects, boxes or opponents advance past it.
+ if(player.finishTime===null&&player.checkpoint===WATER_LAPS*WATER_CHECKPOINTS-1){
+  const predicted={...player,motion:{...player.motion}};
+  tickEffects(predicted,dt);
+  predicted.motion=stepWaterMotion(predicted.motion,input,dt,{...characterTuning(player.id,'waterpark'),finishDistance:Infinity});
+  predicted.speed=predicted.motion.speed;
+  const travel=waterTravelSpeed(predicted)*dt;
+  if(player.total<=line&&travel>0&&player.total+travel>=line){
+   dt*=Math.max(0,Math.min(1,(line-player.total)/travel));playerCrossing=true;
+  }
+ }
+ race.elapsed+=dt;
  for(const b of boxes)advancePickup(b,dt,()=>raceRandom(race));
  const active=race.racers.filter(r=>r.finishTime===null);
  const previous=active.map(actor=>({actor,previous:actor.total,previousLane:actor.lateral,onPickup:()=>{actor.pickups++;actor.reaction=RULES.reaction;}}));
@@ -48,11 +68,14 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
   }
   const old=racer.total;
   const next=stepWaterMotion(racer.motion,control,dt,{...tuning,finishDistance:Infinity});
-  racer.speed=next.speed;
-  next.distance=old+waterTravelSpeed(racer)*dt;
-  racer.motion=next;racer.total=next.distance;racer.lateral=next.lane;
+  racer.speed=next.speed;racer.motion=next;
+  next.distance=racer===player&&playerCrossing?line:old+waterTravelSpeed(racer)*dt;
+  racer.total=next.distance;racer.lateral=next.lane;
   advanceWaterCheckpoints(racer,old,racer.total);
-  if(racer.checkpoint===WATER_CHECKPOINTS*WATER_LAPS){const line=WATER_RACE_LENGTH*WATER_LAPS;racer.finishTime=beforeTime+dt*(line-old)/Math.max(1e-9,racer.total-old);racer.total=line;racer.motion.distance=line;racer.motion.speed=0;racer.speed=0;racer.motion.lateralSpeed=0;racer.motion.finished=true;}
+  if(racer.checkpoint===WATER_CHECKPOINTS*WATER_LAPS){
+   racer.finishTime=beforeTime+dt*Math.max(0,Math.min(1,(line-old)/Math.max(1e-9,racer.total-old)));
+   racer.total=line;racer.motion.distance=line;racer.motion.elapsed=racer.finishTime;racer.motion.finished=true;stopWaterRacer(racer);
+  }
  }
  // Symmetric local contact response, no AI privilege, no finished-line obstacles.
  for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++){
@@ -63,12 +86,23 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
   }
  }
  collectPickups(previous.filter(r=>r.actor.finishTime===null),boxes,WATER_RACE_LENGTH,()=>raceRandom(race));
- race.finished=race.racers.every(r=>r.finishTime!==null);
+ race.finished=player.finishTime!==null;
+ if(race.finished){race.elapsed=player.finishTime!;for(const racer of race.racers)stopWaterRacer(racer);}
+}
+/** End active feedback too, while retaining each rider's actual finish status. */
+function stopWaterRacer(racer:WaterRacer){
+ racer.speed=racer.motion.speed=racer.motion.lateralSpeed=racer.motion.charge=racer.motion.slideBoost=0;
+ racer.motion.drifting=false;racer.held=null;racer.boost=racer.shield=racer.slow=racer.warning=0;
+ racer.bump=racer.reaction=racer.cooldown=racer.decisionIn=racer.pulseFlash=0;
 }
 /** Accumulate rather than truncate ordinary deltas at 120Hz. A >10s suspension
- * does no work; the browser UI pauses at >1s and requires explicit resume. */
+ * does no work; the browser UI pauses at >.25s and requires explicit resume. */
 export function advanceWaterRace(race:WaterRace,input:WaterInput,delta:number,boxes:readonly RacingPickup[]=[]){
  if(!Number.isFinite(delta)||delta<=0||delta>10||race.finished)return;
  race.remainder+=delta;const step=1/120;
- while(race.remainder+1e-10>=step){tick(race,input,step,boxes);race.remainder-=step;}
+ while(race.remainder+1e-10>=step){
+  tick(race,input,step,boxes);
+  if(race.finished){race.remainder=0;break;}
+  race.remainder=Math.max(0,race.remainder-step);
+ }
 }

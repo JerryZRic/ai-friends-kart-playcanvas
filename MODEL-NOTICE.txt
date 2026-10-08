@@ -1,8 +1,10 @@
-Six character runtime models — separate rights notice
+Six characters: runtime drivers and standing portraits — separate rights notice
 
-The six lossless .glb.gz runtime archives under public/assets/drivers/ (served from dist/assets/drivers/) are supplied for this
-non-commercial AI Friends Kart demo. They are distinct from the AGPL-3.0-only
-game code and original kart, props, track and UI.
+The six lossless .glb.gz runtime archives under public/assets/drivers/ and the
+six standing-character portrait archives under public/assets/portraits/ are
+supplied for this non-commercial AI Friends Kart demo. They are served from
+assets/drivers/ and assets/portraits/ beside the demo. They are distinct from
+the AGPL-3.0-only game code and original kart, props, track and UI.
 
 The project owner identifies these character outputs as originating from
 Tripo Free and subject to non-commercial restrictions. The exact applicable
@@ -12,23 +14,35 @@ been verified or cleared. This notice does not grant a new license, a Creative
 Commons license, commercial rights, sublicensing rights, or any other rights
 beyond those actually held under the applicable original terms.
 
-Do not treat these characters as AGPL assets. Code availability does not
-relicense model geometry, textures, character designs or associated rights.
-This demo has no advertisements, payment flow or commercial model sale.
-Before reusing, redistributing or monetizing the models, establish the rights
-and obtain any permission required by their applicable terms. The project
-owner's permission to publish this demo is not a general rights grant.
+Do not treat these characters or their portrait derivatives as AGPL assets.
+Code availability does not relicense model geometry, textures, character
+designs or associated rights. This demo has no advertisements, payment flow
+or commercial model sale. Before reusing, redistributing or monetizing the
+models, establish the rights and obtain any permission required by their
+applicable terms. The project owner's permission to publish this demo is
+not a general rights grant.
 
-The public runtime manifest is docs/runtime-models.json. It lists exactly six
-final model paths, byte sizes and SHA-256 checksums. Only losslessly compressed final runtime GLBs are
-included; no new character Blender projects, raw high-poly originals, separate
-textures, work files or private source references are distributed. Non-runtime
-private metadata has been removed without changing embedded model payloads.
+The public manifests are docs/runtime-models.json (six rigged driving models)
+and docs/portrait-models.json (six separate standing portraits). They list
+final model paths, compressed/decoded byte sizes and SHA-256 checksums.
+Standing portraits derive from the original standing character meshes before
+driving-rig and pose edits. Gemini uses the approved center-only character.
+Portrait geometry is optimized for browser preview; embedded textures are
+retained, and portraits contain no driving rig or driving animations.
 
-The corresponding-source ZIP intentionally does not duplicate the large
-character GLBs. They are separately served at assets/drivers/<id>-driver.glb.gz
-beside the demo. A full repository clone includes them. Rebuilding only the
-code/source ZIP works without them; for the six-character demo, copy those six
-files into public/assets/drivers/ or run the documented manifest-verified fetch
-script. The original kart/prop Blender source files were already public and
-remain included for their AGPL corresponding-source completeness.
+Only final runtime GLBs, losslessly gzip-compressed, are included. No character
+Blender projects, raw high-poly originals, separate textures, work files or
+private source references are distributed. Non-runtime private metadata has
+been removed. Geometry optimization is a separate portrait preparation step;
+lossless gzip describes the final archive compression, not that optimization.
+
+The corresponding-source ZIP intentionally does not duplicate either set of
+large character archives. A full repository clone includes both sets. The
+source ZIP includes both checksum manifests and all corresponding game code,
+tests and build scripts. Rebuilding code from it works without character
+archives; for the complete visuals, run npm run models:fetch to restore the
+verified files under public/assets/drivers/ and public/assets/portraits/.
+This dev source retrieves from the isolated public /dev/ preview, whose new
+portraits are not part of the preserved stable root. The original kart/prop
+Blender sources were already public and remain included for their AGPL
+corresponding-source completeness.

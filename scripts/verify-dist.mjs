@@ -24,7 +24,7 @@ function safePath(path) {
   assert.ok(path && !path.startsWith('/') && !path.includes('\\') && !path.split('/').some(part => part === '.' || part === '..'), `Unsafe archive path: ${path}`);
   assert.doesNotMatch(path, /(?:^|\/)(?:\.openai|\.git|\.aws|\.codex|node_modules|private|secrets?)(?:\/|$)/i, `Private source path: ${path}`);
   assert.ok(!path.endsWith('.blend') || ['models/kart.blend', 'models/props.blend'].includes(path), `Unapproved editable model: ${path}`);
-  assert.ok(!path.startsWith('public/assets/drivers/'), `Restricted character duplicated in source: ${path}`);
+  assert.ok(!/^public\/assets\/(?:drivers|portraits)\//.test(path), `Restricted character duplicated in source: ${path}`);
 }
 // Split sentinels so the source scanner can also inspect this file without self-matching.
 const privatePatterns = [
@@ -44,7 +44,7 @@ const allowedRoots = ['src/', 'tests/', 'scripts/', 'docs/', 'models/', '.github
 const expectedSource = [...rootAllowlist].filter(existsSync);
 for (const root of allowedRoots) for (const path of inventory(root)) {
   const relative = root + path;
-  if (relative.startsWith('public/assets/drivers/')) continue;
+  if (/^public\/assets\/(?:drivers|portraits)\//.test(relative)) continue;
   expectedSource.push(relative);
 }
 expectedSource.sort();
@@ -64,7 +64,7 @@ check('source ZIP has safe exact members, current content and deterministic comp
   assert.deepEqual([...sourceEntries.keys()], expectedSource);
   const deterministic = Object.fromEntries([...sourceEntries].map(([path, bytes]) => [prefix + path, [bytes, { mtime: new Date(1980, 0, 1), level: 9 }]]));
   assert.equal(sha(zipSync(deterministic)), sha(archive), 'Non-deterministic source archive');
-  for (const path of ['src/game.ts', 'src/assets.ts', 'src/scene.ts', 'src/track.ts', 'docs/runtime-models.json', 'tests/migration.test.ts', 'models/kart.blend', 'models/props.blend', 'public/assets/kart-r12-chassis.glb']) assert.ok(sourceEntries.has(path));
+  for (const path of ['src/game.ts', 'src/assets.ts', 'src/scene.ts', 'src/track.ts', 'docs/runtime-models.json', 'docs/portrait-models.json', 'tests/migration.test.ts', 'models/kart.blend', 'models/props.blend', 'public/assets/kart-r12-chassis.glb']) assert.ok(sourceEntries.has(path));
 });
 
 check('dist contains only runtime bundle/maps, approved public assets and legal/source files', () => {
@@ -80,17 +80,35 @@ check('dist contains only runtime bundle/maps, approved public assets and legal/
   assert.match(read('THIRD-PARTY-NOTICES.txt').toString(), /PlayCanvas/);
 });
 
-check('six runtime models have exact authorized compressed/decoded hashes and source excludes them', () => {
-  const manifest = JSON.parse(read('docs/runtime-models.json'));
-  const authorized = JSON.parse(read('tests/helpers/authorized-runtime.json'));
-  assert.deepEqual(manifest.assets, authorized.assets);
-  for (const record of manifest.assets) {
-    const compressed = read('dist/' + record.path), decoded = gunzipSync(compressed, { maxOutputLength: 32 * 1024 * 1024 });
-    assert.equal(compressed.length, record.bytes); assert.equal(sha(compressed), record.sha256);
-    assert.equal(decoded.length, record.decodedBytes); assert.equal(sha(decoded), record.decodedSha256);
-    assert.ok(!sourceEntries.has('public/' + record.path));
-    const gltf = JSON.parse(decoded.toString('utf8', 20, 20 + decoded.readUInt32LE(12)));
-    for (const resource of [...(gltf.buffers || []), ...(gltf.images || [])]) assert.ok(!resource.uri || resource.uri.startsWith('data:'), 'External model dependency');
+check('all twelve driver/portrait archives have exact compressed/decoded hashes and source excludes them', () => {
+  for (const [manifestPath, fixturePath, directory, suffix] of [
+    ['docs/runtime-models.json', 'tests/helpers/authorized-runtime.json', 'drivers', 'driver'],
+    ['docs/portrait-models.json', 'tests/helpers/authorized-portraits.json', 'portraits', 'portrait'],
+  ]) {
+    const manifest = JSON.parse(read(manifestPath)), authorized = JSON.parse(read(fixturePath));
+    assert.deepEqual(manifest.assets, authorized.assets);
+    assert.deepEqual(manifest.assets.map(record => record.id), ['whale', 'gemini', 'gpt', 'claude', 'grok', 'glm']);
+    assert.deepEqual(inventory(`dist/assets/${directory}`), manifest.assets.map(record => `${record.id}-${suffix}.glb.gz`).sort());
+    for (const record of manifest.assets) {
+      assert.equal(record.path, `assets/${directory}/${record.id}-${suffix}.glb.gz`);
+      const compressed = read('dist/' + record.path), decoded = gunzipSync(compressed, { maxOutputLength: 32 * 1024 * 1024 });
+      assert.equal(compressed.length, record.bytes); assert.equal(sha(compressed), record.sha256);
+      assert.equal(compressed[3], 0, 'Archive carries no optional filename/comment metadata');
+      assert.equal(compressed.readUInt32LE(4), 0, 'Archive timestamp is deterministic');
+      assert.equal(decoded.length, record.decodedBytes); assert.equal(sha(decoded), record.decodedSha256);
+      assert.ok(!sourceEntries.has('public/' + record.path));
+      assert.equal(decoded.toString('ascii', 0, 4), 'glTF'); assert.equal(decoded.readUInt32LE(4), 2);
+      assert.equal(decoded.readUInt32LE(8), decoded.length); assert.equal(decoded.readUInt32LE(16), 0x4e4f534a);
+      const gltf = JSON.parse(decoded.toString('utf8', 20, 20 + decoded.readUInt32LE(12)));
+      for (const resource of [...(gltf.buffers || []), ...(gltf.images || [])]) assert.ok(!resource.uri || resource.uri.startsWith('data:'), 'External model dependency');
+      if (directory === 'portraits') {
+        assert.equal(gltf.skins?.length || 0, 0, 'Portrait must not reuse the driving rig');
+        assert.equal(gltf.animations?.length || 0, 0, 'Standing portrait has no driving animation');
+      }
+    }
+  }
+  for (const path of ['MODEL-NOTICE.txt', 'SOURCE.txt']) {
+    const notice = read(path).toString(); assert.match(notice, /portrait/i); assert.match(notice, /AGPL/); assert.match(notice, /non[ -]?commercial/i);
   }
 });
 
@@ -139,7 +157,7 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
     for (const [path, bytes] of sourceEntries) { const target = join(temporary, path); mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, bytes); }
     symlinkSync(resolve('node_modules'), join(temporary, 'node_modules'), 'dir');
     build(); packageSource();
-    const withoutModels = files.filter(path => !path.startsWith('assets/drivers/'));
+    const withoutModels = files.filter(path => !/^assets\/(?:drivers|portraits)\//.test(path));
     assert.deepEqual(inventory(join(temporary, 'dist')), withoutModels);
     for (const path of withoutModels) assert.equal(sha(readFileSync(join(temporary, 'dist', path))), sha(read('dist/' + path)), `Source-only rebuild differs: ${path}`);
     const harness = `
@@ -148,16 +166,16 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
       import {join} from 'node:path';
       let calls=0;
       globalThis.fetch=async (url,options)=>{
-        calls++;assert.equal(process.env.QA_EXPECT_DOWNLOADS,'6');
+        calls++;assert.equal(process.env.QA_EXPECT_DOWNLOADS,'12');
         const parsed=new URL(url);assert.equal(parsed.origin,'https://jerryzric.github.io');
-        assert.match(parsed.pathname,/^\\/ai-friends-kart-playcanvas\\/assets\\/drivers\\/(whale|gemini|gpt|claude|grok|glm)-driver\\.glb\\.gz$/);
+        assert.match(parsed.pathname,/^\\/ai-friends-kart-playcanvas\\/dev\\/assets\\/(drivers|portraits)\\/(whale|gemini|gpt|claude|grok|glm)-(driver|portrait)\\.glb\\.gz$/);
         assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);assert.equal(options.body,undefined);
-        const bytes=readFileSync(join(process.env.QA_RUNTIME_ROOT,'assets/drivers',parsed.pathname.split('/').at(-1)));
+        const bytes=readFileSync(join(process.env.QA_RUNTIME_ROOT,parsed.pathname.slice('/ai-friends-kart-playcanvas/dev/'.length)));
         return {ok:true,status:200,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)};
       };
       await import('./scripts/fetch-runtime-models.mjs');assert.equal(calls,Number(process.env.QA_EXPECT_DOWNLOADS));
     `;
-    for (const count of ['6', '0']) execFileSync(process.execPath, ['--input-type=module', '-e', harness], { cwd: temporary, stdio: 'pipe', timeout: 120000, env: { ...process.env, QA_RUNTIME_ROOT: resolve('dist'), QA_EXPECT_DOWNLOADS: count } });
+    for (const count of ['12', '0']) execFileSync(process.execPath, ['--input-type=module', '-e', harness], { cwd: temporary, stdio: 'pipe', timeout: 120000, env: { ...process.env, QA_RUNTIME_ROOT: resolve('dist'), QA_EXPECT_DOWNLOADS: count } });
     build(); packageSource();
     assert.deepEqual(inventory(join(temporary, 'dist')), files);
     for (const path of files) assert.equal(sha(readFileSync(join(temporary, 'dist', path))), sha(read('dist/' + path)), `Full rebuild differs: ${path}`);
