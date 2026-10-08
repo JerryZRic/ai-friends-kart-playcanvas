@@ -1,4 +1,5 @@
 import * as pc from 'playcanvas';
+import {createPerformancePanel} from './waterpark-performance-ui';
 import {createWaterparkScene} from './waterpark-scene';
 import {sampleWaterpark} from './waterpark-design';
 import {sampleWaterSurface,waterSurfaceRotation} from './waterpark-surface';
@@ -26,6 +27,7 @@ try {
   world.root.addChild(mount.root);
   const input=createWaterparkInput(),events=new AbortController();
   const lifetime=createWaterparkLifetime(()=>{wake.dispose(); mount.dispose(); app.destroy();});
+  const performancePanel=createPerformancePanel(canvas,()=>({quality:'unchanged layered materials + planar reflection',pixelRatioCap:1.7,driver:selected}));
   const clearKeys=()=>input.clear();
 
   function updatePicker() {
@@ -88,13 +90,13 @@ try {
   }
   function pause() {
     if(mode==='riding') {
-      mode='paused'; clearKeys(); $('menu').classList.remove('hidden'); $('menu-title').textContent='已暂停';
+      performancePanel.interrupt('paused'); mode='paused'; clearKeys(); $('menu').classList.remove('hidden'); $('menu-title').textContent='已暂停';
       updatePicker(); $<HTMLButtonElement>('start').focus();
     } else if(mode==='paused')start();
   }
   $('start').addEventListener('click',start,{signal:events.signal});
   $('pause').addEventListener('click',pause,{signal:events.signal});
-  function restart(){if(mode==='menu'||busy)return;mode='finished';start();}
+  function restart(){if(mode==='menu'||busy)return;performancePanel.interrupt('restart');mode='finished';start();}
   const drivingKeys=new Set(['KeyW','KeyS','KeyA','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
   const down=(e:KeyboardEvent)=>{
     if(['Escape','KeyP'].includes(e.code)) {
@@ -123,7 +125,7 @@ try {
   }
   const resize=()=>app.resizeCanvas(); window.addEventListener('resize',resize,{signal:events.signal});
   cleanup=()=>{
-    clearKeys(); events.abort(); app.autoRender=false; app.renderNextFrame=false;
+    performancePanel.dispose(); clearKeys(); events.abort(); app.autoRender=false; app.renderNextFrame=false;
     // Abort HTTP work now, but preserve the app until an already-started GLB parse settles.
     lifetime.close();
   };
@@ -134,13 +136,14 @@ try {
   },{signal:events.signal});
   app.on('update',(dt:number)=>{
     if(lifetime.closed)return;
+    performancePanel.sample(performance.now(),mode==='riding'&&!busy,mode);
     const step=Math.min(Number.isFinite(dt)?Math.max(0,dt):0,.05); let steer=visualSteer;
     if(mode==='riding') {
       clock+=step;
       steer=(input.pressed('KeyA')||input.pressed('ArrowLeft')?1:0)-(input.pressed('KeyD')||input.pressed('ArrowRight')?1:0); visualSteer=steer;
       motion=stepWaterMotion(motion,{throttle:input.pressed('KeyW')||input.pressed('ArrowUp'),brake:input.pressed('KeyS')||input.pressed('ArrowDown'),steer},step);
       if(motion.finished) {
-        mode='finished'; clearKeys(); $('menu-title').textContent='样段完成'; $('message').textContent=`285 米 · ${motion.elapsed.toFixed(2)} 秒`;
+        performancePanel.interrupt('finished'); mode='finished'; clearKeys(); $('menu-title').textContent='样段完成'; $('message').textContent=`285 米 · ${motion.elapsed.toFixed(2)} 秒`;
         $('menu').classList.remove('hidden'); updatePicker(); $<HTMLButtonElement>('start').focus();
       }
     } else if(mode==='menu'&&!document.hidden)clock+=step;

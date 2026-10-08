@@ -14,10 +14,20 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   const errors:unknown[]=[];const originalError=console.error;console.error=(...args)=>errors.push(args);
   const elements=new Map<string,Element>();
   class Element extends EventTarget {
-    id:string; tagName:string; width=1280;height=800;disabled=false;textContent='';value='';style={};dataset:any={};attributes:any={};children:Element[]=[];
+    id:string; tagName:string; width=1280;height=800;disabled=false;hidden=false;removed=false;textContent='';value='';style={};dataset:any={};attributes:any={};children:Element[]=[];
     classes=new Set<string>();classList={add:(value:string)=>this.classes.add(value),remove:(value:string)=>this.classes.delete(value),contains:(value:string)=>this.classes.has(value),toggle:(value:string,force?:boolean)=>{const add=force??!this.classes.has(value);if(add)this.classes.add(value);else this.classes.delete(value);return add;}};
     constructor(id:string,tagName='DIV'){super();this.id=id;this.tagName=tagName;}
     setAttribute(name:string,value:string){this.attributes[name]=value;}
+    set innerHTML(html:string){
+      for(const match of html.matchAll(/<([a-z]+)\b([^>]*\bid="([^"]+)"[^>]*)>/g)){
+        const child=new Element(match[3],match[1].toUpperCase());
+        child.disabled=/\bdisabled\b/.test(match[2]);child.hidden=/\bhidden\b/.test(match[2]);
+        for(const attribute of match[2].matchAll(/([\w-]+)="([^"]*)"/g))child.setAttribute(attribute[1],attribute[2]);
+        this.append(child);
+      }
+    }
+    querySelector(selector:string){return elements.get(selector.replace(/^#/,''))??null;}
+    remove(){this.removed=true;elements.delete(this.id);}
     getBoundingClientRect(){return{left:0,top:0,width:this.width,height:this.height};}
     append(element:Element){elements.set(element.id,element);this.children.push(element);}
     setPointerCapture(_id:number){}
@@ -63,11 +73,31 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   let destroyed=0;app.on('destroy',()=>destroyed++);
   try {
     await import(copy.href+'?run='+Date.now());
+    assert.equal(element('perf-body').hidden,true);
+    element('perf-toggle').click();assert.equal(element('perf-body').hidden,false);
+    assert.equal(element('perf-toggle').attributes['aria-expanded'],'true');
+    element('perf-start').click();assert.equal(element('perf-start').disabled,true);
+    assert.equal(element('perf-cancel').disabled,false);
+    element('perf-cancel').click();assert.equal(element('perf-start').disabled,false);
+    assert.equal(element('perf-export').disabled,true,'empty captures cannot be exported');
+    assert.equal(element('perf-copy').disabled,true,'empty captures cannot be copied');
+    assert.match(element('perf-result').textContent,/0 帧间隔/);
     assert.equal(element('start').disabled,true);element('start').click();assert.equal(attempts,1);
     release();await settle();assert.equal(element('start').disabled,false);assert.match(element('load').textContent,/5\/6/);
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
     element('driver-whale').click();element('start').click();assert.equal(g.document.activeElement,canvas);
+    element('perf-start').click();assert.equal(element('perf-result').textContent,'');
+    element('perf-start').click(); // A duplicate click on the disabled control is harmless.
+    element('perf-toggle').click();assert.equal(element('perf-body').hidden,true);
     key('keydown','KeyW');step(90);assert.ok(Number(element('speed').textContent)>0);
+    element('perf-toggle').click();element('perf-cancel').click();
+    assert.match(element('perf-result').textContent,/89 帧间隔/,'collapsed recording still captures every active interval');
+    assert.equal(element('perf-export').disabled,false);
+    assert.equal(element('perf-copy').disabled,false);
+    assert.equal(element('perf-cancel').disabled,true);
+    element('perf-start').click();assert.equal(element('perf-result').textContent,'');
+    assert.equal(element('perf-export').disabled,true,'starting again clears the prior export');
+    element('perf-cancel').click();assert.equal(element('perf-export').disabled,true);
     key('keydown','KeyA');step(30);key('keydown','Escape');
     const pausedTime=element('time').textContent,pausedPose=snapshot();step(90);
     assert.equal(element('time').textContent,pausedTime);assert.deepEqual(snapshot(),pausedPose,'mount and world poses freeze while paused');
@@ -86,7 +116,10 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     element('start').click();key('keydown','KeyW');step(30);
     emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('time').textContent;step(30);assert.equal(element('time').textContent,cachedTime);
     element('start').click();step(1);assert.ok(Number(element('time').textContent)>Number(cachedTime));
+    const performanceRoot=element('performance'),performanceStart=element('perf-start');
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,1);
+    assert.equal(performanceRoot.removed,true,'performance panel is removed during app disposal');
+    performanceStart.click();assert.equal(performanceStart.disabled,false,'disposed controls no longer start captures');
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(destroyed,1);
     assert.deepEqual(errors,[]);
   } finally {
