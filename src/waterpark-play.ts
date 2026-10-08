@@ -1,6 +1,7 @@
 import * as pc from 'playcanvas';
 import {createWaterparkScene} from './waterpark-scene';
 import {sampleWaterpark} from './waterpark-design';
+import {sampleWaterSurface,waterSurfaceRotation} from './waterpark-surface';
 import {createWaterMount} from './water-mount';
 import {createWaterparkWake} from './waterpark-wake';
 import {newWaterState,stepWaterMotion} from './waterpark-motion';
@@ -17,6 +18,7 @@ try {
   app.graphicsDevice.maxPixelRatio=Math.min(devicePixelRatio||1,1.7);
   app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW); app.setCanvasResolution(pc.RESOLUTION_AUTO);
   const world=createWaterparkScene(app),wake=createWaterparkWake(app,world.root);
+  world.reflection.exclude(wake.entity);
   const assets=new Map<string,DriverAsset>(),failures=new Map<string,string>();
   let selected='whale',mount=createWaterMount(app,undefined,{id:selected,color:getDriver(selected).color});
   let mountedAsset:DriverAsset|undefined,motion=newWaterState(),clock=0,visualSteer=0;
@@ -143,10 +145,13 @@ try {
       }
     } else if(mode==='menu'&&!document.hidden)clock+=step;
     const s=sampleWaterpark(motion.distance,motion.lane);
-    mount.root.setPosition(s.p.x,0,s.p.z); mount.root.setEulerAngles(0,s.angle*180/Math.PI+motion.lateralSpeed*2.3,0);
-    mount.update({speed:motion.speed,steer,time:clock}); wake.update(motion.distance,motion.lane,motion.speed,clock); world.waterMaterial.setParameter('time',clock);
+    const surface=sampleWaterSurface(s.p.x,s.p.z,clock);
+    // Surface following changes only presentation; steering/speed/camera stay approved.
+    const orientation=waterSurfaceRotation(surface.normal,s.angle+motion.lateralSpeed*2.3*Math.PI/180);
+    mount.root.setPosition(s.p.x,surface.height,s.p.z); mount.root.setRotation(orientation.x,orientation.y,orientation.z,orientation.w);
+    mount.update({speed:motion.speed,steer,time:clock}); wake.update(motion.distance,motion.lane,motion.speed,clock,motion.lateralSpeed); world.waterMaterial.setParameter('time',clock);
     const ahead=sampleWaterpark(motion.distance+10,motion.lane*.6).p;
-    world.camera.setPosition(s.p.x-s.t.x*8.2,3.8,s.p.z-s.t.z*8.2); world.camera.lookAt(ahead.x,1.6,ahead.z);
+    world.camera.setPosition(s.p.x-s.t.x*8.2,3.8,s.p.z-s.t.z*8.2); world.camera.lookAt(ahead.x,1.6,ahead.z); world.reflection.update();
     $('speed').textContent=String(Math.round(motion.speed*3.6)); $('distance').textContent=String(Math.floor(motion.distance)); $('time').textContent=motion.elapsed.toFixed(2);
   });
   app.start(); void load();

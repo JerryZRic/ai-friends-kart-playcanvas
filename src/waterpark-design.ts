@@ -26,6 +26,7 @@ export function createWaterparkDesign():MeshData[]{
  const all:Batch[]=[],batch=(n:string,c:string,w=false)=>{const b=new Batch(n,c,w);all.push(b);return b;};
  const water=batch('Turquoise flowing canal','#14bde6',true),cream=batch('Ivory coping and bridge stone','#fff0d4'),sand=batch('Warm sand promenade','#e5c598'),aqua=batch('Layered turquoise retaining walls','#279dbd'),navy=batch('Deep blue wall recess','#3f709f');
  const coral=batch('Coral curb accents','#fa9da9'),purple=batch('Orchid landmark tower','#b38ccc'),pink=batch('Rose tower roofs and canopies','#ed95c8'),white=batch('Pearl railings and canopy stripes','#fff5ed');
+ const roseFabric=batch('Rose woven parasol panels','#ed9dc2'),ivoryFabric=batch('Ivory woven parasol stripes','#fff5ed');
  const grass=batch('Mint green planted banks','#92cc88'),trunk=batch('Palm trunks','#b59379'),leaves=batch('Palm jade leaves','#4fb694'),lime=batch('Palm lime leaves','#9ccf5e'),dark=batch('Tower window blue glass','#477dab'),cloud=batch('Soft cloud clusters','#ffffff');
  function ribbon(b:Batch,from:number,to:number,y:number,start=-35,end=335,step=2){for(let d=start;d<end;d+=step){const p=(s:number,l:number)=>{const q=sampleWaterpark(s,l).p;q.y=y;return q;},next=Math.min(end,d+step);b.quad(p(d,from),p(d,to),p(next,from),p(next,to));if(b.data.water)b.data.uvs.push(from,d,to,d,from,next,to,next);}}
  function wall(b:Batch,l:number,y0:number,y1:number,start=-35,end=335){for(let d=start;d<end;d+=2){const a=sampleWaterpark(d,l).p,c=sampleWaterpark(Math.min(end,d+2),l).p;b.quad(v(a.x,y0,a.z),v(a.x,y1,a.z),v(c.x,y0,c.z),v(c.x,y1,c.z));}}
@@ -46,7 +47,7 @@ export function createWaterparkDesign():MeshData[]{
  for(let j=0;j<3;j++)trunk.add(sphere,top.clone().add(v(Math.cos(j*2)*.3,-.3,Math.sin(j*2)*.3)),v(.45,.6,.45));}
  for(const[d,l,h]of[[-3,-23,10],[15,23,9],[40,-26,12],[68,23,9.8],[100,-23,10],[128,24,11],[153,-25,10],[182,24,11],[217,-24,10],[249,26,11],[275,-23,9],[303,26,12]])palm(d,l,h,d*.67);
  function parasol(d:number,l:number,phase:number){const p=sampleWaterpark(d,l).p;white.add(cylinder,v(p.x,3.9,p.z),v(.14,3.4,.14));
- for(let i=0;i<12;i++){const b=i%2===0?pink:white,a=i/12*Math.PI*2+phase,c=(i+1)/12*Math.PI*2+phase,tip=v(p.x,6.15,p.z),a1=v(p.x+Math.cos(a)*2.8,5.15,p.z+Math.sin(a)*2.8),b1=v(p.x+Math.cos(c)*2.8,5.15,p.z+Math.sin(c)*2.8);b.quad(tip,tip,a1,b1);b.quad(a1,b1,v(a1.x,4.82,a1.z),v(b1.x,4.82,b1.z));}
+ for(let i=0;i<12;i++){const b=i%2===0?roseFabric:ivoryFabric,a=i/12*Math.PI*2+phase,c=(i+1)/12*Math.PI*2+phase,tip=v(p.x,6.15,p.z),a1=v(p.x+Math.cos(a)*2.8,5.15,p.z+Math.sin(a)*2.8),b1=v(p.x+Math.cos(c)*2.8,5.15,p.z+Math.sin(c)*2.8);b.quad(tip,tip,a1,b1);b.quad(a1,b1,v(a1.x,4.82,a1.z),v(b1.x,4.82,b1.z));}
  sand.add(cylinder,v(p.x,3.1,p.z),v(1.65,.18,1.65));}
  for(const s of[-1,1])for(let d=23;d<310;d+=25)parasol(d,s*(21.5+d%3),d*.2);
  const tx=-15,tz=130;purple.add(cylinder,v(tx,10,tz),v(12,16,12));

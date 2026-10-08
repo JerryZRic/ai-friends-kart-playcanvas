@@ -1,6 +1,6 @@
 # Waterpark scene study 01
 
-Status: unpublished two-map prototype. The original coast retains its kart circuit and physics. Waterpark has separate water-mount handling and a bounded 285 m trial. Baseline character files and the Windows release are unchanged.
+Status: published two-map sample, with a bounded material/water refinement pass. The original coast retains its kart circuit and physics. Waterpark has separate water-mount handling and a bounded 285 m trial. Baseline character files and the Windows release are unchanged.
 
 ## Review locally
 
@@ -19,7 +19,7 @@ Original native PlayCanvas meshes: 285 m view section with a straight, wide 100-
 
 ## Two-map architecture
 
-`map-profiles.ts` declares coast/kart and waterpark/water-mount identities. Separate entry pages keep the existing kart game intact. `waterpark-motion.ts` owns acceleration, water drag, lateral inertia, bank response and finish/reset state. `water-mount.ts` owns original whale geometry and character-seat adaptation. `waterpark-wake.ts` draws a single-mesh pair of animated foam trails. The waterpark sample does not yet implement full closed-lap AI racing or NPC item battles. Six-character assets are reused without modifying their source meshes or animations.
+`map-profiles.ts` declares coast/kart and waterpark/water-mount identities. Separate entry pages keep the existing kart game intact. `waterpark-motion.ts` owns acceleration, water drag, lateral inertia, bank response and finish/reset state. `water-mount.ts` owns original whale geometry and character-seat adaptation. `waterpark-wake.ts` draws fixed-size, batched foam ribbons and ballistic spray droplets (two draw calls). The waterpark sample does not yet implement full closed-lap AI racing or NPC item battles. Six-character assets are reused without modifying their source meshes or animations.
 
 ## Verification boundary
 
@@ -30,3 +30,16 @@ To reproduce an offline geometry review after exporting JSON:
 `blender -b -t 6 --python scripts/render-waterpark.py -- /tmp/waterpark-design.json /tmp/waterpark-renders`
 
 The renderer uses CPU Cycles without denoising and saves two PNGs plus an editable Blender scene. It intentionally does not claim shader/GPU parity with the PlayCanvas build.
+
+
+## Water and materials refinement
+
+The approved `waterpark-motion.ts` handling is unchanged. Visual surface following uses a shared three-wave analytical field in `waterpark-surface.ts`; that same coefficient table emits CPU heights/derivatives and GLSL displacement/normals. Maximum displacement is 12.7 cm. The mount follows the sampled height and slope without feeding changes into speed, lateral inertia, banks or the chase camera. Its small swimming animation remains layered on top.
+
+Water uses air/water Schlick Fresnel reflectance, directional fine normal ripples and real planar scenery reflections. The reflection helper is the version already bundled with PlayCanvas 2.23.1, without an engine upgrade. Only static scenery is captured; the mount, wake and water are excluded to avoid recursive reflection. One half-resolution color/depth render target is capped at 768 pixels on either axis, with no additional reflection shadow maps. This is a mean-water-plane reflection, not curved-surface ray tracing.
+
+Shallow/deep absorption color and caustic-like bed highlights use authored canal depth, **not** screen-space scene depth or true refraction. Bank foam follows the known canal edges. The foam wake bends with lateral velocity and follows the same wave heights; fixed-count spray follows short ballistic arcs. These are bounded visual approximations, not a Navier–Stokes fluid solver, SPH simulation, particle collision system or PhysX integration.
+
+Scenery materials distinguish rough stone, matte paving/fabric/plants, painted tile, wet edge surfaces, metal and glass-like windows. A generated prefiltered sky/ground lighting atlas supports their material response; it is not a dynamically captured scenery reflection. Added details are batched to preserve broad near/mid/far composition: 65,480 geometry triangles and 28 scene render batches including water/sky (before the mount and two wake/spray draws). The environment atlas plus three mipmapped normal textures use 327,676 bytes. At the maximum 768×768 reflection target, color plus 32-bit depth is approximately 4.5 MiB; actual depth allocation is backend-dependent. No external textures, models or downloaded HDRIs are introduced.
+
+Validation includes exact CPU wave gradients, normalized surface normals, shared shader coefficients, finite/clamped wake/spray data, original pause/restart/asset loading lifecycle coverage, null-device reflection/material resource checks and shader precision checks. Production/source/privacy checks remain required before publishing. These tests do not establish browser GPU shader compilation, final reflection appearance or actual frame times. Those remain explicit visual/performance acceptance checks on a WebGL2-capable device.
