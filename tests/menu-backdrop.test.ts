@@ -4,7 +4,7 @@ import * as pc from 'playcanvas';
 import { sample as sampleCoast, LENGTH as COAST_LENGTH } from '../src/track';
 import { sampleWaterparkLoop, WATER_RACE_LENGTH, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE } from '../src/waterpark-design';
 import { DEFAULT_SETTINGS } from '../src/game-settings';
-import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors } from '../src/menu-camera';
+import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors, coverCameraPose, type MenuBackdropOptions } from '../src/menu-camera';
 import { createMenuWorld, mountMenuBackdrop } from '../src/menu-backdrop';
 import {coastGroundHeightAt} from '../src/scene';
 
@@ -241,4 +241,100 @@ test('procedural coastal preview palms are planted in actual island caps and nev
     }
     world.destroy();
   } finally { app.destroy(); }
+});
+
+test('cover camera is exactly one-third of the target-relative preview vector at triple orbit/dolly phase', () => {
+  const offset = (pose: ReturnType<typeof menuCameraPose>) => pose.position.map((value, axis) => value - pose.target[axis]);
+  for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
+    for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35]) {
+      const cover = coverCameraPose(map, time, aspect), preview = menuCameraPose(map, time * 3, aspect);
+      const actual = offset(cover), expected = offset(preview);
+      assert.deepEqual(cover.target, preview.target, `${map}: same look target`);
+      assert.equal(cover.fov, preview.fov, `${map}: zoom changes distance, not field of view`);
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(actual[axis] * 3 - expected[axis]) < 1e-10, `${map}: exact one-third offset on axis ${axis}`);
+      assert.ok(Math.abs(Math.hypot(...actual) / Math.hypot(...expected) - 1 / 3) < 1e-12);
+      const dt = 1 / 30, nextCover = offset(coverCameraPose(map, time + dt, aspect));
+      const nextPreview = offset(menuCameraPose(map, (time + dt) * 3, aspect));
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs((nextCover[axis] - actual[axis]) * 3 - (nextPreview[axis] - expected[axis])) < 1e-10, 'orbital and radial changes both use the accelerated phase');
+    }
+  }
+  for (const time of [0, 9.999, 10, 29.999, 30, 59.999, 60, 90]) {
+    assert.deepEqual(menuBackdropPhase(time, false, {presentation: 'cover'}), menuBackdropPhase(time), 'cover motion does not speed up the thirty-second map cycle or fade');
+  }
+});
+
+test('native cover worlds opt in to the closer camera while map preview framing and clipping remain unchanged', () => {
+  const app = fixture();
+  try {
+    for (const map of maps) for (const presentation of ['cover', 'map-preview'] as const) {
+      const world = createMenuWorld(app, map, DEFAULT_SETTINGS, presentation);
+      try {
+        for (const aspect of [16 / 9, 390 / 844, 350 / 390]) for (const time of [0, 7.5, 15, 29.999]) {
+          world.update(time, aspect);
+          const expected = (presentation === 'cover' ? coverCameraPose : menuCameraPose)(map, time, aspect);
+          const position = world.camera.getPosition(), target = new pc.Vec3(...expected.target), camera = world.camera.camera!;
+          position.toArray().forEach((value, axis) => assert.ok(Math.abs(value - expected.position[axis]) < .0001));
+          assert.ok(world.camera.forward.dot(target.clone().sub(position).normalize()) > .999999, 'native camera keeps aiming at the same target');
+          assert.ok(position.y > (map === 'waterpark' ? 27 : 15), 'camera stays above the local tower or road/palm silhouettes');
+          assert.equal(camera.nearClip, .1); assert.equal(camera.farClip, map === 'coast' ? 1500 : 1200);
+          assert.equal(camera.fov, 53);
+          const distance = target.clone().sub(position).length();
+          assert.ok(distance > camera.nearClip * 10 && distance < camera.farClip, 'look target remains safely within depth limits');
+          if (presentation === 'cover') {
+            camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect; camera.camera.updateFrustum();
+            const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
+            const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(point => camera.camera.frustum.containsPoint(point));
+            assert.ok(visible.length >= 8, `${map}: closer cover retains a readable real course section`);
+          }
+        }
+      } finally { world.destroy(); }
+    }
+  } finally { app.destroy(); }
+});
+
+test('backdrop mount routes cover-only motion separately and retains the thirty-second scene switch', () => {
+  const names = ['window', 'document', 'requestAnimationFrame', 'cancelAnimationFrame'];
+  const saved = new Map(names.map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
+  const cases: {options: MenuBackdropOptions; expected: 'cover' | 'map-preview'; map: typeof maps[number]}[] = [
+    {options: {presentation: 'cover'}, expected: 'cover', map: 'waterpark'},
+    {options: {}, expected: 'cover', map: 'waterpark'},
+    {options: {map: 'coast', autoCycle: false, presentation: 'map-preview'}, expected: 'map-preview', map: 'coast'},
+    {options: {map: 'coast'}, expected: 'map-preview', map: 'coast'},
+  ];
+  try {
+    for (const entry of cases) {
+      let nextFrame = 0;
+      const queued = new Map<number, FrameRequestCallback>();
+      const width = 1280, height = 720;
+      const parent = {getBoundingClientRect: () => ({left: 0, top: 0, width, height})};
+      const canvas = Object.assign(new EventTarget(), {id: 'cover-routing-test', width, height, dataset: {} as Record<string, string>, style: {width: '', height: ''}, parentElement: parent,
+        getBoundingClientRect: parent.getBoundingClientRect});
+      Object.defineProperties(canvas, {clientWidth: {get: () => width}, clientHeight: {get: () => height}});
+      const app = fixture(canvas as any); app.render = () => {};
+      const media = Object.assign(new EventTarget(), {matches: false});
+      Object.assign(globalThis, {
+        window: Object.assign(new EventTarget(), {innerWidth: width, innerHeight: height, devicePixelRatio: 1, matchMedia: () => media}),
+        document: Object.assign(new EventTarget(), {hidden: false}),
+        requestAnimationFrame: (callback: FrameRequestCallback) => {queued.set(++nextFrame, callback); return nextFrame;},
+        cancelAnimationFrame: (id: number) => {queued.delete(id);},
+      });
+      const flush = (time: number) => {const callbacks = [...queued.values()]; queued.clear(); for (const callback of callbacks) callback(time);};
+      const dispose = mountMenuBackdrop(canvas as any, {style: {opacity: ''}} as any, DEFAULT_SETTINGS, entry.options, () => app);
+      try {
+        flush(1000); flush(1100);
+        assert.equal(canvas.dataset.backdropMap, entry.map);
+        const camera = app.root.findByName(entry.map === 'coast' ? 'Chase camera' : 'Waterpark low chase composition') as pc.Entity;
+        const expected = (entry.expected === 'cover' ? coverCameraPose : menuCameraPose)(entry.map, .1, width / height);
+        camera.getPosition().toArray().forEach((value, axis) => assert.ok(Math.abs(value - expected.position[axis]) < .0001));
+        if (entry.options.presentation === 'cover') {
+          for (let frame = 2; frame <= 100; frame++) flush(1000 + frame * 100);
+          assert.equal(canvas.dataset.backdropMap, 'waterpark', 'three-times camera phase does not switch maps at ten seconds');
+          for (let frame = 101; frame <= 301; frame++) flush(1000 + frame * 100);
+          assert.equal(canvas.dataset.backdropMap, 'coast', 'the cover still switches scenes after thirty real animation seconds');
+        }
+      } finally { dispose(); }
+    }
+  } finally {
+    for (const [name, descriptor] of saved) {if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete (globalThis as any)[name];}
+  }
 });

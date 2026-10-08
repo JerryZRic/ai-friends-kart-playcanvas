@@ -6,7 +6,8 @@ import {sampleWaterparkLoop,WATER_RACE_LENGTH,WATER_RACE_BRIDGE_DISTANCE,WATER_R
 export const MENU_SCENE_SECONDS = 30;
 export const MENU_FADE_SECONDS = 1.15;
 export const MENU_MAX_FPS = 30;
-export type MenuBackdropOptions = {map?: MapId; autoCycle?: boolean};
+export type MenuPresentation = 'cover' | 'map-preview';
+export type MenuBackdropOptions = {map?: MapId; autoCycle?: boolean; presentation?: MenuPresentation};
 
 const smooth = (value: number) => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
 
@@ -104,4 +105,17 @@ export function menuCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   }
   distance += 8 + Math.sin(time * .075) * 5;
   return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target: [...target] as Point, fov};
+}
+
+/** The title cover uses the requested closer/faster version of the same shot.
+ * Scale about its look target, after evaluating the baseline at triple time.
+ * Do not re-fit/clamp the result: that would silently undo the 1/3 distance.
+ * Map-selection previews continue to use menuCameraPose unchanged. */
+export function coverCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
+  const baseline = menuCameraPose(map, seconds * 3, aspect);
+  return {
+    position: baseline.position.map((value, axis) => baseline.target[axis] + (value - baseline.target[axis]) / 3) as Point,
+    target: [...baseline.target] as Point,
+    fov: baseline.fov,
+  };
 }

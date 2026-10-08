@@ -12,7 +12,7 @@ function startBackdrop(version:number){
  if(!canvas||!curtain||typeof canvas.getContext!=='function')return;
  void import('./menu-backdrop').then(({mountMenuBackdrop})=>{
   if(version!==renderVersion||(state.screen!=='main'&&state.screen!=='maps'))return;
-  disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false}:undefined);
+  disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false,presentation:'map-preview'}:{presentation:'cover'});
  }).catch(error=>console.error('Title background unavailable',error));
 }
 function startCharacter(version:number){

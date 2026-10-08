@@ -17,8 +17,9 @@ are unchanged. See [the isolated deployment procedure](dev-preview.md).
 
 The cover and map picker reuse the actual PlayCanvas course geometry, animated water,
 and lighting. A slow orbit and radial dolly move the camera; the cover changes maps
-behind a smooth dark fade every 30 seconds. The map picker stays on the selected
-track. No character models are downloaded for either track preview.
+behind a smooth dark fade every 30 seconds. The cover camera runs at three times the map-preview orbit/dolly timing and
+one-third of its target distance; the 30-second scene cycle is unchanged.
+The map picker stays on the selected track with its original overview framing. No character models are downloaded for either track preview.
 
 Character selection shows the original standing figure from before the driving-rig
 edits, with drag and arrow-key rotation. These six web-optimized portrait assets

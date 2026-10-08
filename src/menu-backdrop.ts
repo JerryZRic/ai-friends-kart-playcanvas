@@ -4,7 +4,7 @@ import { createWaterparkScene } from './waterpark-scene';
 import { sample } from './track';
 import type { GameSettings } from './game-settings';
 import type { MapId } from './map-profiles';
-import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, type MenuBackdropOptions } from './menu-camera';
+import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, coverCameraPose, type MenuPresentation, type MenuBackdropOptions } from './menu-camera';
 
 type MenuWorld = { map: MapId; camera: pc.Entity; update: (time: number, aspect: number) => void; destroy: () => void };
 
@@ -45,7 +45,7 @@ function addCoastPalms(app: pc.Application, root: pc.Entity) {
 }
 
 /** One live world only. Exported for native-engine lifecycle regression tests. */
-export function createMenuWorld(app: pc.Application, map: MapId, settings: GameSettings): MenuWorld {
+export function createMenuWorld(app: pc.Application, map: MapId, settings: GameSettings, presentation: MenuPresentation = 'map-preview'): MenuWorld {
   const quality = menuBackdropQuality(settings, 1, 1);
   const coast = map === 'coast' ? createCoastScene(app, {preview: true}) : null;
   const waterpark = map === 'waterpark' ? createWaterparkScene(app, {race: true}) : null;
@@ -70,7 +70,7 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
     map, camera: world.camera,
     update(time, aspect) {
       if (destroyed) return;
-      const pose = menuCameraPose(map, time, aspect);
+      const pose = presentation === 'cover' ? coverCameraPose(map, time, aspect) : menuCameraPose(map, time, aspect);
       world.camera.setPosition(...pose.position); world.camera.lookAt(...pose.target);
       world.camera.camera!.fov = pose.fov;
       if (coast) coast.oceanMaterial.setParameter('time', time);
@@ -136,7 +136,7 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     try {
       if (!world || world.map !== phase.map) {
         world?.destroy(); world = null;
-        world = createMenuWorld(app, phase.map, settings);
+        world = createMenuWorld(app, phase.map, settings, options.presentation ?? (options.map ? 'map-preview' : 'cover'));
         canvas.dataset.backdropMap = phase.map;
       }
       world.update(phase.localTime, aspect);
