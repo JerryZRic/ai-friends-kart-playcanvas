@@ -184,6 +184,8 @@ test('native game integration preserves race, camera, items, menu and safety flo
         key('keydown','KeyW');qa.update(.1);key('keyup','KeyW');
         const tuning=characterTuning(profile.id,'coast');
         assert.equal(game.getState().selectedDriverId,profile.id);
+        assert.equal(element('raceChangeCharacter').href,'index.html?screen=characters&map=coast&driver='+profile.id);
+        assert.equal(element('raceChangeMap').href,'index.html?screen=maps&map=coast&driver='+profile.id);
         assert.ok(Math.abs(game.getState().speed-tuning.acceleration*.1)<1e-8);
         for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,`${bot.id} has its own acceleration`);
         qa.set({noBots:true,pos:0,lane:0,speed:0});

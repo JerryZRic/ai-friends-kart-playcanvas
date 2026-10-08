@@ -17,6 +17,13 @@ declare global { interface Window { neonKart: any; webkitAudioContext?: typeof A
 const $ = (id: string): any => document.getElementById(id);
 const settings = readGameSettings(), quality = qualitySettings(settings.quality);
 const query = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
+// Native links remain usable if WebGL or a later bootstrap step fails.
+function updateRaceLinks(driverId:string){
+  $('raceChangeMap').href='index.html?screen=maps&map=coast&driver='+encodeURIComponent(driverId);
+  $('raceChangeCharacter').href='index.html?screen=characters&map=coast&driver='+encodeURIComponent(driverId);
+}
+updateRaceLinks(getDriver(query.get('driver') || DEFAULT_DRIVER_ID).id);
+
 let disposed = false, autoStartPending = query.get('autostart') === '1';
 const canvas = $('game') as HTMLCanvasElement;
 const map = ($('map') as HTMLCanvasElement).getContext('2d')!;
@@ -191,6 +198,7 @@ const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
   if (disposed) return;
+  updateRaceLinks(selectedDriverId);
   const editable=canImport();
   for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':ready?'加载失败 · 原创替身':'加载中');}
   $('start').disabled=!ready||loadingBusy||localDrivers.busy;
@@ -225,9 +233,6 @@ $('resumeRace').onclick=pause;
 $('restartRace').onclick=reset;
 function navigate(screen=''){clearInputs();mouseLook.release();location.href='index.html'+(screen?'?screen='+screen+'&map=coast&driver='+encodeURIComponent(selectedDriverId):'');}
 $('pauseMenu').onclick=()=>navigate();
-$('raceMainMenu').onclick=()=>navigate();
-$('raceChangeMap').onclick=()=>navigate('maps');
-$('raceChangeCharacter').onclick=()=>navigate('characters');
 $('camera').onclick=()=>{view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{muted=!muted;$('sound').textContent=muted?'♪':'♫';$('sound').setAttribute('aria-label',muted?'开启音效':'关闭音效');tone()};
 function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, boost, shield, slow }; }

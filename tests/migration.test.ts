@@ -153,3 +153,15 @@ test('license boundaries and six documentation languages remain explicit', () =>
     assert.match(text, /AGPL/, name);
   }
 });
+
+
+test('coast return navigation has native destinations even before WebGL bootstrap',()=>{
+  const html=read('coast.html').toString(),source=read('src/game.ts').toString();
+  for(const [id,expected] of [['raceMainMenu','index.html'],['raceChangeMap','index.html?screen=maps&map=coast'],['raceChangeCharacter','index.html?screen=characters&map=coast']]){
+    const link=html.match(new RegExp('<a\\b[^>]*id="'+id+'"[^>]*>'))?.[0];
+    assert.ok(link,`${id} must be a native anchor, not a script-dependent button`);
+    const href=link.match(/href="([^"]+)"/)?.[1].replaceAll('&amp;','&');
+    assert.equal(href,expected);
+  }
+  assert.ok(source.indexOf('updateRaceLinks(getDriver(')<source.indexOf('app = new pc.Application('),'query selection updates links before WebGL can fail');
+});
