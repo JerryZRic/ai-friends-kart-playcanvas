@@ -3,6 +3,7 @@ import {createWaterparkDesign, sampleCamera} from './waterpark-design';
 import {createWaterparkWaterMaterial} from './waterpark-water';
 import {createWaterparkEnvironmentDetails, type EnvironmentMesh} from './waterpark-environment';
 import {createWaterparkMaterials, waterparkSurfaceUvs} from './waterpark-materials';
+import {createWaterparkBedDesign, createWaterparkBedMaterials} from './waterpark-bed';
 import {createWaterparkReflection} from './waterpark-reflection';
 
 export function createWaterparkScene(app: pc.Application) {
@@ -11,16 +12,17 @@ export function createWaterparkScene(app: pc.Application) {
   app.scene.fog.type = pc.FOG_LINEAR; app.scene.fog.color = new pc.Color(.66, .85, .94);
   app.scene.fog.start = 110; app.scene.fog.end = 460;
   const surfaces = createWaterparkMaterials(app.graphicsDevice);
+  const bedMaterials = createWaterparkBedMaterials(app.graphicsDevice, surfaces.environment);
   const waterMaterial = createWaterparkWaterMaterial(app);
   waterMaterial.setParameter('bridgeShadow', new Float32Array([183, 3.5, .6, 2]));
   const meshes: pc.Mesh[] = [];
   let triangles = 0;
-  for (const data of [...createWaterparkDesign(), ...createWaterparkEnvironmentDetails()]) {
+  for (const data of [...createWaterparkDesign(), ...createWaterparkEnvironmentDetails(), ...createWaterparkBedDesign()]) {
     const mesh = new pc.Mesh(app.graphicsDevice), normals = pc.calculateNormals(data.positions, data.indices);
     mesh.setPositions(data.positions); mesh.setNormals(normals); mesh.setIndices(data.indices);
-    mesh.setUvs(0, data.water ? data.uvs : waterparkSurfaceUvs(data.positions, normals)); mesh.update(pc.PRIMITIVE_TRIANGLES);
+    mesh.setUvs(0, data.water || ('submerged' in data && data.submerged) ? data.uvs : waterparkSurfaceUvs(data.positions, normals)); mesh.update(pc.PRIMITIVE_TRIANGLES);
     meshes.push(mesh);
-    const material = data.water ? waterMaterial : surfaces.get(data.name, data.color, (data as Partial<EnvironmentMesh>).surface);
+    const material = data.water ? waterMaterial : ('submerged' in data && data.submerged) ? bedMaterials.get(data.name) : surfaces.get(data.name, data.color, (data as Partial<EnvironmentMesh>).surface);
     const entity = new pc.Entity(data.name);
     entity.addComponent('render', {meshInstances: [new pc.MeshInstance(mesh, material)], castShadows: !data.water && !/cloud|joints|drainage recesses|Far /i.test(data.name), receiveShadows: !/cloud/i.test(data.name)});
     root.addChild(entity); triangles += data.indices.length / 3;
@@ -45,6 +47,6 @@ export function createWaterparkScene(app: pc.Application) {
   const reflection = createWaterparkReflection(app, root, camera, waterMaterial);
   // Runtime materials/textures are not asset registry resources. Release them
   // with this root on exit/retry, including the one-time prefiltered sky atlas.
-  root.once('destroy', () => {reflection.destroy(); surfaces.destroy(); waterMaterial.destroy(); skyMaterial.destroy(); for (const mesh of meshes) mesh.destroy();});
+  root.once('destroy', () => {reflection.destroy(); bedMaterials.destroy(); surfaces.destroy(); waterMaterial.destroy(); skyMaterial.destroy(); for (const mesh of meshes) mesh.destroy();});
   return {root, camera, waterMaterial, triangles, setCamera, surfaces, reflection};
 }

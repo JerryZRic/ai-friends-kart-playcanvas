@@ -1,26 +1,34 @@
 name: Build and publish PlayCanvas game
 on:
+  push:
+    branches: [dev]
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish the PlayCanvas HTML game and corresponding source
+        description: Publish the isolated dev preview while preserving the stable root
         required: true
         type: boolean
         default: false
 permissions:
   contents: read
+# Match main's manual workflow so stable and preview deployments cannot overlap.
 concurrency:
   group: github-pages
   cancel-in-progress: false
 jobs:
   build:
-    if: ${{ inputs.publish }}
+    if: ${{ github.ref == 'refs/heads/dev' && (github.event_name == 'push' || inputs.publish) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: read
     steps:
       - uses: actions/checkout@v6
+      - name: Check the pinned stable branch has not advanced
+        run: |
+          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
+          actual=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$actual" = "$expected" || { echo 'Stable main advanced. Refresh the exact stable artifact manifest before preview publication.' >&2; exit 1; }
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -28,19 +36,28 @@ jobs:
       - run: npm ci
       - run: npm run check && npm test && npm run build
       - run: npm run test:dist
+      - name: Preserve the stable site and add the dev build
+        run: node scripts/compose-dev-pages.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: dist
+          path: dist-pages
   deploy:
     needs: build
     permissions:
+      contents: read
       pages: write
       id-token: write
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}dev/waterpark.html
     steps:
+      - uses: actions/checkout@v6
+      - name: Check stable identity immediately before deployment
+        run: |
+          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
+          actual=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$actual" = "$expected" || { echo 'Stable main advanced; refusing to replace the site.' >&2; exit 1; }
       - id: deployment
         uses: actions/deploy-pages@v4

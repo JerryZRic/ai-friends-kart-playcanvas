@@ -2,7 +2,7 @@ import * as pc from 'playcanvas';
 import {WATER_SURFACE_GLSL} from './waterpark-surface';
 
 /**
- * Original, texture-free water for the isolated waterpark visual study.
+ * Original water with real bounded scene reflection/refraction render targets.
  * Mesh TEXCOORD0 is measured in metres: x = signed distance from the channel
  * centre, y = distance along the route. Those coordinates follow curved lanes.
  * The host owns animation: setParameter('time', elapsedSeconds) each frame.
@@ -36,6 +36,13 @@ uniform float waterHalfWidth;
 uniform sampler2D waterReflectionMap;
 uniform float waterReflectionAvailable;
 uniform vec2 waterReflectionTexelSize;
+uniform sampler2D waterRefractionMap;
+uniform highp sampler2D waterRefractionDepthMap;
+uniform float waterRefractionAvailable;
+uniform vec2 waterRefractionTexelSize;
+uniform mat4 waterRefractionInverseViewProjection;
+uniform mat4 waterRefractionViewProjection;
+uniform mat4 matrix_view;
 uniform vec4 uScreenSize;
 // Route position, half-length, opacity, and feather of the optional bridge shade.
 uniform vec4 bridgeShadow;
@@ -68,6 +75,15 @@ float waterCloud(vec2 p) {
     return result + waterNoise(p) * 0.14;
 }
 
+// The refraction target has an oblique near plane. Reconstruct through its
+// inverse matrix; perspective near/far linearization would give wrong depths.
+vec4 refractionHit(vec2 uv) {
+    float depth = texture2D(waterRefractionDepthMap, uv).r;
+    vec4 hit = waterRefractionInverseViewProjection * vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
+    float safeW = abs(hit.w) > 0.000001 ? hit.w : 0.000001;
+    return vec4(hit.xyz / safeW, depth < 0.999999 ? 1.0 : 0.0);
+}
+
 ${WATER_SURFACE_GLSL}
 void main(void) {
     vec2 route = vWaterRoute;
@@ -93,13 +109,41 @@ void main(void) {
     // Schlick reflectance for air/water (IOR approximately 1.333).
     float fresnel = 0.0204 + 0.9796 * pow(1.0 - clamp(dot(normal, toEye), 0.0, 1.0), 5.0);
     float shoreDistance = max(waterHalfWidth - abs(route.x), 0.0);
-    // Authored canal bathymetry, not a sampled scene-depth buffer.
+    // Refraction OFF retains the original authored-depth palette for A/B.
     float bedDepth = mix(0.32, 2.4, smoothstep(0.0, 4.0, shoreDistance));
     vec3 transmission = exp(-vec3(0.72, 0.23, 0.12) * bedDepth);
     vec3 bed = vec3(0.34, 0.72, 0.66);
     float caustic = pow(max(0.0, 1.0 - abs(sin(flow.x * 1.6 + warp * 4.0) + sin(flow.y * 1.2 - warp * 3.0))), 5.0);
     bed += caustic * 0.12 * depthFade;
     water = mix(water * vec3(0.5, 0.77, 0.91), bed, transmission * 0.62);
+    float sampledShoreDepth = 20.0;
+    if (waterRefractionAvailable > 0.5) {
+        vec4 projected = waterRefractionViewProjection * vec4(vWaterWorld, 1.0);
+        vec2 screenUv = projected.xy / max(projected.w, 0.00001) * 0.5 + 0.5;
+        vec2 margin = min(waterRefractionTexelSize * 1.5, vec2(0.49));
+        vec2 undistortedUv = clamp(screenUv, margin, vec2(1.0) - margin);
+        vec4 undistortedHit = refractionHit(undistortedUv);
+        sampledShoreDepth = max(0.0, vWaterWorld.y - undistortedHit.y);
+        // Fade distortion at actual geometry contacts; no flipped refraction UV.
+        float contactFade = smoothstep(0.03, 0.65, sampledShoreDepth);
+        vec2 refractionOffset = (matrix_view * vec4(normal - vec3(0.0, 1.0, 0.0), 0.0)).xy;
+        vec2 refractedUv = clamp(screenUv + refractionOffset * 0.035 * depthFade * contactFade, margin, vec2(1.0) - margin);
+        vec4 hit = refractionHit(refractedUv);
+        float rayDepth = dot(hit.xyz - vWaterWorld, -toEye);
+        // Reject silhouettes / empty clipped sky and use the undistorted sample.
+        if (hit.w < 0.5 || hit.y > vWaterWorld.y + 0.015 || rayDepth < 0.0) {
+            refractedUv = undistortedUv; hit = undistortedHit;
+            rayDepth = dot(hit.xyz - vWaterWorld, -toEye);
+        }
+        vec3 sceneColor = texture2D(waterRefractionMap, refractedUv).rgb;
+        vec3 attenuated = exp(-vec3(0.48, 0.115, 0.055) * clamp(rayDepth, 0.0, 40.0));
+        vec3 deepLinear = pow(vec3(0.015, 0.39, 0.48), vec3(2.2));
+        vec3 transmitted = sceneColor * attenuated + deepLinear * (vec3(1.0) - attenuated);
+        // Planar sRGBA samples linear RGB; finish in the authored display palette.
+        float valid = hit.w * step(0.0, rayDepth) * step(hit.y, vWaterWorld.y + 0.015);
+        water = mix(water, pow(max(transmitted, vec3(0.0)), vec3(1.0 / 2.2)), valid);
+        sampledShoreDepth = mix(20.0, sampledShoreDepth, undistortedHit.w);
+    }
     // A deliberately authored soft shadow for the bridge; native custom materials
     // do not automatically consume the StandardMaterial shadow-map chunks.
     float shadeDistance = abs(route.y - bridgeShadow.x);
@@ -140,7 +184,9 @@ void main(void) {
     water = mix(water, vec3(0.29, 0.88, 0.85), bankWash);
     float separatedFoam = 1.0 - smoothstep(0.08, 0.17 + foamAA, abs(edgeDistance - 0.73 - edgeWobble * 0.42));
     separatedFoam *= smoothstep(0.52, 0.73, waterNoise(vec2(flow.y * 0.65, route.x)));
-    float foam = max(contactFoam * 0.92, separatedFoam * 0.70 * depthFade);
+    float depthContact = (1.0 - smoothstep(0.18, 0.65, sampledShoreDepth));
+    depthContact *= 0.55 + 0.45 * waterNoise(flow * vec2(1.7, 1.3));
+    float foam = max(max(contactFoam * 0.92, separatedFoam * 0.70 * depthFade), depthContact * 0.86);
     water = mix(water, vec3(0.88, 0.99, 0.95), foam);
 
     water = mix(water, vec3(0.59, 0.82, 0.86), smoothstep(180.0, 480.0, vWaterDepth) * 0.48);
@@ -151,7 +197,7 @@ void main(void) {
 /** Create an opaque, depth-writing material. The host owns its lifetime and time. */
 export function createWaterparkWaterMaterial(_app: pc.Application): pc.ShaderMaterial {
   const material = new pc.ShaderMaterial({
-    uniqueName: 'original-waterpark-depth-reflection-v2',
+    uniqueName: 'original-waterpark-scene-refraction-v3',
     attributes: { aPosition: pc.SEMANTIC_POSITION, aUv0: pc.SEMANTIC_TEXCOORD0 },
     vertexGLSL: WATERPARK_WATER_VERTEX_SHADER,
     fragmentGLSL: WATERPARK_WATER_FRAGMENT_SHADER,
@@ -163,6 +209,7 @@ export function createWaterparkWaterMaterial(_app: pc.Application): pc.ShaderMat
   material.setParameter('time', 0);
   material.setParameter('waterHalfWidth', 12);
   material.setParameter('waterReflectionAvailable', 0);
+  material.setParameter('waterRefractionAvailable', 0);
   material.setParameter('waterReflectionTexelSize', [1/768,1/432]);
   material.setParameter('uScreenSize', [1280,720,1/1280,1/720]);
   material.setParameter('bridgeShadow', [0, 0, 0, 1.5]);

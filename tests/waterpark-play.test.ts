@@ -73,12 +73,24 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   let destroyed=0;app.on('destroy',()=>destroyed++);
   try {
     await import(copy.href+'?run='+Date.now());
+    const refractionCamera=app.root.findByName('Waterpark underwater refraction camera') as pc.Entity;
+    assert.ok(refractionCamera?.camera,'the real scene exposes the independent refraction pass');
+    assert.equal(refractionCamera.camera!.enabled,true);
+    assert.equal(element('perf-refraction').attributes['aria-pressed'],'true');
+    const previewPose=snapshot();
+    element('perf-refraction').click();assert.equal(refractionCamera.camera!.enabled,false);
+    assert.equal(element('perf-refraction').attributes['aria-pressed'],'false');
+    assert.deepEqual(snapshot(),previewPose,'A/B selection cannot move the mount or scenery');
+    element('perf-refraction').click();assert.equal(refractionCamera.camera!.enabled,true);
     assert.equal(element('perf-body').hidden,true);
     element('perf-toggle').click();assert.equal(element('perf-body').hidden,false);
     assert.equal(element('perf-toggle').attributes['aria-expanded'],'true');
     element('perf-start').click();assert.equal(element('perf-start').disabled,true);
     assert.equal(element('perf-cancel').disabled,false);
+    assert.equal(element('perf-refraction').disabled,true);
+    element('perf-refraction').emit('click');assert.equal(refractionCamera.camera!.enabled,true,'recording rejects synthetic water setting changes');
     element('perf-cancel').click();assert.equal(element('perf-start').disabled,false);
+    assert.equal(element('perf-refraction').disabled,false);
     assert.equal(element('perf-export').disabled,true,'empty captures cannot be exported');
     assert.equal(element('perf-copy').disabled,true,'empty captures cannot be copied');
     assert.match(element('perf-result').textContent,/0 帧间隔/);

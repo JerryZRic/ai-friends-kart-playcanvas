@@ -1,4 +1,5 @@
 import * as pc from 'playcanvas';
+import { createWaterparkRefraction } from './waterpark-refraction';
 import { PlanarRenderer } from 'playcanvas/scripts/esm/planar-renderer.mjs';
 
 export const WATERPARK_REFLECTION_SCALE = 0.5;
@@ -15,7 +16,8 @@ export function getWaterparkReflectionSize(width: number, height: number, maxTex
 }
 
 /**
- * One scenery-only planar pass using PlayCanvas's official mirrored camera.
+ * One scenery-only reflection plus optional underwater color/depth refraction.
+ * Both use PlayCanvas's official planar camera/clipping implementation.
  * Call after static scenery is complete, then update() after the chase camera.
  * Water and wake live in a main-camera-only layer. New moving objects are not
  * added to the captured scenery, so the mount cannot reflect its own wake.
@@ -128,6 +130,8 @@ export function createWaterparkReflection(
     reflectionLights.push(copy);
   }
 
+  const refraction = createWaterparkRefraction(app, root, camera, waterMaterial, layer, fallback, options.waterLevel ?? 0);
+
   function update() {
     if (destroyed) return null;
     const width = mainCamera.renderTarget?.width ?? app.graphicsDevice.width;
@@ -139,6 +143,7 @@ export function createWaterparkReflection(
     waterMaterial.setParameter('uScreenSize', screenSize);
     const enabled = !!size && root.enabled && camera.enabled && mainCamera.enabled;
     reflectionCamera.camera!.enabled = enabled;
+    refraction.update(enabled ? size : null);
     if (!enabled || !size) {
       waterMaterial.setParameter('waterReflectionMap', fallback);
       waterMaterial.setParameter('waterReflectionAvailable', 0);
@@ -166,6 +171,7 @@ export function createWaterparkReflection(
     root.off('destroy', destroy);
     // Destroy the script while its camera still exists: Entity.destroy removes
     // the camera component first, hiding the target from the official cleanup.
+    refraction.destroy();
     reflectionCamera.script?.destroy(PlanarRenderer);
     resources.destroy();
     for (const [render, previous] of displacedLayers) {
@@ -184,5 +190,13 @@ export function createWaterparkReflection(
   app.on('destroy', destroy);
   root.on('destroy', destroy);
   update();
-  return { camera: reflectionCamera, layer, waterLayer, renderer, reflectionLights, update, exclude, destroy };
+  return { camera: reflectionCamera, layer, waterLayer, renderer, reflectionLights, refraction, update, exclude, destroy,
+    setRefractionEnabled(value: boolean) { refraction.setEnabled(value); update(); },
+    getSettings() { const target = reflectionCamera.camera?.enabled ? reflectionCamera.camera.renderTarget : null;
+      return {...refraction.getSettings(), reflectionActive: !!target,
+        reflectionTarget: target ? {width: target.width, height: target.height} : null,
+        scale: WATERPARK_REFLECTION_SCALE, maxDimension: WATERPARK_REFLECTION_MAX_DIMENSION,
+        refractionDepth: 'sampled-oblique-depth', capture: 'static-scenery'};
+    },
+  };
 }

@@ -100,3 +100,15 @@ test('native waterpark scene connects metre UVs, curved water geometry, bridge s
     }
   } finally { app.destroy(); }
 });
+
+test('refraction samples real color and oblique depth with high precision and rejects invalid contacts', () => {
+  const shader = WATERPARK_WATER_FRAGMENT_SHADER;
+  assert.match(shader, /uniform highp sampler2D waterRefractionDepthMap/);
+  assert.match(shader, /texture2D\(waterRefractionMap, refractedUv\)/);
+  assert.match(shader, /waterRefractionInverseViewProjection \* vec4\(uv \* 2\.0 - 1\.0, depth \* 2\.0 - 1\.0, 1\.0\)/);
+  assert.match(shader, /waterRefractionViewProjection \* vec4\(vWaterWorld, 1\.0\)/);
+  assert.match(shader, /if \(hit\.w < 0\.5 \|\| hit\.y > vWaterWorld\.y \+ 0\.015 \|\| rayDepth < 0\.0\)/);
+  assert.match(shader, /refractedUv = undistortedUv/);
+  assert.match(shader, /sampledShoreDepth/);
+  assert.doesNotMatch(shader, /requestSceneDepthMap|camera_far|camera_near/);
+});

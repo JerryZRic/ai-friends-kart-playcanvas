@@ -27,7 +27,9 @@ try {
   world.root.addChild(mount.root);
   const input=createWaterparkInput(),events=new AbortController();
   const lifetime=createWaterparkLifetime(()=>{wake.dispose(); mount.dispose(); app.destroy();});
-  const performancePanel=createPerformancePanel(canvas,()=>({quality:'unchanged layered materials + planar reflection',pixelRatioCap:1.7,driver:selected}));
+  const performancePanel=createPerformancePanel(canvas,()=>({
+    quality:'layered materials + planar reflection + optional depth refraction',pixelRatioCap:1.7,driver:selected,water:world.reflection.getSettings(),
+  }),{getEnabled:()=>world.reflection.getSettings().requestedRefraction,setEnabled:enabled=>world.reflection.setRefractionEnabled(enabled)});
   const clearKeys=()=>input.clear();
 
   function updatePicker() {

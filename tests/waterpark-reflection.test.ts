@@ -228,3 +228,90 @@ test('scene removal releases reflection camera, official scene hook and textures
   f.app.destroy(); assert.equal(released, 1);
   f.waterMaterial.destroy(); f.stoneMaterial.destroy();
 });
+
+test('real refraction matches the main camera and owns a bounded color plus sampleable non-comparison depth target', () => {
+  const f = fixture();
+  try {
+    const r = createWaterparkReflection(f.app, f.root, f.camera, f.waterMaterial), ref = r.refraction;
+    assert.ok(ref.renderer instanceof PlanarRenderer);
+    assert.equal(ref.renderer.mode, 'refraction');
+    assert.deepEqual(ref.camera.getPosition().toArray(), f.camera.getPosition().toArray());
+    ref.camera.getRotation().toArray().forEach((value, index) => assert.ok(Math.abs(value - f.camera.getRotation().toArray()[index]) < 1e-8));
+    assert.deepEqual(ref.camera.camera!.layers, [r.layer.id]);
+    assert.ok(!ref.camera.camera!.layers.includes(r.waterLayer.id));
+    assert.equal(ref.camera.camera!.priority, f.camera.camera!.priority - 2);
+    const target = ref.camera.camera!.renderTarget!;
+    assert.equal(target.width, 640); assert.equal(target.height, 360); assert.equal(target.samples, 1);
+    assert.equal(target.depthBuffer, ref.renderer.depthTexture);
+    assert.equal(target.depthBuffer!.format, pc.PIXELFORMAT_DEPTH);
+    assert.equal(target.depthBuffer!.minFilter, pc.FILTER_NEAREST);
+    assert.equal(target.depthBuffer!.magFilter, pc.FILTER_NEAREST);
+    assert.equal(target.depthBuffer!.compareOnRead, false);
+    assert.equal(parameter(f.waterMaterial, 'waterRefractionMap'), target.colorBuffer);
+    assert.equal(parameter(f.waterMaterial, 'waterRefractionDepthMap'), target.depthBuffer);
+    assert.equal(parameter(f.waterMaterial, 'waterRefractionAvailable'), 1);
+    assert.deepEqual(r.getSettings().refractionTarget, {width: 640, height: 360});
+    const color = target.colorBuffer;
+    r.setRefractionEnabled(false);
+    assert.equal(ref.camera.camera!.enabled, false);
+    assert.equal(parameter(f.waterMaterial, 'waterRefractionAvailable'), 0);
+    assert.equal(r.getSettings().requestedRefraction, false);
+    assert.equal(r.getSettings().refractionTarget, null);
+    assert.equal(r.camera.camera!.enabled, true, 'reflection retained for A/B');
+    r.setRefractionEnabled(true);
+    assert.equal(ref.camera.camera!.renderTarget!.colorBuffer, color, 'toggle reuses allocation');
+    assert.equal(r.getSettings().refractionActive, true);
+  } finally {f.app.destroy(); f.waterMaterial.destroy(); f.stoneMaterial.destroy();}
+});
+
+test('sampled oblique depth reconstructs underwater geometry along the entire curved route', () => {
+  const f = fixture();
+  try {
+    const r = createWaterparkReflection(f.app, f.root, f.camera, f.waterMaterial);
+    for (let distance = 0; distance <= SAMPLE_LENGTH; distance += 5) {
+      const pose = sampleCamera(distance); f.camera.setPosition(...pose.position as [number,number,number]);
+      f.camera.lookAt(...pose.target as [number,number,number]); r.update();
+      const projection = new pc.Mat4(); r.refraction.camera.camera!.calculateProjection!(projection, pc.VIEW_CENTER);
+      const view = new pc.Mat4().invert(r.refraction.camera.getWorldTransform());
+      const vp = new pc.Mat4().mul2(projection, view);
+      const inverse = new pc.Mat4().set(Array.from(parameter<Float32Array>(f.waterMaterial, 'waterRefractionInverseViewProjection')));
+      const center = sampleWaterpark(distance + 15, 0).p;
+      const below = vp.transformVec4(new pc.Vec4(center.x, -2, center.z, 1));
+      const above = vp.transformVec4(new pc.Vec4(center.x, 2, center.z, 1));
+      assert.ok(below.z >= -below.w, `below-water capture kept at ${distance}`);
+      assert.ok(above.z < -above.w, `above-water capture clipped at ${distance}`);
+      const encodedDepth = (below.z / below.w) * .5 + .5;
+      const decoded = inverse.transformVec4(new pc.Vec4(below.x / below.w, below.y / below.w, encodedDepth * 2 - 1, 1));
+      assert.ok(Math.abs(decoded.x / decoded.w - center.x) < .003);
+      assert.ok(Math.abs(decoded.y / decoded.w + 2) < .003);
+      assert.ok(Math.abs(decoded.z / decoded.w - center.z) < .003);
+      assert.ok(Array.from(inverse.data).every(Number.isFinite));
+    }
+  } finally {f.app.destroy(); f.waterMaterial.destroy(); f.stoneMaterial.destroy();}
+});
+
+test('refraction depth and color resize, suspend, recover and destroy exactly once without stale samplers', () => {
+  const f = fixture();
+  const r = createWaterparkReflection(f.app, f.root, f.camera, f.waterMaterial);
+  const counts = new Map<pc.Texture, number>();
+  function observe(texture: pc.Texture) {counts.set(texture, 0); const original = texture.destroy.bind(texture); texture.destroy = () => {counts.set(texture, counts.get(texture)! + 1); original();};}
+  const first = r.refraction.camera.camera!.renderTarget!;
+  observe(first.colorBuffer!); observe(first.depthBuffer!);
+  f.canvas.width = 3840; f.canvas.height = 2160; r.update();
+  assert.equal(counts.get(first.colorBuffer!), 1); assert.equal(counts.get(first.depthBuffer!), 1);
+  const second = r.refraction.camera.camera!.renderTarget!;
+  assert.equal(second.width, 768); assert.equal(second.height, 432);
+  observe(second.colorBuffer!); observe(second.depthBuffer!);
+  f.canvas.height = 0; r.update();
+  assert.equal(r.getSettings().refractionActive, false);
+  assert.notEqual(parameter(f.waterMaterial, 'waterRefractionDepthMap'), second.depthBuffer);
+  f.canvas.height = 2160; r.update();
+  assert.equal(r.refraction.camera.camera!.renderTarget, second);
+  f.camera.setPosition(0, 0, 0); r.update();
+  assert.equal(r.getSettings().refractionActive, false, 'underwater unsupported view fails safely');
+  f.root.destroy(); r.destroy(); f.app.destroy();
+  for (const count of counts.values()) assert.equal(count, 1);
+  assert.equal(f.waterMaterial.getParameter('waterRefractionMap'), undefined);
+  assert.equal(f.waterMaterial.getParameter('waterRefractionDepthMap'), undefined);
+  f.waterMaterial.destroy(); f.stoneMaterial.destroy();
+});

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "repository": "JerryZRic/ai-friends-kart-playcanvas",
+  "stableCommit": "9bde1b3d5e39d0ea960977685a03f1b2ace98ff9",
+  "workflowRunId": 37773296870,
+  "artifactId": 11548154979,
+  "artifactSha256": "9d3005c9ff91a1f255cd17963ad390fa9d18832642eed2ede6a2e28c97680153",
+  "baseUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "path": "MODEL-NOTICE.txt",
+      "bytes": 2228,
+      "sha256": "1f75c286684563d54166677a13f324e0ee817d01ee7e52555de252e211ffd778"
+    },
+    {
+      "path": "NOTICE",
+      "bytes": 2343,
+      "sha256": "eb61ddb948fb7d16abedfdb0309c71eb0b071eaa3a532055ead2ee42c5e8d0ba"
+    },
+    {
+      "path": "SOURCE.txt",
+      "bytes": 1335,
+      "sha256": "3e54faceba85be4a129b9ed0ae71334b51bde5dc23cac1ec19abdc710bfdb2e2"
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.txt",
+      "bytes": 121415,
+      "sha256": "2d393e6fdcbbca9ccfdc8373db606a4164e043d6c70814814e2fadf457a6e92c"
+    },
+    {
+      "path": "assets/application-Dk7apCJh.js",
+      "bytes": 1997926,
+      "sha256": "decb9fdc260fe0bc393fe9bbecee71e62be0f773abab972851e38b5700b37cb4"
+    },
+    {
+      "path": "assets/application-Dk7apCJh.js.map",
+      "bytes": 5192970,
+      "sha256": "1b13808cce34451336599c1d28b652a3bdaaf23d2053e37156e95aa368f0f868"
+    },
+    {
+      "path": "assets/arch.glb",
+      "bytes": 212332,
+      "sha256": "02d5846dff35d97535b979348a255aaaf7d38b0e1b971ca6a0428b4807d496ae"
+    },
+    {
+      "path": "assets/assets-B-mxuz3E.js",
+      "bytes": 27703,
+      "sha256": "1d7a1a7edc2b82474a6691b6f6af9d931fb398a8068aa3cd098ac996631fcae5"
+    },
+    {
+      "path": "assets/assets-B-mxuz3E.js.map",
+      "bytes": 175535,
+      "sha256": "67af420142f88412cc1a42ac0bede438a77ef951deeb87f18d752fe402be5e9b"
+    },
+    {
+      "path": "assets/drivers/claude-driver.glb.gz",
+      "bytes": 7572632,
+      "sha256": "0d60bb2a3da169fb5a2a7aee4573597bfe57966284b48a2169afcb039c2a0269"
+    },
+    {
+      "path": "assets/drivers/gemini-driver.glb.gz",
+      "bytes": 9977393,
+      "sha256": "74a8c3827f4168117b01af7288e24a662f01a18a72b04464cc0044e8815b7a0d"
+    },
+    {
+      "path": "assets/drivers/glm-driver.glb.gz",
+      "bytes": 9459423,
+      "sha256": "0b690d9993b94d9797bab23ea7d63e313a6253b12008d44c7b8d9f4e67be67fe"
+    },
+    {
+      "path": "assets/drivers/gpt-driver.glb.gz",
+      "bytes": 7716185,
+      "sha256": "b89e0bf70b457785ee9e59887b552cd73143be05eee783d8aefafc1c8b0b5388"
+    },
+    {
+      "path": "assets/drivers/grok-driver.glb.gz",
+      "bytes": 9013413,
+      "sha256": "c0af0d6d75f1ce030f0af777a1b312db91ead5d5411eaf89304f1e461a9d5b7b"
+    },
+    {
+      "path": "assets/drivers/whale-driver.glb.gz",
+      "bytes": 7888160,
+      "sha256": "1bb498c06caab6797756af42cc4a092e9f51dfe661fa97f13639e2e359ff5bc8"
+    },
+    {
+      "path": "assets/kart-r12-chassis.glb",
+      "bytes": 891244,
+      "sha256": "2eadfef0873bb96f62c5047d321bc3f1805a2b22a236b726684d5e17d9e42086"
+    },
+    {
+      "path": "assets/kart.glb",
+      "bytes": 1179824,
+      "sha256": "ba1b4f018004eeabf860922ad570c338c281a671c9af56cdc839592df7ae59a0"
+    },
+    {
+      "path": "assets/main-BHPQfIki.js",
+      "bytes": 50978,
+      "sha256": "bbfdaec8ce207b985285bfe3c4e145701c26a48e2768a59960b575fa78e8c32c"
+    },
+    {
+      "path": "assets/main-BHPQfIki.js.map",
+      "bytes": 167764,
+      "sha256": "fcf3785bb8e7f59b545c8b28fa68b9f885a9d08e4af538bcd3a0dfd7e7c229fb"
+    },
+    {
+      "path": "assets/palm.glb",
+      "bytes": 105300,
+      "sha256": "bce1b487f8f7e821bf361c4e4c0ae60dd0ed03eb16f783e85c74db7bf8c52b03"
+    },
+    {
+      "path": "assets/rock.glb",
+      "bytes": 10148,
+      "sha256": "751119ac92b808fd4cf99cd4f639d2e17db832306a7fc8e59e1e61adcc9beb11"
+    },
+    {
+      "path": "assets/study-CbpPu3NK.js",
+      "bytes": 1457,
+      "sha256": "78668b0fa9d32ad9853b260caa9d76972042805a550ac219c6566860acbccada"
+    },
+    {
+      "path": "assets/study-CbpPu3NK.js.map",
+      "bytes": 3592,
+      "sha256": "725ab07659dec872fc9fccd3321de39163176eeb3c105977de15d190b5d6cbef"
+    },
+    {
+      "path": "assets/waterpark-JJ5mTpdO.js",
+      "bytes": 26561,
+      "sha256": "5bfdf76144321bc9ab307e931a16c86032204cebff20b393978e45a76ebfcb46"
+    },
+    {
+      "path": "assets/waterpark-JJ5mTpdO.js.map",
+      "bytes": 84763,
+      "sha256": "04861ea2aacea03db00e691cab6907b523cdb2739a7b9c0a3bdde354c0584c58"
+    },
+    {
+      "path": "assets/waterpark-scene-C9l0Sb3q.js",
+      "bytes": 30902,
+      "sha256": "eb255680f063a7cefd140caa18706a0fe7683e0f986d91aeb07900c4cc76f5cf"
+    },
+    {
+      "path": "assets/waterpark-scene-C9l0Sb3q.js.map",
+      "bytes": 101701,
+      "sha256": "4ac81804a6cc8c6c86717d3791cf1af5c1554819e2e253192e0a8cb145a064e5"
+    },
+    {
+      "path": "index.html",
+      "bytes": 18097,
+      "sha256": "c2f37c84e2ded2aff370dfacf93458a81fd8bf0ee48ab389be525f362dc6433b"
+    },
+    {
+      "path": "source.html",
+      "bytes": 2577,
+      "sha256": "fc78e173543fbe193209c87f3a3349739964200d0a06e495d0f4843b7c39d38d"
+    },
+    {
+      "path": "source.zip",
+      "bytes": 1412976,
+      "sha256": "ec32d124f7783dd8597ead94b6bb793375b50d93f0f368108cc57ed2952e8a51"
+    },
+    {
+      "path": "waterpark-study.html",
+      "bytes": 2275,
+      "sha256": "3a84cb078a93007dc712e3421ec3a852b3ccc594e1d1e46b971cc0a2845494cc"
+    },
+    {
+      "path": "waterpark.html",
+      "bytes": 6250,
+      "sha256": "3cb34865f86e297fb04ce1f454b3c3178a0e8ac280f78a5a13a11c1932a652bb"
+    }
+  ]
+}

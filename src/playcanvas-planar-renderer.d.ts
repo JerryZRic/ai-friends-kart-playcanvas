@@ -12,6 +12,8 @@ declare module 'playcanvas/scripts/esm/planar-renderer.mjs' {
     planeNormal: Vec3;
     obliqueClipping: boolean;
     clipBias: number;
+    _destroyRenderTarget(): void;
+    updateRenderTarget(): void;
     frameUpdate(): Texture | null;
   }
 }
