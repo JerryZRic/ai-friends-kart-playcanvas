@@ -4,11 +4,19 @@ import * as pc from 'playcanvas';
 import { sample as sampleCoast, LENGTH as COAST_LENGTH } from '../src/track';
 import { sampleWaterparkLoop, WATER_RACE_LENGTH, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE } from '../src/waterpark-design';
 import { DEFAULT_SETTINGS } from '../src/game-settings';
-import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors, coverCameraPose, type MenuBackdropOptions } from '../src/menu-camera';
+import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors, coverCameraPose, coverTrackTarget, type MenuBackdropOptions } from '../src/menu-camera';
 import { createMenuWorld, mountMenuBackdrop } from '../src/menu-backdrop';
 import {coastGroundHeightAt} from '../src/scene';
 
 const maps = ['waterpark', 'coast'] as const;
+const referenceCenterlines = Object.fromEntries(maps.map(map => {
+  const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
+  return [map, Array.from({length: 2048}, (_, i) => sample(i / 2048 * length).p)];
+})) as Record<typeof maps[number], pc.Vec3[]>;
+function nearestCenterlinePoint(map: typeof maps[number], target: pc.Vec3) {
+  return referenceCenterlines[map].reduce((nearest, point) => point.clone().sub(target).lengthSq() < nearest.clone().sub(target).lengthSq() ? point : nearest);
+}
+
 
 function fixture(inputCanvas?: HTMLCanvasElement) {
   const canvas = inputCanvas ?? {id: 'menu-backdrop-test', width: 1280, height: 720, addEventListener() {}, removeEventListener() {},
@@ -243,19 +251,20 @@ test('procedural coastal preview palms are planted in actual island caps and nev
   } finally { app.destroy(); }
 });
 
-test('cover camera is exactly one-third of the target-relative preview vector at triple orbit/dolly phase', () => {
+test('cover camera uses two-thirds of the prior cover radius at nine-times baseline orbit/dolly phase', () => {
   const offset = (pose: ReturnType<typeof menuCameraPose>) => pose.position.map((value, axis) => value - pose.target[axis]);
   for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
     for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35]) {
-      const cover = coverCameraPose(map, time, aspect), preview = menuCameraPose(map, time * 3, aspect);
+      const cover = coverCameraPose(map, time, aspect), preview = menuCameraPose(map, time * 9, aspect);
       const actual = offset(cover), expected = offset(preview);
-      assert.deepEqual(cover.target, preview.target, `${map}: same look target`);
       assert.equal(cover.fov, preview.fov, `${map}: zoom changes distance, not field of view`);
-      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(actual[axis] * 3 - expected[axis]) < 1e-10, `${map}: exact one-third offset on axis ${axis}`);
-      assert.ok(Math.abs(Math.hypot(...actual) / Math.hypot(...expected) - 1 / 3) < 1e-12);
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(actual[axis] * 9 / 2 - expected[axis]) < 1e-10, `${map}: exact two-ninths baseline offset on axis ${axis}`);
+      assert.ok(Math.abs(Math.hypot(...actual) / Math.hypot(...expected) - 2 / 9) < 1e-12);
+      const previousCoverRadiusAtThreeTimesCurrentTime = Math.hypot(...offset(menuCameraPose(map, (time * 3) * 3, aspect))) / 3;
+      assert.ok(Math.abs(Math.hypot(...actual) / previousCoverRadiusAtThreeTimesCurrentTime - 2 / 3) < 1e-12, 'reducing current distance by one-third preserves two-thirds of the prior cover distance');
       const dt = 1 / 30, nextCover = offset(coverCameraPose(map, time + dt, aspect));
-      const nextPreview = offset(menuCameraPose(map, (time + dt) * 3, aspect));
-      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs((nextCover[axis] - actual[axis]) * 3 - (nextPreview[axis] - expected[axis])) < 1e-10, 'orbital and radial changes both use the accelerated phase');
+      const nextPreview = offset(menuCameraPose(map, (time + dt) * 9, aspect));
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs((nextCover[axis] - actual[axis]) * 9 / 2 - (nextPreview[axis] - expected[axis])) < 1e-10, 'orbital and radial changes both use the accelerated phase');
     }
   }
   for (const time of [0, 9.999, 10, 29.999, 30, 59.999, 60, 90]) {
@@ -284,7 +293,14 @@ test('native cover worlds opt in to the closer camera while map preview framing 
             camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect; camera.camera.updateFrustum();
             const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
             const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(point => camera.camera.frustum.containsPoint(point));
-            assert.ok(visible.length >= 8, `${map}: closer cover retains a readable real course section`);
+            assert.ok(visible.length >= 5, `${map}: exact closer zoom retains a readable real course section`);
+            const surface = nearestCenterlinePoint(map, target);
+            assert.ok(surface.clone().sub(target).length() < 1, 'cover focal point remains within one metre of the real track');
+            const viewProjection = new pc.Mat4().mul2(camera.camera.projectionMatrix, new pc.Mat4().invert(world.camera.getWorldTransform()));
+            const project = (point: pc.Vec3) => {const value = viewProjection.transformVec4(new pc.Vec4(point.x, point.y, point.z, 1)); return {x: value.x / value.w, y: value.y / value.w, w: value.w};};
+            const aimed = project(target), road = project(surface);
+            assert.ok(aimed.w > camera.nearClip && Math.abs(aimed.x) < .00001 && Math.abs(aimed.y) < .00001, 'the target projects to native screen center');
+            assert.ok(road.w > camera.nearClip && Math.abs(road.x) < .035 && Math.abs(road.y) < .035, 'actual centerline geometry stays in the center 3.5% of the viewport');
           }
         }
       } finally { world.destroy(); }
@@ -328,7 +344,7 @@ test('backdrop mount routes cover-only motion separately and retains the thirty-
         camera.getPosition().toArray().forEach((value, axis) => assert.ok(Math.abs(value - expected.position[axis]) < .0001));
         if (entry.options.presentation === 'cover') {
           for (let frame = 2; frame <= 100; frame++) flush(1000 + frame * 100);
-          assert.equal(canvas.dataset.backdropMap, 'waterpark', 'three-times camera phase does not switch maps at ten seconds');
+          assert.equal(canvas.dataset.backdropMap, 'waterpark', 'nine-times camera phase does not switch maps at ten seconds');
           for (let frame = 101; frame <= 301; frame++) flush(1000 + frame * 100);
           assert.equal(canvas.dataset.backdropMap, 'coast', 'the cover still switches scenes after thirty real animation seconds');
         }
@@ -336,5 +352,19 @@ test('backdrop mount routes cover-only motion separately and retains the thirty-
     }
   } finally {
     for (const [name, descriptor] of saved) {if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete (globalThis as any)[name];}
+  }
+});
+
+
+test('cover focal target follows a continuous actual centerline section in every viewport', () => {
+  for (const map of maps) {
+    assert.notDeepEqual(coverTrackTarget(map, 0), coverTrackTarget(map, 20), 'focus moves along the authored track section');
+    for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35, 90]) {
+      const target = coverTrackTarget(map, time), point = new pc.Vec3(...target);
+      assert.ok(nearestCenterlinePoint(map, point).clone().sub(point).length() < 1);
+      const next = new pc.Vec3(...coverTrackTarget(map, time + .001));
+      assert.ok(next.sub(point).length() < .05, 'one-millisecond steps have no focal-point jumps');
+      for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) assert.deepEqual(coverCameraPose(map, time, aspect).target, target, 'portrait and desktop stay centered on the same real track feature');
+    }
   }
 });

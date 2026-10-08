@@ -107,15 +107,28 @@ export function menuCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target: [...target] as Point, fov};
 }
 
-/** The title cover uses the requested closer/faster version of the same shot.
- * Scale about its look target, after evaluating the baseline at triple time.
- * Do not re-fit/clamp the result: that would silently undo the 1/3 distance.
- * Map-selection previews continue to use menuCameraPose unchanged. */
+/** Keep the cover's focal point on a real S-bend centerline. A slow, bounded
+ * metre-distance sweep follows that section continuously; no world-bounds
+ * center or empty-water fallback is used, even in portrait layouts. */
+export function coverTrackTarget(map: MapId, seconds: number): Point {
+  const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+  const {sample, length} = route(map);
+  const distance = length * (map === 'coast' ? .69 : .165) + 24 * Math.sin(time * .05);
+  const point = sample(distance).p;
+  return [point.x, point.y + .3, point.z];
+}
+
+/** Reduce the previous cover radius by one third and triple its motion rate:
+ * original overview radius * 2/9, original orbit/dolly phase * 9.
+ * Translate that exact offset onto the real track focal point without re-fit
+ * or zoom clamps. Map-selection overview framing remains untouched. */
 export function coverCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
-  const baseline = menuCameraPose(map, seconds * 3, aspect);
+  const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+  const baseline = menuCameraPose(map, time * 9, aspect);
+  const target = coverTrackTarget(map, time);
   return {
-    position: baseline.position.map((value, axis) => baseline.target[axis] + (value - baseline.target[axis]) / 3) as Point,
-    target: [...baseline.target] as Point,
+    position: baseline.position.map((value, axis) => target[axis] + (value - baseline.target[axis]) * 2 / 9) as Point,
+    target,
     fov: baseline.fov,
   };
 }
