@@ -5,9 +5,9 @@ are unchanged. See [the isolated deployment procedure](dev-preview.md).
 
 ## Complete play flow
 
-- Main menu: Story (clearly marked as in development), Free mode, Settings, Exit
+- Main menu: 大肥鱼卡丁车, with Story, Free mode, Settings and Exit at the bottom. Story opens a development notice only when selected
 - Free mode: choose Sunset Coast (kart) or Sunny Waterpark (water mount), then
-  choose one of the same six distributed characters
+  confirm the rotating 3D map preview and choose one of the same six distributed characters
 - Start: real resource loading, then countdown and three laps against five NPCs
 - Pause: resume, restart or return to the menu
 - Results: actual finishing order/times where available, replay, change character,
@@ -15,9 +15,23 @@ are unchanged. See [the isolated deployment procedure](dev-preview.md).
 - Exit: a resting page with a return button and instructions to close the tab;
   browsers are not asked to close an arbitrary tab
 
-The main menu needs no WebGL. The races require WebGL2. Character selection uses
-simple identification symbols, explicitly labeled as such; the existing rigged
-3D models load in the race. Story content and background music are not included.
+The cover and map picker reuse the actual PlayCanvas course geometry, animated water,
+and lighting. A slow orbit and radial dolly move the camera; the cover changes maps
+behind a smooth dark fade every 30 seconds. The map picker stays on the selected
+track. No character models are downloaded for either track preview.
+
+Character selection shows the selected distributed rigged GLB, loaded on demand,
+with drag and arrow-key rotation. Stale selections are cancelled and a bounded
+session cache avoids repeated downloads. Attribute differences and the existing
+race links remain unchanged. The six symbols are selection buttons, not model
+previews. Story content and background music are not included.
+
+WebGL2 is required for all real 3D previews and races. Menu navigation remains usable
+if WebGL initialization fails; the cover adds no error/debug text. The character
+viewer reports loading failures with a retry control. Reduced-motion users get a
+static track composition. Leaving a screen destroys its viewer, and hidden pages
+suspend frame work. Track previews cap frame rate at 30 fps and cap total rendered
+pixels; quality settings also control shadows and extra water captures.
 
 ## Shared character profiles
 

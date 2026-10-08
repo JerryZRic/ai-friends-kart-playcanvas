@@ -14,7 +14,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 ## Dev free-mode playtest
 
-[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the main menu, map and character selection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root and Windows release above are unchanged.
+[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root and Windows release above are unchanged.
 
 ## Features
 

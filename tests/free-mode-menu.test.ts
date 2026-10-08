@@ -27,13 +27,13 @@ test('settings survive reload and reject corrupt values, unknown versions, missi
 test('menu URLs sanitize hostile states and preserve only selected map and driver on back',()=>{
  assert.deepEqual(parseMenuState('?screen=nonsense&driver=<script>&map=external&return=exit'),{screen:'main',driver:'whale',map:'coast',returnTo:'main'});
  const state=parseMenuState('?screen=characters&driver=grok&map=waterpark');assert.equal(parseMenuState(menuQuery(state)).driver,'grok');
- assert.equal(menuQuery({...state,screen:'maps'}),'?screen=maps');
+ assert.equal(menuQuery({...state,screen:'maps'}),'?screen=maps&map=waterpark');
  assert.equal(raceEntry('coast','grok'),'./coast.html?driver=grok&autostart=1');assert.equal(raceEntry('waterpark','x'),'./waterpark.html?driver=whale&autostart=1');
  assert.equal(MAP_PROFILES.coast.entry,'./coast.html');
 });
-test('entry has no game canvas or game bootstrap; all map entries are separate and settings are honest',async()=>{
+test('entry has no race bootstrap; all map entries are separate and settings are honest',async()=>{
  const index=await readFile('index.html','utf8'),menu=await readFile('src/menu.ts','utf8'),coast=await readFile('coast.html','utf8'),vite=await readFile('vite.config.ts','utf8');
  assert.match(index,/\/src\/menu.ts/);assert.doesNotMatch(index,/<canvas|src\/game.ts|src\/waterpark-play.ts/);assert.doesNotMatch(menu,/from ['"]playcanvas|window.close|volume|AudioContext/);
- assert.match(menu,/故事模式/);assert.match(menu,/开发中/);assert.match(menu,/popstate/);assert.match(menu,/暂未加入背景音乐/);assert.match(menu,/转向加速度/);assert.match(menu,/惯性与阻尼/);assert.match(menu,/操作说明/);
+ assert.match(menu,/menu-backdrop/);assert.match(menu,/大肥鱼卡丁车/);assert.match(menu,/故事模式/);assert.match(menu,/开发中/);assert.match(menu,/popstate/);assert.match(menu,/暂未加入背景音乐/);assert.match(menu,/转向加速度/);assert.match(menu,/惯性与阻尼/);assert.match(menu,/操作说明/);
  assert.match(coast,/src\/game.ts/);assert.match(vite,/coast: 'coast.html'/);
 });

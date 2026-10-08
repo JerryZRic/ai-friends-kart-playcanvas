@@ -8,7 +8,8 @@ export function parseMenuState(search:string):MenuState{
 }
 export function menuQuery(state:MenuState):string{
  const p=new URLSearchParams();if(state.screen!=='main')p.set('screen',state.screen);
- if(state.screen==='characters'||state.screen==='settings'){p.set('map',state.map);p.set('driver',state.driver);}
+ if(state.screen==='maps'||state.screen==='characters'||state.screen==='settings')p.set('map',state.map);
+ if(state.screen==='characters'||state.screen==='settings')p.set('driver',state.driver);
  if(state.screen==='settings')p.set('return',state.returnTo);
  return p.size?'?'+p.toString():'';
 }

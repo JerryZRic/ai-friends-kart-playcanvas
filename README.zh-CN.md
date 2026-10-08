@@ -14,7 +14,7 @@
 
 ## dev 自由模式测试
 
-[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：主菜单、地图与角色选择、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。上方稳定版入口与 Windows 版本保持不变。
+[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。上方稳定版入口与 Windows 版本保持不变。
 
 ## 游戏特色
 

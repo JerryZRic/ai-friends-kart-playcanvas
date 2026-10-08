@@ -68,7 +68,7 @@ export function placeKart(entity: pc.Entity, distance: number, lateral: number, 
 export interface ItemBox extends PickupState { d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity> }
 export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 
-export function createCoastScene(app: pc.Application) {
+export function createCoastScene(app: pc.Application, options: { preview?: boolean } = {}) {
   const root = new pc.Entity('Sunset coast circuit');
   app.root.addChild(root);
   app.scene.ambientLight = color('#adbdd2');
@@ -173,6 +173,18 @@ export function createCoastScene(app: pc.Application) {
   posts.entity(app, 'Guardrail supports', material('#b5d3d9'), root, true);
   supports.entity(app, 'Elevated road piers', material('#93acaa'), root, true);
   grid.entity(app, 'Checkered starting line', material('#fffcde'), root);
+
+  // The title screen shares the circuit, but never allocates gameplay pickups,
+  // item-model caches, shields or particle pools. Render components own meshes;
+  // these procedural materials need an explicit scene-lifetime owner.
+  if (options.preview) {
+    const materials = new Set<pc.Material>();
+    eachMesh(root, instance => materials.add(instance.material));
+    root.once('destroy', () => { for (const mat of materials) mat.destroy(); });
+    const shield = new pc.Entity('Unused preview shield'); shield.enabled = false; root.addChild(shield);
+    return { root, camera, sun, oceanMaterial, boxes: [] as ItemBox[], shield,
+      flames: [] as { mesh: pc.Entity; side: number }[], particles: [] as pc.Entity[], buildProps };
+  }
 
   const itemMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.BoxGeometry({ halfExtents: new pc.Vec3(.625, .625, .625) }));
   const itemMat = material('#b9e7f8', { opacity: .16, metalness: .05, roughness: .2 });
