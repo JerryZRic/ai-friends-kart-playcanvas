@@ -126,7 +126,7 @@ test('six published gzip models preserve compressed and decoded identities, clip
 });
 
 test('source UI retains accessible selection, loading, local replacement, HUD and mobile controls', () => {
-  const html = read('index.html').toString();
+  const html = read('coast.html').toString();
   for (const id of [...ids.map(id => 'slot-' + id), 'game', 'map', 'loadingSection', 'loadingProgress', 'loadingBytes', 'loadingDetails', 'retryLoading', 'start', 'driverFiles', 'importButton', 'clearDriver', 'pause', 'camera', 'sound', 'rank', 'lap', 'timer', 'speed', 'charge', 'item', 'itemName', 'lookHint']) {
     assert.equal([...html.matchAll(new RegExp('id="' + id + '"', 'g'))].length, 1, id);
   }

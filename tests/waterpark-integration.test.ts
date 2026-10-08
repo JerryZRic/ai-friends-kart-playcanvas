@@ -51,8 +51,8 @@ test('both map entries remain relative and keep the kart runtime isolated from t
     const html = read(map.entry);
     for (const prefix of ['/', '/preview/nested/']) assert.ok(new URL(map.entry, `https://example.invalid${prefix}`).pathname.startsWith(prefix));
   }
-  const coast = read('index.html'), waterpark = read('waterpark.html'), study = read('waterpark-study.html');
-  assert.match(coast, /src\/game\.ts/); assert.match(coast, /src\/map-picker\.ts/);
+  const coast = read('coast.html'), waterpark = read('waterpark.html'), study = read('waterpark-study.html');
+  assert.match(coast, /src\/game\.ts/); assert.match(read('index.html'), /src\/menu\.ts/);
   assert.doesNotMatch(coast, /src\/waterpark-play\.ts/);
   assert.match(waterpark, /src\/waterpark-play\.ts/); assert.doesNotMatch(waterpark, /src\/game\.ts/);
   assert.match(study, /src\/waterpark-preview\.ts/);

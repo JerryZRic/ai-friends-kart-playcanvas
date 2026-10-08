@@ -1,4 +1,8 @@
 import * as pc from 'playcanvas';
+import { characterTuning } from './character-profiles';
+import { readGameSettings, qualitySettings } from './game-settings';
+import { coastLap, crossingTime, coastStandings } from './coast-race-rules';
+import { createWaterparkLifetime as createRaceLifetime } from './waterpark-lifetime';
 import { createItemModel, itemImage, type ItemKind } from './item-models';
 import { advancePickup, resetPickup } from './item-pickups';
 import { RULES, newBrain, tickBrain, tickEffects, racingSpeed, chooseItem, activateItem, collectPickups, planLane, moveLane, nearbyGap, type Combatant, type Brain } from './npc-tactics';
@@ -7,10 +11,13 @@ import { createOrbit, bindMouseLook } from './mouse-look.js';
 import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roster.js';
 import { COURSE_FILES, loadCourseAssets, loadBundledDrivers, createImportedRacer, createLocalDriverStore, instantiateRenderEntity, type DriverAsset } from './assets';
 import { createCoastScene, eachMesh, placeKart, color, type Spark } from './scene';
-import { LENGTH, HALF, MAX_SPEED as MAX, sample, clamp, damp, scaled, degrees, UP } from './track';
+import { LENGTH, HALF, sample, clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
 const $ = (id: string): any => document.getElementById(id);
+const settings = readGameSettings(), quality = qualitySettings(settings.quality);
+const query = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
+let disposed = false, autoStartPending = query.get('autostart') === '1';
 const canvas = $('game') as HTMLCanvasElement;
 const map = ($('map') as HTMLCanvasElement).getContext('2d')!;
 let app: pc.Application;
@@ -20,10 +27,13 @@ try {
   $('loading').textContent = '当前浏览器无法启用 WebGL，请开启硬件加速或换用新版浏览器';
   throw error;
 }
-app.graphicsDevice.maxPixelRatio = Math.min(devicePixelRatio || 1, 1.7);
+app.maxDeltaTime = Infinity; // Preserve elapsed time; gameplay is substepped below.
+app.graphicsDevice.maxPixelRatio = Math.min(devicePixelRatio || 1, quality.pixelRatioCap);
 app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
 app.setCanvasResolution(pc.RESOLUTION_AUTO);
 const world = createCoastScene(app);
+const lifetime = createRaceLifetime(()=>{releaseRacers();app.destroy();});
+for (const light of app.root.findComponents('light') as pc.LightComponent[]) {light.castShadows = quality.shadows;light.shadowResolution = quality.shadowResolution;}
 const { camera, boxes, shield: shieldMesh, flames, particles } = world;
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
   charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null,
@@ -31,9 +41,9 @@ let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane 
   audio: AudioContext | null = null, clock = 0;
 type RacerEntity = pc.Entity & { userData?: { driverId: string } };
 type BotFX = { shield: pc.Entity; flames: { mesh: pc.Entity; side: number }[]; inventory: Record<ItemKind, pc.Entity> };
-type Bot = Combatant & Brain & { phase: number; color: string; finishedAt: number | null; mesh: RacerEntity; fx: BotFX };
+type Bot = Combatant & Brain & { phase: number; color: string; driving: boolean; finishedAt: number | null; mesh: RacerEntity; fx: BotFX };
 let bots: Bot[] = [], sparks: Spark[] = [], player: RacerEntity | null = null;
-let selectedDriverId = DEFAULT_DRIVER_ID, chassisAsset: DriverAsset | null = null;
+let selectedDriverId = getDriver(query.get('driver') || DEFAULT_DRIVER_ID).id, chassisAsset: DriverAsset | null = null;
 const controllers = new Map<string, ReturnType<typeof createImportedRacer>>();
 let bundledDrivers = new Map<string, DriverAsset>(), bundledFailures = new Map<string, string>();
 const courseAssets = new Map<string, DriverAsset>(), courseFiles = COURSE_FILES;
@@ -45,6 +55,7 @@ let loadingSnapshot: any = { phase: 'course', records: [], receivedBytes: 0, tot
 const retryDeadlines=new Map();
 const formatBytes=bytes=>bytes<1048576?(bytes/1024).toFixed(0)+' KiB':(bytes/1048576).toFixed(1)+' MiB';
 function setLoadingSnapshot(snapshot){
+  if (disposed) return;
   const previous=loadingSnapshot;
   loadingSnapshot={...snapshot,records:snapshot.records.map(record=>({...record}))};
   for(const record of loadingSnapshot.records){
@@ -57,6 +68,7 @@ function setLoadingSnapshot(snapshot){
   renderLoadingUI();
 }
 function renderLoadingUI(){
+  if(disposed)return;
   const status=loadingSnapshot,course=status.phase==='course';
   const stageNames={queued:'等待下载',downloading:'下载中',decompressing:'校验 / 解压中',preparing:'解析 / 准备 3D 模型',ready:'已就绪',failed:'加载失败'};
   const progress=$('loadingProgress'),hasTotal=status.totalBytes>0;
@@ -91,8 +103,8 @@ function renderLoadingUI(){
   $('retryLoading').disabled=!canRetry;
   $('retryLoading').textContent=courseBuilt?(loadingError?'重试模型准备':'重试失败角色（'+bundledFailures.size+'）'):'重试赛道资源';
 }
-async function prepareCourseAssets() {
-  const loaded = await loadCourseAssets(app, { existing: courseAssets, onStatus: status => setLoadingSnapshot({ phase: 'course', ...status }) });
+async function prepareCourseAssets(signal: AbortSignal) {
+  const loaded = await loadCourseAssets(app, { signal, existing: courseAssets, onStatus: status => setLoadingSnapshot({ phase: 'course', ...status }) });
   for (const [id, asset] of loaded.assets) courseAssets.set(id, asset);
   if (loaded.failures.size) throw new Error('原创赛道资源未完整加载，请重试');
 }
@@ -103,35 +115,39 @@ function buildCourse() {
   courseBuilt = true;
 }
 function boot(): Promise<boolean> {
+  if (disposed) return Promise.resolve(false);
   if (loadingPromise) return loadingPromise;
   if (localDrivers.busy || !['loading', 'menu', 'finished'].includes(state) || (ready && !bundledFailures.size && !loadingError)) return Promise.resolve(false);
   loadingBusy = true; ready = false; loadingError = null; $('loadingDetailGroup').open = true;
   const returnState = state === 'finished' ? 'finished' : 'menu'; state = 'loading';
   $('startText').textContent = courseBuilt ? '正在重试角色' : '正在准备赛道'; updateDriverUI();
   loadingTimer = setInterval(renderLoadingUI, 250);
-  loadingPromise = (async () => {
+  loadingPromise = lifetime.run(async signal => {
     try {
-      if (!courseBuilt) { await prepareCourseAssets(); buildCourse(); setupRacers(); }
-      const loaded = await loadBundledDrivers(app, { existingDrivers: bundledDrivers, onStatus: status => setLoadingSnapshot({ phase: 'drivers', ...status }), onProgress: updateDriverUI });
+      if (!courseBuilt) { await prepareCourseAssets(signal); if (disposed) return false; buildCourse(); setupRacers(); }
+      const loaded = await loadBundledDrivers(app, { signal, existingDrivers: bundledDrivers, onStatus: status => setLoadingSnapshot({ phase: 'drivers', ...status }), onProgress: updateDriverUI });
+      if (disposed) return false;
       bundledDrivers = loaded.drivers; bundledFailures = loaded.failures;
       setupRacers(); ready = true; state = returnState;
       $('startText').textContent = bundledFailures.size ? '开始比赛（含原创替身）' : returnState === 'finished' ? '再来一场' : '开始比赛';
       return true;
     } catch (error) {
+      if (disposed) return false;
       console.error(error); loadingError = error instanceof Error ? error.message : '未知准备错误';
       $('startText').textContent = '资源加载未完成';
       if (courseBuilt) for (const slot of DRIVERS) if (!bundledDrivers.has(slot.id)) bundledFailures.set(slot.id, loadingError);
       return false;
     } finally {
       loadingBusy = false; loadingPromise = null; if (loadingTimer) clearInterval(loadingTimer); loadingTimer = null;
-      $('loadingDetailGroup').open = !ready || bundledFailures.size > 0; updateDriverUI(); renderLoadingUI();
+      if (!disposed) { $('loadingDetailGroup').open = !ready || bundledFailures.size > 0; updateDriverUI(); renderLoadingUI(); if(ready&&!bundledFailures.size&&autoStartPending){autoStartPending=false;reset();} }
     }
-  })();
+  });
   return loadingPromise;
 }
 function tone(freq=500,d=.1){if(muted)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.start();o.stop(audio.currentTime+d)}catch{}}
 function toast(s){$('toast').textContent=s;toastTime=2.1;$('toast').style.opacity=1}
-function rank(){return 1+bots.filter(b=>b.finishedAt!==null?b.finishedAt<=playerFinishedAt:b.total>pos).length}
+function standings(){return coastStandings([{id:selectedDriverId,total:pos,finishedAt:Number.isFinite(playerFinishedAt)?playerFinishedAt:null},...bots.map(({id,total,finishedAt})=>({id,total,finishedAt}))]);}
+function rank(){return standings().findIndex(r=>r.id===selectedDriverId)+1;}
 function createBotFX(): BotFX {
   const sphere = shieldMesh.clone(); sphere.name = 'NPC energy shield'; app.root.addChild(sphere); sphere.enabled = false;
   const jets = flames.map(f => { const mesh = f.mesh.clone(); mesh.name = 'NPC turbo flame'; app.root.addChild(mesh); mesh.enabled = false; return { mesh, side: f.side }; });
@@ -169,11 +185,12 @@ function racerFor(slot): RacerEntity {
   }
   entity.userData = { driverId: slot.id }; app.root.addChild(entity); return entity;
 }
-function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:MAX*(.84+i*.018),held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
-function reset(){if(!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);for(let k in keys)keys[k]=false;boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';document.body.classList.remove('menu');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
+function reset(){if(disposed||!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3.1;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);for(let k in keys)keys[k]=false;boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';$('pausePanel').classList.add('hidden');$('results').classList.add('hidden');document.body.classList.remove('menu');document.body.classList.remove('finished');$('overlay').classList.add('hidden');$('count').classList.remove('paused');$('count').textContent='3';$('pause').textContent='Ⅱ';updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
 const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
+  if (disposed) return;
   const editable=canImport();
   for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':ready?'加载失败 · 原创替身':'加载中');}
   $('start').disabled=!ready||loadingBusy||localDrivers.busy;
@@ -183,14 +200,14 @@ function updateDriverUI(){
   $('clearDriver').disabled=!editable||localDrivers.busy||!localDrivers.has(selectedDriverId);
   $('importSummary').textContent=localDrivers.busy?'正在检查本地 GLB，完成前暂停开始比赛…':bundledDrivers.size+' / 6 个默认角色已加载 · '+DRIVERS.filter(slot=>localDrivers.has(slot.id)).length+' 个本地替换'+(bundledFailures.size?' · 加载失败槽位使用原创替身':'');
 }
-function selectDriver(id){if(!canImport()||!DRIVERS.some(slot=>slot.id===id))return false;selectedDriverId=id;setupRacers();updateDriverUI();snapCamera=true;return true;}
+function selectDriver(id){if(!canImport()||!DRIVERS.some(slot=>slot.id===id))return false;autoStartPending=false;selectedDriverId=id;setupRacers();updateDriverUI();snapCamera=true;return true;}
 let importStatusVersion=0;
 async function importDrivers(files,slotId=selectedDriverId){
   // Capture selection before awaiting file reads. No selected bytes leave memory.
   const chosen=Array.from(files||[]) as File[];if(!chosen.length)return [];
   if(!canImport()||!chassisAsset){$('importStatus').textContent='请在赛前菜单导入；需先加载原创底盘';return [];}
   const statusVersion=++importStatusVersion;
-  const results=await localDrivers.importFiles(chosen,slotId);
+  const results=await lifetime.run(()=>localDrivers.importFiles(chosen,slotId));
   if(statusVersion!==importStatusVersion)return results;
   const imported=results.filter(result=>result.status==='fulfilled'&&result.value.status==='imported').length;
   const errors=results.filter(result=>result.status==='rejected').map(result=>result.reason.message);
@@ -203,7 +220,14 @@ $('driverFiles').addEventListener('change',(event: any)=>{const files=Array.from
 $('clearDriver').onclick=()=>{if(localDrivers.clear(selectedDriverId)){importStatusVersion++;$('importStatus').textContent=bundledDrivers.has(selectedDriverId)?'该槽位已恢复默认角色':'该槽位恢复原创替身（默认模型加载失败）';}};
 $('start').onclick=reset;
 $('retryLoading').onclick=()=>{void boot();};
-function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();$('count').textContent='已暂停';$('count').classList.add('paused');$('pause').textContent='▶';updateLookHint();}else if(state==='paused'){state=countdown>0?'countdown':'running';$('count').textContent='';$('count').classList.remove('paused');$('pause').textContent='Ⅱ';updateLookHint()}}$('pause').onclick=pause;
+function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();$('count').textContent='已暂停';$('count').classList.add('paused');$('pausePanel').classList.remove('hidden');$('pause').textContent='▶';updateLookHint();}else if(state==='paused'){state=countdown>0?'countdown':'running';$('count').textContent='';$('count').classList.remove('paused');$('pausePanel').classList.add('hidden');$('pause').textContent='Ⅱ';updateLookHint()}}$('pause').onclick=pause;
+$('resumeRace').onclick=pause;
+$('restartRace').onclick=reset;
+function navigate(screen=''){clearInputs();mouseLook.release();location.href='index.html'+(screen?'?screen='+screen+'&map=coast&driver='+encodeURIComponent(selectedDriverId):'');}
+$('pauseMenu').onclick=()=>navigate();
+$('raceMainMenu').onclick=()=>navigate();
+$('raceChangeMap').onclick=()=>navigate('maps');
+$('raceChangeCharacter').onclick=()=>navigate('characters');
 $('camera').onclick=()=>{view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{muted=!muted;$('sound').textContent=muted?'♪':'♫';$('sound').setAttribute('aria-label',muted?'开启音效':'关闭音效');tone()};
 function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, boost, shield, slow }; }
@@ -258,17 +282,17 @@ function updateItemImage(){
   $('item').dataset.held=held||'empty';
   $('item').setAttribute('aria-label',held?({boost:'使用涡轮加速',shield:'使用能量护盾',pulse:'使用追踪脉冲'})[held]:'等待道具');
 }
-function updateHUD(){updateItemImage();$('rank').innerHTML=(finishRank||rank())+' <small>/ 6</small>';$('lap').innerHTML=Math.max(1,Math.min(3,Math.floor(pos/LENGTH)+1))+' <small>/ 3</small>';$('timer').textContent=Math.floor(elapsed/60)+':'+String(Math.floor(elapsed%60)).padStart(2,'0');$('speed').textContent=(speed<-.1?'R ':'')+Math.round(Math.abs(speed)*3.6);$('charge').style.width=Math.min(100,charge/1.4*100)+'%';$('chargeLabel').textContent=boost>0?'涡轮加速中！':shield>0?'能量护盾保护中':charge>=.6?'松开 Shift，释放漂移加速':Math.abs(speed)<.1?'按住 W 油门起步':'左 Shift + A / D 手刹漂移';$('itemName').textContent=held?({boost:'ϟ 涡轮加速',shield:'◉ 能量护盾',pulse:'✦ 追踪脉冲'})[held]:'◇ 等待道具';$('itemHelp').textContent=held?'点击这里或按 E 使用':'撞箱拾取 · 问号为随机道具'}
-function finish(){finishRank=rank();state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();document.body.classList.add('menu');$('overlay').classList.remove('hidden');$('title').innerHTML=finishRank===1?'GOLDEN<br><em>FINISH.</em>':'ONE MORE<br><em>RIDE?</em>';$('subtitle').textContent=finishRank===1?'冠军冲线，漂亮的超越':'追逐日落，再快一点点';$('desc').textContent='日落海岸 · 三圈大奖赛';$('results').classList.remove('hidden');$('results').textContent='第 '+finishRank+' / 6 名 · '+elapsed.toFixed(2)+' 秒';$('startText').textContent='再来一场';updateDriverUI();tone(1000,.4)}
+function updateHUD(){updateItemImage();$('rank').innerHTML=(finishRank||rank())+' <small>/ 6</small>';$('lap').innerHTML=coastLap(pos,LENGTH)+' <small>/ 3</small>';$('timer').textContent=Math.floor(elapsed/60)+':'+String(Math.floor(elapsed%60)).padStart(2,'0');$('speed').textContent=(speed<-.1?'R ':'')+Math.round(Math.abs(speed)*3.6);$('charge').style.width=Math.min(100,charge/1.4*100)+'%';$('chargeLabel').textContent=boost>0?'涡轮加速中！':shield>0?'能量护盾保护中':charge>=.6?'松开 Shift，释放漂移加速':Math.abs(speed)<.1?'按住 W 油门起步':'左 Shift + A / D 手刹漂移';$('itemName').textContent=held?({boost:'ϟ 涡轮加速',shield:'◉ 能量护盾',pulse:'✦ 追踪脉冲'})[held]:'◇ 等待道具';$('itemHelp').textContent=held?'点击这里或按 E 使用':'撞箱拾取 · 问号为随机道具'}
+function finish(){finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();document.body.classList.add('menu');document.body.classList.add('finished');$('overlay').classList.remove('hidden');$('title').innerHTML=finishRank===1?'GOLDEN<br><em>FINISH.</em>':'ONE MORE<br><em>RIDE?</em>';$('subtitle').textContent=finishRank===1?'冠军冲线，漂亮的超越':'追逐日落，再快一点点';$('desc').textContent='日落海岸 · 三圈大奖赛';$('results').classList.remove('hidden');$('results').textContent='第 '+finishRank+' / 6 名 · '+elapsed.toFixed(2)+' 秒\n'+standings().map((r,i)=>(i+1)+'. '+getDriver(r.id).label+(r.id===selectedDriverId?'（你）':'')+' · '+(r.finishedAt!==null?r.finishedAt.toFixed(2)+' 秒':'未冲线 · '+Math.max(0,Math.min(99.9,r.total/(LENGTH*3)*100)).toFixed(1)+'%')).join('\n');$('startText').textContent='再来一场';updateDriverUI();tone(1000,.4)}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
   sparks.push({ p: p.clone(), v: new pc.Vec3((Math.random() - .5) * 4, 1 + Math.random() * 2, (Math.random() - .5) * 4), t: type === 'pulse' ? .8 : .45, max: .65 });
 }
-function update(dt){if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').style.opacity=0}if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);$('count').textContent=cur>0?cur:'GO!';if(cur!==old)tone(cur>0?500:1000,.15);if(countdown<=0){state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移')}return}if(state!=='running')return;
-elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,onPickup:()=>{b.pickups++;b.reaction=RULES.reaction+b.phase*.08}}));for(const box of boxes)advancePickup(box,dt);const input=driveInput(keys),steer=input.steer;let now=sample(pos),next=sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
-let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>MAX*.4;if(wantDrift){charge=Math.min(1.6,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(charge>.6&&!input.brake&&!input.reverse){boost=Math.max(boost,Math.min(2.5,charge*1.5));toast('漂移加速！');tone(850,.2)}charge=0}drifting=wantDrift;
-let limit=boost>0?MAX*1.34:MAX;if(Math.abs(lane)>6.3)limit*=.58;if(hit>0||slow>0)limit*=RULES.slowFactor;speed=driveSpeed(speed,input,dt,limit);lane+=lateralInput(steer,speed,MAX,drifting,dt)+curvature*speed*dt*.43;lane=clamp(lane,-6.75,6.75);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
-let previous=pos;pos+=speed*dt;if(pos>=LENGTH*3&&previous<LENGTH*3)playerFinishedAt=elapsed-dt+dt*(LENGTH*3-previous)/(pos-previous);if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
+function update(dt){if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').style.opacity=0}if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);$('count').textContent=cur>0?cur:'GO!';if(cur!==old)tone(cur>0?500:1000,.15);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
+elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,onPickup:()=>{b.pickups++;b.reaction=RULES.reaction+b.phase*.08}}));for(const box of boxes)advancePickup(box,dt);const tuning=characterTuning(selectedDriverId,'coast'),input=driveInput(keys),steer=input.steer;let now=sample(pos),next=sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
+let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(1.6,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(charge>.6&&!input.brake&&!input.reverse){boost=Math.max(boost,Math.min(2.5,charge*1.5));toast('漂移加速！');tone(850,.2)}charge=0}drifting=wantDrift;
+let limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1);if(Math.abs(lane)>6.3)limit*=.58;if(hit>0||slow>0)limit*=RULES.slowFactor;speed=driveSpeed(speed,input,dt*(input.throttle&&!input.reverse&&!input.brake&&speed>=0&&speed<limit?tuning.multipliers.acceleration:1),limit);lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering+curvature*speed*dt*.43;lane=clamp(lane,-6.75,6.75);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
+let previous=pos;pos+=speed*dt;playerFinishedAt=crossingTime(previous,pos,LENGTH*3,elapsed,dt)??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
 const human=playerCombatant(), racers: Combatant[]=[human,...bots.filter(b=>b.total<LENGTH*3)];
 for(const b of bots){tickEffects(b,dt);tickBrain(b,dt);}
 for(const b of bots){
@@ -283,7 +307,9 @@ for(const b of bots){
 applyPlayerCombatant(human);
 for(const b of bots){
   if(b.total>=LENGTH*3)continue;
-  const travel=racingSpeed(b,MAX)*dt, before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);if(b.total>=LENGTH*3)b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);b.lateral=moveLane(b.lateral,b.targetLane,dt);
+  const tuning=characterTuning(b.id,'coast');
+  if(b.driving)b.speed=driveSpeed(b.speed,{throttle:true},dt*tuning.multipliers.acceleration,tuning.maxSpeed*(.9+b.phase*.008));
+  const travel=racingSpeed(b,tuning.maxSpeed)*dt, before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);if(b.total>=LENGTH*3)b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);b.lateral=moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering);
   if(b.total>=LENGTH*3){b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b);continue;}
 }
 for(const b of bots){
@@ -294,7 +320,11 @@ for(const b of bots){
 human.total=pos;human.lateral=lane;
 collectPickups([{actor:human,previous,previousLane,onPickup:()=>{tone(1200,.12);toast('获得道具 · E 使用')}},...botPrevious.filter(r=>r.actor.total<LENGTH*3)],boxes,LENGTH);
 applyPlayerCombatant(human);
-if(pos>=LENGTH*3)finish();updateHUD()}
+if(Number.isFinite(playerFinishedAt)){
+  const fraction=dt>0?clamp((playerFinishedAt-(elapsed-dt))/dt,0,1):1;
+  for(const prior of botPrevious){const b=prior.actor;if(b.finishedAt===null||b.finishedAt>playerFinishedAt){const effectiveFraction=b.finishedAt!==null?clamp((playerFinishedAt-(elapsed-dt))/(b.finishedAt-(elapsed-dt)),0,1):fraction;b.total=prior.previous+(b.total-prior.previous)*effectiveFraction;if(b.finishedAt!==null){b.total=Math.min(b.total,LENGTH*3-1e-8);b.finishedAt=null;}}}
+  finish();
+}updateHUD()}
 
 /* NATIVE_DRAW */
 const mapPath=Array.from({length:100},(_,i)=>sample(i/100*LENGTH).p);function drawMap(){map.clearRect(0,0,260,230);const coord=p=>[130+p.x*.6,114+p.z*.6];map.beginPath();mapPath.forEach((p,i)=>{let [x,y]=coord(p);i?map.lineTo(x,y):map.moveTo(x,y)});map.closePath();map.strokeStyle='#163b4bbb';map.lineWidth=12;map.stroke();map.strokeStyle='#eef5e9bb';map.lineWidth=4;map.stroke();for(let b of [...bots.map(b=>({d:b.total,color:b.color,player:false})),{d:pos,color:getDriver(selectedDriverId).color,player:true}]){let [x,y]=coord(sample(b.d).p);map.beginPath();map.arc(x,y,b.player?5.5:3.5,0,Math.PI*2);map.fillStyle=b.color;map.fill();map.strokeStyle='#163b4b';map.lineWidth=1.5;map.stroke()}}
@@ -375,11 +405,11 @@ function getState() {
   return {
     engine: 'PlayCanvas', state, pos, lane, speed, elapsed, charge, boost, shield, slow, held, drifting, steerVis,
     bots: bots.map(({id,total,lateral,speed,held,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt})=>({id,total,lateral,speed,held,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt})),
-    lap: Math.max(1, Math.min(3, Math.floor(pos / LENGTH) + 1)), length: LENGTH, rank: finishRank || rank(), camera: view,
+    lap: coastLap(pos, LENGTH), length: LENGTH, rank: finishRank || rank(), camera: view,
     muted, mouseLook: { ...orbit.get(), ...mouseLook.get() }, modelsLoaded: ready, allDriversLoaded: bundledDrivers.size === 6,
     bundledLoaded: [...bundledDrivers.keys()], bundledFailures: [...bundledFailures.keys()],
     loading: { ...loadingSnapshot, records: loadingSnapshot.records.map(record => ({ ...record })), busy: loadingBusy, courseBuilt, error: loadingError },
-    selectedDriverId, importedSlots: DRIVERS.filter(d => localDrivers.has(d.id)).map(d => d.id), importing: localDrivers.busy,
+    selectedDriverId, tuning:characterTuning(selectedDriverId,'coast'), quality:settings.quality, standings:standings().map(r=>({...r})), importedSlots: DRIVERS.filter(d => localDrivers.has(d.id)).map(d => d.id), importing: localDrivers.busy,
     driverStates: DRIVERS.map(d => ({ id: d.id, appearance: localDrivers.has(d.id) ? 'local-import' : bundledDrivers.has(d.id) ? 'bundled-model' : 'original-fallback', ...(controllers.get(d.id)?.getState() || {}) })),
     drawCalls: stats.drawCalls?.total ?? stats.frame?.drawCalls ?? 0, triangles: stats.frame?.triangles ?? 0,
   };
@@ -389,7 +419,7 @@ window.neonKart = { getState, start: reset, pause, useItem, selectDriver, import
 let manual = false;
 if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
   window.neonKart.debug = {
-    app, world, sample, orbit, mouseLook, keys, controllers, courseAssets, localDrivers, update, draw, setupRacers, updateDriverUI,
+    app, world, sample, orbit, mouseLook, keys, controllers, courseAssets, localDrivers, update, advanceFrame, draw, setupRacers, updateDriverUI,
     player: () => player, bots: () => bots, boxes: () => boxes,
     freeze: (value = true) => { manual = value; },
     step: (seconds: number) => { for (let i = 0; i < Math.ceil(seconds * 60); i++) { const dt = 1 / 60; clock += dt; if (ready) update(dt); draw(dt); } },
@@ -399,15 +429,30 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
     },
   };
 }
-addEventListener('resize', () => { app.resizeCanvas(); snapCamera = true; });
+addEventListener('resize', () => { if(!disposed){app.resizeCanvas(); snapCamera = true;} });
 canvas.addEventListener('webglcontextlost', event => {
   event.preventDefault(); release(); $('count').textContent = '画面已中断，请刷新'; $('count').classList.add('paused');
 });
-app.on('update', (delta: number) => {
-  if (manual) return;
-  const dt = Math.min(.045, delta || .016); clock += dt;
-  if (ready) update(dt);
-  draw(dt);
-});
+function advanceFrame(delta:number){
+  if(disposed)return;
+  // A long stall is an explicit pause, never an unbounded catch-up loop.
+  if(delta>.25&&(state==='running'||state==='countdown')){pause();toast('画面中断，比赛已暂停 · 继续后接着比赛');return;}
+  const dt = Number.isFinite(delta) ? Math.max(0,delta) : 0; clock += dt;
+  // Substep the whole active frame instead of dropping time on slower devices.
+  if (ready && (state==='running'||state==='countdown')) { let remaining=dt; while(remaining>1e-8){const step=Math.min(1/60,remaining);update(step);remaining-=step;if(state!=='running'&&state!=='countdown')break;} }
+  else if(ready)update(dt);
+  draw(Math.min(.25,dt));
+}
+app.on('update',(delta:number)=>{if(!manual)advanceFrame(delta);});
 void boot();
 app.start();
+
+addEventListener('pagehide',(event: PageTransitionEvent)=>{
+  release();
+  if(event.persisted)return; // BFCache restores the same paused session.
+  disposed=true;ready=false;state='leaving';importStatusVersion++;
+  if(loadingTimer)clearInterval(loadingTimer);loadingTimer=null;
+  app.autoRender=false;app.renderNextFrame=false;
+  if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);
+  audio?.close();localDrivers.dispose();lifetime.close();
+});

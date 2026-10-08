@@ -1,5 +1,5 @@
 import {PerformanceCapture} from './waterpark-performance';
-export const PERFORMANCE_BUILD='waterpark-refraction-20261008-1';
+export const PERFORMANCE_BUILD='free-mode-race-20261008-1';
 const CONTEXT_SAMPLE_INTERVAL_MS=250;
 type RefractionControl={getEnabled:()=>boolean;setEnabled:(enabled:boolean)=>void};
 type WaterSettings={requestedRefraction:boolean;refractionActive:boolean;reflectionActive:boolean;reflectionTarget:{width:number;height:number}|null;refractionTarget:{width:number;height:number}|null};
@@ -49,7 +49,7 @@ export function createPerformancePanel(canvas:HTMLCanvasElement,getContext:()=>R
  $('perf-cancel').addEventListener('click',()=>{if(capture.status!=='recording')return;capture.cancel(performance.now());finish(performance.now());paint(performance.now());},{signal:events.signal});
  $('perf-export').addEventListener('click',()=>{
   if(!report?.frames)return;
-  const payload={schemaVersion:2,buildId:PERFORMANCE_BUILD,scene:'waterpark-285m',captureMethod:'performance.now timestamps between consecutive active PlayCanvas update callbacks; not CPU/GPU render duration',percentileMethod:'nearest rank, raw milliseconds, bounded last 32768 intervals',thresholdsMs:[33.3,50,100],refractionControlLockedDuringCapture:!!refraction,contextSampleIntervalMs:CONTEXT_SAMPLE_INTERVAL_MS,initialContext:context,finalContext,contextChanges:changes,contextChangesTruncated:changesTruncated,result:report,note:'Refresh/VSync may cap FPS; this measurement does not estimate remaining GPU headroom. Context is sampled at start, finish, and during updates no more often than every 250 ms, so brief changes may be missed. Local user-initiated export; no upload.'};
+  const payload={schemaVersion:2,buildId:PERFORMANCE_BUILD,scene:'waterpark-circuit-six-racers',captureMethod:'performance.now timestamps between consecutive active PlayCanvas update callbacks; not CPU/GPU render duration',percentileMethod:'nearest rank, raw milliseconds, bounded last 32768 intervals',thresholdsMs:[33.3,50,100],refractionControlLockedDuringCapture:!!refraction,contextSampleIntervalMs:CONTEXT_SAMPLE_INTERVAL_MS,initialContext:context,finalContext,contextChanges:changes,contextChangesTruncated:changesTruncated,result:report,note:'Refresh/VSync may cap FPS; this measurement does not estimate remaining GPU headroom. Context is sampled at start, finish, and during updates no more often than every 250 ms, so brief changes may be missed. Local user-initiated export; no upload.'};
   const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=PERFORMANCE_BUILD+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  },{signal:events.signal});
  $('perf-copy').addEventListener('click',async()=>{if(!report?.frames)return;try{await navigator.clipboard.writeText(PERFORMANCE_BUILD+'\n'+summary());notice='摘要已复制';noticeUntil=performance.now()+5000;$('perf-status').textContent=notice;}catch{notice='浏览器未允许复制，请选中下方摘要或导出 JSON';noticeUntil=performance.now()+8000;$('perf-status').textContent=notice;}},{signal:events.signal});

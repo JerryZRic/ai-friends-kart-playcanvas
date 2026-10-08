@@ -1,13 +1,15 @@
 # Isolated dev preview
 
-The `dev` branch publishes the waterpark test scene at:
+The `dev` branch publishes the complete free-mode test game at:
 
-https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/waterpark.html
+https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/
 
 The stable game and waterpark keep their existing root URLs. This branch does not
 change `main`, create a Windows build, or publish a Windows release.
 
-## Refraction test build
+See [free-mode features and validation boundaries](free-mode.md).
+
+## Water rendering
 
 The water surface uses an additional static-scenery color/depth capture through
 PlayCanvas's official `PlanarRenderer`. Depth reconstruction uses the matching
@@ -15,7 +17,8 @@ oblique capture inverse view-projection matrix, rather than the main camera's
 depth buffer. The extra target is half-resolution, capped at 768 pixels on its
 long side, with no MSAA. The existing reflection capture is unchanged.
 
-The underwater floor uses two batches with at most 4,200 triangles. Wakes use two
+The complete race circuit underwater floor uses two batches and 6,944 triangles
+(the separate short study route remains below 4,200). The player wake uses two
 draws. The 水面 / FPS controls include a refraction switch, which is locked while
 a performance capture is running. Exported JSON version 2 records the selected
 settings. Switching refraction off is an A/B check for the extra capture and its

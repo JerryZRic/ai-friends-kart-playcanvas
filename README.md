@@ -12,6 +12,10 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 > The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
+## Dev free-mode playtest
+
+[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the main menu, map and character selection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root and Windows release above are unchanged.
+
 ## Features
 
 - **Six selectable drivers:** WHALE, GEMINI, GPT, CLAUDE, GROK and GLM, with bundled rigged character models

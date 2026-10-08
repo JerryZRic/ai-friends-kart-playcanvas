@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import {sampleWaterpark, WATER_HALF_WIDTH, type MeshData} from './waterpark-design';
+import {waterparkLayout, WATER_RACE_LENGTH, WATER_HALF_WIDTH, type MeshData, type WaterparkGeometryOptions} from './waterpark-design';
 import {finiteWaterValue} from './waterpark-surface';
 
 export const WATERPARK_BED_BUDGET = Object.freeze({batches: 2, triangles: 4200, textureSize: 128});
@@ -13,10 +13,11 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
  * inside the existing coping wall (which extends to -0.4), and always remains
  * below the lowest analytical wave. The whole channel is still presentation,
  * with no change to movement/collision limits. */
-export function sampleWaterparkBedDepth(distance: number, lateral: number) {
-  const d = clamp(finiteWaterValue(distance), WATERPARK_BED_EXTENT.start, WATERPARK_BED_EXTENT.end);
+export function sampleWaterparkBedDepth(distance: number, lateral: number, options: WaterparkGeometryOptions = {}) {
+  const d = options.race ? finiteWaterValue(distance) % WATER_RACE_LENGTH : clamp(finiteWaterValue(distance), WATERPARK_BED_EXTENT.start, WATERPARK_BED_EXTENT.end);
   const l = clamp(Math.abs(finiteWaterValue(lateral)), 0, WATER_HALF_WIDTH);
-  const deep = 2.65 + Math.sin(d * .024) * .18 + Math.cos(d * .011) * .1;
+  const phase = d / WATER_RACE_LENGTH * Math.PI * 2;
+  const deep = options.race ? 2.65 + Math.sin(phase * 2) * .18 + Math.cos(phase) * .1 : 2.65 + Math.sin(d * .024) * .18 + Math.cos(d * .011) * .1;
   const t = clamp((WATER_HALF_WIDTH - l) / 4, 0, 1), slope = t * t * (3 - 2 * t);
   return .36 + (deep - .36) * slope;
 }
@@ -24,16 +25,18 @@ export function sampleWaterparkBedDepth(distance: number, lateral: number) {
 /** One indexed curved basin and one merged set of small physical tile inlays.
  * These are real opaque submerged surfaces for refraction color/depth capture,
  * not a second plane on top of the water or a screen-space floor approximation. */
-export function createWaterparkBedDesign(): WaterparkBedMesh[] {
+export function createWaterparkBedDesign(options: WaterparkGeometryOptions = {}): WaterparkBedMesh[] {
+  const {sample, start, end, closed} = waterparkLayout(options);
+  const depthAt = (d: number, l: number) => sampleWaterparkBedDepth(d, l, options);
   const make = (name: string, color: string): WaterparkBedMesh => ({name, color, positions: [], indices: [], uvs: [], submerged: true});
   const floor = make(WATERPARK_BED_NAMES.floor, '#d8e7de'), inlays = make(WATERPARK_BED_NAMES.inlays, '#428a9d');
-  const {start, end, step} = WATERPARK_BED_EXTENT, lanes = WATERPARK_BED_LANES;
+  const {step} = WATERPARK_BED_EXTENT, lanes = WATERPARK_BED_LANES;
   const rows = Math.ceil((end - start) / step) + 1;
   for (let row = 0; row < rows; row++) {
     const d = Math.min(end, start + row * step);
-    let crossDistance = 0, previousDepth = sampleWaterparkBedDepth(d, lanes[0]);
+    let crossDistance = 0, previousDepth = depthAt(d, lanes[0]);
     for (let col = 0; col < lanes.length; col++) {
-      const lane = lanes[col], depth = sampleWaterparkBedDepth(d, lane), p = sampleWaterpark(d, lane).p;
+      const lane = lanes[col], depth = depthAt(d, lane), p = sample(d, lane).p;
       if (col) crossDistance += Math.hypot(lane - lanes[col - 1], depth - previousDepth);
       floor.positions.push(p.x, -depth, p.z);
       // The repeat contains 4 x 4 half-metre tiles. Arc-length UVs keep grout
@@ -48,13 +51,13 @@ export function createWaterparkBedDesign(): WaterparkBedMesh[] {
   // Short dark-blue mosaic strips create a readable distortion reference in
   // the refracted image. Central floor is flat laterally so these tiny raised
   // inlays cannot intersect the coarser slope triangles or produce z fighting.
-  for (let d = -28; d < 330; d += 8) for (const lane of [-5, 5]) {
+  for (let d = closed ? 9 : -28; d < end - 5; d += 8) for (const lane of [-5, 5]) {
     const offset = inlays.positions.length / 3;
     // Place vertices on an existing floor row to match its interpolated depth.
     const from = d - 1, to = d + 1;
     for (const [s, l] of [[from, lane - .16], [from, lane + .16], [to, lane - .16], [to, lane + .16]]) {
-      const p = sampleWaterpark(s, l).p;
-      inlays.positions.push(p.x, -sampleWaterparkBedDepth(s, l) + .006, p.z);
+      const p = sample(s, l).p;
+      inlays.positions.push(p.x, -depthAt(s, l) + .006, p.z);
       inlays.uvs.push((l - lane) * .5, s * .5);
     }
     inlays.indices.push(offset, offset + 2, offset + 1, offset + 1, offset + 2, offset + 3);

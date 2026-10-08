@@ -9,7 +9,7 @@ import {parseLocalGLB} from '../src/assets';
 /** Real entrypoint, meshes, rig and physics on NullGraphicsDevice. Browser DOM
  * events/image pixels and network scheduling are substituted; no GPU claim. */
 test('waterpark entry preserves partial loading, pause/freeze, focus, touch, restart and exit lifecycles', async () => {
-  const g=globalThis as any, names=['window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad'];
+  const g=globalThis as any, names=['window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace'];
   const saved=new Map(names.map(name=>[name,Object.getOwnPropertyDescriptor(g,name)]));
   const errors:unknown[]=[];const originalError=console.error;console.error=(...args)=>errors.push(args);
   const elements=new Map<string,Element>();
@@ -64,15 +64,17 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   source=source.replace(/new pc\.Application\(canvas,.*?\);/,'(globalThis as any).__waterparkApp;');
   source=source.replace('const input=createWaterparkInput(),events=new AbortController();','const input=createWaterparkInput(),events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
   source=source.replace('app.start(); void load();','void load();');
+  source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); const npcMounts=");
   const copy=new URL('../src/.waterpark-play-test.ts',import.meta.url);writeFileSync(copy,source);
   const emit=(target:EventTarget,type:string,data:any={})=>{const event=new Event(type,{cancelable:true});Object.assign(event,data);target.dispatchEvent(event);return event;};
   const key=(type:string,code:string,target:any=canvas)=>{const event=new Event(type,{cancelable:true});Object.defineProperty(event,'target',{value:target});Object.assign(event,{code,repeat:false});windowTarget.dispatchEvent(event);return event;};
-  const step=(count:number)=>{for(let i=0;i<count;i++)app.fire('update',1/60);};
+  const step=(count:number,dt=1/60)=>{for(let i=0;i<count;i++)app.fire('update',dt);};
   const settle=async()=>{for(let i=0;i<30;i++)await new Promise(resolve=>setTimeout(resolve,1));};
   const snapshot=()=>{const result:number[]=[];for(const entity of app.root.findComponents('render') as pc.RenderComponent[]){result.push(...Array.from(entity.entity.getWorldTransform().data));}return result;};
   let destroyed=0;app.on('destroy',()=>destroyed++);
   try {
     await import(copy.href+'?run='+Date.now());
+    assert.equal(app.maxDeltaTime,Infinity,'engine must not silently clamp real frame delta to 0.1s');
     const refractionCamera=app.root.findByName('Waterpark underwater refraction camera') as pc.Entity;
     assert.ok(refractionCamera?.camera,'the real scene exposes the independent refraction pass');
     assert.equal(refractionCamera.camera!.enabled,true);
@@ -95,9 +97,9 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.equal(element('perf-copy').disabled,true,'empty captures cannot be copied');
     assert.match(element('perf-result').textContent,/0 帧间隔/);
     assert.equal(element('start').disabled,true);element('start').click();assert.equal(attempts,1);
-    release();await settle();assert.equal(element('start').disabled,false);assert.match(element('load').textContent,/5\/6/);
+    release();await settle();assert.equal(element('start').disabled,true);assert.match(element('load').textContent,/5\/6/);
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
-    element('driver-whale').click();element('start').click();assert.equal(g.document.activeElement,canvas);
+    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(180);assert.equal(element('time').textContent,'0.00');
     element('perf-start').click();assert.equal(element('perf-result').textContent,'');
     element('perf-start').click(); // A duplicate click on the disabled control is harmless.
     element('perf-toggle').click();assert.equal(element('perf-body').hidden,true);
@@ -118,16 +120,19 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     element('start').click();assert.equal(g.document.activeElement,canvas);
     key('keydown','KeyR');step(1);assert.equal(element('speed').textContent,'0');assert.ok(Number(element('time').textContent)<.1);
     const accelerate=touch[0];accelerate.emit('pointerdown',{pointerId:1,pointerType:'touch',button:0});
-    key('keydown','KeyW');key('keyup','KeyW');step(60);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
+    key('keydown','KeyW');key('keyup','KeyW');step(240);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
     accelerate.emit('pointercancel',{pointerId:1});emit(windowTarget,'blur');
     const blurTime=element('time').textContent;step(10);assert.equal(element('time').textContent,blurTime);
-    element('start').click();key('keydown','KeyR');key('keydown','KeyW');step(1800);
-    assert.match(element('message').textContent,/285 米/);assert.equal(element('speed').textContent,'0');
-    failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.match(element('load').textContent,/六位/);
+    element('start').click();key('keydown','KeyR');key('keydown','KeyW');step(320,.5);
+    assert.match(element('message').textContent,/三圈/);assert.equal(element('speed').textContent,'0');
+    failLast=false;element('retry').click();await settle();assert.equal(attempts,3);assert.match(element('load').textContent,/六位/);
     element('driver-glm').click();assert.equal(element('start').disabled,false);
     element('start').click();key('keydown','KeyW');step(30);
     emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('time').textContent;step(30);assert.equal(element('time').textContent,cachedTime);
-    element('start').click();step(1);assert.ok(Number(element('time').textContent)>Number(cachedTime));
+    element('start').click();step(200);assert.ok(Number(element('time').textContent)>Number(cachedTime));
+    const preStallTime=element('time').textContent;step(1,1.2);assert.equal(element('time').textContent,preStallTime,'long suspension pauses rather than advances race');assert.equal(element('pause').attributes['aria-label'],'继续');element('start').click();
+    element('pause').click();element('restart').click();step(1);assert.equal(element('time').textContent,'0.00');assert.equal(element('speed').textContent,'0');
+    const actualPlayer=g.__waterparkRace.racers[0];actualPlayer.speed=actualPlayer.motion.speed=20;actualPlayer.boost=2;actualPlayer.slow=0;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*1.34*3.6),'HUD reports actual boosted travel speed');actualPlayer.boost=0;actualPlayer.slow=2;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*.55*3.6),'HUD reports actual slowed travel speed');actualPlayer.finishTime=1;step(1,0);assert.equal(element('speed').textContent,'0','finished rider always displays zero');
     const performanceRoot=element('performance'),performanceStart=element('perf-start');
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,1);
     assert.equal(performanceRoot.removed,true,'performance panel is removed during app disposal');

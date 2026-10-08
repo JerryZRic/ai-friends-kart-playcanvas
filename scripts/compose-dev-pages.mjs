@@ -107,7 +107,7 @@ export async function composeDevPages({ manifest, devDirectory = 'dist', output 
     await verifyStableRoot(manifest, target);
     assert.deepEqual(await inventory(join(target, 'dev')), devFiles);
     for (const path of devFiles) assert.equal(sha256(await readFile(join(target, 'dev', path))), sha256(await readFile(join(source, path))), `Dev copy changed: ${path}`);
-    return { stableCommit: manifest.stableCommit, stableFiles: manifest.files.length, devFiles: devFiles.length, previewPath: 'dev/waterpark.html' };
+    return { stableCommit: manifest.stableCommit, stableFiles: manifest.files.length, devFiles: devFiles.length, previewPath: 'dev/' };
   } catch (error) {
     await rm(target, { recursive: true, force: true });
     throw error;

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import * as pc from 'playcanvas';
+import { CHARACTER_PROFILES, characterTuning } from '../src/character-profiles';
 import { parseLocalGLB, COURSE_FILES, RUNTIME_MODELS } from '../src/assets';
 import { itemImage, type ItemDisplay, type ItemKind } from '../src/item-models';
 import { resetPickup, setPickupDisplay } from '../src/item-pickups';
@@ -12,6 +13,7 @@ import { resetPickup, setPickupDisplay } from '../src/item-pickups';
  * This validates engine integration; it does NOT claim GPU/browser visual QA. */
 test('native game integration preserves race, camera, items, menu and safety flows', async (t) => {
   const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error;
+  const previousLocation=g.location;g.location={search:'?driver=whale&autostart=1'};
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
   class Element {
@@ -91,9 +93,9 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.equal(courseAttempts, 2); assert.equal(bundleAttempts, 1); assert.equal(qa.controllers.size, 5);
     assert.deepEqual(game.getState().bundledFailures, ['glm']); assert.equal(game.getState().allDriversLoaded, false);
     assert.equal(game.getState().driverStates.find(d=>d.id==='glm').appearance, 'original-fallback');
-    assert.match(element('startText').textContent, /原创替身/); const courseRoot = qa.world.root.findByName('Original course props');
+    assert.match(element('startText').textContent, /原创替身/);assert.equal(game.getState().state,'menu','autostart failure stays visible and requires explicit fallback consent');assert.equal(game.selectDriver('whale'),true); const courseRoot = qa.world.root.findByName('Original course props');
     failGLM = false; assert.equal(await game.retryLoading(), true); assert.equal(bundleAttempts, 2); assert.equal(courseAttempts, 2);
-    assert.equal(game.getState().allDriversLoaded, true); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
+    assert.equal(game.getState().allDriversLoaded, true);assert.equal(game.getState().state,'menu','explicit character selection cancels pending autostart'); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
     assert.equal(qa.boxes().length, 45); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
@@ -154,7 +156,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       for (const [index, bot] of bots.entries()) Object.assign(bot, {
         total: 400 + index * 30, lateral: 5, targetLane: 5, speed: 0,
         held: null, boost: 0, shield: 0, slow: 0, pulseFlash: 0, bump: 0, finishedAt: null,
-        decisionIn: 1000, reaction: 1000, cooldown: 1000, pickups: 0, uses: 0,
+        driving: false, decisionIn: 1000, reaction: 1000, cooldown: 1000, pickups: 0, uses: 0,
       });
       return bots;
     };
@@ -175,6 +177,48 @@ test('native game integration preserves race, camera, items, menu and safety flo
           for (const mesh of render.meshInstances) assert.equal(worldLayer.meshInstances.includes(mesh), false, `${entity.name} leaves the native render layer`);
       }
     };
+    await t.test('every character applies acceleration, top-speed and steering tuning to player and opponents', () => {
+      for (const profile of CHARACTER_PROFILES) {
+        qa.set({state:'menu'}); assert.equal(game.selectDriver(profile.id),true);game.start();
+        qa.set({state:'running',countdown:0,elapsed:0});
+        key('keydown','KeyW');qa.update(.1);key('keyup','KeyW');
+        const tuning=characterTuning(profile.id,'coast');
+        assert.equal(game.getState().selectedDriverId,profile.id);
+        assert.ok(Math.abs(game.getState().speed-tuning.acceleration*.1)<1e-8);
+        for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,`${bot.id} has its own acceleration`);
+        qa.set({noBots:true,pos:0,lane:0,speed:0});
+        key('keydown','KeyW');for(let frame=0;frame<240;frame++)qa.update(1/60);key('keyup','KeyW');
+        assert.ok(Math.abs(game.getState().speed-tuning.maxSpeed)<1e-6);
+        qa.set({pos:0,lane:0,speed:tuning.maxSpeed});
+        key('keydown','KeyD');qa.update(.01);key('keyup','KeyD');
+        const steered=game.getState().lane;
+        qa.set({pos:0,lane:0,speed:tuning.maxSpeed});qa.update(.01);
+        const neutral=game.getState().lane;
+        assert.ok(Math.abs((steered-neutral)-(-7*(tuning.maxSpeed-.06)/tuning.maxSpeed*.01*tuning.multipliers.steering))<1e-8);
+      }
+      qa.set({state:'menu'});game.selectDriver('whale');
+    });
+    await t.test('30/60/120 Hz frames preserve countdown overflow and clocks; huge stalls pause safely',()=>{
+      for(const hz of [30,60,120]){
+        game.start();qa.set({noBots:true});
+        for(let frame=0;frame<hz*4;frame++)qa.advanceFrame(1/hz);
+        assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-.9)<1e-7);
+        const elapsed=game.getState().elapsed;qa.advanceFrame(1e6);
+        assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,elapsed);
+        game.pause();qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-elapsed-1/hz)<1e-7);
+      }
+    });
+    await t.test('pause buttons freeze countdown and restart a clean race, with exact crossing time in results',()=>{
+      game.start();qa.update(.5);const before=game.getState();game.pause();qa.update(2);
+      assert.equal(game.getState().elapsed,before.elapsed);assert.equal(game.getState().state,'paused');
+      element('resumeRace').click();assert.equal(game.getState().state,'countdown');
+      game.pause();element('restartRace').click();assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);
+      qa.update(3.2);assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-.1)<1e-8);
+      qa.set({pos:game.getState().length*3-.1,speed:20,noBots:true});qa.update(.1);
+      const result=game.getState();assert.equal(result.state,'finished');assert.ok(result.elapsed<.2);
+      assert.equal(result.standings[0].finishedAt,result.elapsed);assert.equal(result.pos,result.length*3);
+      assert.match(element('results').textContent,/WHALE（你）/);assert.doesNotThrow(()=>JSON.stringify(result));
+    });
     await t.test('all native boxes have transparent front glass and one enclosed model', () => {
       for (const box of qa.boxes()) {
         assertBoxVisible(box);
@@ -192,7 +236,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
         setPickupDisplay(box, display);
         assertBoxVisible(box);
       }
-      const html = readFileSync('index.html', 'utf8');
+      const html = readFileSync('coast.html', 'utf8');
       assert.match(html, /<img\b[^>]*id="itemImage"[^>]*\balt=""[^>]*\bhidden/);
     });
     await t.test('depicted and mystery rewards remove every native mesh before draw and update the HUD', () => {
@@ -558,8 +602,19 @@ test('native game integration preserves race, camera, items, menu and safety flo
     game.start(); assert.equal(game.getState().speed, 0); assert.equal(game.getState().pos, 0); assert.equal(game.getState().elapsed, 0); assert.equal(game.getState().boost, 0); assert.equal(game.getState().charge, 0);
     assert.equal(g.document.activeElement, canvas); assert.equal(await game.retryLoading(), false);
     assert.equal(loggedErrors.length, 1); assert.match(String(loggedErrors[0]), /Injected preparation failure/);
+    // BFCache keeps the scene alive and paused. A true exit waits for outstanding
+    // local reads/parses before destroying PlayCanvas, and never publishes stale UI.
+    events.pagehide.forEach(fn=>fn({persisted:true}));assert.equal(game.getState().state,'paused');assert.ok(app.graphicsDevice);
+    qa.set({state:'menu'});let finishRead:Function;const delayed=new Promise(resolve=>{finishRead=resolve});
+    const leavingImport=game.importDrivers([{name:'custom.glb',size:importedBytes.byteLength,arrayBuffer:()=>delayed}]);
+    const previousImportStatus=element('importStatus').textContent;
+    events.pagehide.forEach(fn=>fn({persisted:false}));assert.ok(app.graphicsDevice,'in-flight work retains the parser app');
+    finishRead(importedBytes);const leavingResult=await leavingImport;
+    assert.equal(leavingResult[0].value.status,'stale');assert.equal(element('importStatus').textContent,previousImportStatus);
+    assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
+
   } finally {
-    console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); app.destroy();
+    g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
   }
 });

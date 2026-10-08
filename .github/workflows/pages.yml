@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}dev/waterpark.html
+      url: ${{ steps.deployment.outputs.page_url }}dev/
     steps:
       - uses: actions/checkout@v6
       - name: Check stable identity immediately before deployment

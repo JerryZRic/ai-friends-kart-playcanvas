@@ -1,4 +1,6 @@
-import {MAP_PROFILES} from './map-profiles';
-// Loaded alongside the original game, without changing its circuit, physics or loader.
+// Lightweight navigation only: the entry menu never imports the WebGL game.
 const panel=document.querySelector('.panel');
-if(panel){const section=document.createElement('nav');section.setAttribute('aria-label','地图选择');section.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:14px 0';for(const profile of Object.values(MAP_PROFILES)){const link=document.createElement('a');link.href=profile.entry;link.textContent=`${profile.label} · ${profile.vehicle==='kart'?'卡丁车':'坐骑样段'}`;link.style.cssText='font:600 11px system-ui;color:#e5ffff;background:#173d4bcc;border:1px solid #b8dce955;padding:9px 12px;border-radius:6px;text-decoration:none';if(profile.id==='coast')link.setAttribute('aria-current','page');section.append(link);}panel.insertBefore(section,panel.querySelector('p'));}
+if(panel&&!document.querySelector('[data-menu-return]')){
+ const nav=document.createElement('nav');nav.dataset.menuReturn='true';nav.setAttribute('aria-label','返回自由模式');nav.style.cssText='display:flex;gap:12px;flex-wrap:wrap;margin:14px 0';
+ for(const [text,href] of [['← 主菜单','./index.html'],['重新选择地图','./index.html?screen=maps']]){const a=document.createElement('a');a.href=href;a.textContent=text;a.style.cssText='color:#d5ff60;padding:8px 0;font:600 12px system-ui';nav.append(a);}panel.prepend(nav);
+}

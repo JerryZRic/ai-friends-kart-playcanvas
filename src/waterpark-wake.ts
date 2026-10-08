@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import {sampleWaterpark, WATER_HALF_WIDTH} from './waterpark-design';
+import {waterparkLayout, WATER_HALF_WIDTH, type WaterparkGeometryOptions} from './waterpark-design';
 import {sampleWaterSurface, finiteWaterValue} from './waterpark-surface';
 
 export const WAKE_SEGMENTS = 24, SPRAY_DROPLETS = 28, CONTACT_SEGMENTS = 20;
@@ -10,12 +10,13 @@ const waterLane = (lane: number) => clamp(lane, -WATER_HALF_WIDTH + .06, WATER_H
 /** Deterministic fixed-size visual geometry. Contact foam hugs the bow waterline,
  * twin trails curve with lateral speed, and spray follows gravity. This changes
  * no mount, rider, movement state or collision response. */
-export function waterparkEffectGeometry(distance: number, lane: number, speed: number, time: number, lateralSpeed = 0) {
-  distance = clamp(finiteWaterValue(distance), 0, 285); lane = clamp(finiteWaterValue(lane), -10.5, 10.5);
+export function waterparkEffectGeometry(distance: number, lane: number, speed: number, time: number, lateralSpeed = 0, options: WaterparkGeometryOptions = {}) {
+  const {sample, closed, start, end} = waterparkLayout(options);
+  distance = closed ? finiteWaterValue(distance) : clamp(finiteWaterValue(distance), Math.max(0, start), Math.min(285, end)); lane = clamp(finiteWaterValue(lane), -10.5, 10.5);
   speed = clamp(finiteWaterValue(speed), 0, 30); time = Math.max(0, finiteWaterValue(time)); lateralSpeed = clamp(finiteWaterValue(lateralSpeed), -8, 8);
   const positions: number[] = [], contact: number[] = [], spray: number[] = [];
   const effort = speed / 30, turn = Math.abs(lateralSpeed) / 8, length = 3 + effort * 15;
-  const bow = sampleWaterpark(distance + .65, lane), surface = sampleWaterSurface(bow.p.x, bow.p.z, time);
+  const bow = sample(distance + .65, lane), surface = sampleWaterSurface(bow.p.x, bow.p.z, time);
   const incomingSlope = surface.dx * (bow.t.x * speed + bow.n.x * lateralSpeed) + surface.dz * (bow.t.z * speed + bow.n.z * lateralSpeed);
   const impact = clamp(incomingSlope * .65, 0, .4);
   for (const side of [-1, 1]) for (let i = 0; i <= WAKE_SEGMENTS; i++) {
@@ -23,7 +24,7 @@ export function waterparkEffectGeometry(distance: number, lane: number, speed: n
     const center = lane - lateralSpeed * lag * .55 + side * (.65 + f * (1.25 + turn * .9));
     const width = .19 + f * (.58 + turn * .25);
     for (const offset of [-width, width]) {
-      const p = sampleWaterpark(d, waterLane(center + offset)).p;
+      const p = sample(d, waterLane(center + offset)).p;
       positions.push(p.x, sampleWaterSurface(p.x, p.z, time).height + .035, p.z);
     }
   }
@@ -38,7 +39,7 @@ export function waterparkEffectGeometry(distance: number, lane: number, speed: n
     for (const outside of [0, 1]) {
       const x = across * (.7 + outside * width), z = .18 + forward * (1.23 + outside * width);
       const d = distance + z * cos - x * sin, l = waterLane(lane + x * cos + z * sin);
-      const p = sampleWaterpark(d, l).p;
+      const p = sample(d, l).p;
       contact.push(p.x, sampleWaterSurface(p.x, p.z, time).height + .042, p.z);
     }
   }
@@ -53,13 +54,13 @@ export function waterparkEffectGeometry(distance: number, lane: number, speed: n
     const longitudinalVelocity = -(speed * .56 + 1.2);
     const sidewaysVelocity = side * (1.4 + effort * 2 + turn * 1.6) * (1 + outward * .24) - lateralSpeed * .2;
     const d = distance + .8 + age * longitudinalVelocity, l = waterLane(lane + side * .63 + age * sidewaysVelocity);
-    const s = sampleWaterpark(d, l), waterHeight = sampleWaterSurface(s.p.x, s.p.z, time).height;
+    const s = sample(d, l), waterHeight = sampleWaterSurface(s.p.x, s.p.z, time).height;
     const y = waterHeight + .04 + Math.max(0, height);
     const size = (.027 + effort * .04 + turn * .025 + impact * .025) * (1 - phase * .7) * visibility;
     // Tapered short streaks lean along the actual trajectory. Each droplet is
     // still just two triangles; no particle entities, billboards or bodies.
     const tailTime = size * .38;
-    const tail = sampleWaterpark(d - longitudinalVelocity * tailTime, waterLane(l - sidewaysVelocity * tailTime));
+    const tail = sample(d - longitudinalVelocity * tailTime, waterLane(l - sidewaysVelocity * tailTime));
     const tailY = Math.max(sampleWaterSurface(tail.p.x, tail.p.z, time).height + .04, y - (launchVelocity - 9.8 * age) * tailTime);
     for (const sideWidth of [-1, 1]) spray.push(s.p.x + s.n.x * sideWidth * size, y, s.p.z + s.n.z * sideWidth * size);
     for (const sideWidth of [-.32, .32]) spray.push(tail.p.x + tail.n.x * sideWidth * size, tailY, tail.p.z + tail.n.z * sideWidth * size);
@@ -108,7 +109,7 @@ void main() {
 
 /** Two batched draws including the bow collar; topology is allocated once and
  * shared for every update. Runtime resources also release on parent teardown. */
-export function createWaterparkWake(app: pc.Application, parent: pc.Entity) {
+export function createWaterparkWake(app: pc.Application, parent: pc.Entity, options: WaterparkGeometryOptions = {}) {
   const mesh = new pc.Mesh(app.graphicsDevice), sprayMesh = new pc.Mesh(app.graphicsDevice);
   const indices: number[] = [], uvs: number[] = [];
   function strip(offset: number, segments: number, contact: boolean) {
@@ -139,7 +140,7 @@ export function createWaterparkWake(app: pc.Application, parent: pc.Entity) {
   let disposed = false;
   function update(distance: number, lane: number, speed: number, time: number, lateralSpeed = 0) {
     if (disposed) return;
-    const data = waterparkEffectGeometry(distance, lane, speed, time, lateralSpeed);
+    const data = waterparkEffectGeometry(distance, lane, speed, time, lateralSpeed, options);
     mesh.setPositions([...data.positions, ...data.contact]); mesh.update(pc.PRIMITIVE_TRIANGLES);
     sprayMesh.setPositions(data.spray); sprayMesh.update(pc.PRIMITIVE_TRIANGLES);
     mat.setParameter('strength', data.strength); mat.setParameter('time', finiteWaterValue(time));

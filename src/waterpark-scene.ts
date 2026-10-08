@@ -1,13 +1,14 @@
 import * as pc from 'playcanvas';
-import {createWaterparkDesign, sampleCamera} from './waterpark-design';
+import {createWaterparkDesign, sampleCamera, waterparkLayout, type WaterparkGeometryOptions} from './waterpark-design';
 import {createWaterparkWaterMaterial} from './waterpark-water';
 import {createWaterparkEnvironmentDetails, type EnvironmentMesh} from './waterpark-environment';
 import {createWaterparkMaterials, waterparkSurfaceUvs} from './waterpark-materials';
 import {createWaterparkBedDesign, createWaterparkBedMaterials} from './waterpark-bed';
 import {createWaterparkReflection} from './waterpark-reflection';
 
-export function createWaterparkScene(app: pc.Application) {
-  const root = new pc.Entity('Waterpark art sample'); app.root.addChild(root);
+export function createWaterparkScene(app: pc.Application, options: WaterparkGeometryOptions = {}) {
+  const {sample, closed} = waterparkLayout(options);
+  const root = new pc.Entity(closed ? 'Waterpark closed-loop race' : 'Waterpark art sample'); app.root.addChild(root);
   app.scene.ambientLight = new pc.Color(.55, .7, .82); app.scene.exposure = 1.08;
   app.scene.fog.type = pc.FOG_LINEAR; app.scene.fog.color = new pc.Color(.66, .85, .94);
   app.scene.fog.start = 110; app.scene.fog.end = 460;
@@ -17,7 +18,7 @@ export function createWaterparkScene(app: pc.Application) {
   waterMaterial.setParameter('bridgeShadow', new Float32Array([183, 3.5, .6, 2]));
   const meshes: pc.Mesh[] = [];
   let triangles = 0;
-  for (const data of [...createWaterparkDesign(), ...createWaterparkEnvironmentDetails(), ...createWaterparkBedDesign()]) {
+  for (const data of [...createWaterparkDesign(options), ...createWaterparkEnvironmentDetails(options), ...createWaterparkBedDesign(options)]) {
     const mesh = new pc.Mesh(app.graphicsDevice), normals = pc.calculateNormals(data.positions, data.indices);
     mesh.setPositions(data.positions); mesh.setNormals(normals); mesh.setIndices(data.indices);
     mesh.setUvs(0, data.water || ('submerged' in data && data.submerged) ? data.uvs : waterparkSurfaceUvs(data.positions, normals)); mesh.update(pc.PRIMITIVE_TRIANGLES);
@@ -41,7 +42,12 @@ export function createWaterparkScene(app: pc.Application) {
   const skyMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({radius: 700, latitudeBands: 12, longitudeBands: 24})); meshes.push(skyMesh);
   sky.addComponent('render', {meshInstances: [new pc.MeshInstance(skyMesh, skyMaterial)], castShadows: false, receiveShadows: false}); root.addChild(sky);
   function setCamera(distance: number) {
-    const c = sampleCamera(distance); camera.setPosition(...c.position as [number, number, number]); camera.lookAt(...c.target as [number, number, number]);
+    if (closed || options.sampler) {
+      const s = sample(distance), ahead = sample(distance + 24);
+      camera.setPosition(s.p.x - s.t.x * 7.8, 3.7, s.p.z - s.t.z * 7.8); camera.lookAt(ahead.p.x, 2.1, ahead.p.z);
+    } else {
+      const c = sampleCamera(distance); camera.setPosition(...c.position as [number, number, number]); camera.lookAt(...c.target as [number, number, number]);
+    }
   }
   setCamera(12);
   const reflection = createWaterparkReflection(app, root, camera, waterMaterial);
