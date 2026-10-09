@@ -85,3 +85,46 @@ test('both pages preserve hidden adapter IDs and share clutter-free loading/resu
   assert.match(css, /body\.finished \.overlay\.race-finish\{display:flex\}/);
   assert.match(css, /\.legacy-race-menu\{display:none!important\}/);
 });
+
+
+test('loading tips teach map-specific charged release without changing loading actions', () => {
+  for (const map of ['coast', 'waterpark'] as const) {
+    const { doc, get } = fixture(); const ui = mountRaceLoadingUi(doc, map);
+    assert.equal(get('loadingTipTitle').textContent, map === 'coast' ? '漂移加速' : '水上滑移加速');
+    assert.match(get('loadingTipStart').textContent, /W.*左 Shift \+ A \/ D.*转向蓄力/);
+    assert.match(get('loadingTipRelease').textContent, /松开 Shift 加速/);
+    if (map === 'coast') assert.match(get('loadingTipRelease').textContent, /变黄/);
+    else {
+      assert.match(get('loadingTipRelease').textContent, /超过 0\.6 秒/);
+      assert.doesNotMatch(get('loadingTipRelease').textContent, /黄|漂移/);
+    }
+    const tip = get('loadingTipRelease').textContent;
+    for (const snapshot of [
+      {progress: null, status: '等待资源', busy: true},
+      {progress: .8, status: '下载失败', busy: false, canRetry: true},
+      {progress: .8, status: '正在重试', busy: true},
+      {progress: 1, status: '回到发车位', busy: true},
+    ]) {
+      ui.update(snapshot);
+      assert.equal(get('loadingTipRelease').textContent, tip);
+      assert.equal(ui.continueButton.hidden, true, 'tips must not unlock driving or continuation');
+    }
+    ui.dispose(); ui.update({progress: 1, status: '过期回调', canContinue: true});
+    assert.equal(ui.continueButton.disabled, true);
+    mountRaceLoadingUi(doc, map);
+    assert.equal(get('loadingTipRelease').textContent, tip, 're-entering loading mounts the same correct hint');
+  }
+  // Static instructions remain outside the busy/live progress region.
+  assert.ok(RACE_LOADING_MARKUP.indexOf('aria-labelledby="loadingTipTitle"') < RACE_LOADING_MARKUP.indexOf('id="raceLoadingProgressGroup"'));
+  assert.doesNotMatch(RACE_LOADING_MARKUP, /loadingTip[^>]*aria-live/);
+});
+
+test('tips share footer flow with retry/progress and narrow layouts retain text controls', () => {
+  const css = readFileSync(new URL('../src/race-ui.css', import.meta.url), 'utf8');
+  assert.match(css, /\.loading-bottom\{[^}]*max-height:[^}]*overflow-y:auto/);
+  assert.match(css, /\.loading-bottom \.loading-footer\{position:static/);
+  assert.match(css, /\.loading-bottom \.loading-controls\{position:static/);
+  assert.match(css, /\.loading-driving-tip p\{[^}]*overflow-wrap:break-word/);
+  assert.match(css, /\.loading-bottom \.loading-controls dl\{display:grid/);
+  assert.match(css, /body\.menu:not\(\.finished\) \.race-loading-screen\{display:block\}/);
+});

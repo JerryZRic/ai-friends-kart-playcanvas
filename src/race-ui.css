@@ -156,3 +156,33 @@ body.menu .game-ui{visibility:hidden}
 .fill[data-state="charging"]{background:#78cfff;box-shadow:0 0 9px #78cfff}
 .fill[data-state="ready"]{background:#ffd36d;box-shadow:0 0 12px #ffd36d}
 .fill[data-state="full"]{background:#fff1ad;box-shadow:0 0 16px #ffd36d}
+
+/* Tips and progress stay in one flow; recovery actions cannot cover the tip.
+   The bottom area scrolls on exceptionally short screens instead of covering
+   the map title. This is presentation only and adds no driving input handlers. */
+.loading-bottom{position:absolute;left:var(--loading-gutter);right:var(--loading-gutter);bottom:clamp(28px,6vh,56px);display:flex;align-items:flex-end;gap:36px;max-height:calc(100% - 220px);overflow-y:auto;pointer-events:auto}
+.loading-bottom .loading-footer{position:static;flex:1;min-width:0;order:0}
+.loading-bottom .loading-controls{position:static;flex:0 0 208px;order:1}
+.loading-driving-tip{margin:0 0 24px;max-width:520px;font-size:13px;line-height:1.7;color:#f1f6ec}
+.loading-driving-tip h2{margin:0 0 8px;font-size:13px;font-weight:750;color:var(--lime);letter-spacing:1px}
+.loading-driving-tip p{margin:4px 0;overflow-wrap:break-word}
+@media(max-width:700px){
+ .loading-bottom{bottom:25px;gap:20px;flex-direction:column;align-items:stretch}
+ .loading-bottom .loading-controls{flex:none;width:auto;order:0;display:block}
+ .loading-bottom .loading-footer{flex:none;order:1}
+ .loading-bottom .loading-keyboard{display:none}
+ .loading-bottom .loading-controls dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:10px}
+ .loading-bottom .loading-controls dl>div{margin:0;gap:6px}
+ .loading-bottom .loading-controls dt{flex-basis:62px}
+ .loading-bottom .loading-controls dd{white-space:normal}
+ .loading-driving-tip{margin-bottom:18px;font-size:12px}
+}
+@media(max-height:560px){
+ .loading-bottom{bottom:20px;max-height:calc(100% - 136px);gap:22px}
+ .loading-driving-tip{margin-bottom:14px;font-size:12px}
+}
+@media(max-width:480px){
+ .loading-bottom{gap:14px}
+ .loading-bottom .loading-controls dl{font-size:9px;gap:3px 8px}
+ .loading-bottom .loading-controls dt{flex-basis:55px}
+}

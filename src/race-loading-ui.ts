@@ -15,15 +15,20 @@ export interface RaceLoadingSnapshot {
 
 export const RACE_LOADING_MARKUP = `<section class="race-loading-screen" aria-label="赛前加载">
   <header class="loading-map"><span class="loading-map-tag" id="loadingMapTag"></span><h1 id="loadingMapName"></h1><p>06 位选手 <span>·</span> 03 圈 <span>·</span> 自由竞速</p></header>
+  <div class="loading-bottom">
   <section class="loading-controls" aria-label="键盘操作">
     <div class="loading-keyboard" aria-hidden="true"><kbd class="key-w">W</kbd><kbd class="key-a">A</kbd><kbd class="key-s">S</kbd><kbd class="key-d">D</kbd><kbd class="key-shift">Shift</kbd><kbd class="key-space">Space</kbd></div>
     <dl><div><dt>W / S</dt><dd>油门 / 刹车倒车</dd></div><div><dt>A / D</dt><dd>左右转向</dd></div><div><dt>Shift</dt><dd id="loadingDriftHelp">手刹漂移</dd></div><div><dt>Space / E</dt><dd>刹车 / 使用道具</dd></div><div><dt>Esc</dt><dd>暂停比赛</dd></div></dl>
   </section>
-  <section class="loading-footer" id="raceLoadingProgressGroup" aria-label="资源下载进度" aria-busy="true">
+  <div class="loading-footer">
+    <aside class="loading-driving-tip" aria-labelledby="loadingTipTitle"><h2 id="loadingTipTitle"></h2><p id="loadingTipStart"></p><p id="loadingTipRelease"></p></aside>
+    <section id="raceLoadingProgressGroup" aria-label="资源下载进度" aria-busy="true">
     <div class="loading-actions"><button type="button" id="raceLoadingRetry" hidden disabled>重试加载</button><button type="button" id="raceLoadingContinue" hidden disabled>继续比赛</button><a id="raceLoadingExit" href="index.html" hidden>返回主菜单</a></div>
     <progress class="race-loading-progress" id="raceLoadingProgress" max="1" aria-label="资源下载进度" aria-describedby="raceLoadingStatus"></progress>
     <div class="loading-status-line"><span id="raceLoadingPercent" aria-hidden="true">—</span><span id="raceLoadingStatus" role="status" aria-live="polite" aria-atomic="true">正在准备赛道…</span></div>
-  </section>
+    </section>
+  </div>
+  </div>
 </section>`;
 
 export function mountRaceLoadingUi(doc: Document, map: MapId) {
@@ -35,6 +40,12 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
   get('loadingMapName').textContent = profile.label;
   get('loadingMapTag').textContent = profile.tag;
   get('loadingDriftHelp').textContent = profile.id === 'waterpark' ? '水上滑移' : '手刹漂移';
+  const water = profile.id === 'waterpark';
+  get('loadingTipTitle').textContent = water ? '水上滑移加速' : '漂移加速';
+  get('loadingTipStart').textContent = '按住 W 提速，再按左 Shift + A / D 持续转向蓄力';
+  get('loadingTipRelease').textContent = water
+    ? '滑移超过 0.6 秒后，松开 Shift 加速；蓄力越满，加速越久'
+    : '蓄力条变黄后，松开 Shift 加速；蓄力越满，加速越久';
   const progress = get<HTMLProgressElement>('raceLoadingProgress');
   const percent = get('raceLoadingPercent'), status = get('raceLoadingStatus'), group = get('raceLoadingProgressGroup');
   const retryButton = get<HTMLButtonElement>('raceLoadingRetry'), continueButton = get<HTMLButtonElement>('raceLoadingContinue');
