@@ -294,7 +294,7 @@ test('native worlds route the independent close cover and map-preview cameras wi
             camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect; camera.camera.updateFrustum();
             const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
             const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(point => camera.camera.frustum.containsPoint(point));
-            assert.ok(visible.length >= (presentation === 'cover' ? 5 : aspect >= 1 ? 115 : 20), `${map}: composition retains a readable real course section`);
+            assert.ok(visible.length >= (presentation === 'cover' ? 5 : 7), `${map}: composition retains a readable real course section`);
             const surface = nearestCenterlinePoint(map, target);
             if (presentation === 'cover') assert.ok(surface.clone().sub(target).length() < 1, 'cover focal point remains within one metre of the real track');
             const viewProjection = new pc.Mat4().mul2(camera.camera.projectionMatrix, new pc.Mat4().invert(world.camera.getWorldTransform()));
@@ -371,25 +371,23 @@ test('cover focal target follows a continuous actual centerline section in every
 });
 
 
-test('map-selection diorama fits route anchors and stays above foliage throughout its calm motion', () => {
+test('map-selection scenic shot stays close to a real bend with visible smooth motion above foliage', () => {
   for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
-    for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35, 90, 180]) {
+    const start = mapPreviewCameraPose(map, 0, aspect);
+    for (const time of [0, .125, 2, 5, 10, 17, 29.999, 35, 90, 180]) {
       const pose = mapPreviewCameraPose(map, time, aspect);
       const position = new pc.Vec3(...pose.position), target = new pc.Vec3(...pose.target);
-      const forward = target.clone().sub(position).normalize();
-      const right = new pc.Vec3().cross(forward, pc.Vec3.UP).normalize(), up = new pc.Vec3().cross(right, forward);
-      const tanV = Math.tan(pose.fov * Math.PI / 360);
-      assert.ok(pose.position[1] > 75, 'lens clears palms and the landmark tower');
-      for (const point of menuCameraAnchors(map, aspect)) {
-        const delta = new pc.Vec3(...point).sub(position), depth = delta.dot(forward);
-        assert.ok(depth > 0);
-        assert.ok(Math.abs(delta.dot(right) / (depth * tanV * aspect)) < .9);
-        assert.ok(Math.abs(delta.dot(up) / (depth * tanV)) < .9);
-      }
+      const distance = position.clone().sub(target).length();
+      assert.ok(distance >= 85 && distance <= 134, 'close scenic radius is independent of full course size');
+      assert.ok(pose.position[1] > 50, 'lens stays above palms and the landmark tower');
+      assert.ok(nearestCenterlinePoint(map, target).clone().sub(target).length() < 1.5, 'focus stays on actual road');
       const next = mapPreviewCameraPose(map, time + 1 / 30, aspect);
-      assert.ok(Math.hypot(...next.position.map((value, axis) => value - pose.position[axis])) < 1, 'no fast orbit or camera jump');
+      assert.ok(Math.hypot(...next.position.map((value, axis) => value - pose.position[axis])) < .65, 'smooth frame-to-frame travel');
       assert.notDeepEqual(pose.position, coverCameraPose(map, time, aspect).position);
+      if ([2, 5, 10].includes(time)) assert.ok(position.clone().sub(new pc.Vec3(...start.position)).length() > time * 3, 'visible motion within the first few seconds');
     }
+    const radius = (time: number) => {const pose = mapPreviewCameraPose(map, time, aspect); return Math.hypot(...pose.position.map((v, i) => v - pose.target[i]));};
+    assert.ok(radius(5) - radius(0) > 10, 'radial dolly is noticeable separately from orbit');
   }
   for (const value of [NaN, Infinity, -Infinity, 0, -2]) for (const map of maps) {
     const pose = mapPreviewCameraPose(map, value, value);

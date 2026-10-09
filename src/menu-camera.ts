@@ -133,25 +133,22 @@ export function coverCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   };
 }
 
-/** Map selection is a calm elevated course diorama beside full-route cards.
- * Fit actual geometry in its own viewport and keep the lens above the palms;
- * the previous close orbit could put large leaves directly in front of it.
- * This composition deliberately has no dependency on the cover zoom/phase. */
+/** The cards already show the whole route. The right-hand preview is a close
+ * scenic shot of a real bend: a bounded orbit, visible radial dolly and gentle
+ * travel along the centerline. Keep the lens above nearby palms throughout,
+ * without fitting the full map or inheriting the cover camera's zoom. */
 export function mapPreviewCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
   const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 16 / 9;
-  const {points, target} = cameraFrame(map, safeAspect);
-  const angle = (map === 'coast' ? -2.16 : -1.92) + Math.sin(time * .045) * .14;
-  const pitch = .76, direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
-  const right = [-Math.sin(angle), 0, Math.cos(angle)];
-  const up = [-Math.cos(angle) * Math.sin(pitch), Math.cos(pitch), -Math.sin(angle) * Math.sin(pitch)];
-  const fov = 48, tanV = Math.tan(fov * Math.PI / 360), tanH = tanV * safeAspect;
-  let distance = 110;
-  for (const point of points) {
-    const relative = point.map((value, axis) => value - target[axis]);
-    const dot = (axis: number[]) => relative.reduce((sum, value, index) => sum + value * axis[index], 0);
-    distance = Math.max(distance, dot(direction) + Math.max(Math.abs(dot(right)) / tanH, Math.abs(dot(up)) / tanV) / .88);
-  }
-  distance += 10 + 2 * Math.sin(time * .065);
-  return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target: [...target] as Point, fov};
+  const {sample, length} = route(map);
+  const focalDistance = length * (map === 'coast' ? .69 : .165) + 18 * Math.sin(time * .13);
+  const point = sample(focalDistance).p;
+  const target: Point = [point.x, point.y + 1, point.z];
+  const angle = (map === 'coast' ? -2.16 : -1.92) + .62 * Math.sin(time * .17);
+  const pitch = .67 + .035 * Math.sin(time * .2);
+  // A modest portrait allowance preserves a readable road width, not the full
+  // route. Absolute metre distances prevent new longer maps zooming back out.
+  const distance = (map === 'coast' ? 105 : 98) + portraitWeight(safeAspect) * 16 + 12 * Math.sin(time * .25);
+  const direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
+  return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target, fov: 48};
 }
