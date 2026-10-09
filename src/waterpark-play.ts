@@ -28,8 +28,8 @@ const shell=createRaceShell(document,canvas,{map:'waterpark',driver:initialDrive
 let startupApp:pc.Application|undefined, cleanup:undefined|(()=>void);
 try {
   const app=startupApp=new pc.Application(canvas,{graphicsDeviceOptions:{antialias:true,alpha:false,powerPreference:'high-performance'}});
-  // Keep real frame deltas; the shared clock separates preparation from an
-  // interrupted race instead of charging model/shader warm-up to the race.
+  // The shared clock bounds visible rendering stalls without inferring pause.
+  // Browser visibility/focus and user controls handle real interruptions.
   app.maxDeltaTime=Infinity;
   const settings=readGameSettings(),quality=qualitySettings(settings.quality);
   app.graphicsDevice.maxPixelRatio=Math.min(devicePixelRatio||1,quality.pixelRatioCap);
@@ -171,8 +171,6 @@ try {
     performancePanel.sample(performance.now(),mode==='riding'&&!busy&&race.countdown<=0&&race.racers[0].finishTime===null,race.countdown>0?'countdown':race.racers[0].finishTime!==null?'spectating':mode);
     const frame=frameClock.sample(dt,mode==='riding',race.countdown);
     const step=frame.dt; let steer=visualSteer;
-    // A suspended race pauses; initial rendering and countdown do not.
-    if(frame.interrupted){pause();shell.toast('画面中断，比赛已暂停 · 继续后接着比赛');}
     shell.tick(step);
     const pressed=(key:string)=>!!controls.keys[key];
     if(mode==='riding') {

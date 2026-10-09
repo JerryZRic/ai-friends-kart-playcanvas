@@ -112,7 +112,7 @@ route. See [course design and original reference principles](level-zero-courses.
 
 Race simulation and countdown use update deltas, not independent timer loops.
 Pausing or going into the background freezes gameplay clocks and item effects.
-Large stalls explicitly pause rather than attempting unlimited catch-up work. The water
+Long foreground frames are bounded to 250 ms of substepped simulation instead of opening pause or attempting unlimited catch-up. Blur, hidden tabs and explicit controls pause separately. The water
 simulation runs fixed 120 Hz steps; render-rate equivalence is covered by tests.
 
 ## Settings and rendering

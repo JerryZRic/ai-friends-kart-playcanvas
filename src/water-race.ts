@@ -95,8 +95,9 @@ function stopWaterRacer(racer:WaterRacer){
  racer.motion.drifting=false;racer.held=null;racer.boost=racer.shield=racer.slow=racer.warning=0;
  racer.bump=racer.reaction=racer.cooldown=racer.decisionIn=racer.pulseFlash=0;
 }
-/** Accumulate rather than truncate ordinary deltas at 120Hz. A >10s suspension
- * does no work; the browser UI pauses at >.25s and requires explicit resume. */
+/** Accumulate ordinary deltas at 120Hz. The browser frame clock bounds long
+ * foreground frames to .25s; focus/visibility events pause independently.
+ * Reject >10s here defensively for callers that bypass that adapter. */
 export function advanceWaterRace(race:WaterRace,input:WaterInput,delta:number,boxes:readonly RacingPickup[]=[]){
  if(!Number.isFinite(delta)||delta<=0||delta>10||race.finished)return;
  race.remainder+=delta;const step=1/120;

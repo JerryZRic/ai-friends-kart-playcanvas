@@ -245,14 +245,34 @@ test('native game integration preserves race, camera, items, menu and safety flo
       }
       qa.set({state:'menu'});game.selectDriver('whale');
     });
-    await t.test('30/60/120 Hz frames preserve countdown overflow and clocks; huge stalls pause safely',()=>{
+    await t.test('foreground stalls after five and ten seconds never open the pause dialog',()=>{
+      for(const seconds of [5,10]){
+        game.start();qa.set({noBots:true});qa.advanceFrame(0);
+        for(let frame=0;frame<(3+seconds)*60;frame++)qa.advanceFrame(1/60);
+        assert.equal(game.getState().state,'running');
+        const before=game.getState().elapsed;qa.advanceFrame(.8);
+        assert.equal(game.getState().state,'running',`foreground stall at ${seconds}s`);
+        assert.equal(element('pausePanel').classList.contains('hidden'),true);
+        assert.ok(game.getState().elapsed>before&&game.getState().elapsed-before<=.2500001,'catch-up is bounded');
+        events.blur.forEach(fn=>fn());const frozen=game.getState().elapsed;qa.advanceFrame(20);
+        assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,frozen);
+        game.pause();qa.advanceFrame(20);assert.equal(game.getState().state,'running');assert.equal(game.getState().elapsed,frozen);
+        g.document.hidden=true;docEvents.visibilitychange.forEach(fn=>fn());qa.advanceFrame(20);
+        assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,frozen);
+        g.document.hidden=false;docEvents.visibilitychange.forEach(fn=>fn());assert.equal(game.getState().state,'paused');
+        game.pause();qa.advanceFrame(20);assert.equal(game.getState().elapsed,frozen);
+
+      }
+    });
+    await t.test('30/60/120 Hz frames preserve countdown overflow and clocks; huge foreground stalls remain bounded',()=>{
       for(const hz of [30,60,120]){
         game.start();qa.set({noBots:true});qa.advanceFrame(0);
         for(let frame=0;frame<hz*4;frame++)qa.advanceFrame(1/hz);
         assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-1)<1e-7);
         const elapsed=game.getState().elapsed;qa.advanceFrame(1e6);
-        assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,elapsed);
-        game.pause();qa.advanceFrame(.8);assert.equal(game.getState().elapsed,elapsed);qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-elapsed-1/hz)<1e-7);
+        assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-elapsed-.25)<1e-7);
+        const afterStall=game.getState().elapsed;game.pause();qa.advanceFrame(2);assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,afterStall);
+        game.pause();qa.advanceFrame(.8);assert.equal(game.getState().elapsed,afterStall);qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-afterStall-1/hz)<1e-7);
       }
     });
     await t.test('pause buttons freeze countdown and restart a clean race, with exact crossing time in results',()=>{

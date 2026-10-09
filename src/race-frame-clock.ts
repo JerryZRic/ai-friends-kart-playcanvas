@@ -1,7 +1,8 @@
-/** Engine deltas straddle start/resume and include model upload/shader warm-up.
- * Rebase at those boundaries. During the pre-race countdown, bound a slow
- * visible frame instead of treating preparation as a suspended race. Actual
- * blur/hidden/pagehide/Escape/lock loss still pause immediately via controls.
+/** Frame duration is not evidence of focus loss: shader compilation, asset
+ * upload and GC can stall a visible race at any time. Bound simulation catch-up
+ * to 250 ms (substepped by each adapter), dropping excess wall time rather than
+ * opening a pause dialog or teleporting racers. Only explicit user/browser
+ * interruption events in race-controls pause. Rebase start/resume intervals.
  */
 export function createRaceFrameClock() {
   let fresh = true;
@@ -9,10 +10,10 @@ export function createRaceFrameClock() {
     reset() { fresh = true; },
     sample(delta: number, active: boolean, countdown: number) {
       const dt = Number.isFinite(delta) ? Math.max(0, delta) : 0;
-      if (!active) return {dt, interrupted: false};
-      if (fresh) { fresh = false; return {dt: 0, interrupted: false}; }
-      if (countdown > 0) return {dt: dt > .25 ? Math.min(.25, countdown) : dt, interrupted: false};
-      return dt > .25 ? {dt: 0, interrupted: true} : {dt, interrupted: false};
+      if (!active) return {dt};
+      if (fresh) { fresh = false; return {dt: 0}; }
+      if (countdown > 0 && dt > .25) return {dt: Math.min(.25, countdown)};
+      return {dt: Math.min(dt, .25)};
     },
   };
 }

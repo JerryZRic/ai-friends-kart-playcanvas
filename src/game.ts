@@ -433,10 +433,9 @@ function advanceFrame(delta:number){
   if(disposed)return;
   performancePanel.sample(performance.now(),state==='running',state);
   const frame=frameClock.sample(delta,state==='running'||state==='countdown',countdown);
-  // Only an in-progress race can be suspended by a long frame.
-  if(frame.interrupted){pause();toast('画面中断，比赛已暂停 · 继续后接着比赛');return;}
+  // Foreground stalls use bounded catch-up; real interruptions come from controls.
   const dt = frame.dt; if(state!=='paused')clock += dt;
-  // Substep the whole active frame instead of dropping time on slower devices.
+  // Substep every accepted interval; the frame clock bounds exceptional stalls.
   if (ready && (state==='running'||state==='countdown')) { let remaining=dt; while(remaining>1e-8){const step=Math.min(1/60,remaining);update(step);remaining-=step;if(state!=='running'&&state!=='countdown')break;} }
   else if(ready)update(dt);
   draw(Math.min(.25,dt));

@@ -107,6 +107,13 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     release();await settle();assert.equal(element('start').disabled,true);assert.match(element('load').textContent,/5\/6/);
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
     element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');
+    for(const seconds of [5,10]){
+      while(g.__waterparkRace.elapsed<seconds)step(1);
+      const before=g.__waterparkRace.elapsed;step(1,1.2);
+      assert.equal(g.__waterparkControls.mode,'riding',`foreground stall at ${seconds}s`);
+      assert.equal(element('pausePanel').classList.contains('hidden'),true);
+      assert.ok(g.__waterparkRace.elapsed>before&&g.__waterparkRace.elapsed-before<=.2500001,'catch-up is bounded');
+    }
     // The actual water entry adapts the same controls, not a test reimplementation.
     const controls=g.__waterparkControls;
     step(1,0);assert.equal(controls.view,0);
@@ -186,7 +193,7 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     element('start').click();step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','replay starts without a stale-frame pause');g.document.hidden=true;emit(documentTarget,'visibilitychange');assert.equal(g.__waterparkControls.mode,'paused','backgrounding still pauses during countdown');g.document.hidden=false;emit(documentTarget,'visibilitychange');assert.equal(g.__waterparkControls.mode,'paused');element('resumeRace').click();key('keydown','KeyW');step(30);
     emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('timer').textContent;step(30);assert.equal(element('timer').textContent,cachedTime);
     element('resumeRace').click();step(260);assert.notEqual(element('timer').textContent,cachedTime);
-    const preStallTime=element('timer').textContent;step(1,1.2);assert.equal(element('timer').textContent,preStallTime,'long suspension pauses rather than advances race');assert.equal(element('pause').attributes['aria-label'],'继续');element('resumeRace').click();
+    const preStallTime=g.__waterparkRace.elapsed;step(1,1.2);assert.equal(g.__waterparkControls.mode,'riding','later foreground stall cannot pause');assert.ok(Math.abs(g.__waterparkRace.elapsed-preStallTime-.25)<1e-7);g.document.hidden=true;emit(documentTarget,'visibilitychange');const hiddenTime=g.__waterparkRace.elapsed;step(1,20);assert.equal(g.__waterparkControls.mode,'paused');assert.equal(g.__waterparkRace.elapsed,hiddenTime);g.document.hidden=false;emit(documentTarget,'visibilitychange');assert.equal(g.__waterparkControls.mode,'paused','visibility alone never resumes');element('resumeRace').click();step(1,20);assert.equal(g.__waterparkControls.mode,'riding');assert.equal(g.__waterparkRace.elapsed,hiddenTime,'resume rebases hidden wall time');
     element('pause').click();element('restartRace').click();step(1);assert.equal(element('timer').textContent,'0:00');assert.equal(element('speed').textContent,'0');
     const actualPlayer=g.__waterparkRace.racers[0];actualPlayer.speed=actualPlayer.motion.speed=20;actualPlayer.boost=2;actualPlayer.slow=0;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*1.34*3.6),'HUD reports actual boosted travel speed');actualPlayer.boost=0;actualPlayer.slow=2;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*.55*3.6),'HUD reports actual slowed travel speed');actualPlayer.finishTime=1;step(1,0);assert.equal(element('speed').textContent,'0','finished rider always displays zero');
     const performanceRoot=element('performance'),performanceStart=element('perf-start');
