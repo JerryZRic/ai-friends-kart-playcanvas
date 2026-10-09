@@ -90,20 +90,25 @@ their progress rather than invented finish times. Replay clears old results and
 effects before a new countdown. See [the race-shell contract](race-shell.md) for
 the adapter API and ownership boundaries.
 
-## Water circuit
+## Original medium-complexity circuits
 
-The water circuit is an authored asymmetric loop of approximately 760 m, with
-linked S bends, recovery straights, a broad return and a bridge near the finish
-approach. Its 24 m waterway stays beginner-friendly; fourteen staggered item
-placements create optional lines through the exits and open sections. The
-approximately 1,056 m coast course has broad S transitions, unequal straights,
-gentle slopes and smoothly varying 12.4–16.4 m road width.
+The approximately 921 m water circuit has a tower-side horseshoe, a garden
+dogleg, an eastern bowl, a stronger lagoon counter-bend and a broad south
+return, with a bridge on the finish approach. Its consistent 24 m canal retains
+room to recover. Fourteen staggered pickups offer central recovery and optional
+inside/outside lines at corner exits.
+
+The approximately 1,373 m coast circuit has four unequal lobes: a headland
+climb, downhill chicane, an open 177-degree lookout hairpin, cross-island esses
+and a harbour double apex. Road elevation spans about 2.4–12.6 m, with grade
+below 8%; width changes smoothly from 13.2–16.4 m. Wide corner exits alternate
+with acceleration sections. Forty-five pickups retain reachable optional lines.
 
 Both use the shared metre-distance `ClosedCircuit` sampler. Rendered surfaces,
 barriers, racers, pickups, minimap and map previews follow the same geometry.
 Water's eight sequential forward gates per lap still prevent reverse/seam or
 skipped-gate credit. The separate art-study page retains its original 285 m
-route. See [level-0 course design](level-zero-courses.md).
+route. See [course design and original reference principles](level-zero-courses.md).
 
 Race simulation and countdown use update deltas, not independent timer loops.
 Pausing or going into the background freezes gameplay clocks and item effects.

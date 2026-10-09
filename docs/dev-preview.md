@@ -17,7 +17,7 @@ oblique capture inverse view-projection matrix, rather than the main camera's
 depth buffer. The extra target is half-resolution, capped at 768 pixels on its
 long side, with no MSAA. The existing reflection capture is unchanged.
 
-The complete race circuit underwater floor uses two batches and 6,944 triangles
+The complete race circuit underwater floor uses two batches and 9,676 triangles
 (the separate short study route remains below 4,200). The player wake uses two
 draws. The 水面 / FPS controls include a refraction switch, which is locked while
 a performance capture is running. Exported JSON version 2 records the selected

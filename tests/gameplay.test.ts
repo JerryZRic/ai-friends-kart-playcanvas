@@ -222,7 +222,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       }
       qa.set({state:'menu'});game.selectDriver('whale');
     });
-    await t.test('level-0 variable-width course is completable by all six profiles with bounded racers',()=>{
+    await t.test('medium-complexity variable-width course is completable by all six profiles with bounded racers',()=>{
       for(const profile of CHARACTER_PROFILES){
         qa.set({state:'menu'});game.selectDriver(profile.id);game.start();
         key('keydown','KeyW');

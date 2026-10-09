@@ -1,26 +1,30 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
-import {circuit, LENGTH, HALF, halfWidthAt, laneLimitAt, shoulderAt, sample, isRoadsideClear, COAST_TURN_SIGNS, COAST_PICKUPS} from '../src/track';
+import {circuit, LENGTH, HALF, halfWidthAt, laneLimitAt, shoulderAt, sample, isRoadsideClear, COAST_TURN_SIGNS, COAST_PICKUPS, COAST_SECTIONS} from '../src/track';
 import {createCoastScene, coastGroundHeightAt, coastPalmPlacements, COAST_ISLANDS} from '../src/scene';
 
 const near = (a: number, b: number, tolerance = 1e-4) => assert.ok(Math.abs(a - b) <= tolerance, `${a} differs from ${b}`);
 const same = (a: number[], b: number[], tolerance = 1e-4) => { assert.equal(a.length, b.length); a.forEach((v, i) => near(v, b[i], tolerance)); };
 
-test('coast level0 adds real left/right S sections while remaining a gentle noncrossing circuit', () => {
-  assert.ok(LENGTH > 1030 && LENGTH < 1090); assert.equal(circuit.points.length, 16);
-  same(sample(0).p.toArray(), [0, 2.4, -140]);
-  let minY = Infinity, maxY = -Infinity, maximumCurvature = 0, maximumGrade = 0, leftMetres = 0, rightMetres = 0, straightMetres = 0;
+test('coast has medium-complexity turns, a real open hairpin and separated branches', () => {
+  assert.ok(LENGTH > 1350 && LENGTH < 1400); assert.equal(circuit.points.length, 28);
+  same(sample(0).p.toArray(), [0, 2.4, -165]);
+  let minY = Infinity, maxY = -Infinity, maximumCurvature = 0, maximumGrade = 0, leftMetres = 0, rightMetres = 0, straightMetres = 0, absoluteYaw = 0;
   const step = LENGTH / 3000;
   for (let d = 0; d < LENGTH; d += step) {
     const a = sample(d), b = sample(d + step), angle = Math.atan2(a.t.z * b.t.x - a.t.x * b.t.z, a.t.x * b.t.x + a.t.z * b.t.z), k = angle / step;
+    absoluteYaw += Math.abs(k) * step;
     minY = Math.min(minY, a.p.y); maxY = Math.max(maxY, a.p.y); maximumCurvature = Math.max(maximumCurvature, Math.abs(k));
     maximumGrade = Math.max(maximumGrade, Math.abs(a.t.y) / Math.hypot(a.t.x, a.t.z));
     if (k > .002) leftMetres += step; if (k < -.002) rightMetres += step; if (Math.abs(k) < .0025) straightMetres += step;
     assert.ok(a.p.distance(b.p) < step * 1.015, 'metre sampler cannot accelerate around a knot');
   }
-  assert.ok(1 / maximumCurvature > 35, 'level0 has no sharp hairpins'); assert.ok(maximumGrade < .05);
-  assert.ok(minY > 2.3 && maxY < 8 && maxY - minY > 5); assert.ok(leftMetres > 140 && rightMetres > 400 && straightMetres > 110);
+  assert.ok(1 / maximumCurvature > 20, 'open hairpins leave clearance outside the full road and rails'); assert.ok(maximumGrade < .08);
+  assert.ok(minY > 2.3 && maxY < 13 && maxY - minY > 10); assert.ok(leftMetres > 250 && rightMetres > 600 && straightMetres > 100);
+  assert.ok(absoluteYaw > 14 && absoluteYaw < 16, 'roughly 850 degrees of turning, not the previous 515-degree S oval');
+  assert.equal(COAST_SECTIONS.length, 8);
+  assert.ok(COAST_SECTIONS.some(section => section.name === 'Lookout hairpin'));
   assert.ok(sample(-.0001).t.distance(sample(.0001).t) < 1e-5, 'no finish-seam heading pop');
   const rows = Array.from({length: 240}, (_, i) => sample(i / 240 * LENGTH).p);
   for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) {
@@ -33,12 +37,12 @@ test('width variations are periodic, gradual and wide enough for all existing pi
   let min = Infinity, max = -Infinity;
   for (let d = -10; d < LENGTH + 10; d += .5) {
     const half = halfWidthAt(d); min = Math.min(min, half); max = Math.max(max, half);
-    assert.ok(half >= 6.2 && half <= 8.2); near(half, halfWidthAt(d + LENGTH * 3), 1e-12);
+    assert.ok(half >= 6.6 && half <= 8.2); near(half, halfWidthAt(d + LENGTH * 3), 1e-12);
     assert.ok(Math.abs(halfWidthAt(d + .5) - half) < .011, 'no abrupt pinch');
     near(laneLimitAt(d), half - .45); near(shoulderAt(d), half - .9);
     assert.ok(laneLimitAt(d) >= 5.2); assert.ok(half - 4.2 > 1.3);
   }
-  near(min, 6.2); near(max, 8.2);
+  near(min, 6.6); near(max, 8.2);
   for (const d of [-10, 0, 10, 40]) near(halfWidthAt(d), HALF, 1e-12);
   assert.ok(COAST_TURN_SIGNS.some(sign => sign.left) && COAST_TURN_SIGNS.some(sign => !sign.left));
   for (const sign of COAST_TURN_SIGNS) assert.equal(sign.left, circuit.curvature(sign.distance + 12, 22) > 0);
@@ -72,7 +76,7 @@ test('race palms use real supporting island caps and never spawn with ocean root
 
 test('forty-five pickups form staggered optional side lines with safe centre recovery', () => {
   assert.equal(COAST_PICKUPS.length, 45); assert.equal(new Set(COAST_PICKUPS.map(p => p.d)).size, 45);
-  assert.deepEqual(new Set(COAST_PICKUPS.map(p => p.line)), new Set(['recovery', 's-exit', 'wide-choice']));
+  assert.deepEqual(new Set(COAST_PICKUPS.map(p => p.line)), new Set(['recovery', 'corner-exit', 'wide-choice']));
   for (let group = 0; group < 15; group++) {
     const row = COAST_PICKUPS.filter(p => p.group === group); assert.equal(row.length, 3);
     assert.ok(row.some(p => p.lateral === 0)); near(row[2].d - row[0].d, 28, 1e-10);

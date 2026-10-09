@@ -6,7 +6,16 @@ import {characterTuning} from '../src/character-profiles';
 import type {RacingPickup} from '../src/npc-tactics';
 const input={throttle:true,brake:false,steer:0};
 function boxes():RacingPickup[]{return Array.from({length:24},(_,i)=>({d:45+Math.floor(i/3)*75,lateral:(i%3-1)*4,display:'boost',cool:0,mesh:{enabled:true},models:{boost:{enabled:true},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}}}));}
-function run(hz:number){const race=newWaterRace('whale'),pickups=boxes();resetWaterPickups(race,pickups);for(let i=0;i<hz*180&&!race.finished;i++)advanceWaterRace(race,input,1/hz,pickups);return race;}
+function run(hz:number){
+ const race=newWaterRace('whale'),pickups=boxes();resetWaterPickups(race,pickups);
+ // A medium-complexity route needs steering. Hold a deterministic controller
+ // decision for one second so 30/60/120 Hz feeds exactly the same fixed ticks.
+ for(let second=0;second<180&&!race.finished;second++){
+  const player=race.racers[0],steer=Math.max(-1,Math.min(1,-player.lateral*.6-player.motion.lateralSpeed*.4));
+  for(let frame=0;frame<hz&&!race.finished;frame++)advanceWaterRace(race,{...input,steer},1/hz,pickups);
+ }
+ return race;
+}
 test('six unique racers keep real three-lap results and deterministic replay',()=>{const race=run(60);assert.ok(race.finished);assert.equal(new Set(race.racers.map(r=>r.id)).size,6);assert.equal(race.racers[0].checkpoint,24);for(const r of race.racers){if(r.finishTime!==null){assert.equal(r.checkpoint,24);assert.equal(r.total,WATER_RACE_LENGTH*3);assert.ok(r.finishTime>70);}else {assert.ok(r.checkpoint<24);assert.ok(r.total<WATER_RACE_LENGTH*3);}assert.equal(r.speed,0);}assert.deepEqual(run(60),race);assert.ok(race.racers.slice(1).some(r=>r.pickups>0&&r.uses>0));assert.ok(race.racers.every(r=>r.uses<=r.pickups));const sorted=waterStandings(race);assert.ok(sorted.every((r,i)=>i===0||r.finishTime!>=sorted[i-1].finishTime!));});
 test('race finish times and rank are identical at 30, 60 and 120 Hz',()=>{const a=run(30),b=run(60),c=run(120);assert.deepEqual(a.racers,b.racers);assert.deepEqual(a.racers,c.racers);});
 test('countdown and effects use simulation time; invalid deltas and finished frames do nothing',()=>{const r=newWaterRace('glm');advanceWaterRace(r,input,2.5);assert.equal(r.elapsed,0);assert.equal(r.racers[0].total,0);advanceWaterRace(r,input,.6);assert.ok(Math.abs(r.elapsed-.1)<.009);const snapshot=structuredClone(r);advanceWaterRace(r,input,NaN);advanceWaterRace(r,input,-1);advanceWaterRace(r,input,1e12);assert.deepEqual(r,snapshot);const done=run(60),saved=structuredClone(done);advanceWaterRace(done,input,3);assert.deepEqual(done,saved);});
@@ -117,7 +126,7 @@ test('throttle, water slide, brake and reverse replays stay deterministic at com
  const expected=replay(120);assert.deepEqual(replay(60),expected);assert.deepEqual(replay(30),expected);
 });
 
-test('all six drivers complete the authored S course while NPCs keep moving and collect real staggered pickups',()=>{
+test('all six drivers complete the authored medium-complexity course while NPCs keep moving and collect real staggered pickups',()=>{
  const reports=[];
  for(const selected of ['whale','gemini','gpt','claude','grok','glm']){
   const race=newWaterRace(selected),pickups:RacingPickup[]=WATER_RACE_PICKUPS.map(({d,lateral})=>({d,lateral,display:'boost',cool:0,mesh:{enabled:true},models:{boost:{enabled:true},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}}}));
@@ -138,5 +147,5 @@ test('all six drivers complete the authored S course while NPCs keep moving and 
   assert.ok(race.racers.every(racer=>racer.uses<=racer.pickups));
   reports.push({selected,seconds:Number(race.elapsed.toFixed(2)),npcBankHits,minNpcSpeed:Number(minNpcSpeed.toFixed(2))});
  }
- console.log(JSON.stringify({waterLevelZero:reports}));
+ console.log(JSON.stringify({waterMediumCourse:reports}));
 });

@@ -1,5 +1,5 @@
 import * as pc from 'playcanvas';
-import {waterparkLayout, waterparkBridgeDistance, type WaterparkGeometryOptions, type MeshData} from './waterpark-design';
+import {waterparkLayout, waterparkBridgeDistance, waterparkSceneryClearance, type WaterparkGeometryOptions, type MeshData} from './waterpark-design';
 import type {WaterparkSurface} from './waterpark-materials';
 
 export type EnvironmentMesh = MeshData & {surface: WaterparkSurface; depthBand: 'near' | 'middle' | 'far'};
@@ -33,6 +33,7 @@ class DetailBatch {
 /** Original static details, merged by depth/material instead of one draw per prop. */
 export function createWaterparkEnvironmentDetails(options: WaterparkGeometryOptions = {}): EnvironmentMesh[] {
   const {sample, start, end, closed} = waterparkLayout(options);
+  const sceneryClear=closed?waterparkSceneryClearance(options):()=>true;
   const landmarks = (distances: number[]) => closed ? [...distances, ...distances.map(d => d + (end - start) / 2)] : distances;
   const batches: DetailBatch[] = [];
   const batch = (name: string, color: string, surface: WaterparkSurface, depth: EnvironmentMesh['depthBand']) => {
@@ -110,7 +111,8 @@ export function createWaterparkEnvironmentDetails(options: WaterparkGeometryOpti
   // Only four restrained, untextured background volumes. No high frequency
   // window grid: broad setback bands keep the landmark tower legible.
   for (const [d, lateral, width, height] of [[104, 57, 17, 13], [152, -61, 21, 10], [240, 61, 20, 16], [304, -55, 24, 11]]) {
-    const lane=lateral;
+    const lane=lateral,centre=sample(d,lane).p;
+    if(!sceneryClear(centre.x,centre.z,Math.hypot(width,13)/2))continue;
     place(distant, box, d, lane, 2.25 + height / 2, v(width, height, 11));
     for (const y of [height * .38, height * .72]) {
       place(windows, box, d - 5.54, lane, 2.25 + y, v(width * .8, 1.15, .08));

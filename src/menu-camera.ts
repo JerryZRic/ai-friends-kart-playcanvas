@@ -133,17 +133,25 @@ export function coverCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   };
 }
 
-/** Map selection uses exactly one tenth of its original overview radius and
- * five times its orbit/dolly phase. Recenter the offset on a real S-bend so
- * the tighter view never aims at the old whole-course bounds' empty infield.
- * Keep the overview baseline and cover function independent and unchanged. */
+/** Map selection is a calm elevated course diorama beside full-route cards.
+ * Fit actual geometry in its own viewport and keep the lens above the palms;
+ * the previous close orbit could put large leaves directly in front of it.
+ * This composition deliberately has no dependency on the cover zoom/phase. */
 export function mapPreviewCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
-  const baseline = menuCameraPose(map, time * 5, aspect);
-  const target = coverTrackTarget(map, 0);
-  return {
-    position: baseline.position.map((value, axis) => target[axis] + (value - baseline.target[axis]) * .1) as Point,
-    target,
-    fov: baseline.fov,
-  };
+  const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 16 / 9;
+  const {points, target} = cameraFrame(map, safeAspect);
+  const angle = (map === 'coast' ? -2.16 : -1.92) + Math.sin(time * .045) * .14;
+  const pitch = .76, direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
+  const right = [-Math.sin(angle), 0, Math.cos(angle)];
+  const up = [-Math.cos(angle) * Math.sin(pitch), Math.cos(pitch), -Math.sin(angle) * Math.sin(pitch)];
+  const fov = 48, tanV = Math.tan(fov * Math.PI / 360), tanH = tanV * safeAspect;
+  let distance = 110;
+  for (const point of points) {
+    const relative = point.map((value, axis) => value - target[axis]);
+    const dot = (axis: number[]) => relative.reduce((sum, value, index) => sum + value * axis[index], 0);
+    distance = Math.max(distance, dot(direction) + Math.max(Math.abs(dot(right)) / tanH, Math.abs(dot(up)) / tanV) / .88);
+  }
+  distance += 10 + 2 * Math.sin(time * .065);
+  return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target: [...target] as Point, fov};
 }

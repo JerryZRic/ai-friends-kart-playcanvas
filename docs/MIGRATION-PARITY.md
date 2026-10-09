@@ -2,8 +2,8 @@
 
 This inventory compares the released **AI Friends Kart Web 1.2.0** feature set with this separate PlayCanvas project. The original project is retained separately; the migration does not overwrite it. This document records source and automated evidence separately from browser evidence. A passing CPU test is not a rendered-gameplay sign-off.
 
-The dev free-mode level-0 Coast now intentionally has a new route: broad S
-sections, variable road width and gentle slopes. Original curve fixtures remain
+The dev free-mode Coast now intentionally has a medium-complexity route:
+asymmetric lobes, an open hairpin, stronger counter-bends, variable width and hills. Original curve fixtures remain
 unchanged and are checked against an explicit historical `CoastCircuit` using
 `ORIGINAL_TRACK_POINTS` and its legacy seam convention. They do not describe the
 current playable route. The current route is checked separately in
@@ -22,7 +22,7 @@ still required. See [free-mode architecture](free-mode.md).
 | Feature group | Original scope that must be retained | Migration evidence and status |
 | --- | --- | --- |
 | Rendering engine | Complete 3D sunset-coast game, not a selection-only or driving-only prototype | PlayCanvas 2.23.1 installed; runtime imports exclude Three.js. Engine-dependency assertion **passed**. Visual parity **blocked** pending a GPU browser |
-| Circuit and environment | Closed elevated coast circuit, road, striped curbs, rails/posts/supports, start checkerboard, original arch/kart/palm/rock assets, signs, islands, mountains, sky/sun, ocean | Historical 1,800-step curve and 32 original position/tangent fixtures remain independently checked. Current dev level 0 uses a new 16-point shared spline, knot-aligned metre table, periodic tangent, variable-width geometry, slope-conforming markings, curvature-directed signs and rock-clearance filtering. New geometry/invariant tests **passed** on a NullGraphicsDevice. Original asset hashes **passed**; rendering remains unverified |
+| Circuit and environment | Closed elevated coast circuit, road, striped curbs, rails/posts/supports, start checkerboard, original arch/kart/palm/rock assets, signs, islands, mountains, sky/sun, ocean | Historical 1,800-step curve and 32 original position/tangent fixtures remain independently checked. Current dev medium-complexity Coast uses a 28-point shared spline, knot-aligned metre table, periodic tangent, variable-width geometry, slope-conforming markings, curvature-directed signs and rock-clearance filtering. New geometry/invariant tests **passed** on a NullGraphicsDevice. Original asset hashes **passed**; rendering remains unverified |
 | Six selectable racers | WHALE, GEMINI, GPT, CLAUDE, GROK, GLM; selected player plus the other five AI racers; stable labels/colors/order | Roster/order checks **passed**. All six exact compressed/decoded identities, original skin/vertex counts, clips and markers **passed**. Real engine animation, independent clones and all six live-game selections also **passed** |
 | Rigged models | Full original geometry, UVs, materials/textures, independent skin hierarchies; sampled authored steering, wheel ±18°, pause freeze, neutral reset | Six original payloads unchanged and structurally checked. Real PlayCanvas parser/skin/animation checks **passed**: 121 poses for each model, 54,208 finite CPU-deformed vertex samples, independent clones, unchanged material objects, pause/reset/disposal. Maximum grip drift was 0.199 mm, below the 2 mm limit. Texture decoding/rendering and visual grip inspection **blocked** |
 | Loading and retry | Five original course files plus six models; streamed actual byte progress; separate decompression/preparation; size/SHA-256 checks; bounded two-file model work; 60-second attempts; up to four attempts for transient network/408/429/5xx; permanent/parse/integrity failures do not auto-retry | Engine-independent stream/retry suite and 13 bundled/course-loader groups **passed**. No percentage is claimed for parsing. Model failures must be explicit per-slot original-driver fallbacks; course failure must prevent starting |
@@ -36,8 +36,8 @@ still required. See [free-mode architecture](free-mode.md).
 
 ## Historical route and exact retained assets
 
-- Historical baseline circuit: 985.3759899870129 game units, fixed road half-width 7.2. This curve remains reproducible in its original fixture test; it is no longer the playable dev level-0 layout
-- Current Coast level 0: approximately 1,056.4 metres; smooth half-width 6.2–8.2 metres, nominal start half-width 7.2; minimum turn radius above 35 metres and grade below 5%. Maximum standard forward speed 42 and reverse cap 11 remain unchanged
+- Historical baseline circuit: 985.3759899870129 game units, fixed road half-width 7.2. This curve remains reproducible in its original fixture test; it is no longer the playable dev layout
+- Current Coast: approximately 1,372.5 metres; smooth half-width 6.6–8.2 metres, nominal start half-width 7.2; minimum turn radius above 20 metres and grade below 8%. Maximum standard forward speed 42 and reverse cap 11 remain unchanged
 - Original files: kart.glb, palm.glb, rock.glb, arch.glb, kart-r12-chassis.glb; the original kart.blend and props.blend editable source files
 - Driver order: whale, gemini, gpt, claude, grok, glm
 - Character compressed total: 51,627,206 bytes, about 49.2 MiB. All compressed and decoded sizes and SHA-256 values are independently pinned in the migration tests

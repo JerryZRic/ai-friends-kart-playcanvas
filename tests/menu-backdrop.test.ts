@@ -287,21 +287,21 @@ test('native worlds route the independent close cover and map-preview cameras wi
           assert.ok(world.camera.forward.dot(target.clone().sub(position).normalize()) > .999999, 'native camera keeps aiming at the same target');
           assert.ok(position.y > (presentation === 'cover' ? (map === 'waterpark' ? 27 : 15) : 10), 'camera remains elevated above the focal track surface');
           assert.equal(camera.nearClip, .1); assert.equal(camera.farClip, map === 'coast' ? 1500 : 1200);
-          assert.equal(camera.fov, 53);
+          assert.equal(camera.fov, expected.fov);
           const distance = target.clone().sub(position).length();
           assert.ok(distance > camera.nearClip * 10 && distance < camera.farClip, 'look target remains safely within depth limits');
           {
             camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect; camera.camera.updateFrustum();
             const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
             const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(point => camera.camera.frustum.containsPoint(point));
-            assert.ok(visible.length >= (presentation === 'cover' ? 5 : 2), `${map}: exact closer zoom retains a readable real course section`);
+            assert.ok(visible.length >= (presentation === 'cover' ? 5 : aspect >= 1 ? 115 : 20), `${map}: composition retains a readable real course section`);
             const surface = nearestCenterlinePoint(map, target);
-            assert.ok(surface.clone().sub(target).length() < 1, 'close camera focal point remains within one metre of the real track');
+            if (presentation === 'cover') assert.ok(surface.clone().sub(target).length() < 1, 'cover focal point remains within one metre of the real track');
             const viewProjection = new pc.Mat4().mul2(camera.camera.projectionMatrix, new pc.Mat4().invert(world.camera.getWorldTransform()));
             const project = (point: pc.Vec3) => {const value = viewProjection.transformVec4(new pc.Vec4(point.x, point.y, point.z, 1)); return {x: value.x / value.w, y: value.y / value.w, w: value.w};};
             const aimed = project(target), road = project(surface);
             assert.ok(aimed.w > camera.nearClip && Math.abs(aimed.x) < .00001 && Math.abs(aimed.y) < .00001, 'the target projects to native screen center');
-            assert.ok(road.w > camera.nearClip && Math.abs(road.x) < .035 && Math.abs(road.y) < .035, 'actual centerline geometry stays in the center 3.5% of the viewport');
+            if (presentation === 'cover') assert.ok(road.w > camera.nearClip && Math.abs(road.x) < .035 && Math.abs(road.y) < .035, 'cover centerline geometry stays in the center 3.5% of the viewport');
           }
         }
       } finally { world.destroy(); }
@@ -371,20 +371,24 @@ test('cover focal target follows a continuous actual centerline section in every
 });
 
 
-test('map-selection preview has exact one-tenth radius and five-times orbit/dolly phase, aimed at real track', () => {
+test('map-selection diorama fits route anchors and stays above foliage throughout its calm motion', () => {
   for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
     for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35, 90, 180]) {
-      const pose = mapPreviewCameraPose(map, time, aspect), baseline = menuCameraPose(map, time * 5, aspect);
-      assert.equal(pose.fov, baseline.fov);
-      const offset = pose.position.map((v, i) => v - pose.target[i]);
-      const reference = baseline.position.map((v, i) => v - baseline.target[i]);
-      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(offset[axis] * 10 - reference[axis]) < 1e-10);
-      assert.ok(Math.abs(Math.hypot(...offset) / Math.hypot(...reference) - .1) < 1e-12);
-      const next = mapPreviewCameraPose(map, time + 1 / 30, aspect), nextBaseline = menuCameraPose(map, (time + 1 / 30) * 5, aspect);
-      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs((next.position[axis] - pose.position[axis]) * 10 - (nextBaseline.position[axis] - baseline.position[axis])) < 1e-10, 'both motion phases advance at exactly five times baseline');
-      const target = new pc.Vec3(...pose.target);
-      assert.ok(nearestCenterlinePoint(map, target).clone().sub(target).length() < 1);
-      assert.deepEqual(pose.target, coverTrackTarget(map, 0));
+      const pose = mapPreviewCameraPose(map, time, aspect);
+      const position = new pc.Vec3(...pose.position), target = new pc.Vec3(...pose.target);
+      const forward = target.clone().sub(position).normalize();
+      const right = new pc.Vec3().cross(forward, pc.Vec3.UP).normalize(), up = new pc.Vec3().cross(right, forward);
+      const tanV = Math.tan(pose.fov * Math.PI / 360);
+      assert.ok(pose.position[1] > 75, 'lens clears palms and the landmark tower');
+      for (const point of menuCameraAnchors(map, aspect)) {
+        const delta = new pc.Vec3(...point).sub(position), depth = delta.dot(forward);
+        assert.ok(depth > 0);
+        assert.ok(Math.abs(delta.dot(right) / (depth * tanV * aspect)) < .9);
+        assert.ok(Math.abs(delta.dot(up) / (depth * tanV)) < .9);
+      }
+      const next = mapPreviewCameraPose(map, time + 1 / 30, aspect);
+      assert.ok(Math.hypot(...next.position.map((value, axis) => value - pose.position[axis])) < 1, 'no fast orbit or camera jump');
+      assert.notDeepEqual(pose.position, coverCameraPose(map, time, aspect).position);
     }
   }
   for (const value of [NaN, Infinity, -Infinity, 0, -2]) for (const map of maps) {

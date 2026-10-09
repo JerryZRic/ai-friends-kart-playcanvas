@@ -9,11 +9,17 @@ let disposeBackdrop:(()=>void)|undefined,disposeCharacter:CharacterPreviewContro
 function closeStory(){root.querySelector('#story-dialog')?.remove();root.querySelector<HTMLElement>('#story-button')?.focus();}
 function startBackdrop(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#title-backdrop'),curtain=root.querySelector<HTMLElement>('#title-curtain');
- if(!canvas||!curtain||typeof canvas.getContext!=='function')return;
+ if(!canvas||!curtain)return;
+ if(state.screen==='maps'){
+  // Keep the route poster visible if WebGL is absent or temporarily loses its context.
+  canvas.addEventListener('webglcontextlost',()=>{canvas.dataset.previewFallback='true';});
+  canvas.addEventListener('webglcontextrestored',()=>{delete canvas.dataset.previewFallback;});
+ }
+ if(typeof canvas.getContext!=='function'){canvas.dataset.backdropState='unavailable';return;}
  void import('./menu-backdrop').then(({mountMenuBackdrop})=>{
   if(version!==renderVersion||(state.screen!=='main'&&state.screen!=='maps'))return;
   disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false,presentation:'map-preview'}:{presentation:'cover'});
- }).catch(error=>console.error('Title background unavailable',error));
+ }).catch(error=>{if(version===renderVersion)canvas.dataset.backdropState='unavailable';console.error('Title background unavailable',error);});
 }
 function startCharacter(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#character-preview'),status=root.querySelector<HTMLElement>('#character-preview-status');
@@ -36,7 +42,36 @@ function render(){
  if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单"><button id="story-button">故事模式</button><button data-screen="maps">自由模式</button><button data-screen="settings">设置</button><button data-screen="exit">退出</button></nav></section>`;
  if(state.screen==='maps'){
   const selected=resolveMap(state.map);
-  root.innerHTML=top('选择赛道','')+`<section class="map-preview-layout"><div class="map-stage" aria-label="${selected.label} 3D 赛道预览"><canvas id="title-backdrop" aria-hidden="true" tabindex="-1"></canvas><div id="title-curtain" aria-hidden="true"></div><div class="map-stage-shade" aria-hidden="true"></div><div class="map-stage-caption"><p class="eyebrow">${selected.tag}</p><h2>${selected.label}</h2><p>${selected.description}</p></div></div><div class="map-choices" role="group" aria-label="选择地图">${Object.values(MAP_PROFILES).map(m=>`<button class="map-choice" data-map="${m.id}" aria-pressed="${m.id===state.map}"><strong>${m.label}</strong><span>${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}</span></button>`).join('')}</div><button class="primary map-confirm" id="confirm-map">确认地图，选择角色 →</button></section>`;
+  root.innerHTML=top('选择赛道','从海岸公路到晴空水道，下一站由你决定')+`
+   <section class="map-preview-layout" aria-label="赛道选择与预览">
+    <aside class="map-library" aria-labelledby="map-library-heading">
+     <div class="map-library-heading"><h2 id="map-library-heading">赛道一览</h2><span>02 COURSES</span></div>
+     <div class="map-choices" role="group" aria-label="选择地图" aria-describedby="map-keyboard-hint">${Object.values(MAP_PROFILES).map((m,index)=>`
+      <button class="map-choice" data-map="${m.id}" aria-pressed="${m.id===state.map}" tabindex="${m.id===state.map?'0':'-1'}" aria-label="${m.label}，${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}">
+       <span class="map-choice-visual">
+        <img class="map-overview" src="./map-previews/${m.id}-overview.webp" alt="${m.label}的 3D 俯视全景，展示完整赛道路线" width="1280" height="720" decoding="async">
+        <span class="map-choice-number" aria-hidden="true">0${index+1}</span>
+        <span class="map-overview-label">3D 俯视图</span>
+        <span class="map-selected-indicator" aria-hidden="true">${m.id===state.map?'✓':'↗'}</span>
+       </span>
+       <span class="map-choice-copy"><span class="map-choice-title"><strong>${m.label}</strong><span class="map-choice-arrow" aria-hidden="true">→</span></span><span class="map-choice-meta"><span>${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}</span><span>${m.id===state.map?'已选择':m.tag}</span></span></span>
+      </button>`).join('')}</div>
+     <p class="map-keyboard-hint" id="map-keyboard-hint">↑ ↓ 切换赛道 <span>·</span> Tab 前往下一步</p>
+    </aside>
+    <section class="map-detail-panel" data-preview-map="${selected.id}" aria-labelledby="selected-map-title">
+     <div class="map-stage" aria-label="${selected.label} 3D 赛道预览">
+      <img class="map-stage-fallback" src="./map-previews/${selected.id}-overview.webp" alt="" aria-hidden="true">
+      <canvas id="title-backdrop" aria-hidden="true" tabindex="-1"></canvas><div id="title-curtain" aria-hidden="true"></div><div class="map-stage-shade" aria-hidden="true"></div>
+      <div class="map-preview-label"><i aria-hidden="true"></i><span class="map-preview-scenic-label">赛道预览</span><span class="map-preview-fallback-label">3D 俯视图</span></div>
+      <div class="map-stage-caption"><p class="eyebrow">${selected.tag}</p><h2 id="selected-map-title">${selected.label}</h2><p>${selected.description}</p></div>
+     </div>
+     <div class="map-detail-copy">
+      <p class="map-detail-description">${selected.detail}</p>
+      <dl class="map-facts"><div><dt>专属载具</dt><dd>${selected.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}</dd></div><div><dt>参赛阵容</dt><dd>六名选手</dd></div><div><dt>驾驶手感</dt><dd>${selected.vehicle==='kart'?'抓地与漂移':'水面惯性与滑移'}</dd></div></dl>
+      <div class="map-proceed"><p><span>01 / 02</span> 下一步：选择出发伙伴</p><button class="primary map-confirm" id="confirm-map"><span>确认赛道，选择角色</span><span aria-hidden="true">→</span></button></div>
+     </div>
+    </section>
+   </section>`;
  }
  if(state.screen==='characters'){
  const map=resolveMap(state.map),selected=resolveCharacter(state.driver),t=characterTuning(selected.id,state.map);
@@ -63,7 +98,19 @@ function bind(){
   dialog.addEventListener('keydown',event=>{if(event.key==='Tab'){event.preventDefault();close.focus();}});
  });
  root.querySelectorAll<HTMLElement>('[data-screen]').forEach(button=>button.addEventListener('click',()=>{const target=button.dataset.screen as MenuScreen;navigate(target,target==='settings'?{returnTo:state.screen==='maps'||state.screen==='characters'?state.screen:'main'}:{});}));
- root.querySelectorAll<HTMLElement>('[data-map]').forEach(button=>button.addEventListener('click',()=>selectMap(button.dataset.map as MapId)));
+ root.querySelectorAll<HTMLElement>('[data-map]').forEach(button=>{
+  button.addEventListener('click',()=>selectMap(button.dataset.map as MapId));
+  button.addEventListener('keydown',event=>{
+   const maps=Object.keys(MAP_PROFILES) as MapId[],index=maps.indexOf(button.dataset.map as MapId);
+   let next:number;
+   if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%maps.length;
+   else if(event.key==='ArrowUp'||event.key==='ArrowLeft')next=(index+maps.length-1)%maps.length;
+   else if(event.key==='Home')next=0;
+   else if(event.key==='End')next=maps.length-1;
+   else return;
+   event.preventDefault();selectMap(maps[next]);
+  });
+ });
  root.querySelectorAll<HTMLElement>('[data-driver]').forEach(button=>button.addEventListener('click',()=>{if(state.driver===button.dataset.driver)return;state.driver=resolveCharacter(button.dataset.driver).id;history.replaceState(null,'',`./index.html${menuQuery(state)}`);render();root.querySelector<HTMLElement>(`[data-driver="${state.driver}"]`)?.focus({preventScroll:true});}));
  const status=(saved:boolean)=>{const node=document.getElementById('settings-status');if(node)node.textContent=saved?'已保存，下次进入赛道时生效':'此浏览器无法保存设置；重新进入赛道将使用默认值';};
  root.querySelectorAll<HTMLInputElement>('[name="quality"]').forEach(input=>input.addEventListener('change',()=>{settings={...settings,quality:input.value as Quality};status(saveGameSettings(settings));}));

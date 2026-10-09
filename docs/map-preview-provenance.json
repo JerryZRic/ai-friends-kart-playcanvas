@@ -1,0 +1,108 @@
+{
+  "kind": "offline-native-geometry-render",
+  "renderer": "Blender 4.3.2, Cycles CPU",
+  "description": "Source-derived 3D overhead renders of the actual PlayCanvas menu scenes. These are not browser/GPU gameplay screenshots. Materials, water shading and lighting are approximate.",
+  "resolution": [
+    1280,
+    720
+  ],
+  "generatorHashes": {
+    "scripts/export-map-previews.ts": "4548cd8bd5110840b7841a2afac119e63f221d26007bcb51b6d7b512b43db2f8",
+    "scripts/render-map-previews.py": "63a71e1b4c64321e18b848b481e3c6d13a30774306e3ec1dbbe0e166ed031e97"
+  },
+  "maps": {
+    "coast": {
+      "asset": "map-previews/coast-overview.webp",
+      "sha256": "1988b5e929b033fef1381a511b96f1e1ea4cd96eb5b4f1840650d8617f7f9769",
+      "bytes": 35956,
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "f915519ca4c8e82620dd91ce5dd663ce89631b31ce51fa48e5a73afd11cf2f83",
+        "src/menu-backdrop.ts": "950e52cc74871a6170d68851a793006aa41c5af52b575c52f850fba19153fbfe",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "453923d78923a7cc17201735106c4b2c78d0cdaf3b50700aa174e50e37c18c9c",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "meshBatches": 21,
+      "triangles": 74604,
+      "routeLength": 1372.549164011638,
+      "routeBounds": {
+        "min": [
+          -184.1528568410537,
+          2.358820510307182,
+          -166.46193775599136
+        ],
+        "max": [
+          199.1247265947825,
+          12.609560262191637,
+          198.91372641819618
+        ]
+      },
+      "camera": {
+        "projection": "orthographic",
+        "elevationDegrees": 68,
+        "normalizedSafeBounds": [
+          0.19909270107746124,
+          0.060000065714120865,
+          0.8009073138237,
+          0.9399999976158142
+        ]
+      },
+      "omittedAtmosphere": [
+        "Gradient sky",
+        "Sun disc",
+        "Distant mountains"
+      ]
+    },
+    "waterpark": {
+      "asset": "map-previews/waterpark-overview.webp",
+      "sha256": "36e6cf3788a0757dcd1faf0218ec5984e778114fdfa27e5dfc976579ad751f2d",
+      "bytes": 51794,
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "f915519ca4c8e82620dd91ce5dd663ce89631b31ce51fa48e5a73afd11cf2f83",
+        "src/menu-backdrop.ts": "950e52cc74871a6170d68851a793006aa41c5af52b575c52f850fba19153fbfe",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "453923d78923a7cc17201735106c4b2c78d0cdaf3b50700aa174e50e37c18c9c",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "meshBatches": 28,
+      "triangles": 111276,
+      "routeLength": 920.8259696113196,
+      "routeBounds": {
+        "min": [
+          -15.861872256529887,
+          0,
+          -140.498930216242
+        ],
+        "max": [
+          220.95969219703463,
+          0,
+          162.2921521640825
+        ]
+      },
+      "camera": {
+        "projection": "orthographic",
+        "elevationDegrees": 68,
+        "normalizedSafeBounds": [
+          0.17421232163906097,
+          0.05999981239438057,
+          0.8257876038551331,
+          0.9399998188018799
+        ]
+      },
+      "omittedAtmosphere": [
+        "Soft cloud clusters",
+        "Waterpark blue gradient sky"
+      ]
+    }
+  }
+}

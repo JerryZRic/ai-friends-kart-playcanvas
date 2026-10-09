@@ -166,7 +166,19 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     key('keydown','KeyW');key('keyup','KeyW');step(240);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
     accelerate.emit('pointercancel',{pointerId:1});emit(windowTarget,'blur');
     const blurTime=element('timer').textContent;step(10);assert.equal(element('timer').textContent,blurTime);
-    element('resumeRace').click();element('restartRace').click();key('keydown','KeyW');step(800,.2);
+    element('resumeRace').click();element('restartRace').click();key('keydown','KeyW');
+    // Complete the real medium-complexity route through its keyboard adapter.
+    // A straight-throttle replay can now ride a bank indefinitely; don't skip
+    // checkpoints or teleport to the finish just to exercise the results UI.
+    for(let frame=0;frame<800&&!g.__waterparkRace.finished;frame++){
+      const player=g.__waterparkRace.racers[0],correction=player.lateral*.6+player.motion.lateralSpeed*.4;
+      key('keyup','KeyA');key('keyup','KeyD');
+      if(correction>.25)key('keydown','KeyD');else if(correction<-.25)key('keydown','KeyA');
+      step(1,.2);
+    }
+    key('keyup','KeyW');key('keyup','KeyA');key('keyup','KeyD');
+    assert.equal(g.__waterparkRace.finished,true,'the actual entry completes all three laps under keyboard control');
+    assert.equal(g.__waterparkRace.racers[0].checkpoint,24,'all sequential checkpoints were earned');
     assert.match(element('message').textContent,/三圈/);assert.equal(element('speed').textContent,'0');
     failLast=false;element('retry').click();await settle();assert.equal(attempts,3);assert.match(element('load').textContent,/六位/);
     element('driver-glm').click();assert.equal(element('start').disabled,false);

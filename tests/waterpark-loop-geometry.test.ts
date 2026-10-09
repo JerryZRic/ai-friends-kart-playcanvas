@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
-import {createWaterparkDesign, sampleWaterpark, sampleWaterparkLoop, SAMPLE_LENGTH, WATER_HALF_WIDTH, WATER_RACE_LENGTH, WATER_RACE_POINTS, waterCircuit, waterparkCurvature, createWaterparkRaceLand, WATER_RACE_LAND_CENTER, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_PICKUPS, waterparkBridgeDistance} from '../src/waterpark-design';
+import {createWaterparkDesign, sampleWaterpark, sampleWaterparkLoop, SAMPLE_LENGTH, WATER_HALF_WIDTH, WATER_RACE_LENGTH, WATER_RACE_POINTS, waterCircuit, waterparkCurvature, createWaterparkRaceLand, WATER_RACE_SURFACE_STEP, WATER_RACE_SECTIONS, WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE, waterparkSceneryClearance, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_PICKUPS, waterparkBridgeDistance} from '../src/waterpark-design';
 import {createWaterparkBedDesign, sampleWaterparkBedDepth, WATERPARK_BED_LANES} from '../src/waterpark-bed';
 import {createWaterparkEnvironmentDetails} from '../src/waterpark-environment';
 import {createWaterparkScene} from '../src/waterpark-scene';
@@ -20,10 +20,10 @@ function fixture() {
   options.devtools = false; app.init(options); return app;
 }
 
-test('the beginner canal has two true S sequences, metre travel and a smooth closed seam', () => {
+test('the resort canal has stronger alternating bowls and chicanes, metre travel and a smooth seam', () => {
   assert.equal(SAMPLE_LENGTH, 285, 'study route is preserved');
   assert.equal(sampleWaterpark(270).angle, 1.75);
-  assert.ok(WATER_RACE_LENGTH>700&&WATER_RACE_LENGTH<780);
+  assert.ok(WATER_RACE_LENGTH>900&&WATER_RACE_LENGTH<940);
   const joins=Array.from({length:WATER_RACE_POINTS.length},(_,i)=>waterCircuit.arcs[i*waterCircuit.arcSteps/WATER_RACE_POINTS.length]);
   for (const lane of [-WATER_HALF_WIDTH,-9.8,0,9.8,WATER_HALF_WIDTH]) {
     for (const d of [-1000,-3,0,91,183,330,480,WATER_RACE_LENGTH,1000]) {
@@ -38,15 +38,17 @@ test('the beginner canal has two true S sequences, metre travel and a smooth clo
       assert.ok(after.p.clone().sub(before.p).normalize().dot(at.t)>.99999,'no reversed/cusped water bank at a join');
     }
   }
-  let negativeLength=0,negativeAngle=0,readableCounterTurns=0;
-  const finishCounterTurn=()=>{if(negativeLength>25&&negativeAngle>.25)readableCounterTurns++;negativeLength=negativeAngle=0;};
+  let negativeLength=0,negativeAngle=0,readableCounterTurns=0,absoluteYaw=0;
+  const finishCounterTurn=()=>{if(negativeLength>40&&negativeAngle>.75)readableCounterTurns++;negativeLength=negativeAngle=0;};
   for(let d=0;d<WATER_RACE_LENGTH;d+=.5){
     const a=sampleWaterparkLoop(d),b=sampleWaterparkLoop(d+.25);
     assert.ok(Math.abs(a.p.distance(b.p)-.25)<.002,'travel is metres, including control knots');
-    assert.equal(a.p.y,0);assert.ok(Math.abs(waterCircuit.curvature(d,1))<1/32,'beginner curve radius stays above32m');
-    const bend=waterparkCurvature(d);if(bend<-.001){negativeLength+=.5;negativeAngle-=bend*.5;}else finishCounterTurn();
+    assert.equal(a.p.y,0);assert.ok(Math.abs(waterCircuit.curvature(d,.25))<1/23,'full 18.15 m promenades remain clear of the open-hairpin centre');
+    const bend=waterparkCurvature(d);absoluteYaw+=Math.abs(bend)*.5;if(bend<-.001){negativeLength+=.5;negativeAngle-=bend*.5;}else finishCounterTurn();
   }
-  finishCounterTurn();assert.equal(readableCounterTurns,2,'two distinct left/right S sequences change actual driving geometry');
+  finishCounterTurn();assert.equal(readableCounterTurns,2,'two substantial counter-turns exceed 43 degrees, replacing the old 25/33-degree wiggles');
+  assert.ok(absoluteYaw>11&&absoluteYaw<12,'roughly 650 degrees of turning instead of the old 482-degree oval');
+  assert.equal(WATER_RACE_SECTIONS.length,8);
   for (const invalid of [NaN,Infinity,-Infinity]) assert.ok(xyz(sampleWaterparkLoop(invalid,invalid).p).every(Number.isFinite));
 });
 
@@ -64,7 +66,7 @@ test('race meshes are deterministic, finite and keep one gapless non-inverted ca
     assert.ok(mesh.indices.every(i => Number.isInteger(i) && i >= 0 && i < mesh.positions.length / 3));
     assert.ok(mesh.positions.length / 3 < 65536, 'every merged batch retains 16-bit indices');
   }
-  const water = design.find(mesh => mesh.water)!, rows = Math.ceil(WATER_RACE_LENGTH / 1.3);
+  const water = design.find(mesh => mesh.water)!, rows = Math.ceil(WATER_RACE_LENGTH / WATER_RACE_SURFACE_STEP);
   assert.equal(water.positions.length, 24 * rows * 12);
   assert.equal(water.uvs.length, water.positions.length / 3 * 2);
   let area = 0;
@@ -148,18 +150,19 @@ test('filled garden and exterior terrain stay upright, gapless and clear of the 
   }
  }
  const intersects=(a:pc.Vec3,b:pc.Vec3,c:pc.Vec3,d:pc.Vec3)=>cross(a,b,c)*cross(a,b,d)<-1e-7&&cross(c,d,a)*cross(c,d,b)<-1e-7;
- const edges=[-1,1].map(side=>Array.from({length:rows},(_,i)=>{
-  const d=i/rows*WATER_RACE_LENGTH,p=sampleWaterparkLoop(d,side*18.15).p;
-  if(side<0){p.x=WATER_RACE_LAND_CENTER.x+(p.x-WATER_RACE_LAND_CENTER.x)*1.55;p.z=WATER_RACE_LAND_CENTER.z+(p.z-WATER_RACE_LAND_CENTER.z)*1.55;}
-  return p;
- }));
- // Shared geometric edges are exact, including the seam: the garden has one
- // continuous fan and the exterior has one continuous closed apron.
- for(let i=0;i<rows;i++){
-  const next=(i+1)%rows,at=i*21,to=next*21;
-  same(grass.positions.slice(at+6,at+9),grass.positions.slice(to+3,to+6));
-  same(grass.positions.slice(at+15,at+21),grass.positions.slice(to+9,to+15));
+ const edges=[-1,1].map(side=>Array.from({length:rows},(_,i)=>sampleWaterparkLoop(i/rows*WATER_RACE_LENGTH,side*18.15).p));
+ // Every sampled bank endpoint is on the triangulated terrain boundary. The
+ // slabs must preserve concave margins, not fan across their inlets.
+ for(const edge of edges)for(const p of edge){
+  let found=false;
+  for(let i=0;i<grass.positions.length;i+=3)if(Math.hypot(grass.positions[i]-p.x,grass.positions[i+2]-p.z)<1e-7){found=true;break;}
+  assert.ok(found,'terrain keeps every exact coping endpoint');
  }
+ const polygonArea=(points:pc.Vec3[])=>Math.abs(points.reduce((sum,a,i)=>{const b=points[(i+1)%points.length];return sum+a.x*b.z-b.x*a.z;},0)/2);
+ const outer=edges[0],xs=outer.map(p=>p.x),zs=outer.map(p=>p.z);
+ const expected=(Math.max(...xs)-Math.min(...xs)+170)*(Math.max(...zs)-Math.min(...zs)+170)-polygonArea(outer)+polygonArea(edges[1]);
+ let area=0;for(let i=0;i<grass.indices.length;i+=3){const[a,b,c]=grass.indices.slice(i,i+3).map(index=>new pc.Vec3(...grass.positions.slice(index*3,index*3+3) as [number,number,number]));area+=Math.abs(cross(a,b,c))/2;}
+ near(area,expected,1e-6);
 
  for(const [side,edge]of edges.entries())for(let i=0;i<rows;i++){
   for(let j=i+2;j<rows;j++)if(!(i===0&&j===rows-1))assert.equal(intersects(edge[i],edge[(i+1)%rows],edge[j],edge[(j+1)%rows]),false,'a land edge cannot cross itself');
@@ -190,4 +193,16 @@ test('race land honors an adapter sampler instead of leaving terrain at the defa
  const design=createWaterparkDesign({race:true,sampler}),grass=design.find(mesh=>mesh.name==='Mint green planted banks')!;
  same(grass.positions.slice(0,shifted.positions.length),shifted.positions);
  assert.throws(()=>createWaterparkRaceLand({race:true,extent:{start:0,end:200}}),/closed sampler/,'partial open geometry must not pretend to be a closed land island');
+});
+
+
+test('tower, canopies and resort blocks clear every canal branch on the concave course',()=>{
+ const clear=waterparkSceneryClearance(race),tower=sampleWaterparkLoop(WATER_RACE_TOWER_DISTANCE,WATER_RACE_TOWER_LANE).p;
+ assert.ok(clear(tower.x,tower.z,8),'tower roof remains wholly outside the canal');
+ const meshes=[...createWaterparkDesign(race),...createWaterparkEnvironmentDetails(race)];
+ const names=['Orchid landmark tower','Palm trunks','Palm jade leaves','Palm lime leaves','Rose woven parasol panels','Ivory woven parasol stripes','Far pale resort terraces','Far blue resort glazing'];
+ const route=Array.from({length:Math.ceil(WATER_RACE_LENGTH)},(_,i)=>sampleWaterparkLoop(i).p);
+ for(const mesh of meshes.filter(mesh=>names.includes(mesh.name)))for(let i=0;i<mesh.positions.length;i+=3){
+  assert.ok(route.every(p=>Math.hypot(p.x-mesh.positions[i],p.z-mesh.positions[i+2])>12.1),`${mesh.name} cannot intrude on another canal branch`);
+ }
 });
