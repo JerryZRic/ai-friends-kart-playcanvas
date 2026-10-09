@@ -115,8 +115,16 @@ export function createWaterparkReflection(
   // A reflection-only copy keeps the authored direct lighting without triggering
   // another directional shadow atlas/cascade pass for the reflected viewpoint.
   const reflectionLights: pc.Entity[] = [];
+  const mainOnlyLights: pc.LightComponent[] = [];
   for (const light of root.findComponents('light') as pc.LightComponent[]) {
     if (!light.enabled || !light.entity.enabled || !light.layers.some(id => mainCamera.layers.includes(id))) continue;
+    // Excluding a rider from the capture must not exclude it from sunlight.
+    // The main-only layer needs the original light (and its existing shadows),
+    // while the reflection keeps its separate shadow-free copy.
+    if (!light.layers.includes(waterLayer.id)) {
+      light.layers = [...light.layers, waterLayer.id];
+      mainOnlyLights.push(light);
+    }
     const copy = new pc.Entity(`${light.entity.name} (reflection, no shadows)`);
     copy.addComponent('light', {
       type: light.type, color: light.color.clone(), intensity: light.intensity,
@@ -174,6 +182,10 @@ export function createWaterparkReflection(
     refraction.destroy();
     reflectionCamera.script?.destroy(PlanarRenderer);
     resources.destroy();
+    for (const light of mainOnlyLights) {
+      if (light.entity.light === light) light.layers = light.layers.filter(id => id !== waterLayer.id);
+    }
+    mainOnlyLights.length = 0;
     for (const [render, previous] of displacedLayers) {
       if (render.entity.render === render) render.layers = previous;
     }

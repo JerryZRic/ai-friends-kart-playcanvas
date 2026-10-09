@@ -14,6 +14,15 @@ function coast() {
   return {app, world: createCoastScene(app as pc.Application)};
 }
 
+test('coast uses the requested main light and exposure', () => {
+  const {app} = coast();
+  try {
+    assert.equal(app.scene.exposure, 1.2);
+    const sun = app.root.findByName('Warm sunset key light') as pc.Entity;
+    assert.equal(sun.light!.intensity, 2);
+  } finally { app.destroy(); }
+});
+
 // Inspect the actual PlayCanvas-generated GLSL defaults at each declaration.
 // This is a cross-stage interface check, not a GPU compile/render substitute.
 function floatInterface(source: string) {

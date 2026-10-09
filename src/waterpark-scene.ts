@@ -9,7 +9,7 @@ import {createWaterparkReflection} from './waterpark-reflection';
 export function createWaterparkScene(app: pc.Application, options: WaterparkGeometryOptions = {}) {
   const {sample, closed} = waterparkLayout(options);
   const root = new pc.Entity(closed ? 'Waterpark closed-loop race' : 'Waterpark art sample'); app.root.addChild(root);
-  app.scene.ambientLight = new pc.Color(.55, .7, .82); app.scene.exposure = 1.08;
+  app.scene.ambientLight = new pc.Color(.55, .7, .82); app.scene.exposure = 1.2;
   app.scene.fog.type = pc.FOG_LINEAR; app.scene.fog.color = new pc.Color(.66, .85, .94);
   app.scene.fog.start = 110; app.scene.fog.end = 460;
   const surfaces = createWaterparkMaterials(app.graphicsDevice);
@@ -29,7 +29,7 @@ export function createWaterparkScene(app: pc.Application, options: WaterparkGeom
     root.addChild(entity); triangles += data.indices.length / 3;
   }
   const sun = new pc.Entity('Waterpark afternoon sun');
-  sun.addComponent('light', {type: 'directional', color: new pc.Color(1, .94, .83), intensity: 1.85, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .1, normalOffsetBias: .06, numCascades: 2});
+  sun.addComponent('light', {type: 'directional', color: new pc.Color(1, .94, .83), intensity: 2, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .1, normalOffsetBias: .06, numCascades: 2});
   sun.setEulerAngles(47, -35, 0); root.addChild(sun);
   const camera = new pc.Entity('Waterpark low chase composition');
   camera.addComponent('camera', {fov: 56, nearClip: .1, farClip: 1200, clearColor: new pc.Color(.18, .59, .91), toneMapping: pc.TONEMAP_ACES, gammaCorrection: pc.GAMMA_SRGB}); root.addChild(camera);

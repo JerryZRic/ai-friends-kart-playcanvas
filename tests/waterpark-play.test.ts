@@ -159,7 +159,19 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.equal(g.__waterparkControls.mode,'transition','all six real models begin camera return before countdown');
     assert.equal(element('raceLoadingPercent').textContent,'100%');assert.match(element('raceLoadingStatus').textContent,/返回起点/);
     assert.equal(element('raceLoadingRetry').hidden,true);assert.equal(element('start').disabled,true);
-    for(const id of ['whale','gemini','gpt','claude','grok','glm'])assert.ok(app.root.findByName('WaterMount_'+id),'all six actual riders are mounted');
+    assert.equal(app.scene.exposure,1.2);
+    const sunlight=(app.root.findByName('Waterpark afternoon sun') as pc.Entity).light!;
+    assert.equal(sunlight.intensity,2);
+    for(const id of ['whale','gemini','gpt','claude','grok','glm']){
+      const mount=app.root.findByName('WaterMount_'+id) as pc.Entity;
+      assert.ok(mount,'all six actual riders are mounted');
+      const renders=mount.findComponents('render') as pc.RenderComponent[];
+      assert.ok(renders.some(render=>render.meshInstances.some(mesh=>mesh.skinInstance)),'actual skinned rider is included');
+      for(const render of renders){
+        assert.ok(render.layers.some(id=>(app.scene.layers.getLayerById(id) as any)._lights.includes(sunlight.light)), 'every rider and mount mesh receives the main sun');
+        assert.ok(!g.__waterparkControls.world.reflection.layer.meshInstances.some((mesh:pc.MeshInstance)=>render.meshInstances.includes(mesh)), 'rider stays excluded from water reflection');
+      }
+    }
     const returningCount=g.__waterparkRace.countdown,hiddenReturn=aerialCamera.getPosition().clone();
     key('keydown','KeyW');touch[0].emit('pointerdown',{pointerId:41,pointerType:'touch',button:0});step(30,.5);
     assert.equal(g.__waterparkControls.mode,'transition');assert.equal(g.__waterparkRace.countdown,returningCount);

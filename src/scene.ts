@@ -105,7 +105,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   const root = new pc.Entity('Sunset coast circuit');
   app.root.addChild(root);
   app.scene.ambientLight = color('#adbdd2');
-  app.scene.exposure = 1.25;
+  app.scene.exposure = 1.2;
   app.scene.fog.type = pc.FOG_LINEAR;
   app.scene.fog.color = color('#eabbb2');
   app.scene.fog.start = 210;
@@ -116,7 +116,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   camera.setPosition(30, 15, -150);
   camera.lookAt(0, 2, -140);
   const sun = new pc.Entity('Warm sunset key light');
-  sun.addComponent('light', { type: 'directional', color: color('#ffe1b6'), intensity: 2.7, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .15, normalOffsetBias: .08, numCascades: 2 });
+  sun.addComponent('light', { type: 'directional', color: color('#ffe1b6'), intensity: 2, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .15, normalOffsetBias: .08, numCascades: 2 });
   sun.setEulerAngles(53, -39, 0);
   app.root.addChild(sun);
 

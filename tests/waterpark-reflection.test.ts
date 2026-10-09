@@ -105,8 +105,11 @@ test('dedicated layers exclude water, nested wake and later mount while reflecti
     assert.equal(reflection.reflectionLights[0].light!.intensity, f.sun.light!.intensity);
     assert.deepEqual(reflection.reflectionLights[0].light!.layers, [reflection.layer.id]);
     assert.equal(f.sun.light!.castShadows, true);
-    assert.deepEqual(f.sun.light!.layers, [pc.LAYERID_WORLD]);
+    assert.deepEqual(f.sun.light!.layers, [pc.LAYERID_WORLD, reflection.waterLayer.id]);
+    assert.ok((reflection.waterLayer as any)._lights.includes(f.sun.light!.light));
     const mount = f.addMesh('Later dynamic mount');
+    reflection.exclude(mount);
+    assert.deepEqual(mount.render!.layers, [reflection.waterLayer.id]);
     assert.ok(!reflection.layer.meshInstances.includes(mount.render!.meshInstances[0]));
     const wakeRoot = new pc.Entity('Wake root'); f.root.addChild(wakeRoot);
     const wake = f.addMesh('Nested wake', f.stoneMaterial, wakeRoot);
@@ -117,6 +120,8 @@ test('dedicated layers exclude water, nested wake and later mount while reflecti
     assert.ok(f.app.scene.layers.getOpaqueIndex(reflection.waterLayer) > f.app.scene.layers.getOpaqueIndex(world));
     assert.ok(f.app.scene.layers.getOpaqueIndex(reflection.waterLayer) < f.app.scene.layers.getTransparentIndex(world));
     reflection.destroy(); reflection.destroy();
+    assert.deepEqual(f.sun.light!.layers, [pc.LAYERID_WORLD]);
+    assert.deepEqual(mount.render!.layers, [pc.LAYERID_WORLD]);
     assert.deepEqual(f.water.render!.layers, [pc.LAYERID_WORLD]);
     assert.deepEqual(wake.render!.layers, [pc.LAYERID_WORLD]);
     assert.ok(!f.camera.camera!.layers.includes(reflection.waterLayer.id));
