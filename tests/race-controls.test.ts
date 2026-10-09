@@ -142,7 +142,7 @@ test('right mouse view supports chorded mouse release, pointer recovery and inde
 
 test('shared drag fallback suppresses rear-view movement and resumes without an orbit jump', async () => {
   const f = fixture({lock: 'reject'});
-  f.left(); await Promise.resolve(); assert.equal(f.controls.mouseLook.get().fallback, true);
+  f.left(); await Promise.resolve(); assert.equal(f.controls.mouseLook.get().fallback, true);assert.equal(f.state(),'active','pointer-lock denial must not pause');assert.equal(f.calls.pause,0);
   f.left();
   f.pointer(f.canvas, 'pointermove', 10, {pointerType: 'mouse', buttons: 1, clientX: 110, clientY: 110});
   assert.ok(Math.abs(f.controls.orbit.get().targetYaw - .03) < 1e-12);

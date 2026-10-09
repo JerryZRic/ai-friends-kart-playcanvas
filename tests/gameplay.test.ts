@@ -121,6 +121,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.equal(qa.boxes().length, 45); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
+    await t.test('first model-ready frame cannot open the pause panel',()=>{game.start();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');assert.equal(element('pausePanel').classList.contains('hidden'),true);qa.advanceFrame(.8);qa.advanceFrame(1.2);assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);key('keydown','Escape');assert.equal(game.getState().state,'paused');element('restartRace').click();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');});
     const race = () => { game.start(); qa.step(3.3); assert.equal(game.getState().state, 'running'); };
     const worldLayer = app.scene.layers.getLayerById(pc.LAYERID_WORLD)!;
     const displays: ItemDisplay[] = ['boost', 'shield', 'pulse', 'mystery'];
@@ -246,12 +247,12 @@ test('native game integration preserves race, camera, items, menu and safety flo
     });
     await t.test('30/60/120 Hz frames preserve countdown overflow and clocks; huge stalls pause safely',()=>{
       for(const hz of [30,60,120]){
-        game.start();qa.set({noBots:true});
+        game.start();qa.set({noBots:true});qa.advanceFrame(0);
         for(let frame=0;frame<hz*4;frame++)qa.advanceFrame(1/hz);
         assert.equal(game.getState().state,'running');assert.ok(Math.abs(game.getState().elapsed-1)<1e-7);
         const elapsed=game.getState().elapsed;qa.advanceFrame(1e6);
         assert.equal(game.getState().state,'paused');assert.equal(game.getState().elapsed,elapsed);
-        game.pause();qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-elapsed-1/hz)<1e-7);
+        game.pause();qa.advanceFrame(.8);assert.equal(game.getState().elapsed,elapsed);qa.advanceFrame(1/hz);assert.ok(Math.abs(game.getState().elapsed-elapsed-1/hz)<1e-7);
       }
     });
     await t.test('pause buttons freeze countdown and restart a clean race, with exact crossing time in results',()=>{

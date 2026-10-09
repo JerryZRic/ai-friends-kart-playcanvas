@@ -1,6 +1,7 @@
 import * as pc from 'playcanvas';
 import {mountRaceHud} from './race-hud';
 import {createRaceShell} from './race-shell';
+import {createRaceFrameClock} from './race-frame-clock';
 import {bindRaceControls} from './race-controls';
 import {chaseCamera} from './race-camera';
 import {createPerformancePanel} from './waterpark-performance-ui';
@@ -27,8 +28,8 @@ const shell=createRaceShell(document,canvas,{map:'waterpark',driver:initialDrive
 let startupApp:pc.Application|undefined, cleanup:undefined|(()=>void);
 try {
   const app=startupApp=new pc.Application(canvas,{graphicsDeviceOptions:{antialias:true,alpha:false,powerPreference:'high-performance'}});
-  // Keep real frame deltas: race fixed steps handle ordinary stalls, while >.25s
-  // suspension enters an explicit pause instead of silently slowing the clock.
+  // Keep real frame deltas; the shared clock separates preparation from an
+  // interrupted race instead of charging model/shader warm-up to the race.
   app.maxDeltaTime=Infinity;
   const settings=readGameSettings(),quality=qualitySettings(settings.quality);
   app.graphicsDevice.maxPixelRatio=Math.min(devicePixelRatio||1,quality.pixelRatioCap);
@@ -41,6 +42,7 @@ try {
   let selected=initialDriver,mount=createWaterMount(app,undefined,{id:selected,color:getDriver(selected).color});
   let mountedAsset:DriverAsset|undefined,race=newWaterRace(selected),clock=0,visualSteer=0;
   let autostart=new URLSearchParams(globalThis.location?.search??'').get('autostart')==='1';
+  const frameClock=createRaceFrameClock();
   let mode:'menu'|'riding'|'paused'|'finished'='menu',busy=false;
   world.root.addChild(mount.root);world.reflection.exclude(mount.root);
   const events=new AbortController();
@@ -124,7 +126,7 @@ try {
   $('retry').addEventListener('click',()=>void load(),{signal:events.signal});
   function start() {
     if(lifetime.closed||mode==='riding'||assets.size!==DRIVERS.length||!mountedAsset||mountedAsset!==assets.get(selected)||busy)return;
-    clearKeys(); controls.mouseLook.release();
+    frameClock.reset();clearKeys(); controls.mouseLook.release();
     if(mode==='paused'){mode='riding';shell.setPaused(false,race.countdown);}
     else {race=newWaterRace(selected);resetWaterPickups(race,pickups);clock=0;visualSteer=0;lastAnnouncement='';controls.orbit.recenter(true);snapCamera=true;shell.start(race.countdown);mode='riding';}
     $('message').textContent=''; canvas.focus();updatePicker();
@@ -167,9 +169,10 @@ try {
   app.on('update',(dt:number)=>{
     if(lifetime.closed)return;
     performancePanel.sample(performance.now(),mode==='riding'&&!busy&&race.countdown<=0&&race.racers[0].finishTime===null,race.countdown>0?'countdown':race.racers[0].finishTime!==null?'spectating':mode);
-    const step=Number.isFinite(dt)?Math.max(0,dt):0; let steer=visualSteer;
-    // A suspended tab is paused explicitly, never silently truncating its race clock.
-    if(step>.25&&mode==='riding'){pause();shell.toast('画面中断，比赛已暂停 · 继续后接着比赛');}
+    const frame=frameClock.sample(dt,mode==='riding',race.countdown);
+    const step=frame.dt; let steer=visualSteer;
+    // A suspended race pauses; initial rendering and countdown do not.
+    if(frame.interrupted){pause();shell.toast('画面中断，比赛已暂停 · 继续后接着比赛');}
     shell.tick(step);
     const pressed=(key:string)=>!!controls.keys[key];
     if(mode==='riding') {

@@ -8,6 +8,7 @@ import { advancePickup, resetPickup } from './item-pickups';
 import { RULES, newBrain, tickBrain, tickEffects, racingSpeed, chooseItem, activateItem, collectPickups, planLane, moveLane, nearbyGap, type Combatant, type Brain } from './npc-tactics';
 import { keyCode, driveInput, driveSpeed, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
+import {createRaceFrameClock} from './race-frame-clock';
 import {bindRaceControls} from './race-controls';
 import {chaseCamera} from './race-camera';
 import {mountRaceHud} from './race-hud';
@@ -50,6 +51,7 @@ const lifetime = createRaceLifetime(()=>{releaseRacers();app.destroy();});
 for (const light of app.root.findComponents('light') as pc.LightComponent[]) {light.castShadows = quality.shadows;light.shadowResolution = quality.shadowResolution;}
 const { camera, boxes, shield: shieldMesh, flames, particles } = world;
 const performancePanel=createPerformancePanel(canvas,()=>({quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:LENGTH,racerCount:6,profile:characterTuning(selectedDriverId,'coast'),driver:selectedDriverId}),undefined,{mount:$('raceSettings'),scene:'coast-circuit-six-racers'});
+const frameClock=createRaceFrameClock();
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
   charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null,
   drifting = false, steerVis = 0, finishRank = 0, playerFinishedAt = Infinity, view = 0, muted = shell.muted, clock = 0;
@@ -202,7 +204,7 @@ function racerFor(slot): RacerEntity {
   entity.userData = { driverId: slot.id }; app.root.addChild(entity); return entity;
 }
 function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
-function reset(){if(disposed||!ready||loadingBusy||localDrivers.busy)return;mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+function reset(){if(disposed||!ready||loadingBusy||localDrivers.busy)return;frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
 const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
@@ -237,7 +239,7 @@ $('driverFiles').addEventListener('change',(event: any)=>{const files=Array.from
 $('clearDriver').onclick=()=>{if(localDrivers.clear(selectedDriverId)){importStatusVersion++;$('importStatus').textContent=bundledDrivers.has(selectedDriverId)?'该槽位已恢复默认角色':'该槽位恢复原创替身（默认模型加载失败）';}};
 $('start').onclick=reset;
 $('retryLoading').onclick=()=>{void boot();};
-function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();shell.setPaused(true,countdown);updateLookHint();}else if(state==='paused'){state=countdown>0?'countdown':'running';shell.setPaused(false,countdown);updateLookHint()}}$('pause').onclick=pause;
+function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();shell.setPaused(true,countdown);updateLookHint();}else if(state==='paused'){frameClock.reset();state=countdown>0?'countdown':'running';shell.setPaused(false,countdown);updateLookHint()}}$('pause').onclick=pause;
 $('resumeRace').onclick=pause;
 $('restartRace').onclick=reset;
 function navigate(screen=''){clearInputs();mouseLook.release();const urls=shell.updateNavigation('coast',selectedDriverId)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
@@ -430,9 +432,10 @@ canvas.addEventListener('webglcontextlost', event => {
 function advanceFrame(delta:number){
   if(disposed)return;
   performancePanel.sample(performance.now(),state==='running',state);
-  // A long stall is an explicit pause, never an unbounded catch-up loop.
-  if(delta>.25&&(state==='running'||state==='countdown')){pause();toast('画面中断，比赛已暂停 · 继续后接着比赛');return;}
-  const dt = Number.isFinite(delta) ? Math.max(0,delta) : 0; if(state!=='paused')clock += dt;
+  const frame=frameClock.sample(delta,state==='running'||state==='countdown',countdown);
+  // Only an in-progress race can be suspended by a long frame.
+  if(frame.interrupted){pause();toast('画面中断，比赛已暂停 · 继续后接着比赛');return;}
+  const dt = frame.dt; if(state!=='paused')clock += dt;
   // Substep the whole active frame instead of dropping time on slower devices.
   if (ready && (state==='running'||state==='countdown')) { let remaining=dt; while(remaining>1e-8){const step=Math.min(1/60,remaining);update(step);remaining-=step;if(state!=='running'&&state!=='countdown')break;} }
   else if(ready)update(dt);

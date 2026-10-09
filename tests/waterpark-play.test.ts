@@ -9,8 +9,9 @@ import {parseLocalGLB} from '../src/assets';
 /** Real entrypoint, meshes, rig and physics on NullGraphicsDevice. Browser DOM
  * events/image pixels and network scheduling are substituted; no GPU claim. */
 test('waterpark entry preserves partial loading, pause/freeze, focus, touch, restart and exit lifecycles', async () => {
-  const g=globalThis as any, names=['window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace','__waterparkControls'];
+  const g=globalThis as any, names=['location','window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace','__waterparkControls'];
   const saved=new Map(names.map(name=>[name,Object.getOwnPropertyDescriptor(g,name)]));
+  g.location={search:'?driver=whale&autostart=1'};
   const errors:unknown[]=[];const originalError=console.error;console.error=(...args)=>errors.push(args);
   const elements=new Map<string,Element>();
   class Element extends EventTarget {
@@ -105,7 +106,7 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.equal(element('start').disabled,true);element('start').click();assert.equal(attempts,1);
     release();await settle();assert.equal(element('start').disabled,true);assert.match(element('load').textContent,/5\/6/);
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
-    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(180);assert.equal(element('timer').textContent,'0:00');
+    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');
     // The actual water entry adapts the same controls, not a test reimplementation.
     const controls=g.__waterparkControls;
     step(1,0);assert.equal(controls.view,0);
@@ -158,10 +159,10 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.equal(element('pause').attributes['aria-label'],'继续');
     assert.equal(key('keydown','ArrowLeft',element('start')).defaultPrevented,false,'menu arrows are not captured');
     element('resumeRace').click();assert.equal(g.document.activeElement,canvas);
-    const resumeSpeed=pausePlayer.motion.speed;step(1);
+    const resumeSpeed=pausePlayer.motion.speed;step(1,.8);assert.equal(g.__waterparkControls.mode,'riding');assert.equal(pausePlayer.motion.speed,resumeSpeed);step(1);
     assert.ok(pausePlayer.motion.speed<resumeSpeed,'resume cannot revive a stale throttle hold');
     assert.equal(pausePlayer.motion.slideBoost,0,'resume cannot release a paused slide charge');
-    element('restartRace').click();step(1);assert.equal(element('speed').textContent,'0');assert.equal(element('timer').textContent,'0:00');
+    element('restartRace').click();step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','restart cannot immediately pause');assert.equal(element('pausePanel').classList.contains('hidden'),true);assert.equal(element('speed').textContent,'0');assert.equal(element('timer').textContent,'0:00');
     const accelerate=touch[0];accelerate.emit('pointerdown',{pointerId:1,pointerType:'touch',button:0});
     key('keydown','KeyW');key('keyup','KeyW');step(240);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
     accelerate.emit('pointercancel',{pointerId:1});emit(windowTarget,'blur');
@@ -182,7 +183,7 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.match(element('message').textContent,/三圈/);assert.equal(element('speed').textContent,'0');
     failLast=false;element('retry').click();await settle();assert.equal(attempts,3);assert.match(element('load').textContent,/六位/);
     element('driver-glm').click();assert.equal(element('start').disabled,false);
-    element('start').click();key('keydown','KeyW');step(30);
+    element('start').click();step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','replay starts without a stale-frame pause');g.document.hidden=true;emit(documentTarget,'visibilitychange');assert.equal(g.__waterparkControls.mode,'paused','backgrounding still pauses during countdown');g.document.hidden=false;emit(documentTarget,'visibilitychange');assert.equal(g.__waterparkControls.mode,'paused');element('resumeRace').click();key('keydown','KeyW');step(30);
     emit(windowTarget,'pagehide',{persisted:true});assert.equal(destroyed,0);const cachedTime=element('timer').textContent;step(30);assert.equal(element('timer').textContent,cachedTime);
     element('resumeRace').click();step(260);assert.notEqual(element('timer').textContent,cachedTime);
     const preStallTime=element('timer').textContent;step(1,1.2);assert.equal(element('timer').textContent,preStallTime,'long suspension pauses rather than advances race');assert.equal(element('pause').attributes['aria-label'],'继续');element('resumeRace').click();
