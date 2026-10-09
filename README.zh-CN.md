@@ -14,7 +14,7 @@
 
 ## dev 自由模式测试
 
-[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。上方稳定版入口与 Windows 版本保持不变。
+[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。经测试的自由模式版本现已合入主分支，并发布到上方稳定版入口；Windows 版本单独发布。
 
 ## 游戏特色
 
@@ -99,7 +99,7 @@ npm run models:fetch
 npm run build
 ```
 
-下载脚本使用独立 `/dev/` 预览的固定公开路径，按[驾驶模型清单](docs/runtime-models.json)及[站姿肖像清单](docs/portrait-models.json)校验压缩及解压后的哈希，并拒绝覆盖不匹配的本地文件。保留不变的稳定版根目录不包含新肖像。没有角色档案时，代码仍可构建；完整画面需要还原两组模型。
+下载脚本使用独立 `/dev/` 预览的固定公开路径，按[驾驶模型清单](docs/runtime-models.json)及[站姿肖像清单](docs/portrait-models.json)校验压缩及解压后的哈希，并拒绝覆盖不匹配的本地文件。没有角色档案时，代码仍可构建；完整画面需要还原两组模型。
 
 ### GitHub Pages
 

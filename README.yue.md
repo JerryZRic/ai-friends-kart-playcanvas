@@ -95,7 +95,7 @@ npm run models:fetch
 npm run build
 ```
 
-下載腳本會用獨立 `/dev/` 預覽嘅固定公開路徑，核對[駕駛模型清單](docs/runtime-models.json)同[站姿肖像清單](docs/portrait-models.json)入面嘅壓縮檔同解壓後雜湊值；本機檔案唔吻合就拒絕覆寫。保持不變嘅穩定版根目錄冇新肖像。程式碼可以單獨建置；完整畫面要還原兩組模型。
+下載腳本會用獨立 `/dev/` 預覽嘅固定公開路徑，核對[駕駛模型清單](docs/runtime-models.json)同[站姿肖像清單](docs/portrait-models.json)入面嘅壓縮檔同解壓後雜湊值；本機檔案唔吻合就拒絕覆寫。程式碼可以單獨建置；完整畫面要還原兩組模型。
 
 ### GitHub Pages
 

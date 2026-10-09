@@ -14,7 +14,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 ## Dev free-mode playtest
 
-[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root and Windows release above are unchanged.
+[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The tested free-mode build is now available at the stable root as well. The Windows release is separate.
 
 ## Features
 
@@ -99,7 +99,7 @@ npm run models:fetch
 npm run build
 ```
 
-The fetch script uses fixed public paths under this isolated `/dev/` preview and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json) and [the portrait manifest](docs/portrait-models.json); it refuses to overwrite mismatched local files. The preserved stable root does not contain the new portraits. Code builds without these archives; restore both sets for the complete visuals.
+The fetch script uses fixed public paths under this isolated `/dev/` preview and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json) and [the portrait manifest](docs/portrait-models.json); it refuses to overwrite mismatched local files. Code builds without these archives; restore both sets for the complete visuals.
 
 ### GitHub Pages
 
