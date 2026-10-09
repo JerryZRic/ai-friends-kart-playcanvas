@@ -110,18 +110,26 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.equal(element('retryLoading').disabled, false);
     const retry = game.retryLoading(); const repeated = game.retryLoading(); assert.equal(retry, repeated, 'concurrent retry clicks share one boot');
     unblock(); await retry;
-    for (let i = 0; i < 300 && !game.getState().modelsLoaded; i++) await new Promise(resolve => setTimeout(resolve, 5));
-    assert.equal(game.getState().loading.error, null); assert.equal(game.getState().modelsLoaded, true);
+    for (let i = 0; i < 300 && game.getState().loading.busy; i++) await new Promise(resolve => setTimeout(resolve, 5));
+    assert.equal(game.getState().loading.error, null); assert.equal(game.getState().modelsLoaded, false, 'missing real character cannot be declared ready');
     assert.equal(courseAttempts, 2); assert.equal(bundleAttempts, 1); assert.equal(qa.controllers.size, 5);
     assert.deepEqual(game.getState().bundledFailures, ['glm']); assert.equal(game.getState().allDriversLoaded, false);
-    assert.equal(game.getState().driverStates.find(d=>d.id==='glm').appearance, 'original-fallback');
-    assert.match(element('startText').textContent, /原创替身/);assert.equal(game.getState().state,'menu','autostart failure stays visible and requires explicit fallback consent');assert.equal(game.selectDriver('whale'),true); const courseRoot = qa.world.root.findByName('Original course props');
+    assert.equal(game.getState().driverStates.find(d=>d.id==='glm').appearance, 'not-loaded');
+    assert.match(element('startText').textContent, /重试/);assert.equal(game.getState().state,'menu','autostart failure remains retryable');assert.equal(game.selectDriver('whale'),false);game.start();assert.equal(game.getState().state,'menu');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.enabled,false,'missing model has no placeholder render');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.findComponents('render').length,0); const courseRoot = qa.world.root.findByName('Original course props');
     failGLM = false; assert.equal(await game.retryLoading(), true); assert.equal(bundleAttempts, 2); assert.equal(courseAttempts, 2);
-    assert.equal(game.getState().allDriversLoaded, true);assert.equal(game.getState().state,'menu','explicit character selection cancels pending autostart'); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
+    assert.equal(game.getState().allDriversLoaded, true);assert.equal(game.getState().state,'returning','autostart first returns to the starting line'); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
     assert.equal(qa.boxes().length, 45); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
-    await t.test('first model-ready frame cannot open the pause panel',()=>{game.start();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');assert.equal(element('pausePanel').classList.contains('hidden'),true);qa.advanceFrame(.8);qa.advanceFrame(1.2);assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);key('keydown','Escape');assert.equal(game.getState().state,'paused');element('restartRace').click();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');});
+    await t.test('model-ready return freezes race and input until camera arrives',()=>{
+      assert.equal(game.getState().state,'returning');
+      key('keydown','KeyW');qa.advanceFrame(.8);assert.equal(game.getState().state,'returning');assert.equal(game.getState().elapsed,0);assert.equal(game.getState().speed,0);
+      const before=qa.world.camera.getPosition().clone();g.document.hidden=true;qa.advanceFrame(10);assert.ok(qa.world.camera.getPosition().equals(before));assert.equal(game.getState().state,'returning');g.document.hidden=false;
+      events.blur?.forEach(fn=>fn({}));qa.advanceFrame(10);assert.ok(qa.world.camera.getPosition().equals(before),'blur freezes loading return');events.focus?.forEach(fn=>fn({}));
+      for(let i=0;i<80;i++)qa.advanceFrame(1/60);
+      assert.equal(game.getState().state,'countdown');assert.equal(element('pausePanel').classList.contains('hidden'),true);assert.equal(game.getState().speed,0);
+      qa.advanceFrame(.8);qa.advanceFrame(1.2);assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);key('keydown','Escape');assert.equal(game.getState().state,'paused');element('restartRace').click();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');
+    });
     const race = () => { game.start(); qa.step(3.3); assert.equal(game.getState().state, 'running'); };
     const worldLayer = app.scene.layers.getLayerById(pc.LAYERID_WORLD)!;
     const displays: ItemDisplay[] = ['boost', 'shield', 'pulse', 'mystery'];
@@ -284,7 +292,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       qa.set({pos:game.getState().length*3-.1,speed:20,noBots:true});qa.update(.1);
       const result=game.getState();assert.equal(result.state,'finished');assert.ok(result.elapsed>.2&&result.elapsed<.3);
       assert.equal(result.standings[0].finishedAt,result.elapsed);assert.equal(result.pos,result.length*3);
-      assert.match(element('results').textContent,/WHALE（你）/);assert.doesNotThrow(()=>JSON.stringify(result));
+      assert.match(element('results').textContent,/WHALE你/);assert.doesNotThrow(()=>JSON.stringify(result));
     });
     await t.test('all native boxes have transparent front glass and one enclosed model', () => {
       for (const box of qa.boxes()) {

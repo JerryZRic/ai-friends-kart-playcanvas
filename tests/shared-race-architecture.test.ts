@@ -9,10 +9,10 @@ const read = (path: string) => readFileSync(new URL('../' + path, import.meta.ur
 test('both race adapters consume shared HUD, shell, input, camera and performance modules', () => {
   for (const entry of ['src/game.ts', 'src/waterpark-play.ts']) {
     const source = read(entry);
-    for (const module of ['race-frame-clock', 'race-hud', 'race-shell', 'race-controls', 'race-camera', 'waterpark-performance-ui']) {
+    for (const module of ['race-loading-camera', 'race-loading-ui', 'race-frame-clock', 'race-hud', 'race-shell', 'race-controls', 'race-camera', 'waterpark-performance-ui']) {
       assert.match(source, new RegExp(`from ['"]\\./${module}['"]`), `${entry} consumes ${module}`);
     }
-    for (const call of ['createRaceFrameClock', 'mountRaceHud', 'createRaceShell', 'bindRaceControls', 'chaseCamera', 'createPerformancePanel']) {
+    for (const call of ['createLoadingCamera', 'mountRaceLoadingUi', 'createRaceFrameClock', 'mountRaceHud', 'createRaceShell', 'bindRaceControls', 'chaseCamera', 'createPerformancePanel']) {
       assert.match(source, new RegExp(`\\b${call}\\(`), `${entry} instantiates ${call}`);
     }
     for (const method of ['start', 'setPaused', 'renderCountdown', 'finish', 'updateHUD', 'drawMinimap', 'tick', 'toggleSound', 'dispose']) {
@@ -26,7 +26,7 @@ test('both race adapters consume shared HUD, shell, input, camera and performanc
 });
 
 test('shared modules remain independent of either map bootstrap and settings schema', () => {
-  for (const path of ['src/race-frame-clock.ts', 'src/race-shell.ts', 'src/race-hud.ts', 'src/race-controls.ts', 'src/race-camera.ts']) {
+  for (const path of ['src/race-loading-camera.ts', 'src/race-loading-ui.ts', 'src/race-frame-clock.ts', 'src/race-shell.ts', 'src/race-hud.ts', 'src/race-controls.ts', 'src/race-camera.ts']) {
     const source = read(path);
     assert.doesNotMatch(source, /from ['"]\.\/(?:game|waterpark-play|water-race|coast-race-rules)['"]/, `${path} cannot import an entry or map simulation`);
   }

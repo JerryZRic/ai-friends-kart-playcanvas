@@ -79,6 +79,20 @@ export function formatRaceResults(snapshot: RaceFinishSnapshot): string {
   return [`第 ${clamp(count(snapshot.rank, 1), 1, racers)} / ${racers} 名 · ${nonnegative(snapshot.elapsed).toFixed(2)} 秒`, ...rows].join('\n');
 }
 
+/** Table content is escaped, and unfinished racers never receive inferred times. */
+export function renderRaceResults(snapshot: RaceFinishSnapshot): string {
+  const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
+  const distance = positive(snapshot.trackLength) * count(snapshot.laps, 3);
+  const rows = snapshot.racers.map((racer, index) => {
+    const finished = racer.finishedAt !== null && Number.isFinite(racer.finishedAt);
+    const player = racer.id === snapshot.selectedDriverId;
+    const label = escape(racer.label ?? resolveCharacter(racer.id).label);
+    const value = finished ? `${nonnegative(racer.finishedAt!).toFixed(2)} 秒` : `${clamp(nonnegative(racer.total) / distance * 100, 0, 99.9).toFixed(1)}%`;
+    return `<tr class="${player ? 'result-player ' : ''}${finished ? 'result-finished' : 'result-unfinished'}" data-racer-id="${escape(racer.id)}"><th scope="row">${index + 1}</th><td class="result-name">${label}${player ? '<span class="result-you">你</span>' : ''}</td><td class="result-value">${value}</td><td class="result-state">${finished ? '已冲线' : '未冲线'}</td></tr>`;
+  });
+  return `<table class="result-table"><caption>本场比赛完整排名</caption><thead><tr><th scope="col">名次</th><th scope="col">选手</th><th scope="col">用时 / 进度</th><th scope="col">状态</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
+}
+
 /** Bounds are sampled once. Race updates draw dots without rebuilding track geometry. */
 export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceMapTrack) {
   const context = canvas?.getContext('2d');
@@ -308,11 +322,13 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       phase = 'finished'; resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.add('finished');
       hidden('overlay', false); hidden('menu', false); hidden('results', false); text('count', '');
-      if (elements.title) elements.title.innerHTML = snapshot.rank === 1 ? 'GOLDEN<br><em>FINISH.</em>' : 'ONE MORE<br><em>RIDE?</em>';
-      text('subtitle', snapshot.rank === 1 ? '冠军冲线，漂亮的超越' : '再来一场，争取更好成绩');
+      text('title', '比赛结果');
+      const racers = count(snapshot.racerCount, snapshot.racers.length || 6);
+      text('subtitle', `第 ${clamp(count(snapshot.rank, 1), 1, racers)} / ${racers} 名${snapshot.rank === 1 ? ' · 冠军冲线' : ''}`);
       const laps = count(snapshot.laps, 3);
       text('desc', `${resolveMap(mapId).label} · ${laps === 3 ? '三' : laps}圈大奖赛`);
-      text('results', formatRaceResults(snapshot)); text('startText', '再来一场');
+      if (elements.results) elements.results.innerHTML = renderRaceResults(snapshot);
+      text('startText', '再来一场');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
       if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
       focus(elements.start);

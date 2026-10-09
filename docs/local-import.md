@@ -1,6 +1,8 @@
+> The streamlined race loading screen hides the legacy import controls. The existing session-only importer remains available to the adapter/debug API; ordinary character selection is in the main menu.
+
 # Compatible local driver contract
 
-The six slot IDs are `whale`, `gemini`, `gpt`, `claude`, `grok`, and `glm`. Every slot automatically loads its distributed runtime character. An explicit original-driver fallback is shown if loading fails. A compatible local file can optionally replace either appearance. Single-file import targets the slot selected when import begins; multi-file import uses exactly one slot-ID filename token.
+The six slot IDs are `whale`, `gemini`, `gpt`, `claude`, `grok`, and `glm`. Every slot automatically loads its distributed runtime character. Missing models are never replaced by the retired low-poly fallback. A compatible local file can optionally replace either appearance. Single-file import targets the slot selected when import begins; multi-file import uses exactly one slot-ID filename token.
 
 ## Export contract
 
@@ -27,7 +29,7 @@ GLB headers, declared lengths, chunks, buffer views, accessors and image headers
 
 At most two files are being read/parsed at once. Each request captures its target slot immediately. Newer requests for that same slot supersede older pending work; stale parsed assets are disposed. Invalid/cancelled loads preserve the prior source. A successful replacement first releases borrowing actor controllers and then unloads the old container and its owned subassets. Destroying an actor releases its per-instance render/skin state and cloned chassis materials, without unloading borrowed shared geometry or character textures. Empty/cancelled file selections change nothing.
 
-The menu is the only import location. Starting a race is disabled while any imports are pending. An import that loses its menu permission before completion is discarded, preserving current race actors. A page refresh ends local replacement sessions and loads the six distributed default models again. Clearing a local replacement restores its distributed default, or the explicit original fallback if that model failed to load. There is no localStorage, IndexedDB, server upload or model cache.
+The menu is the only import location. Starting a race is disabled while any imports are pending. An import that loses its menu permission before completion is discarded, preserving current race actors. A page refresh ends local replacement sessions and loads the six distributed default models again. Clearing a local replacement restores its distributed default, and missing bundled models must be retried before racing. There is no localStorage, IndexedDB, server upload or model cache.
 
 ## Verification
 

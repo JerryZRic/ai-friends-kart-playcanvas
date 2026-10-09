@@ -32,7 +32,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 Open the **[GitHub Pages game](https://jerryzric.github.io/ai-friends-kart-playcanvas/)** in a browser with **WebGL2** enabled. Wait for the characters to load, choose a driver and start the race.
 
-The first character download is approximately **51.6 MB** in total. At most two models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models are explicitly labeled as original-driver fallbacks.
+The first character download is approximately **51.6 MB** in total. At most two models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models remain absent; retry must finish before the race starts. Both maps share an aerial loading flyover and a smooth starting-line return.
 
 No ChatGPT login, model-service account or runtime CDN is required. The game and character assets are served from the same distribution.
 
@@ -116,7 +116,7 @@ The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) is
 
 ## Local driver replacements
 
-Select a driver slot and import a compatible GLB, or multi-select filenames containing exactly one slot-name token each. Files are limited to **32 MiB each**, with at most two processed concurrently. Imports stay in page memory: they are neither uploaded nor persisted. Failure/cancellation preserves the previous driver; **Restore default** restores the bundled character or an explicit fallback.
+Select a driver slot and import a compatible GLB, or multi-select filenames containing exactly one slot-name token each. Files are limited to **32 MiB each**, with at most two processed concurrently. Imports stay in page memory: they are neither uploaded nor persisted. Failure/cancellation preserves the previous driver; **Restore default** restores the bundled character. The streamlined race loading screen keeps legacy import controls hidden; character selection happens in the main menu.
 
 See [the rig and import contract](docs/local-import.md) for accepted models and validation rules.
 

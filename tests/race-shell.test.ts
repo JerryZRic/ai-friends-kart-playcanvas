@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createRaceMinimap, createRaceShell, createRaceSound, formatRaceResults, formatRaceTime, raceNavigation, RACE_SOUND_KEY, type RaceHudSnapshot } from '../src/race-shell';
+import { createRaceMinimap, createRaceShell, createRaceSound, formatRaceResults, renderRaceResults, formatRaceTime, raceNavigation, RACE_SOUND_KEY, type RaceHudSnapshot } from '../src/race-shell';
 import { itemImage } from '../src/item-models';
 
 /** Shared DOM presentation contract. Simulation/GPU work belongs to map tests. */
@@ -96,7 +96,7 @@ test('shared start, pause, resume, finish and restart clear stale presentation',
   shell.renderCountdown(0, true); assert.match($('count').textContent, /等待其他选手/); assert.ok($('count').classes.has('waiting'));
   shell.finish(finish); assert.equal($('body').classes.has('finished'), true); assert.equal($('overlay').classes.has('hidden'), false);
   assert.equal($('pause').disabled, true);
-  assert.match($('desc').textContent, /晴空水上乐园/); assert.match($('results').textContent, /GROK（你）/); assert.equal($('startText').textContent, '再来一场');
+  assert.match($('desc').textContent, /晴空水上乐园/); assert.match($('results').innerHTML, /GROK<span class="result-you">你<\/span>/); assert.equal($('startText').textContent, '再来一场');
   assert.equal($('count').textContent, ''); assert.equal(fixtureState.activeElement, $('start')); assert.equal($('pausePanel').classes.has('hidden'), true);
   shell.setPaused(true); shell.renderCountdown(2); assert.equal($('count').textContent, '', 'terminal flow cannot be paused or show old countdown');
   shell.start(3); assert.equal($('body').classes.has('finished'), false); assert.equal($('results').textContent, ''); assert.equal($('results').classes.has('hidden'), true);
@@ -160,4 +160,28 @@ test('sound is shared across maps using an independent fail-safe preference', ()
   sound.dispose(); sound.dispose(); sound.toggle(); sound.tone(); assert.equal(closes, 1); assert.equal(tones, 2);
   const blocked = createRaceSound({ storage: { getItem() { throw Error('denied'); }, setItem() { throw Error('denied'); } }, audioFactory() { throw Error('unsupported'); } });
   assert.equal(blocked.muted, true); assert.doesNotThrow(() => { blocked.toggle(); blocked.tone(); blocked.dispose(); });
+});
+
+
+test('the shared result table keeps all six authoritative rows and distinguishes unfinished racers', () => {
+  const racers = [
+    { id: 'claude', finishedAt: 88.002, total: 300 },
+    { id: 'grok', finishedAt: 90.123, total: 300 },
+    { id: 'whale', finishedAt: 91.345, total: 300 },
+    { id: 'gpt', finishedAt: null, total: 288 },
+    { id: 'glm', finishedAt: null, total: 245 },
+    { id: 'gemini', finishedAt: null, total: 212 },
+  ];
+  const html = renderRaceResults({ ...finish, racers });
+  assert.equal([...html.matchAll(/data-racer-id=/g)].length, 6);
+  assert.deepEqual([...html.matchAll(/data-racer-id="([^"]+)"/g)].map(match => match[1]), racers.map(racer => racer.id));
+  assert.equal([...html.matchAll(/class="result-state">已冲线/g)].length, 3);
+  assert.equal([...html.matchAll(/class="result-state">未冲线/g)].length, 3);
+  assert.match(html, /90.12 秒/);
+  assert.match(html, /96.0%/);
+  for (const row of html.match(/<tr class="[^"]*result-unfinished[^>]*>.*?<\/tr>/g) || []) assert.doesNotMatch(row, /秒/);
+  assert.match(html, /<table class="result-table"><caption>本场比赛完整排名<\/caption>/);
+  const escaped = renderRaceResults({ ...finish, racers: [{ id: '"<bad>', label: '<img src=x onerror=alert(1)>', finishedAt: Infinity, total: Infinity }] });
+  assert.doesNotMatch(escaped, /<img|data-racer-id=""/);
+  assert.match(escaped, /&lt;img/); assert.match(escaped, /未冲线/); assert.doesNotMatch(escaped, /Infinity|NaN/);
 });

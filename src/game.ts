@@ -11,17 +11,23 @@ import { createOrbit, bindMouseLook } from './mouse-look.js';
 import {createRaceFrameClock} from './race-frame-clock';
 import {bindRaceControls} from './race-controls';
 import {chaseCamera} from './race-camera';
+import {createLoadingCamera} from './race-loading-camera';
+import {mountRaceLoadingUi} from './race-loading-ui';
 import {mountRaceHud} from './race-hud';
 import {createRaceShell,raceNavigation} from './race-shell';
 import {createPerformancePanel} from './waterpark-performance-ui';
 import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roster.js';
-import { COURSE_FILES, loadCourseAssets, loadBundledDrivers, createImportedRacer, createLocalDriverStore, instantiateRenderEntity, type DriverAsset } from './assets';
-import { createCoastScene, eachMesh, placeKart, color, type Spark } from './scene';
+import { COURSE_FILES, loadCourseAssets, loadBundledDrivers, createImportedRacer, createLocalDriverStore, type DriverAsset } from './assets';
+import { createCoastScene, eachMesh, placeKart, type Spark } from './scene';
 import { LENGTH, halfWidthAt, sample, clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
 mountRaceHud({subtitle:'SUNSET COAST GRAND PRIX',canvasLabel:'真实 3D 卡丁车赛道'});
 const $ = (id: string): any => document.getElementById(id);
+const loadingUi=mountRaceLoadingUi(document,'coast');
+const loadingCamera=createLoadingCamera({length:LENGTH,sample});
+let initialCameraReturn=true,loadingFocused=true,contextUnavailable=false;
+const loadingActive=()=>loadingFocused&&!contextUnavailable&&!document.hidden&&(typeof document.hasFocus!=='function'||document.hasFocus());
 const settings = readGameSettings(), quality = qualitySettings(settings.quality);
 const query = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
 // Native links remain usable if WebGL or a later bootstrap step fails.
@@ -40,6 +46,7 @@ try {
   app = new pc.Application(canvas, { graphicsDeviceOptions: { antialias: true, alpha: false, powerPreference: 'high-performance' } });
 } catch (error) {
   $('loading').textContent = '当前浏览器无法启用 WebGL，请开启硬件加速或换用新版浏览器';
+  loadingUi.update({progress:null,status:$('loading').textContent,busy:false});
   throw error;
 }
 app.maxDeltaTime = Infinity; // Preserve elapsed time; gameplay is substepped below.
@@ -87,6 +94,7 @@ function setLoadingSnapshot(snapshot){
 }
 function renderLoadingUI(){
   if(disposed)return;
+  if(contextUnavailable){loadingUi.update({progress:null,status:'画面已中断，请刷新页面后重试',busy:false});return;}
   const status=loadingSnapshot,course=status.phase==='course';
   const stageNames={queued:'等待下载',downloading:'下载中',decompressing:'校验 / 解压中',preparing:'解析 / 准备 3D 模型',ready:'已就绪',failed:'加载失败'};
   const progress=$('loadingProgress'),hasTotal=status.totalBytes>0;
@@ -114,11 +122,13 @@ function renderLoadingUI(){
   }else if(!courseBuilt){
     $('loading').textContent='赛道资源加载失败，请检查网络后重试';
   }else if(bundledFailures.size){
-    $('loading').textContent='角色加载失败：'+[...bundledFailures.keys()].map(id=>getDriver(id).label).join('、')+'；可重试，或使用原创替身开始比赛';
+    $('loading').textContent='角色加载失败：'+[...bundledFailures.keys()].map(id=>getDriver(id).label).join('、')+'；请重试失败资源';
   }else $('loading').textContent='6 / 6 角色已就绪 · 非商业试玩';
   const canRetry=!loadingBusy&&!localDrivers.busy&&(loadingError||!courseBuilt||bundledFailures.size>0)&&(state==='loading'||state==='menu'||state==='finished');
   $('retryLoading').classList[!loadingBusy&&(loadingError||!courseBuilt||bundledFailures.size>0)?'remove':'add']('hidden');
   $('retryLoading').disabled=!canRetry;
+  const shortStatus=!loadingBusy&&(loadingError||!courseBuilt)?'赛道或模型准备失败，请重试':!loadingBusy&&bundledFailures.size?`角色加载失败 ${bundledFailures.size} / 6，请重试`:$('loading').textContent;
+  loadingUi.update({progress:hasTotal?Math.min(1,status.receivedBytes/status.totalBytes):null,status:shortStatus,busy:loadingBusy,canRetry:!!canRetry,canContinue:ready&&!loadingBusy&&!localDrivers.busy,continueLabel:'开始比赛'});
   $('retryLoading').textContent=courseBuilt?(loadingError?'重试模型准备':'重试失败角色（'+bundledFailures.size+'）'):'重试赛道资源';
 }
 async function prepareCourseAssets(signal: AbortSignal) {
@@ -133,7 +143,7 @@ function buildCourse() {
   courseBuilt = true;
 }
 function boot(): Promise<boolean> {
-  if (disposed) return Promise.resolve(false);
+  if (disposed||contextUnavailable) return Promise.resolve(false);
   if (loadingPromise) return loadingPromise;
   if (localDrivers.busy || !['loading', 'menu', 'finished'].includes(state) || (ready && !bundledFailures.size && !loadingError)) return Promise.resolve(false);
   loadingBusy = true; ready = false; loadingError = null; $('loadingDetailGroup').open = true;
@@ -142,15 +152,15 @@ function boot(): Promise<boolean> {
   loadingTimer = setInterval(renderLoadingUI, 250);
   loadingPromise = lifetime.run(async signal => {
     try {
-      if (!courseBuilt) { await prepareCourseAssets(signal); if (disposed) return false; buildCourse(); setupRacers(); }
+      if (!courseBuilt) { await prepareCourseAssets(signal); if (disposed||contextUnavailable) return false; buildCourse(); }
       const loaded = await loadBundledDrivers(app, { signal, existingDrivers: bundledDrivers, onStatus: status => setLoadingSnapshot({ phase: 'drivers', ...status }), onProgress: updateDriverUI });
-      if (disposed) return false;
+      if (disposed||contextUnavailable) return false;
       bundledDrivers = loaded.drivers; bundledFailures = loaded.failures;
-      setupRacers(); ready = true; state = returnState;
-      $('startText').textContent = bundledFailures.size ? '开始比赛（含原创替身）' : returnState === 'finished' ? '再来一场' : '开始比赛';
+      setupRacers(); ready = bundledFailures.size===0&&bundledDrivers.size===DRIVERS.length; state = returnState;
+      $('startText').textContent = bundledFailures.size ? '请重试失败资源' : returnState === 'finished' ? '再来一场' : '开始比赛';
       return true;
     } catch (error) {
-      if (disposed) return false;
+      if (disposed||contextUnavailable) return false;
       console.error(error); loadingError = error instanceof Error ? error.message : '未知准备错误';
       $('startText').textContent = '资源加载未完成';
       if (courseBuilt) for (const slot of DRIVERS) if (!bundledDrivers.has(slot.id)) bundledFailures.set(slot.id, loadingError);
@@ -193,31 +203,35 @@ function racerFor(slot): RacerEntity {
     const controller = createImportedRacer(app, asset, chassisAsset, slot);
     controllers.set(slot.id, controller); entity = controller.root;
   } else {
-    entity = new pc.Entity('Fallback racer placement');
-    entity.addChild(instantiateRenderEntity(courseAssets.get('kart')!));
-    eachMesh(entity, mesh => {
-      const m = mesh.material.clone() as pc.StandardMaterial;
-      if (/body|paint|helmet/i.test(m.name) && !/visor/i.test(m.name)) m.diffuse = color(slot.color);
-      m.update(); mesh.material = m; mesh.castShadow = true;
-    });
+    // A missing asset remains invisible. Never resurrect the retired low-poly rider.
+    entity = new pc.Entity('Unloaded racer');
+    entity.enabled = false;
   }
   entity.userData = { driverId: slot.id }; app.root.addChild(entity); return entity;
 }
 function setupRacers(){releaseRacers();const order=raceOrder(selectedDriverId);player=racerFor(order[0]);bots=order.slice(1).map((slot,i)=>({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()}));placeKart(player,pos,lane,0);bots.forEach(b=>placeKart(b.mesh,b.total,b.lateral,0));}
-function reset(){if(disposed||!ready||loadingBusy||localDrivers.busy)return;frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+function reset(){if(disposed||contextUnavailable||!ready||loadingBusy||localDrivers.busy||state==='returning')return;
+if(initialCameraReturn){
+  clearInputs();mouseLook.release();orbit.recenter(true);
+  pos=0;lane=-2;speed=0;setupRacers();state='returning';
+  const start=sample(0,-2);loadingCamera.beginReturn(chaseCamera({position:start.p,tangent:start.t,view,rearView:false,orbit:{yaw:0,pitch:0}}));
+  loadingUi.update({progress:1,status:'模型已就绪 · 镜头返回起点',busy:true,canRetry:false,canContinue:false});
+  return;
+}
+frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
 const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
   if (disposed) return;
   updateRaceLinks(selectedDriverId);
   const editable=canImport();
-  for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':ready?'加载失败 · 原创替身':'加载中');}
-  $('start').disabled=!ready||loadingBusy||localDrivers.busy;
+  for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':bundledFailures.has(slot.id)?'加载失败':'加载中');}
+  $('start').disabled=!ready||loadingBusy||localDrivers.busy||state==='returning';
   $('retryLoading').disabled=loadingBusy||localDrivers.busy||!['loading','menu','finished'].includes(state);
   $('importButton').disabled=!editable||!chassisAsset;
   $('driverFiles').disabled=!editable||!chassisAsset;
   $('clearDriver').disabled=!editable||localDrivers.busy||!localDrivers.has(selectedDriverId);
-  $('importSummary').textContent=localDrivers.busy?'正在检查本地 GLB，完成前暂停开始比赛…':bundledDrivers.size+' / 6 个默认角色已加载 · '+DRIVERS.filter(slot=>localDrivers.has(slot.id)).length+' 个本地替换'+(bundledFailures.size?' · 加载失败槽位使用原创替身':'');
+  $('importSummary').textContent=localDrivers.busy?'正在检查本地 GLB，完成前暂停开始比赛…':bundledDrivers.size+' / 6 个默认角色已加载 · '+DRIVERS.filter(slot=>localDrivers.has(slot.id)).length+' 个本地替换'+(bundledFailures.size?' · 失败角色等待重试':'');
 }
 function selectDriver(id){if(!canImport()||!DRIVERS.some(slot=>slot.id===id))return false;autoStartPending=false;selectedDriverId=id;setupRacers();updateDriverUI();snapCamera=true;return true;}
 let importStatusVersion=0;
@@ -245,7 +259,7 @@ $('restartRace').onclick=reset;
 function navigate(screen=''){clearInputs();mouseLook.release();const urls=shell.updateNavigation('coast',selectedDriverId)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
 $('pauseMenu').onclick=()=>navigate();
 $('pauseChangeMap').onclick=()=>navigate('maps');
-$('camera').onclick=()=>{view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
+$('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returning')return;view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{shell.toggleSound();muted=shell.muted;};
 function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, boost, shield, slow }; }
 function applyPlayerCombatant(r: Combatant) { held = r.held; boost = r.boost; shield = r.shield; slow = r.slow; }
@@ -276,7 +290,7 @@ function updateLookHint(){
   $('lookHint').textContent=state==='paused'?'已暂停 · P 继续':lookStatus==='locked'?'移动鼠标环顾 · Q 回正 · 右键回看 · Esc 暂停并释放鼠标':lookStatus==='drag'?'按住鼠标左键拖动环顾 · Q 回正 · Esc 暂停':'单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停';
 }
 controls=bindRaceControls(canvas,{
-  state:()=>state==='running'||state==='countdown'?'active':state==='paused'?'paused':state==='finished'?'finished':'menu',
+  state:()=>state==='running'||state==='countdown'?'active':state==='paused'?'paused':state==='finished'?'finished':state==='loading'||state==='returning'?'loading':'menu',
   pause,useItem,switchCamera:()=>$('camera').click(),start:reset,
   recenter:()=>toast('视角回正'),status:status=>{lookStatus=status;updateLookHint()},
   onClear:()=>{charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,
@@ -346,6 +360,12 @@ function draw(dt: number) {
     box.mesh.setEulerAngles(degrees(Math.sin(clock * .8) * .15), degrees(clock * .8), degrees(.18));
     const p = box.mesh.getPosition(); box.mesh.setPosition(p.x, box.base + Math.sin(clock * 2 + box.d) * .17, p.z);
   }
+  const cinematic=state==='loading'||state==='menu'||state==='returning';
+  if(cinematic){
+    const pose=loadingCamera.step(dt,loadingActive());
+    camera.setPosition(pose.position.x,pose.position.y,pose.position.z);camera.lookAt(pose.look.x,pose.look.y,pose.look.z);camera.camera!.fov=pose.fov;
+    if(state==='returning'&&pose.phase==='ready'&&loadingActive()){initialCameraReturn=false;state='menu';reset();}
+  }
   if (player) {
     const s = placeKart(player, pos, lane, steerVis);
     bots.forEach(b => {
@@ -362,17 +382,19 @@ function draw(dt: number) {
       cameraPosition = scaled(scaled(focus.p.clone(), focus.t, 10 + Math.sin(t) * 2), focus.n, 15 + Math.cos(t) * 2);
       cameraPosition.y += 7.7;
       look = scaled(scaled(focus.p.clone(), focus.n, -3.8), focus.t, 8); look.y += 1.2;
-      camera.camera!.fov = 53;
+      if(!cinematic)camera.camera!.fov = 53;
     } else {
       const angles = orbit.step(state === 'paused' ? 0 : dt);
       const pose=chaseCamera({position:s.p,tangent:s.t,view,rearView,orbit:angles});
       cameraPosition=new pc.Vec3(pose.position.x,pose.position.y,pose.position.z);
       look=new pc.Vec3(pose.look.x,pose.look.y,pose.look.z);
-      camera.camera!.fov = damp(camera.camera!.fov, boost > 0 ? 65 : 56, 3, state==='paused'?0:dt);
+      if(!cinematic)camera.camera!.fov = damp(camera.camera!.fov, boost > 0 ? 65 : 56, 3, state==='paused'?0:dt);
     }
+    if(!cinematic){
     if (snapCamera) { camera.setPosition(cameraPosition); snapCamera = false; }
     else if(state!=='paused')camera.setPosition(new pc.Vec3().lerp(camera.getPosition(), cameraPosition, 1 - Math.exp(-dt * (menu ? 1.8 : 8))));
     camera.lookAt(look);
+    }
     shieldMesh.enabled = shield > 0;
     shieldMesh.setPosition(player.getPosition().clone().add(new pc.Vec3(0, 1.2, 0)));
     for (const flame of flames) {
@@ -406,7 +428,7 @@ function getState() {
     bundledLoaded: [...bundledDrivers.keys()], bundledFailures: [...bundledFailures.keys()],
     loading: { ...loadingSnapshot, records: loadingSnapshot.records.map(record => ({ ...record })), busy: loadingBusy, courseBuilt, error: loadingError },
     selectedDriverId, tuning:characterTuning(selectedDriverId,'coast'), quality:settings.quality, standings:standings().map(r=>({...r})), importedSlots: DRIVERS.filter(d => localDrivers.has(d.id)).map(d => d.id), importing: localDrivers.busy,
-    driverStates: DRIVERS.map(d => ({ id: d.id, appearance: localDrivers.has(d.id) ? 'local-import' : bundledDrivers.has(d.id) ? 'bundled-model' : 'original-fallback', ...(controllers.get(d.id)?.getState() || {}) })),
+    driverStates: DRIVERS.map(d => ({ id: d.id, appearance: localDrivers.has(d.id) ? 'local-import' : bundledDrivers.has(d.id) ? 'bundled-model' : 'not-loaded', ...(controllers.get(d.id)?.getState() || {}) })),
     drawCalls: stats.drawCalls?.total ?? stats.frame?.drawCalls ?? 0, triangles: stats.frame?.triangles ?? 0,
   };
 }
@@ -425,12 +447,15 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
     },
   };
 }
+addEventListener('blur',()=>{loadingFocused=false;});
+addEventListener('focus',()=>{loadingFocused=true;frameClock.reset();});
+addEventListener('pageshow',()=>{loadingFocused=true;frameClock.reset();});
 addEventListener('resize', () => { if(!disposed){app.resizeCanvas(); snapCamera = true;} });
 canvas.addEventListener('webglcontextlost', event => {
-  event.preventDefault(); release(); $('count').textContent = '画面已中断，请刷新'; $('count').classList.add('paused');
+  event.preventDefault(); contextUnavailable=true; release();renderLoadingUI(); $('count').textContent = '画面已中断，请刷新'; $('count').classList.add('paused');
 });
 function advanceFrame(delta:number){
-  if(disposed)return;
+  if(disposed||contextUnavailable)return;
   performancePanel.sample(performance.now(),state==='running',state);
   const frame=frameClock.sample(delta,state==='running'||state==='countdown',countdown);
   // Foreground stalls use bounded catch-up; real interruptions come from controls.
@@ -441,15 +466,19 @@ function advanceFrame(delta:number){
   draw(Math.min(.25,dt));
 }
 app.on('update',(delta:number)=>{if(!manual)advanceFrame(delta);});
+loadingUi.retryButton.onclick=()=>void boot();
+loadingUi.continueButton.onclick=reset;
+const initialPose=loadingCamera.step(0);
+camera.setPosition(initialPose.position.x,initialPose.position.y,initialPose.position.z);camera.lookAt(initialPose.look.x,initialPose.look.y,initialPose.look.z);camera.camera!.fov=initialPose.fov;
 void boot();
 app.start();
 
 addEventListener('pagehide',(event: PageTransitionEvent)=>{
-  release();
+  loadingFocused=false;release();
   if(event.persisted)return; // BFCache restores the same paused session.
   disposed=true;ready=false;state='leaving';importStatusVersion++;
   if(loadingTimer)clearInterval(loadingTimer);loadingTimer=null;
   app.autoRender=false;app.renderNextFrame=false;
   if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);
-  controls.dispose();shell.dispose();performancePanel.dispose();localDrivers.dispose();lifetime.close();
+  loadingUi.dispose();loadingCamera.dispose();controls.dispose();shell.dispose();performancePanel.dispose();localDrivers.dispose();lifetime.close();
 });

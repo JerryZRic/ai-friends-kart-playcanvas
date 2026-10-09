@@ -11,13 +11,22 @@
 </head>
 <body class="menu waterpark-race">
   <div id="raceHud"></div>
-  <div class="overlay waterpark-menu" id="overlay">
-    <div class="panel">
-      <span class="eyebrow">SIX FRIENDS · NON-COMMERCIAL DEMO</span>
-      <h1 id="menu-title"><span id="title">WATERPARK<br><em>RACE.</em></span></h1>
-      <div class="chinese" id="subtitle">六位好友 · 晴空水上乐园</div>
-      <p id="desc">闭环水道 · 三圈竞速 · 六位伙伴同场比赛。<br>水面惯性、转弯侧倾与尾流，沿水道收集道具箱。</p>
-      <div class="results" id="results" aria-live="polite"></div>
+  <div id="raceLoading"></div>
+  <section class="overlay race-finish" id="overlay" role="dialog" aria-modal="true" aria-labelledby="title" aria-describedby="subtitle">
+    <div class="panel race-finish-panel">
+      <span class="eyebrow">RACE RESULTS</span>
+      <h1 id="title">比赛结果</h1>
+      <div class="chinese" id="subtitle"></div>
+      <p id="desc"></p>
+      <div class="results hidden" id="results"></div>
+      <nav class="race-nav race-finish-actions" aria-label="赛后操作">
+        <button class="start" id="start" disabled><span id="startText">再来一场</span><span aria-hidden="true">↗</span></button>
+        <a id="raceChangeMap" href="index.html?screen=maps&amp;map=waterpark">更换地图</a>
+        <a id="raceMainMenu" href="index.html">返回主菜单</a>
+      </nav>
+    </div>
+  </section>
+  <div class="legacy-race-menu" hidden inert aria-hidden="true">
       <section class="loading-panel race-loading" aria-label="角色加载进度">
         <div class="loading" id="load" role="status" aria-live="polite">正在准备六位角色…</div>
         <button id="retry" class="retry-loading hidden" type="button">重试失败角色</button>
@@ -28,17 +37,9 @@
         <div class="import-help">六位原有角色自动加载；模型仅作非商业试玩。</div>
       </section>
       <div id="message" role="status" aria-live="polite"></div>
-      <button class="start" id="start" disabled><span id="startText">等待角色加载</span><span>↗</span></button>
-      <nav class="race-nav" aria-label="比赛导航">
-        <button id="restart" type="button" class="hidden">重新开始比赛</button>
-        <a id="change-driver" href="./index.html?screen=characters&amp;map=waterpark">更换角色</a>
-        <a id="change-map" href="./index.html?screen=maps&amp;map=waterpark">更换地图</a>
-        <a id="raceMainMenu" href="./index.html">返回主菜单</a>
-      </nav>
-      <div class="controls" id="instructions"><b>W</b> 油门　<b>S</b> 刹车 / 倒车　<b>A D</b> 左 / 右转<br><b>空格</b> 刹车　<b>左 Shift</b> 手刹漂移　<b>Z</b> 视角<br><b>鼠标右键</b> 回看　<b>E</b> 本作道具　<b>Esc</b> 暂停<br><b>单击赛道</b> 移动鼠标环顾　<b>Q</b> 视角回正</div>
-      <nav class="race-nav" aria-label="开源与许可"><a href="./source.html">Source / License</a></nav>
-    </div>
-    <div class="scene-label">THE SUNNY WATERWAY<strong>WATERPARK CIRCUIT / 02</strong></div>
+
+<button id="restart" type="button" disabled>重新开始比赛</button><a id="change-driver" href="index.html?screen=characters&amp;map=waterpark">更换角色</a><a id="change-map" href="index.html?screen=maps&amp;map=waterpark">更换地图</a>
+    <div id="instructions"></div>
   </div>
   <script type="module" src="/src/waterpark-play.ts"></script>
 </body>

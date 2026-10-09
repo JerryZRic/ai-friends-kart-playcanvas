@@ -8,10 +8,10 @@ import {parseLocalGLB} from '../src/assets';
 
 /** Real entrypoint, meshes, rig and physics on NullGraphicsDevice. Browser DOM
  * events/image pixels and network scheduling are substituted; no GPU claim. */
-test('waterpark entry preserves partial loading, pause/freeze, focus, touch, restart and exit lifecycles', async () => {
+for(const scenario of ['full-race','manual-ready','context-loss-loading','context-loss-return','close-loading'])test(`waterpark real entry loading and race lifecycle: ${scenario}`, async () => {
   const g=globalThis as any, names=['location','window','document','innerWidth','innerHeight','devicePixelRatio','__waterparkApp','__waterparkLoad','__waterparkRace','__waterparkControls'];
   const saved=new Map(names.map(name=>[name,Object.getOwnPropertyDescriptor(g,name)]));
-  g.location={search:'?driver=whale&autostart=1'};
+  g.location={search:'?driver=whale'+(scenario==='manual-ready'?'':'&autostart=1')};
   const errors:unknown[]=[];const originalError=console.error;console.error=(...args)=>errors.push(args);
   const elements=new Map<string,Element>();
   class Element extends EventTarget {
@@ -54,12 +54,14 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   options.resourceHandlers=[pc.ContainerHandler,pc.RenderHandler,pc.MaterialHandler,pc.TextureHandler];options.devtools=false;app.init(options);
   app.assets.on('add',(asset:pc.Asset)=>{if(asset.type==='container')(asset.options as any).image={processAsync(_image:unknown,done:Function){const texture=new pc.Asset('test-texture','texture');texture.resource=new pc.Texture(options.graphicsDevice,{width:1,height:1});texture.loaded=true;app.assets.add(texture);done(null,texture);}};});
   (app as any).setCanvasFillMode=()=>{};(app as any).setCanvasResolution=()=>{};g.__waterparkApp=app;
-  let release!:()=>void,attempts=0,signal!:AbortSignal,failLast=true;
+  let release!:()=>void,attempts=0,signal!:AbortSignal,failLast=scenario==='full-race';
   let gate=new Promise<void>(resolve=>release=resolve);
   const bytes=gunzipSync(readFileSync('public/assets/drivers/whale-driver.glb.gz'));
   const driver=await parseLocalGLB(app,bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
   g.__waterparkLoad=async(_app:any,options:any)=>{
-    attempts++;signal=options.signal;setMaxListeners(100,signal);await gate;
+    attempts++;signal=options.signal;setMaxListeners(100,signal);
+    options.onStatus({loaded:options.existing.size,total:6,receivedBytes:123,totalBytes:1000,records:[{stage:'downloading'}]});
+    await gate;
     const assets=new Map(options.existing),failures=new Map();
     for(const id of ['whale','gemini','gpt','claude','grok','glm']){if(id==='glm'&&failLast)failures.set(id,'Injected partial failure');else assets.set(id,driver);}
     options.onStatus({loaded:assets.size,total:6,receivedBytes:100,totalBytes:null});
@@ -82,6 +84,48 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
   try {
     await import(copy.href+'?run='+Date.now());
     assert.equal(app.maxDeltaTime,Infinity,'engine must not silently clamp real frame delta to 0.1s');
+    if(scenario!=='full-race'){
+      const state=()=>g.__waterparkControls,continueButton=element('raceLoadingContinue');
+      if(scenario==='close-loading'){
+        emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,0,'an in-flight parser retains its application');
+        release();await settle();assert.equal(destroyed,1,'closing settles and disposes the pending loader exactly once');
+        assert.equal(continueButton.disabled,true);assert.deepEqual(errors,[]);return;
+      }
+      if(scenario==='context-loss-loading'){
+        const position=state().world.camera.getPosition().clone();canvas.emit('webglcontextlost');step(30,.2);
+        assert.ok(state().world.camera.getPosition().equals(position));release();await settle();
+        assert.equal(state().mode,'menu');assert.equal(app.root.findByName('WaterMount_whale'),null,'late completion cannot instantiate on a lost graphics context');
+      }else{
+        release();await settle();
+        if(scenario==='manual-ready'){
+          assert.equal(state().mode,'menu');assert.equal(continueButton.disabled,false);assert.equal(continueButton.hidden,false);
+          step(120);assert.equal(g.__waterparkRace.countdown,3,'a direct-page visit waits for explicit start');
+          continueButton.click();assert.equal(state().mode,'transition');continueButton.emit('click');assert.equal(attempts,1,'duplicate continue does not reload assets');
+          step(5);const position=state().world.camera.getPosition().clone();emit(windowTarget,'pagehide',{persisted:true});step(100,.2);
+          assert.ok(state().world.camera.getPosition().equals(position));assert.equal(state().mode,'transition');assert.equal(destroyed,0);
+          emit(windowTarget,'pageshow',{persisted:true});for(let i=0;i<100&&state().mode==='transition';i++)step(1);
+          assert.equal(state().mode,'riding');assert.equal(g.__waterparkRace.countdown,3);
+          element('pause').click();step(30);assert.equal(state().mode,'paused');assert.equal(g.__waterparkRace.countdown,3,'explicit pause still works after the camera handoff');
+          emit(windowTarget,'pagehide',{persisted:false});assert.equal(destroyed,1);assert.equal(continueButton.disabled,true);assert.deepEqual(errors,[]);return;
+        }
+        assert.equal(state().mode,'transition');step(5);const position=state().world.camera.getPosition().clone();canvas.emit('webglcontextlost');step(100,.2);
+        assert.ok(state().world.camera.getPosition().equals(position));assert.equal(state().mode,'transition');
+      }
+      assert.match(element('raceLoadingStatus').textContent,/画面已中断/,'context failure stays visible in the loading UI');
+      assert.equal(continueButton.disabled,true);assert.equal(element('raceLoadingRetry').disabled,true);assert.equal(element('start').disabled,true);
+      continueButton.emit('click');canvas.emit('webglcontextrestored');step(100,.2);
+      assert.notEqual(state().mode,'riding','graphics failure cannot auto-launch or falsely resume after restoration');assert.equal(g.__waterparkRace.countdown,3);
+      emit(windowTarget,'pagehide',{persisted:false});assert.equal(destroyed,1);assert.deepEqual(errors,[]);return;
+    }
+    assert.equal(app.root.findByName('WaterMount_whale'),null,'there is no placeholder mount while the actual rider downloads');
+    assert.equal(element('raceLoadingPercent').textContent,'12%','the displayed percentage comes from actual received bytes');
+    assert.equal(element('raceLoadingContinue').disabled,true);
+    const aerialCamera=g.__waterparkControls.world.camera,flightStart=aerialCamera.getPosition().clone();
+    assert.ok(flightStart.y>=40,'loading begins high above the actual circuit');
+    step(15);assert.ok(aerialCamera.getPosition().distance(flightStart)>3,'loading camera follows the water circuit at visible medium speed');
+    const flightHidden=aerialCamera.getPosition().clone();g.document.hidden=true;emit(documentTarget,'visibilitychange');step(30,.5);
+    assert.ok(aerialCamera.getPosition().equals(flightHidden),'backgrounding freezes the loading flight');
+    g.document.hidden=false;emit(documentTarget,'visibilitychange');
     const refractionCamera=app.root.findByName('Waterpark underwater refraction camera') as pc.Entity;
     assert.ok(refractionCamera?.camera,'the real scene exposes the independent refraction pass');
     assert.equal(refractionCamera.camera!.enabled,true);
@@ -105,8 +149,31 @@ test('waterpark entry preserves partial loading, pause/freeze, focus, touch, res
     assert.match(element('perf-result').textContent,/0 帧间隔/);
     assert.equal(element('start').disabled,true);element('start').click();assert.equal(attempts,1);
     release();await settle();assert.equal(element('start').disabled,true);assert.match(element('load').textContent,/5\/6/);
+    assert.equal(element('raceLoadingPercent').textContent,'—','an unknown byte total is never replaced with an invented percentage');
+    assert.equal(element('raceLoadingRetry').hidden,false);assert.equal(element('raceLoadingRetry').disabled,false);
+    assert.equal(app.root.findByName('WaterMount_glm'),null,'the missing NPC is absent rather than replaced with a fallback');
     element('driver-glm').click();assert.equal(element('start').disabled,true,'failed rider cannot launch fallback');
-    element('driver-whale').click();failLast=false;element('retry').click();await settle();assert.equal(attempts,2);assert.equal(element('start').disabled,false);element('start').click();assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');
+    assert.equal(app.root.findByName('WaterMount_glm'),null,'selecting the failed driver cannot instantiate a placeholder');
+    element('driver-whale').click();g.document.hidden=true;emit(documentTarget,'visibilitychange');failLast=false;
+    element('raceLoadingRetry').click();await settle();assert.equal(attempts,2);
+    assert.equal(g.__waterparkControls.mode,'transition','all six real models begin camera return before countdown');
+    assert.equal(element('raceLoadingPercent').textContent,'100%');assert.match(element('raceLoadingStatus').textContent,/返回起点/);
+    assert.equal(element('raceLoadingRetry').hidden,true);assert.equal(element('start').disabled,true);
+    for(const id of ['whale','gemini','gpt','claude','grok','glm'])assert.ok(app.root.findByName('WaterMount_'+id),'all six actual riders are mounted');
+    const returningCount=g.__waterparkRace.countdown,hiddenReturn=aerialCamera.getPosition().clone();
+    key('keydown','KeyW');touch[0].emit('pointerdown',{pointerId:41,pointerType:'touch',button:0});step(30,.5);
+    assert.equal(g.__waterparkControls.mode,'transition');assert.equal(g.__waterparkRace.countdown,returningCount);
+    assert.ok(aerialCamera.getPosition().equals(hiddenReturn),'loading completion in a background tab cannot finish the camera return');
+    g.document.hidden=false;emit(documentTarget,'visibilitychange');step(10);
+    assert.equal(g.__waterparkRace.countdown,returningCount,'camera return holds the countdown');
+    emit(windowTarget,'blur');const blurReturn=aerialCamera.getPosition().clone();step(30,.5);
+    assert.ok(aerialCamera.getPosition().equals(blurReturn),'window blur freezes the camera return');assert.equal(g.__waterparkControls.mode,'transition');
+    emit(windowTarget,'focus');
+    for(let i=0;i<80&&g.__waterparkControls.mode==='transition';i++)step(1);
+    assert.equal(g.__waterparkControls.mode,'riding');assert.equal(g.__waterparkRace.countdown,returningCount);
+    assert.ok(aerialCamera.getPosition().y<10,'countdown starts only after reaching the start-line chase camera');
+    assert.ok(Object.values(g.__waterparkControls.keys).every(value=>!value),'input pressed while loading cannot leak into the race');
+    assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');
     for(const seconds of [5,10]){
       while(g.__waterparkRace.elapsed<seconds)step(1);
       const before=g.__waterparkRace.elapsed;step(1,1.2);

@@ -7,8 +7,9 @@ simulation. It must not implement a second HUD, input binding or results screen.
 ## Ownership
 
 `race-hud.ts` mounts the shared DOM once before scene initialization. Both HTML
-pages import `race-ui.css`; their remaining markup is loading/driver-selection
-content inside the same overlay contract.
+pages import `race-ui.css`. `race-loading-ui.ts` mounts the same sparse loading
+overlay into both pages; legacy adapter IDs remain inert and hidden. The visible
+finish overlay holds one centered standings table with replay/map/menu controls.
 
 `createRaceShell(document, canvas, options)` captures the HUD elements once and
 owns presentation changes. `options` contains `map`, `driver`, and optionally a
@@ -71,3 +72,29 @@ execute the real entries with PlayCanvas's NullGraphicsDevice. None of these
 checks establishes visual quality, pointer-lock behavior in an actual browser,
 GPU rendering correctness, or frame rate on the user's hardware. Those require
 browser/device testing of the produced preview.
+
+## Shared loading and starting-line return
+
+`race-loading-camera.ts` follows each map's actual loop at 22 world metres per
+second, 46 metres above the sampled road/water. It interpolates camera position,
+look target and field of view to the starting-line chase camera in 1.15 seconds
+using a smooth quintic curve. Bounded cinematic steps cannot skip the transition
+on a stalled frame. Hidden/unfocused pages freeze it. Only after it arrives do
+adapters clear held input, reset the frame clock and begin the countdown.
+Replay/restart retain the immediate clean reset after the first entry.
+
+The loading overlay contains map identity, six-racer/three-lap parameters,
+keyboard diagram and download percentage with one short stage line. Percentage
+measures actual received/expected bytes for the current resource phase, not
+model readiness. Unknown sizes remain indeterminate; 100% download may still
+need parsing. Download errors retain successful assets and show retry/exit.
+No retired low-poly racer is instantiated or displayed. Missing actual models
+remain absent and block race readiness rather than becoming substitutes.
+
+`renderRaceResults` receives all authoritative standings in their original
+order, escapes labels, highlights the player and distinguishes finished times
+from unfinished progress. It never predicts finish times.
+
+CPU integration covers partial failure/retry, hidden and focused transitions,
+input/countdown isolation, replay, pause and disposal. DOM/CSS layout inspection
+is separate from GPU scene rendering; cloud WebGL is not supported.
