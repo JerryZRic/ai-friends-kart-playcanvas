@@ -121,13 +121,28 @@ export function coverTrackTarget(map: MapId, seconds: number): Point {
 /** Reduce the previous cover radius by one third and triple its motion rate:
  * original overview radius * 2/9, original orbit/dolly phase * 9.
  * Translate that exact offset onto the real track focal point without re-fit
- * or zoom clamps. Map-selection overview framing remains untouched. */
+ * or zoom clamps. This baseline remains independent of map-selection zoom. */
 export function coverCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
   const baseline = menuCameraPose(map, time * 9, aspect);
   const target = coverTrackTarget(map, time);
   return {
     position: baseline.position.map((value, axis) => target[axis] + (value - baseline.target[axis]) * 2 / 9) as Point,
+    target,
+    fov: baseline.fov,
+  };
+}
+
+/** Map selection uses exactly one tenth of its original overview radius and
+ * five times its orbit/dolly phase. Recenter the offset on a real S-bend so
+ * the tighter view never aims at the old whole-course bounds' empty infield.
+ * Keep the overview baseline and cover function independent and unchanged. */
+export function mapPreviewCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
+  const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+  const baseline = menuCameraPose(map, time * 5, aspect);
+  const target = coverTrackTarget(map, 0);
+  return {
+    position: baseline.position.map((value, axis) => target[axis] + (value - baseline.target[axis]) * .1) as Point,
     target,
     fov: baseline.fov,
   };

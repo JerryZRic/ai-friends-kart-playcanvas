@@ -17,12 +17,15 @@ are unchanged. See [the isolated deployment procedure](dev-preview.md).
 
 The cover and map picker reuse the actual PlayCanvas course geometry, animated water,
 and lighting. A slow orbit and radial dolly move the camera; the cover changes maps
-behind a smooth dark fade every 30 seconds. The cover camera runs at nine times the map-preview orbit/dolly timing and
-two-ninths of its target distance (two-thirds of the previous cover distance).
+behind a smooth dark fade every 30 seconds. The cover camera runs at nine times the original overview orbit/dolly timing and
+two-ninths of the original overview target distance (two-thirds of the previous cover distance).
 Its focus follows an actual S-bend centerline with a smooth bounded sweep, keeping
 the center on the track rather than the empty infield. The 30-second scene cycle
 is unchanged.
-The map picker stays on the selected track with its original overview framing. No character models are downloaded for either track preview.
+The map picker stays on the selected track, now at exactly one-tenth of its
+original overview distance and five times its original orbit/dolly speed. Its
+closer framing centers a real S-bend instead of the empty course infield. These
+map-preview changes do not alter the cover or racing cameras. No character models are downloaded for either track preview.
 
 Character selection shows the original standing figure from before the driving-rig
 edits, with drag and arrow-key rotation. These six web-optimized portrait assets

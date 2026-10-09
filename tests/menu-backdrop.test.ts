@@ -4,7 +4,7 @@ import * as pc from 'playcanvas';
 import { sample as sampleCoast, LENGTH as COAST_LENGTH } from '../src/track';
 import { sampleWaterparkLoop, WATER_RACE_LENGTH, WATER_RACE_BRIDGE_DISTANCE, WATER_RACE_TOWER_DISTANCE, WATER_RACE_TOWER_LANE } from '../src/waterpark-design';
 import { DEFAULT_SETTINGS } from '../src/game-settings';
-import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors, coverCameraPose, coverTrackTarget, type MenuBackdropOptions } from '../src/menu-camera';
+import { MENU_FADE_SECONDS, MENU_MAX_FPS, MENU_SCENE_SECONDS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, menuCameraAnchors, mapPreviewCameraPose, coverCameraPose, coverTrackTarget, type MenuBackdropOptions } from '../src/menu-camera';
 import { createMenuWorld, mountMenuBackdrop } from '../src/menu-backdrop';
 import {coastGroundHeightAt} from '../src/scene';
 
@@ -81,7 +81,7 @@ test('real PlayCanvas worlds release cameras, reflection layers and GPU textures
     for (let pass = 0; pass < 3; pass++) for (const map of maps) {
       const world = createMenuWorld(app, map, {...DEFAULT_SETTINGS, quality: pass === 0 ? 'low' : 'balanced'});
       world.update(5, 16 / 9);
-      world.camera.getPosition().toArray().forEach((value, axis) => assert.ok(Math.abs(value - menuCameraPose(map, 5).position[axis]) < .0001));
+      world.camera.getPosition().toArray().forEach((value, axis) => assert.ok(Math.abs(value - mapPreviewCameraPose(map, 5).position[axis]) < .0001));
       assert.equal(app.assets.list().length, 0, 'menu must not load GLB assets');
       assert.equal(app.root.findByName('Energy item box'), null);
       assert.equal(app.root.findByName('Drift spark'), null);
@@ -155,13 +155,14 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
   }
 });
 
-test('camera frusta retain real track and waterpark landmarks on desktop and portrait', () => {
+test('original overview baseline still fits full track and landmarks independently of preview zoom', () => {
   const app = fixture();
   try {
     for (const map of maps) {
       const world = createMenuWorld(app, map, DEFAULT_SETTINGS);
       for (const aspect of [16 / 9, 390 / 844, 350 / 390]) for (const time of [0, 15, 29]) {
-        world.update(time, aspect);
+        const baseline = menuCameraPose(map, time, aspect);
+        world.camera.setPosition(...baseline.position); world.camera.lookAt(...baseline.target);
         const camera = world.camera.camera!;
         camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect;
         camera.camera.updateFrustum();
@@ -272,7 +273,7 @@ test('cover camera uses two-thirds of the prior cover radius at nine-times basel
   }
 });
 
-test('native cover worlds opt in to the closer camera while map preview framing and clipping remain unchanged', () => {
+test('native worlds route the independent close cover and map-preview cameras with safe clipping', () => {
   const app = fixture();
   try {
     for (const map of maps) for (const presentation of ['cover', 'map-preview'] as const) {
@@ -280,22 +281,22 @@ test('native cover worlds opt in to the closer camera while map preview framing 
       try {
         for (const aspect of [16 / 9, 390 / 844, 350 / 390]) for (const time of [0, 7.5, 15, 29.999]) {
           world.update(time, aspect);
-          const expected = (presentation === 'cover' ? coverCameraPose : menuCameraPose)(map, time, aspect);
+          const expected = (presentation === 'cover' ? coverCameraPose : mapPreviewCameraPose)(map, time, aspect);
           const position = world.camera.getPosition(), target = new pc.Vec3(...expected.target), camera = world.camera.camera!;
           position.toArray().forEach((value, axis) => assert.ok(Math.abs(value - expected.position[axis]) < .0001));
           assert.ok(world.camera.forward.dot(target.clone().sub(position).normalize()) > .999999, 'native camera keeps aiming at the same target');
-          assert.ok(position.y > (map === 'waterpark' ? 27 : 15), 'camera stays above the local tower or road/palm silhouettes');
+          assert.ok(position.y > (presentation === 'cover' ? (map === 'waterpark' ? 27 : 15) : 10), 'camera remains elevated above the focal track surface');
           assert.equal(camera.nearClip, .1); assert.equal(camera.farClip, map === 'coast' ? 1500 : 1200);
           assert.equal(camera.fov, 53);
           const distance = target.clone().sub(position).length();
           assert.ok(distance > camera.nearClip * 10 && distance < camera.farClip, 'look target remains safely within depth limits');
-          if (presentation === 'cover') {
+          {
             camera.aspectRatioMode = pc.ASPECT_MANUAL; camera.aspectRatio = aspect; camera.camera.updateFrustum();
             const sample = map === 'coast' ? sampleCoast : sampleWaterparkLoop, length = map === 'coast' ? COAST_LENGTH : WATER_RACE_LENGTH;
             const visible = Array.from({length: 120}, (_, i) => sample(i / 120 * length).p).filter(point => camera.camera.frustum.containsPoint(point));
-            assert.ok(visible.length >= 5, `${map}: exact closer zoom retains a readable real course section`);
+            assert.ok(visible.length >= (presentation === 'cover' ? 5 : 2), `${map}: exact closer zoom retains a readable real course section`);
             const surface = nearestCenterlinePoint(map, target);
-            assert.ok(surface.clone().sub(target).length() < 1, 'cover focal point remains within one metre of the real track');
+            assert.ok(surface.clone().sub(target).length() < 1, 'close camera focal point remains within one metre of the real track');
             const viewProjection = new pc.Mat4().mul2(camera.camera.projectionMatrix, new pc.Mat4().invert(world.camera.getWorldTransform()));
             const project = (point: pc.Vec3) => {const value = viewProjection.transformVec4(new pc.Vec4(point.x, point.y, point.z, 1)); return {x: value.x / value.w, y: value.y / value.w, w: value.w};};
             const aimed = project(target), road = project(surface);
@@ -340,7 +341,7 @@ test('backdrop mount routes cover-only motion separately and retains the thirty-
         flush(1000); flush(1100);
         assert.equal(canvas.dataset.backdropMap, entry.map);
         const camera = app.root.findByName(entry.map === 'coast' ? 'Chase camera' : 'Waterpark low chase composition') as pc.Entity;
-        const expected = (entry.expected === 'cover' ? coverCameraPose : menuCameraPose)(entry.map, .1, width / height);
+        const expected = (entry.expected === 'cover' ? coverCameraPose : mapPreviewCameraPose)(entry.map, .1, width / height);
         camera.getPosition().toArray().forEach((value, axis) => assert.ok(Math.abs(value - expected.position[axis]) < .0001));
         if (entry.options.presentation === 'cover') {
           for (let frame = 2; frame <= 100; frame++) flush(1000 + frame * 100);
@@ -366,5 +367,28 @@ test('cover focal target follows a continuous actual centerline section in every
       assert.ok(next.sub(point).length() < .05, 'one-millisecond steps have no focal-point jumps');
       for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) assert.deepEqual(coverCameraPose(map, time, aspect).target, target, 'portrait and desktop stay centered on the same real track feature');
     }
+  }
+});
+
+
+test('map-selection preview has exact one-tenth radius and five-times orbit/dolly phase, aimed at real track', () => {
+  for (const map of maps) for (const aspect of [16 / 9, 2.3, 1, 390 / 844, .3]) {
+    for (const time of [0, .125, 3, 9.9, 10, 17, 29.999, 35, 90, 180]) {
+      const pose = mapPreviewCameraPose(map, time, aspect), baseline = menuCameraPose(map, time * 5, aspect);
+      assert.equal(pose.fov, baseline.fov);
+      const offset = pose.position.map((v, i) => v - pose.target[i]);
+      const reference = baseline.position.map((v, i) => v - baseline.target[i]);
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs(offset[axis] * 10 - reference[axis]) < 1e-10);
+      assert.ok(Math.abs(Math.hypot(...offset) / Math.hypot(...reference) - .1) < 1e-12);
+      const next = mapPreviewCameraPose(map, time + 1 / 30, aspect), nextBaseline = menuCameraPose(map, (time + 1 / 30) * 5, aspect);
+      for (let axis = 0; axis < 3; axis++) assert.ok(Math.abs((next.position[axis] - pose.position[axis]) * 10 - (nextBaseline.position[axis] - baseline.position[axis])) < 1e-10, 'both motion phases advance at exactly five times baseline');
+      const target = new pc.Vec3(...pose.target);
+      assert.ok(nearestCenterlinePoint(map, target).clone().sub(target).length() < 1);
+      assert.deepEqual(pose.target, coverTrackTarget(map, 0));
+    }
+  }
+  for (const value of [NaN, Infinity, -Infinity, 0, -2]) for (const map of maps) {
+    const pose = mapPreviewCameraPose(map, value, value);
+    assert.ok([...pose.position, ...pose.target, pose.fov].every(Number.isFinite));
   }
 });

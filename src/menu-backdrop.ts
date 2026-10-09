@@ -4,7 +4,7 @@ import { createWaterparkScene } from './waterpark-scene';
 import { sample } from './track';
 import type { GameSettings } from './game-settings';
 import type { MapId } from './map-profiles';
-import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, menuCameraPose, coverCameraPose, type MenuPresentation, type MenuBackdropOptions } from './menu-camera';
+import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, mapPreviewCameraPose, coverCameraPose, type MenuPresentation, type MenuBackdropOptions } from './menu-camera';
 
 type MenuWorld = { map: MapId; camera: pc.Entity; update: (time: number, aspect: number) => void; destroy: () => void };
 
@@ -70,7 +70,7 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
     map, camera: world.camera,
     update(time, aspect) {
       if (destroyed) return;
-      const pose = presentation === 'cover' ? coverCameraPose(map, time, aspect) : menuCameraPose(map, time, aspect);
+      const pose = presentation === 'cover' ? coverCameraPose(map, time, aspect) : mapPreviewCameraPose(map, time, aspect);
       world.camera.setPosition(...pose.position); world.camera.lookAt(...pose.target);
       world.camera.camera!.fov = pose.fov;
       if (coast) coast.oceanMaterial.setParameter('time', time);
