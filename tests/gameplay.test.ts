@@ -14,6 +14,9 @@ import { resetPickup, setPickupDisplay } from '../src/item-pickups';
  * This validates engine integration; it does NOT claim GPU/browser visual QA. */
 test('native game integration preserves race, camera, items, menu and safety flows', async (t) => {
   const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error,originalRandom=Math.random;
+  // Entity IDs must not consume or repeat a resettable gameplay RNG stream.
+  const originalGuid=pc.guid.create;let guidSequence=0;
+  pc.guid.create=()=>`00000000-0000-4000-8000-${(++guidSequence).toString(16).padStart(12,'0')}`;
   let randomSeed=0x51a7c0de;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/0x100000000;};
   const previousLocation=g.location;g.location={search:'?driver=whale&autostart=1'};
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
@@ -232,6 +235,44 @@ test('native game integration preserves race, camera, items, menu and safety flo
       }
       qa.set({state:'menu'});game.selectDriver('whale');
     });
+    await t.test('coast drift HUD matches release boundaries and charge cap without changing the controls',()=>{
+      game.start();parkBots();qa.set({state:'running',countdown:0,pos:0,lane:0,speed:35,boost:0,shield:0,slow:0});
+      key('keydown','KeyA');key('keydown','ShiftLeft');
+      for(const [charge,percent,state] of [[.6,'37.5%','charging'],[.601,'37.5625%','ready'],[1.4,'87.49999999999999%','ready'],[1.6,'100%','full']] as const){
+        qa.set({charge,drifting:true});qa.update(0);
+        assert.ok(Math.abs(parseFloat(element('charge').style.width)-parseFloat(percent))<1e-8);
+        assert.equal(element('charge').dataset.state,state);
+        if(charge===.6)assert.doesNotMatch(element('chargeLabel').textContent,/松开 Shift/);
+        else assert.match(element('chargeLabel').textContent,/松开 Shift/);
+      }
+      qa.set({charge:.6,drifting:true});key('keyup','ShiftLeft');key('keyup','KeyA');qa.update(0);assert.equal(game.getState().boost,0);
+      qa.set({charge:.601,drifting:true});qa.update(0);assert.ok(Math.abs(game.getState().boost-.9015)<1e-9);
+      assert.equal(element('charge').dataset.state,'idle');assert.match(element('chargeLabel').textContent,/加速/);
+      qa.set({charge:1.6,drifting:true,boost:0});key('keydown','KeyA');key('keydown','ShiftLeft');qa.update(0);assert.equal(element('charge').dataset.state,'full');
+      game.pause();assert.equal(game.getState().charge,0);assert.equal(element('charge').dataset.state,'idle');assert.equal(element('charge').style.width,'0%');assert.doesNotMatch(element('chargeLabel').textContent,/松开 Shift/);
+      const frozen=element('chargeLabel').textContent;qa.update(2);assert.equal(element('chargeLabel').textContent,frozen);
+      game.start();assert.equal(element('charge').style.width,'0%');assert.equal(element('charge').dataset.state,'idle');
+    });
+    await t.test('coast item guidance updates nearest targets and ignores finished rivals before a shot',()=>{
+      game.start();const [near,far]=parkBots();qa.set({state:'running',countdown:0,pos:100,lane:-5,speed:0,held:'pulse'});
+      Object.assign(near,{total:120,shield:2});Object.assign(far,{total:130});qa.update(0);
+      assert.match(element('itemHelp').textContent,/有护盾/);assert.equal(game.getState().held,'pulse');
+      near.shield=0;qa.update(0);assert.match(element('itemHelp').textContent,/E 发射脉冲/);
+      near.total=game.getState().length*3;far.total=game.getState().length*3;qa.update(0);
+      assert.match(element('itemHelp').textContent,/前方无目标/);game.useItem();assert.equal(game.getState().boost,1.9);
+      assert.match(element('itemHelp').textContent,/撞箱拾取/);assert.equal(element('item').disabled,true);
+    });
+    await t.test('actual coast rival target slows at the hairpin and recovers on the sprint with bounded acceleration',()=>{
+      game.start();const [bot]=parkBots();qa.set({state:'running',countdown:0,pos:1000,lane:-5,speed:0});
+      const tuning=characterTuning(bot.id,'coast'),straight=tuning.maxSpeed*(.9+bot.phase*.008);
+      Object.assign(bot,{total:533,speed:straight,driving:true,decisionIn:0});qa.update(.1);
+      assert.ok(bot.cornerPace<=.861);assert.ok(bot.speed<straight);assert.ok(straight-bot.speed<=2.2*tuning.multipliers.acceleration+1e-9);
+      Object.assign(bot,{total:0,decisionIn:0,held:null,boost:0,slow:0});
+      for(let i=0;i<60;i++)qa.update(1/60);
+      assert.equal(bot.cornerPace,1);assert.ok(Math.abs(bot.speed-straight)<1e-9);
+      const before=bot.speed;game.pause();qa.update(2);assert.equal(bot.speed,before);
+      game.start();assert.ok(qa.bots().every(b=>b.cornerPace===1&&b.speed===0));
+    });
     await t.test('medium-complexity variable-width course is completable by all six profiles with bounded racers',()=>{
       for(const profile of CHARACTER_PROFILES){
         qa.set({state:'menu'});game.selectDriver(profile.id);game.start();
@@ -316,7 +357,8 @@ test('native game integration preserves race, camera, items, menu and safety flo
       assert.match(html, /<img\b[^>]*id="itemImage"[^>]*\balt=""[^>]*\bhidden/);
     });
     await t.test('dynamic native pool stays dormant through drawing/countdown, spawns on the actual circuit, and cleans up on restart/finish', () => {
-      game.start();
+      // Independent fixture seed: prior race timing must not choose this test's random sequence.
+      randomSeed=0x51a7c0de;game.start();
       const pool=qa.boxes().filter(box=>box.dynamic),staticBoxes=qa.boxes().filter(box=>!box.dynamic);
       assert.equal(pool.length,4);pool.forEach(assertBoxHidden);
       qa.draw(1);qa.update(2.5);qa.draw(1);pool.forEach(assertBoxHidden);
@@ -338,7 +380,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       assert.equal(game.getState().held,'shield');assertBoxHidden(first);
       qa.draw(0);assertBoxHidden(first);qa.update(0);assertBoxHidden(first);
       assert.equal(game.getState().held,'shield','drawing and an overlapping second update cannot claim the temporary pickup twice');
-      game.start();pool.forEach(assertBoxHidden);qa.draw(0);pool.forEach(assertBoxHidden);
+      randomSeed=0x51a7c0de;game.start();pool.forEach(assertBoxHidden);qa.draw(0);pool.forEach(assertBoxHidden);
       assert.equal(sceneEntities().length,entityCount);assert.equal(app.root.findComponents('render').length,renderCount);
       qa.update(3);let active:any;
       for(let frame=0;frame<60*100&&!active;frame++){qa.update(1/60);active=pool.find(box=>box.mesh.enabled);}
@@ -349,6 +391,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     });
     await t.test('all six characters can collect dynamic pool items as NPCs and use the earned reward', () => {
       for(const [index,profile] of CHARACTER_PROFILES.entries()){
+        randomSeed=0x51a7c0de;
         qa.set({state:'menu'});assert.equal(game.selectDriver(CHARACTER_PROFILES[(index+1)%CHARACTER_PROFILES.length].id),true);
         race();const pool=qa.boxes().filter(box=>box.dynamic);let box:any;
         for(let frame=0;frame<60*100&&!box;frame++){qa.update(1/60);box=pool.find(candidate=>candidate.mesh.enabled);}
@@ -745,7 +788,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
 
   } finally {
-    Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
+    pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
   }
 });

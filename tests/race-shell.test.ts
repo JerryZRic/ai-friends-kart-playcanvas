@@ -185,3 +185,10 @@ test('the shared result table keeps all six authoritative rows and distinguishes
   assert.doesNotMatch(escaped, /<img|data-racer-id=""/);
   assert.match(escaped, /&lt;img/); assert.match(escaped, /未冲线/); assert.doesNotMatch(escaped, /Infinity|NaN/);
 });
+
+ test('map feedback overrides reset cleanly when returning to the shared water HUD', () => {
+  const {shell,$}=fixture();shell.start();
+  shell.updateHUD({...snapshot,charge:1.4,chargeMax:1.6,chargeLabel:'蓄力就绪',chargeState:'ready',itemHelp:'出弯加速'});
+  assert.equal($('chargeLabel').textContent,'蓄力就绪');assert.equal($('charge').dataset.state,'ready');assert.ok(Math.abs(parseFloat($('charge').style.width)-87.5)<1e-9);assert.equal($('itemHelp').textContent,'出弯加速');
+  shell.updateHUD(snapshot);assert.equal($('charge').style.width,'50%');assert.equal($('charge').dataset.state,'idle');assert.match($('chargeLabel').textContent,/释放漂移加速/);assert.equal($('itemHelp').textContent,'点击这里或按 E 使用');shell.dispose();
+});

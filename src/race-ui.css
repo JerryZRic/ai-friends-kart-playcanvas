@@ -151,3 +151,8 @@ body.finished .overlay.race-finish{display:flex}
 
 /* Loading/result screens also remove hidden driving controls from focus and AT. */
 body.menu .game-ui{visibility:hidden}
+
+/* Coast feedback is opt-in; shared/water meters keep their existing appearance. */
+.fill[data-state="charging"]{background:#78cfff;box-shadow:0 0 9px #78cfff}
+.fill[data-state="ready"]{background:#ffd36d;box-shadow:0 0 12px #ffd36d}
+.fill[data-state="full"]{background:#fff1ad;box-shadow:0 0 16px #ffd36d}

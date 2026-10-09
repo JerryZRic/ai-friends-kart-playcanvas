@@ -13,6 +13,10 @@ export interface RaceHudSnapshot {
   speed: number;
   charge?: number;
   chargeMax?: number;
+  /** Optional map-specific feedback; absent fields retain the shared defaults. */
+  chargeLabel?: string;
+  chargeState?: 'idle' | 'charging' | 'ready' | 'full';
+  itemHelp?: string;
   boost?: number;
   shield?: number;
   held: ItemKind | null;
@@ -268,7 +272,8 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       text('speed', `${speed < -.1 ? 'R ' : ''}${Math.round(Math.abs(speed) * 3.6)}`);
       const charge = nonnegative(snapshot.charge ?? 0);
       if (elements.charge) elements.charge.style.width = `${clamp(charge / positive(snapshot.chargeMax ?? 1.4,1.4) * 100, 0, 100)}%`;
-      text('chargeLabel', (snapshot.boost ?? 0) > 0 ? '涡轮加速中！' : (snapshot.shield ?? 0) > 0 ? '能量护盾保护中' : charge >= .6 ? '松开 Shift，释放漂移加速' : Math.abs(speed) < .1 ? '按住 W 油门起步' : snapshot.slideLabel || '左 Shift + A / D 手刹漂移');
+      if (elements.charge) elements.charge.dataset.state = snapshot.chargeState || 'idle';
+      text('chargeLabel', snapshot.chargeLabel ?? ((snapshot.boost ?? 0) > 0 ? '涡轮加速中！' : (snapshot.shield ?? 0) > 0 ? '能量护盾保护中' : charge >= .6 ? '松开 Shift，释放漂移加速' : Math.abs(speed) < .1 ? '按住 W 油门起步' : snapshot.slideLabel || '左 Shift + A / D 手刹漂移'));
       const held = snapshot.held;
       if (shownItem !== held) {
         shownItem = held;
@@ -284,7 +289,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
         elements.item?.setAttribute('aria-label', held ? ITEMS[held].action : '等待道具');
       }
       text('itemName', held ? ITEMS[held].name : '◇ 等待道具');
-      text('itemHelp', held ? '点击这里或按 E 使用' : '撞箱拾取 · 问号为随机道具');
+      text('itemHelp', held ? snapshot.itemHelp ?? '点击这里或按 E 使用' : '撞箱拾取 · 问号为随机道具');
       if (elements.item) (elements.item as HTMLButtonElement).disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
     },
     start(countdown = 3) {
