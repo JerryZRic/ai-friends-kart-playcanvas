@@ -159,7 +159,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.equal(g.__waterparkControls.mode,'transition','all six real models begin camera return before countdown');
     assert.equal(element('raceLoadingPercent').textContent,'100%');assert.match(element('raceLoadingStatus').textContent,/返回起点/);
     assert.equal(element('raceLoadingRetry').hidden,true);assert.equal(element('start').disabled,true);
-    assert.equal(app.scene.exposure,1.2);
+    assert.equal(app.scene.exposure,1);
     const sunlight=(app.root.findByName('Waterpark afternoon sun') as pc.Entity).light!;
     assert.equal(sunlight.intensity,2);
     for(const id of ['whale','gemini','gpt','claude','grok','glm']){

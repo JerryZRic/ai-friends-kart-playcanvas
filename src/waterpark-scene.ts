@@ -9,7 +9,7 @@ import {createWaterparkReflection} from './waterpark-reflection';
 export function createWaterparkScene(app: pc.Application, options: WaterparkGeometryOptions = {}) {
   const {sample, closed} = waterparkLayout(options);
   const root = new pc.Entity(closed ? 'Waterpark closed-loop race' : 'Waterpark art sample'); app.root.addChild(root);
-  app.scene.ambientLight = new pc.Color(.55, .7, .82); app.scene.exposure = 1.2;
+  app.scene.ambientLight = new pc.Color(.55, .7, .82); app.scene.exposure = 1;
   app.scene.fog.type = pc.FOG_LINEAR; app.scene.fog.color = new pc.Color(.66, .85, .94);
   app.scene.fog.start = 110; app.scene.fog.end = 460;
   const surfaces = createWaterparkMaterials(app.graphicsDevice);
