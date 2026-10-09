@@ -3,7 +3,19 @@ import {CHARACTER_PROFILES,resolveCharacter,characterTuning} from './character-p
 import {MAP_PROFILES,resolveMap,type MapId} from './map-profiles';
 import {readGameSettings,saveGameSettings,type Quality} from './game-settings';
 import {parseMenuState,menuQuery,raceEntry,type MenuScreen} from './menu-state';
+declare global { interface Window { __menuBoot?: {begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
 const root=document.getElementById('menu')!;
+let homeReady=false;
+function revealHome(version:number, fallback=false){
+ if(version!==renderVersion||state.screen!=='main')return;
+ if(!fallback&&window.__menuBoot?.ready()===false)return;
+ homeReady=true;
+ const nav=root.querySelector<HTMLElement>('.title-actions');
+ if(nav){nav.hidden=false;nav.inert=false;nav.setAttribute('aria-hidden','false');}
+ root.querySelectorAll<HTMLButtonElement>('.title-action').forEach(button=>{button.disabled=false;});
+ if(fallback){const canvas=root.querySelector<HTMLElement>('#title-backdrop');if(canvas)canvas.hidden=true;const poster=root.querySelector<HTMLElement>('.title-fallback');if(poster)poster.hidden=false;root.querySelector<HTMLElement>('#story-button')?.focus();}
+}
+
 let state=parseMenuState(location.search),settings=readGameSettings();
 let disposeBackdrop:(()=>void)|undefined,disposeCharacter:CharacterPreviewController|undefined,renderVersion=0;
 function closeStory(){root.querySelector('#story-dialog')?.remove();root.querySelector<HTMLElement>('#story-button')?.focus();}
@@ -15,11 +27,19 @@ function startBackdrop(version:number){
   canvas.addEventListener('webglcontextlost',()=>{canvas.dataset.previewFallback='true';});
   canvas.addEventListener('webglcontextrestored',()=>{delete canvas.dataset.previewFallback;});
  }
- if(typeof canvas.getContext!=='function'){canvas.dataset.backdropState='unavailable';return;}
- void import('./menu-backdrop').then(({mountMenuBackdrop})=>{
-  if(version!==renderVersion||(state.screen!=='main'&&state.screen!=='maps'))return;
-  disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false,presentation:'map-preview'}:{presentation:'cover'});
- }).catch(error=>{if(version===renderVersion)canvas.dataset.backdropState='unavailable';console.error('Title background unavailable',error);});
+ if(typeof canvas.getContext!=='function'){canvas.dataset.backdropState='unavailable';if(state.screen==='main'){if(window.__menuBoot)window.__menuBoot.fail('此设备暂时无法初始化 3D 背景');else revealHome(version,true);}return;}
+ if(state.screen==='main')window.__menuBoot?.stage(2,'菜单程序已就绪，正在载入 3D 引擎…');
+ void import('./menu-backdrop').then(async ({mountMenuBackdrop})=>{
+  // Let the loading shell paint even when the engine chunk is already cached.
+  await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+  if(version!==renderVersion||(state.screen!=='main'&&state.screen!=='maps')||(state.screen==='main'&&homeReady))return;
+  if(state.screen==='main')window.__menuBoot?.stage(2,'菜单程序已就绪，正在启动 3D 引擎…');
+  disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false,presentation:'map-preview'}:{presentation:'cover'},undefined,{
+   onStage:stage=>{if(version===renderVersion&&state.screen==='main')window.__menuBoot?.stage(stage==='scene'?3:4,stage==='scene'?'正在准备首页场景与材质…':'正在绘制首页画面…');},
+   onReady:()=>revealHome(version),
+   onError:()=>{if(version===renderVersion&&state.screen==='main')window.__menuBoot?.fail('3D 背景暂时无法显示');},
+  });
+ }).catch(error=>{if(version===renderVersion){canvas.dataset.backdropState='unavailable';if(state.screen==='main')window.__menuBoot?.fail('3D 引擎加载失败，请检查网络后重试');}console.error('Title background unavailable',error);});
 }
 function startCharacter(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#character-preview'),status=root.querySelector<HTMLElement>('#character-preview-status');
@@ -36,10 +56,13 @@ function render(){
  disposeBackdrop?.();disposeBackdrop=undefined;
  if(!retainedStage){disposeCharacter?.();disposeCharacter=undefined;}
  const version=++renderVersion;
+ homeReady=false;
+ if(state.screen==='main')window.__menuBoot?.begin(()=>{if(version!==renderVersion)return;disposeBackdrop?.();disposeBackdrop=undefined;revealHome(version,true);});
+ else window.__menuBoot?.dismiss();
  if(document.body)document.body.dataset.screen=state.screen;
  document.title=`${({main:'主菜单',maps:'选择地图',characters:'选择角色',settings:'游戏设置',exit:'休息一下'})[state.screen]} · 大肥鱼卡丁车`;
  root.className=`screen-${state.screen}`;
- if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单"><button id="story-button">故事模式</button><button data-screen="maps">自由模式</button><button data-screen="settings">设置</button><button data-screen="exit">退出</button></nav></section>`;
+ if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled>故事模式</button><button class="title-action" data-screen="maps" disabled>自由模式</button><button class="title-action" data-screen="settings" disabled>设置</button><button class="title-action" data-screen="exit" disabled>退出</button></nav></section>`;
  if(state.screen==='maps'){
   const selected=resolveMap(state.map);
   root.innerHTML=top('选择赛道','从海岸公路到晴空水道，下一站由你决定')+`
@@ -91,13 +114,13 @@ function selectMap(map:MapId){if(state.map===map)return;state={...state,map,driv
 function bind(){
  root.querySelector('#confirm-map')?.addEventListener('click',()=>navigate('characters'));
  root.querySelector('#story-button')?.addEventListener('click',()=>{
-  if(root.querySelector('#story-dialog'))return;
+  if(!homeReady||root.querySelector('#story-dialog'))return;
   const dialog=document.createElement('section');dialog.id='story-dialog';dialog.className='story-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','story-heading');
   dialog.innerHTML='<h2 id="story-heading">故事模式开发中</h2><p>先来一场自由竞速吧</p><button id="close-story">返回</button>';
   root.querySelector('.title-screen')!.appendChild(dialog);const close=dialog.querySelector<HTMLButtonElement>('#close-story')!;close.addEventListener('click',closeStory);close.focus();
   dialog.addEventListener('keydown',event=>{if(event.key==='Tab'){event.preventDefault();close.focus();}});
  });
- root.querySelectorAll<HTMLElement>('[data-screen]').forEach(button=>button.addEventListener('click',()=>{const target=button.dataset.screen as MenuScreen;navigate(target,target==='settings'?{returnTo:state.screen==='maps'||state.screen==='characters'?state.screen:'main'}:{});}));
+ root.querySelectorAll<HTMLElement>('[data-screen]').forEach(button=>button.addEventListener('click',()=>{if(state.screen==='main'&&!homeReady)return;const target=button.dataset.screen as MenuScreen;navigate(target,target==='settings'?{returnTo:state.screen==='maps'||state.screen==='characters'?state.screen:'main'}:{});}));
  root.querySelectorAll<HTMLElement>('[data-map]').forEach(button=>{
   button.addEventListener('click',()=>selectMap(button.dataset.map as MapId));
   button.addEventListener('keydown',event=>{

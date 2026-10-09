@@ -127,6 +127,7 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
     const baselineCanvasListeners = canvas.listenerCount();
     dispose = mountMenuBackdrop(canvas as any, {style: {opacity: ''}} as any, DEFAULT_SETTINGS, {map: 'coast'}, () => app);
     assert.equal(queued.size, 1, 'only one owned scheduler');
+    flush(900); flush(950); // stage announcements each get a paint opportunity
     flush(1000); assert.equal(renders, 1);
     flush(1016); assert.equal(renders, 1, 'skips frames to stay at 30 fps');
     flush(1034); assert.equal(renders, 2);
@@ -140,7 +141,7 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
     assert.equal(canvas.style.width, '390px'); assert.equal(canvas.style.height, '844px');
     const camera = app.root.findByName('Chase camera') as pc.Entity;
     assert.ok(Math.abs(camera.camera!.aspectRatio - 390 / 844) < .002);
-    media.matches = true; media.dispatchEvent(new Event('change')); flush(6000);
+    media.matches = true; media.dispatchEvent(new Event('change')); flush(6000); flush(6016);
     assert.equal(queued.size, 0, 'reduced motion draws once and then sleeps');
     assert.equal((canvas.dataset as any).backdropState, 'static');
     media.matches = false; media.dispatchEvent(new Event('change')); assert.equal(queued.size, 1);
@@ -338,7 +339,7 @@ test('backdrop mount routes cover-only motion separately and retains the thirty-
       const flush = (time: number) => {const callbacks = [...queued.values()]; queued.clear(); for (const callback of callbacks) callback(time);};
       const dispose = mountMenuBackdrop(canvas as any, {style: {opacity: ''}} as any, DEFAULT_SETTINGS, entry.options, () => app);
       try {
-        flush(1000); flush(1100);
+        flush(800); flush(900); flush(1000); flush(1100);
         assert.equal(canvas.dataset.backdropMap, entry.map);
         const camera = app.root.findByName(entry.map === 'coast' ? 'Chase camera' : 'Waterpark low chase composition') as pc.Entity;
         const expected = (entry.expected === 'cover' ? coverCameraPose : mapPreviewCameraPose)(entry.map, .1, width / height);
@@ -392,5 +393,105 @@ test('map-selection scenic shot stays close to a real bend with visible smooth m
   for (const value of [NaN, Infinity, -Infinity, 0, -2]) for (const map of maps) {
     const pose = mapPreviewCameraPose(map, value, value);
     assert.ok([...pose.position, ...pose.target, pose.fov].every(Number.isFinite));
+  }
+});
+
+test('backdrop loading callbacks follow staged paints, settle once, and cancel safely', () => {
+  const saved = new Map(['window', 'document', 'requestAnimationFrame', 'cancelAnimationFrame'].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
+  function harness(reduced = false, failure?: 'init' | 'render', cover = false) {
+    let nextFrame = 0, renders = 0;
+    const events: string[] = [], queued = new Map<number, FrameRequestCallback>();
+    const parent = {getBoundingClientRect: () => ({left: 0, top: 0, width: 1280, height: 720})};
+    const canvas = Object.assign(new EventTarget(), {id: 'menu-ready-test', width: 1280, height: 720, clientWidth: 1280, clientHeight: 720, dataset: {} as Record<string, string>, style: {width: '', height: ''}, parentElement: parent, getBoundingClientRect: parent.getBoundingClientRect});
+    const media = Object.assign(new EventTarget(), {matches: reduced});
+    const doc = Object.assign(new EventTarget(), {hidden: false});
+    Object.assign(globalThis, {
+      window: Object.assign(new EventTarget(), {innerWidth: 1280, innerHeight: 720, devicePixelRatio: 1, matchMedia: () => media}), document: doc,
+      requestAnimationFrame: (callback: FrameRequestCallback) => {queued.set(++nextFrame, callback); return nextFrame;},
+      cancelAnimationFrame: (id: number) => {queued.delete(id);},
+    });
+    const curtain = {style: {opacity: ''}};
+    const app = failure === 'init' ? null : fixture(canvas as any);
+    if (app) app.render = () => {renders++; if (failure === 'render') throw new Error('test render failure');};
+    const dispose = mountMenuBackdrop(canvas as any, curtain as any, DEFAULT_SETTINGS, cover ? {presentation: 'cover'} : {map: 'coast', autoCycle: false},
+      () => {if (!app) throw new Error('test init failure'); return app;},
+      {onStage: stage => events.push(stage), onReady: () => events.push('ready'), onError: () => events.push('error')});
+    const flush = (time: number) => {
+      assert.ok(queued.size <= 1, 'only one owned RAF during loading or animation');
+      const callbacks = [...queued.values()]; queued.clear(); for (const callback of callbacks) callback(time);
+    };
+    return {events, queued, canvas, curtain, doc, media, dispose, flush, renders: () => renders};
+  }
+  const originalWarn = console.warn; console.warn = () => {};
+  try {
+    for (const reduced of [false, true]) {
+      const h = harness(reduced);
+      try {
+        assert.deepEqual(h.events, []);
+        h.flush(100); assert.deepEqual(h.events, ['scene']); assert.equal(h.renders(), 0);
+        h.flush(200); assert.deepEqual(h.events, ['scene', 'render']); assert.equal(h.renders(), 0);
+        h.flush(300); assert.equal(h.renders(), 1); assert.deepEqual(h.events, ['scene', 'render']);
+        let settledTime = 300;
+        if (!reduced) while (Number(h.curtain.style.opacity) >= .05 && settledTime < 3000) {settledTime += 100; h.flush(settledTime);}
+        h.flush(settledTime + 16); assert.deepEqual(h.events, ['scene', 'render', 'ready']);
+        if (reduced) assert.equal(h.queued.size, 0, 'single static render gets a readiness paint then sleeps');
+        for (let i = 1; i < 6; i++) h.flush(settledTime + i * 100);
+        assert.equal(h.events.filter(event => event === 'ready').length, 1);
+        h.canvas.dispatchEvent(new Event('webglcontextlost', {cancelable: true}));
+        assert.equal(h.queued.size, 0, 'a ready scene pauses on context loss');
+        h.canvas.dispatchEvent(new Event('webglcontextrestored')); h.flush(settledTime + 1000);
+        assert.equal(h.events.filter(event => event === 'ready').length, 1, 'restoration never repeats startup readiness');
+        assert.ok(!h.events.includes('error'), 'post-ready context restoration retains the normal lifecycle');
+      } finally {h.dispose();}
+    }
+    for (const stopAfter of [0, 1, 2, 3]) {
+      const h = harness(true);
+      for (let i = 0; i < stopAfter; i++) h.flush((i + 1) * 100);
+      const before = [...h.events]; h.dispose(); h.dispose(); h.flush(1000);
+      assert.equal(h.queued.size, 0); assert.deepEqual(h.events, before, 'disposal cancels stage and readiness callbacks');
+    }
+    for (const failure of ['init', 'render'] as const) {
+      const h = harness(false, failure);
+      try {
+        h.flush(100); h.flush(200); h.flush(300); h.flush(400);
+        assert.equal(h.events.filter(event => event === 'error').length, 1);
+        assert.ok(!h.events.includes('ready')); assert.equal(h.queued.size, 0);
+        assert.equal(h.canvas.dataset.backdropState, 'unavailable');
+      } finally {h.dispose();}
+    }
+    {
+      const h = harness(true);
+      try {
+        h.flush(100); h.flush(200); h.flush(300);
+        h.doc.hidden = true; h.doc.dispatchEvent(new Event('visibilitychange')); h.flush(400);
+        assert.ok(!h.events.includes('ready'), 'hidden canvas cannot settle pending readiness');
+        h.doc.hidden = false; h.doc.dispatchEvent(new Event('visibilitychange')); h.flush(500);
+        assert.ok(!h.events.includes('ready'), 'resume renders anew before readiness');
+        h.flush(600); assert.equal(h.events.at(-1), 'ready');
+      } finally {h.dispose();}
+    }
+    {
+      const h = harness(true);
+      try {
+        h.flush(100); h.canvas.dispatchEvent(new Event('webglcontextlost', {cancelable: true}));
+        h.canvas.dispatchEvent(new Event('webglcontextrestored')); h.flush(200);
+        assert.deepEqual(h.events, ['scene', 'error'], 'context loss while loading settles failure instead of hanging');
+        assert.equal(h.queued.size, 0);
+      } finally {h.dispose();}
+    }
+    {
+      const h = harness(false, undefined, true);
+      try {
+        h.flush(100); h.flush(200); h.flush(300);
+        assert.equal(h.curtain.style.opacity, '1.000'); assert.ok(!h.events.includes('ready'));
+        let time = 300;
+        while (Number(h.curtain.style.opacity) >= .05 && time < 3000) {time += 100; h.flush(time);}
+        assert.ok(Number(h.curtain.style.opacity) < .05); assert.ok(!h.events.includes('ready'), 'visible render still needs a paint opportunity');
+        h.flush(time + 16); assert.equal(h.events.at(-1), 'ready');
+      } finally {h.dispose();}
+    }
+  } finally {
+    console.warn = originalWarn;
+    for (const [name, descriptor] of saved) {if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete (globalThis as any)[name];}
   }
 });

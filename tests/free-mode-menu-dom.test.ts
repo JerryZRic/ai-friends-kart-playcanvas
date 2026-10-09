@@ -9,7 +9,7 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  const storage=new Map<string,string>(),elements:Element[]=[];
  let deny=false;
  class Element extends EventTarget{
-  attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
+  hidden=false;inert=false;attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
   constructor(readonly tagName='DIV'){super();}
   set innerHTML(html:string){this.html=html;if(this===root)elements.length=0;this.owned=[];for(const m of html.matchAll(/<([a-z]+)\b([^>]*)>/g)){const el=new Element(m[1].toUpperCase());for(const a of m[2].matchAll(/([\w-]+)="([^"]*)"/g)){el.attrs[a[1]]=a[2];if(a[1].startsWith('data-'))el.dataset[a[1].slice(5)]=a[2];}el.disabled=/\bdisabled\b/.test(m[2]);el.checked=/\bchecked\b/.test(m[2]);el.value=el.attrs.value??'';elements.push(el);this.owned.push(el);}}
   get innerHTML(){return this.html;}
@@ -24,13 +24,18 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  const root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];
  const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.push(url);location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[urls.length-1]=url;location.search=new URL(url,'https://test.invalid/dev/').search;}};
  g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,getElementById:(id:string)=>id==='menu'?root:elements.find(e=>e.attrs.id===id)};
- g.window=Object.assign(windowTarget,{scrollTo:()=>{}});g.location=location;g.history=history;
+ let fallback:(()=>void)|undefined,firstBoot=true,failures=0;
+ g.window=Object.assign(windowTarget,{scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.location=location;g.history=history;
  Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem:(k:string)=>{if(deny)throw Error();return storage.get(k)??null;},setItem:(k:string,v:string)=>{if(deny)throw Error();storage.set(k,v);}}});
  const $=(s:string)=>{const el=root.querySelector(s);assert.ok(el,s);return el;};
  const key=(key:string,target:EventTarget=windowTarget)=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key});target.dispatchEvent(event);return event;};
  try{
   await import('../src/menu');
-  assert.equal(root.className,'screen-main');assert.equal(g.document.body.dataset.screen,'main');assert.equal(elements.filter(e=>e.tagName==='BUTTON').length,4);assert.equal(elements.filter(e=>e.disabled).length,0);assert.equal(root.innerHTML.replace(/<[^>]*>/g,''),'大肥鱼卡丁车故事模式自由模式设置退出');
+  assert.equal(root.className,'screen-main');assert.equal(g.document.body.dataset.screen,'main');
+  assert.equal(elements.filter(e=>e.disabled).length,4,'all home buttons disabled until readiness or explicit fallback');assert.match(root.innerHTML,/aria-hidden="true" hidden inert/);
+  $('[data-screen="maps"]').dispatchEvent(new Event('click'));$('#story-button').dispatchEvent(new Event('click'));assert.equal(root.className,'screen-main');assert.equal(root.querySelector('#story-dialog'),null,'synthetic early activation is also gated');
+  assert.equal(failures,1);firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);
+  assert.equal(elements.filter(e=>e.tagName==='BUTTON').length,4);assert.equal(elements.filter(e=>e.disabled).length,0);assert.equal(root.innerHTML.replace(/<[^>]*>/g,''),'大肥鱼卡丁车故事模式自由模式设置退出');
   $('#story-button').click();assert.ok($('#story-dialog'));key('Escape');assert.equal(root.querySelector('#story-dialog'),null);assert.equal(g.document.activeElement.attrs.id,'story-button');
   $('#story-button').click();$('#close-story').click();assert.equal(root.querySelector('#story-dialog'),null);
   for(let n=0;n<2;n++){

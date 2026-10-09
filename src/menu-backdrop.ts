@@ -90,11 +90,18 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   };
 }
 
+export type MenuBackdropCallbacks = {
+  onStage?: (stage: 'scene' | 'render') => void;
+  onReady?: () => void;
+  onError?: (error: unknown) => void;
+};
+
 /** Owns only the title-screen canvas. The menu destroys it before replacing DOM.
  * Uses the real engine's shared course geometry with an on-demand 30 fps loop. */
 export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElement, settings: GameSettings, options: MenuBackdropOptions = {},
   // Test seam: lifecycle tests use a real PlayCanvas AppBase + NullGraphicsDevice.
   createApplication: () => pc.Application = () => new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality === 'high', alpha: false, powerPreference: 'low-power'}}),
+  callbacks: MenuBackdropCallbacks = {},
 ): () => void {
   let app: pc.Application | null = null, world: MenuWorld | null = null;
   let disposed = false, suspended = false, lost = false;
@@ -102,6 +109,7 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
   const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   let reducedMotion = motion?.matches ?? false;
   let aspect = 16 / 9;
+  let sceneAnnounced = false, firstWorld = true, ready = false, readyPending = false;
   const cancelFrame = () => { if (frame) cancelAnimationFrame(frame); frame = 0; lastFrame = 0; };
   const cancelEngineFrame = () => {
     if (app?.frameRequestId) { cancelAnimationFrame(app.frameRequestId); app.frameRequestId = null; }
@@ -122,9 +130,28 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     needsFrame = true;
     resume();
   }
+  function fail(error: unknown) {
+    if (disposed) return;
+    try { callbacks.onError?.(error); }
+    finally { dispose(); canvas.dataset.backdropState = 'unavailable'; curtain.style.opacity = '0'; }
+  }
   function draw(now: number) {
     frame = 0;
     if (!app || !canDraw()) { updateState(); return; }
+    // This callback runs on the next owned RAF, after the rendered canvas had
+    // a paint opportunity. A reduced-motion scene also gets this final RAF.
+    if (readyPending) {
+      readyPending = false; ready = true;
+      callbacks.onReady?.();
+      if (disposed) return;
+      if (reducedMotion && !needsFrame) return;
+    }
+    if (!sceneAnnounced) {
+      sceneAnnounced = true;
+      callbacks.onStage?.('scene');
+      if (!disposed) frame = requestAnimationFrame(draw);
+      return;
+    }
     if (!needsFrame && lastFrame && now - lastFrame < 1000 / MENU_MAX_FPS - .5) {
       frame = requestAnimationFrame(draw); return;
     }
@@ -138,17 +165,26 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
         world?.destroy(); world = null;
         world = createMenuWorld(app, phase.map, settings, options.presentation ?? (options.map ? 'map-preview' : 'cover'));
         canvas.dataset.backdropMap = phase.map;
+        if (firstWorld) {
+          firstWorld = false; lastFrame = 0;
+          callbacks.onStage?.('render');
+          if (!disposed) frame = requestAnimationFrame(draw);
+          return;
+        }
       }
       world.update(phase.localTime, aspect);
       app.update(reducedMotion ? 0 : dt);
       app.render();
+      if (disposed) return;
       app.fire('frameend');
+      if (disposed) return;
       needsFrame = false;
       updateState();
-      if (!reducedMotion) frame = requestAnimationFrame(draw);
+      if (!ready && phase.opacity < .05) readyPending = true;
+      if (!reducedMotion || readyPending) frame = requestAnimationFrame(draw);
     } catch (error) {
       console.warn('Title scenery could not be rendered.', error);
-      dispose(); canvas.dataset.backdropState = 'unavailable'; curtain.style.opacity = '0';
+      fail(error);
     }
   }
   function resume() {
@@ -156,11 +192,14 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     updateState();
     if (!frame && (!reducedMotion || needsFrame)) frame = requestAnimationFrame(draw);
   }
-  function visibility() { if (document.hidden) { cancelFrame(); updateState(); } else { needsFrame = true; resume(); } }
-  function pagehide() { suspended = true; cancelFrame(); updateState(); }
+  function visibility() { if (document.hidden) { readyPending = false; cancelFrame(); updateState(); } else { needsFrame = true; resume(); } }
+  function pagehide() { readyPending = false; suspended = true; cancelFrame(); updateState(); }
   function pageshow() { suspended = false; needsFrame = true; resize(); }
-  function motionChanged() { reducedMotion = motion?.matches ?? false; elapsed = 0; cancelFrame(); needsFrame = true; resume(); }
-  function contextLost(event: Event) { event.preventDefault(); lost = true; cancelFrame(); updateState(); }
+  function motionChanged() { readyPending = false; reducedMotion = motion?.matches ?? false; elapsed = 0; cancelFrame(); needsFrame = true; resume(); }
+  function contextLost(event: Event) {
+    event.preventDefault(); readyPending = false; lost = true; cancelFrame(); updateState();
+    if (!ready) fail(new Error('Title scenery WebGL context was lost during loading.'));
+  }
   function contextRestored() {
     // Rebuild the small generated lighting atlas as well as ordinary resources.
     world?.destroy(); world = null; lost = false; needsFrame = true; resize();
@@ -195,7 +234,7 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     resize();
   } catch (error) {
     console.warn('Title scenery WebGL initialization is unavailable.', error);
-    dispose(); canvas.dataset.backdropState = 'unavailable';
+    fail(error);
   }
   return dispose;
 }

@@ -90,3 +90,7 @@ body[data-screen=maps] .masthead{height:76px;padding-top:18px;padding-bottom:18p
 .character-roster{min-width:0}.character-stage{position:relative;min-height:350px;height:clamp(350px,48svh,540px);margin-bottom:18px;overflow:hidden;border:1px solid #ffffff24;border-radius:16px;background:radial-gradient(ellipse at 50% 20%,#476271,#132d39 75%)}
 #character-preview{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}#character-preview:active{cursor:grabbing}#character-preview-status{position:absolute;left:14px;right:14px;bottom:12px;margin:0;color:#d7e6e4;text-align:center;font-size:11px;line-height:1.7;pointer-events:none}#character-preview-status button{pointer-events:auto;background:#d5ff60;color:#173039;border-radius:6px;padding:7px 13px;margin-left:8px}.character-roster .character-card{min-height:128px;padding:12px}.character-roster .character-symbol{width:42px;height:42px;border-radius:15px;font-size:24px;margin-bottom:10px}.character-roster .character-role{font-size:9px}.character-roster .character-name{font-size:12px}
 @media(max-width:640px){.character-stage{height:42svh;min-height:300px}.character-roster .character-card{min-height:112px;padding:12px 5px}.character-roster .character-name{font-size:11px}}
+
+/* Hidden controls must also leave keyboard and accessibility navigation. */
+[hidden]{display:none!important}
+.title-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
