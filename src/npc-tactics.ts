@@ -8,7 +8,7 @@ export interface Combatant {
   held: ItemKind | null; boost: number; shield: number; slow: number;
 }
 export interface Brain { bump: number; decisionIn: number; reaction: number; cooldown: number; targetLane: number; pulseFlash: number; pickups: number; uses: number }
-export interface RacingPickup extends PickupState { d: number; lateral: number }
+export interface RacingPickup extends PickupState { d: number; lateral: number; dynamic?: boolean }
 export const newBrain = (phase: number, lane: number): Brain => ({ bump: 0, decisionIn: phase * .047, reaction: 0, cooldown: 0, targetLane: lane, pulseFlash: 0, pickups: 0, uses: 0 });
 const clamp = (n: number, low: number, high: number) => Math.max(low, Math.min(high, n));
 export const forwardGap = (from: number, to: number, length: number) => { const gap = (to - from) % length; return gap < 0 ? gap + length : gap; };

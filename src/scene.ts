@@ -1,8 +1,10 @@
 import * as pc from 'playcanvas';
 import { HALF, LENGTH, COAST_TURN_SIGNS, COAST_PICKUPS, halfWidthAt, isRoadsideClear, sample, scaled, degrees } from './track';
 import { instantiateRenderEntity, type DriverAsset } from './assets';
-import { createItemModel, type ItemDisplay } from './item-models';
+import type { ItemDisplay } from './item-models';
 import { resetPickup, type PickupState } from './item-pickups';
+import { createPickupVisual } from './pickup-visual';
+import { DYNAMIC_PICKUP_CAPACITY } from './dynamic-pickups';
 
 export const color = (hex: string) => new pc.Color().fromString(hex);
 /** The actual generated terrain, shared by race and menu prop placement. */
@@ -98,7 +100,7 @@ export function placeKart(entity: pc.Entity, distance: number, lateral: number, 
   entity.setRotation(yaw);
   return s;
 }
-export interface ItemBox extends PickupState { d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity> }
+export interface ItemBox extends PickupState { d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity>; dynamic?: boolean }
 export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 
 export function createCoastScene(app: pc.Application, options: { preview?: boolean } = {}) {
@@ -229,31 +231,19 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
       flames: [] as { mesh: pc.Entity; side: number }[], particles: [] as pc.Entity[], buildProps };
   }
 
-  const itemMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.BoxGeometry({ halfExtents: new pc.Vec3(.625, .625, .625) }));
-  const itemMat = material('#b9e7f8', { opacity: .16, metalness: .05, roughness: .2 });
-  // Only the front shell overlays the opaque contents. No transparent depth writes,
-  // double-sided blending or custom shaders that can hide the enclosed model.
-  itemMat.cull = pc.CULLFACE_BACK; itemMat.twoSidedLighting = false; itemMat.update();
-  const edges = new MeshBuilder();
-  const edgeMaterial = material('#fff6ba', { unlit: true });
-  // Twelve thin native boxes draw a crisp luminous outline, batched into one mesh.
-  for (let axis = 0; axis < 3; axis++) for (const a of [-.64, .64]) for (const b of [-.64, .64]) {
-    const dimensions = [.026, .026, .026]; dimensions[axis] = 1.31;
-    const location = axis === 0 ? [0, a, b] : axis === 1 ? [a, 0, b] : [a, b, 0];
-    edges.add(new pc.BoxGeometry({ halfExtents: new pc.Vec3(dimensions[0] / 2, dimensions[1] / 2, dimensions[2] / 2) }), new pc.Vec3(...location));
-  }
-  const edgeMesh = new pc.Mesh(app.graphicsDevice); edgeMesh.setPositions(edges.positions); edgeMesh.setNormals(pc.calculateNormals(edges.positions, edges.indices)); edgeMesh.setIndices(edges.indices); edgeMesh.update();
   const boxes: ItemBox[] = [];
   for (const {d, lateral} of COAST_PICKUPS) {
     const p = sample(d, lateral).p; p.y += 1.25;
-    const entity = new pc.Entity('Energy item box'); root.addChild(entity); entity.setPosition(p);
-    meshEntity('Translucent pickup glass', itemMesh, itemMat, entity);
-    meshEntity('Luminous edges', edgeMesh, edgeMaterial, entity);
-    const models = Object.fromEntries((['boost', 'shield', 'pulse', 'mystery'] as ItemDisplay[]).map(kind => {
-      const model = createItemModel(app, kind); entity.addChild(model); return [kind, model];
-    })) as Record<ItemDisplay, pc.Entity>;
-    const box: ItemBox = { d, lateral, mesh: entity, cool: 0, base: p.y, display: 'mystery', models };
+    const visual = createPickupVisual(app, root); visual.mesh.setPosition(p);
+    const box: ItemBox = { d, lateral, ...visual, cool: 0, base: p.y, display: 'mystery' };
     resetPickup(box); boxes.push(box);
+  }
+  // A bounded dormant pool adds no runtime allocations when the race director
+  // moves a temporary box into play. Preview worlds returned before this pool.
+  for (let i = 0; i < DYNAMIC_PICKUP_CAPACITY; i++) {
+    const p = sample(0).p; p.y += 1.25;
+    const visual = createPickupVisual(app, root); visual.mesh.setPosition(p); visual.mesh.enabled = false;
+    boxes.push({ d: 0, lateral: 0, ...visual, cool: 0, base: p.y, display: 'mystery', dynamic: true });
   }
   const shield = meshEntity('Energy shield', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 2.4, latitudeBands: 16, longitudeBands: 24 })), material('#84e8fa', { opacity: .18, roughness: .1, metalness: .2, emissive: '#123f45' }), root);
   shield.enabled = false;

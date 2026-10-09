@@ -13,7 +13,8 @@ import { resetPickup, setPickupDisplay } from '../src/item-pickups';
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
  * This validates engine integration; it does NOT claim GPU/browser visual QA. */
 test('native game integration preserves race, camera, items, menu and safety flows', async (t) => {
-  const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error;
+  const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error,originalRandom=Math.random;
+  let randomSeed=0x51a7c0de;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/0x100000000;};
   const previousLocation=g.location;g.location={search:'?driver=whale&autostart=1'};
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
@@ -118,7 +119,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.match(element('startText').textContent, /重试/);assert.equal(game.getState().state,'menu','autostart failure remains retryable');assert.equal(game.selectDriver('whale'),false);game.start();assert.equal(game.getState().state,'menu');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.enabled,false,'missing model has no placeholder render');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.findComponents('render').length,0); const courseRoot = qa.world.root.findByName('Original course props');
     failGLM = false; assert.equal(await game.retryLoading(), true); assert.equal(bundleAttempts, 2); assert.equal(courseAttempts, 2);
     assert.equal(game.getState().allDriversLoaded, true);assert.equal(game.getState().state,'returning','autostart first returns to the starting line'); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
-    assert.equal(qa.boxes().length, 45); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
+    assert.equal(qa.boxes().length, 49); assert.equal(qa.boxes().filter(box=>!box.dynamic).length,45); assert.equal(qa.boxes().filter(box=>box.dynamic).length,4); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
     await t.test('model-ready return freezes race and input until camera arrives',()=>{
@@ -296,7 +297,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     });
     await t.test('all native boxes have transparent front glass and one enclosed model', () => {
       for (const box of qa.boxes()) {
-        assertBoxVisible(box);
+        if(box.dynamic)assertBoxHidden(box);else assertBoxVisible(box);
         const glass = box.mesh.findByName('Translucent pickup glass') as pc.Entity;
         assert.ok(glass?.render);
         const material = glass.render!.meshInstances[0].material as pc.StandardMaterial;
@@ -314,6 +315,57 @@ test('native game integration preserves race, camera, items, menu and safety flo
       const html = (readFileSync('coast.html', 'utf8')+readFileSync('src/race-hud.ts','utf8'));
       assert.match(html, /<img\b[^>]*id="itemImage"[^>]*\balt=""[^>]*\bhidden/);
     });
+    await t.test('dynamic native pool stays dormant through drawing/countdown, spawns on the actual circuit, and cleans up on restart/finish', () => {
+      game.start();
+      const pool=qa.boxes().filter(box=>box.dynamic),staticBoxes=qa.boxes().filter(box=>!box.dynamic);
+      assert.equal(pool.length,4);pool.forEach(assertBoxHidden);
+      qa.draw(1);qa.update(2.5);qa.draw(1);pool.forEach(assertBoxHidden);
+      const entityCount=sceneEntities().length,renderCount=app.root.findComponents('render').length;
+      qa.update(.5);assert.equal(game.getState().state,'running');
+      let first:any;
+      for(let frame=0;frame<60*100&&!first;frame++){qa.update(1/60);first=pool.find(box=>box.mesh.enabled);}
+      assert.ok(first,'real coast updates activate a preallocated random pickup without a test-only spawner');
+      assert.ok(first.d>=0&&first.d<game.getState().length);
+      assert.ok(Math.abs(first.lateral)<=laneLimitAt(first.d));
+      assert.ok(!staticBoxes.some(box=>box.d===first.d&&box.lateral===first.lateral),'dynamic spawn is not an authored static pickup');
+      const sample=qa.sample(first.d,first.lateral).p,position=first.mesh.getPosition();
+      assert.ok(Math.abs(position.x-sample.x)<1e-4&&Math.abs(position.z-sample.z)<1e-4);
+      assert.ok(Math.abs(position.y-sample.y-1.25)<1e-4,'spawn position is set before the next draw');
+      const state=()=>pool.map(box=>({d:box.d,lateral:box.lateral,cool:box.cool,display:box.display,enabled:box.mesh.enabled,position:box.mesh.getPosition().toArray()}));
+      qa.draw(0);game.pause();const paused=state();for(let frame=0;frame<48;frame++)qa.advanceFrame(.25);assert.deepEqual(state(),paused,'pause freezes pool lifetime, position and scheduling');
+      game.pause();parkBots();setPickupDisplay(first,'shield');
+      qa.set({pos:first.d,lane:first.lateral,speed:0,held:null});qa.update(0);
+      assert.equal(game.getState().held,'shield');assertBoxHidden(first);
+      qa.draw(0);assertBoxHidden(first);qa.update(0);assertBoxHidden(first);
+      assert.equal(game.getState().held,'shield','drawing and an overlapping second update cannot claim the temporary pickup twice');
+      game.start();pool.forEach(assertBoxHidden);qa.draw(0);pool.forEach(assertBoxHidden);
+      assert.equal(sceneEntities().length,entityCount);assert.equal(app.root.findComponents('render').length,renderCount);
+      qa.update(3);let active:any;
+      for(let frame=0;frame<60*100&&!active;frame++){qa.update(1/60);active=pool.find(box=>box.mesh.enabled);}
+      assert.ok(active,'restart starts a fresh dynamic schedule');
+      qa.set({pos:game.getState().length*3-.01,lane:0,speed:40,noBots:true});qa.update(.01);
+      assert.equal(game.getState().state,'finished');pool.forEach(assertBoxHidden);
+      qa.draw(3);qa.update(20);pool.forEach(assertBoxHidden);
+    });
+    await t.test('all six characters can collect dynamic pool items as NPCs and use the earned reward', () => {
+      for(const [index,profile] of CHARACTER_PROFILES.entries()){
+        qa.set({state:'menu'});assert.equal(game.selectDriver(CHARACTER_PROFILES[(index+1)%CHARACTER_PROFILES.length].id),true);
+        race();const pool=qa.boxes().filter(box=>box.dynamic);let box:any;
+        for(let frame=0;frame<60*100&&!box;frame++){qa.update(1/60);box=pool.find(candidate=>candidate.mesh.enabled);}
+        assert.ok(box,`${profile.id} scenario receives a real runtime spawn`);
+        const bots=parkBots(),bot=bots.find(candidate=>candidate.id===profile.id);assert.ok(bot);
+        for(const [slot,other] of bots.entries())Object.assign(other,{total:box.d+150+slot*30,lateral:5,targetLane:5});
+        Object.assign(bot,{total:box.d,lateral:box.lateral,targetLane:box.lateral,decisionIn:1000});
+        qa.set({pos:box.d+12,lane:box.lateral,speed:0,held:null,shield:0,slow:0});
+        setPickupDisplay(box,'pulse');qa.update(0);
+        assert.equal(bot.held,'pulse',`${profile.id} uses the shared dynamic collision resolver`);assert.equal(bot.pickups,1);assert.equal(bot.uses,0);
+        assertBoxHidden(box);qa.draw(0);assertBoxHidden(box);
+        Object.assign(bot,{reaction:0,cooldown:0,decisionIn:0});qa.update(0);
+        assert.equal(bot.held,null);assert.equal(bot.uses,1);assert.equal(game.getState().slow,3,`${profile.id} uses the item against a valid nearby target`);
+        assertBoxHidden(box);
+      }
+    });
+    qa.set({state:'menu'});assert.equal(game.selectDriver('whale'),true);
     await t.test('depicted and mystery rewards remove every native mesh before draw and update the HUD', () => {
       race(); qa.set({ noBots: true }); assertEmptyImage();
       const box = qa.boxes()[0], sources = new Set<string>();
@@ -636,7 +688,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
       // Starting a race must restore parents now, even before the countdown draws a frame.
       game.start();
       assert.equal(game.getState().state, 'countdown'); assert.equal(game.getState().held, null); assertEmptyImage();
-      for (const pickup of qa.boxes()) { assert.ok(displays.includes(pickup.display)); assertBoxVisible(pickup); }
+      for (const pickup of qa.boxes()) { assert.ok(displays.includes(pickup.display)); if(pickup.dynamic)assertBoxHidden(pickup);else assertBoxVisible(pickup); }
     });
     race(); qa.step(1); assert.equal(game.getState().speed, 0);
     key('keydown', 'KeyW'); qa.step(3); assert.ok(game.getState().speed > 35); key('keyup', 'KeyW');
@@ -686,13 +738,14 @@ test('native game integration preserves race, camera, items, menu and safety flo
     qa.set({state:'menu'});let finishRead:Function;const delayed=new Promise(resolve=>{finishRead=resolve});
     const leavingImport=game.importDrivers([{name:'custom.glb',size:importedBytes.byteLength,arrayBuffer:()=>delayed}]);
     const previousImportStatus=element('importStatus').textContent;
-    events.pagehide.forEach(fn=>fn({persisted:false}));assert.ok(app.graphicsDevice,'in-flight work retains the parser app');
+    const exitingPool=qa.boxes().filter(box=>box.dynamic);for(const box of exitingPool){box.mesh.enabled=true;box.cool=0;}
+    events.pagehide.forEach(fn=>fn({persisted:false}));assert.ok(app.graphicsDevice,'in-flight work retains the parser app');exitingPool.forEach(assertBoxHidden);
     finishRead(importedBytes);const leavingResult=await leavingImport;
     assert.equal(leavingResult[0].value.status,'stale');assert.equal(element('importStatus').textContent,previousImportStatus);
     assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
 
   } finally {
-    g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
+    Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
   }
 });

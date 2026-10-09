@@ -5,6 +5,9 @@ import {gunzipSync} from 'node:zlib';
 import {setMaxListeners} from 'node:events';
 import * as pc from 'playcanvas';
 import {parseLocalGLB} from '../src/assets';
+import {advanceWaterRace} from '../src/water-race';
+import {setPickupDisplay} from '../src/item-pickups';
+import type {RacingPickup} from '../src/npc-tactics';
 
 /** Real entrypoint, meshes, rig and physics on NullGraphicsDevice. Browser DOM
  * events/image pixels and network scheduling are substituted; no GPU claim. */
@@ -73,17 +76,29 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
   source=source.replace(/new pc\.Application\(canvas,.*?\);/,'(globalThis as any).__waterparkApp;');
   source=source.replace('const events=new AbortController();','const events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
   source=source.replace('app.start(); void load();','void load();');
-  source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); Object.defineProperty(globalThis,'__waterparkControls',{configurable:true,get:()=>({keys:controls.keys,orbit:controls.orbit,mouseLook:controls.mouseLook,view,mode,world})}); const npcMounts=");
+  source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); Object.defineProperty(globalThis,'__waterparkControls',{configurable:true,get:()=>({keys:controls.keys,orbit:controls.orbit,mouseLook:controls.mouseLook,view,mode,world,pickups})}); const npcMounts=");
   const copy=new URL('../src/.waterpark-play-test.ts',import.meta.url);writeFileSync(copy,source);
   const emit=(target:EventTarget,type:string,data:any={})=>{const event=new Event(type,{cancelable:true});Object.assign(event,data);target.dispatchEvent(event);return event;};
   const key=(type:string,code:string,target:any=canvas)=>{const event=new Event(type,{cancelable:true});Object.defineProperty(event,'target',{value:target});Object.assign(event,{code,repeat:false});windowTarget.dispatchEvent(event);return event;};
-  const step=(count:number,dt=1/60)=>{for(let i=0;i<count;i++)app.fire('update',dt);};
+  const observedDynamicSpawns=new Set<string>();
+  const dynamicPool=():RacingPickup[]=>(g.__waterparkControls?.pickups??[]).filter((box:RacingPickup)=>box.dynamic);
+  const step=(count:number,dt=1/60)=>{for(let i=0;i<count;i++){app.fire('update',dt);for(const box of dynamicPool())if(box.mesh.enabled)observedDynamicSpawns.add(`${box.d}:${box.lateral}`);}};
+  const assertPickupHidden=(box:RacingPickup)=>{
+    assert.equal(box.mesh.enabled,false);
+    for(const render of (box.mesh as pc.Entity).findComponents('render') as pc.RenderComponent[]){
+      assert.equal(render.entity.enabled,false);
+      for(const layerId of render.layers)for(const mesh of render.meshInstances)assert.equal(app.scene.layers.getLayerById(layerId)!.meshInstances.includes(mesh),false,'disabled pickup leaves every native render layer before draw');
+    }
+  };
+  const poolState=()=>dynamicPool().map(box=>({d:box.d,lateral:box.lateral,cool:box.cool,display:box.display,enabled:box.mesh.enabled}));
   const settle=async()=>{for(let i=0;i<30;i++)await new Promise(resolve=>setTimeout(resolve,1));};
   const snapshot=()=>{const result:number[]=[];for(const entity of app.root.findComponents('render') as pc.RenderComponent[]){result.push(...Array.from(entity.entity.getWorldTransform().data));}return result;};
   let destroyed=0;app.on('destroy',()=>destroyed++);
   try {
     await import(copy.href+'?run='+Date.now());
     assert.equal(app.maxDeltaTime,Infinity,'engine must not silently clamp real frame delta to 0.1s');
+    assert.equal(g.__waterparkControls.pickups.length,18);assert.equal(dynamicPool().length,4);dynamicPool().forEach(assertPickupHidden);
+    step(1,0);dynamicPool().forEach(assertPickupHidden);
     if(scenario!=='full-race'){
       const state=()=>g.__waterparkControls,continueButton=element('raceLoadingContinue');
       if(scenario==='close-loading'){
@@ -185,6 +200,13 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.equal(g.__waterparkControls.mode,'riding');assert.equal(g.__waterparkRace.countdown,returningCount);
     assert.ok(aerialCamera.getPosition().y<10,'countdown starts only after reaching the start-line chase camera');
     assert.ok(Object.values(g.__waterparkControls.keys).every(value=>!value),'input pressed while loading cannot leak into the race');
+    dynamicPool().forEach(assertPickupHidden);
+    for(const box of g.__waterparkControls.pickups){
+      const mesh=box.mesh as pc.Entity,glass=mesh.findByName('Translucent pickup glass') as pc.Entity,material=glass.render!.meshInstances[0].material as pc.StandardMaterial;
+      assert.equal(material.opacity,.16);assert.equal(material.depthWrite,false);assert.equal(material.cull,pc.CULLFACE_BACK);
+      assert.ok(mesh.getLocalScale().equals(pc.Vec3.ONE),'water boxes preserve the coast shell native scale');
+      for(const model of Object.values(box.models) as pc.Entity[])assert.ok(model.getLocalScale().equals(pc.Vec3.ONE),'water item models preserve their native coast scale');
+    }
     assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');
     for(const seconds of [5,10]){
       while(g.__waterparkRace.elapsed<seconds)step(1);
@@ -240,7 +262,8 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.equal(touch[0].hasPointerCapture(19),false,'pause releases held touch capture');
     assert.equal(pausePlayer.motion.charge,0);assert.equal(pausePlayer.motion.drifting,false);
     pausePlayer.held='boost';key('keydown','KeyE');key('keyup','KeyE');assert.equal(pausePlayer.held,'boost','paused E cannot use an item');pausePlayer.held=null;
-    const pausedTime=element('timer').textContent,pausedPose=snapshot();step(90);
+    const pausedTime=element('timer').textContent,pausedPose=snapshot(),pausedPool=poolState();step(90);
+    assert.deepEqual(poolState(),pausedPool,'paused rendering cannot schedule, expire or resurrect a dynamic pickup');
     assert.equal(element('timer').textContent,pausedTime);assert.deepEqual(snapshot(),pausedPose,'mount and world poses freeze while paused');
     assert.equal(element('pause').attributes['aria-label'],'继续');
     assert.equal(key('keydown','ArrowLeft',element('start')).defaultPrevented,false,'menu arrows are not captured');
@@ -249,6 +272,20 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.ok(pausePlayer.motion.speed<resumeSpeed,'resume cannot revive a stale throttle hold');
     assert.equal(pausePlayer.motion.slideBoost,0,'resume cannot release a paused slide charge');
     element('restartRace').click();step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','restart cannot immediately pause');assert.equal(element('pausePanel').classList.contains('hidden'),true);assert.equal(element('speed').textContent,'0');assert.equal(element('timer').textContent,'0:00');
+    dynamicPool().forEach(assertPickupHidden);step(1,0);dynamicPool().forEach(assertPickupHidden);
+    // Exercise collection in the actual fixed-step race before the entrypoint draws.
+    let dynamicBox:RacingPickup|undefined;
+    for(let frame=0;frame<60*45&&!dynamicBox;frame++){step(1);dynamicBox=dynamicPool().find(box=>box.mesh.enabled);}
+    assert.ok(dynamicBox,'real water entry updates activate a random box on the authored circuit');
+    assert.ok(observedDynamicSpawns.size>0);
+    const poolPlayer=g.__waterparkRace.racers[0];
+    for(const [index,racer] of g.__waterparkRace.racers.entries())if(index){racer.total=dynamicBox.d+150+index*30;racer.motion.distance=racer.total;}
+    Object.assign(poolPlayer,{total:dynamicBox.d,lateral:dynamicBox.lateral,speed:0,held:null});
+    Object.assign(poolPlayer.motion,{distance:dynamicBox.d,lane:dynamicBox.lateral,speed:0,lateralSpeed:0});
+    setPickupDisplay(dynamicBox,'shield');advanceWaterRace(g.__waterparkRace,{throttle:false,brake:false,steer:0},1/120,g.__waterparkControls.pickups);
+    assert.equal(poolPlayer.held,'shield');assertPickupHidden(dynamicBox);
+    step(1,0);assertPickupHidden(dynamicBox);assert.equal(poolPlayer.held,'shield','draw cannot resurrect a claimed temporary box');
+    element('restartRace').click();dynamicPool().forEach(assertPickupHidden);step(1,0);dynamicPool().forEach(assertPickupHidden);
     const accelerate=touch[0];accelerate.emit('pointerdown',{pointerId:1,pointerType:'touch',button:0});
     key('keydown','KeyW');key('keyup','KeyW');step(240);assert.ok(Number(element('speed').textContent)>20,'pointer hold survives keyboard release');
     accelerate.emit('pointercancel',{pointerId:1});emit(windowTarget,'blur');
@@ -265,6 +302,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     }
     key('keyup','KeyW');key('keyup','KeyA');key('keyup','KeyD');
     assert.equal(g.__waterparkRace.finished,true,'the actual entry completes all three laps under keyboard control');
+    dynamicPool().forEach(assertPickupHidden);step(2,0);dynamicPool().forEach(assertPickupHidden);
     assert.equal(g.__waterparkRace.racers[0].checkpoint,24,'all sequential checkpoints were earned');
     assert.match(element('message').textContent,/三圈/);assert.equal(element('speed').textContent,'0');
     failLast=false;element('retry').click();await settle();assert.equal(attempts,3);assert.match(element('load').textContent,/六位/);
@@ -276,7 +314,9 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     element('pause').click();element('restartRace').click();step(1);assert.equal(element('timer').textContent,'0:00');assert.equal(element('speed').textContent,'0');
     const actualPlayer=g.__waterparkRace.racers[0];actualPlayer.speed=actualPlayer.motion.speed=20;actualPlayer.boost=2;actualPlayer.slow=0;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*1.34*3.6),'HUD reports actual boosted travel speed');actualPlayer.boost=0;actualPlayer.slow=2;step(1,0);assert.equal(Number(element('speed').textContent),Math.round(20*.55*3.6),'HUD reports actual slowed travel speed');actualPlayer.finishTime=1;step(1,0);assert.equal(element('speed').textContent,'0','finished rider always displays zero');
     const performanceRoot=element('performance'),performanceStart=element('perf-start');
+    const exitingPool=dynamicPool();for(const box of exitingPool){box.mesh.enabled=true;box.cool=0;}
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,1);
+    assert.ok(exitingPool.every(box=>!box.mesh.enabled),'navigation clears dynamic pickup visibility before scene disposal');
     assert.equal(performanceRoot.removed,true,'performance panel is removed during app disposal');
     performanceStart.click();assert.equal(performanceStart.disabled,false,'disposed controls no longer start captures');
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(destroyed,1);

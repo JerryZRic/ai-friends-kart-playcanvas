@@ -18,7 +18,7 @@
       "sourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
-        "src/scene.ts": "dea0adccba55f804ccced1b071e1160b7738c391aa6f0d1105e02f06c27f1bad",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
         "src/menu-backdrop.ts": "950e52cc74871a6170d68851a793006aa41c5af52b575c52f850fba19153fbfe",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
@@ -65,7 +65,7 @@
       "sourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
-        "src/scene.ts": "dea0adccba55f804ccced1b071e1160b7738c391aa6f0d1105e02f06c27f1bad",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
         "src/menu-backdrop.ts": "950e52cc74871a6170d68851a793006aa41c5af52b575c52f850fba19153fbfe",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",

@@ -114,11 +114,15 @@ test('actual native coast road, kerbs, rails, markings and pickups follow the ne
       const d = i * 2 / 240 * LENGTH + (corner < 2 ? -1.05 : 1.05), lane = (laneIndex ? 2.4 : -2.4) + (corner % 2 ? .055 : -.055), p = sample(d, lane).p; p.y += .012;
       const index = (i * 2 + laneIndex) * 12 + corner * 3; same(markings.slice(index, index + 3), p.toArray());
     }
-    assert.equal(world.boxes.length, 45);
-    for (const box of world.boxes) { const p = sample(box.d, box.lateral).p; p.y += 1.25; same(box.mesh.getPosition().toArray(), p.toArray()); assert.ok(Math.abs(box.lateral) + .65 < halfWidthAt(box.d)); }
+    assert.equal(world.boxes.length, 49);
+    assert.equal(world.boxes.filter(box=>box.dynamic).length,4);
+    assert.ok(world.boxes.filter(box=>box.dynamic).every(box=>!box.mesh.enabled),'preallocated dynamic pickups start outside render layers');
+    for (const box of world.boxes.filter(box=>!box.dynamic)) { const p = sample(box.d, box.lateral).p; p.y += 1.25; same(box.mesh.getPosition().toArray(), p.toArray()); assert.ok(Math.abs(box.lateral) + .65 < halfWidthAt(box.d)); }
     const totalTriangles = (world.root.findComponents('render') as pc.RenderComponent[]).reduce((sum, render) => sum + render.meshInstances.reduce((n, instance) => n + instance.mesh.primitive[0].count / 3, 0), 0);
-    // Includes every pooled particle and all hidden pickup variants, exactly as
-    // the original scene did; the new route adds no tessellation or draw pools.
-    assert.ok(totalTriangles <= 136300, `${totalTriangles} exceeds existing native scene budget`);
+    // Account only for the four bounded native pickup shells added to the scene.
+    // Every hidden item variant is included, so the budget cannot hide allocations.
+    const poolTriangles=world.boxes.filter(box=>box.dynamic).reduce((sum,box)=>sum+(box.mesh.findComponents('render') as pc.RenderComponent[]).reduce((n,render)=>n+render.meshInstances.reduce((m,instance)=>m+instance.mesh.primitive[0].count/3,0),0),0);
+    assert.equal(poolTriangles,4*1264,'four shared pickup shells add exactly 5,056 triangles including all hidden variants');
+    assert.ok(totalTriangles <= 141356, `${totalTriangles} exceeds the exact existing scene plus four pickup shells budget`);
   } finally { app.destroy(); }
 });

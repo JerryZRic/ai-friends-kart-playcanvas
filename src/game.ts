@@ -5,6 +5,7 @@ import { coastLap, crossingTime, coastStandings } from './coast-race-rules';
 import { createWaterparkLifetime as createRaceLifetime } from './waterpark-lifetime';
 import { createItemModel, itemImage, type ItemKind } from './item-models';
 import { advancePickup, resetPickup } from './item-pickups';
+import { createDynamicPickupDirector } from './dynamic-pickups';
 import { RULES, newBrain, tickBrain, tickEffects, racingSpeed, chooseItem, activateItem, collectPickups, planLane, moveLane, nearbyGap, type Combatant, type Brain } from './npc-tactics';
 import { keyCode, driveInput, driveSpeed, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
@@ -57,6 +58,7 @@ const world = createCoastScene(app);
 const lifetime = createRaceLifetime(()=>{releaseRacers();app.destroy();});
 for (const light of app.root.findComponents('light') as pc.LightComponent[]) {light.castShadows = quality.shadows;light.shadowResolution = quality.shadowResolution;}
 const { camera, boxes, shield: shieldMesh, flames, particles } = world;
+const dynamicPickups=createDynamicPickupDirector(boxes.filter(b=>b.dynamic),{length:LENGTH,sample,laneLimit:d=>Math.min(5.2,halfWidthAt(d)-1.1)});
 const performancePanel=createPerformancePanel(canvas,()=>({quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:LENGTH,racerCount:6,profile:characterTuning(selectedDriverId,'coast'),driver:selectedDriverId}),undefined,{mount:$('raceSettings'),scene:'coast-circuit-six-racers'});
 const frameClock=createRaceFrameClock();
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
@@ -218,7 +220,7 @@ if(initialCameraReturn){
   loadingUi.update({progress:1,status:'模型已就绪 · 镜头返回起点',busy:true,canRetry:false,canContinue:false});
   return;
 }
-frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.forEach(b=>resetPickup(b));setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
 const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
 function updateDriverUI(){
@@ -256,7 +258,7 @@ $('retryLoading').onclick=()=>{void boot();};
 function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();shell.setPaused(true,countdown);updateLookHint();}else if(state==='paused'){frameClock.reset();state=countdown>0?'countdown':'running';shell.setPaused(false,countdown);updateLookHint()}}$('pause').onclick=pause;
 $('resumeRace').onclick=pause;
 $('restartRace').onclick=reset;
-function navigate(screen=''){clearInputs();mouseLook.release();const urls=shell.updateNavigation('coast',selectedDriverId)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
+function navigate(screen=''){dynamicPickups.finish();clearInputs();mouseLook.release();const urls=shell.updateNavigation('coast',selectedDriverId)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
 $('pauseMenu').onclick=()=>navigate();
 $('pauseChangeMap').onclick=()=>navigate('maps');
 $('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returning')return;view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
@@ -297,13 +299,13 @@ controls=bindRaceControls(canvas,{
 });
 keys=controls.keys;mouseLook=controls.mouseLook;
 function updateHUD(){shell.updateHUD({rank:finishRank||rank(),lap:coastLap(pos,LENGTH),elapsed,speed,charge,boost,shield,held,slideLabel:'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});}
-function finish(){finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI();tone(1000,.4)}
+function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI();tone(1000,.4)}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
   sparks.push({ p: p.clone(), v: new pc.Vec3((Math.random() - .5) * 4, 1 + Math.random() * 2, (Math.random() - .5) * 4), t: type === 'pulse' ? .8 : .45, max: .65 });
 }
 function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(cur!==old)tone(cur>0?500:1000,.15);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
-elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,onPickup:()=>{b.pickups++;b.reaction=RULES.reaction+b.phase*.08}}));for(const box of boxes)advancePickup(box,dt);const tuning=characterTuning(selectedDriverId,'coast'),input=driveInput(keys),steer=input.steer;let now=sample(pos),next=sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
+elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,onPickup:()=>{b.pickups++;b.reaction=RULES.reaction+b.phase*.08}}));for(const box of boxes)if(!box.dynamic)advancePickup(box,dt);const tuning=characterTuning(selectedDriverId,'coast'),input=driveInput(keys),steer=input.steer;let now=sample(pos),next=sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
 let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(1.6,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(charge>.6&&!input.brake&&!input.reverse){boost=Math.max(boost,Math.min(2.5,charge*1.5));toast('漂移加速！');tone(850,.2)}charge=0}drifting=wantDrift;
 let limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1);if(Math.abs(lane)>halfWidthAt(pos)-.9)limit*=.58;if(hit>0||slow>0)limit*=RULES.slowFactor;speed=driveSpeed(speed,input,dt*(input.throttle&&!input.reverse&&!input.brake&&speed>=0&&speed<limit?tuning.multipliers.acceleration:1),limit);lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering+curvature*speed*dt*.43;lane=clamp(lane,-(halfWidthAt(pos)-.45),halfWidthAt(pos)-.45);steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
 let previous=pos;pos+=speed*dt;lane=clamp(lane,-(halfWidthAt(pos)-.45),halfWidthAt(pos)-.45);playerFinishedAt=crossingTime(previous,pos,LENGTH*3,elapsed,dt)??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
@@ -339,6 +341,13 @@ if(Number.isFinite(playerFinishedAt)){
   const fraction=dt>0?clamp((playerFinishedAt-(elapsed-dt))/dt,0,1):1;
   for(const prior of botPrevious){const b=prior.actor;if(b.finishedAt===null||b.finishedAt>playerFinishedAt){const effectiveFraction=b.finishedAt!==null?clamp((playerFinishedAt-(elapsed-dt))/(b.finishedAt-(elapsed-dt)),0,1):fraction;b.total=prior.previous+(b.total-prior.previous)*effectiveFraction;if(b.finishedAt!==null){b.total=Math.min(b.total,LENGTH*3-1e-8);b.finishedAt=null;}}}
   finish();
+}else{
+ const snapshots=[{...playerCombatant(),travelSpeed:speed,reactionSpeed:Math.abs(speed),finished:false},...bots.map(b=>({id:b.id,total:b.total,lateral:b.lateral,held:b.held,travelSpeed:racingSpeed(b,characterTuning(b.id,'coast').maxSpeed),reactionSpeed:Math.min(Math.abs(b.speed),characterTuning(b.id,'coast').maxSpeed)*RULES.boostFactor,finished:b.total>=LENGTH*3}))].map(r=>{
+  const tuning=characterTuning(r.id,'coast');return {...r,finishDistance:LENGTH*3,maxSpeed:tuning.maxSpeed*RULES.boostFactor,acceleration:tuning.acceleration*RULES.boostFactor};
+ });
+ for(const box of dynamicPickups.tick({dt,active:true,racers:snapshots,staticBoxes:boxes.filter(b=>!b.dynamic)})){
+  const item=box as typeof boxes[number],p=sample(box.d,box.lateral).p;item.base=p.y+1.25;item.mesh.setPosition(p.x,item.base,p.z);
+ }
 }updateHUD()}
 
 /* NATIVE_DRAW */
@@ -356,7 +365,8 @@ function draw(dt: number) {
   if (rearView !== lastRearView) { snapCamera = true; lastRearView = rearView; }
   world.oceanMaterial.setParameter('time', clock);
   for (const box of boxes) {
-    box.mesh.enabled = box.cool <= 0;
+    // Pickup ownership and the director alone control visibility, never rendering.
+    if(!box.mesh.enabled)continue;
     box.mesh.setEulerAngles(degrees(Math.sin(clock * .8) * .15), degrees(clock * .8), degrees(.18));
     const p = box.mesh.getPosition(); box.mesh.setPosition(p.x, box.base + Math.sin(clock * 2 + box.d) * .17, p.z);
   }
@@ -476,7 +486,7 @@ app.start();
 addEventListener('pagehide',(event: PageTransitionEvent)=>{
   loadingFocused=false;release();
   if(event.persisted)return; // BFCache restores the same paused session.
-  disposed=true;ready=false;state='leaving';importStatusVersion++;
+  dynamicPickups.finish();disposed=true;ready=false;state='leaving';importStatusVersion++;
   if(loadingTimer)clearInterval(loadingTimer);loadingTimer=null;
   app.autoRender=false;app.renderNextFrame=false;
   if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);

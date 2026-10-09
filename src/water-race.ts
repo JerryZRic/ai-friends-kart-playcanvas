@@ -2,9 +2,10 @@
 import { raceOrder } from './driver-roster.js';
 import { characterTuning } from './character-profiles';
 import { newWaterState, stepWaterMotion, WATER_HANDLING, type WaterInput, type WaterState } from './waterpark-motion';
-import { WATER_RACE_LENGTH, waterparkCurvature } from './waterpark-design';
+import { WATER_RACE_LENGTH, waterparkCurvature, sampleWaterparkLoop } from './waterpark-design';
 import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
 import { advancePickup, resetPickup } from './item-pickups';
+import { createDynamicPickupDirector } from './dynamic-pickups';
 export const WATER_LAPS=3, WATER_CHECKPOINTS=8, WATER_COUNTDOWN=3;
 export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number};
 export type WaterRace={racers:WaterRacer[];countdown:number;elapsed:number;finished:boolean;remainder:number;seed:number;announcements:string[]};
@@ -33,7 +34,14 @@ export function useWaterItem(race:WaterRace,racer:WaterRacer){
  const result=activateItem(racer,race.racers.filter(r=>r.finishTime===null),WATER_RACE_LENGTH);
  if(result){racer.uses++;racer.cooldown=RULES.cooldown;racer.pulseFlash=result.item==='pulse'?.8:0;race.announcements.push(`${racer.id} 使用${result.item==='boost'?'加速':result.item==='shield'?'护盾':'脉冲'}${result.target?` → ${result.target.id}${result.blocked?'（护盾抵挡）':''}`:''}`);if(race.announcements.length>4)race.announcements.shift();}
 }
-export function resetWaterPickups(race:WaterRace,boxes:readonly RacingPickup[]){for(const box of boxes)resetPickup(box,()=>raceRandom(race));}
+const dynamicDirectors=new WeakMap<WaterRace,ReturnType<typeof createDynamicPickupDirector>>();
+export function resetWaterPickups(race:WaterRace,boxes:readonly RacingPickup[]){
+ for(const box of boxes)if(!box.dynamic)resetPickup(box,()=>raceRandom(race));
+ dynamicDirectors.get(race)?.finish();
+ const director=createDynamicPickupDirector(boxes.filter(b=>b.dynamic),{length:WATER_RACE_LENGTH,sample:sampleWaterparkLoop,laneLimit:()=>5.2},{rng:()=>raceRandom(race)});
+ director.reset();dynamicDirectors.set(race,director);
+}
+export function clearWaterDynamicPickups(race:WaterRace){dynamicDirectors.get(race)?.finish();}
 function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPickup[]){
  if(race.finished)return;
  if(race.countdown>0){const waiting=Math.min(dt,race.countdown);race.countdown-=waiting;dt-=waiting;if(race.countdown<1e-9)race.countdown=0;if(dt<1e-9)return;}
@@ -52,7 +60,7 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
   }
  }
  race.elapsed+=dt;
- for(const b of boxes)advancePickup(b,dt,()=>raceRandom(race));
+ for(const b of boxes)if(!b.dynamic)advancePickup(b,dt,()=>raceRandom(race));
  const active=race.racers.filter(r=>r.finishTime===null);
  const previous=active.map(actor=>({actor,previous:actor.total,previousLane:actor.lateral,onPickup:()=>{actor.pickups++;actor.reaction=RULES.reaction;}}));
  for(const racer of active){
@@ -87,7 +95,11 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
  }
  collectPickups(previous.filter(r=>r.actor.finishTime===null),boxes,WATER_RACE_LENGTH,()=>raceRandom(race));
  race.finished=player.finishTime!==null;
- if(race.finished){race.elapsed=player.finishTime!;for(const racer of race.racers)stopWaterRacer(racer);}
+ if(race.finished){race.elapsed=player.finishTime!;clearWaterDynamicPickups(race);for(const racer of race.racers)stopWaterRacer(racer);}
+ else dynamicDirectors.get(race)?.tick({dt,active:true,staticBoxes:boxes.filter(b=>!b.dynamic),racers:race.racers.map(r=>{
+  const tuning=characterTuning(r.id,'waterpark');
+  return {id:r.id,total:r.total,lateral:r.lateral,travelSpeed:waterTravelSpeed(r),reactionSpeed:Math.abs(Math.min(tuning.maxSpeed,r.speed))*(r.speed>0?RULES.boostFactor:1),finishDistance:WATER_RACE_LENGTH*WATER_LAPS,maxSpeed:tuning.maxSpeed*RULES.boostFactor,acceleration:tuning.acceleration*RULES.boostFactor,held:r.held,finished:r.finishTime!==null};
+ })});
 }
 /** End active feedback too, while retaining each rider's actual finish status. */
 function stopWaterRacer(racer:WaterRacer){

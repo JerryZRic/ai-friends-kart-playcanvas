@@ -149,3 +149,66 @@ test('all six drivers complete the authored medium-complexity course while NPCs 
  }
  console.log(JSON.stringify({waterMediumCourse:reports}));
 });
+
+function dynamicRacePickups():RacingPickup[]{
+ const make=(d:number,lateral:number,dynamic=false):RacingPickup=>({d,lateral,dynamic,display:'boost',cool:0,mesh:{enabled:!dynamic},models:{boost:{enabled:true},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}}});
+ return [...WATER_RACE_PICKUPS.map(({d,lateral})=>make(d,lateral)),...Array.from({length:4},()=>make(0,0,true))];
+}
+const correctWaterPlayer=(race:ReturnType<typeof newWaterRace>)=>({...input,steer:Math.max(-1,Math.min(1,-race.racers[0].lateral*.6-race.racers[0].motion.lateralSpeed*.4))});
+
+test('water race owns a serializable bounded dynamic pool through countdown, real spawning, restart and finish',()=>{
+ const race=newWaterRace('whale'),pickups=dynamicRacePickups(),pool=pickups.filter(box=>box.dynamic);
+ resetWaterPickups(race,pickups);assert.equal(pool.length,4);assert.ok(pool.every(box=>!box.mesh.enabled));
+ const initialPool=structuredClone(pool);
+ advanceWaterRace(race,input,3,pickups);assert.equal(race.elapsed,0);assert.deepEqual(pool,initialPool,'countdown consumes no pool timers');
+ let active:RacingPickup|undefined;
+ for(let frame=0;frame<60*45&&!active;frame++){advanceWaterRace(race,correctWaterPlayer(race),1/60,pickups);active=pool.find(box=>box.mesh.enabled);}
+ assert.ok(active,'actual authored water circuit permits a runtime random spawn');
+ assert.ok(active.d>=0&&active.d<WATER_RACE_LENGTH&&Math.abs(active.lateral)<=5.2);
+ assert.ok(!WATER_RACE_PICKUPS.some(box=>box.d===active!.d&&box.lateral===active!.lateral));
+ assert.doesNotThrow(()=>structuredClone(race));assert.deepEqual(JSON.parse(JSON.stringify(race)),race,'the director does not leak functions or native entities into race state');
+ const frozen=structuredClone({race,pool});
+ for(const dt of [0,-1,NaN,Infinity,11])advanceWaterRace(race,input,dt,pickups);
+ assert.deepEqual({race,pool},frozen,'non-simulation updates cannot advance dynamic lifetimes');
+ const player=race.racers[0];player.checkpoint=WATER_LAPS*WATER_CHECKPOINTS-1;player.total=WATER_RACE_LENGTH*WATER_LAPS-.01;player.motion.distance=player.total;player.speed=player.motion.speed=20;
+ advanceWaterRace(race,input,1/60,pickups);assert.equal(race.finished,true);assert.ok(pool.every(box=>!box.mesh.enabled),'finish hides the pool in the same physics tick');
+ const finished=structuredClone({race,pool});advanceWaterRace(race,input,10,pickups);assert.deepEqual({race,pool},finished);
+ const restarted=newWaterRace('whale');resetWaterPickups(restarted,pickups);assert.ok(pool.every(box=>!box.mesh.enabled&&box.cool===Infinity),'reset restores dormant slots without reviving their old positions');
+ assert.ok(pickups.filter(box=>!box.dynamic).every(box=>box.mesh.enabled&&box.cool===0));
+});
+
+test('dynamic water spawning and race simulation stay deterministic at 30, 60 and 120 Hz',()=>{
+ const replay=(hz:number)=>{
+  const race=newWaterRace('gemini'),pickups=dynamicRacePickups();resetWaterPickups(race,pickups);
+  for(let second=0;second<45;second++){
+   const control=correctWaterPlayer(race);
+   for(let frame=0;frame<hz;frame++)advanceWaterRace(race,control,1/hz,pickups);
+  }
+  assert.ok(Math.abs(race.remainder)<1e-12);
+  const {remainder,...state}=race;return {race:state,pickups};
+ };
+ const expected=replay(120);assert.deepEqual(replay(60),expected);assert.deepEqual(replay(30),expected);
+});
+
+test('all six water NPC characters collect actual dynamic spawns and deliberately use earned items',async()=>{
+ const {setPickupDisplay}=await import('../src/item-pickups');
+ const ids=['whale','gemini','gpt','claude','grok','glm'];
+ for(const [index,id] of ids.entries()){
+  const race=newWaterRace(ids[(index+1)%ids.length]),pickups=dynamicRacePickups();resetWaterPickups(race,pickups);race.countdown=0;
+  let box:RacingPickup|undefined;
+  for(let frame=0;frame<60*45&&!box;frame++){advanceWaterRace(race,correctWaterPlayer(race),1/60,pickups);box=pickups.find(candidate=>candidate.dynamic&&candidate.mesh.enabled);}
+  assert.ok(box,`${id} receives an actual dynamic spawn`);
+  const target=race.racers.find(racer=>racer.id===id)!,player=race.racers[0];
+  for(const [slot,racer] of race.racers.entries()){
+   Object.assign(racer,{total:box.d+150+slot*35,lateral:4,speed:20,held:null,boost:0,shield:0,slow:0,bump:0,warning:0,reaction:0,cooldown:0,decisionIn:1000,pickups:0,uses:0});
+   Object.assign(racer.motion,{distance:racer.total,lane:racer.lateral,speed:20,lateralSpeed:0,slideBoost:0});
+  }
+  Object.assign(target,{total:box.d,lateral:box.lateral,targetLane:box.lateral});Object.assign(target.motion,{distance:box.d,lane:box.lateral});
+  Object.assign(player,{total:box.d+16,lateral:box.lateral});Object.assign(player.motion,{distance:player.total,lane:box.lateral});
+  setPickupDisplay(box,'pulse');advanceWaterRace(race,input,1/120,pickups);
+  assert.equal(target.held,'pulse',`${id} receives the pool's depicted reward`);assert.equal(target.pickups,1);assert.equal(target.uses,0);assert.equal(box.mesh.enabled,false);
+  assert.equal(player.held,null,'an NPC pickup cannot also enter the player inventory');
+  for(let tick=0;tick<240&&target.uses===0;tick++)advanceWaterRace(race,input,1/120,pickups);
+  assert.equal(target.uses,1,`${id} obeys the reaction and warning delay, then uses the earned pulse`);assert.equal(target.held,null);assert.ok(player.slow>0);assert.equal(box.mesh.enabled,false);
+ }
+});

@@ -8,6 +8,7 @@ import {
   type Brain, type Combatant, type PickupRacer, type RacingPickup,
 } from '../src/npc-tactics';
 import { COAST_PICKUPS, LENGTH, MAX_SPEED, sample } from '../src/track';
+import { WATER_RACE_LENGTH } from '../src/waterpark-design';
 
 type Bot = Combatant & Brain;
 const kinds: ItemKind[] = ['boost', 'shield', 'pulse'];
@@ -384,4 +385,15 @@ test('long seeded races keep five NPCs honest, atomic and on-track while using a
   for (const kind of kinds) assert.ok(used[kind] >= 10, `meaningful ${kind} use across races: ${used[kind]}`);
   assert.ok(totalPickups > 200); assert.ok(totalDistance > 100 * LENGTH);
   t.diagnostic(`Four 180-second seeded races: ${totalPickups} atomic pickups; NPC uses ${JSON.stringify(used)}; ${(totalDistance / LENGTH).toFixed(1)} cumulative laps`);
+});
+
+test('every character seeks reachable temporary boxes on either circuit and ignores dormant slots', () => {
+  for (const id of ['whale','gemini','gpt','claude','grok','glm']) for (const length of [LENGTH,WATER_RACE_LENGTH]) {
+    const actor=racer(id,{total:length-12,lateral:0,speed:22});
+    const temporary={...box(18,2.5),dynamic:true};
+    const dormant={...box(5,-3),dynamic:true,cool:Infinity,mesh:{enabled:false}};
+    assert.equal(planLane(actor,[actor],[temporary,dormant],length,0,0),2.5,`${id} targets the live pool across the lap seam`);
+    temporary.mesh.enabled=false;
+    assert.notEqual(planLane(actor,[actor],[temporary,dormant],length,0,0),2.5,'claimed/expired slots cannot keep attracting AI');
+  }
 });

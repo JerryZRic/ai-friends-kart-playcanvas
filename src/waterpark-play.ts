@@ -13,8 +13,9 @@ import {sampleWaterSurface,waterSurfaceRotation} from './waterpark-surface';
 import {createWaterMount} from './water-mount';
 import {WATER_HANDLING} from './waterpark-motion';
 import {createWaterparkWake} from './waterpark-wake';
-import {newWaterRace,advanceWaterRace,resetWaterPickups,useWaterItem,waterStandings,waterTravelSpeed,WATER_LAPS,WATER_CHECKPOINTS} from './water-race';
-import {createItemModel,type ItemDisplay} from './item-models';
+import {newWaterRace,advanceWaterRace,resetWaterPickups,clearWaterDynamicPickups,useWaterItem,waterStandings,waterTravelSpeed,WATER_LAPS,WATER_CHECKPOINTS} from './water-race';
+import {createPickupVisual} from './pickup-visual';
+import {DYNAMIC_PICKUP_CAPACITY} from './dynamic-pickups';
 import type {RacingPickup} from './npc-tactics';
 import {characterTuning} from './character-profiles';
 import {readGameSettings,saveGameSettings,qualitySettings} from './game-settings';
@@ -57,12 +58,12 @@ try {
   let controls:ReturnType<typeof bindRaceControls>,view=0,snapCamera=true,lastRearView=false;
   const npcMounts=new Map<string,ReturnType<typeof createWaterMount>>();
   const pickups:RacingPickup[]=[];
-  for(const {d,lateral:lane} of WATER_RACE_PICKUPS){
-    const entity=new pc.Entity('水上道具箱');world.root.addChild(entity);
-    const models={} as Record<ItemDisplay,pc.Entity>;
-    for(const kind of ['boost','shield','pulse','mystery'] as const){models[kind]=createItemModel(app,kind);models[kind].setLocalScale(1.2,1.2,1.2);entity.addChild(models[kind]);}world.reflection.exclude(entity);
-    const p=sampleWaterpark(d,lane).p;entity.setPosition(p.x,1.1,p.z);
-    pickups.push({d,lateral:lane,mesh:entity,models,display:'boost',cool:0});
+  for(const [index,{d,lateral:lane}] of [...WATER_RACE_PICKUPS,...Array.from({length:DYNAMIC_PICKUP_CAPACITY},()=>({d:0,lateral:0}))].entries()){
+    const visual=createPickupVisual(app,world.root),dynamic=index>=WATER_RACE_PICKUPS.length;
+    world.reflection.exclude(visual.mesh);
+    const p=sampleWaterpark(d,lane).p;visual.mesh.setPosition(p.x,p.y+1.25,p.z);
+    visual.mesh.enabled=!dynamic;
+    pickups.push({d,lateral:lane,...visual,display:'boost',cool:0,dynamic});
   }
   resetWaterPickups(race,pickups);
   const effectMesh=pc.Mesh.fromGeometry(app.graphicsDevice,new pc.TorusGeometry({tubeRadius:.065,ringRadius:1.55,segments:24,sides:6}));
@@ -186,7 +187,7 @@ try {
   }
   function restart(){if(contextLost||mode==='menu'||mode==='transition'||busy)return;performancePanel.interrupt('restart');mode='finished';start();}
   function useItem(){if(mode==='riding')useWaterItem(race,race.racers[0]);}
-  function navigate(screen=''){clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
+  function navigate(screen=''){clearWaterDynamicPickups(race);clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
   function switchCamera(){if(contextLost||mode==='menu'||mode==='transition')return;view=(view+1)%2;controls.orbit.recenter(true);snapCamera=true;shell.toast(view?'高位追逐视角':'低位追逐视角');}
   $('start').addEventListener('click',start,{signal:events.signal});
   $('pause').addEventListener('click',pause,{signal:events.signal});
@@ -212,7 +213,7 @@ try {
   let lastAnnouncement='';
   const resize=()=>app.resizeCanvas(); window.addEventListener('resize',resize,{signal:events.signal});
   cleanup=()=>{
-    performancePanel.dispose();clearKeys();controls.dispose();shell.dispose();loadingUi.dispose();loadingCamera.dispose();events.abort(); app.autoRender=false; app.renderNextFrame=false;
+    clearWaterDynamicPickups(race);performancePanel.dispose();clearKeys();controls.dispose();shell.dispose();loadingUi.dispose();loadingCamera.dispose();events.abort(); app.autoRender=false; app.renderNextFrame=false;
     // Abort HTTP work now, but preserve the app until an already-started GLB parse settles.
     lifetime.close();
   };
@@ -243,6 +244,12 @@ try {
 
       }
     } else if((mode==='menu'||mode==='transition')&&foreground())clock+=Math.min(step,.05);
+    for(const box of pickups){
+      if(!box.mesh.enabled)continue;
+      const p=sampleWaterpark(box.d,box.lateral).p;
+      (box.mesh as pc.Entity).setPosition(p.x,p.y+1.25+Math.sin(clock*2+box.d)*.17,p.z);
+      (box.mesh as pc.Entity).setEulerAngles(Math.sin(clock*.8)*.15*180/Math.PI,clock*.8*180/Math.PI,.18*180/Math.PI);
+    }
     const motion=race.racers[0].motion;
     if(mode==='riding')shell.renderCountdown(race.countdown);
     for(const racer of race.racers.slice(1)){
