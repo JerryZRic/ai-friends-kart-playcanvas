@@ -1,0 +1,23 @@
+/* Five real separated cells. Fill widths come from gameplay values, never images. */
+.garage-stat-bars{clear:both;min-width:0;border-top:1px dashed #b2ad8a;padding-top:9px;margin-top:9px;color:#4d4535;font-variant-numeric:tabular-nums}
+.garage-stat-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.garage-stat-heading h3{margin:0;min-width:0;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.garage-stat-heading>span{flex-shrink:0;font-size:10px;color:#665d48}
+.garage-stat-list{display:grid;gap:12px}
+.garage-stat-main{display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:10px}
+.garage-stat-name{font-size:13px;font-weight:800;line-height:1.4}
+.garage-stat-meter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;min-width:0;height:14px}
+.garage-stat-segment{display:block;position:relative;min-width:0;height:100%;overflow:hidden;border:1px solid #9c9678;border-radius:3px;background:#d4ceb0;box-shadow:inset 0 1px 2px #66553a1a}
+.garage-stat-fill{display:block;height:100%;max-width:100%;background:linear-gradient(#6b9a76,#35684d);box-shadow:inset 0 1px #ffffff4d}
+.garage-stat-detail{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin:4px 0 0 46px;font-size:11px;line-height:1.35}
+.garage-stat-value{min-width:0;color:#5e563f}
+.garage-stat-value>small{font-size:9px}
+.garage-stat-delta{flex-shrink:0;font-size:10px;font-weight:700;white-space:nowrap}
+.garage-stat-delta.positive{color:#2e6547}.garage-stat-delta.negative{color:#a74732}.garage-stat-delta.neutral{color:#756c53}
+.garage-stat-row[data-available=false] .garage-stat-meter{opacity:.55}
+.garage-stat-inactive{display:grid;grid-template-columns:auto auto;justify-content:space-between;align-items:baseline;gap:3px 6px;margin-top:12px;padding-top:8px;border-top:1px dotted #b5ad8c;color:#736a53;font-size:11px;line-height:1.4}
+.garage-stat-inactive>span:first-child{font-weight:700}.garage-stat-inactive>span:last-of-type{text-align:right}
+.garage-stat-inactive small{font-size:9px;font-weight:400}.garage-stat-inactive>span:first-child>small{margin-left:3px;padding:1px 3px;border:1px solid #b5ad8c;border-radius:3px}
+.garage-stat-inactive p{grid-column:1/-1;margin:0;font-size:9px}
+.garage-stat-scale-note{margin:9px 0 0;color:#746b53;font-size:9px;line-height:1.55}
+@media(forced-colors:active){.garage-stat-segment{border-color:CanvasText;background:Canvas}.garage-stat-fill{background:Highlight;forced-color-adjust:none}.garage-stat-delta{color:CanvasText!important}}

@@ -69,7 +69,8 @@ package and does not alter the stable main branch or stable publication manifest
 
 ## Reproduce
 
-From a repository checkout: `npm ci`, `npm test`, `npm run build`, `npm run test:dist`.
+From a repository checkout (current Node 22+): `npm ci`, `npm test`, `npm run build`, `npm run test:dist`.
+The test command bounds execution to two files at once so native-engine suites do not exhaust constrained runners.
 After extracting source.zip, first restore separately served runtime assets with
 `npm run models:fetch` and `npm run food:fetch`. `npm run food:verify` independently
 checks all 324 public food payloads without private production files.
@@ -83,7 +84,7 @@ numeric readout (0–240 km/h dial scale, with the needle bounded at the ends).
 Comparison changes still use the real selected/candidate build. Decorative props
 and the redundant dial are hidden from assistive technology. All original native
 controls, status/progress, loading failure and retry handling remain available.
-Small-screen layouts reflow; motion is suppressed for reduced-motion preferences.
+The fixed-reference presentation scales uniformly on small screens; reduced-motion preferences disable automatic rotation by default.
 Artwork is original SVG/CSS; no third-party game artwork is included.
 
 ## Free-mode recipes and difficulty
@@ -125,10 +126,41 @@ actual model selection, cancellation, retries, race lifecycle and all six driver
 fits through the real PlayCanvas NullGraphicsDevice pipeline. Browser GPU rendering,
 mobile memory pressure and real-device frame rate still require hardware testing.
 
-## Landscape workshop layout
+## Fixed-reference workshop layout
 
-The garage uses a viewport-height cockpit at landscape widths of at least 1000 CSS pixels and heights of at least 680 CSS pixels. Six drawers, the real assembly preview, character-plus-car comparison, a six-item horizontal tray and bottom actions stay on the main screen. The tray pages through all 54 parts per slot; changing filters resets its page. Smaller or portrait windows use a flowing fallback.
+The accessible HTML overlay uses one 1440 × 900 logical composition, centered and
+uniformly scaled by min(viewport width / 1440, viewport height / 900). Extra space
+shows the workshop background. Six large silhouette drawers, the actual PlayCanvas
+assembly, five-cell segmented statistics, six-card paged tray and bottom actions
+retain their proportions at every viewport size; there are no width-dependent
+reflow breakpoints or page scroll. Portrait phones intentionally get a smaller
+letterboxed interface, rather than a rearranged mobile layout.
 
-Recipes and named-build editing share a native modal dialog, while detailed design estimates and explanations live in a second dialog. Escape or the visible close button dismisses each dialog and returns focus to its opener. The actual build state, preview cancellation, camera controls and race navigation remain shared with the existing garage flow. The requested common desktop sizes are layout targets; browser verification records the actual available viewport rather than claiming unperformed device coverage.
+This is a fixed-reference HTML overlay over a PlayCanvas 3D canvas, not an engine
+Screen/Element HUD. Native form controls preserve labels, keyboard operation and
+focus behavior. Native modal dialogs use the same uniform scale explicitly in the
+top layer and scroll internally if needed. Escape and visible close buttons return
+focus to their opener. The visual viewport accounts for on-screen keyboards.
 
-The simplified workshop uses six original SVG silhouettes above short slot labels; installed parts remain available through accessible names and tooltips. Main comparisons show current values and deltas, with full units/history in Details. The preview now renders an opaque cream/mint room, stationary turntable and procedural contact shadow directly in PlayCanvas, avoiding reliance on transparent-canvas compositing. Horizontal input rotates a centered assembly wrapper; the room and world lights stay fixed. Source module geometry and materials are unchanged. GPU pixel output still requires verification on a WebGL-capable browser; NullGraphicsDevice tests establish lifecycle, transforms, fitting and sizing only.
+Actual gameplay acceleration, HUD-converted speed and steering each use a declared,
+fixed independent scale mapped to 0–5 separated segments. Fractional segments are
+filled proportionally (3.2 means three full cells and 20% of the fourth), with actual
+units and signed current/candidate changes alongside. The zero-segment lower bound
+is not zero performance. Stability remains a neutral design estimate, explicitly
+inactive; battery/wear metadata cannot masquerade as a gameplay benefit.
+
+The real PlayCanvas scene has an opaque cream/mint workshop, a detailed workbench,
+tools, fixtures, stationary platform and procedural contact shadow. Only the
+centered original six-module car rotates. Source meshes/materials, room and lights
+remain unchanged by rotation. Automatic presentation moves at 8 degrees per second,
+pauses during manual interaction, resumes 3.5 seconds afterward, and has an explicit
+pause/resume control. Reduced-motion preference starts it paused; hidden documents
+and lost/disposed contexts stop frame scheduling. Delta time is capped after stalls.
+
+Canvas layout dimensions remain logical while the render target follows its
+physical displayed size and bounded DPR; pointer deltas are converted back into
+design coordinates. Automated numerical tests cover common desktop and portrait
+sizes, independent top-layer dialog fitting, resize lifecycle, fractional bars,
+motion timing and real PlayCanvas hierarchy/camera/resource ownership. These tests
+do not claim GPU pixel output, real-device frame rate, or exact browser viewport
+coverage. The cloud browser's lack of WebGL remains an explicit visual QA limit.

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "check": "tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.*",
+    "test": "node --import tsx --test --test-concurrency=2 tests/*.test.*",
     "build": "npm run check && vite build && node scripts/package-source.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "models:fetch": "node scripts/fetch-runtime-models.mjs",

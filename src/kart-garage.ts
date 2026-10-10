@@ -1,4 +1,7 @@
 import * as pc from 'playcanvas';
+import {mountGarageLayout} from './kart-garage-layout';
+import {renderGarageStatBars} from './kart-garage-stats';
+import {garageSpinDelta, garagePointerDelta, GARAGE_INTERACTION_IDLE_MS} from './kart-garage-motion';
 import { catalog, partsBySlot, KART_SLOTS, defaultBuild, validateBuild, resolveBuild, buildStats, kartTuning, loadGarageState, saveGarageState, MAX_NAMED_BUILDS, MAX_BUILD_NAME_LENGTH, type KartBuild, type KartSlot, type KartPart, type GarageState } from './kart-build';
 import { createKartAssemblyLoader, type KartAssembly, type KartAssemblyProgress } from './kart-assembly';
 import { resolveCharacter } from './character-profiles';
@@ -88,24 +91,35 @@ export function mountKartGaragePreview(canvas: HTMLCanvasElement, onStatus: (sta
   let yaw = 36, pitch = 22, zoom = 1, aspect = 1, frame = 0, pointer: number | null = null, lastX = 0, lastY = 0;
   let resizeObserver: ResizeObserver | null = null, released: Promise<unknown> = Promise.resolve();
   const settings = readGameSettings();
-  const cancelFrame = () => {if (frame) cancelAnimationFrame(frame); frame = 0;};
+  const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let spinEnabled = !motionPreference?.matches, spinUserPaused = false, lastFrame: number | null = null, resumeAt = 0;
+  const spinButton = canvas.closest('.preview-panel')?.querySelector<HTMLButtonElement>('#preview-spin');
+  const syncSpin = () => {if (spinButton) {spinButton.setAttribute('aria-pressed', String(spinEnabled)); spinButton.textContent = spinEnabled ? '暂停转台' : '旋转展示';}};
+  const pauseForInteraction = () => {resumeAt = performance.now() + GARAGE_INTERACTION_IDLE_MS;};
+  const cancelFrame = () => {if (frame) cancelAnimationFrame(frame); frame = 0; lastFrame = null;};
   function fit() {
     if (!camera || !model) return;
     stage?.rotate(yaw);
     const view = garageStageCamera(model.bounds, aspect, pitch, zoom);
     camera.setPosition(view.position); camera.lookAt(view.target); camera.camera!.fov = view.fov; camera.camera!.nearClip = view.nearClip; camera.camera!.farClip = view.farClip;
   }
-  function draw() {
-    frame = 0; if (!app || disposed || lost || document.hidden) return;
+  function draw(now: number) {
+    frame = 0; if (!app || disposed || lost || document.hidden) {lastFrame = null; return;}
+    const delta = garageSpinDelta(now, lastFrame, spinEnabled && ready, pointer !== null, resumeAt);
+    lastFrame = now;
+    if (delta) {yaw = (yaw + delta) % 360; stage?.rotate(yaw);}
     try {app.update(0); app.render(); app.fire('frameend');}
-    catch (error) {fail(`3D 渲染失败：${String((error as Error).message || error)}`);}
+    catch (error) {fail(`3D 渲染失败：${String((error as Error).message || error)}`); return;}
+    if (spinEnabled && ready && !disposed && !lost) frame = requestAnimationFrame(draw);
   }
   function refresh() {fit(); if (!frame && app && !disposed && !lost && !document.hidden) frame = requestAnimationFrame(draw);}
   function resize() {
     if (!app || disposed) return;
     const rect = canvas.parentElement!.getBoundingClientRect(), size = garageViewportSize(rect.width, rect.height, window.devicePixelRatio || 1, settings.quality === 'low');
     aspect = size.aspect; app.graphicsDevice.maxPixelRatio = size.pixelRatio;
-    app.resizeCanvas(size.width, size.height); refresh();
+    // CSS dimensions remain logical; framebuffer follows physical on-screen size × DPR.
+    app.resizeCanvas(canvas.parentElement!.clientWidth, canvas.parentElement!.clientHeight);
+    app.setCanvasResolution(pc.RESOLUTION_FIXED, size.width, size.height); refresh();
   }
   function status(state: KartAssemblyProgress | {stage: 'failed'; message: string}) {
     if (disposed) return; ready = state.stage === 'ready'; canvas.dataset.previewState = state.stage;
@@ -121,7 +135,7 @@ export function mountKartGaragePreview(canvas: HTMLCanvasElement, onStatus: (sta
       const next = await loader.load(selected, {signal: controller.signal, onProgress: state => {if (!disposed && thisVersion === version) status(state);}});
       if (disposed || thisVersion !== version) {next.dispose(); return;}
       model = next; stage!.attach(next.root, next.bounds); fit(); refresh();
-      status({stage: 'ready', receivedBytes: 0, totalBytes: 0, completed: 6, total: 6});
+      status({stage: 'ready', receivedBytes: 0, totalBytes: 0, completed: 6, total: 6}); refresh();
     } catch (error) {if (!disposed && thisVersion === version && !controller.signal.aborted) status({stage: 'failed', message: `所选零件未加载完成：${String((error as Error).message || error)}`});}
   }
   function releaseApp() {
@@ -135,39 +149,44 @@ export function mountKartGaragePreview(canvas: HTMLCanvasElement, onStatus: (sta
     try {
       lost = false;
       app = new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality !== 'low', alpha: false, powerPreference: 'low-power'}});
-      app.setCanvasFillMode(pc.FILLMODE_NONE); app.setCanvasResolution(pc.RESOLUTION_AUTO);
+      app.setCanvasFillMode(pc.FILLMODE_NONE); app.setCanvasResolution(pc.RESOLUTION_FIXED, 1, 1);
       stage = createKartGarageStage(app);
       camera = new pc.Entity('Garage camera', app); camera.addComponent('camera', {clearColor: GARAGE_CLEAR_COLOR, fov: 34}); app.root.addChild(camera);
       loader = createKartAssemblyLoader(app); app.start(); if (app.frameRequestId) {cancelAnimationFrame(app.frameRequestId); app.frameRequestId = null;}
       resize(); void select(selected);
     } catch (error) {fail(`当前设备无法初始化 WebGL 3D 预览：${String((error as Error).message || error)}`);}
   }
-  function down(event: PointerEvent) {if (event.button !== 0 || pointer !== null) return; pointer = event.pointerId; lastX = event.clientX; lastY = event.clientY; canvas.setPointerCapture?.(pointer);}
-  function move(event: PointerEvent) {if (event.pointerId !== pointer) return; yaw += (event.clientX - lastX) * .45; pitch = pc.math.clamp(pitch + (event.clientY - lastY) * .25, 4, 78); lastX = event.clientX; lastY = event.clientY; refresh();}
-  function end(event: PointerEvent) {if (event.pointerId !== pointer) return; const old = pointer; pointer = null; if (old !== null && canvas.hasPointerCapture?.(old)) canvas.releasePointerCapture(old);}
-  function wheel(event: WheelEvent) {event.preventDefault(); zoom = pc.math.clamp(zoom + event.deltaY * .001, .72, 1.8); refresh();}
-  function reset() {yaw = 36; pitch = 22; zoom = 1; refresh();}
+  function down(event: PointerEvent) {if (event.button !== 0 || pointer !== null) return; pauseForInteraction(); pointer = event.pointerId; lastX = event.clientX; lastY = event.clientY; canvas.setPointerCapture?.(pointer);}
+  function move(event: PointerEvent) {if (event.pointerId !== pointer) return; const rect = canvas.getBoundingClientRect(); pauseForInteraction(); yaw += garagePointerDelta(event.clientX - lastX, rect.width, canvas.clientWidth) * .45; pitch = pc.math.clamp(pitch + garagePointerDelta(event.clientY - lastY, rect.height, canvas.clientHeight) * .25, 4, 78); lastX = event.clientX; lastY = event.clientY; refresh();}
+  function end(event: PointerEvent) {if (event.pointerId !== pointer) return; const old = pointer; pointer = null; pauseForInteraction(); if (old !== null && canvas.hasPointerCapture?.(old)) canvas.releasePointerCapture(old);}
+  function wheel(event: WheelEvent) {event.preventDefault(); pauseForInteraction(); zoom = pc.math.clamp(zoom + event.deltaY * .001, .72, 1.8); refresh();}
+  function reset() {pauseForInteraction(); yaw = 36; pitch = 22; zoom = 1; refresh();}
   function keyboard(event: KeyboardEvent) {
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '=', 'Home'].includes(event.key)) return;
-    event.preventDefault();
+    event.preventDefault(); pauseForInteraction();
     if (event.key === 'Home') reset(); else if (event.key === 'ArrowLeft') yaw -= 12; else if (event.key === 'ArrowRight') yaw += 12;
     else if (event.key === 'ArrowUp') pitch -= 8; else if (event.key === 'ArrowDown') pitch += 8;
     else zoom += event.key === '-' ? .1 : -.1;
     pitch = pc.math.clamp(pitch, 4, 78); zoom = pc.math.clamp(zoom, .72, 1.8); refresh();
   }
-  function visibility() {if (document.hidden) cancelFrame(); else refresh();}
-  function contextLost(event: Event) {event.preventDefault(); lost = true; ready = false; controller?.abort(); ++version; cancelFrame(); status({stage: 'failed', message: '3D 显卡连接中断，恢复后可重试。尚未显示所选装配'});}
+  function motionChanged() {spinEnabled = !motionPreference?.matches && !spinUserPaused; lastFrame = null; syncSpin(); refresh();}
+  function toggleSpin() {spinEnabled = !spinEnabled; spinUserPaused = !spinEnabled; lastFrame = null; resumeAt = 0; syncSpin(); refresh();}
+  function releasePointer() {const old = pointer; pointer = null; if (old !== null && canvas.hasPointerCapture?.(old)) canvas.releasePointerCapture(old);}
+  function visibility() {if (document.hidden) {releasePointer(); cancelFrame();} else refresh();}
+  function contextLost(event: Event) {event.preventDefault(); releasePointer(); lost = true; ready = false; controller?.abort(); ++version; cancelFrame(); status({stage: 'failed', message: '3D 显卡连接中断，恢复后可重试。尚未显示所选装配'});}
   function contextRestored() {lost = false; void select(selected); resize();}
   const retry = () => {if (disposed) return; if (app && !lost) void select(selected); else {releaseApp(); void released.then(initialize);}};
   const dispose = () => {
-    if (disposed) return; disposed = true; ++version; controller?.abort(); cancelFrame(); resizeObserver?.disconnect();
+    if (disposed) return; disposed = true; ++version; controller?.abort(); releasePointer(); cancelFrame(); resizeObserver?.disconnect();
     canvas.removeEventListener('pointerdown', down); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerup', end); canvas.removeEventListener('pointercancel', end); canvas.removeEventListener('lostpointercapture', end); canvas.removeEventListener('wheel', wheel); canvas.removeEventListener('keydown', keyboard); canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored);
+    motionPreference?.removeEventListener('change', motionChanged);
     window.removeEventListener('resize', resize); document.removeEventListener('visibilitychange', visibility); releaseApp();
   };
   canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move); canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('lostpointercapture', end); canvas.addEventListener('wheel', wheel, {passive: false}); canvas.addEventListener('keydown', keyboard); canvas.addEventListener('webglcontextlost', contextLost); canvas.addEventListener('webglcontextrestored', contextRestored);
+  motionPreference?.addEventListener('change', motionChanged); syncSpin();
   window.addEventListener('resize', resize); document.addEventListener('visibilitychange', visibility);
   if (typeof ResizeObserver !== 'undefined') {resizeObserver = new ResizeObserver(resize); resizeObserver.observe(canvas.parentElement!);}
-  initialize(); return {select, retry, reset, zoomBy(delta: number) {zoom = pc.math.clamp(zoom + delta, .72, 1.8); refresh();}, dispose, get ready() {return ready;}};
+  initialize(); return {select, retry, reset, resize, toggleSpin, zoomBy(delta: number) {pauseForInteraction(); zoom = pc.math.clamp(zoom + delta, .72, 1.8); refresh();}, dispose, get ready() {return ready;}};
 }
 
 const mountedGarages = new WeakMap<HTMLElement, () => void>();
@@ -186,7 +205,7 @@ export function mountKartGarage(root: HTMLElement) {
   root.innerHTML = `<header class="garage-header"><a class="garage-brand" data-garage-home href="${garageHomeEntry(driver.id, state.activeBuild, search)}"><span>AI FRIENDS</span>KART<span class="brand-dot">.</span></a><nav aria-label="车库导航"><a data-garage-back href="${esc(back)}">← 角色选择</a><span class="dev-stamp">DEV 试验工坊</span></nav></header>
     <div class="garage-heading"><div><p class="eyebrow">WELCOME TO THE LITTLE KART WORKSHOP</p><h1>好味改装工坊<span>！</span></h1><p class="workshop-steps">选零件 · 看变化 · 出发</p></div><div class="driver-chip"><span style="color:${driver.color}">${driver.symbol}</span><div><small>本次试驾伙伴</small><strong>${driver.label}</strong><a data-garage-back href="${esc(back)}">更换角色 ↗</a></div></div></div>
     <section class="garage-workbench" aria-label="车辆装配台"><aside class="slot-panel"><div class="panel-heading"><h2>选部件</h2><span>6 槽</span></div><div id="garage-slots" role="group" aria-label="选择零件槽位"></div><p class="slot-note"><strong>改装小贴士</strong><br>跨主题自由组合<br>同主题没有额外加成</p></aside>
-    <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">01 / 我的装配台</span><h2 id="build-title">自由混搭</h2><p id="build-description" class="build-description">六槽自由搭配，主题没有额外加成</p></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="bench-scenery" aria-hidden="true"><span class="bench-lamp"></span><span class="bench-pegboard"></span><span class="bench-tool bench-tool-one"></span><span class="bench-tool bench-tool-two"></span><span class="bench-shelf"></span><span class="bench-box"></span><span class="bench-tin"></span><span class="bench-platform"></span><span class="bench-sticker">MIX<br>&amp; RACE</span></div><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转车辆、滚轮缩放、方向键调整视角、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>六个真实模块 · 一台你的赛车</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动旋转 <span>·</span> 滚轮缩放</p><div class="camera-buttons"><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
+    <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">01 / 我的装配台</span><h2 id="build-title">自由混搭</h2><p id="build-description" class="build-description">六槽自由搭配，主题没有额外加成</p></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="bench-scenery" aria-hidden="true"><span class="bench-lamp"></span><span class="bench-pegboard"></span><span class="bench-tool bench-tool-one"></span><span class="bench-tool bench-tool-two"></span><span class="bench-shelf"></span><span class="bench-box"></span><span class="bench-tin"></span><span class="bench-platform"></span><span class="bench-sticker">MIX<br>&amp; RACE</span></div><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转车辆、滚轮缩放、方向键调整视角、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>六个真实模块 · 一台你的赛车</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动旋转 <span>·</span> 滚轮缩放</p><div class="camera-buttons"><button id="preview-spin" aria-pressed="false" title="车辆缓慢旋转；手动调整后暂停 3.5 秒">旋转展示</button><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
     <aside class="performance-panel"><div class="panel-heading"><h2>试车仪表台</h2><span>CHECK / 02</span></div><div id="build-stats"></div><details class="performance-disclosure"><summary>这些参数如何影响比赛？</summary><p class="performance-note">设计估算先转为车辆倍率，再叠加角色属性；上方比赛平路上限与赛道 HUD 使用相同速度换算。当前试玩：重量、动力、极速、操控已参与海岸竞速；电量消耗、耐久损耗与翻车恢复暂未启用。电池容量和耐久均不提供当前优势；稳定性侧倾阈值仅为设计估算，不是角色增益或翻车机制。</p></details><a class="garage-start" id="garage-race" href="${garageRaceEntry(driver.id, state.activeBuild, search)}"><span><small>READY, SET...</small>${freeFlow ? '完成搭配 · 比赛设置' : '去日落海岸试跑'}</span><span>➜</span></a><p class="race-note">保留六名角色属性 · 水上坐骑不受影响</p></aside></section>
     <section class="build-shelf" aria-label="配方与已保存方案"><div class="shelf-tabs"><h2>灵感配方盒</h2><span>五种取舍，选后仍可自由编辑</span></div><div class="starter-list" id="starter-builds"></div><div class="save-row"><form id="save-build-form"><label for="build-name">收藏这套搭配</label><input id="build-name" name="name" maxlength="${MAX_BUILD_NAME_LENGTH}" placeholder="给你的车起个名字" autocomplete="off"><button id="save-build-submit" type="submit">保存新方案 ＋</button><button id="save-as-new" type="button" hidden>另存新方案</button><p id="edit-build-status">新方案 · 保存名称和六个零件，不绑定角色</p></form><p id="save-status" role="status" aria-live="polite">装配会自动保存在此浏览器</p></div><div id="saved-builds" class="saved-list"></div></section>
     <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">PARTS & GOODIES / 零件百宝箱</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">外观主题（可选）<select id="theme-filter"><option value="">全部 54 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="找零件"></label><button id="apply-theme" title="按当前主题装配六个零件；没有套装加成" disabled>整套试装</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
@@ -201,6 +220,7 @@ export function mountKartGarage(root: HTMLElement) {
   $('.garage-actions').insertAdjacentHTML('beforeend', '<a class="license-link" href="./source.html" aria-label="开源代码与模型许可">许可 ↗</a>');
   $('.race-note').remove();
   $('.parts-library').insertAdjacentHTML('beforeend', '<div class="parts-pagination"><span id="tray-hint">悬停比较 · 点击装配</span><div><button id="parts-prev" aria-label="上一页零件">←</button><span id="parts-page" role="status" aria-live="polite"></span><button id="parts-next" aria-label="下一页零件">→</button></div></div>');
+  const layout = mountGarageLayout(root, () => preview?.resize());
   let dialogOpener: HTMLElement | null = null;
   root.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
     dialog.addEventListener('close', () => {dialogOpener?.focus({preventScroll: true}); dialogOpener = null;}, {signal: events.signal});
@@ -218,7 +238,7 @@ export function mountKartGarage(root: HTMLElement) {
     const physical = Object.fromEntries(KART_SLOTS.map(key => [key, byId.get((candidate || state.activeBuild)[key])!.physicalDesign])) as Record<KartSlot, Readonly<Record<string, number>>>;
     const combinedRows = [['加速', 'acceleration', '游戏单位/s²'], ['极速', 'speed', 'km/h（HUD 换算）'], ['操控', 'handling', '游戏转向系数'], ['稳定性', 'stability', 'g（设计估计，抗侧翻未启用）']] as const;
     const combinedMarkup = `<div class="combined-stats"><h3>${esc(driver.label)} + 车辆 · ${prospective ? '当前 → 试装' : '上次 → 当前'}</h3>${combinedRows.map(([label, key, unit]) => {const delta = combined[key] - previous[key]; return `<div><span>${label}</span><strong>${previous[key].toFixed(2)} → ${combined[key].toFixed(2)}</strong><small>${unit} · Δ ${delta > 0 ? '+' : ''}${delta.toFixed(2)}</small></div>`;}).join('')}<p>角色参与加速、极速与操控；稳定性显示车辆设计值</p></div>`;
-    const compactCombinedMarkup = `<div class="combined-stats compact-comparison"><h3>${esc(driver.label)} + 赛车</h3>${combinedRows.map(([label, key, unit]) => {const delta = combined[key] - previous[key]; return `<div title="${esc(unit)} · ${prospective ? '当前 → 试装' : '上次 → 当前'} ${previous[key].toFixed(2)} → ${combined[key].toFixed(2)}"><span>${label}${key === 'stability' ? '<small class="estimate-tag">设计值</small>' : ''}</span><strong>${combined[key].toFixed(key === 'speed' ? 1 : 2)}${key === 'speed' ? '<small> km/h</small>' : ''}</strong><small class="compact-delta ${Math.abs(delta) < .005 ? 'neutral' : delta > 0 ? 'positive' : 'negative'}">${Math.abs(delta) < .005 ? '—' : `${delta > 0 ? '+' : ''}${delta.toFixed(2)}`}</small></div>`;}).join('')}<p>变化对比${prospective ? '当前装配' : '上次装配'} · 稳定性机制未启用</p></div>`;
+    const compactCombinedMarkup = renderGarageStatBars({driverLabel: driver.label, current: combined, previous, prospective});
     const rows = [
       ['设计极速', 'topSpeedKph', 'km/h', 1, false], ['设计起步', 'launchAcceleration', 'm/s²', 2, false], ['设计抓地', 'lateralGripG', 'g', 2, false], ['整车质量', 'massKg', 'kg', 1, true],
     ] as const;
@@ -271,7 +291,7 @@ export function mountKartGarage(root: HTMLElement) {
     if (target.id === 'save-as-new') {editingId = null; renderEditing(); $<HTMLInputElement>('#build-name').focus();}
     if (target.id === 'clear-filters') {partPage = 0; theme = ''; query = ''; $<HTMLSelectElement>('#theme-filter').value = ''; $<HTMLInputElement>('#part-search').value = ''; renderParts();}
     if (target.id === 'apply-theme' && theme) {const build = {...state.activeBuild}; for (const part of catalog.filter(value => value.themeId === theme)) build[part.slot] = part.id; applyBuild(build, `${themeName(byId.get(build.body)!)} · 整套`);}
-    if (target.id === 'preview-zoom-in') preview?.zoomBy(-.1); if (target.id === 'preview-zoom-out') preview?.zoomBy(.1); if (target.id === 'preview-reset') preview?.reset(); if (target.id === 'preview-retry') preview?.retry();
+    if (target.id === 'preview-spin') preview?.toggleSpin(); if (target.id === 'preview-zoom-in') preview?.zoomBy(-.1); if (target.id === 'preview-zoom-out') preview?.zoomBy(.1); if (target.id === 'preview-reset') preview?.reset(); if (target.id === 'preview-retry') preview?.retry();
   }, {signal: events.signal});
   const comparePart = (event: Event) => {const target = (event.target as HTMLElement).closest<HTMLElement>('[data-part]'); if (!target) return; const part = byId.get(target.dataset.part!)!; renderStats({...state.activeBuild, [part.slot]: part.id});};
   $('#parts-grid').addEventListener('pointerover', comparePart); $('#parts-grid').addEventListener('focusin', comparePart); $('#parts-grid').addEventListener('pointerleave', () => renderStats()); $('#parts-grid').addEventListener('focusout', event => {if (!$('#parts-grid').contains((event as FocusEvent).relatedTarget as Node)) renderStats();});
@@ -300,7 +320,7 @@ export function mountKartGarage(root: HTMLElement) {
       if (current.totalBytes && current.totalBytes > 0) {bar.max = current.totalBytes; bar.value = current.receivedBytes;} else bar.removeAttribute('value');
     }
   }, state.activeBuild);
-  const pagehide = () => {events.abort(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
+  const pagehide = () => {events.abort(); layout.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
   const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
   window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);
   const dispose = () => {pagehide(); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow); mountedGarages.delete(root);};
