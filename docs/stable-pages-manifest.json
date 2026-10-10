@@ -1,12 +1,17 @@
 {
   "schemaVersion": 1,
   "repository": "JerryZRic/ai-friends-kart-playcanvas",
-  "stableCommit": "26c56e2305843044c5ed3b12f77847e6831ba58c",
-  "workflowRunId": 37916677374,
-  "artifactId": 11610245112,
-  "artifactSha256": "99b63d0bcb8d5ea2066d55a658b7fed601aed99ebf04f6604253b61ceea302db",
+  "stableCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
+  "workflowRunId": 38055560640,
+  "artifactId": 11671375479,
+  "artifactSha256": "1648f9dae206808b2e1074da0c33f636654e7b19bfc9c823887fc40b1db2a38e",
   "baseUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/",
   "files": [
+    {
+      "path": "FOOD-ASSET-NOTICE.txt",
+      "bytes": 1294,
+      "sha256": "d23c0068c201a6312d0320e053194f27061311ba3c0c5f7accabb3cf195deee3"
+    },
     {
       "path": "LICENSE",
       "bytes": 34523,
@@ -14,18 +19,18 @@
     },
     {
       "path": "MODEL-NOTICE.txt",
-      "bytes": 3079,
-      "sha256": "b53a950cdaa56fa85a8c4c8626fb18c9681b0cef88053c718b1b7f782647804c"
+      "bytes": 4269,
+      "sha256": "6d1317af26ca2aca6874f6eced71eed0d050ab63443b406c58859ee6bcbe83a6"
     },
     {
       "path": "NOTICE",
-      "bytes": 2421,
-      "sha256": "9b943a06d8946c8d13fced514dc754e46fd00963e31c317fac7dde324c57ed1f"
+      "bytes": 2663,
+      "sha256": "1a8fa56647b7fe412cee280bee6e82b5d3b12986f063c5bd95e69b4382d1f6b7"
     },
     {
       "path": "SOURCE.txt",
-      "bytes": 1541,
-      "sha256": "f994c495de9aeb98e816e7e6f79bd1a35fcd3923f763019acb1cf68f9616fe4d"
+      "bytes": 1933,
+      "sha256": "3d5f975aa0b6c801d84c3e67d03fc7de66937cebafd9eb00a52ac8512ea8efe0"
     },
     {
       "path": "THIRD-PARTY-NOTICES.txt",
@@ -33,14 +38,14 @@
       "sha256": "2d393e6fdcbbca9ccfdc8373db606a4164e043d6c70814814e2fadf457a6e92c"
     },
     {
-      "path": "assets/application-DZTA1EER.js",
-      "bytes": 1995910,
-      "sha256": "5ce908c42eac0cb81fe2977e42179e5a22ba77d377ae58eba183222a388e413a"
+      "path": "assets/application-DqDnV9N3.js",
+      "bytes": 1995926,
+      "sha256": "b78ced52a3b1242c31f8343acb7af54a47089d9929d69de9d4acb97c2492f647"
     },
     {
-      "path": "assets/application-DZTA1EER.js.map",
+      "path": "assets/application-DqDnV9N3.js.map",
       "bytes": 5192991,
-      "sha256": "5256b32b96f029f234ff372aa61ba59090244f0248314de7fd4256fb355ddcba"
+      "sha256": "34bde4e5ee4d5c646738a44f58bac01b4d2b22a2bd93cf3aa9288970783ef029"
     },
     {
       "path": "assets/arch.glb",
@@ -48,44 +53,54 @@
       "sha256": "02d5846dff35d97535b979348a255aaaf7d38b0e1b971ca6a0428b4807d496ae"
     },
     {
-      "path": "assets/assets-BiLXuKRr.js",
-      "bytes": 27734,
-      "sha256": "99003a0b867ccd3ae529241bd27a417ccc9291028bbc5c7b334f1e46beaf2178"
+      "path": "assets/assets-DURPsAQi.js",
+      "bytes": 26409,
+      "sha256": "ba3ef098a7e2e28d9f910d680f9bb06c461ff373a80d0f19cd7e02957e1cee4b"
     },
     {
-      "path": "assets/assets-BiLXuKRr.js.map",
-      "bytes": 175535,
-      "sha256": "9cc16813808f9bad541cff1fe4cb50fe4ead143314a9bcdcfdf4c3408634bcba"
+      "path": "assets/assets-DURPsAQi.js.map",
+      "bytes": 173386,
+      "sha256": "dcd3ba7c7198e818aed17647f63905f268647f08e3f59ba7a1e196ee9607af15"
     },
     {
-      "path": "assets/character-preview-rfbqESoD.js",
-      "bytes": 11143,
-      "sha256": "2b1eda6b6a4a49c7403599c916e8161da6cc0a759b29dca1f58ca43bd44ad7b7"
+      "path": "assets/character-identity-DoWqX2O9.js",
+      "bytes": 908,
+      "sha256": "17b1b6b17599bca3a5c7e70f4ecb979215570ee8c9ab439ffa22d7ff33daaeeb"
     },
     {
-      "path": "assets/character-preview-rfbqESoD.js.map",
-      "bytes": 36237,
-      "sha256": "cb3e225c6a94b8cb2807040a387104c9b2e54efddc28f16aa7c43ac3f7265d76"
+      "path": "assets/character-identity-DoWqX2O9.js.map",
+      "bytes": 2346,
+      "sha256": "26112214a6c6629097035f3cd568b7ac6c5d22f8dabf228c3a1495fef8a0e70b"
     },
     {
-      "path": "assets/closed-circuit-ChiK1ZC1.js",
+      "path": "assets/character-preview-BNaZbSqj.js",
+      "bytes": 14460,
+      "sha256": "ce53492de5a924874ba8e57043bbf9e900e430d8e9c09c949f79e3dabef912a3"
+    },
+    {
+      "path": "assets/character-preview-BNaZbSqj.js.map",
+      "bytes": 49084,
+      "sha256": "09c40996ea85630e7a7dbc8ddec9e14f79782a90fe391002aa812cbc021d2cb9"
+    },
+    {
+      "path": "assets/closed-circuit-XcaY-CVc.js",
       "bytes": 2375,
-      "sha256": "d78b964e389958caddc07d0ab2dec1a0088e1bc3785316da569f52f6dd887585"
+      "sha256": "768f16a541374717b72139f1935e523d21bc85173ac95a71942e8ca17358bd3e"
     },
     {
-      "path": "assets/closed-circuit-ChiK1ZC1.js.map",
+      "path": "assets/closed-circuit-XcaY-CVc.js.map",
       "bytes": 9276,
-      "sha256": "a3683d3fde20b50afe1d624b038db5bcb580b3d9bd96bade2bcbbb16421a0bb7"
+      "sha256": "418fbeb8868450d8069282cd1ff3115947b92c6915452fb12b65b5813f1dab27"
     },
     {
-      "path": "assets/coast-D_Ro3i1B.js",
-      "bytes": 24690,
-      "sha256": "926730dc098c3b2ca4dadbdc023b8808333e7612948e5234597bba13389719cd"
+      "path": "assets/coast-Djzno2KC.js",
+      "bytes": 38522,
+      "sha256": "b999a071a5c703613fc0ea8b36f69b63e550eaee94ee80d507423edcf7b9d6c8"
     },
     {
-      "path": "assets/coast-D_Ro3i1B.js.map",
-      "bytes": 77650,
-      "sha256": "b18c13ad0b4863fa835bf41be6548ab8f90695c1ae6ee6882f3e0b61c09227f2"
+      "path": "assets/coast-Djzno2KC.js.map",
+      "bytes": 132163,
+      "sha256": "2a39bfb641bb04eca73c9d1f26785e1d9f5827b7f3dcd043e5fa054dd7eacf73"
     },
     {
       "path": "assets/drivers/claude-driver.glb.gz",
@@ -118,14 +133,29 @@
       "sha256": "1bb498c06caab6797756af42cc4a092e9f51dfe661fa97f13639e2e359ff5bc8"
     },
     {
-      "path": "assets/game-settings-DZdUEB6_.js",
-      "bytes": 3139,
-      "sha256": "9f113f1d1e25ab59f34b1f2482578687237b502b13dfd7be05023ffb4e776903"
+      "path": "assets/garage-Bw5ZUzyP.css",
+      "bytes": 47106,
+      "sha256": "57453a6281eabc22007251ab97abbbb928bece310dfdc50a8b17ebe7e9f08a2a"
     },
     {
-      "path": "assets/game-settings-DZdUEB6_.js.map",
-      "bytes": 7705,
-      "sha256": "46193d7a8564d5f85079e1be7e8dfeee0dda7b1330bda8f55a46de5e71d263d0"
+      "path": "assets/garage-I1aCN4Xi.js",
+      "bytes": 52263,
+      "sha256": "fa16ff12ae08eb9839cb0dd8207ecc9d9aea84960f4b18cf6b95a7bcf78325e5"
+    },
+    {
+      "path": "assets/garage-I1aCN4Xi.js.map",
+      "bytes": 135301,
+      "sha256": "fa1a471e523b20512338f3194f7bab9fab0d511e57169a58d6f7cdd9a6082fdb"
+    },
+    {
+      "path": "assets/kart-presets-DHQiV2C-.js",
+      "bytes": 16191,
+      "sha256": "f2a750d6093fe5ec72cad955055768ae0704e675169ab15bcf2717182c495b80"
+    },
+    {
+      "path": "assets/kart-presets-DHQiV2C-.js.map",
+      "bytes": 59614,
+      "sha256": "a3bb586f7731b2c48700f6ac56613bc72f330e8d357def0e8e4203629599e054"
     },
     {
       "path": "assets/kart-r12-chassis.glb",
@@ -138,29 +168,39 @@
       "sha256": "ba1b4f018004eeabf860922ad570c338c281a671c9af56cdc839592df7ae59a0"
     },
     {
-      "path": "assets/main-DsCA5oWX.css",
-      "bytes": 25488,
-      "sha256": "b7e2db4f568d4864b8e614d6aff847d9be480ae24b55f6d91086080ef36900d6"
+      "path": "assets/main-B6loe11Z.js",
+      "bytes": 21252,
+      "sha256": "70021ea98f1bf2fb63bf0ee2be078764c63915b99b37e4cf280fb74188e22aad"
     },
     {
-      "path": "assets/main-iRsPrera.js",
-      "bytes": 16899,
-      "sha256": "6e084d796f83e1618641bb2fe8904f3bf655df6bf5aed2d69662d8775793d18f"
+      "path": "assets/main-B6loe11Z.js.map",
+      "bytes": 39740,
+      "sha256": "ee43bb9030d13b9f2ec66a56d7bc98d799cf5ecace8eaa33f7041682e67b5d16"
     },
     {
-      "path": "assets/main-iRsPrera.js.map",
-      "bytes": 31190,
-      "sha256": "e41e9cae70cac7297d087d7eeb108769a266430dc346647badaea0dc46b8b468"
+      "path": "assets/main-C3TBqLb8.css",
+      "bytes": 26244,
+      "sha256": "ab82af4000d8b289d4c1b89342d2cfb76363b330c697c67d7cd53296fb749e01"
     },
     {
-      "path": "assets/menu-backdrop-C9rfV5xR.js",
-      "bytes": 8368,
-      "sha256": "be643bd75b869132c94e3e4dd77041fba6a5d59672f4c150f3aa8a8747d5203f"
+      "path": "assets/menu-backdrop-DCY-MbuD.js",
+      "bytes": 8538,
+      "sha256": "0d0fe9bd482329479f3175d6890b9fb70d8a0483cb00f17135d91ed2904cc5eb"
     },
     {
-      "path": "assets/menu-backdrop-C9rfV5xR.js.map",
-      "bytes": 35866,
-      "sha256": "3d6da5952605dc14de10a7dc41eff9870d3c3a84124bf85a4bd69b9933500aaa"
+      "path": "assets/menu-backdrop-DCY-MbuD.js.map",
+      "bytes": 36608,
+      "sha256": "152a12f0cebc2d83b3b2132e372773901916f95f56db6777f8162e85d5b848f6"
+    },
+    {
+      "path": "assets/menu-state-XB7w1i_9.js",
+      "bytes": 2082,
+      "sha256": "ed7dd8a489534ed9ffb190a098642d7ec280c0d1f72dca05a40d4230b725d1f4"
+    },
+    {
+      "path": "assets/menu-state-XB7w1i_9.js.map",
+      "bytes": 5954,
+      "sha256": "b5a0832fa67ec3e78dab88e394ea251edaf342a87757fb425b3d5e84ec792a4a"
     },
     {
       "path": "assets/palm.glb",
@@ -168,14 +208,14 @@
       "sha256": "bce1b487f8f7e821bf361c4e4c0ae60dd0ed03eb16f783e85c74db7bf8c52b03"
     },
     {
-      "path": "assets/pickup-visual-Dljt3Q2p.js",
-      "bytes": 16435,
-      "sha256": "aff4970de97dd6999562f27c9ddc1b11c94a77f6773b818ff069a795ecee2ec6"
+      "path": "assets/pickup-visual-Da5Ano8x.js",
+      "bytes": 16440,
+      "sha256": "61ef72c1d55a0ccf062e8c5e4b0d4892775db77613d66c1c25c44b8d4975fdc5"
     },
     {
-      "path": "assets/pickup-visual-Dljt3Q2p.js.map",
-      "bytes": 65639,
-      "sha256": "42b1f1ffa1ed1565c78bd9234cf583fae0041676395b6cb4d38415b0db3bc9a0"
+      "path": "assets/pickup-visual-Da5Ano8x.js.map",
+      "bytes": 65638,
+      "sha256": "34bc5b4c51b098033b0a65ed123b2831c85c5d3bb4c500e8c82f20c851789113"
     },
     {
       "path": "assets/portraits/claude-portrait.glb.gz",
@@ -213,74 +253,134 @@
       "sha256": "8ea86ca3c8b2e72de54ad629dfc50c34b4ec273d54f0f6908537dbcd211eb54c"
     },
     {
+      "path": "assets/race-options-BkP1V8z2.css",
+      "bytes": 771,
+      "sha256": "ded1e03598a5b02ac1d7377c02a4ebfc0be7f438dddf9dee3198cda91eea55b7"
+    },
+    {
+      "path": "assets/race-options-u8ln7pcX.js",
+      "bytes": 141075,
+      "sha256": "500248dde34e7490a57cba77a11d5f78018f6f8ead0c8430f587789da0fa200f"
+    },
+    {
+      "path": "assets/race-options-u8ln7pcX.js.map",
+      "bytes": 269619,
+      "sha256": "518f5505cc6a86c4b7cece563af73a5700ada75fda2a7444130b4473c4bdc1b0"
+    },
+    {
       "path": "assets/rock.glb",
       "bytes": 10148,
       "sha256": "751119ac92b808fd4cf99cd4f639d2e17db832306a7fc8e59e1e61adcc9beb11"
     },
     {
-      "path": "assets/scene-BsQ4YtXV.js",
-      "bytes": 12975,
-      "sha256": "b36ccfcd92a53b660780014224d31971cc3583fe7dc14e99252a76bfb04b6f7b"
+      "path": "assets/scene-CRJh4pWX.js",
+      "bytes": 12980,
+      "sha256": "47178ac40d006132a05b8123b61b0fc21917187f1ff9ef11cbd03f997c77b4f0"
     },
     {
-      "path": "assets/scene-BsQ4YtXV.js.map",
-      "bytes": 46446,
-      "sha256": "be96df76facb0154485d8c2b318025f494ca93e70058f25f9872bec8a32742df"
+      "path": "assets/scene-CRJh4pWX.js.map",
+      "bytes": 46440,
+      "sha256": "eed9cfeeda7e20caf5a30d2003e0eef257bc85e4266d59e7cf9f35c36d25a914"
     },
     {
-      "path": "assets/study-B9X9O4Ac.js",
+      "path": "assets/study-Dgo8C8Uu.js",
       "bytes": 1489,
-      "sha256": "7bd724265019856252ed3b4e72f65b37cb5bab2f51249c2555a6d79612e90d9d"
+      "sha256": "2375452e104b8ee5666ec7c6e683b36967aa30895ac96a2111264fa3027afb81"
     },
     {
-      "path": "assets/study-B9X9O4Ac.js.map",
+      "path": "assets/study-Dgo8C8Uu.js.map",
       "bytes": 3592,
-      "sha256": "82221ef26ce626a6be4b26c6ae8da27d1655ed8f29dcba3a8d704b3ad01a022f"
+      "sha256": "2e339808239a48d1cee5b577815b750da81540fc473f6ab9ea63794d3be0a39d"
     },
     {
-      "path": "assets/waterpark-CoL-JtzO.js",
-      "bytes": 35130,
-      "sha256": "620af0155e15e0d488d051bd257c720d3d1d9aa07f5cc9eb1553aaf989add925"
+      "path": "assets/ui-layout-Jzr1Vibi.css",
+      "bytes": 546,
+      "sha256": "3ea83fb736df8f767457b7e439ca29ad21ad70f9c742ee75f4bce3459fe86b77"
     },
     {
-      "path": "assets/waterpark-CoL-JtzO.js.map",
-      "bytes": 119948,
-      "sha256": "a00b97e5d70d8e79ab60a06beaac24a867165b2af97f18aa36e84eb26c76eb8b"
+      "path": "assets/waterpark-Cc3L9j-i.js",
+      "bytes": 35609,
+      "sha256": "a9333876e52529be9f5af7dd5023a336d7a277917c283c41a0ae0ae513b9c5ba"
     },
     {
-      "path": "assets/waterpark-performance-ui-CLRFa24V.css",
-      "bytes": 24307,
-      "sha256": "1969ce1b00b8e7869aaa9af73a6cfc9b289e2d670d45f267714efcd645265ad0"
+      "path": "assets/waterpark-Cc3L9j-i.js.map",
+      "bytes": 121537,
+      "sha256": "426d86e0496e85d39ca7be143303383f665cbe5b485881b424cd1c75cc78014e"
     },
     {
-      "path": "assets/waterpark-performance-ui-D7Ctxvt2.js",
-      "bytes": 34682,
-      "sha256": "6544a74bb3733e22047f3177cb732bdefff2c24e07cc6d0bd252a03a0441701b"
+      "path": "assets/waterpark-performance-ui-BPR-BLye.css",
+      "bytes": 21397,
+      "sha256": "f9df957b2151687a4791d7882821eb04a765f123b443aa50266eaf93da4ecc16"
     },
     {
-      "path": "assets/waterpark-performance-ui-D7Ctxvt2.js.map",
-      "bytes": 109868,
-      "sha256": "e9765f277d4ce335629a6ef521d1c39542a22dc22b105c072ed8fb7a3f0ffc37"
+      "path": "assets/waterpark-performance-ui-D7bpxQob.js",
+      "bytes": 40529,
+      "sha256": "28b3a4cdb3d087762bf35e1d7c5ed30c288298ad61d1c14b55a7154e02dd14b2"
     },
     {
-      "path": "assets/waterpark-scene-CSttH-1O.js",
+      "path": "assets/waterpark-performance-ui-D7bpxQob.js.map",
+      "bytes": 125040,
+      "sha256": "8f27e1d4acb2c02551d4762e1ebc6065764edf58490e877b692108b5e2e3f8ce"
+    },
+    {
+      "path": "assets/waterpark-scene-CkbVzSeR.js",
       "bytes": 44344,
-      "sha256": "220181e61f1632efa3ab54106d4531c84ad3182999c092cddb2245fa6b91a565"
+      "sha256": "f5e57ae7cf84bb9dbd531d90e8259a58d347cbb06824639dd84a0d7cdf783ac6"
     },
     {
-      "path": "assets/waterpark-scene-CSttH-1O.js.map",
-      "bytes": 146760,
-      "sha256": "3d9053e65f9c1e3f0f653aa8fb97858297183e052a6e1e915142328fa73b219f"
+      "path": "assets/waterpark-scene-CkbVzSeR.js.map",
+      "bytes": 146768,
+      "sha256": "82f03ec549b10bdc5501f68583895949d140fde9b7444b8c9fb03d76ad70d925"
+    },
+    {
+      "path": "character-emblems/claude.png",
+      "bytes": 11019,
+      "sha256": "3f18e1a6b28e2277f3df83658d06da6ffd5342e01c847d747db04dc8cb9e959e"
+    },
+    {
+      "path": "character-emblems/gemini.png",
+      "bytes": 11710,
+      "sha256": "5f30d3433e3462b9e8d2c238a83a28c6d1a9e16f7c1e7c24da1db34b5519c9e0"
+    },
+    {
+      "path": "character-emblems/glm.png",
+      "bytes": 15022,
+      "sha256": "54172013f36df2b499bb2d5b9fe1dbac61bcb2f167a983c20a66ded7ef4f97ab"
+    },
+    {
+      "path": "character-emblems/gpt.png",
+      "bytes": 13282,
+      "sha256": "bc52a9ac1ff0e398c347423a9735556f36621ca5c53927e47a154031aed2eb21"
+    },
+    {
+      "path": "character-emblems/grok.png",
+      "bytes": 13085,
+      "sha256": "02d9bdf779cde810a53fe50afe075f10954831ad8699d8d3f99f22923be2c3b7"
+    },
+    {
+      "path": "character-emblems/whale.png",
+      "bytes": 11890,
+      "sha256": "43d74713cea7f05b761fb7c5686a39041518b8989234034018a9d4eff6923996"
     },
     {
       "path": "coast.html",
-      "bytes": 5335,
-      "sha256": "509169d10a25a9f537da6e3274e66a2f72c0de7ea1d19bcda3d8e5ae72fa0ee9"
+      "bytes": 5882,
+      "sha256": "55952f4ac121d0ffccc481061b8de2a9bae9a13398819fde340476589c5879e7"
+    },
+    {
+      "path": "garage-workshop.svg",
+      "bytes": 15068,
+      "sha256": "f9b247ed5a13727af7e6fffc4a617f1e09dadbd1e9d9ea1ea1d3c1204f9ce245"
+    },
+    {
+      "path": "garage.html",
+      "bytes": 3566,
+      "sha256": "4b6afae5f1fb0a96a0650789388d28370ecbb09054ed8d36e22e52b91a114b6d"
     },
     {
       "path": "index.html",
-      "bytes": 6000,
-      "sha256": "06b19f1cd887c55640972aab62bff14d0ec4cba2f40167c7cc6cd39b87616c1b"
+      "bytes": 7512,
+      "sha256": "2dbc61c8872f40ecc9cb4693d814e07aa1474d6f9527870df6733f32bdf649b0"
     },
     {
       "path": "map-previews/coast-overview.webp",
@@ -293,24 +393,309 @@
       "sha256": "36e6cf3788a0757dcd1faf0218ec5984e778114fdfa27e5dfc976579ad751f2d"
     },
     {
+      "path": "models/food-karts/bundles/000-white-rice.zip",
+      "bytes": 1101459,
+      "sha256": "205a5006dd593e98c325a88e12528598e38c7f6290017dfba706da42c7acebbf"
+    },
+    {
+      "path": "models/food-karts/bundles/001-lemon-pastry.zip",
+      "bytes": 2340426,
+      "sha256": "10818a779d8a22818ef7f3120f386db2a5281ccba1d6072039ecdcc85c4586c4"
+    },
+    {
+      "path": "models/food-karts/bundles/002-strawberry-wafer.zip",
+      "bytes": 2345984,
+      "sha256": "d490ce345525807c9a93afed744ab0f03ff160ee5fe4b67750989123a267f0c1"
+    },
+    {
+      "path": "models/food-karts/bundles/003-matcha-roll.zip",
+      "bytes": 2932193,
+      "sha256": "20494eb5a7802d81a2325977c93242161c9a0410a528ff477112d8351dc47cc0"
+    },
+    {
+      "path": "models/food-karts/bundles/004-chocolate-hazelnut.zip",
+      "bytes": 2742407,
+      "sha256": "686a815009f38a1c91a15499a72801388d27617fad2a829e664b6fcd30dd6a04"
+    },
+    {
+      "path": "models/food-karts/bundles/005-mango.zip",
+      "bytes": 2480582,
+      "sha256": "cd4d33a93a978ad0393258db1fa564348b0f53cecd2755b4523e795209198c9c"
+    },
+    {
+      "path": "models/food-karts/bundles/006-blueberry-macaron.zip",
+      "bytes": 2665117,
+      "sha256": "2936db39a27af372d94744d98038954c262bc33a1ccedfbd5593a76c8f7b9c6a"
+    },
+    {
+      "path": "models/food-karts/bundles/007-watermelon.zip",
+      "bytes": 2303150,
+      "sha256": "8ca6627019f2374201d3a189226369b9ff5574afac86aaed47c5512585dc5e39"
+    },
+    {
+      "path": "models/food-karts/bundles/008-pretzel-caramel.zip",
+      "bytes": 2721760,
+      "sha256": "692d5eaa3eacab0e4b656c93934cb691db251f3c5f5191646e658399af21b743"
+    },
+    {
+      "path": "models/food-karts/bundles/009-pineapple.zip",
+      "bytes": 2067941,
+      "sha256": "ea23670140bf3f4381598e6493e2f3231c28dcba32184c454b93f179edf0e90c"
+    },
+    {
+      "path": "models/food-karts/bundles/010-peach-mochi.zip",
+      "bytes": 2451200,
+      "sha256": "abedb9443115792c38f0bcae9fe88d91a3f051981d509c4a72574bf0e909a108"
+    },
+    {
+      "path": "models/food-karts/bundles/011-banana-cream.zip",
+      "bytes": 2636404,
+      "sha256": "9b61cb61911a48a0f0e0f23f1a6e429ebbc8925c3c6b0d2754e75c6d73e7a300"
+    },
+    {
+      "path": "models/food-karts/bundles/012-popcorn-caramel.zip",
+      "bytes": 2941023,
+      "sha256": "967177c2dfd65a7046ac8af6fb03962bb70faa942ea1d0db504669a6dd422649"
+    },
+    {
+      "path": "models/food-karts/bundles/013-kiwi.zip",
+      "bytes": 3286417,
+      "sha256": "8b7d1b160d2368bf0938646c9904a866f59bfc3f3825d9d1272b694689d1bd23"
+    },
+    {
+      "path": "models/food-karts/bundles/014-cinnamon-roll.zip",
+      "bytes": 3207885,
+      "sha256": "c31428233a3dcfd4e428c79091fd05f097d0b3080b2d0f2d821f592c8853cd02"
+    },
+    {
+      "path": "models/food-karts/bundles/015-cherry-tart.zip",
+      "bytes": 2833022,
+      "sha256": "eb3d66758011cfceb3ee041f7296351d8f3f0525cb54adbb0c09d02fb71f8166"
+    },
+    {
+      "path": "models/food-karts/bundles/016-orange-sorbet.zip",
+      "bytes": 2760256,
+      "sha256": "231b808b6633414401482711f2c47e50f62dc4083c3944d2955030ed8b4fe2de"
+    },
+    {
+      "path": "models/food-karts/bundles/017-pistachio-cookie.zip",
+      "bytes": 3624220,
+      "sha256": "e99a78e1fee6aea2f646f3cea7140d84a4bf9127a12850ffe9c37789d045d57e"
+    },
+    {
+      "path": "models/food-karts/bundles/018-dragon-fruit.zip",
+      "bytes": 2853348,
+      "sha256": "8e8b468a5998ad9f9fcff8429eff06bc2a43ccf78939c17bf9dce2000d69badb"
+    },
+    {
+      "path": "models/food-karts/bundles/019-honey-waffle.zip",
+      "bytes": 2824462,
+      "sha256": "65239a35371f76da66940a2d91a52d92a847845554f85a77e10678c53691fa92"
+    },
+    {
+      "path": "models/food-karts/bundles/020-grape-jelly.zip",
+      "bytes": 3534040,
+      "sha256": "8637ae87ee78748648ff9812b2d0165688430b28c0d641d5d9c1dec6de0e200b"
+    },
+    {
+      "path": "models/food-karts/bundles/021-apple-pie.zip",
+      "bytes": 3188688,
+      "sha256": "52e7c0df8f9297a162451826ccb9f699e511f89539ce8d12387b48845abf505d"
+    },
+    {
+      "path": "models/food-karts/bundles/022-coconut.zip",
+      "bytes": 3260513,
+      "sha256": "c56e8672a569bad1be23e260f69fa9b0397d3359d49b3ded12d21acb812ba446"
+    },
+    {
+      "path": "models/food-karts/bundles/023-raspberry-donut.zip",
+      "bytes": 3540368,
+      "sha256": "9f4d760f42c844664c42459ac0893f4b048922674a8545aec8fa4dc5913ba0f8"
+    },
+    {
+      "path": "models/food-karts/bundles/024-sesame-biscuit.zip",
+      "bytes": 3775029,
+      "sha256": "94653ad04f5955c56a8ebfb86534ec0e3e4701848abd6e4d48fadc28063c6174"
+    },
+    {
+      "path": "models/food-karts/bundles/025-pear.zip",
+      "bytes": 3470028,
+      "sha256": "fcd7102037786fef5414b789045b33e846f8f01d72134942a0f551e86e3d6b41"
+    },
+    {
+      "path": "models/food-karts/bundles/026-tiramisu.zip",
+      "bytes": 3790321,
+      "sha256": "9368ec33b6684237b16723adb9e21f76e4003dcc0a7f08c6a3933549a8532e86"
+    },
+    {
+      "path": "models/food-karts/bundles/027-blackberry-tart.zip",
+      "bytes": 3883960,
+      "sha256": "793cba986d0d963ee67938ae5bd8a2aeb426458459bb41b79e2fca905825feab"
+    },
+    {
+      "path": "models/food-karts/bundles/028-peanut-brittle.zip",
+      "bytes": 3776423,
+      "sha256": "1e7bf2b27a0aff85b534313d425e5b1a916cb5ca22c04e59713bd720567e1995"
+    },
+    {
+      "path": "models/food-karts/bundles/029-lychee.zip",
+      "bytes": 4112823,
+      "sha256": "f04a70b86a65168a3348b801feaac500ef66d2dffca29e54aaa3ae30fd9626ce"
+    },
+    {
+      "path": "models/food-karts/bundles/030-coffee-bun.zip",
+      "bytes": 4031631,
+      "sha256": "d4a2d22f0e0cbc59e799e31bfcaebc7b0cd946a5baa3afc2b39ad04d8055126a"
+    },
+    {
+      "path": "models/food-karts/bundles/031-apricot.zip",
+      "bytes": 3922622,
+      "sha256": "b120465255012ae8bc5f223a7a936096d575aedf86fbd9cdd32b085427993633"
+    },
+    {
+      "path": "models/food-karts/bundles/032-pecan-pie.zip",
+      "bytes": 4263186,
+      "sha256": "b8373d01ab0aac9c922f5683c4df6741e75842e70d4ec79b5a6279bb5f49f089"
+    },
+    {
+      "path": "models/food-karts/bundles/033-cantaloupe.zip",
+      "bytes": 3702210,
+      "sha256": "c99b1a3b7f20ac30ee6c55baad829b4c19e959eaef6835f646b12bd7079e91e0"
+    },
+    {
+      "path": "models/food-karts/bundles/034-butter-croissant.zip",
+      "bytes": 4381875,
+      "sha256": "a419348374f6919a6d48b27ac50de074203823a9aa01ca3ff7d7c60e24440429"
+    },
+    {
+      "path": "models/food-karts/bundles/035-pomegranate.zip",
+      "bytes": 3892496,
+      "sha256": "5f1b03332bce35a65192e6818b92ae326880d5c35cc72519054a3402e46ebf63"
+    },
+    {
+      "path": "models/food-karts/bundles/036-almond-financier.zip",
+      "bytes": 3658598,
+      "sha256": "2b6fcec9af863e36b753f5bc6f4b52868bb157729668c7978973342b8e204a10"
+    },
+    {
+      "path": "models/food-karts/bundles/037-plum.zip",
+      "bytes": 3424450,
+      "sha256": "31d8683c3b2de2e3cffb2b26fd2e91fd3fc1ee97eb5f1b3ec795aabe43ffe046"
+    },
+    {
+      "path": "models/food-karts/bundles/038-vanilla-eclair.zip",
+      "bytes": 3454919,
+      "sha256": "ebaee98c48c1406b6547251a00f653c8d9db614ced99560509ca05356fd09494"
+    },
+    {
+      "path": "models/food-karts/bundles/039-persimmon.zip",
+      "bytes": 3017308,
+      "sha256": "5263193d9028cdfd0fc0d169a892e455f859f60342a0a4e14a420fe6d378ab35"
+    },
+    {
+      "path": "models/food-karts/bundles/040-gingerbread.zip",
+      "bytes": 3127652,
+      "sha256": "a805193670b607f470d2753003eabf6c4a6c479e04718e6ead5b87deb407b22e"
+    },
+    {
+      "path": "models/food-karts/bundles/041-guava.zip",
+      "bytes": 3051101,
+      "sha256": "5d732fe3722dfe232e0c1c20a07b0fc83fc8dce7c35f6754f74eac6d22922c19"
+    },
+    {
+      "path": "models/food-karts/bundles/042-custard-tart.zip",
+      "bytes": 3322371,
+      "sha256": "65ea856a43284b5658ab2be893efdf07a223b69c9ad1b31006d6d381a8bef4db"
+    },
+    {
+      "path": "models/food-karts/bundles/043-fig.zip",
+      "bytes": 3241139,
+      "sha256": "f981453156f1a62980601d6a8b04b7cb6f645127d85fa9fae45423515d7cb330"
+    },
+    {
+      "path": "models/food-karts/bundles/044-cocoa-brownie.zip",
+      "bytes": 3381036,
+      "sha256": "3e288bf9f45cac77b1aed04eae1e1d92ff0e692d24a0929357f41ad2dd382ce9"
+    },
+    {
+      "path": "models/food-karts/bundles/045-passion-fruit.zip",
+      "bytes": 3723766,
+      "sha256": "8a68fef221132f7c663b77981cc696f51f2dbdd15cb432fdfafb80881fce8490"
+    },
+    {
+      "path": "models/food-karts/bundles/046-coconut-biscuit.zip",
+      "bytes": 3918066,
+      "sha256": "25bad9b21127c843144bb470fc200ab6b2d6805c03c05801466027f8ab3144b6"
+    },
+    {
+      "path": "models/food-karts/bundles/047-starfruit.zip",
+      "bytes": 3151444,
+      "sha256": "034e1066df06e16dc46b178ae9f178001f0e4a3583706b3740fbd8c9a37df980"
+    },
+    {
+      "path": "models/food-karts/bundles/048-strawberry-shortcake.zip",
+      "bytes": 3793315,
+      "sha256": "01c7334f8e369da9adedfa0bc59da37ad9d55fdb2f7a4e1e2ea0ce91f5a84303"
+    },
+    {
+      "path": "models/food-karts/bundles/049-papaya.zip",
+      "bytes": 3276079,
+      "sha256": "ef55864ad56698986cae6021bfc4f78b673522c02adcf89d55ab0351ea292aad"
+    },
+    {
+      "path": "models/food-karts/bundles/050-oat-raisin-cookie.zip",
+      "bytes": 3861842,
+      "sha256": "ba77dc3d548e01e79de50cec4f3bfec2d2557e441a099a3a2de9e01bd81a12bf"
+    },
+    {
+      "path": "models/food-karts/bundles/051-longan.zip",
+      "bytes": 3781371,
+      "sha256": "68859a56026b2838f935deb578a8c687733f8349437b5e861385f3e9e9318703"
+    },
+    {
+      "path": "models/food-karts/bundles/052-caramel-pudding.zip",
+      "bytes": 1771074,
+      "sha256": "aa63203662553e0152149fd204452352ca02c0af6f3a03311fd19066c746718c"
+    },
+    {
+      "path": "models/food-karts/bundles/053-rambutan.zip",
+      "bytes": 2281213,
+      "sha256": "829fff147ef42ccaff6eacd4806013ef2364accd58642629a1c3530588838c13"
+    },
+    {
+      "path": "models/food-karts/bundles/054-red-bean-dorayaki.zip",
+      "bytes": 2182324,
+      "sha256": "b64e1021af86bffd9e711f0260837d00340dd4ec435dc44781cf102958bf3514"
+    },
+    {
+      "path": "models/food-karts/manifest.json",
+      "bytes": 2471472,
+      "sha256": "bf7eed7445ef0c177bada220bfaf3af6f3548f34dae9147c8145961ef3577ff0"
+    },
+    {
+      "path": "models/food-karts/thumbnails.json",
+      "bytes": 1785000,
+      "sha256": "3eee4970444c201a91f2222e5bff51ac7830d2baf7446a2871e8af61d9a38d02"
+    },
+    {
       "path": "source.html",
-      "bytes": 2849,
-      "sha256": "666e079feb46fa569a5d3bec9b26cc6df9d7c6ffc88f5e1c5b59eb0f682a92e5"
+      "bytes": 3309,
+      "sha256": "d24d3c888189c7a29d969330477e7bd7cadf099efc997d49f9f84b7e897376f5"
     },
     {
       "path": "source.zip",
-      "bytes": 1722665,
-      "sha256": "9b3e3db24add7622274c544db3408d635b063aa0b455248b2fe08244770c0c67"
+      "bytes": 14106384,
+      "sha256": "05b76496851a2b8230da78da400f35d8c8a43f4b43a7a74baa766beb857c7641"
     },
     {
       "path": "waterpark-study.html",
       "bytes": 2443,
-      "sha256": "c8538a6436db55377935252037c3c83cec5ba9af1cf3434c553644de49fde77d"
+      "sha256": "9da83638ae4b96172f5a3f63e368a79818c193f5d3478c7b2517c0ab3ed94265"
     },
     {
       "path": "waterpark.html",
-      "bytes": 3744,
-      "sha256": "aaec8954df8d82c69150f55fabeb8f94cf89d16a61db2b352ba2eebe2b671ee3"
+      "bytes": 4041,
+      "sha256": "3e2be8629a28c5c88f12e7a8eb3e47968ca8f30f0c1d81c725531dba27c1d461"
     }
   ]
 }
