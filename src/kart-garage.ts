@@ -282,7 +282,7 @@ export function mountKartGarage(root: HTMLElement) {
     const result = upsertGarageNamedBuild(state, input.value, editingId, `build-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
     if (result.ok === false) {input.setCustomValidity(result.reason); input.reportValidity(); $('#save-status').textContent = result.reason; return;}
     input.setCustomValidity(''); const updating = editingId !== null; state = result.state; editingId = result.id;
-    const name = input.value.trim(); input.value = name; $('#build-title').textContent = name;
+    const name = input.value.trim(); input.value = name; $('#build-title').textContent = name; $('#build-title').title = name;
     persist(`“${name}”已${updating ? '更新' : '保存'}在此浏览器`); renderSaved(); renderEditing();
   });
   $<HTMLInputElement>('#build-name').addEventListener('input', event => (event.target as HTMLInputElement).setCustomValidity(''));
