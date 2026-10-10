@@ -26,7 +26,7 @@ function edge(id:RouteEdgeId,start:CircuitPoint,end:CircuitPoint):RouteEdge {
 const start=edge('start',seam,split),alley=edge('alley',split,merge),boulevard=edge('boulevard',split,merge),finish=edge('finish',merge,seam);
 const edges=Object.freeze({start,alley,boulevard,finish});
 const gate=(index:number,edgeId:RouteEdgeId,fraction:number):CheckpointGate=>Object.freeze({index,edgeId,s:edges[edgeId].length*fraction});
-export const TOWN_COURSE:ForkCourse=Object.freeze({id:'town',edges,commonStart:start,commonFinish:finish,alternates:Object.freeze({alley,boulevard}),canonicalLength:start.length+boulevard.length+finish.length,gatesPerLap:8,sharedMergeLength:35,
+export const TOWN_COURSE:ForkCourse=Object.freeze({id:'town',presentation:Object.freeze({branchLabels:Object.freeze({alley:'灯巷捷径',boulevard:'电车大道'})}),edges,commonStart:start,commonFinish:finish,alternates:Object.freeze({alley,boulevard}),canonicalLength:start.length+boulevard.length+finish.length,gatesPerLap:8,sharedMergeLength:35,
   checkpointGates:Object.freeze([gate(0,'start',.32),gate(1,'start',.85),gate(2,'alley',1/3),gate(3,'alley',2/3),gate(2,'boulevard',1/3),gate(3,'boulevard',2/3),gate(4,'finish',.08),gate(5,'finish',.35),gate(6,'finish',.7),gate(7,'finish',1)])});
 export const TOWN_ROAD_EDGES:readonly RouteEdge[]=Object.freeze(Object.values(edges));
 /** Explicit scene metadata; decorative/scenery systems never infer a deck from XZ. */

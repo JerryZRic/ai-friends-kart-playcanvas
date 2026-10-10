@@ -22,6 +22,8 @@
 
 **灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开 dev 旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town)。
 
+**赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开 dev 采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

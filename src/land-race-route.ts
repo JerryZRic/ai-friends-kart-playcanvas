@@ -27,7 +27,9 @@ export function createLandRaceRoute(course:ForkCourse,seed:number) {
   };
   const npcChoice=(id:string)=>{
     const c=cursor(id),chosen=c.choiceByLap[c.lap];if(chosen)return chosen;
-    const key=`${seed}:${id}:${c.lap}:town-fork`;let hash=2166136261;
+    // Stable per-course decisions do not consume the item RNG. For town this
+    // remains byte-for-byte the original seed/id/lap/town-fork hash input.
+    const key=`${seed}:${id}:${c.lap}:${course.id}-fork`;let hash=2166136261;
     for(const char of key)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;
     const selected:BranchId=hash/4294967296<.45?'alley':'boulevard';intents.set(id,{lap:c.lap,choice:selected});return selected;
   };

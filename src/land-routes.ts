@@ -8,6 +8,7 @@ export interface RouteEdge {
 }
 export type CheckpointGate = Readonly<{index:number;edgeId:RouteEdgeId;s:number}>;
 export interface ForkCourse {
+  readonly presentation?:Readonly<{branchLabels:Readonly<Record<BranchId,string>>}>;
   readonly id:string; readonly edges:Readonly<Record<RouteEdgeId,RouteEdge>>;
   readonly commonStart:RouteEdge; readonly commonFinish:RouteEdge;
   readonly alternates:Readonly<Record<BranchId,RouteEdge>>;

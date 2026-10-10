@@ -386,7 +386,7 @@ controls=bindRaceControls(canvas,{
 keys=controls.keys;mouseLook=controls.mouseLook;
 function updateHUD(){
   const feedback=coastHudFeedback(playerCombatant(),bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions);
-  const forkHint=routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?'← A / 左键：灯巷捷径 · D / 右键 →：电车大道（默认）':null;
+  const forkHint=routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?course.forkHint:null;
   shell.updateHUD({...feedback,
     // chargeLabel takes precedence over slideLabel in the shared HUD. Feed the
     // actual visible field so every fork presents its own route names.

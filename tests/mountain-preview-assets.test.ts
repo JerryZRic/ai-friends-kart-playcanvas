@@ -20,5 +20,8 @@ test('mountain menu image records current runtime geometry and complete offline 
   assert.ok(Math.min(...bounds.slice(0,2))>=.059&&Math.max(...bounds.slice(2))<=.941,key);
  }
  const coast=JSON.parse(readFileSync('docs/map-preview-provenance.json','utf8'));
- assert.deepEqual(Object.keys(MAP_PROFILES).sort(),[...Object.keys(coast.maps),'mountain','town'].sort());
+ for(const id of Object.keys(MAP_PROFILES).filter(id=>!coast.maps[id])){
+  const proof=JSON.parse(readFileSync(`docs/${id}-preview-provenance.json`,'utf8'));
+  assert.equal(proof.kind,'offline-native-geometry-render');assert.equal(sha(proof.menuAsset.file),proof.menuAsset.sha256);
+ }
 });

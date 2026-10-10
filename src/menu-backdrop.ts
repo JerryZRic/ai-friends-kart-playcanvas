@@ -13,7 +13,13 @@ let createMountainWorld: ((app:pc.Application)=>ReturnType<typeof import('./land
 let mountainPreparation:Promise<void>|undefined;
 let createTownWorld:typeof createMountainWorld;
 let townPreparation:Promise<void>|undefined;
+let createQuarryWorld:typeof createMountainWorld;
+let quarryPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='quarry')return quarryPreparation??=Promise.all([import('./land-scene'),import('./maps/quarry'),import('./quarry-scenery')]).then(([scene,{QUARRY_TRACK,QUARRY_COURSE},{buildQuarrySceneGeometry,QUARRY_SCENE_THEME}])=>{
+    registerMenuRoute('quarry',{sample:QUARRY_TRACK.sample,length:QUARRY_TRACK.length,lane:QUARRY_TRACK.halfWidthAt(0)});
+    createQuarryWorld=app=>scene.createLandScene(app,QUARRY_TRACK,{preview:true,geometry:buildQuarrySceneGeometry(QUARRY_COURSE),theme:QUARRY_SCENE_THEME});
+  }).catch(error=>{quarryPreparation=undefined;throw error;});
   if(map==='town')return townPreparation??=Promise.all([import('./land-scene'),import('./maps/town'),import('./town-scenery')]).then(([scene,{TOWN_TRACK,TOWN_COURSE},{buildTownSceneGeometry,TOWN_SCENE_THEME}])=>{
     registerMenuRoute('town',{sample:TOWN_TRACK.sample,length:TOWN_TRACK.length,lane:TOWN_TRACK.halfWidthAt(0)});
     createTownWorld=app=>scene.createLandScene(app,TOWN_TRACK,{preview:true,geometry:buildTownSceneGeometry(TOWN_COURSE),theme:TOWN_SCENE_THEME});
@@ -68,7 +74,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   const waterpark = map === 'waterpark' ? createWaterparkScene(app, {race: true}) : null;
   if(map==='mountain'&&!createMountainWorld)throw new Error('Prepare the mountain menu world before mounting.');
   if(map==='town'&&!createTownWorld)throw new Error('Prepare the town menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):null;
+  if(map==='quarry'&&!createQuarryWorld)throw new Error('Prepare the quarry menu world before mounting.');
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

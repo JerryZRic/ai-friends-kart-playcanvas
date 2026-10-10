@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {SETTINGS_KEY} from '../src/game-settings';
 import {garageRaceEntry} from '../src/kart-garage';
+import {MAP_PROFILES} from '../src/map-profiles';
+const mapIds=Object.keys(MAP_PROFILES),lastMap=mapIds.at(-1)!;
 /** DOM event contract tests, intentionally no GPU / visual-rendering claim. */
 test('menu repeated select/back/settings/exit, history and blocked storage work without WebGL',async()=>{
  const g=globalThis as any,names=['document','window','location','history','localStorage'];
@@ -48,14 +50,15 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
    const ids=elements.map(e=>e.attrs.id).filter(Boolean);assert.equal(new Set(ids).size,ids.length,'map controls and preview IDs must be unique');
    assert.equal(elements.filter(e=>e.tagName==='CANVAS').length,1,'only the selected map creates a live preview');
    const preview=$('#title-backdrop');assert.equal(preview.dataset.backdropState,'unavailable','missing WebGL retains the static route poster');preview.dispatchEvent(new Event('webglcontextlost'));assert.equal(preview.dataset.previewFallback,'true');preview.dispatchEvent(new Event('webglcontextrestored'));assert.equal(preview.dataset.previewFallback,undefined);
-   const overviewImages=root.querySelectorAll('.map-overview');assert.equal(overviewImages.length,4);assert.deepEqual(overviewImages.map(e=>e.attrs.src),['./map-previews/coast-overview.webp','./map-previews/waterpark-overview.webp','./map-previews/mountain-overview.webp','./map-previews/town-overview.webp']);assert.ok(overviewImages.every(e=>e.attrs.alt.includes('3D 俯视全景')));
+   const overviewImages=root.querySelectorAll('.map-overview');assert.equal(overviewImages.length,mapIds.length);assert.deepEqual(overviewImages.map(e=>e.attrs.src),mapIds.map(id=>`./map-previews/${id}-overview.webp`));assert.ok(overviewImages.every(e=>e.attrs.alt.includes('3D 俯视全景')));
    assert.ok(root.innerHTML.indexOf('class="map-library"')<root.innerHTML.indexOf('class="map-detail-panel"'),'route cards precede the scenic preview in reading order');
    assert.equal($('[data-map="coast"]').attrs.tabindex,'0');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'-1');
    const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map="coast"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'waterpark');assert.equal(urls.length,historyLength,'selection updates the existing history entry');
    assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.equal($('[data-map="coast"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');
-   key('ArrowDown',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'mountain');assert.match(root.innerHTML,/04 COURSES/);assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/mountain-overview.webp');key('ArrowDown',$('[data-map="mountain"]'));assert.equal(g.document.activeElement.dataset.map,'town');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/town-overview.webp');key('ArrowDown',$('[data-map="town"]'));assert.equal(g.document.activeElement.dataset.map,'coast','arrow navigation wraps');
-   key('End',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'town');key('Home',$('[data-map="town"]'));assert.equal(g.document.activeElement.dataset.map,'coast');
-   key('ArrowLeft',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'town');key('ArrowRight',$('[data-map="town"]'));assert.equal(g.document.activeElement.dataset.map,'coast');key('ArrowUp',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'town');$('[data-map="waterpark"]').click();
+   for(let i=2;i<mapIds.length;i++){key('ArrowDown',$(`[data-map="${mapIds[i-1]}"]`));assert.equal(g.document.activeElement.dataset.map,mapIds[i]);assert.equal($('.map-stage-fallback').attrs.src,`./map-previews/${mapIds[i]}-overview.webp`);}
+   assert.ok(root.innerHTML.includes(`${String(mapIds.length).padStart(2,'0')} COURSES`));key('ArrowDown',$(`[data-map="${lastMap}"]`));assert.equal(g.document.activeElement.dataset.map,'coast','arrow navigation wraps');
+   key('End',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,lastMap);key('Home',$(`[data-map="${lastMap}"]`));assert.equal(g.document.activeElement.dataset.map,'coast');
+   key('ArrowLeft',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,lastMap);key('ArrowRight',$(`[data-map="${lastMap}"]`));assert.equal(g.document.activeElement.dataset.map,'coast');key('ArrowUp',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,lastMap);$('[data-map="waterpark"]').click();
    assert.equal(key('Tab',$('[data-map="waterpark"]')).defaultPrevented,false,'native Tab and button activation remain available');
    $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true','settings return retains the selected course');
    $('[data-map="waterpark"]').click();assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');$('#confirm-map').click();$('[data-driver="grok"]').click();assert.equal($('#choose-vehicle').attrs['data-screen'],'vehicles');

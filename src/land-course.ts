@@ -1,36 +1,37 @@
 /** One kart runtime; large scenery modules load only for the selected course. */
 import * as pc from 'playcanvas';
 import {createCoastScene, placeKart as placeCoastKart} from './scene';
-import {LENGTH, sample, halfWidthAt, circuit} from './track';
+import {LENGTH, sample, halfWidthAt} from './track';
+import {townPickupRows,quarryPickupRows} from './land-course-pickups';
 import {resolveMap, type MapId} from './map-profiles';
 import type {LandTrack,LandSample} from './land-track';
-export type CameraObstacle={min:readonly number[];max:readonly number[]};
+export type {CameraBlocker as CameraObstacle} from './land-camera';
+import type {CameraBlocker as CameraObstacle} from './land-camera';
 import type {ForkCourse} from './land-routes';
 
 export async function loadLandCourse(search: string) {
   const requested=resolveMap(new URLSearchParams(search).get('map'));
   const mapId: MapId=requested.vehicle==='kart'?requested.id:'coast';
-  if(mapId==='town') {
-    const [{TOWN_TRACK:track,TOWN_COURSE:routes},{createLandScene},{buildTownSceneGeometry,TOWN_SCENE_THEME}]=await Promise.all([import('./maps/town'),import('./land-scene'),import('./town-scenery')]);
-    const geometry=buildTownSceneGeometry(routes);
-    const rows=([['start',.15],['alley',.43],['boulevard',.32],['boulevard',.61],['finish',.56],['finish',.83]] as const);
-    const pickups=rows.flatMap(([edgeId,fraction])=>[-2.4,2.4].map(lateral=>{
-      const edge=routes.edges[edgeId],s=edge.length*fraction;
-      const d=edgeId==='start'?s:edgeId==='finish'?routes.commonStart.length+routes.alternates.boulevard.length+s:routes.commonStart.length+s/edge.length*routes.alternates.boulevard.length;
-      return {edgeId,s,d,lateral,p:edge.sample(s,lateral).p};
-    }));
+  if(mapId==='town'||mapId==='quarry') {
+    // Each importer stays explicit so production splits the large scenery. A
+    // single adapter feeds both original forks into the same kart runtime.
+    const definition=mapId==='town'
+      ? Promise.all([import('./maps/town'),import('./town-scenery')]).then(([map,scene])=>({track:map.TOWN_TRACK,routes:map.TOWN_COURSE,geometry:scene.buildTownSceneGeometry(map.TOWN_COURSE),theme:scene.TOWN_SCENE_THEME,pickups:townPickupRows(map.TOWN_COURSE)}))
+      : Promise.all([import('./maps/quarry'),import('./quarry-scenery')]).then(([map,scene])=>({track:map.QUARRY_TRACK,routes:map.QUARRY_COURSE,geometry:scene.buildQuarrySceneGeometry(map.QUARRY_COURSE),theme:scene.QUARRY_SCENE_THEME,pickups:quarryPickupRows(map.QUARRY_COURSE)}));
+    const [{track,routes,geometry,theme,pickups},{createLandScene}]=await Promise.all([definition,import('./land-scene')]);
+    const labels=routes.presentation?.branchLabels??{alley:'支线',boulevard:'主路'};
     return {id:mapId,profile:resolveMap(mapId),track,routes:routes as ForkCourse|null,length:track.length,sample:track.sample,halfWidthAt:track.halfWidthAt,
-      cameraObstacles:geometry.cameraObstacles,
-      createScene:(app:pc.Application)=>createLandScene(app,track,{geometry,theme:TOWN_SCENE_THEME,pickups}),
+      forkHint:`← A / 左键：${labels.alley} · D / 右键 →：${labels.boulevard}（默认）`,cameraObstacles:geometry.cameraObstacles,
+      createScene:(app:pc.Application)=>createLandScene(app,track,{geometry,theme,pickups}),
       placeKart:(entity:pc.Entity,distance:number,lateral:number,angle=0)=>placeLandKart(entity,track,distance,lateral,angle)};
   }
   if(mapId==='mountain') {
     const [{MOUNTAIN_TRACK:track},{createLandScene}]=await Promise.all([import('./maps/mountain'),import('./land-scene')]);
-    return {id:mapId,profile:resolveMap(mapId),cameraObstacles:[] as readonly CameraObstacle[],track, routes:null as ForkCourse|null, length:track.length, sample:track.sample, halfWidthAt:track.halfWidthAt,
+    return {id:mapId,profile:resolveMap(mapId),forkHint:'',cameraObstacles:[] as readonly CameraObstacle[],track, routes:null as ForkCourse|null, length:track.length, sample:track.sample, halfWidthAt:track.halfWidthAt,
       createScene:(app:pc.Application)=>createLandScene(app,track),
       placeKart:(entity:pc.Entity,distance:number,lateral:number,angle=0)=>placeLandKart(entity,track,distance,lateral,angle)};
   }
-  return {id:'coast' as MapId,profile:resolveMap('coast'),cameraObstacles:[] as readonly CameraObstacle[],track:null as LandTrack|null,routes:null as ForkCourse|null,length:LENGTH,sample,halfWidthAt,
+  return {id:'coast' as MapId,profile:resolveMap('coast'),forkHint:'',cameraObstacles:[] as readonly CameraObstacle[],track:null as LandTrack|null,routes:null as ForkCourse|null,length:LENGTH,sample,halfWidthAt,
     createScene:createCoastScene,placeKart:placeCoastKart};
 }
 /** Model +Z faces the tangent; the local up follows real grade AND camber. */

@@ -14,7 +14,7 @@ import { clearFoodKartPayloadCache } from '../../src/food-kart-payload';
 import { createRaceKartTuning, kartRoadContext, buildForRacer, stepRaceKartSpeed } from '../../src/kart-race';
 
 const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
-export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;courseFailure?:boolean};
+export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;quarry?:boolean;courseFailure?:boolean};
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
@@ -28,7 +28,8 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   const previousLocation=g.location, previousStorage=Object.getOwnPropertyDescriptor(g,'localStorage');
   const storageReads: string[] = [], storageWrites: string[] = [];
   Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem(key:string){storageReads.push(key);return key===GARAGE_STORAGE_KEY&&scenario.savedBuild?JSON.stringify({version:1,activeBuild:scenario.savedBuild,namedBuilds:[]}):null;},setItem(key:string){storageWrites.push(key);}}});
-  g.location={search:'?driver=whale&autostart=1'+(scenario.town?'&map=town':scenario.mountain?'&map=mountain':''),href:'http://localhost/coast.html?driver=whale&autostart=1'+(scenario.town?'&map=town':scenario.mountain?'&map=mountain':'')};
+  const forkMap=scenario.quarry?'quarry':scenario.town?'town':null;
+  g.location={search:'?driver=whale&autostart=1'+(forkMap?'&map='+forkMap:scenario.mountain?'&map=mountain':''),href:'http://localhost/coast.html?driver=whale&autostart=1'+(forkMap?'&map='+forkMap:scenario.mountain?'&map=mountain':'')};
   clearFoodKartPayloadCache();
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
@@ -134,10 +135,10 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   source = source.replace("import.meta.env.DEV || new URLSearchParams(location.search).has('qa')", 'true');
   source = source.replace('app.start();', '// Manual NullGraphicsDevice stepping.');
   if(scenario.courseFailure)source=source.replace("import {loadLandCourse,placeLandFrame} from './land-course';","import {placeLandFrame} from './land-course'; const loadLandCourse = async (_search:string):Promise<any> => {throw new Error('Injected mountain chunk failure');};");
-  const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':scenario.town?'town':scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
+  const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':forkMap?forkMap:scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
   try {
-    if(scenario.mountain||scenario.town){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
+    if(scenario.mountain||forkMap){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
       await assert.rejects(import(copy.href+'?run='+Date.now()),/Injected mountain chunk failure/);
       assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);
@@ -147,21 +148,22 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     }
     await import(copy.href + '?run=' + Date.now());
     const game = g.window.neonKart, qa = game.debug;
-    if(scenario.town){
-      const {TOWN_COURSE:course}=await import('../../src/maps/town');
+    if(forkMap){
+      const course=forkMap==='quarry'?(await import('../../src/maps/quarry')).QUARRY_COURSE:(await import('../../src/maps/town')).TOWN_COURSE;
       const {sampleCursor,createCursor,createRouteProgress}=await import('../../src/land-routes');
       for(let i=0;i<1600&&!game.getState().modelsLoaded;i++)await new Promise(resolve=>setTimeout(resolve,5));
-      assert.equal(game.getState().modelsLoaded,true,game.getState().loading.error||'town loading completes');
-      assert.equal(game.getState().map,'town');assert.equal(qa.controllers.size,6);assert.equal(qa.courseAssets.size,1);
+      assert.equal(game.getState().modelsLoaded,true,game.getState().loading.error||`${forkMap} loading completes`);
+      assert.equal(game.getState().map,forkMap);assert.equal(qa.controllers.size,6);assert.equal(qa.courseAssets.size,1);
       for(let i=0;i<600&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
       assert.equal(game.getState().state,'running');
       const start=game.getState().pos;qa.set({pos:course.canonicalLength*2,speed:40});qa.update(1/60);assert.equal(game.getState().pos,start);assert.equal(game.getState().validatedLaps,0);
       // The same pointer-bound controls used on touch feed the real fork decision.
       const routes=qa.routes,id=game.getState().selectedDriverId;
       routes.states.set(id,createRouteProgress({...createCursor(2),s:course.commonStart.length-.2}));qa.set({pos:routes.total(id),lane:2,speed:30});
-      qa.update(1/600);assert.match(element('chargeLabel').textContent,/灯巷捷径.*电车大道/,'physical fork guidance must use the visible charge field');
+      qa.update(1/600);assert.match(element('chargeLabel').textContent,forkMap==='quarry'?/石脊窄道.*重载环坡/:/灯巷捷径.*电车大道/);
       element('touch-ArrowLeft').emit('pointerdown',{pointerId:7,preventDefault(){}});qa.update(1/60);element('touch-ArrowLeft').emit('pointerup',{pointerId:7});
-      assert.equal(game.getState().route.edgeId,'alley');assert.doesNotMatch(element('chargeLabel').textContent||'',/灯巷捷径/,'ordinary driving feedback returns after the split');
+      assert.equal(game.getState().route.edgeId,'alley');
+      assert.doesNotMatch(element('chargeLabel').textContent||'',/石脊窄道|重载环坡|灯巷捷径|电车大道/);
       const heldCursor=JSON.stringify(game.getState().route);game.pause();qa.update(.1);assert.equal(JSON.stringify(game.getState().route),heldCursor);game.pause();
       game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
       const branches=new Set<string>();let minY=Infinity,maxY=-Infinity;
@@ -180,7 +182,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
         }
       }
       qa.keys.KeyW=qa.keys.KeyA=qa.keys.KeyD=false;
-      assert.equal(game.getState().state,'finished',JSON.stringify(game.getState()));assert.equal(game.getState().validatedLaps,3);assert.equal(branches.size,2,'seeded actual NPC field traverses both streets');assert.ok(maxY-minY>18);
+      assert.equal(game.getState().state,'finished',JSON.stringify(game.getState()));assert.equal(game.getState().validatedLaps,3);assert.equal(branches.size,2,'seeded actual NPC field traverses both physical alternatives');assert.ok(maxY-minY>18);
       assert.ok(Object.values(game.getState().route.choiceByLap).includes('alley'));
       const alleyTime=game.getState().elapsed;
       game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);assert.deepEqual(game.getState().route.choiceByLap,{});

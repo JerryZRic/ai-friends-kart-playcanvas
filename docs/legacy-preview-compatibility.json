@@ -1,7 +1,7 @@
 {
   "kind": "unchanged-native-geometry-verification",
   "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
-  "description": "The map-loader catalog was extended, without altering legacy coast/water rendered meshes or route arrays. Fresh exports from the accepted baseline and updated source were compared byte-for-byte after excluding only sourceHashes. Existing rendered image bytes remain unchanged.",
+  "description": "After extending the map catalog with quarry and sharing fork-runtime presentation, fresh coast, waterpark, mountain and town exports were compared against their saved exact-source exports. Every exported field matches after excluding only the top-level sourceHashes field. Geometry, normals, UVs, indices, materials, textures, route arrays, landmarks, theme and exported metadata are unchanged wherever present. Existing PNG and WebP preview bytes are preserved; no new render is claimed.",
   "maps": {
     "coast": {
       "geometryAndRouteSha256": "94ef03ed053773444d30f4853d98501cda1dc8ecc4799e525b10a3cfd74158d0",
@@ -10,14 +10,35 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
+        "src/menu-backdrop.ts": "ffdf29ab48dd6819d41b83a004fdc96f0d058dd55ef9b403610e266c15704504",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
         "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
         "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
         "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
-      }
+      },
+      "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
+      "baselineExportSha256": "13fc0dd4a40ed9bd3998f693d341de6819daead5ef5a9210cbbcca44e68a69b9",
+      "currentExportSha256": "22428a13d2ff8e4d53e2e6fe8833ce7fe71453f1a5bd3f2b1d218d2ae1b84169",
+      "normalizedExportSha256": "acf7a677323e477b8f7a002a17fa0b5c42d168682a07076e276c4bb2179b535d",
+      "baselineSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "08b86fced6a2a1a0629ea7bf9c440d9b5501d3d4e74c7dfa210527dde0b03737",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "changedSourceFiles": [
+        "src/scene.ts",
+        "src/menu-backdrop.ts"
+      ],
+      "exactExportEqual": true
     },
     "waterpark": {
       "geometryAndRouteSha256": "c9525efd224082c4d32919613eaf473909d0a7bc1ce30a6c94547ae1f731cd1e",
@@ -26,14 +47,124 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
+        "src/menu-backdrop.ts": "ffdf29ab48dd6819d41b83a004fdc96f0d058dd55ef9b403610e266c15704504",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
         "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
         "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
         "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
+      "baselineExportSha256": "bf1111fc19f3795326d483d525d85ca12013ff7c69933dbdf7b9996cdff0fd15",
+      "currentExportSha256": "4249968b673452ed2f5cedf8d8fb98664effd185cd8adece82babac09eaa4c9c",
+      "normalizedExportSha256": "c3f963dca3f0186f227eea323bd0b4b68a6672f868e092a2e734890b3858a38e",
+      "baselineSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "08b86fced6a2a1a0629ea7bf9c440d9b5501d3d4e74c7dfa210527dde0b03737",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "changedSourceFiles": [
+        "src/scene.ts",
+        "src/menu-backdrop.ts"
+      ],
+      "exactExportEqual": true
+    },
+    "mountain": {
+      "baselineCommit": "099e923c3d2bbb77d23714b39fd2870d9906137e",
+      "baselineExportSha256": "6d3a971844139d17d960326e5814ddcae1484693c552b1c09f518666d3810858",
+      "currentExportSha256": "4bd74ded07a073fba5c46f455140f61f73b6e759511dc6ab98773c696a7523c0",
+      "normalizedExportSha256": "86740dca028d283e4475d8c271c08e06ca4108bf67ba63cf1b5ceef8dc79b9d2",
+      "geometryAndRouteSha256": "113eae4c34f1f4c92416790e7504726e47e359809c6dd7f68d245b04c8915a3a",
+      "baselineSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/land-scene.ts": "9a01f7e5b1536a042991a9f30ee82ddecddfa6df90ab3803016956d0fda36748"
+      },
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+      },
+      "changedSourceFiles": [
+        "src/land-scene.ts"
+      ],
+      "exactExportEqual": true,
+      "imageSha256": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
+      "renderedPngSha256": {
+        "mountain-overview.png": "e7e1f09e00cc1c5825bc2693aebc1f3107786a8466a8a4750a75ac7faf8247d8",
+        "mountain-topdown.png": "9988b8b1dc6dd5f84e3d5c426b77c93ecd1948860e132872a452b58a7a973cee",
+        "mountain-viaduct.png": "1a568b0e56678bedea8d472d878a96bf997f971c4594f6d3763bb53f5c4a81a8",
+        "mountain-chalet.png": "141950ba3585dd9158f8981ad434d7322f193463f3840c106ff28452dd7cf3dd",
+        "mountain-chalet-roadside.png": "ec59a934a89fbbf702a9c4085ecdbd3004217e6fcc2f4a809ea1c40c12013d9d"
       }
+    },
+    "town": {
+      "baselineCommit": "6f9d25610e8a9df69fc10943466f81612793f3a6",
+      "baselineExportSha256": "92901281e0c34d4b4d54b8819313154ae335d000f3d4bb568b6f0327ad71c1ad",
+      "currentExportSha256": "196d9d0d86f3edc74ef5cdcf04aee9f6b0015951c916a6ecdaab1470e393d9c7",
+      "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17",
+      "geometryAndRouteSha256": "bddc4eb5868911ff3be3c2ebf2ff2d048498a9cd0ee4973e82655c36f05370d3",
+      "baselineSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/land-routes.ts": "94b8f6bb67d26e991aedf02eaef0bb2c0ed7636ca275cf0fcc5aa2673a5d1990",
+        "src/maps/town.ts": "2bf3845509fc6f91cd869167bf629fe759ae04426788e1ba0c61e049703a49da",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+      },
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+        "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+      },
+      "changedSourceFiles": [
+        "src/land-routes.ts",
+        "src/maps/town.ts"
+      ],
+      "exactExportEqual": true,
+      "imageSha256": "50d661ee48729b1cf5924d9352cf396228399b48b2b8fbecc95f43db8e565fcc",
+      "renderedPngSha256": {
+        "town-overview.png": "913c84f0260cf3ec61c8281e3a745478075fc7e77e1fb4998aad26bae70b7d27",
+        "town-topdown.png": "725bda852e44f00e5fd0fe87992840279fe9f7eb568064868e663bd44f62cda7",
+        "town-bridge.png": "ed9656c952ad412450f9965459a50ca1a862de1376c0c91d3d8f69d4d334f930",
+        "town-market-street.png": "a908646459b98d217c26a8c8b0e04a28887618c53d274942f5539d1fc7072a45",
+        "town-clocktower-street.png": "da770a96151ff4d3173c166371a08dbf2d20deaf7e78496ef8d9089c6cf37ba9"
+      },
+      "originalRenderInputExportSha256": "d68400749d799987f019265e07762583d3fc66f7739b742137f92e4044a7977d",
+      "geometryTexturesRoutesThemeSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118"
     }
+  },
+  "baselineCommitScope": "The top-level baselineCommit applies to coast and waterpark; each map also identifies its verified baseline commit.",
+  "verificationMethod": {
+    "excludedFields": [
+      "sourceHashes"
+    ],
+    "comparison": "Parse both complete JSON exports, delete only the top-level sourceHashes field, then require exact equality of JSON.stringify results with original member and array order retained. No numeric rounding, tolerance, field sorting or other exclusions are used for equality.",
+    "normalizedExportSha256": "SHA-256 of UTF-8 JSON.stringify after deleting only top-level sourceHashes.",
+    "geometryAndRouteSha256": "SHA-256 of UTF-8 Python json.dumps after deleting only top-level sourceHashes, with sort_keys=True and separators=(comma, colon); retained for compatibility with the previous verification.",
+    "baselineVerification": "Every source hash embedded in each saved baseline export was verified against the listed baselineCommit.",
+    "currentSourceVerification": "Every current source hash was verified against the source file after serial exports completed.",
+    "imageVerification": "All 16 existing repository PNG/WebP files retained their pre-verification SHA-256 values; all original mountain and town PNG views also match their recorded render hashes."
   }
 }

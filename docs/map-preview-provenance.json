@@ -19,7 +19,7 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
+        "src/menu-backdrop.ts": "ffdf29ab48dd6819d41b83a004fdc96f0d058dd55ef9b403610e266c15704504",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
@@ -56,7 +56,24 @@
         "Gradient sky",
         "Sun disc",
         "Distant mountains"
-      ]
+      ],
+      "renderSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "08b86fced6a2a1a0629ea7bf9c440d9b5501d3d4e74c7dfa210527dde0b03737",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "compatibilityVerification": {
+        "file": "docs/legacy-preview-compatibility.json",
+        "map": "coast",
+        "normalizedExportSha256": "acf7a677323e477b8f7a002a17fa0b5c42d168682a07076e276c4bb2179b535d"
+      }
     },
     "waterpark": {
       "asset": "map-previews/waterpark-overview.webp",
@@ -66,7 +83,7 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
+        "src/menu-backdrop.ts": "ffdf29ab48dd6819d41b83a004fdc96f0d058dd55ef9b403610e266c15704504",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
@@ -102,7 +119,24 @@
       "omittedAtmosphere": [
         "Soft cloud clusters",
         "Waterpark blue gradient sky"
-      ]
+      ],
+      "renderSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "08b86fced6a2a1a0629ea7bf9c440d9b5501d3d4e74c7dfa210527dde0b03737",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      },
+      "compatibilityVerification": {
+        "file": "docs/legacy-preview-compatibility.json",
+        "map": "waterpark",
+        "normalizedExportSha256": "c3f963dca3f0186f227eea323bd0b4b68a6672f868e092a2e734890b3858a38e"
+      }
     }
   }
 }

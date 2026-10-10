@@ -6,8 +6,8 @@
     "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
     "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
     "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
-    "src/land-routes.ts": "94b8f6bb67d26e991aedf02eaef0bb2c0ed7636ca275cf0fcc5aa2673a5d1990",
-    "src/maps/town.ts": "2bf3845509fc6f91cd869167bf629fe759ae04426788e1ba0c61e049703a49da",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
     "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
     "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
@@ -216,7 +216,9 @@
       "src/land-routes.ts",
       "src/maps/town.ts"
     ],
-    "proof": "Full re-export of geometry, normals, indices, UVs, material values, procedural texture pixels, all four physical route sample arrays, landmarks and theme has an identical content SHA-256. Only shared-throat behavior metadata/logic changed; finished render pixels remain unchanged.",
-    "identicalContentSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118"
+    "proof": "The current complete export matches both the accepted town export and original Blender render input exactly after excluding only top-level sourceHashes. This includes geometry, normals, indices, UVs, materials, procedural texture pixels, all four physical route sample arrays, landmarks, checkpoint gates and theme. Prior shared-throat logic and current branch-label presentation changes do not change the exported payload. Finished render pixels remain unchanged.",
+    "identicalContentSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118",
+    "verificationFile": "docs/legacy-preview-compatibility.json",
+    "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17"
   }
 }

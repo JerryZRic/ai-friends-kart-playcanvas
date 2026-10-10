@@ -1,0 +1,201 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime quarry mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate dry afternoon daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/quarry-scenery.ts": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+  },
+  "geometryTexturesRoutesThemeSha256": "6ff9ca7efbc07fb79a2b29e5aa386956cdf14dcc0915be7f0b45e7cee0958ea9",
+  "generatorHashes": {
+    "scripts/export-quarry-preview.ts": "db1ba50eea282aefcf26533e744e2538c1b25bf5d0a392cf1368d8df27e07911",
+    "scripts/render-quarry-preview.py": "adb14d0e503c4a7b6a4d7db2808d2d65dc459841cac2e0250497d4f26bbeb160"
+  },
+  "batches": 20,
+  "vertices": 165571,
+  "triangles": 102692,
+  "routeLengthsMetres": {
+    "start": 669.6794925348206,
+    "alley": 373.43876933883155,
+    "boulevard": 441.6981165277977,
+    "finish": 1127.9580941495626
+  },
+  "framingSource": "Union of left/right routeRoadSamples from start, Carved Shelf (alley), Haul Road (boulevard) and finish; overview/topdown additionally include source structure and roadside landmark bounds.",
+  "lapLengthsMetres": {
+    "shelfLapLength": 2171.0763560232144,
+    "haulLapLength": 2239.335703212181
+  },
+  "originalModels": {
+    "glb": {
+      "file": "quarry-original-scene.glb",
+      "sha256": "e4755f9b41f07be50a60a485cfdfef40da2f00216358d0e8461f539e188c84fb",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "quarry-original-scene.blend",
+      "sha256": "1cc1674b65b8e4dd17b5b208353e6eccfec4255ec1c854577275e0755fed9bb0",
+      "note": "Editable original mesh batches, packed source procedural textures, UVs, runtime-derived normals and approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "quarry-overview": {
+      "file": "quarry-overview.png",
+      "sha256": "ae722fad98d7c96d787310bba074c378defc8d92dd2a871dd90725fba9f92db8",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        957.9686889648438,
+        610.795654296875,
+        1040.79052734375
+      ],
+      "cameraQuaternionBlender": [
+        0.45346754789352417,
+        0.20000626146793365,
+        0.35050061345100403,
+        0.7946785688400269
+      ],
+      "projection": "ORTHO",
+      "description": "Full dry sandstone quarry overview with both physical fork roads, extraction benches, industrial landmarks and timber crossing inside the frame; distant terrain may extend outside it.",
+      "routeScreenBounds": [
+        0.11867034435272217,
+        0.15167084336280823,
+        0.8385781645774841,
+        0.7821512818336487
+      ],
+      "orthographicScaleMetres": 872.1063842773438
+    },
+    "quarry-topdown": {
+      "file": "quarry-topdown.png",
+      "sha256": "5e4f95ea6a3398cfcaca17410d88d608c108e9ba070ccf9fef2ff1524203325b",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        20.026559829711914,
+        36.46587371826172,
+        1522.5396728515625
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry: pale narrow Carved Shelf is the inner S fork; broad compacted Haul Road is the outer fork. Independent runtime samplers retain actual shared split/merge throats. Dry-Cut Trestle crosses the working-floor road at a separate elevation; no invented connecting road.",
+      "routeScreenBounds": [
+        0.26182445883750916,
+        0.23718149960041046,
+        0.830962061882019,
+        0.9050810933113098
+      ],
+      "orthographicScaleMetres": 1029.8004150390625
+    },
+    "quarry-timber-overpass": {
+      "file": "quarry-timber-overpass.png",
+      "sha256": "24e061d90741910e4b741435bcdb8614149ce0f81bdba2c302683b8398651b51",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -1388.6304931640625,
+        587.2149658203125,
+        412.379638671875
+      ],
+      "cameraQuaternionBlender": [
+        0.4727156162261963,
+        0.36188262701034546,
+        -0.48840993642807007,
+        -0.6379942297935486
+      ],
+      "projection": "ORTHO",
+      "description": "Original timber trestle, shallow upper chords, cross sleepers, externally grounded bents and open lower working-floor road. Runtime geometry, support placement and clearances are unchanged.",
+      "routeScreenBounds": [
+        -0.17876911163330078,
+        -0.46953085064888,
+        3.119296073913574,
+        1.3940048217773438
+      ],
+      "orthographicScaleMetres": 155.0
+    },
+    "quarry-derrick-street": {
+      "file": "quarry-derrick-street.png",
+      "sha256": "fa4f83f5fb1385d3934d6d5121982978793f46622a2f3870cbe5351ec567a42c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        53.2629508972168,
+        -264.5684509277344,
+        31.263671875
+      ],
+      "cameraQuaternionBlender": [
+        0.3263188600540161,
+        0.37394964694976807,
+        -0.6541147828102112,
+        -0.5707989931106567
+      ],
+      "projection": "PERSP",
+      "description": "Perspective from 2.1 m above actual sampled boulevard road centre. Original source scenery only; no driver, HUD or vehicle. Looks toward the original asymmetric timber counterweight derrick beside Haul Road.",
+      "routeScreenBounds": [
+        -4837.2783203125,
+        -108.924560546875,
+        806.2425537109375,
+        18.71871566772461
+      ],
+      "lensMillimetres": 31.0,
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 179.67381011300247,
+      "heightAboveSampledRoadMetres": 2.1
+    },
+    "quarry-conveyor-detail": {
+      "file": "quarry-conveyor-detail.png",
+      "sha256": "797ed70c403c2b64e14e7860813ace20a508826fa2d1895bb88799b0e944713b",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1005.7254638671875,
+        -918.5145263671875,
+        731.8622436523438
+      ],
+      "cameraQuaternionBlender": [
+        0.8174378871917725,
+        0.49466732144355774,
+        0.15279504656791687,
+        0.25249388813972473
+      ],
+      "projection": "ORTHO",
+      "description": "Three-quarter original double conveyor transfer, showing both distinct belts, support legs, diagonal braces, rollers, stone loads, transfer chute and full grounded foundation. Source geometry is unchanged.",
+      "routeScreenBounds": [
+        -6.030465602874756,
+        -2.5048062801361084,
+        0.1316610872745514,
+        3.253109931945801
+      ],
+      "orthographicScaleMetres": 76.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/quarry-overview.webp",
+    "sha256": "45b6d25a0d252c2e7a51422afccae895e13548894a517f7a82dec7340e1f8e9e",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}
