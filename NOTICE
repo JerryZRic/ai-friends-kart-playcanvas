@@ -42,3 +42,7 @@ PlayCanvas edition (2026): engine migration to PlayCanvas Engine + TypeScript + 
 Current corresponding source: https://github.com/JerryZRic/ai-friends-kart-playcanvas
 The prior edition and original upstream notices above are preserved as provenance.
 This edition does not bundle Three.js. PlayCanvas and fflate retain their MIT terms.
+
+Modular food garage dev preview (2026): six-slot assembly, original 54-theme food
+modules, build persistence, and coast handling composition. Original food asset
+provenance is separate from third-party characters; see FOOD-ASSET-NOTICE.txt.

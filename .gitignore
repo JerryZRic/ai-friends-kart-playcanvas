@@ -6,3 +6,6 @@ dist/
 
 dist-pages/
 dist-waterpark/
+
+__pycache__/
+*.pyc

@@ -3,13 +3,14 @@ import { readdirSync, readFileSync, writeFileSync, copyFileSync, lstatSync } fro
 import { zipSync } from 'fflate';
 const outputDir = process.argv[2] || 'dist';
 if (!['dist', 'dist-waterpark'].includes(outputDir)) throw new Error('Unsupported build output directory');
-const rootFiles = ['.gitignore','package.json','package-lock.json','tsconfig.json','vite.config.ts','index.html','coast.html','waterpark.html','waterpark-study.html','LICENSE','NOTICE','MODEL-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt'];
+const rootFiles = ['.gitignore','package.json','package-lock.json','tsconfig.json','vite.config.ts','index.html','garage.html','coast.html','waterpark.html','waterpark-study.html','LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt'];
 const roots = ['src','tests','scripts','docs','models','.github','public'];
 const files = [...rootFiles];
 function visit(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = `${dir}/${entry.name}`;
-    if (path === 'public/assets/drivers' || path === 'public/assets/portraits') continue;
+    if (entry.name === '__pycache__' || entry.name.endsWith('.pyc')) continue;
+    if (path === 'public/assets/drivers' || path === 'public/assets/portraits' || path.startsWith('public/models/food-karts/') && !path.endsWith('/manifest.json')) continue;
     if (entry.isSymbolicLink()) throw new Error(`Symlink is not source: ${path}`);
     if (entry.isDirectory()) visit(path);
     else if (entry.isFile()) files.push(path);
@@ -23,9 +24,9 @@ for (const path of [...new Set(files)].sort()) {
   archive[`ai-friends-kart-playcanvas-source/${path}`] = [new Uint8Array(readFileSync(path)), { mtime: new Date(1980, 0, 1), level: 9 }];
 }
 writeFileSync(`${outputDir}/source.zip`, zipSync(archive));
-for (const name of ['LICENSE','NOTICE','MODEL-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt']) copyFileSync(name, `${outputDir}/${name}`);
+for (const name of ['LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt']) copyFileSync(name, `${outputDir}/${name}`);
 writeFileSync(`${outputDir}/.nojekyll`, '');
-for (const page of ['index.html', 'coast.html', 'waterpark.html']) {
+for (const page of ['index.html', 'garage.html', 'coast.html', 'waterpark.html']) {
   const html = readFileSync(`${outputDir}/${page}`, 'utf8');
   if (!html.includes('source-license')) writeFileSync(`${outputDir}/${page}`, html.replace('</body>', '<a id="source-license" href="source.html" style="position:fixed;right:12px;bottom:6px;z-index:20;color:#dbe8e8;background:#102b37d9;padding:3px 7px;font:10px/1.4 Arial" aria-label="Source code and license / 源码与许可证">Source / License · 源码与许可证</a></body>'));
 }

@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "scope": "Rider seat and hand fit; not browser rendering or performance evidence",
+  "verifiedDate": "2026-10-10",
+  "cpuVerification": {
+    "chassisCount": 54,
+    "driverCount": 6,
+    "steeringSamples": [
+      -1,
+      -0.5,
+      0,
+      0.5,
+      1
+    ],
+    "measuredPoses": 1620,
+    "maxGripTrajectoryDeviationMillimeters": 0.07328459362337027,
+    "seatSurfaceRangeMeters": [
+      0.7357147518352761,
+      1.0568173835608414
+    ],
+    "maxAdditionalCockpitMeshBytesPerActor": 1039216,
+    "maxOwnedCockpitMeshesPerActor": 10
+  },
+  "offlineReferences": [
+    {
+      "driver": "whale",
+      "file": "modular-driver-whale-offline.png",
+      "sha256": "6c7ecd9feb5522f562f3e7136234948c4d7b01320cf26f7990046d8da9d34a6a",
+      "driverDecodedSha256": "50610733ba5a4eb73b47bddb22c96fad2883e7c8f4e56cdd229f6d77318b8703",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.391817297730153,
+          0.2950000010430813
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 7.232835520847724e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    },
+    {
+      "driver": "gemini",
+      "file": "modular-driver-gemini-offline.png",
+      "sha256": "8675a4702f023bb786dc56719a65a3686396c2fed03ee2dece10b4c699a6d233",
+      "driverDecodedSha256": "bf5519ce507441012124ae9b0dba542a9f11d434a7ea4da03cdca6ef5ccb11c3",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.43181737879247,
+          0.28999999463558196
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 7.052109817108366e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    },
+    {
+      "driver": "gpt",
+      "file": "modular-driver-gpt-offline.png",
+      "sha256": "ee143489b92cdeb5c794188dd9e4d3a99acf5c4ceb318e46c507224a59480ab5",
+      "driverDecodedSha256": "c6817f6f72f4ff58a801cd18e3deaef84003f7bbe6b88004bfb734b9da2f2efb",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.4218173883292131,
+          0.3
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 7.682413239226846e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    },
+    {
+      "driver": "claude",
+      "file": "modular-driver-claude-offline.png",
+      "sha256": "87047862f997951c49d8c93bc74e5e3cb60a06fd0ab7d270c876ebe0eddfdb47",
+      "driverDecodedSha256": "08ad20d0a29495f49d69c1bd7b9948e5a6ca56148ac41ec342e62c0640a9b523",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.4418173692557268,
+          0.5049999982118607
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 2.694597761044475e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    },
+    {
+      "driver": "grok",
+      "file": "modular-driver-grok-offline.png",
+      "sha256": "884537cf58fd10c7e4760983b0fb95029bd296ada49c648715fc65dcead6dce3",
+      "driverDecodedSha256": "382f56fa39cb26e8a243ab0faa8a413062c2416e3fdbb775317ec2f84f400a2c",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.43181737879247,
+          0.31500000059604644
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 7.23384526713834e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    },
+    {
+      "driver": "glm",
+      "file": "modular-driver-glm-offline.png",
+      "sha256": "cd2e9ad945ca41772fad623627b0d66ed0a7e748014c785e3653168081d70421",
+      "driverDecodedSha256": "ccbea7de68001e680de8e945b955392d28e958db4e02d3f549ecd6b905141e62",
+      "kit": "054-red-bean-dorayaki",
+      "steering": 0.6,
+      "engine": "Blender Cycles",
+      "samples": 64,
+      "denoising": false,
+      "resolution": [
+        1200,
+        1000
+      ],
+      "poseSource": "PlayCanvas per-render-mesh skin matrices; baked world-space vertices",
+      "visualReview": "Reviewed: upright seated body and hands around original food steering wheel",
+      "fit": {
+        "runtimeMeshCount": 8,
+        "runtimeMeshBytes": 616728,
+        "seatHeight": 1.0568173835608414,
+        "hipClearance": 0.14,
+        "wheelCenter": [
+          0,
+          1.4518173597189836,
+          0.25999999344348906
+        ],
+        "rimRadius": 0.15500000087955607,
+        "rimTube": 0.025980755686760573,
+        "maxGripError": 6.882390006524028e-08,
+        "wheelPieces": 5,
+        "columnPieces": 1,
+        "staticTriangles": 21444,
+        "movingTriangles": 1252
+      }
+    }
+  ],
+  "rights": "Character imagery remains subject to MODEL-NOTICE.txt, including stated non-commercial restrictions. These references do not relicense characters under AGPL. No new redistribution clearance is claimed.",
+  "limits": [
+    "No browser GPU or mobile frame-rate validation in this report",
+    "Authored leg poses retained; pedal-contact IK not implemented",
+    "Reference images illustrate rider fitting; rolling-wheel direction is tested separately"
+  ]
+}

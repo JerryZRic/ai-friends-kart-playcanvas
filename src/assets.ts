@@ -83,7 +83,7 @@ function meshInstances(entity: pc.Entity): pc.MeshInstance[] {
 }
 
 /** Use the engine's skeleton-aware instantiation, never Entity.clone() for a borrowed rig. */
-function prepareAnimation(model: pc.Entity, driver: DriverAsset) {
+export function prepareAnimation(model: pc.Entity, driver: DriverAsset) {
   model.addComponent('anim', { activate: false, enabled: false });
   const anim = model.anim!;
   const range = animationTrack(driver, 'SteeringRange');

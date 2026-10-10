@@ -94,3 +94,5 @@ body[data-screen=maps] .masthead{height:76px;padding-top:18px;padding-bottom:18p
 /* Hidden controls must also leave keyboard and accessibility navigation. */
 [hidden]{display:none!important}
 .title-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.garage-menu-link{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;margin:0 0 13px;border:1px solid #bbd99388;border-radius:10px;background:#d5ff600b;color:#d9edb8}.garage-menu-link:hover{border-color:#d5ff60;background:#d5ff6018}.garage-menu-link strong{display:block;font-size:13px}.garage-menu-link small{display:block;font-size:9px;color:#a5bea8;margin-top:6px}.garage-menu-link>span:last-child{font-size:22px}.garage-header-link{font-size:11px;border:1px solid #bbd99366;border-radius:7px;padding:8px 12px;color:#d9edb8;background:#17394499}.garage-header-link:hover{border-color:#d5ff60}@media(max-width:620px){.garage-header-link{font-size:9px;padding:7px 9px}}

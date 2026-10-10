@@ -1,0 +1,21 @@
+Original food kart modules — dev assembly preview
+Copyright (C) 2026 JerryZRic and contributors
+SPDX-License-Identifier: AGPL-3.0-only
+
+These 54 original food-themed kits (324 independent modules), their original
+material textures and module-preview images are distinct from the six character
+models. The existing project license and original-asset notices apply. No Tripo
+character rights are granted or altered by these food asset files.
+
+The runtime manifest gives public identities, exact reconstructed original GLB
+SHA-256 hashes, image hashes, coordinate conventions and mount anchors. Delivery
+separates repeated embedded PNG bytes from gzip geometry payloads, grouped into
+on-demand theme bundles; reconstruction
+preserves every original GLB byte. Runtime rider fitting is a separate adapter.
+
+Public delivery: models/food-karts/manifest.json and its referenced relative files.
+Source code and reproducible verification: source.zip and the public repository.
+Large runtime payloads and images are served separately from source.zip; run
+npm run food:fetch after extraction to restore them, then npm test and npm run build.
+The private editable source production archives are not bundled in this preview.
+These are stylized game visuals, not mechanically engineered vehicle components.

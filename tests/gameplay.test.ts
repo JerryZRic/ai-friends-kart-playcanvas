@@ -8,17 +8,31 @@ import { parseLocalGLB, COURSE_FILES, RUNTIME_MODELS } from '../src/assets';
 import {halfWidthAt,laneLimitAt} from '../src/track';
 import { itemImage, type ItemDisplay, type ItemKind } from '../src/item-models';
 import { resetPickup, setPickupDisplay } from '../src/item-pickups';
+import { defaultBuild, starterBuilds, KART_SLOTS, GARAGE_STORAGE_KEY, buildStats, type KartBuild } from '../src/kart-build';
+import { clearFoodKartPayloadCache } from '../src/food-kart-payload';
+import { createRaceKartTuning, kartRoadContext } from '../src/kart-race';
+
+const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
+const scenarios = [
+  {name: 'native game integration preserves race, camera, items, menu and safety flows', savedBuild: undefined, cancelDuringParts: false},
+  {name: 'saved nondefault kart changes real player geometry and track-context handling', savedBuild: savedRaceBuild, cancelDuringParts: false},
+  {name: 'leaving during real modular kart loading aborts work without publishing racers', savedBuild: undefined, cancelDuringParts: true},
+];
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
  * This validates engine integration; it does NOT claim GPU/browser visual QA. */
-test('native game integration preserves race, camera, items, menu and safety flows', async (t) => {
+for (const scenario of scenarios) test(scenario.name, async (t) => {
   const g = globalThis as any, originalFetch = globalThis.fetch, originalConsoleError = console.error,originalRandom=Math.random;
   // Entity IDs must not consume or repeat a resettable gameplay RNG stream.
   const originalGuid=pc.guid.create;let guidSequence=0;
   pc.guid.create=()=>`00000000-0000-4000-8000-${(++guidSequence).toString(16).padStart(12,'0')}`;
   let randomSeed=0x51a7c0de;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/0x100000000;};
-  const previousLocation=g.location;g.location={search:'?driver=whale&autostart=1'};
+  const previousLocation=g.location, previousStorage=Object.getOwnPropertyDescriptor(g,'localStorage');
+  const storageReads: string[] = [], storageWrites: string[] = [];
+  Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem(key:string){storageReads.push(key);return key===GARAGE_STORAGE_KEY&&scenario.savedBuild?JSON.stringify({version:1,activeBuild:scenario.savedBuild,namedBuilds:[]}):null;},setItem(key:string){storageWrites.push(key);}}});
+  g.location={search:'?driver=whale&autostart=1',href:'http://localhost/coast.html?driver=whale&autostart=1'};
+  clearFoodKartPayloadCache();
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
   class Element {
@@ -74,6 +88,27 @@ test('native game integration preserves race, camera, items, menu and safety flo
   app.assets.on('add', (asset: pc.Asset) => { if (asset.type === 'container') (asset.options as any).image = { processAsync(_image, done) { const texture = new pc.Asset('test-texture', 'texture'); texture.resource = new pc.Texture(device, { width: 1, height: 1 }); texture.loaded = true; app.assets.add(texture); done(null, texture); } }; });
   g.__testApp = app; (app as any).setCanvasFillMode = () => {}; (app as any).setCanvasResolution = () => {};
   const bytes = (path, gzip = false) => { const buffer = gzip ? gunzipSync(readFileSync(path)) : readFileSync(path); return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength); };
+  // Only transport is stubbed: manifest validation, checksums, reconstruction,
+  // container parsing, six-slot assembly, cockpit fitting and rigs are real.
+  const foodManifest=JSON.parse(readFileSync('public/models/food-karts/manifest.json','utf8'));
+  const bundlePathFor=(id:string)=>foodManifest.kits.find(kit=>kit.id===foodManifest.parts.find(part=>part.id===id).kitId).bundlePath;
+  const missingBundlePath=bundlePathFor(defaultBuild.chassis);
+  let failFoodPart=true, pendingFoodSignal: AbortSignal | undefined;
+  const foodRequests: string[]=[];
+  globalThis.fetch=async (input,options:RequestInit={})=>{
+    const url=new URL(String(input));
+    assert.equal(url.origin,'http://localhost');
+    assert.match(url.pathname,/^\/models\/food-karts\/(?:manifest\.json|bundles\/\d{3}-[a-z0-9-]+\.zip)$/);
+    const path=url.pathname.slice(1);foodRequests.push(path);
+    if(scenario.cancelDuringParts&&path.endsWith('.zip')){
+      pendingFoodSignal=options.signal as AbortSignal;
+      return new Promise<Response>((_resolve,reject)=>{pendingFoodSignal!.addEventListener('abort',()=>reject(pendingFoodSignal!.reason),{once:true});});
+    }
+    if(failFoodPart&&path===missingBundlePath)return new Response('missing theme bundle',{status:404});
+    const data=readFileSync('public/'+path);
+    return new Response(new Uint8Array(data),{headers:{'content-length':String(data.byteLength)}});
+  };
+  const settleAppDisposal=async()=>{for(let i=0;i<100&&app.graphicsDevice;i++)await new Promise(resolve=>setTimeout(resolve,0));};
   // Loading remains asynchronous so Start/readiness guards are exercised.
   let courseAttempts = 0, bundleAttempts = 0, failGLM = true; const parsedDrivers: Record<string,number> = {};
   const originalGenerate = app.batcher.generate.bind(app.batcher); let failPreparation = true;
@@ -101,7 +136,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
   source = source.replace(/app = new pc\.Application\(canvas,.*?\);/, 'app = (globalThis as any).__testApp;');
   source = source.replace("import.meta.env.DEV || new URLSearchParams(location.search).has('qa')", 'true');
   source = source.replace('app.start();', '// Manual NullGraphicsDevice stepping.');
-  const copy = new URL('../src/.game-test.ts', import.meta.url); writeFileSync(copy, source);
+  const copy = new URL(`../src/.game-test-${scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
   try {
     await import(copy.href + '?run=' + Date.now());
@@ -113,18 +148,55 @@ test('native game integration preserves race, camera, items, menu and safety flo
     assert.equal(qa.world.root.findByName('Original course props'), null, 'failed off-scene build rolls back without publishing duplicate props');
     assert.equal(element('retryLoading').disabled, false);
     const retry = game.retryLoading(); const repeated = game.retryLoading(); assert.equal(retry, repeated, 'concurrent retry clicks share one boot');
-    unblock(); await retry;
+    unblock();
+    if(scenario.cancelDuringParts){
+      for(let i=0;i<1000&&!pendingFoodSignal;i++)await new Promise(resolve=>setTimeout(resolve,5));
+      assert.ok(pendingFoodSignal,'a real theme bundle request is pending');
+      assert.equal(game.getState().modelsLoaded,false);assert.equal(qa.controllers.size,0);
+      const loadingText=element('loading').textContent;
+      events.pagehide.forEach(fn=>fn({persisted:false}));
+      assert.equal(pendingFoodSignal.aborted,true,'scene lifetime aborts real theme bundle transport');
+      assert.equal(await retry,false);await settleAppDisposal();
+      assert.equal(game.getState().state,'leaving');assert.equal(game.getState().modelsLoaded,false);
+      assert.equal(qa.controllers.size,0);assert.equal(element('loading').textContent,loadingText,'cancelled work cannot publish stale loading UI');
+      assert.equal(app.graphicsDevice,null);return;
+    }
+    assert.equal(await retry,false,'a missing authentic part blocks readiness');
+    assert.match(game.getState().loading.error,/HTTP 404/);
+    assert.equal(game.getState().loading.phase,'karts');assert.equal(game.getState().modelsLoaded,false);
+    assert.equal(qa.controllers.size,0,'failed assembly never publishes partial racers');
+    assert.equal(element('retryLoading').disabled,false);game.start();assert.equal(game.getState().modelsLoaded,false);
+    assert.equal(foodRequests.filter(path=>path===missingBundlePath).length,1,'permanent asset errors wait for an explicit retry');
+    failFoodPart=false;assert.equal(await game.retryLoading(),true);
+    assert.equal(foodRequests.filter(path=>path===missingBundlePath).length,2,'explicit retry makes one new request for the failed theme bundle');
     for (let i = 0; i < 300 && game.getState().loading.busy; i++) await new Promise(resolve => setTimeout(resolve, 5));
     assert.equal(game.getState().loading.error, null); assert.equal(game.getState().modelsLoaded, false, 'missing real character cannot be declared ready');
-    assert.equal(courseAttempts, 2); assert.equal(bundleAttempts, 1); assert.equal(qa.controllers.size, 5);
+    assert.equal(courseAttempts, 2); assert.equal(bundleAttempts, 2); assert.equal(qa.controllers.size, 5);
     assert.deepEqual(game.getState().bundledFailures, ['glm']); assert.equal(game.getState().allDriversLoaded, false);
     assert.equal(game.getState().driverStates.find(d=>d.id==='glm').appearance, 'not-loaded');
     assert.match(element('startText').textContent, /重试/);assert.equal(game.getState().state,'menu','autostart failure remains retryable');assert.equal(game.selectDriver('whale'),false);game.start();assert.equal(game.getState().state,'menu');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.enabled,false,'missing model has no placeholder render');assert.equal(qa.bots().find(b=>b.id==='glm').mesh.findComponents('render').length,0); const courseRoot = qa.world.root.findByName('Original course props');
-    failGLM = false; assert.equal(await game.retryLoading(), true); assert.equal(bundleAttempts, 2); assert.equal(courseAttempts, 2);
+    failGLM = false; assert.equal(await game.retryLoading(), true); assert.equal(bundleAttempts, 3); assert.equal(courseAttempts, 2);
     assert.equal(game.getState().allDriversLoaded, true);assert.equal(game.getState().state,'returning','autostart first returns to the starting line'); assert.equal(qa.controllers.size, 6); assert.ok(Object.values(parsedDrivers).every(count => count === 1), 'successful drivers are retained on failed-slot retry'); assert.equal(qa.world.root.findByName('Original course props'), courseRoot);
     assert.equal(qa.boxes().length, 49); assert.equal(qa.boxes().filter(box=>!box.dynamic).length,45); assert.equal(qa.boxes().filter(box=>box.dynamic).length,4); assert.equal(qa.world.root.findByName('Original course props')?.name, 'Original course props');
     assert.ok(qa.world.root.findComponents('render').length > 100);
     qa.freeze();
+    const assertRacerBuild=(id:string,build:Readonly<KartBuild>)=>{
+      const controller=qa.controllers.get(id);assert.ok(controller);assert.match(controller.root.name,/^ModularDriver_/);
+      const assembly=controller.chassis;
+      assert.deepEqual(assembly.children.map(part=>part.name),KART_SLOTS.map(slot=>`${slot}:${build[slot]}`));
+      for(const slot of KART_SLOTS){
+        const part=assembly.findByName(`${slot}:${build[slot]}`);assert.ok(part?.enabled,`${id}/${slot} is enabled`);
+        const render=part.findComponents('render') as pc.RenderComponent[];
+        assert.ok(render.length>0,`${id}/${slot} retains authored food geometry`);
+        assert.ok(render.some(component=>component.meshInstances.some(mesh=>mesh.visible)),`${id}/${slot} has visible native meshes`);
+      }
+      assert.ok(controller.getState().fit.maxGripError<.002);assert.equal(controller.getState().status,'ready');
+    };
+    assert.deepEqual(game.getState().kartBuild,scenario.savedBuild||defaultBuild);
+    assert.equal(game.getState().modularKartsLoaded,true);assert.ok(storageReads.includes(GARAGE_STORAGE_KEY));
+    assert.equal(storageWrites.includes(GARAGE_STORAGE_KEY),false,'starting a race never rewrites a saved build');
+    assertRacerBuild('whale',scenario.savedBuild||defaultBuild);for(const bot of qa.bots())assertRacerBuild(bot.id,defaultBuild);
+    assert.equal(foodRequests.filter(path=>path===bundlePathFor(defaultBuild.body)).length,1,'successful earlier parts survive a failed-slot retry');
     await t.test('model-ready return freezes race and input until camera arrives',()=>{
       assert.equal(game.getState().state,'returning');
       key('keydown','KeyW');qa.advanceFrame(.8);assert.equal(game.getState().state,'returning');assert.equal(game.getState().elapsed,0);assert.equal(game.getState().speed,0);
@@ -134,6 +206,49 @@ test('native game integration preserves race, camera, items, menu and safety flo
       assert.equal(game.getState().state,'countdown');assert.equal(element('pausePanel').classList.contains('hidden'),true);assert.equal(game.getState().speed,0);
       qa.advanceFrame(.8);qa.advanceFrame(1.2);assert.equal(game.getState().state,'countdown');assert.equal(game.getState().elapsed,0);key('keydown','Escape');assert.equal(game.getState().state,'paused');element('restartRace').click();qa.advanceFrame(.8);assert.equal(game.getState().state,'countdown');
     });
+    if(scenario.savedBuild){
+      await t.test('saved six-slot parts follow the selected character and drive actual acceleration, speed and steering',()=>{
+        const tuningFor=createRaceKartTuning(scenario.savedBuild),multipliers=buildStats(scenario.savedBuild).multipliers;
+        assert.notEqual(multipliers.acceleration,1);assert.notEqual(multipliers.speed,1);assert.notEqual(multipliers.handling,1);
+        for(const profile of CHARACTER_PROFILES){
+          qa.set({state:'menu'});assert.equal(game.selectDriver(profile.id),true);game.start();
+          assertRacerBuild(profile.id,scenario.savedBuild!);for(const bot of qa.bots())assertRacerBuild(bot.id,defaultBuild);
+          qa.set({state:'running',countdown:0,elapsed:0,pos:0,lane:0,speed:0});
+          const expected=tuningFor(profile.id,profile.id,kartRoadContext(0,0,qa.sample));
+          key('keydown','KeyW');qa.update(.1);key('keyup','KeyW');
+          assert.ok(Math.abs(game.getState().speed-expected.acceleration*.1)<1e-8,`${profile.id} saved parts alter actual acceleration`);
+          assert.notEqual(expected.acceleration,characterTuning(profile.id,'coast').acceleration);
+          for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,'opponents retain default-build character acceleration');
+          qa.set({noBots:true,pos:0,lane:0,speed:0,held:null,boost:0,shield:0,slow:0});
+          key('keydown','KeyW');for(let frame=0;frame<300;frame++){qa.set({pos:0,lane:0});qa.update(1/60);}key('keyup','KeyW');
+          const top=tuningFor(profile.id,profile.id,kartRoadContext(0,game.getState().speed,qa.sample));
+          assert.ok(Math.abs(game.getState().speed-top.maxSpeed)<1e-8,`${profile.id} uses saved-build top speed`);
+          assert.notEqual(top.maxSpeed,characterTuning(profile.id,'coast').maxSpeed);
+          qa.set({pos:0,lane:0,speed:top.maxSpeed});key('keydown','KeyD');qa.update(.01);key('keyup','KeyD');const steered=game.getState().lane;
+          qa.set({pos:0,lane:0,speed:top.maxSpeed});qa.update(.01);const neutral=game.getState().lane;
+          assert.ok(Math.abs(steered-neutral-(-7*(top.maxSpeed-.06)/top.maxSpeed*.01*top.multipliers.steering))<1e-8,`${profile.id} saved handling changes real steering displacement`);
+          assert.notEqual(top.multipliers.steering,characterTuning(profile.id,'coast').multipliers.steering);
+          // Exercise real update() on a hill and a sharp bend, not telemetry alone.
+          const candidates=Array.from({length:Math.ceil(game.getState().length/5)},(_,i)=>i*5);
+          const steep=candidates.reduce((best,d)=>Math.abs(kartRoadContext(d,12,qa.sample).grade!)>Math.abs(kartRoadContext(best,12,qa.sample).grade!)?d:best,0);
+          const bend=candidates.reduce((best,d)=>Math.abs(kartRoadContext(d,12,qa.sample).curvature!)>Math.abs(kartRoadContext(best,12,qa.sample).curvature!)?d:best,0);
+          for(const distance of [steep,bend]){
+            qa.set({pos:distance,lane:0,speed:12,held:null,boost:0,shield:0,slow:0});
+            const road=tuningFor(profile.id,profile.id,kartRoadContext(distance,12,qa.sample));
+            key('keydown','KeyW');qa.update(.05);key('keyup','KeyW');
+            assert.ok(Math.abs(game.getState().speed-Math.min(road.maxSpeed,12+road.acceleration*.05))<1e-8,'real acceleration follows signed grade and selected parts');
+          }
+          qa.set({pos:bend,lane:0,speed:12,held:null,boost:0,shield:0,slow:0});
+          key('keydown','KeyW');for(let frame=0;frame<300;frame++){qa.set({pos:bend,lane:0});qa.update(1/60);}key('keyup','KeyW');
+          const corner=tuningFor(profile.id,profile.id,kartRoadContext(bend,game.getState().speed,qa.sample));
+          assert.ok(corner.maxSpeed<top.maxSpeed);assert.ok(Math.abs(game.getState().speed-corner.maxSpeed)<1e-8,'actual corner ceiling follows grip, not the flat-road HUD estimate');
+        }
+      });
+      const controllers=[...qa.controllers.values()];
+      events.pagehide.forEach(fn=>fn({persisted:false}));await settleAppDisposal();
+      assert.equal(app.graphicsDevice,null);assert.ok(controllers.every(controller=>controller.getState().status==='disposed'));
+      return;
+    }
     const race = () => { game.start(); qa.step(3.3); assert.equal(game.getState().state, 'running'); };
     const worldLayer = app.scene.layers.getLayerById(pc.LAYERID_WORLD)!;
     const displays: ItemDisplay[] = ['boost', 'shield', 'pulse', 'mystery'];
@@ -224,7 +339,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
         assert.ok(Math.abs(game.getState().speed-tuning.acceleration*.1)<1e-8);
         for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,`${bot.id} has its own acceleration`);
         qa.set({noBots:true,pos:0,lane:0,speed:0});
-        key('keydown','KeyW');for(let frame=0;frame<240;frame++)qa.update(1/60);key('keyup','KeyW');
+        key('keydown','KeyW');for(let frame=0;frame<240;frame++){qa.set({pos:0,lane:0});qa.update(1/60);}key('keyup','KeyW');
         assert.ok(Math.abs(game.getState().speed-tuning.maxSpeed)<1e-6);
         qa.set({pos:0,lane:0,speed:tuning.maxSpeed});
         key('keydown','KeyD');qa.update(.01);key('keyup','KeyD');
@@ -560,7 +675,9 @@ test('native game integration preserves race, camera, items, menu and safety flo
       const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 0x100000000; };
       withRandom(random, () => {
         race();
-        for (let frame = 0; frame < 60 * 60; frame++) qa.update(1 / 60);
+        // Corner-limited vehicles need more than the old 60-second straight-speed checkpoint.
+        // Observe their actual race until every opponent finds a legitimate use.
+        for (let frame = 0; frame < 60 * 180 && (frame < 60 * 60 || qa.bots().some(bot=>bot.uses===0)); frame++) qa.update(1 / 60);
         qa.draw(0);
       });
       assert.equal(game.getState().state, 'running');
@@ -596,10 +713,12 @@ test('native game integration preserves race, camera, items, menu and safety flo
       Object.assign(normal, { total: 200, speed: 40 });
       Object.assign(boosted, { total: 400, speed: 40, boost: 3.3 });
       Object.assign(slowed, { total: 600, speed: 40, slow: 3 });
+      const contextualTuning=createRaceKartTuning(defaultBuild);
+      const expected=[normal,boosted,slowed].map((bot,index)=>Math.min(40,contextualTuning(bot.id,game.getState().selectedDriverId,kartRoadContext(bot.total,40,qa.sample)).maxSpeed)*[1,1.34,.55][index]*.25);
       qa.update(.25);
-      assert.ok(Math.abs((normal.total - 200) - 10) < 1e-6);
-      assert.ok(Math.abs((boosted.total - 400) - 13.4) < 1e-6);
-      assert.ok(Math.abs((slowed.total - 600) - 5.5) < 1e-6);
+      assert.ok(Math.abs((normal.total - 200) - expected[0]) < 1e-6);
+      assert.ok(Math.abs((boosted.total - 400) - expected[1]) < 1e-6);
+      assert.ok(Math.abs((slowed.total - 600) - expected[2]) < 1e-6);
       assert.equal(boosted.boost, 3.05); assert.equal(slowed.slow, 2.75);
     });
     await t.test('pause freezes NPC decisions and native FX, then reset disposes effects immediately', () => {
@@ -774,7 +893,7 @@ test('native game integration preserves race, camera, items, menu and safety flo
     const event={target:{files:[],value:'previous'}}; element('driverFiles').emit('change',event); assert.equal(event.target.value,'');
     game.start(); assert.equal(game.getState().speed, 0); assert.equal(game.getState().pos, 0); assert.equal(game.getState().elapsed, 0); assert.equal(game.getState().boost, 0); assert.equal(game.getState().charge, 0);
     assert.equal(g.document.activeElement, canvas); assert.equal(await game.retryLoading(), false);
-    assert.equal(loggedErrors.length, 1); assert.match(String(loggedErrors[0]), /Injected preparation failure/);
+    assert.equal(loggedErrors.length, 2); assert.match(String(loggedErrors[0]), /Injected preparation failure/);assert.match(String(loggedErrors[1]),/HTTP 404/);
     // BFCache keeps the scene alive and paused. A true exit waits for outstanding
     // local reads/parses before destroying PlayCanvas, and never publishes stale UI.
     events.pagehide.forEach(fn=>fn({persisted:true}));assert.equal(game.getState().state,'paused');assert.ok(app.graphicsDevice);
@@ -785,9 +904,11 @@ test('native game integration preserves race, camera, items, menu and safety flo
     events.pagehide.forEach(fn=>fn({persisted:false}));assert.ok(app.graphicsDevice,'in-flight work retains the parser app');exitingPool.forEach(assertBoxHidden);
     finishRead(importedBytes);const leavingResult=await leavingImport;
     assert.equal(leavingResult[0].value.status,'stale');assert.equal(element('importStatus').textContent,previousImportStatus);
-    assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
+    await settleAppDisposal();assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
 
   } finally {
+    if(app.graphicsDevice){events.pagehide?.forEach(fn=>fn({persisted:false}));await settleAppDisposal();}
+    clearFoodKartPayloadCache();if(previousStorage)Object.defineProperty(g,'localStorage',previousStorage);else delete g.localStorage;
     pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
   }

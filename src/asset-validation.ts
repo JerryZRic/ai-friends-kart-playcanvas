@@ -43,7 +43,7 @@ export function validateGLB(buffer: ArrayBuffer): any {
   for (const key of ['buffers', 'bufferViews', 'accessors', 'nodes', 'meshes', 'skins', 'images', 'animations']) {
     if (json[key] !== undefined && !Array.isArray(json[key])) throw new Error(`Invalid glTF ${key} array`);
   }
-  for (const [key, limit] of Object.entries({ buffers: 8, bufferViews: 8192, accessors: 8192, nodes: 4096, meshes: 1024, skins: 128, images: 16, animations: 64 })) {
+  for (const [key, limit] of Object.entries({ buffers: 8, bufferViews: 8192, accessors: 8192, nodes: 4096, meshes: 1024, skins: 128, images: 32, animations: 64 })) {
     if ((json[key]?.length || 0) > limit) throw new Error(`Too many glTF ${key}`);
   }
   // Reject invalid/cyclic hierarchies before the engine recursively instantiates them.

@@ -14,3 +14,6 @@ export function menuQuery(state:MenuState):string{
  return p.size?'?'+p.toString():'';
 }
 export function raceEntry(map:MapId,driver:unknown):string{return `${resolveMap(map).entry}?driver=${resolveCharacter(driver).id}&autostart=1`;}
+
+/** The workshop is a separate page so preview resources are released on navigation. */
+export function garageEntry(driver:unknown):string{return `./garage.html?driver=${resolveCharacter(driver).id}`;}

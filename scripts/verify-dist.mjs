@@ -7,6 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { gunzipSync } from 'node:zlib';
 import { unzipSync, zipSync } from 'fflate';
+import { verifyFoodKartAssets } from './verify-food-kart-assets.mjs';
 
 const read = path => readFileSync(path);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -39,18 +40,24 @@ function scanContent(path, bytes) {
   if (path.endsWith('.glb.gz')) bytes = gunzipSync(bytes, { maxOutputLength: 32 * 1024 * 1024 });
   for (const pattern of privatePatterns) assert.ok(!pattern.test(bytes.toString('utf8')), `Private data pattern in ${path}: ${pattern.source}`);
 }
-const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
+const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
 const allowedRoots = ['src/', 'tests/', 'scripts/', 'docs/', 'models/', '.github/', 'public/'];
 const expectedSource = [...rootAllowlist].filter(existsSync);
 for (const root of allowedRoots) for (const path of inventory(root)) {
   const relative = root + path;
-  if (/^public\/assets\/(?:drivers|portraits)\//.test(relative)) continue;
+  if (relative.split('/').includes('__pycache__') || relative.endsWith('.pyc')) continue;
+  if (/^public\/assets\/(?:drivers|portraits)\//.test(relative) || relative.startsWith('public/models/food-karts/') && !relative.endsWith('/manifest.json')) continue;
   expectedSource.push(relative);
 }
 expectedSource.sort();
 const files = inventory('dist'), archive = read('dist/source.zip');
 const entries = unzipSync(archive), prefix = 'ai-friends-kart-playcanvas-source/';
 const sourceEntries = new Map();
+
+check('all 324 food modules reconstruct exact verified originals', () => {
+  const verified=verifyFoodKartAssets(); assert.equal(verified.verifiedParts,324);
+  for (const path of inventory('public/models/food-karts')) assert.equal(sha(read('public/models/food-karts/'+path)),sha(read('dist/models/food-karts/'+path)), 'Food artifact changed: '+path);
+});
 
 check('source ZIP has safe exact members, current content and deterministic compression', () => {
   for (const [name, bytes] of Object.entries(entries)) {
@@ -69,13 +76,13 @@ check('source ZIP has safe exact members, current content and deterministic comp
 
 check('dist contains only runtime bundle/maps, approved public assets and legal/source files', () => {
   const publicFiles = inventory('public');
-  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
+  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
   for (const path of files) {
     assert.ok(allowed.has(path) || /^assets\/[A-Za-z0-9_-]+-[A-Za-z0-9_-]+\.(?:js|css)(?:\.map)?$/.test(path), `Unexpected distribution path: ${path}`);
     if (path !== 'source.zip') scanContent(path, read('dist/' + path));
   }
   for (const path of publicFiles) assert.equal(sha(read('dist/' + path)), sha(read('public/' + path)));
-  for (const path of ['LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt']) assert.equal(sha(read('dist/' + path)), sha(read(path)));
+  for (const path of ['LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt']) assert.equal(sha(read('dist/' + path)), sha(read(path)));
   assert.equal(read('dist/.nojekyll').length, 0);
   assert.match(read('THIRD-PARTY-NOTICES.txt').toString(), /PlayCanvas/);
 });
@@ -114,7 +121,7 @@ check('all twelve driver/portrait archives have exact compressed/decoded hashes 
 
 check('entry/source links and runtime assets resolve at root and nested Pages paths', () => {
   const html = read('dist/index.html').toString(), source = read('dist/source.html').toString();
-  const gamePages = ['index.html', 'coast.html', 'waterpark.html', 'waterpark-study.html'].map(path => read('dist/' + path).toString());
+  const gamePages = ['index.html', 'coast.html', 'waterpark.html', 'waterpark-study.html', 'garage.html'].map(path => read('dist/' + path).toString());
   for (const page of gamePages.slice(0, 3)) assert.equal((page.match(/id="source-license"/g) || []).length, 1);
   assert.equal((html.match(/id="source-license"/g) || []).length, 1);
   assert.doesNotMatch(html, /<base\b/i);
@@ -157,7 +164,7 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
     for (const [path, bytes] of sourceEntries) { const target = join(temporary, path); mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, bytes); }
     symlinkSync(resolve('node_modules'), join(temporary, 'node_modules'), 'dir');
     build(); packageSource();
-    const withoutModels = files.filter(path => !/^assets\/(?:drivers|portraits)\//.test(path));
+    const withoutModels = files.filter(path => !/^assets\/(?:drivers|portraits)\//.test(path) && (!path.startsWith('models/food-karts/') || path.endsWith('/manifest.json')));
     assert.deepEqual(inventory(join(temporary, 'dist')), withoutModels);
     for (const path of withoutModels) assert.equal(sha(readFileSync(join(temporary, 'dist', path))), sha(read('dist/' + path)), `Source-only rebuild differs: ${path}`);
     const harness = `
@@ -176,6 +183,22 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
       await import('./scripts/fetch-runtime-models.mjs');assert.equal(calls,Number(process.env.QA_EXPECT_DOWNLOADS));
     `;
     for (const count of ['12', '0']) execFileSync(process.execPath, ['--input-type=module', '-e', harness], { cwd: temporary, stdio: 'pipe', timeout: 120000, env: { ...process.env, QA_RUNTIME_ROOT: resolve('dist'), QA_EXPECT_DOWNLOADS: count } });
+    const foodHarness = `
+      import assert from 'node:assert/strict';
+      import {readFileSync} from 'node:fs';
+      import {join} from 'node:path';
+      let calls=0;
+      globalThis.fetch=async (url,options)=>{
+        calls++;const parsed=new URL(url);assert.equal(parsed.origin,'https://jerryzric.github.io');
+        assert.ok(parsed.pathname.startsWith('/ai-friends-kart-playcanvas/dev/models/food-karts/'));
+        assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);assert.equal(options.body,undefined);
+        const bytes=readFileSync(join(process.env.QA_RUNTIME_ROOT,parsed.pathname.slice('/ai-friends-kart-playcanvas/dev/'.length)));
+        return {ok:true,status:200,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)};
+      };
+      await import('./scripts/fetch-food-karts.mjs');assert.equal(calls,Number(process.env.QA_EXPECT_DOWNLOADS));
+    `;
+    const foodCount=files.filter(path=>path.startsWith('models/food-karts/')&&!path.endsWith('/manifest.json')).length;
+    for(const count of [String(foodCount),'0'])execFileSync(process.execPath,['--input-type=module','-e',foodHarness],{cwd:temporary,stdio:'pipe',timeout:120000,env:{...process.env,QA_RUNTIME_ROOT:resolve('dist'),QA_EXPECT_DOWNLOADS:count}});
     build(); packageSource();
     assert.deepEqual(inventory(join(temporary, 'dist')), files);
     for (const path of files) assert.equal(sha(readFileSync(join(temporary, 'dist', path))), sha(read('dist/' + path)), `Full rebuild differs: ${path}`);

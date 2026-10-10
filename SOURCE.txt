@@ -21,3 +21,9 @@ Local replacements remain only in page memory and are never uploaded or persiste
 
 Keep source.html, source.zip, LICENSE, NOTICE, SOURCE.txt, MODEL-NOTICE.txt and
 THIRD-PARTY-NOTICES.txt beside the deployed game.
+
+Dev modular garage: 54 original food themes / 324 parts use lossless shared-image
+delivery beside the game. These large payloads are excluded from source.zip; the
+public manifest and reconstruction/verification scripts are included. Run
+npm run food:fetch after extracting the source to restore all food payloads, then
+npm run food:verify. The separate food notice is FOOD-ASSET-NOTICE.txt.

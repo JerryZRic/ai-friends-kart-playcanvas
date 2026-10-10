@@ -11,7 +11,9 @@
     "build": "npm run check && vite build && node scripts/package-source.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "models:fetch": "node scripts/fetch-runtime-models.mjs",
-    "test:dist": "node scripts/verify-dist.mjs"
+    "test:dist": "node scripts/verify-dist.mjs",
+    "food:fetch": "node scripts/fetch-food-karts.mjs",
+    "food:verify": "node scripts/verify-food-kart-assets.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",

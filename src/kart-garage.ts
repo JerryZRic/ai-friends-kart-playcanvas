@@ -1,0 +1,196 @@
+import * as pc from 'playcanvas';
+import { catalog, partsBySlot, KART_SLOTS, defaultBuild, starterBuilds, resolveBuild, buildStats, kartTuning, loadGarageState, saveGarageState, type KartBuild, type KartSlot, type KartPart, type GarageState } from './kart-build';
+import { createKartAssemblyLoader, kartAssemblyCamera, type KartAssembly, type KartAssemblyProgress } from './kart-assembly';
+import { resolveCharacter } from './character-profiles';
+import { readGameSettings } from './game-settings';
+import {loadKartThumbnails} from './kart-thumbnails';
+
+const SLOT_NAMES: Record<KartSlot, string> = {body: '车壳', chassis: '底盘', motor: '电机', transmission: '传动', battery: '电池', wheels: '轮胎'};
+const SLOT_ICONS: Record<KartSlot, string> = {body: '▱', chassis: '⊞', motor: '◉', transmission: '⚙', battery: '▥', wheels: '◎'};
+const byId = new Map(catalog.map(part => [part.id, part]));
+const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]!));
+const bytes = (size: number) => size < 1024 * 1024 ? `${(size / 1024).toFixed(0)} KB` : `${(size / 1024 / 1024).toFixed(1)} MB`;
+const themeName = (part: KartPart) => part.themeName;
+export function garageRaceEntry(driver: unknown, build: KartBuild) {
+  const params = new URLSearchParams({driver: resolveCharacter(driver).id, autostart: '1', kart: JSON.stringify(resolveBuild(build))});
+  return `./coast.html?${params}`;
+}
+export function filterGarageParts(slot: KartSlot, theme: string, query: string) {
+  const needle = query.trim().toLocaleLowerCase();
+  return partsBySlot[slot].filter(part => (!theme || part.themeId === theme) && (!needle || `${part.id} ${part.name} ${part.themeName} ${part.archetypeLabel}`.toLocaleLowerCase().includes(needle)));
+}
+
+/** One preview app per mounted garage. Latest builds own their own abort signal;
+ * stale results are disposed and never presented as the current selection. */
+export function mountKartGaragePreview(canvas: HTMLCanvasElement, onStatus: (state: KartAssemblyProgress | {stage: 'failed'; message: string}) => void, initial: KartBuild) {
+  let app: pc.Application | null = null, loader: ReturnType<typeof createKartAssemblyLoader> | null = null, model: KartAssembly | null = null, camera: pc.Entity | null = null;
+  let selected = resolveBuild(initial), controller: AbortController | null = null, version = 0, disposed = false, lost = false, ready = false;
+  let yaw = 36, pitch = 22, zoom = 1, aspect = 1, frame = 0, pointer: number | null = null, lastX = 0, lastY = 0;
+  let resizeObserver: ResizeObserver | null = null, released: Promise<unknown> = Promise.resolve();
+  const settings = readGameSettings();
+  const cancelFrame = () => {if (frame) cancelAnimationFrame(frame); frame = 0;};
+  function fit() {
+    if (!camera || !model) return;
+    const view = kartAssemblyCamera(model.bounds, aspect, yaw, pitch, zoom);
+    camera.setPosition(view.position); camera.lookAt(view.target); camera.camera!.fov = view.fov; camera.camera!.nearClip = view.nearClip; camera.camera!.farClip = view.farClip;
+  }
+  function draw() {
+    frame = 0; if (!app || disposed || lost || document.hidden) return;
+    try {app.update(0); app.render(); app.fire('frameend');}
+    catch (error) {fail(`3D 渲染失败：${String((error as Error).message || error)}`);}
+  }
+  function refresh() {fit(); if (!frame && app && !disposed && !lost && !document.hidden) frame = requestAnimationFrame(draw);}
+  function resize() {
+    if (!app || disposed) return;
+    const rect = canvas.parentElement!.getBoundingClientRect(); aspect = Math.max(1, rect.width) / Math.max(1, rect.height);
+    app.graphicsDevice.maxPixelRatio = Math.min(window.devicePixelRatio || 1, settings.quality === 'low' ? 1 : 1.5);
+    app.resizeCanvas(Math.max(1, Math.round(rect.width)), Math.max(1, Math.round(rect.height))); refresh();
+  }
+  function status(state: KartAssemblyProgress | {stage: 'failed'; message: string}) {
+    if (disposed) return; ready = state.stage === 'ready'; canvas.dataset.previewState = state.stage;
+    canvas.setAttribute('aria-busy', String(!ready && state.stage !== 'failed')); onStatus(state);
+  }
+  async function select(build: KartBuild) {
+    selected = resolveBuild(build); if (disposed) return;
+    if (!loader) {status({stage: 'failed', message: '此设备的 3D 预览尚未就绪。可重试，或继续查看零件参数'}); return;}
+    controller?.abort(); controller = new AbortController(); const thisVersion = ++version;
+    model?.dispose(); model = null; refresh();
+    status({stage: 'loading', receivedBytes: 0, totalBytes: null, completed: 0, total: 6});
+    try {
+      const next = await loader.load(selected, {signal: controller.signal, onProgress: state => {if (!disposed && thisVersion === version) status(state);}});
+      if (disposed || thisVersion !== version) {next.dispose(); return;}
+      model = next; app!.root.addChild(next.root); fit(); refresh();
+      status({stage: 'ready', receivedBytes: 0, totalBytes: 0, completed: 6, total: 6});
+    } catch (error) {if (!disposed && thisVersion === version && !controller.signal.aborted) status({stage: 'failed', message: `所选零件未加载完成：${String((error as Error).message || error)}`});}
+  }
+  function releaseApp() {
+    const oldApp = app, oldLoader = loader; app = null; loader = null; camera = null;
+    controller?.abort(); model?.dispose(); model = null;
+    if (oldApp) {oldApp.root.enabled = false; released = (oldLoader?.dispose() || Promise.resolve()).finally(() => {oldApp.destroy();});}
+  }
+  function fail(message: string) {cancelFrame(); ++version; releaseApp(); status({stage: 'failed', message});}
+  function initialize() {
+    if (disposed || app) return;
+    try {
+      lost = false;
+      app = new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality !== 'low', alpha: true, powerPreference: 'low-power'}});
+      app.setCanvasFillMode(pc.FILLMODE_NONE); app.setCanvasResolution(pc.RESOLUTION_AUTO);
+      app.scene.ambientLight = new pc.Color(.74, .77, .79);
+      camera = new pc.Entity('Garage camera', app); camera.addComponent('camera', {clearColor: new pc.Color(.86, .88, .84, 0), fov: 34}); app.root.addChild(camera);
+      for (const [name, color, intensity, rotation] of [['Key', [1, .91, .78], 1.7, [42, -30, 0]], ['Fill', [.73, .86, 1], .7, [-15, 150, 0]]] as const) {
+        const light = new pc.Entity(name, app); light.addComponent('light', {type: 'directional', color: new pc.Color(color[0], color[1], color[2]), intensity, castShadows: false}); light.setLocalEulerAngles(rotation[0], rotation[1], rotation[2]); app.root.addChild(light);
+      }
+      loader = createKartAssemblyLoader(app); app.start(); if (app.frameRequestId) {cancelAnimationFrame(app.frameRequestId); app.frameRequestId = null;}
+      resize(); void select(selected);
+    } catch (error) {fail(`当前设备无法初始化 WebGL 3D 预览：${String((error as Error).message || error)}`);}
+  }
+  function down(event: PointerEvent) {if (event.button !== 0 || pointer !== null) return; pointer = event.pointerId; lastX = event.clientX; lastY = event.clientY; canvas.setPointerCapture?.(pointer);}
+  function move(event: PointerEvent) {if (event.pointerId !== pointer) return; yaw += (event.clientX - lastX) * .45; pitch = pc.math.clamp(pitch + (event.clientY - lastY) * .25, 4, 78); lastX = event.clientX; lastY = event.clientY; refresh();}
+  function end(event: PointerEvent) {if (event.pointerId !== pointer) return; const old = pointer; pointer = null; if (old !== null && canvas.hasPointerCapture?.(old)) canvas.releasePointerCapture(old);}
+  function wheel(event: WheelEvent) {event.preventDefault(); zoom = pc.math.clamp(zoom + event.deltaY * .001, .72, 1.8); refresh();}
+  function reset() {yaw = 36; pitch = 22; zoom = 1; refresh();}
+  function keyboard(event: KeyboardEvent) {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '=', 'Home'].includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === 'Home') reset(); else if (event.key === 'ArrowLeft') yaw -= 12; else if (event.key === 'ArrowRight') yaw += 12;
+    else if (event.key === 'ArrowUp') pitch -= 8; else if (event.key === 'ArrowDown') pitch += 8;
+    else zoom += event.key === '-' ? .1 : -.1;
+    pitch = pc.math.clamp(pitch, 4, 78); zoom = pc.math.clamp(zoom, .72, 1.8); refresh();
+  }
+  function visibility() {if (document.hidden) cancelFrame(); else refresh();}
+  function contextLost(event: Event) {event.preventDefault(); lost = true; ready = false; controller?.abort(); ++version; cancelFrame(); status({stage: 'failed', message: '3D 显卡连接中断，恢复后可重试。尚未显示所选装配'});}
+  function contextRestored() {lost = false; void select(selected); resize();}
+  const retry = () => {if (disposed) return; if (app && !lost) void select(selected); else {releaseApp(); void released.then(initialize);}};
+  const dispose = () => {
+    if (disposed) return; disposed = true; ++version; controller?.abort(); cancelFrame(); resizeObserver?.disconnect();
+    canvas.removeEventListener('pointerdown', down); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerup', end); canvas.removeEventListener('pointercancel', end); canvas.removeEventListener('lostpointercapture', end); canvas.removeEventListener('wheel', wheel); canvas.removeEventListener('keydown', keyboard); canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored);
+    window.removeEventListener('resize', resize); document.removeEventListener('visibilitychange', visibility); releaseApp();
+  };
+  canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move); canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('lostpointercapture', end); canvas.addEventListener('wheel', wheel, {passive: false}); canvas.addEventListener('keydown', keyboard); canvas.addEventListener('webglcontextlost', contextLost); canvas.addEventListener('webglcontextrestored', contextRestored);
+  window.addEventListener('resize', resize); document.addEventListener('visibilitychange', visibility);
+  if (typeof ResizeObserver !== 'undefined') {resizeObserver = new ResizeObserver(resize); resizeObserver.observe(canvas.parentElement!);}
+  initialize(); return {select, retry, reset, zoomBy(delta: number) {zoom = pc.math.clamp(zoom + delta, .72, 1.8); refresh();}, dispose, get ready() {return ready;}};
+}
+
+export function mountKartGarage(root: HTMLElement) {
+  const driver = resolveCharacter(new URLSearchParams(location.search).get('driver'));
+  let state: GarageState = loadGarageState(), slot: KartSlot = 'body', theme = '', query = '', compareBuild: KartBuild = {...state.activeBuild};
+  let preview: ReturnType<typeof mountKartGaragePreview> | null = null, storageAvailable = true;
+  let thumbnails:ReadonlyMap<string,string>=new Map();const thumbnailAbort=new AbortController();
+  const themes = [...new Map(catalog.map(part => [part.themeId, part])).values()].sort((a, b) => a.kitNumber - b.kitNumber);
+  const back = `./index.html?screen=characters&map=coast&driver=${driver.id}`;
+  root.innerHTML = `<header class="garage-header"><a class="garage-brand" href="./index.html"><span>AI FRIENDS</span>KART<span class="brand-dot">.</span></a><nav aria-label="车库导航"><a href="${back}">← 角色选择</a><span>DEV / 陆地改装测试</span></nav></header>
+    <div class="garage-heading"><div><p class="eyebrow">THE MIX & MATCH WORKSHOP</p><h1>好吃的灵感，<br class="mobile-break">好开的搭配<span>。</span></h1><p>54 个食物主题 · 324 个原创零件 · 6 个独立槽位</p></div><div class="driver-chip"><span style="color:${driver.color}">${driver.symbol}</span><div><small>本次试驾伙伴</small><strong>${driver.label}</strong><a href="${back}">更换角色 ↗</a></div></div></div>
+    <section class="garage-workbench" aria-label="车辆装配台"><aside class="slot-panel"><div class="panel-heading"><h2>六槽装配</h2><span>06 / 06</span></div><div id="garage-slots" role="group" aria-label="选择零件槽位"></div><p class="slot-note">跨主题自由组合<br>同主题没有额外加成</p></aside>
+    <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">LIVE ASSEMBLY</span><h2 id="build-title">自由混搭</h2></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转、滚轮缩放、方向键环绕、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>原始零件 · 共用安装坐标</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动环绕 <span>·</span> 滚轮缩放 <span>·</span> 方向键也可操作</p><div class="camera-buttons"><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
+    <aside class="performance-panel"><div class="panel-heading"><h2>这台车的性格</h2><span>BUILD SPECS</span></div><div id="build-stats"></div><p class="performance-note">设计估算先转为车辆倍率，再叠加角色属性；上方比赛平路上限与赛道 HUD 使用相同速度换算。当前试玩：重量、动力、极速、操控已参与海岸竞速；电量消耗、耐久损耗与翻车恢复暂未启用。续航、侧倾等仅供搭配参考。</p><a class="garage-start" id="garage-race" href="${garageRaceEntry(driver.id, state.activeBuild)}"><span>去日落海岸试跑</span><span>→</span></a><p class="race-note">保留六名角色属性 · 水上坐骑不受影响</p></aside></section>
+    <section class="build-shelf" aria-label="配方与已保存方案"><div class="shelf-tabs"><h2>试试不同手感</h2><span>STARTER MIXES</span></div><div class="starter-list" id="starter-builds"></div><div class="save-row"><form id="save-build-form"><label for="build-name">收藏这套搭配</label><input id="build-name" name="name" maxlength="40" placeholder="给你的车起个名字" autocomplete="off"><button type="submit">保存方案 ＋</button></form><p id="save-status" role="status" aria-live="polite">装配会自动保存在此浏览器</p></div><div id="saved-builds" class="saved-list"></div></section>
+    <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">CHOOSE YOUR INGREDIENTS</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">主题<select id="theme-filter"><option value="">全部 54 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="名称 / 类型 / 零件 ID"></label><button id="apply-theme" disabled>整套主题试装</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
+    <footer class="garage-footer"><span>原创食物模型 · DEV 独立测试</span><a href="./source.html">开源代码与模型许可 ↗</a><a href="${back}">返回角色选择</a></footer>`;
+  const $ = <T extends HTMLElement = HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
+  function persist(message = '当前装配已自动保存') {storageAvailable = saveGarageState(state); $('#save-status').textContent = storageAvailable ? message : '此浏览器无法保存；本次搭配仍可通过下方试跑入口带入比赛，离开后不会保留'; $('#save-status').dataset.error = String(!storageAvailable);}
+  function renderSlots() {
+    $('#garage-slots').innerHTML = KART_SLOTS.map((name, index) => {const part = byId.get(state.activeBuild[name])!; return `<button class="slot-choice" data-slot="${name}" aria-pressed="${slot === name}"><span class="slot-icon" aria-hidden="true">${SLOT_ICONS[name]}</span><span><strong><small>0${index + 1}</small> ${SLOT_NAMES[name]}</strong><span>${esc(themeName(part))}</span></span><span class="slot-chevron" aria-hidden="true">${slot === name ? '→' : '·'}</span></button>`;}).join('');
+    $('#current-slot-label').textContent = SLOT_NAMES[slot];
+  }
+  function renderStats(candidate?: KartBuild) {
+    const current = buildStats(state.activeBuild), comparison = buildStats(candidate || compareBuild), prospective = !!candidate;
+    const displayed = prospective ? comparison : current, baseline = prospective ? current : comparison;
+    const raceTuning = kartTuning(driver.id, 'coast', candidate || state.activeBuild, {grade: 0, curvature: 0, speed: 0});
+    const rows = [
+      ['设计极速', 'topSpeedKph', 'km/h', 1, false], ['设计起步', 'launchAcceleration', 'm/s²', 2, false], ['设计抓地', 'lateralGripG', 'g', 2, false], ['整车质量', 'massKg', 'kg', 1, true],
+    ] as const;
+    $('#build-stats').innerHTML = `<p class="comparison-title">${prospective ? '此零件装上后 / 与当前比较' : '当前装配 / 与上次装配比较'}</p><div class="game-speed-summary"><span>${esc(driver.label)} · 比赛平路上限</span><strong>${(raceTuning.maxSpeed * 3.6).toFixed(1)} <small>km/h</small></strong><p>已叠加角色属性 · 未计道具加速<br>弯道上限依抓地调整</p></div><p class="design-spec-caption">以下为设计估算，用于生成车辆倍率</p><div class="spec-rows">${rows.map(([name, key, unit, digits, inverse]) => {const value = Number(displayed[key]), delta = value - Number(baseline[key]); return `<div class="spec-row"><div><span>${name}</span><small class="stat-delta ${Math.abs(delta) < .005 ? 'neutral' : (delta > 0) !== inverse ? 'positive' : 'negative'}">${Math.abs(delta) < .005 ? '—' : `${delta > 0 ? '+' : ''}${delta.toFixed(digits)}`}</small></div><strong>${value.toFixed(digits)} <small>${unit}</small></strong></div>`;}).join('')}</div><div class="race-multipliers"><h3>比赛车辆系数</h3>${[['加速', displayed.multipliers.acceleration], ['极速', displayed.multipliers.speed], ['转向', displayed.multipliers.handling]].map(([label, value]) => `<div><span>${label}</span><meter min="0.65" max="1.35" value="${value}" aria-label="${label}系数 ${Number(value).toFixed(2)}"></meter><strong>×${Number(value).toFixed(2)}</strong></div>`).join('')}</div><details class="more-stats"><summary>更多估算参数</summary><dl><div><dt>驱动功率</dt><dd>${displayed.drivePowerKw.toFixed(1)} kW</dd></div><div><dt>电池容量</dt><dd>${displayed.batteryKwh.toFixed(1)} kWh</dd></div><div><dt>巡航续航</dt><dd>${displayed.cruiseMinutes.toFixed(0)} min</dd></div><div><dt>侧倾阈值</dt><dd>${displayed.rollThresholdG.toFixed(2)} g</dd></div></dl></details>`;
+  }
+  function renderParts() {
+    const filtered = filterGarageParts(slot, theme, query);
+    $('#parts-count').textContent = `${filtered.length} / 54 件${theme || query ? '符合筛选' : '可选'} · 当前槽位一次装备一件`;
+    $('#parts-grid').innerHTML = filtered.length ? filtered.map(part => {const thumbnail = thumbnails.get(part.id), hasThumb = !!thumbnail; return `<button class="part-card" data-part="${esc(part.id)}" aria-pressed="${state.activeBuild[slot] === part.id}"><span class="part-visual ${hasThumb ? '' : 'no-thumbnail'}">${hasThumb ? `<img src="${thumbnail}" alt="${esc(part.name)}原始模型模块图" loading="lazy" width="400" height="300">` : `<span aria-hidden="true">${SLOT_ICONS[slot]}</span><small>点选查看真实 3D</small>`}<span class="part-number">${String(part.kitNumber).padStart(3, '0')}</span><span class="part-selected" aria-hidden="true">${state.activeBuild[slot] === part.id ? '✓' : '+'}</span></span><span class="part-copy"><strong>${esc(part.name)}</strong><span class="part-type">${esc(part.archetypeLabel)}<span>装配 →</span></span><code>${esc(part.id)}</code></span></button>`;}).join('') : '<div class="no-parts"><strong>没有找到这个零件</strong><p>换个名称、零件 ID，或把主题切回“全部”</p><button id="clear-filters">清除筛选</button></div>';
+    $('#apply-theme').toggleAttribute('disabled', !theme);
+  }
+  function renderSaved() {
+    $('#saved-builds').innerHTML = state.namedBuilds.map(saved => `<div class="saved-build"><button data-load-build="${esc(saved.id)}">↗ ${esc(saved.name)}</button><button class="delete-build" data-delete-build="${esc(saved.id)}" aria-label="删除已保存方案 ${esc(saved.name)}">×</button></div>`).join('');
+  }
+  function applyBuild(build: KartBuild, name = '自由混搭') {
+    compareBuild = {...state.activeBuild}; state = {...state, activeBuild: resolveBuild(build)};
+    $('#build-title').textContent = name; $('#garage-race').setAttribute('href', garageRaceEntry(driver.id, state.activeBuild));
+    persist(); renderSlots(); renderStats(); renderParts(); void preview?.select(state.activeBuild);
+  }
+  $('#starter-builds').innerHTML = [{id: 'balanced-default', name: '标准混搭', description: '六主题混搭 · 原始基准手感', build: defaultBuild}, ...starterBuilds].map((build, index) => `<button data-starter="${esc(build.id)}" title="${esc(build.description)}"><small>${String(index + 1).padStart(2, '0')}</small><span>${esc(build.name)}</span><span aria-hidden="true">↗</span></button>`).join('');
+  root.addEventListener('click', event => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('button'); if (!target) return;
+    if (target.dataset.slot) {slot = target.dataset.slot as KartSlot; renderSlots(); renderParts(); renderStats(); $(`[data-slot="${slot}"]`).focus({preventScroll: true});}
+    if (target.dataset.part) {const part = byId.get(target.dataset.part)!; if (part.id !== state.activeBuild[part.slot]) {applyBuild({...state.activeBuild, [part.slot]: part.id}); $(`[data-part="${part.id}"]`)?.focus({preventScroll: true});}}
+    if (target.dataset.starter) {const starter = starterBuilds.find(value => value.id === target.dataset.starter); applyBuild(starter?.build || defaultBuild, starter?.name || '标准混搭');}
+    if (target.dataset.loadBuild) {const saved = state.namedBuilds.find(value => value.id === target.dataset.loadBuild); if (saved) applyBuild(saved.build, saved.name);}
+    if (target.dataset.deleteBuild) {state = {...state, namedBuilds: state.namedBuilds.filter(value => value.id !== target.dataset.deleteBuild)}; persist('已删除保存的方案；当前装配保持不变'); renderSaved();}
+    if (target.id === 'clear-filters') {theme = ''; query = ''; $<HTMLSelectElement>('#theme-filter').value = ''; $<HTMLInputElement>('#part-search').value = ''; renderParts();}
+    if (target.id === 'apply-theme' && theme) {const build = {...state.activeBuild}; for (const part of catalog.filter(value => value.themeId === theme)) build[part.slot] = part.id; applyBuild(build, `${themeName(byId.get(build.body)!)} · 整套`);}
+    if (target.id === 'preview-zoom-in') preview?.zoomBy(-.1); if (target.id === 'preview-zoom-out') preview?.zoomBy(.1); if (target.id === 'preview-reset') preview?.reset(); if (target.id === 'preview-retry') preview?.retry();
+  });
+  const comparePart = (event: Event) => {const target = (event.target as HTMLElement).closest<HTMLElement>('[data-part]'); if (!target) return; const part = byId.get(target.dataset.part!)!; renderStats({...state.activeBuild, [part.slot]: part.id});};
+  $('#parts-grid').addEventListener('pointerover', comparePart); $('#parts-grid').addEventListener('focusin', comparePart); $('#parts-grid').addEventListener('pointerleave', () => renderStats()); $('#parts-grid').addEventListener('focusout', event => {if (!$('#parts-grid').contains((event as FocusEvent).relatedTarget as Node)) renderStats();});
+  $<HTMLSelectElement>('#theme-filter').addEventListener('change', event => {theme = (event.target as HTMLSelectElement).value; renderParts(); renderStats();});
+  $<HTMLInputElement>('#part-search').addEventListener('input', event => {query = (event.target as HTMLInputElement).value; renderParts(); renderStats();});
+  $('#save-build-form').addEventListener('submit', event => {event.preventDefault(); const input = $<HTMLInputElement>('#build-name'), name = input.value.trim().slice(0, 40); if (!name) {input.setCustomValidity('请先给这套搭配起个名字'); input.reportValidity(); return;} input.setCustomValidity(''); if (state.namedBuilds.length >= 12) {$('#save-status').textContent = '最多收藏 12 套搭配，请先删除一套再保存'; return;} state = {...state, namedBuilds: [...state.namedBuilds, {id: `build-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, name, build: {...state.activeBuild}}]}; $('#build-title').textContent = name; persist(`“${name}”已保存在此浏览器`); renderSaved(); input.value = '';});
+  $<HTMLInputElement>('#build-name').addEventListener('input', event => (event.target as HTMLInputElement).setCustomValidity(''));
+  renderSlots(); renderStats(); renderParts(); renderSaved();
+  void loadKartThumbnails(thumbnailAbort.signal).then(images=>{if(thumbnailAbort.signal.aborted)return;thumbnails=images;renderParts();$('#thumbnail-status').textContent='324 张原始模型缩略图已就绪';}).catch(()=>{if(!thumbnailAbort.signal.aborted)$('#thumbnail-status').textContent='缩略图未能加载；零件名称、参数与真实 3D 选择仍可使用';});
+  preview = mountKartGaragePreview($<HTMLCanvasElement>('#kart-preview'), current => {
+    const status = $('#preview-status'), detail = $('#preview-detail'), bar = $<HTMLProgressElement>('#preview-progress'), retry = $('#preview-retry'), overlay = $('#preview-message');
+    const ready = current.stage === 'ready', failed = current.stage === 'failed'; overlay.dataset.state = current.stage; retry.hidden = !failed; bar.hidden = ready || failed;
+    $('#preview-badge').textContent = ready ? '6 / 6 · 实际 3D' : failed ? '预览未完成' : '正在准备'; $('#preview-badge').dataset.state = current.stage;
+    if (failed) {status.textContent = current.message; detail.textContent = '不会用占位模型替代缺失零件。参数和已选搭配仍可查看';}
+    else if (ready) {status.textContent = '六个原始模块已装配'; detail.textContent = '拖动与缩放，检查你的搭配';}
+    else {
+      status.textContent = current.stage === 'retrying' ? `网络暂时中断，${Math.ceil((current.retryInMs || 0) / 1000)} 秒后重试` : current.stage === 'preparing' ? `正在解析真实模型 · ${current.completed} / 6` : `正在下载所选零件 · ${current.completed} / 6`;
+      detail.textContent = `${bytes(current.receivedBytes)}${current.totalBytes ? ` / ${bytes(current.totalBytes)}` : ' 已接收'}${current.cachedBytes ? ` · 缓存复用 ${bytes(current.cachedBytes)}` : ''}${current.partId ? ` · ${current.partId}` : ''}`;
+      if (current.totalBytes && current.totalBytes > 0) {bar.max = current.totalBytes; bar.value = current.receivedBytes;} else bar.removeAttribute('value');
+    }
+  }, state.activeBuild);
+  const pagehide = () => {thumbnailAbort.abort();preview?.dispose(); preview = null;};
+  const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
+  window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);
+  return {get state() {return state;}, applyBuild, dispose() {pagehide(); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow);}};
+}
+if (typeof document !== 'undefined' && document.getElementById('kart-garage')) mountKartGarage(document.getElementById('kart-garage')!);
