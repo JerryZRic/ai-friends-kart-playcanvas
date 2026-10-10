@@ -1,0 +1,67 @@
+/* All menu pages share the garage's 1440 × 900 composition. Only the outer
+   frame scales; cards, text, dialogs and previews never reflow by device size. */
+html,body{width:100%;height:100%;min-width:0;min-height:0;margin:0;overflow:hidden;background:#07151c}
+body[data-screen=main]{background:#07151c;overflow:hidden}
+#menu-ui{overflow:hidden;background:#0e242b;isolation:isolate}
+#menu-ui .ambient{position:absolute;z-index:-1}
+#menu-ui .masthead{width:1440px;max-width:none;height:76px;margin:0;padding:18px 72px}
+#menu-ui main{width:1440px;max-width:none;height:772px;min-height:0;margin:0;padding:8px 72px 20px;overflow:hidden}
+#menu-ui .site-footer{position:absolute;left:72px;right:72px;bottom:0;height:52px;max-width:none;margin:0;padding:16px 0;align-items:center;flex-wrap:nowrap;gap:25px}
+#menu-ui .section-top{height:30px;margin:0 0 12px}
+#menu-ui .section-heading{margin:0 0 20px}
+#menu-ui .section-heading .eyebrow{font-size:10px;line-height:13px;margin:0 0 8px}
+#menu-ui .section-heading h1{font-size:38px;line-height:1.3;margin:0 0 7px}
+#menu-ui .section-heading>p:last-child{font-size:12px;line-height:1.7;margin:0}
+#menu-ui main.screen-main{height:900px;padding:0}
+#menu-ui .title-screen{height:900px;min-height:0;padding:72px 86px 63px}
+#menu-ui #game-title{font-size:98px}
+#menu-ui .title-actions{width:900px;grid-template-columns:repeat(4,minmax(0,1fr))}
+#menu-ui .title-actions button{font-size:25px;min-height:68px}
+#menu-ui .story-dialog{width:420px}
+/* PlayCanvas sizes its physical buffer from the scaled rectangle. Its inline
+   width/height must not change the logical CSS box and apply scaling twice. */
+#menu-ui #title-backdrop,#menu-ui #character-preview{width:100%!important;height:100%!important}
+#menu-ui .map-preview-layout{grid-template-columns:minmax(350px,1fr) minmax(0,1.25fr);gap:28px}
+#menu-ui .map-stage{height:333px}
+#menu-ui .map-stage-caption h2{font-size:38px}
+#menu-ui .character-layout{grid-template-columns:1.25fr 1fr;gap:32px}
+#menu-ui .character-stage{height:310px;min-height:0;margin-bottom:14px}
+#menu-ui .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#menu-ui .character-roster .character-card{height:96px;min-height:0;padding:9px 12px}
+#menu-ui .character-roster .character-symbol{width:34px;height:34px;font-size:22px;border-radius:12px;margin-bottom:5px}
+#menu-ui .character-roster .character-role{margin-top:4px}
+#menu-ui .roster-note{margin:0}
+#menu-ui .profile-panel{padding:24px 28px}
+#menu-ui .profile-description{margin-bottom:18px}
+#menu-ui .stats{gap:14px}
+#menu-ui .stats-note{margin:16px 0}
+#menu-ui .flow-step{margin:18px 0 14px}
+#menu-ui .settings-panel{width:900px;max-width:none;padding:24px 28px}
+/* Long help/settings content scrolls only within this fixed logical panel. */
+#menu-ui .screen-settings>.settings-panel{height:584px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+#menu-ui .screen-settings>.settings-panel:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
+#menu-ui .race-options-panel{padding:22px 28px}
+#menu-ui .race-build-summary{margin-bottom:18px;padding-bottom:16px}
+#menu-ui .race-build-summary dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px}
+#menu-ui .race-options-panel fieldset{margin-bottom:16px}
+#menu-ui .race-options-panel .setting-row{padding:16px 0}
+#menu-ui .race-options-panel .start-race{margin-top:16px}
+#menu-ui .quality-options{grid-template-columns:repeat(3,1fr)}
+#menu-ui .exit-panel{padding:40px 0;max-width:650px}
+#menu-ui .exit-panel h1{font-size:40px}
+#menu-ui .exit-symbol{font-size:75px}
+/* Race setup keeps the complete six-part summary beside the options, leaving
+   the primary action on a dedicated full-width row inside the logical frame. */
+#menu-ui .race-options-panel{display:grid;grid-template-columns:252px minmax(0,1fr);grid-template-rows:182px 84px 28px 56px 18px;gap:14px 28px;height:470px;max-height:584px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+#menu-ui .race-options-panel .race-build-summary{grid-column:1;grid-row:1/4;align-self:stretch;margin:0;padding:0 22px 0 0;border-bottom:0;border-right:1px solid #ffffff20}
+#menu-ui .race-options-panel .race-build-summary dl{grid-template-columns:1fr;gap:9px}
+#menu-ui .race-options-panel .race-build-summary dl>div{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:start}
+#menu-ui .race-options-panel .race-build-summary dt{line-height:1.8}
+#menu-ui .race-options-panel .race-build-summary dd{margin:0;line-height:1.65}
+#menu-ui .race-options-panel fieldset{grid-column:2;grid-row:1;margin:0}
+#menu-ui .race-options-panel .quality-options{margin-top:14px}
+#menu-ui .race-options-panel .setting-row{grid-column:2;grid-row:2;margin:0;padding:12px 0}
+#menu-ui #race-options-status{grid-column:2;grid-row:3;align-self:center;margin:0}
+#menu-ui .race-options-panel .start-race{grid-column:1/-1;grid-row:4;margin:0;height:56px}
+#menu-ui .race-options-panel .fine-print{grid-column:1/-1;grid-row:5;margin:0;font-size:10px;line-height:18px}
+#menu-ui .race-options-panel input[type=number]{height:46px;cursor:text}

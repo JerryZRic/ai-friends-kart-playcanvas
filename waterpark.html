@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/src/race-ui.css">
 </head>
 <body class="menu waterpark-race">
+  <div id="raceUi" class="fixed-ui-root">
   <div id="raceHud"></div>
   <div id="raceLoading"></div>
   <section class="overlay race-finish" id="overlay" role="dialog" aria-modal="true" aria-labelledby="title" aria-describedby="subtitle">
@@ -40,6 +41,7 @@
 
 <button id="restart" type="button" disabled>重新开始比赛</button><a id="change-driver" href="index.html?screen=characters&amp;map=waterpark">更换角色</a><a id="change-map" href="index.html?screen=maps&amp;map=waterpark">更换地图</a>
     <div id="instructions"></div>
+  </div>
   </div>
   <script type="module" src="/src/waterpark-play.ts"></script>
 </body>

@@ -106,12 +106,12 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
     override removeEventListener(type: string, callback: any, options?: any) { this.listeners.get(type)?.delete(callback); super.removeEventListener(type, callback, options); }
     listenerCount() { return [...this.listeners.values()].reduce((sum, set) => sum + set.size, 0); }
   }
-  let width = 1200, height = 700, nextFrame = 0, renders = 0, contextsLost = 0, appDestroyed = false;
+  let width = 1200, height = 700, nextFrame = 0, renders = 0, contextsLost = 0, appDestroyed = false, lockedLogicalSize = false;
   const queued = new Map<number, FrameRequestCallback>();
   const parent = {getBoundingClientRect: () => ({left: 0, top: 0, width, height})};
   const canvas = Object.assign(new Target(), {id: 'menu-lifecycle-test', width, height, dataset: {}, style: {width: '', height: ''}, parentElement: parent,
     getBoundingClientRect() { return {left: 0, top: 0, width: parseFloat(this.style.width) || width, height: parseFloat(this.style.height) || height}; }});
-  Object.defineProperties(canvas, {clientWidth: {get: () => parseFloat(canvas.style.width) || width}, clientHeight: {get: () => parseFloat(canvas.style.height) || height}});
+  Object.defineProperties(canvas, {clientWidth: {get: () => lockedLogicalSize ? 1440 : parseFloat(canvas.style.width) || width}, clientHeight: {get: () => lockedLogicalSize ? 900 : parseFloat(canvas.style.height) || height}});
   const app = fixture(canvas as any); app.render = () => { renders++; };
   const destroyApp = app.destroy.bind(app); app.destroy = () => { destroyApp(); appDestroyed = true; };
   Object.assign(app.graphicsDevice, {gl: {getExtension: () => ({loseContext: () => { assert.ok(appDestroyed, 'release browser context only after engine teardown'); contextsLost++; }})}});
@@ -122,7 +122,7 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
     requestAnimationFrame: (callback: FrameRequestCallback) => {queued.set(++nextFrame, callback); return nextFrame;},
     cancelAnimationFrame: (id: number) => {queued.delete(id);}});
   const flush = (time: number) => { const callbacks = [...queued]; queued.clear(); for (const [, callback] of callbacks) callback(time); };
-  let dispose: (() => void) | undefined;
+  let dispose: ReturnType<typeof mountMenuBackdrop> | undefined;
   try {
     const baselineCanvasListeners = canvas.listenerCount();
     dispose = mountMenuBackdrop(canvas as any, {style: {opacity: ''}} as any, DEFAULT_SETTINGS, {map: 'coast'}, () => app);
@@ -145,6 +145,16 @@ test('mount pauses hidden/pagehide work, resizes from its container, and release
     assert.equal(queued.size, 0, 'reduced motion draws once and then sleeps');
     assert.equal((canvas.dataset as any).backdropState, 'static');
     media.matches = false; media.dispatchEvent(new Event('change')); assert.equal(queued.size, 1);
+    lockedLogicalSize = true; width = 720; height = 450;
+    dispose.resize(); flush(6500);
+    const physicalRatio = menuBackdropQuality(DEFAULT_SETTINGS, width, height, 2).pixelRatio;
+    assert.equal(app.graphicsDevice.maxPixelRatio, physicalRatio);
+    // The real CPU/Null device caps DPR to one outside a browser.
+    assert.equal(app.graphicsDevice.width, width);
+    assert.equal(app.graphicsDevice.height, height);
+    assert.equal(camera.camera!.aspectRatio, 1.6, 'camera keeps logical framing while the render target fits physical pixels');
+    assert.equal((canvas as typeof canvas & {clientWidth: number}).clientWidth, 1440, 'fixed CSS remains a logical size');
+
     dispose(); dispose();
     assert.equal(queued.size, 0); assert.equal(win.listenerCount(), 0); assert.equal(doc.listenerCount(), 0); assert.equal(media.listenerCount(), 0);
     assert.ok(canvas.listenerCount() <= baselineCanvasListeners, 'backdrop and engine listeners are removed');

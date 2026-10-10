@@ -535,3 +535,5 @@ body { min-width: 0; background: radial-gradient(ellipse at 50% 40%, #35696b, #1
   #garage-slots .slot-choice[aria-pressed="true"] { outline-color: Highlight; border-color: Highlight; }
   #garage-slots .slot-choice:focus-visible { outline-color: CanvasText; }
 }
+/* Recovery stays in the same scaled frame before the workshop grid is mounted. */
+#kart-garage:has(> .garage-boot) {display: block}

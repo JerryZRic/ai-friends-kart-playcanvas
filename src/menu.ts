@@ -1,11 +1,13 @@
 import type {CharacterPreviewController} from './character-preview';
+import type {MenuBackdropController} from './menu-backdrop';
+import {mountUiLayout,mountUiViewportNotice} from './ui-layout';
 import {CHARACTER_PROFILES,resolveCharacter,characterTuning} from './character-profiles';
 import {MAP_PROFILES,resolveMap,type MapId} from './map-profiles';
 import {readGameSettings,saveGameSettings,type Quality} from './game-settings';
 import {parseMenuState,menuQuery,raceEntry,garageEntry,type MenuScreen} from './menu-state';
 import {parseRaceOptions} from './race-options';
 import {loadGarageState,buildParts,KART_SLOTS,SLOT_LABELS} from './kart-build';
-declare global { interface Window { __menuBoot?: {begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
+declare global { interface Window { __menuBoot?: {releaseLayout?:()=>void;begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
 const root=document.getElementById('menu')!;
 let homeReady=false;
 function revealHome(version:number, fallback=false){
@@ -19,7 +21,23 @@ function revealHome(version:number, fallback=false){
 }
 
 let state=parseMenuState(location.search),settings=readGameSettings();
-let disposeBackdrop:(()=>void)|undefined,disposeCharacter:CharacterPreviewController|undefined,renderVersion=0;
+let disposeBackdrop:MenuBackdropController|undefined,disposeCharacter:CharacterPreviewController|undefined,renderVersion=0;
+const shell=document.getElementById('menu-ui')!;
+window.__menuBoot?.releaseLayout?.();
+const menuLayout=mountUiLayout(shell,()=>{disposeBackdrop?.resize();disposeCharacter?.resize();});
+const viewportNotice=mountUiViewportNotice(shell);
+let layoutDisposed=false;
+function disposeMenuLayout(){
+ if(layoutDisposed)return;
+ layoutDisposed=true;renderVersion++;
+ menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
+ disposeBackdrop=undefined;disposeCharacter=undefined;
+ window.removeEventListener('pagehide',pageHide);window.removeEventListener('pageshow',pageShow);
+}
+function pageHide(event:PageTransitionEvent){if(!event.persisted)disposeMenuLayout();}
+function pageShow(){menuLayout.update();}
+window.addEventListener('pagehide',pageHide);window.addEventListener('pageshow',pageShow);
+if(import.meta.hot)import.meta.hot.dispose(disposeMenuLayout);
 function closeStory(){root.querySelector('#story-dialog')?.remove();root.querySelector<HTMLElement>('#story-button')?.focus();}
 function startBackdrop(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#title-backdrop'),curtain=root.querySelector<HTMLElement>('#title-curtain');
@@ -116,7 +134,7 @@ function render(){
   const vehicleSummary=selectedParts?`<section class="race-build-summary" aria-label="已选卡丁车"><h2>已选卡丁车</h2><dl>${KART_SLOTS.map(slot=>`<div><dt>${SLOT_LABELS[slot]}</dt><dd>${selectedParts[slot].name}</dd></div>`).join('')}</dl></section>`:'<section class="race-build-summary" aria-label="已选坐骑"><h2>已选坐骑</h2><p>鲸鱼坐骑 · 水面惯性与滑移</p></section>';
   root.innerHTML=top('比赛设置',`${resolveMap(state.map).label} · ${resolveCharacter(state.driver).label} · 第 4 / 4 步`,'characters',true)+`<section class="settings-panel race-options-panel">${vehicleSummary}<fieldset><legend>对手难度</legend><p>只改变 NPC 的驾驶水平；对手与玩家使用相同规则。</p><div class="quality-options">${[['easy','简单','轻松熟悉赛道'],['normal','普通','标准驾驶水平'],['hard','困难','更熟练的路线与操作']].map(([value,label,description])=>`<label><input type="radio" name="difficulty" value="${value}" ${state.difficulty===value?'checked':''}><span><strong>${label}</strong><small>${description}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="race-seed">比赛种子</label><p>相同种子可重现对手配置，范围 0–4294967295</p></div><input id="race-seed" type="number" min="0" max="4294967295" step="1" value="${state.seed}" inputmode="numeric"></div><p id="race-options-status" role="status" aria-live="polite">已选择${state.difficulty==='easy'?'简单':state.difficulty==='hard'?'困难':'普通'}难度</p><a class="primary start-race" id="start-race" href="${raceEntry(state.map,state.driver,state)}"><span>开始比赛</span><span>→</span></a><p class="fine-print">首次进入需要下载 3D 资源，请稍候</p></section>`;
  }
- if(state.screen==='settings')root.innerHTML=`<div class="section-top"><button class="text-button" data-screen="${state.returnTo}">← 返回${screenLabel(state.returnTo)}</button></div><div class="section-heading"><p class="eyebrow">MAKE IT YOURS</p><h1>游戏设置</h1><p>应用于接下来进入的赛道，自动保存在此浏览器</p></div><section class="settings-panel"><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class="quality-options">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type="radio" name="quality" value="${q}" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="refraction">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type="checkbox" id="refraction" ${settings.refraction?'checked':''}></div><div class="setting-row muted-row"><div><strong>背景音乐</strong><p>暂未加入背景音乐，后续版本再见</p></div><span class="badge">待加入</span></div><section class="controls-guide" aria-label="操作说明"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class="settings-status" id="settings-status" role="status" aria-live="polite">设置已载入</p><button class="text-button" id="reset-settings">恢复默认设置</button></section>`;
+ if(state.screen==='settings')root.innerHTML=`<div class="section-top"><button class="text-button" data-screen="${state.returnTo}">← 返回${screenLabel(state.returnTo)}</button></div><div class="section-heading"><p class="eyebrow">MAKE IT YOURS</p><h1>游戏设置</h1><p>应用于接下来进入的赛道，自动保存在此浏览器</p></div><section class="settings-panel" tabindex="0" aria-label="画面设置与操作说明"><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class="quality-options">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type="radio" name="quality" value="${q}" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="refraction">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type="checkbox" id="refraction" ${settings.refraction?'checked':''}></div><div class="setting-row muted-row"><div><strong>背景音乐</strong><p>暂未加入背景音乐，后续版本再见</p></div><span class="badge">待加入</span></div><section class="controls-guide" aria-label="操作说明"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class="settings-status" id="settings-status" role="status" aria-live="polite">设置已载入</p><button class="text-button" id="reset-settings">恢复默认设置</button></section>`;
  if(state.screen==='exit')root.innerHTML=`<section class="exit-panel"><p class="eyebrow">SEE YOU AT THE START LINE</p><div class="exit-symbol" aria-hidden="true">☀</div><h1>休息一下，<br>随时再出发。</h1><p>已返回休息页面，没有比赛在后台运行。<br>你可以关闭此标签页退出游戏。</p><button class="primary" data-screen="main">返回主菜单 →</button></section>`;
  refreshNavigationLinks();
  bind();

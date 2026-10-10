@@ -4,10 +4,11 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 const html=readFileSync('index.html','utf8');
 function boot(){
- class Node extends EventTarget {hidden=false;disabled=false;value=0;textContent='';attrs:Record<string,string>={};setAttribute(k:string,v:string){this.attrs[k]=v;}}
+ class Node extends EventTarget {properties=new Map<string,string>();style={setProperty:(k:string,v:string)=>this.properties.set(k,v)};hidden=false;disabled=false;value=0;textContent='';attrs:Record<string,string>={};setAttribute(k:string,v:string){this.attrs[k]=v;}}
  const nodes=new Map([...html.matchAll(/id="(menu-boot[^"]*)"/g)].map(m=>[m[1],new Node()]));
  let id=0,reloads=0;const timers=new Map<number,()=>void>();
- const window=new EventTarget() as EventTarget & {__menuBoot:any};const body={dataset:{} as Record<string,string>};
+ nodes.set('menu-ui',new Node());
+ const window=Object.assign(new EventTarget(),{innerWidth:390,innerHeight:844}) as EventTarget & {__menuBoot:any;innerWidth:number;innerHeight:number};const body={dataset:{} as Record<string,string>};
  vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)![1],{window,document:{body,getElementById:(id:string)=>nodes.get(id)},location:{reload:()=>reloads++},setTimeout:(f:()=>void,ms:number)=>{assert.equal(ms,30000);timers.set(++id,f);return id;},clearTimeout:(id:number)=>timers.delete(id)});
  return {api:window.__menuBoot,window,body,nodes,timers,reloads:()=>reloads,timeout:()=>{for(const f of [...timers.values()])f();}};
 }
@@ -37,4 +38,13 @@ test('repeat entry resets errors and history navigation dismisses an old gate',(
 });
 test('module script network errors settle loading immediately',()=>{
  const b=boot();const error=new Event('error');Object.defineProperty(error,'target',{value:{tagName:'SCRIPT'}});b.window.dispatchEvent(error);assert.equal(b.nodes.get('menu-boot-retry')!.hidden,false);assert.equal(b.timers.size,0);
+});
+
+test('HTML-first recovery stays uniformly contained before any module succeeds',()=>{
+ const b=boot(),props=b.nodes.get('menu-ui')!.properties;
+ assert.equal(Number(props.get('--ui-scale')),390/1440);assert.equal(props.get('--ui-left'),'0px');
+ assert.equal(parseFloat(props.get('--ui-top')!), (844-900*390/1440)/2);
+ b.window.innerWidth=1920;b.window.innerHeight=1080;b.window.dispatchEvent(new Event('resize'));
+ assert.equal(Number(props.get('--ui-scale')),1.2);assert.equal(props.get('--ui-left'),'96px');assert.equal(props.get('--ui-top'),'0px');
+ b.api.releaseLayout();b.window.innerWidth=1000;b.window.dispatchEvent(new Event('resize'));assert.equal(Number(props.get('--ui-scale')),1.2,'shared controller can take sole ownership');
 });

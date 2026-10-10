@@ -1,0 +1,27 @@
+/* A single 1440 × 900 design plane. World canvases are intentionally outside. */
+.fixed-ui-root {
+  position: fixed;
+  left: var(--ui-left, 0px);
+  top: var(--ui-top, 0px);
+  width: var(--ui-design-width, 1440px);
+  height: var(--ui-design-height, 900px);
+  transform: scale(var(--ui-scale, 1));
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+.ui-viewport-notice {
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid #d5e9db66;
+  border-radius: 8px;
+  background: #102936ed;
+  color: #f4f8eb;
+  font: 13px/1.5 system-ui, sans-serif;
+  text-align: center;
+  pointer-events: none;
+}
+.ui-viewport-notice[hidden] {display: none !important}

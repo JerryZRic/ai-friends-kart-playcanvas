@@ -1,4 +1,5 @@
 import * as pc from 'playcanvas';
+import {mountUiViewportNotice} from './ui-layout';
 import {mountGarageLayout} from './kart-garage-layout';
 import {renderGarageStatBars} from './kart-garage-stats';
 import {garageSpinDelta, garagePointerDelta, GARAGE_INTERACTION_IDLE_MS} from './kart-garage-motion';
@@ -220,7 +221,9 @@ export function mountKartGarage(root: HTMLElement) {
   $('.garage-actions').insertAdjacentHTML('beforeend', '<a class="license-link" href="./source.html" aria-label="开源代码与模型许可">许可 ↗</a>');
   $('.race-note').remove();
   $('.parts-library').insertAdjacentHTML('beforeend', '<div class="parts-pagination"><span id="tray-hint">悬停比较 · 点击装配</span><div><button id="parts-prev" aria-label="上一页零件">←</button><span id="parts-page" role="status" aria-live="polite"></span><button id="parts-next" aria-label="下一页零件">→</button></div></div>');
+  (window as Window & {__garageBootLayout?: {release(): void}}).__garageBootLayout?.release();
   const layout = mountGarageLayout(root, () => preview?.resize());
+  const viewportNotice = mountUiViewportNotice(root);
   let dialogOpener: HTMLElement | null = null;
   root.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
     dialog.addEventListener('close', () => {dialogOpener?.focus({preventScroll: true}); dialogOpener = null;}, {signal: events.signal});
@@ -320,7 +323,7 @@ export function mountKartGarage(root: HTMLElement) {
       if (current.totalBytes && current.totalBytes > 0) {bar.max = current.totalBytes; bar.value = current.receivedBytes;} else bar.removeAttribute('value');
     }
   }, state.activeBuild);
-  const pagehide = () => {events.abort(); layout.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
+  const pagehide = () => {events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
   const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
   window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);
   const dispose = () => {pagehide(); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow); mountedGarages.delete(root);};

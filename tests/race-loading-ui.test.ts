@@ -119,12 +119,13 @@ test('loading tips teach map-specific charged release without changing loading a
   assert.doesNotMatch(RACE_LOADING_MARKUP, /loadingTip[^>]*aria-live/);
 });
 
-test('tips share footer flow with retry/progress and narrow layouts retain text controls', () => {
+test('tips and controls keep their logical footer flow through uniform viewport scaling', () => {
   const css = readFileSync(new URL('../src/race-ui.css', import.meta.url), 'utf8');
   assert.match(css, /\.loading-bottom\{[^}]*max-height:[^}]*overflow-y:auto/);
   assert.match(css, /\.loading-bottom \.loading-footer\{position:static/);
   assert.match(css, /\.loading-bottom \.loading-controls\{position:static/);
   assert.match(css, /\.loading-driving-tip p\{[^}]*overflow-wrap:break-word/);
-  assert.match(css, /\.loading-bottom \.loading-controls dl\{display:grid/);
+  assert.match(css, /\.loading-bottom \.loading-controls\{position:static;flex:0 0 208px;order:1/);
+  assert.doesNotMatch(css, /@media[^{}]*(?:max|min)-(?:width|height)/);
   assert.match(css, /body\.menu:not\(\.finished\) \.race-loading-screen\{display:block\}/);
 });

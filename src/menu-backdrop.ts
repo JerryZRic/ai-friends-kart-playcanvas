@@ -73,6 +73,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
       const pose = presentation === 'cover' ? coverCameraPose(map, time, aspect) : mapPreviewCameraPose(map, time, aspect);
       world.camera.setPosition(...pose.position); world.camera.lookAt(...pose.target);
       world.camera.camera!.fov = pose.fov;
+      world.camera.camera!.aspectRatioMode = pc.ASPECT_MANUAL;
+      world.camera.camera!.aspectRatio = aspect;
       if (coast) coast.oceanMaterial.setParameter('time', time);
       if (waterpark) {
         waterpark.waterMaterial.setParameter('time', time);
@@ -90,6 +92,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   };
 }
 
+export type MenuBackdropController = (() => void) & {resize: () => void};
+
 export type MenuBackdropCallbacks = {
   onStage?: (stage: 'scene' | 'render') => void;
   onReady?: () => void;
@@ -102,7 +106,7 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
   // Test seam: lifecycle tests use a real PlayCanvas AppBase + NullGraphicsDevice.
   createApplication: () => pc.Application = () => new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality === 'high', alpha: false, powerPreference: 'low-power'}}),
   callbacks: MenuBackdropCallbacks = {},
-): () => void {
+): MenuBackdropController {
   let app: pc.Application | null = null, world: MenuWorld | null = null;
   let disposed = false, suspended = false, lost = false;
   let frame = 0, elapsed = 0, lastFrame = 0, needsFrame = true;
@@ -124,9 +128,12 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     const rect = (canvas.parentElement ?? canvas).getBoundingClientRect();
     const width = Math.max(1, Math.round(rect.width || window.innerWidth || 1));
     const height = Math.max(1, Math.round(rect.height || window.innerHeight || 1));
-    aspect = width / height;
+    aspect = rect.width > 0 && rect.height > 0 ? rect.width / rect.height : width / height;
     app.graphicsDevice.maxPixelRatio = menuBackdropQuality(settings, width, height, window.devicePixelRatio).pixelRatio;
     app.resizeCanvas(width, height);
+    // AUTO reads untransformed clientWidth/clientHeight and would ignore the
+    // physical fit. Keep the GPU buffer independent of the logical CSS box.
+    app.setCanvasResolution(pc.RESOLUTION_FIXED, width, height);
     needsFrame = true;
     resume();
   }
@@ -236,5 +243,5 @@ export function mountMenuBackdrop(canvas: HTMLCanvasElement, curtain: HTMLElemen
     console.warn('Title scenery WebGL initialization is unavailable.', error);
     fail(error);
   }
-  return dispose;
+  return Object.assign(dispose, {resize});
 }

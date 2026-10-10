@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {characterPreviewDragDegrees} from '../src/character-preview';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
 import { readFileSync } from 'node:fs';
@@ -145,4 +146,12 @@ test('a newer selection waits for the old parser, then discards its model withou
   assert.equal(peak, 1); assert.equal(order.includes('build:whale'), false); assert.ok(order.includes('asset:whale'));
   assert.equal(states.includes('whale:ready'), false); assert.equal(states.at(-1), 'gpt:ready');
   await session.dispose(); assert.equal(order.at(-2), 'model:gpt'); assert.equal(order.at(-1), 'asset:gpt');
+});
+
+test('portrait drag uses logical pixels across proportional viewport sizes', () => {
+  for (const scale of [320/1440,390/1440,390/900,.8,1,1.2,2]) {
+    assert.ok(Math.abs(characterPreviewDragDegrees(60*scale,700*scale,700)-30)<1e-10);
+    assert.ok(Math.abs(characterPreviewDragDegrees(-80*scale,700*scale,700)+40)<1e-10);
+  }
+  for(const invalid of [0,-1,NaN,Infinity]) assert.equal(characterPreviewDragDegrees(20,invalid,700),10);
 });

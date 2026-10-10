@@ -11,7 +11,10 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  let deny=false;
  class Element extends EventTarget{
   href='';hidden=false;inert=false;attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
+  style={getPropertyValue:(_name:string)=>'',getPropertyPriority:(_name:string)=>'',setProperty:(_name:string,_value:string)=>{},removeProperty:(_name:string)=>{}};
   constructor(readonly tagName='DIV'){super();}
+  getAttribute(name:string){return this.attrs[name]??null;}
+  removeAttribute(name:string){delete this.attrs[name];}
   set innerHTML(html:string){this.html=html;if(this===root)elements.length=0;this.owned=[];for(const m of html.matchAll(/<([a-z]+)\b([^>]*)>/g)){const el=new Element(m[1].toUpperCase());for(const a of m[2].matchAll(/([\w-]+)="([^"]*)"/g)){el.attrs[a[1]]=a[2];if(a[1].startsWith('data-'))el.dataset[a[1].slice(5)]=a[2];}el.disabled=/\bdisabled\b/.test(m[2]);el.checked=/\bchecked\b/.test(m[2]);el.value=el.attrs.value??'';elements.push(el);this.owned.push(el);}}
   get innerHTML(){return this.html;}
   querySelectorAll(selector:string){return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\[([^=\]]+)(?:="([^"]*)")?\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}
@@ -23,9 +26,9 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   click(){if(!this.disabled)this.dispatchEvent(new Event('click'));}
  }
  const headerGarage=new Element('A'),wordmark=new Element('A');
- const root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];
+ const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];
  const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.push(url);location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[urls.length-1]=url;location.search=new URL(url,'https://test.invalid/dev/').search;}};
- g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu'?root:elements.find(e=>e.attrs.id===id)};
+ g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)};
  let fallback:(()=>void)|undefined,firstBoot=true,failures=0;
  g.window=Object.assign(windowTarget,{scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.location=location;g.history=history;
  Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem:(k:string)=>{if(deny)throw Error();return storage.get(k)??null;},setItem:(k:string,v:string)=>{if(deny)throw Error();storage.set(k,v);}}});
@@ -33,7 +36,7 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  const key=(key:string,target:EventTarget=windowTarget)=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key});target.dispatchEvent(event);return event;};
  try{
   await import('../src/menu');
-  assert.equal(root.className,'screen-main');assert.equal(g.document.body.dataset.screen,'main');
+  assert.equal(root.className,'screen-main');assert.equal(g.document.body.dataset.screen,'main');assert.equal(shell.attrs['data-fixed-layout'],'1440x900');
   assert.equal(elements.filter(e=>e.disabled).length,4,'all home buttons disabled until readiness or explicit fallback');assert.match(root.innerHTML,/aria-hidden="true" hidden inert/);
   $('[data-screen="maps"]').dispatchEvent(new Event('click'));$('#story-button').dispatchEvent(new Event('click'));assert.equal(root.className,'screen-main');assert.equal(root.querySelector('#story-dialog'),null,'synthetic early activation is also gated');
   assert.equal(failures,1);firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);
@@ -84,6 +87,9 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   location.search=completed.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-race-settings');assert.match($('#start-race').attrs.href,/difficulty=hard.*seed=77/);
   location.search=homeTarget.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-main');$('[data-screen="maps"]').click();assert.equal(new URLSearchParams(location.search).get('seed'),'77');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);
 
+  windowTarget.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));assert.equal(shell.attrs['data-fixed-layout'],'1440x900','BFCache keeps layout mounted');
+  windowTarget.dispatchEvent(new Event('pageshow'));assert.equal(shell.attrs['data-fixed-layout'],'1440x900');
+  windowTarget.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:false}));assert.equal(shell.attrs['data-fixed-layout'],undefined,'real navigation disposes the layout');
  }finally{for(const[n,d]of saved){if(d)Object.defineProperty(g,n,d);else delete g[n];}}
 });
 
@@ -93,5 +99,5 @@ test('desktop course library uses side-by-side uncropped overview cards alongsid
  assert.match(css,/\.map-choices\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.match(css,/\.map-choice-visual\{[^}]*aspect-ratio:16\/9/);
  assert.match(css,/\.map-overview\{[^}]*object-fit:contain/);
- assert.match(css,/@media\(max-width:900px\)\{\.map-preview-layout\{grid-template-columns:1fr/);
+ assert.doesNotMatch(css,/@media\s*\([^)]*(?:min|max)-(?:width|height)/,'physical viewport breakpoints must not rearrange the fixed composition');
 });

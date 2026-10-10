@@ -167,7 +167,13 @@ export function createCharacterPreviewSession(app: pc.AppBase, options: {
   };
 }
 
-export type CharacterPreviewController = (() => void) & {updateCharacter: (driver: string) => void; retry: () => void};
+/** Same logical drag produces the same orbit at every display scale. */
+export function characterPreviewDragDegrees(deltaX: number, renderedWidth: number, logicalWidth: number): number {
+  const scale = Number.isFinite(renderedWidth) && Number.isFinite(logicalWidth) && renderedWidth > 0 && logicalWidth > 0 ? renderedWidth / logicalWidth : 1;
+  return deltaX / scale * .5;
+}
+
+export type CharacterPreviewController = (() => void) & {updateCharacter: (driver: string) => void; retry: () => void; resize: () => void};
 
 /** Dedicated, bounded 30fps portrait renderer. All DOM and frame listeners are
  * released synchronously on exit, even if an embedded texture is still decoding. */
@@ -190,6 +196,7 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
     if (!model || !camera) return;
     const view = characterPreviewCamera(model.bounds, aspect);
     camera.setPosition(view.position); camera.lookAt(view.target);
+    camera.camera!.aspectRatioMode = pc.ASPECT_MANUAL; camera.camera!.aspectRatio = aspect;
     camera.camera!.fov = view.fov; camera.camera!.nearClip = view.nearClip; camera.camera!.farClip = view.farClip;
   }
   function draw(now: number) {
@@ -208,9 +215,11 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   function resize() {
     if (!app || disposed) return;
     const rect = (canvas.parentElement || canvas).getBoundingClientRect(), width = Math.max(1, Math.round(rect.width)), height = Math.max(1, Math.round(rect.height));
-    aspect = width / height;
+    aspect = rect.width > 0 && rect.height > 0 ? rect.width / rect.height : width / height;
     app.graphicsDevice.maxPixelRatio = Math.min(window.devicePixelRatio || 1, settings.quality === 'low' ? 1 : 1.5);
-    app.resizeCanvas(width, height); fit(); refresh();
+    app.resizeCanvas(width, height);
+    // AUTO uses the logical client size, not the transformed physical box.
+    app.setCanvasResolution(pc.RESOLUTION_FIXED, width, height); fit(); refresh();
   }
   function display(state: PreviewState) {
     if (disposed) return;
@@ -245,7 +254,9 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   }
   function pointerMove(event: PointerEvent) {
     if (pointer !== event.pointerId || !model) return;
-    model.rotate(model.angle + (event.clientX - lastX) * .5); lastX = event.clientX; refresh();
+    // Pointer coordinates are physical pixels; preserve the same rotation for
+    // the same logical drag across every uniformly scaled menu frame.
+    model.rotate(model.angle + characterPreviewDragDegrees(event.clientX - lastX, canvas.getBoundingClientRect().width, canvas.clientWidth)); lastX = event.clientX; refresh();
   }
   function pointerEnd(event: PointerEvent) {
     if (pointer !== event.pointerId) return;
@@ -315,5 +326,5 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   canvas.style.cursor = 'grab';
   if (typeof ResizeObserver !== 'undefined') { resizeObserver = new ResizeObserver(resize); resizeObserver.observe(canvas.parentElement || canvas); }
   initialize();
-  return Object.assign(dispose, {updateCharacter: select, retry});
+  return Object.assign(dispose, {updateCharacter: select, retry, resize});
 }
