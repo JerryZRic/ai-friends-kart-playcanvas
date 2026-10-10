@@ -26,6 +26,8 @@
 
 **杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开 dev 杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest)。
 
+**发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开 dev 工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

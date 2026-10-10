@@ -137,5 +137,15 @@
     "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
     "src/land-scene.ts": "9a01f7e5b1536a042991a9f30ee82ddecddfa6df90ab3803016956d0fda36748"
+  },
+  "workshopCameraCompatibility": {
+    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+    "changedFiles": [],
+    "excludedFields": [
+      "sourceHashes"
+    ],
+    "exactExportEqual": true,
+    "normalizedExportSha256": "86740dca028d283e4475d8c271c08e06ca4108bf67ba63cf1b5ceef8dc79b9d2",
+    "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed."
   }
 }

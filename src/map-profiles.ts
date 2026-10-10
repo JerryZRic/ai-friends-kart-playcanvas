@@ -6,6 +6,7 @@ export const MAP_PROFILES=Object.freeze({
  town:Object.freeze({id:'town',label:'灯阶旧城环线',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 双路线旧城竞速',tag:'LANTERN TERRACE RALLY',detail:'从集市广场出发，选择紧凑灯巷或宽阔电车大道，在高架街桥、连续弯与汇合冲刺中争夺领先。',icon:'▦'}),
  quarry:Object.freeze({id:'quarry',label:'赤砾采石环道',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 砂岩采石场双路线竞速',tag:'REDSTRATA QUARRY',detail:'沿干燥砂岩台地爬升，在石脊窄道与重载环坡之间选线，穿过木栈桥下方的加工场并冲向装载区。',icon:'◇'}),
  forest:Object.freeze({id:'forest',label:'杉影星台环线',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 杉林天文台双路线竞速',tag:'CEDARLIGHT OBSERVATORY',detail:'穿过根谷连续弯与倾斜林碗，选择镜台便道或观星环路，再沿高架林冠桥返回山谷。',icon:'♧'}),
+ workshop:Object.freeze({id:'workshop',label:'发条工坊回旋道',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 巨型钟表工坊双路线竞速',tag:'CLOCKWIND WORKSHOP',detail:'沿木制螺旋坡绕钟芯爬升，跨过旧路线，在工具柜便道与工作台外环之间选线，再穿过抽屉台阶返回起点。',icon:'⚙'}),
 });
 export type MapId=keyof typeof MAP_PROFILES;
 export function resolveMap(id:unknown){return MAP_PROFILES[typeof id==='string'&&Object.prototype.hasOwnProperty.call(MAP_PROFILES,id)?id as MapId:'coast'];}

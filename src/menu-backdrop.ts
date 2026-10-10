@@ -17,7 +17,13 @@ let createQuarryWorld:typeof createMountainWorld;
 let quarryPreparation:Promise<void>|undefined;
 let createForestWorld:typeof createMountainWorld;
 let forestPreparation:Promise<void>|undefined;
+let createWorkshopWorld:typeof createMountainWorld;
+let workshopPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='workshop')return workshopPreparation??=Promise.all([import('./land-scene'),import('./maps/workshop'),import('./workshop-scenery')]).then(([scene,{WORKSHOP_TRACK,WORKSHOP_COURSE},{buildWorkshopSceneGeometry,WORKSHOP_SCENE_THEME}])=>{
+    registerMenuRoute('workshop',{sample:WORKSHOP_TRACK.sample,length:WORKSHOP_TRACK.length,lane:WORKSHOP_TRACK.halfWidthAt(0)});
+    createWorkshopWorld=app=>scene.createLandScene(app,WORKSHOP_TRACK,{preview:true,geometry:buildWorkshopSceneGeometry(WORKSHOP_COURSE),theme:WORKSHOP_SCENE_THEME});
+  }).catch(error=>{workshopPreparation=undefined;throw error;});
   if(map==='forest')return forestPreparation??=Promise.all([import('./land-scene'),import('./maps/forest'),import('./forest-scenery')]).then(([scene,{FOREST_TRACK,FOREST_COURSE},{buildForestSceneGeometry,FOREST_SCENE_THEME}])=>{
     registerMenuRoute('forest',{sample:FOREST_TRACK.sample,length:FOREST_TRACK.length,lane:FOREST_TRACK.halfWidthAt(0)});
     createForestWorld=app=>scene.createLandScene(app,FOREST_TRACK,{preview:true,geometry:buildForestSceneGeometry(FOREST_COURSE),theme:FOREST_SCENE_THEME});
@@ -82,7 +88,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   if(map==='town'&&!createTownWorld)throw new Error('Prepare the town menu world before mounting.');
   if(map==='quarry'&&!createQuarryWorld)throw new Error('Prepare the quarry menu world before mounting.');
   if(map==='forest'&&!createForestWorld)throw new Error('Prepare the forest menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):null;
+  if(map==='workshop'&&!createWorkshopWorld)throw new Error('Prepare the workshop menu world before mounting.');
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

@@ -13,7 +13,7 @@
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
     "src/forest-scenery.ts": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
     "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
-    "src/land-camera.ts": "2bf7be1b2d11476bea7362861169f183deb101290cdacf2c00521e272306c234"
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
   },
   "geometryTexturesRoutesThemeSha256": "2afa707ac933b2ccbb258a209526a28c1281060b11568fe96e94bf34608097d1",
   "generatorHashes": {
@@ -88,10 +88,10 @@
         1524.133544921875
       ],
       "cameraQuaternionBlender": [
-        7.549790126404332e-08,
-        0.0,
-        -0.0,
-        -1.0
+        7.549790126404332e-8,
+        0,
+        0,
+        -1
       ],
       "projection": "ORTHO",
       "description": "True overhead source geometry: pale narrow Lens Service Path cuts through the inner observatory plateau; the broad Observatory Rim follows the outer arc. Both independent roads retain their actual split/merge throats. Upper canopy viaduct crosses the earlier root-valley road at its real separate elevation.",
@@ -129,7 +129,7 @@
         2.6491615772247314,
         1.6250327825546265
       ],
-      "orthographicScaleMetres": 145.0
+      "orthographicScaleMetres": 145
     },
     "forest-observatory-detail": {
       "file": "forest-observatory-detail.png",
@@ -157,7 +157,7 @@
         3.0397536754608154,
         1.0698537826538086
       ],
-      "orthographicScaleMetres": 68.0
+      "orthographicScaleMetres": 68
     },
     "forest-station-detail": {
       "file": "forest-station-detail.png",
@@ -185,7 +185,7 @@
         3.513204574584961,
         9.0606689453125
       ],
-      "orthographicScaleMetres": 76.0
+      "orthographicScaleMetres": 76
     }
   },
   "menuAsset": {
@@ -195,5 +195,30 @@
       1280,
       720
     ]
+  },
+  "renderSourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/forest-scenery.ts": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "2bf7be1b2d11476bea7362861169f183deb101290cdacf2c00521e272306c234"
+  },
+  "workshopCameraCompatibility": {
+    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+    "changedFiles": [
+      "src/land-camera.ts"
+    ],
+    "excludedFields": [
+      "sourceHashes"
+    ],
+    "exactExportEqual": true,
+    "normalizedExportSha256": "895f024a32cf7e479b849a7a3cada61e7ba1ef60911c2efe9fe39cab49ec4978",
+    "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed."
   }
 }

@@ -86,10 +86,10 @@
         1518.37548828125
       ],
       "cameraQuaternionBlender": [
-        7.549790126404332e-08,
-        0.0,
-        -0.0,
-        -1.0
+        7.549790126404332e-8,
+        0,
+        0,
+        -1
       ],
       "projection": "ORTHO",
       "description": "True overhead geometry view: pale, narrow Lantern Alley is the inner fork; dark, broad Tram Boulevard is the outer fork. Both roads come from independent runtime samplers, including shared split/merge throats. No schematic or invented connecting road.",
@@ -127,7 +127,7 @@
         1.851623296737671,
         1.6643357276916504
       ],
-      "orthographicScaleMetres": 145.0
+      "orthographicScaleMetres": 145
     },
     "town-market-street": {
       "file": "town-market-street.png",
@@ -155,7 +155,7 @@
         1095.7591552734375,
         53.54450607299805
       ],
-      "lensMillimetres": 32.0,
+      "lensMillimetres": 32,
       "roadEdge": "start",
       "roadDistanceMetres": 41.96342444657963,
       "heightAboveSampledRoadMetres": 2.1
@@ -186,7 +186,7 @@
         359.3480529785156,
         87.89173126220703
       ],
-      "lensMillimetres": 32.0,
+      "lensMillimetres": 32,
       "roadEdge": "finish",
       "roadDistanceMetres": 301.28975997274557,
       "heightAboveSampledRoadMetres": 2.1
@@ -220,5 +220,15 @@
     "identicalContentSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118",
     "verificationFile": "docs/legacy-preview-compatibility.json",
     "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17"
+  },
+  "workshopCameraCompatibility": {
+    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+    "changedFiles": [],
+    "excludedFields": [
+      "sourceHashes"
+    ],
+    "exactExportEqual": true,
+    "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17",
+    "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed."
   }
 }

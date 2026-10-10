@@ -1,7 +1,7 @@
 {
   "kind": "unchanged-native-geometry-verification",
   "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
-  "description": "The quarry-era exact export comparisons remain recorded below. After adding the forest catalog entry, fresh coast and waterpark exports again match their accepted baseline after excluding only top-level sourceHashes. Mountain, town and quarry export-source and generator hashes remain unchanged. Existing image bytes are preserved; no old-map rerender is claimed.",
+  "description": "Earlier exact export comparisons remain recorded below. After adding the workshop catalog entry and optional exact-mesh camera support, all six earlier map exports again match their accepted original exports after excluding only top-level sourceHashes. All existing image bytes are preserved; no old-map rerender is claimed.",
   "maps": {
     "coast": {
       "geometryAndRouteSha256": "94ef03ed053773444d30f4853d98501cda1dc8ecc4799e525b10a3cfd74158d0",
@@ -10,7 +10,7 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "347582b46351b4d7c4e999f9eb406aca5a0bb881017a65e019fefd76f3db71f0",
+        "src/menu-backdrop.ts": "79b4cf723bc9529708681b3505b8d029821858a0b1275386042bd80d9b1253dc",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
@@ -20,7 +20,7 @@
       },
       "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
       "baselineExportSha256": "13fc0dd4a40ed9bd3998f693d341de6819daead5ef5a9210cbbcca44e68a69b9",
-      "currentExportSha256": "5989b48a76b9baf7e116f9896ded83b59c22cd9681b87b87fca992b17090fca9",
+      "currentExportSha256": "147bc7a1a7420c50303256f25fd2a0fd2ff9066a15c9b6236deccfdd63356144",
       "normalizedExportSha256": "acf7a677323e477b8f7a002a17fa0b5c42d168682a07076e276c4bb2179b535d",
       "baselineSourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
@@ -47,7 +47,7 @@
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
         "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
-        "src/menu-backdrop.ts": "347582b46351b4d7c4e999f9eb406aca5a0bb881017a65e019fefd76f3db71f0",
+        "src/menu-backdrop.ts": "79b4cf723bc9529708681b3505b8d029821858a0b1275386042bd80d9b1253dc",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
@@ -57,7 +57,7 @@
       },
       "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
       "baselineExportSha256": "bf1111fc19f3795326d483d525d85ca12013ff7c69933dbdf7b9996cdff0fd15",
-      "currentExportSha256": "4b3474b3a581eb27cff13ac2bc3cfc559a5f9af9d47231382b024ea5d22fee0d",
+      "currentExportSha256": "393e7ffaaa56f1ea710a71cb246ae92550edc2cf47c03c74814276f26f067efa",
       "normalizedExportSha256": "c3f963dca3f0186f227eea323bd0b4b68a6672f868e092a2e734890b3858a38e",
       "baselineSourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
@@ -193,6 +193,114 @@
       "public/character-emblems/grok.png": "02d9bdf779cde810a53fe50afe075f10954831ad8699d8d3f99f22923be2c3b7",
       "public/character-emblems/whale.png": "43d74713cea7f05b761fb7c5686a39041518b8989234034018a9d4eff6923996",
       "public/map-previews/coast-overview.webp": "1988b5e929b033fef1381a511b96f1e1ea4cd96eb5b4f1840650d8617f7f9769",
+      "public/map-previews/mountain-overview.webp": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
+      "public/map-previews/quarry-overview.webp": "45b6d25a0d252c2e7a51422afccae895e13548894a517f7a82dec7340e1f8e9e",
+      "public/map-previews/town-overview.webp": "50d661ee48729b1cf5924d9352cf396228399b48b2b8fbecc95f43db8e565fcc",
+      "public/map-previews/waterpark-overview.webp": "36e6cf3788a0757dcd1faf0218ec5984e778114fdfa27e5dfc976579ad751f2d"
+    }
+  },
+  "workshopCatalogVerification": {
+    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+    "freshExactExports": [
+      "coast",
+      "waterpark",
+      "mountain",
+      "town",
+      "quarry",
+      "forest"
+    ],
+    "mapProofs": {
+      "coast": {
+        "exactExportEqual": true,
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "baselineExportSha256": "13fc0dd4a40ed9bd3998f693d341de6819daead5ef5a9210cbbcca44e68a69b9",
+        "currentExportSha256": "147bc7a1a7420c50303256f25fd2a0fd2ff9066a15c9b6236deccfdd63356144",
+        "normalizedExportSha256": "acf7a677323e477b8f7a002a17fa0b5c42d168682a07076e276c4bb2179b535d"
+      },
+      "waterpark": {
+        "exactExportEqual": true,
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "baselineExportSha256": "bf1111fc19f3795326d483d525d85ca12013ff7c69933dbdf7b9996cdff0fd15",
+        "currentExportSha256": "393e7ffaaa56f1ea710a71cb246ae92550edc2cf47c03c74814276f26f067efa",
+        "normalizedExportSha256": "c3f963dca3f0186f227eea323bd0b4b68a6672f868e092a2e734890b3858a38e"
+      },
+      "mountain": {
+        "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+        "changedFiles": [],
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "exactExportEqual": true,
+        "normalizedExportSha256": "86740dca028d283e4475d8c271c08e06ca4108bf67ba63cf1b5ceef8dc79b9d2",
+        "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed.",
+        "baselineExportSha256": "6d3a971844139d17d960326e5814ddcae1484693c552b1c09f518666d3810858",
+        "currentExportSha256": "4bd74ded07a073fba5c46f455140f61f73b6e759511dc6ab98773c696a7523c0"
+      },
+      "town": {
+        "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+        "changedFiles": [],
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "exactExportEqual": true,
+        "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17",
+        "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed.",
+        "baselineExportSha256": "92901281e0c34d4b4d54b8819313154ae335d000f3d4bb568b6f0327ad71c1ad",
+        "currentExportSha256": "196d9d0d86f3edc74ef5cdcf04aee9f6b0015951c916a6ecdaab1470e393d9c7"
+      },
+      "quarry": {
+        "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+        "changedFiles": [],
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "exactExportEqual": true,
+        "normalizedExportSha256": "55d1cddb8161ea2a5fe67504519fe9386c41715391911efd1808e8a0d762f911",
+        "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed.",
+        "baselineExportSha256": "ea9740d5ff8bf05abbc1d81bb0ef60de8ee06312cbbe69351c492f4ffc35c890",
+        "currentExportSha256": "ea9740d5ff8bf05abbc1d81bb0ef60de8ee06312cbbe69351c492f4ffc35c890"
+      },
+      "forest": {
+        "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
+        "changedFiles": [
+          "src/land-camera.ts"
+        ],
+        "excludedFields": [
+          "sourceHashes"
+        ],
+        "exactExportEqual": true,
+        "normalizedExportSha256": "895f024a32cf7e479b849a7a3cada61e7ba1ef60911c2efe9fe39cab49ec4978",
+        "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed.",
+        "baselineExportSha256": "d99b0b7b837d0b0cba685e93815dabc354a0f396342ce0c1c8c69f5197d3cace",
+        "currentExportSha256": "6d13ad9ae3869e7fbae3ab79a7c3c0fcbd609e2427d47ea303623186ca3500ad"
+      }
+    },
+    "unchangedGeneratorMaps": [
+      "mountain",
+      "town",
+      "quarry",
+      "forest"
+    ],
+    "existingImageCount": 18,
+    "imageHashes": {
+      "docs/qa/modular-driver-claude-offline.png": "87047862f997951c49d8c93bc74e5e3cb60a06fd0ab7d270c876ebe0eddfdb47",
+      "docs/qa/modular-driver-gemini-offline.png": "8675a4702f023bb786dc56719a65a3686396c2fed03ee2dece10b4c699a6d233",
+      "docs/qa/modular-driver-glm-offline.png": "cd2e9ad945ca41772fad623627b0d66ed0a7e748014c785e3653168081d70421",
+      "docs/qa/modular-driver-gpt-offline.png": "ee143489b92cdeb5c794188dd9e4d3a99acf5c4ceb318e46c507224a59480ab5",
+      "docs/qa/modular-driver-grok-offline.png": "884537cf58fd10c7e4760983b0fb95029bd296ada49c648715fc65dcead6dce3",
+      "docs/qa/modular-driver-whale-offline.png": "6c7ecd9feb5522f562f3e7136234948c4d7b01320cf26f7990046d8da9d34a6a",
+      "public/character-emblems/claude.png": "3f18e1a6b28e2277f3df83658d06da6ffd5342e01c847d747db04dc8cb9e959e",
+      "public/character-emblems/gemini.png": "5f30d3433e3462b9e8d2c238a83a28c6d1a9e16f7c1e7c24da1db34b5519c9e0",
+      "public/character-emblems/glm.png": "54172013f36df2b499bb2d5b9fe1dbac61bcb2f167a983c20a66ded7ef4f97ab",
+      "public/character-emblems/gpt.png": "bc52a9ac1ff0e398c347423a9735556f36621ca5c53927e47a154031aed2eb21",
+      "public/character-emblems/grok.png": "02d9bdf779cde810a53fe50afe075f10954831ad8699d8d3f99f22923be2c3b7",
+      "public/character-emblems/whale.png": "43d74713cea7f05b761fb7c5686a39041518b8989234034018a9d4eff6923996",
+      "public/map-previews/coast-overview.webp": "1988b5e929b033fef1381a511b96f1e1ea4cd96eb5b4f1840650d8617f7f9769",
+      "public/map-previews/forest-overview.webp": "bbad3d3b001635ebbe5779bc5a8653b2634b50d010959ee49a01c9b4ef059439",
       "public/map-previews/mountain-overview.webp": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
       "public/map-previews/quarry-overview.webp": "45b6d25a0d252c2e7a51422afccae895e13548894a517f7a82dec7340e1f8e9e",
       "public/map-previews/town-overview.webp": "50d661ee48729b1cf5924d9352cf396228399b48b2b8fbecc95f43db8e565fcc",

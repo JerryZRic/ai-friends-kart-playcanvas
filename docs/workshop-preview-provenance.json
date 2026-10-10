@@ -1,0 +1,251 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime workshop mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm workshop daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/workshop-scenery.ts": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "geometryTexturesRoutesThemeSha256": "32f572000a54c959d99ce9ca21b98fc95392a7910f41d1a2cec76b495f1612a1",
+  "generatorHashes": {
+    "scripts/export-workshop-preview.ts": "a224ad8b3ac2cf1bb96d750713d34d45911ca3833ce0aab0eb1f518ed4c587b6",
+    "scripts/render-workshop-preview.py": "fa259b7fbe93d10aeeb7edf9af0cc38f66261f8fa88ba963e7c45ad9038fb8d5"
+  },
+  "batches": 21,
+  "vertices": 146357,
+  "triangles": 97508,
+  "routeLengthsMetres": {
+    "start": 1453.8222121229105,
+    "alley": 367.4336910791745,
+    "boulevard": 416.87525123740556,
+    "finish": 771.1308234841844
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Cabinet Chicane (alley), Workbench Rim (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "cabinetLapLength": 2592.3867266862694,
+    "rimLapLength": 2641.8282868445003
+  },
+  "originalModels": {
+    "glb": {
+      "file": "workshop-original-scene.glb",
+      "sha256": "27ceea77704948d3d019d771d2b4efd2a9054565fc7159955945cf9c42ddb8b2",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "workshop-original-scene.blend",
+      "sha256": "c14cf0fb62f8baa76350090b40c0666e25f5fbffe11089ada07b60fb4b1d650c",
+      "note": "Editable original mesh batches, packed source procedural textures, UVs, runtime-derived normals and approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "workshop-overview": {
+      "file": "workshop-overview.png",
+      "sha256": "1d3e356cb2425cb5a4654c11e37f383bd15a5cec8b3aeeeeaf7f016392b1c592",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        1024.626708984375,
+        862.8450927734375,
+        923.3128051757812
+      ],
+      "cameraQuaternionBlender": [
+        0.39774948358535767,
+        0.20443879067897797,
+        0.4088777005672455,
+        0.795499324798584
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Clockwind Workshop circuit with both physical fork roads, banked helical spool climb, open height-separated crossing, connected wooden benches and modeled clockmaker landmarks. Exact emitted static source geometry, approximate offline lighting.",
+      "routeScreenBounds": [
+        0.3469863831996918,
+        0.23201555013656616,
+        0.7747695446014404,
+        0.7209956645965576
+      ],
+      "orthographicScaleMetres": 1365.6639404296875,
+      "fittedSubjectScreenBounds": [
+        0.11667019128799438,
+        0.06999979168176651,
+        0.883330225944519,
+        0.9299997091293335
+      ]
+    },
+    "workshop-topdown": {
+      "file": "workshop-topdown.png",
+      "sha256": "6e0230cc5414c7428a22a4716f4fde57a751f066d0ff21c9dc4c61dacb02f854",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -2.500014066696167,
+        92.49998474121094,
+        1525.1630859375
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry, including both independently sampled physical roads: the technical Cabinet Chicane and broad Workbench Rim. Real split/merge geometry and the upper/lower road crossing retain their actual elevations.",
+      "routeScreenBounds": [
+        0.15065394341945648,
+        0.22931884229183197,
+        0.8822097778320312,
+        0.7993835806846619
+      ],
+      "orthographicScaleMetres": 1122.0931396484375,
+      "fittedSubjectScreenBounds": [
+        0.06999999284744263,
+        0.15243515372276306,
+        0.9300000071525574,
+        0.8475648164749146
+      ]
+    },
+    "workshop-helix-crossing": {
+      "file": "workshop-helix-crossing.png",
+      "sha256": "67ffbaaa0932b092a8b384c6df2e2c0e19e3cbd1a020015833b49bc67fa681c3",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1195.5455322265625,
+        526.4590454101562,
+        733.6119995117188
+      ],
+      "cameraQuaternionBlender": [
+        0.46917861700057983,
+        0.28084924817085266,
+        0.4300229847431183,
+        0.7183838486671448
+      ],
+      "projection": "ORTHO",
+      "description": "Source-accurate three-quarter spool climb around the original clock heart, continuous graded support and open overhead crossing. Road camber, elevations, underside and separated lower road are unmodified.",
+      "routeScreenBounds": [
+        0.10162865370512009,
+        -0.4349953830242157,
+        1.6493114233016968,
+        1.0746437311172485
+      ],
+      "orthographicScaleMetres": 355.0
+    },
+    "workshop-clockheart-detail": {
+      "file": "workshop-clockheart-detail.png",
+      "sha256": "58ce8a8dcbe18048a6d96fb7fa1d954ac4e2723ef05e8524e45da63ed0c5ebd7",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        305.5274353027344,
+        1169.345947265625,
+        847.5325317382812
+      ],
+      "cameraQuaternionBlender": [
+        0.1219639703631401,
+        0.06605168431997299,
+        0.4716126620769501,
+        0.870829164981842
+      ],
+      "projection": "ORTHO",
+      "description": "Original modeled clock heart: source dial faces, hands, bezel, static toothed gears, frame, spindle bosses and grounded pedestal. The gear teeth and silhouette are actual mesh geometry.",
+      "routeScreenBounds": [
+        -1.6220532655715942,
+        -1.6919405460357666,
+        3.1623220443725586,
+        1.0894259214401245
+      ],
+      "orthographicScaleMetres": 167.14991760253906,
+      "fittedSubjectScreenBounds": [
+        0.2559310495853424,
+        0.06999769806861877,
+        0.7440687417984009,
+        0.9299976825714111
+      ]
+    },
+    "workshop-cabinet-detail": {
+      "file": "workshop-cabinet-detail.png",
+      "sha256": "88e4cba552b0dfcd64dc431161bca9db16dad01d06c44861ffb7a79e6a9f486b",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1070.400390625,
+        1310.931396484375,
+        660.832275390625
+      ],
+      "cameraQuaternionBlender": [
+        0.2531540095806122,
+        0.16517868638038635,
+        0.5208866000175476,
+        0.7983145713806152
+      ],
+      "projection": "ORTHO",
+      "description": "Original workshop cabinet assembly with actual recessed drawer fronts, pulls, tool silhouettes and grounded wooden construction. Only the emitted source meshes are shown.",
+      "routeScreenBounds": [
+        -0.5743974447250366,
+        -0.5174914598464966,
+        6.1921067237854,
+        3.051938056945801
+      ],
+      "orthographicScaleMetres": 105.29839324951172,
+      "fittedSubjectScreenBounds": [
+        0.2868601083755493,
+        0.070002481341362,
+        0.7131375670433044,
+        0.9300024509429932
+      ]
+    },
+    "workshop-vise-detail": {
+      "file": "workshop-vise-detail.png",
+      "sha256": "d3873806ae377b42763ad7c57ec8c4f50ddac8901ad747fb81e8539cf7a9fc91",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        807.697998046875,
+        1219.799072265625,
+        715.7066650390625
+      ],
+      "cameraQuaternionBlender": [
+        0.29600799083709717,
+        0.1787799894809723,
+        0.48509666323661804,
+        0.8031800389289856
+      ],
+      "projection": "ORTHO",
+      "description": "Original vise assembly: source fixed and moving jaws, static threaded rod, cross-handle and bolted mounting plinth. This is a static modeled landmark, not an animated clamping interaction.",
+      "routeScreenBounds": [
+        -5.1032328605651855,
+        -2.599771022796631,
+        4.879810333251953,
+        3.9395596981048584
+      ],
+      "orthographicScaleMetres": 68.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/workshop-overview.webp",
+    "sha256": "8895cd3207b3bcd68b32ab33625566004decd7c1cc41c2160a56cb4d00472d3c",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

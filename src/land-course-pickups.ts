@@ -46,3 +46,20 @@ export const FOREST_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:1045,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const forestPickupRows=(course:ForkCourse)=>routePickupRows(course,FOREST_PICKUP_ROWS);
+
+/** Whole-row edge-local coordinates keep the cabinet pickups beyond the wide
+ * overlapping entry/exit ribbons, not merely beyond the 40m interaction tail.
+ * The approach pockets avoid both physical visits to the same-edge crossing.
+ * These authored boxes retain the shared eight-second respawn; the dynamic
+ * director alone certifies speed/acceleration-aware appearance reaction gaps. */
+export const WORKSHOP_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+  {edgeId:'start',s:185,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:700,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:1110,lanes:[-3.5,3.5]},
+  {edgeId:'alley',s:235,lanes:[-2.2,2.2]},
+  {edgeId:'boulevard',s:210,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:180,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:550,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:650,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
+export const workshopPickupRows=(course:ForkCourse)=>routePickupRows(course,WORKSHOP_PICKUP_ROWS);
