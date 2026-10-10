@@ -1,0 +1,57 @@
+/* Import after kart-garage.css: six tactile drawers, image first and label below. */
+#garage-slots {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+#garage-slots .slot-choice {
+  min-width: 0;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 3px 14px;
+  text-align: center;
+}
+#garage-slots .slot-icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  max-width: 100%;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 0 #fff4d67a);
+}
+.kart-slot-art { display: block; width: 100%; height: 100%; }
+#garage-slots .slot-choice > span:nth-child(2) { flex: 0 0 auto; width: 100%; }
+#garage-slots .slot-choice strong { font-size: 12px; line-height: 1.2; letter-spacing: .05em; }
+/* Installed theme stays in the native button title and accessible description. */
+#garage-slots .slot-choice strong small,
+#garage-slots .slot-choice > span:nth-child(2) > span,
+#garage-slots .slot-chevron { display: none; }
+#garage-slots .slot-choice::after { width: 20px; height: 3px; left: calc(50% - 10px); bottom: 5px; }
+#garage-slots .slot-choice[aria-pressed="true"] { outline: 2px solid #fff4c0; outline-offset: -5px; }
+#garage-slots .slot-choice:focus-visible { outline: 3px solid #196bcc; outline-offset: 3px; }
+/* Allow the same original silhouettes in thumbnail-loading placeholders. */
+.part-visual.no-thumbnail > span:has(> .kart-slot-art) { display: block; width: 60%; max-width: 80px; aspect-ratio: 1; height: auto; }
+@media (max-width: 960px) {
+  #garage-slots { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: auto; }
+}
+@media (max-width: 660px) {
+  #garage-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #garage-slots .slot-choice { min-height: 88px; }
+}
+@media (min-width: 1500px) and (min-height: 850px) {
+  #garage-slots .slot-icon { width: 60px; height: 60px; }
+  #garage-slots .slot-choice strong { font-size: 14px; }
+}
+@media (forced-colors: active) {
+  #garage-slots .slot-choice[aria-pressed="true"] { border: 3px solid Highlight; outline-color: Highlight; }
+  #garage-slots .slot-choice:focus-visible { outline-color: CanvasText; }
+}
+@media (min-width: 1000px) and (min-height: 680px) and (max-height: 720px) and (orientation: landscape) {
+  #garage-slots .slot-choice { min-height: 0; padding: 5px 2px 11px; gap: 2px; }
+  #garage-slots .slot-icon { width: 40px; height: 40px; }
+}
