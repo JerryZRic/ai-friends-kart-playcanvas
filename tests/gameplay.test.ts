@@ -450,7 +450,7 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
       qa.set({pos:game.getState().length*3-.1,speed:20,noBots:true});qa.update(.1);
       const result=game.getState();assert.equal(result.state,'finished');assert.ok(result.elapsed>.2&&result.elapsed<.3);
       assert.equal(result.standings[0].finishedAt,result.elapsed);assert.equal(result.pos,result.length*3);
-      assert.match(element('results').textContent,/WHALE你/);assert.doesNotThrow(()=>JSON.stringify(result));
+      assert.match(element('results').textContent,/大肥鱼你/);assert.doesNotThrow(()=>JSON.stringify(result));
     });
     await t.test('all native boxes have transparent front glass and one enclosed model', () => {
       for (const box of qa.boxes()) {

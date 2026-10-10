@@ -19,7 +19,7 @@ function fixture() {
   return { doc, get: (id: string) => elements.get(id)! };
 }
 
-test('shared loading mount varies only map identity and uses one keyboard diagram', () => {
+test('shared loading mount varies only map identity and uses one complete keycap guide', () => {
   for (const [map, name] of [['coast', '日落海岸'], ['waterpark', '晴空水上乐园']] as const) {
     const { doc, get } = fixture(); const ui = mountRaceLoadingUi(doc, map);
     assert.equal(get('loadingMapName').textContent, name);
@@ -32,7 +32,7 @@ test('shared loading mount varies only map identity and uses one keyboard diagra
     assert.equal(ui.retryButton.hidden, true); assert.equal(ui.continueButton.hidden, true);
     assert.equal(get('raceLoadingExit').hidden, true);
   }
-  for (const key of ['W', 'A', 'S', 'D', 'Shift', 'Space']) assert.match(RACE_LOADING_MARKUP, new RegExp(`>${key}</kbd>`));
+  for (const key of ['W', 'A', 'S', 'D', '↑', '↓', '←', '→', 'Shift', 'Space', 'E', 'Z', 'C', 'Q', 'P', 'Esc', 'Enter']) assert.match(RACE_LOADING_MARKUP, new RegExp(`>${key}</kbd>`));
   assert.match(RACE_LOADING_MARKUP, /aria-label="资源下载进度"/);
   assert.throws(() => mountRaceLoadingUi({ getElementById: () => null } as unknown as Document, 'coast'), /Missing shared race loading mount/);
 });
@@ -125,7 +125,9 @@ test('tips and controls keep their logical footer flow through uniform viewport 
   assert.match(css, /\.loading-bottom \.loading-footer\{position:static/);
   assert.match(css, /\.loading-bottom \.loading-controls\{position:static/);
   assert.match(css, /\.loading-driving-tip p\{[^}]*overflow-wrap:break-word/);
-  assert.match(css, /\.loading-bottom \.loading-controls\{position:static;flex:0 0 208px;order:1/);
+  assert.match(css, /\.loading-bottom \.loading-controls\{position:static;flex:0 0 620px;order:1/);
+  assert.match(css, /\.loading-control-columns\{display:grid;grid-template-columns:1fr 1fr/);
+  assert.match(css, /\.loading-actions a,\.loading-actions a:visited\{[^}]*color:#f1f6ec/);
   assert.doesNotMatch(css, /@media[^{}]*(?:max|min)-(?:width|height)/);
   assert.match(css, /body\.menu:not\(\.finished\) \.race-loading-screen\{display:block\}/);
 });

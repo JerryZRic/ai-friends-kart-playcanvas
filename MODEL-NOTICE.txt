@@ -46,3 +46,15 @@ This dev source retrieves from the isolated public /dev/ preview, whose new
 portraits are not part of the preserved stable root. The original kart/prop
 Blender sources were already public and remain included for their AGPL
 corresponding-source completeness.
+
+Setting-sheet emblems
+
+The six PNGs under public/character-emblems/ are extracted from the top-right
+emblems in the owner's supplied final character setting sheets. Display names
+use those sheets' Chinese names. No model IDs, geometry or saved builds change.
+These character artworks remain distinct from the AGPL code; their inclusion
+under the owner's authorization is not a general redistribution or commercial
+rights grant. Source hashes, crop coordinates and output hashes are recorded
+in docs/character-emblems.json. Original full sheets and private source
+references are not redistributed. Extraction preserves the original emblem
+pixels and colors, including surrounding motif stars; no AI redraw is used.

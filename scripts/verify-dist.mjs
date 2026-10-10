@@ -38,7 +38,8 @@ const privatePatterns = [
 ];
 function scanContent(path, bytes) {
   if (path.endsWith('.glb.gz')) bytes = gunzipSync(bytes, { maxOutputLength: 32 * 1024 * 1024 });
-  for (const pattern of privatePatterns) assert.ok(!pattern.test(bytes.toString('utf8')), `Private data pattern in ${path}: ${pattern.source}`);
+  const text = bytes.toString('utf8');
+  for (const pattern of privatePatterns) assert.ok(!pattern.test(text), `Private data pattern in ${path}: ${pattern.source}`);
 }
 const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
 const allowedRoots = ['src/', 'tests/', 'scripts/', 'docs/', 'models/', '.github/', 'public/'];
@@ -158,8 +159,15 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
   // Preserve dependency symlinks in this offline fixture, matching the package-local
   // paths a real npm ci installation has. Otherwise sourcemaps name the host cache.
   const buildScript = `import {build} from ${JSON.stringify('file://' + resolve('node_modules/vite/dist/node/index.js'))};await build({resolve:{preserveSymlinks:true}});`;
-  const build = () => execFileSync(process.execPath, ['--input-type=module', '-e', buildScript], { cwd: temporary, stdio: 'pipe', timeout: 120000 });
-  const packageSource = () => execFileSync(process.execPath, ['scripts/package-source.mjs'], { cwd: temporary, stdio: 'pipe', timeout: 120000 });
+  // Synchronous children pause this verifier's GC. Drop dead scan/compare
+  // buffers before each build rather than competing with Vite for their memory.
+  // npm run test:dist enables GC; direct invocation remains supported.
+  const runChild = (args, options = {}) => {
+    globalThis.gc?.();
+    return execFileSync(process.execPath, args, { cwd: temporary, stdio: 'pipe', timeout: 120000, ...options });
+  };
+  const build = () => runChild(['--input-type=module', '-e', buildScript]);
+  const packageSource = () => runChild(['scripts/package-source.mjs']);
   try {
     for (const [path, bytes] of sourceEntries) { const target = join(temporary, path); mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, bytes); }
     symlinkSync(resolve('node_modules'), join(temporary, 'node_modules'), 'dir');
@@ -182,7 +190,7 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
       };
       await import('./scripts/fetch-runtime-models.mjs');assert.equal(calls,Number(process.env.QA_EXPECT_DOWNLOADS));
     `;
-    for (const count of ['12', '0']) execFileSync(process.execPath, ['--input-type=module', '-e', harness], { cwd: temporary, stdio: 'pipe', timeout: 120000, env: { ...process.env, QA_RUNTIME_ROOT: resolve('dist'), QA_EXPECT_DOWNLOADS: count } });
+    for (const count of ['12', '0']) runChild(['--input-type=module', '-e', harness], { env: { ...process.env, QA_RUNTIME_ROOT: resolve('dist'), QA_EXPECT_DOWNLOADS: count } });
     const foodHarness = `
       import assert from 'node:assert/strict';
       import {readFileSync} from 'node:fs';
@@ -198,7 +206,7 @@ check('source-only rebuild is byte-identical; manifest fetch restores only appro
       await import('./scripts/fetch-food-karts.mjs');assert.equal(calls,Number(process.env.QA_EXPECT_DOWNLOADS));
     `;
     const foodCount=files.filter(path=>path.startsWith('models/food-karts/')&&!path.endsWith('/manifest.json')).length;
-    for(const count of [String(foodCount),'0'])execFileSync(process.execPath,['--input-type=module','-e',foodHarness],{cwd:temporary,stdio:'pipe',timeout:120000,env:{...process.env,QA_RUNTIME_ROOT:resolve('dist'),QA_EXPECT_DOWNLOADS:count}});
+    for(const count of [String(foodCount),'0'])runChild(['--input-type=module','-e',foodHarness],{env:{...process.env,QA_RUNTIME_ROOT:resolve('dist'),QA_EXPECT_DOWNLOADS:count}});
     build(); packageSource();
     assert.deepEqual(inventory(join(temporary, 'dist')), files);
     for (const path of files) assert.equal(sha(readFileSync(join(temporary, 'dist', path))), sha(read('dist/' + path)), `Full rebuild differs: ${path}`);

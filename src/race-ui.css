@@ -72,18 +72,39 @@ body.menu:not(.finished) .race-loading-screen{display:block}
 .loading-actions{display:flex;gap:10px;flex-wrap:wrap;pointer-events:auto}
 .loading-actions:has(:not([hidden])){margin-bottom:16px}
 .loading-actions button,.loading-actions a{padding:11px 15px;background:#17323de8;border:1px solid #ebf2e870;border-radius:5px;font-size:12px;font-weight:650}
-.loading-actions a{text-decoration:none}
+.loading-actions a,.loading-actions a:visited{text-decoration:none;color:#f1f6ec}
 .loading-actions [hidden]{display:none!important}
 .loading-actions button:disabled{opacity:.6;cursor:wait}
 #raceLoadingContinue{background:var(--lime);color:var(--ink);border-color:var(--lime)}
-.loading-controls{position:absolute;right:var(--loading-gutter);bottom:54px;width:208px;font-size:11px}
-.loading-keyboard{display:grid;grid-template-columns:44px repeat(3,30px);grid-template-rows:repeat(3,30px);gap:5px;justify-content:end;margin-bottom:19px}
-.loading-keyboard kbd{display:flex;align-items:center;justify-content:center;background:#102b3770;border:1px solid #e9f2e6a8;border-bottom:3px solid #e9f2e680;border-radius:4px;font-family:inherit;font-size:11px;font-weight:600;line-height:1;box-shadow:0 2px 6px #061c2522;text-shadow:none}
-.key-w{grid-column:3;grid-row:1}.key-a{grid-column:2;grid-row:2}.key-s{grid-column:3;grid-row:2}.key-d{grid-column:4;grid-row:2}.key-shift{grid-column:1;grid-row:2}.key-space{grid-column:2/5;grid-row:3}
-.loading-controls dl{margin:0;line-height:1.65}
-.loading-controls dl>div{display:flex;gap:13px;margin-top:5px}
-.loading-controls dt{flex:0 0 72px;color:var(--lime);font-weight:700;white-space:nowrap}
-.loading-controls dd{margin:0;color:#f1f6ec;white-space:nowrap}
+/* Every shortcut is represented by a keycap, with mouse actions alongside.
+   These are logical design sizes; the shared root scales the complete guide. */
+.loading-controls{width:620px;padding:20px 22px 18px;border:1px solid #e9f2e62b;border-radius:10px;background:#102b3785;backdrop-filter:blur(6px);font-size:14px;text-shadow:none}
+.loading-controls-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:18px}
+.loading-controls-heading h2{margin:0;font-size:17px;font-weight:750;letter-spacing:2px}
+.loading-controls-heading>span{font-size:12px;color:#cededc}
+.loading-control-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.loading-control-group h3{margin:0 0 10px;font-size:12px;letter-spacing:1px;font-weight:650;color:var(--lime)}
+.loading-controls dl{margin:0;line-height:1.45}
+.loading-controls dl>div{display:flex;align-items:center;gap:12px;min-height:35px}
+.loading-controls dt{display:flex;align-items:center;gap:4px;flex:0 0 88px;color:var(--lime);font-weight:650;white-space:nowrap}
+.loading-controls dd{min-width:0;margin:0;color:#f1f6ec;overflow-wrap:break-word}
+.loading-controls dd small{display:block;font-size:11px;font-weight:400;color:#c6d8d8;line-height:1.5}
+.loading-controls kbd{display:inline-flex;min-width:28px;height:28px;padding:0 6px;align-items:center;justify-content:center;background:#e9f2e60c;border:1px solid #e9f2e680;border-bottom:3px solid #e9f2e661;border-radius:4px;font-family:inherit;font-size:13px;font-weight:650;line-height:1;color:#fff}
+.loading-key-or{font-size:11px;font-weight:400;color:#acc4c9}
+.loading-controls .loading-mouse-guide{margin-top:8px}
+.loading-controls .loading-mouse-guide>div{min-height:57px;gap:10px}
+.loading-controls .loading-mouse-guide dt{flex-basis:92px;gap:5px;font-size:11px;color:#eaf2ec;font-weight:500}
+.loading-mouse{flex:0 0 28px;width:28px;height:38px;fill:none;stroke:#e9f2e69c;stroke-width:1.5}
+.loading-mouse .mouse-left,.loading-mouse .mouse-right{stroke:none;fill:transparent}
+.loading-mouse-left .mouse-left,.loading-mouse-right .mouse-right{fill:var(--lime)}
+.loading-mouse .mouse-motion{display:none;stroke:var(--lime)}
+.loading-mouse-move .mouse-motion{display:block}
+.loading-control-secondary{margin-top:16px;padding-top:13px;border-top:1px solid #e9f2e630}
+.loading-pause-guide{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.loading-controls .loading-pause-guide dt{flex-basis:48px}
+.loading-controls .loading-ready-guide>div{min-height:40px}
+.loading-controls .loading-ready-guide dt{flex-basis:48px}
+.loading-control-secondary>p{margin:2px 0 0;font-size:11px;line-height:1.6;color:#c6d8d8}
 @keyframes race-loading-pulse{0%,100%{background-position:100% 0}50%{background-position:0 0}}
 
 /* Both maps render their authoritative standings in the same centered table. */
@@ -138,7 +159,7 @@ body.menu .game-ui{visibility:hidden}
    This is presentation only and adds no driving input handlers. */
 .loading-bottom{position:absolute;left:var(--loading-gutter);right:var(--loading-gutter);bottom:54px;display:flex;align-items:flex-end;gap:36px;max-height:calc(100% - 220px);overflow-y:auto;pointer-events:auto}
 .loading-bottom .loading-footer{position:static;flex:1;min-width:0;order:0}
-.loading-bottom .loading-controls{position:static;flex:0 0 208px;order:1}
+.loading-bottom .loading-controls{position:static;flex:0 0 620px;order:1}
 .loading-driving-tip{margin:0 0 24px;max-width:520px;font-size:13px;line-height:1.7;color:#f1f6ec}
 .loading-driving-tip h2{margin:0 0 8px;font-size:13px;font-weight:750;color:var(--lime);letter-spacing:1px}
 .loading-driving-tip p{margin:4px 0;overflow-wrap:break-word}

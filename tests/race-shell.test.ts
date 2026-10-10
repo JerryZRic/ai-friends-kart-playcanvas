@@ -42,9 +42,11 @@ test('race navigation retains map and character for both destination screens', (
   });
   const { shell, $ } = fixture();
   assert.match($('raceChangeMap').href, /map=coast&driver=grok$/);
+  assert.match($('raceDriverIdentity').innerHTML, /grok.png.*洛可/);
   shell.updateNavigation('waterpark', 'glm');
   assert.equal($('raceChangeCharacter').href, $('change-driver').href);
   assert.match($('change-map').href, /map=waterpark&driver=glm$/);
+  assert.match($('raceDriverIdentity').innerHTML, /glm.png.*智谱/);
   assert.equal(raceNavigation('invalid' as any, '<script>').changeMap, 'index.html?screen=maps&map=coast&driver=whale');
 });
 
@@ -96,7 +98,7 @@ test('shared start, pause, resume, finish and restart clear stale presentation',
   shell.renderCountdown(0, true); assert.match($('count').textContent, /等待其他选手/); assert.ok($('count').classes.has('waiting'));
   shell.finish(finish); assert.equal($('body').classes.has('finished'), true); assert.equal($('overlay').classes.has('hidden'), false);
   assert.equal($('pause').disabled, true);
-  assert.match($('desc').textContent, /晴空水上乐园/); assert.match($('results').innerHTML, /GROK<span class="result-you">你<\/span>/); assert.equal($('startText').textContent, '再来一场');
+  assert.match($('desc').textContent, /晴空水上乐园/); assert.match($('results').innerHTML, /洛可<span class="result-you">你<\/span>/); assert.equal($('startText').textContent, '再来一场');
   assert.equal($('count').textContent, ''); assert.equal(fixtureState.activeElement, $('start')); assert.equal($('pausePanel').classes.has('hidden'), true);
   shell.setPaused(true); shell.renderCountdown(2); assert.equal($('count').textContent, '', 'terminal flow cannot be paused or show old countdown');
   shell.start(3); assert.equal($('body').classes.has('finished'), false); assert.equal($('results').textContent, ''); assert.equal($('results').classes.has('hidden'), true);
@@ -105,8 +107,8 @@ test('shared start, pause, resume, finish and restart clear stale presentation',
 });
 
 test('result formatting uses authoritative ordering and exact player finish time', () => {
-  assert.equal(formatRaceResults(finish), '第 2 / 3 名 · 99.12 秒\n1. WHALE · 90.46 秒\n2. GROK（你） · 99.12 秒\n3. GLM · 未冲线 · 66.7%');
-  assert.match(formatRaceResults({ ...finish, racerCount: 6, racers: [{ id: 'grok', label: '<name>', finishedAt: null, total: 400 }] }), /<name>（你） · 未冲线 · 99.9%/);
+  assert.equal(formatRaceResults(finish), '第 2 / 3 名 · 99.12 秒\n1. 大肥鱼 · 90.46 秒\n2. 洛可（你） · 99.12 秒\n3. 智谱 · 未冲线 · 66.7%');
+  assert.match(formatRaceResults({ ...finish, racerCount: 6, racers: [{ id: 'grok', label: '<name>', finishedAt: null, total: 400 }] }), /洛可（你） · 未冲线 · 99.9%/);
   assert.equal(formatRaceTime(3601.9), '60:01'); assert.equal(formatRaceTime(-2), '0:00'); assert.equal(formatRaceTime(Infinity), '0:00');
 });
 

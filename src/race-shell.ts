@@ -1,3 +1,4 @@
+import {characterDisplayName,characterEmblem} from './character-identity.js';
 import { itemImage, type ItemKind } from './item-models';
 import { resolveCharacter } from './character-profiles';
 import { resolveMap, type MapId } from './map-profiles';
@@ -82,7 +83,7 @@ export function formatRaceResults(snapshot: RaceFinishSnapshot): string {
   const laps = count(snapshot.laps, 3), racers = count(snapshot.racerCount, snapshot.racers.length || 6);
   const distance = positive(snapshot.trackLength) * laps;
   const rows = snapshot.racers.map((racer, index) => {
-    const label = racer.label ?? resolveCharacter(racer.id).label;
+    const label = characterDisplayName(racer.id,racer.label);
     const time = racer.finishedAt !== null && Number.isFinite(racer.finishedAt)
       ? `${nonnegative(racer.finishedAt).toFixed(2)} 秒`
       : `未冲线 · ${clamp(nonnegative(racer.total) / distance * 100, 0, 99.9).toFixed(1)}%`;
@@ -98,9 +99,9 @@ export function renderRaceResults(snapshot: RaceFinishSnapshot): string {
   const rows = snapshot.racers.map((racer, index) => {
     const finished = racer.finishedAt !== null && Number.isFinite(racer.finishedAt);
     const player = racer.id === snapshot.selectedDriverId;
-    const label = escape(racer.label ?? resolveCharacter(racer.id).label);
+    const label = escape(characterDisplayName(racer.id,racer.label));
     const value = finished ? `${nonnegative(racer.finishedAt!).toFixed(2)} 秒` : `${clamp(nonnegative(racer.total) / distance * 100, 0, 99.9).toFixed(1)}%`;
-    return `<tr class="${player ? 'result-player ' : ''}${finished ? 'result-finished' : 'result-unfinished'}" data-racer-id="${escape(racer.id)}"><th scope="row">${index + 1}</th><td class="result-name">${label}${player ? '<span class="result-you">你</span>' : ''}</td><td class="result-value">${value}</td><td class="result-state">${finished ? '已冲线' : '未冲线'}</td></tr>`;
+    return `<tr class="${player ? 'result-player ' : ''}${finished ? 'result-finished' : 'result-unfinished'}" data-racer-id="${escape(racer.id)}"><th scope="row">${index + 1}</th><td class="result-name">${characterEmblem(racer.id)}${label}${player ? '<span class="result-you">你</span>' : ''}</td><td class="result-value">${value}</td><td class="result-state">${finished ? '已冲线' : '未冲线'}</td></tr>`;
   });
   return `<table class="result-table"><caption>本场比赛完整排名</caption><thead><tr><th scope="col">名次</th><th scope="col">选手</th><th scope="col">用时 / 进度</th><th scope="col">状态</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
 }
@@ -214,7 +215,7 @@ export interface RaceShellOptions extends RaceSoundOptions {
 
 /** DOM-only coordinator. It never owns physics, race elapsed time or standings. */
 export function createRaceShell(document: Document, canvas: HTMLCanvasElement, options: RaceShellOptions) {
-  const ids = ['rank', 'lap', 'timer', 'speed', 'charge', 'chargeLabel', 'item', 'itemImage', 'itemName', 'itemHelp', 'toast', 'count', 'pause', 'pausePanel', 'resumeRace', 'overlay', 'menu', 'title', 'subtitle', 'desc', 'results', 'start', 'startText', 'sound', 'raceChangeMap', 'raceChangeCharacter', 'raceMainMenu', 'change-driver', 'change-map'] as const;
+  const ids = ['rank', 'lap', 'timer', 'speed', 'charge', 'chargeLabel', 'item', 'itemImage', 'itemName', 'itemHelp', 'toast', 'count', 'pause', 'pausePanel', 'resumeRace', 'overlay', 'menu', 'title', 'subtitle', 'desc', 'results', 'start', 'startText', 'sound', 'raceChangeMap', 'raceChangeCharacter', 'raceMainMenu', 'change-driver', 'change-map', 'raceDriverIdentity'] as const;
   const elements = Object.fromEntries(ids.map(id => [id, document.getElementById(id)])) as Record<typeof ids[number], HTMLElement | null>;
   const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = value; };
   const hidden = (id: typeof ids[number], value: boolean) => {
@@ -238,6 +239,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     if (disposed) return;
     mapId = resolveMap(map).id as MapId;
     const urls = raceNavigation(mapId, driver);
+    if (elements.raceDriverIdentity) elements.raceDriverIdentity.innerHTML = characterEmblem(driver) + characterDisplayName(driver);
     for (const id of ['raceChangeCharacter', 'change-driver'] as const) if (elements[id]) (elements[id] as HTMLAnchorElement).href = urls.changeCharacter;
     for (const id of ['raceChangeMap', 'change-map'] as const) if (elements[id]) (elements[id] as HTMLAnchorElement).href = urls.changeMap;
     if (elements.raceMainMenu) (elements.raceMainMenu as HTMLAnchorElement).href = urls.main;

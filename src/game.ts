@@ -1,3 +1,4 @@
+import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
 import { getNpcPresets } from './kart-presets';
 import { garageEntry } from './menu-state';
@@ -273,8 +274,9 @@ const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModula
 function updateDriverUI(){
   if (disposed) return;
   updateRaceLinks(selectedDriverId);
+  shell.updateNavigation('coast',selectedDriverId);
   const editable=canImport();
-  for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.textContent=slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':bundledFailures.has(slot.id)?'加载失败':'加载中');}
+  for(const slot of DRIVERS){const button=$('slot-'+slot.id);button.disabled=!editable;button.setAttribute('aria-pressed',String(slot.id===selectedDriverId));button.innerHTML=characterEmblem(slot.id)+slot.label+' · '+(localDrivers.has(slot.id)?'本地替换':bundledDrivers.has(slot.id)?'已就绪':bundledFailures.has(slot.id)?'加载失败':'加载中');}
   $('start').disabled=!ready||loadingBusy||localDrivers.busy||state==='returning';
   $('retryLoading').disabled=loadingBusy||localDrivers.busy||!['loading','menu','finished'].includes(state);
   $('importButton').disabled=!editable||!chassisAsset;

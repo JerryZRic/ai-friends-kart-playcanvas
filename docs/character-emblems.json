@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "source": "Owner-supplied final character setting sheets, v3",
+  "process": "Exact top-right raster extraction; near-white background key at 4% tolerance; preserve original colors; fit inside112px square; center on128px transparent canvas. No generative redraw.",
+  "sourceDimensions": [
+    1448,
+    1086
+  ],
+  "emblems": [
+    {
+      "id": "whale",
+      "label": "大肥鱼",
+      "sourceFile": "01_DeepSeek_大肥鱼.png",
+      "sourceSha256": "91247b8980115640040ede3b46fe9dc26402a59090688503159c588961c8aa7f",
+      "crop": {
+        "x": 1288,
+        "y": 32,
+        "width": 142,
+        "height": 126
+      },
+      "path": "character-emblems/whale.png",
+      "sha256": "43d74713cea7f05b761fb7c5686a39041518b8989234034018a9d4eff6923996",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "id": "gemini",
+      "label": "双子",
+      "sourceFile": "02_Gemini_双子.png",
+      "sourceSha256": "6699236df79424322c233c3574908b53ad01f21d87490259645b10a739e6a4a2",
+      "crop": {
+        "x": 1290,
+        "y": 18,
+        "width": 143,
+        "height": 142
+      },
+      "path": "character-emblems/gemini.png",
+      "sha256": "5f30d3433e3462b9e8d2c238a83a28c6d1a9e16f7c1e7c24da1db34b5519c9e0",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "id": "gpt",
+      "label": "小吉",
+      "sourceFile": "04_GPT_小吉.png",
+      "sourceSha256": "7f0506993b99bab0dc22814d56a12bb523e9761f94f6c38217426761f0e4f74f",
+      "crop": {
+        "x": 1307,
+        "y": 19,
+        "width": 126,
+        "height": 142
+      },
+      "path": "character-emblems/gpt.png",
+      "sha256": "bc52a9ac1ff0e398c347423a9735556f36621ca5c53927e47a154031aed2eb21",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "id": "claude",
+      "label": "克洛德",
+      "sourceFile": "03_Claude_克洛德.png",
+      "sourceSha256": "3a95586d12d3f1ef21c99abba86c12f2711bf23856f242b3a1f16f284961970f",
+      "crop": {
+        "x": 1314,
+        "y": 13,
+        "width": 120,
+        "height": 158
+      },
+      "path": "character-emblems/claude.png",
+      "sha256": "3f18e1a6b28e2277f3df83658d06da6ffd5342e01c847d747db04dc8cb9e959e",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "id": "grok",
+      "label": "洛可",
+      "sourceFile": "05_Grok_洛可.png",
+      "sourceSha256": "ecb8dec7a658bbfe4c01a00e8ff44660ed5e86377ce54088d7f5d78b1ebadee6",
+      "crop": {
+        "x": 1287,
+        "y": 24,
+        "width": 147,
+        "height": 149
+      },
+      "path": "character-emblems/grok.png",
+      "sha256": "02d9bdf779cde810a53fe50afe075f10954831ad8699d8d3f99f22923be2c3b7",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "id": "glm",
+      "label": "智谱",
+      "sourceFile": "06_GLM_智谱.png",
+      "sourceSha256": "2415e594c8e693ee131909367a48d40d06b35814643ce889fe7b9be76266dbb6",
+      "crop": {
+        "x": 1285,
+        "y": 29,
+        "width": 143,
+        "height": 132
+      },
+      "path": "character-emblems/glm.png",
+      "sha256": "54172013f36df2b499bb2d5b9fe1dbac61bcb2f167a983c20a66ded7ef4f97ab",
+      "width": 128,
+      "height": 128
+    }
+  ]
+}

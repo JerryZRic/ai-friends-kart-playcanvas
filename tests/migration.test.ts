@@ -39,7 +39,7 @@ test('PlayCanvas is the installed rendering engine; runtime source has no Three.
 
 test('all six stable selections retain exact IDs, paint colors, labels and selected-first race order', () => {
   assert.deepEqual(DRIVERS.map(driver => driver.id), ids);
-  assert.deepEqual(DRIVERS.map(driver => driver.label), ids.map(id => id.toUpperCase()));
+  assert.deepEqual(DRIVERS.map(driver => driver.label), ['大肥鱼','双子','小吉','克洛德','洛可','智谱']);
   assert.deepEqual(DRIVERS.map(driver => driver.color), ['#77dcea', '#a5a4ff', '#f4e4c8', '#eeac8e', '#b89bdb', '#9cddad']);
   assert.equal(DEFAULT_DRIVER_ID, 'whale');
   for (const id of ids) {

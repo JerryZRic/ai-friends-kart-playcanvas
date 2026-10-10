@@ -1,4 +1,5 @@
 import { resolveMap, type MapId } from './map-profiles';
+import { RACE_CONTROL_GUIDE_MARKUP } from './race-control-guide';
 
 /** Presentation only: adapters supply real loading progress and short stage text. */
 export interface RaceLoadingSnapshot {
@@ -16,10 +17,7 @@ export interface RaceLoadingSnapshot {
 export const RACE_LOADING_MARKUP = `<section class="race-loading-screen" aria-label="赛前加载">
   <header class="loading-map"><span class="loading-map-tag" id="loadingMapTag"></span><h1 id="loadingMapName"></h1><p>06 位选手 <span>·</span> 03 圈 <span>·</span> 自由竞速</p></header>
   <div class="loading-bottom">
-  <section class="loading-controls" aria-label="键盘操作">
-    <div class="loading-keyboard" aria-hidden="true"><kbd class="key-w">W</kbd><kbd class="key-a">A</kbd><kbd class="key-s">S</kbd><kbd class="key-d">D</kbd><kbd class="key-shift">Shift</kbd><kbd class="key-space">Space</kbd></div>
-    <dl><div><dt>W / S</dt><dd>油门 / 刹车倒车</dd></div><div><dt>A / D</dt><dd>左右转向</dd></div><div><dt>Shift</dt><dd id="loadingDriftHelp">手刹漂移</dd></div><div><dt>Space / E</dt><dd>刹车 / 使用道具</dd></div><div><dt>Esc</dt><dd>暂停比赛</dd></div></dl>
-  </section>
+  ${RACE_CONTROL_GUIDE_MARKUP}
   <div class="loading-footer">
     <aside class="loading-driving-tip" aria-labelledby="loadingTipTitle"><h2 id="loadingTipTitle"></h2><p id="loadingTipStart"></p><p id="loadingTipRelease"></p></aside>
     <section id="raceLoadingProgressGroup" aria-label="资源下载进度" aria-busy="true">
