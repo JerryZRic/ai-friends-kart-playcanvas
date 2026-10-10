@@ -72,3 +72,15 @@ From a repository checkout: `npm ci`, `npm test`, `npm run build`, `npm run test
 After extracting source.zip, first restore separately served runtime assets with
 `npm run models:fetch` and `npm run food:fetch`. `npm run food:verify` independently
 checks all 324 public food payloads without private production files.
+
+## Original workshop presentation
+
+The garage uses an original illustrated workshop backdrop, colored tool drawers,
+a cutting-mat assembly bench, paper recipe slips, and a physical-style instrument
+panel. The speed dial uses the same driver-adjusted flat-road ceiling as the
+numeric readout (0–240 km/h dial scale, with the needle bounded at the ends).
+Comparison changes still use the real selected/candidate build. Decorative props
+and the redundant dial are hidden from assistive technology. All original native
+controls, status/progress, loading failure and retry handling remain available.
+Small-screen layouts reflow; motion is suppressed for reduced-motion preferences.
+Artwork is original SVG/CSS; no third-party game artwork is included.

@@ -152,3 +152,24 @@ test('concurrent racing assemblies pin shared parts through parsing and bounded-
     assert.equal(loader.cachedParts, 0); assert.equal(loader.textureStats().containers, 0); assert.equal(application.assets.list().length, 0);
   } finally {await loader.dispose(); application.destroy();}
 });
+
+test('workshop presentation retains real assembly feedback and original accessible controls', () => {
+  const source = readFileSync('src/kart-garage.ts', 'utf8');
+  const css = readFileSync('src/kart-garage.css', 'utf8');
+  const art = readFileSync('public/garage-workshop.svg', 'utf8');
+  assert.match(source, /好味改装工坊/);
+  assert.match(source, /class="bench-scenery" aria-hidden="true"/);
+  assert.match(source, /class="speed-dial" aria-hidden="true"/);
+  assert.match(source, /raceTuning\.maxSpeed \* 3\.6 \/ 240 \* 220 - 110/);
+  assert.match(source, /Math\.max\(-110, Math\.min\(110/);
+  assert.match(source, /class="performance-disclosure"/);
+  assert.match(source, /不会用占位模型替代缺失零件/);
+  assert.match(source, /id="preview-status" role="status" aria-live="polite"/);
+  for (const id of ['preview-retry', 'preview-zoom-in', 'preview-zoom-out', 'preview-reset', 'save-build-form', 'theme-filter', 'part-search', 'apply-theme']) assert.ok(source.includes(`id="${id}"`));
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.match(css, /focus-visible/);
+  assert.match(css, /@media\(max-width:370px\)/);
+  assert.match(art, /viewBox="0 0 1600 1000"/);
+  assert.doesNotMatch(art, /<script|<foreignObject|(?:href|src)="https?:/i);
+  assert.ok(Buffer.byteLength(art) < 35000);
+});

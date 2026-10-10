@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1600 1000" fill="none">
+<title>The little kart workshop</title>
+<desc>An original nostalgic toy workshop with turquoise plaster, amber window light, timber rafters, brass lamps, tools and well-loved shelves. The centre is left clear.</desc>
+<defs>
+  <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#638f8b"/><stop offset=".47" stop-color="#426c68"/><stop offset="1" stop-color="#2c4e4b"/></linearGradient>
+  <radialGradient id="ambient"><stop stop-color="#a4b49b" stop-opacity=".35"/><stop offset="1" stop-color="#8fbdac" stop-opacity="0"/></radialGradient>
+  <linearGradient id="timber" x2="0" y2="1"><stop stop-color="#a3784d"/><stop offset=".25" stop-color="#8b6140"/><stop offset="1" stop-color="#493a2c"/></linearGradient>
+  <linearGradient id="window" x2="0" y2="1"><stop stop-color="#fff1c0"/><stop offset=".55" stop-color="#e5bf78"/><stop offset="1" stop-color="#96a68a"/></linearGradient>
+  <linearGradient id="cabinet" x2="1" y2="1"><stop stop-color="#73918a"/><stop offset="1" stop-color="#375750"/></linearGradient>
+  <linearGradient id="brass" x2="0" y2="1"><stop stop-color="#e7c57b"/><stop offset=".45" stop-color="#ad7d41"/><stop offset="1" stop-color="#775333"/></linearGradient>
+  <linearGradient id="metal" x2="1" y2=".8"><stop stop-color="#b5b7a5"/><stop offset=".42" stop-color="#d6d2b6"/><stop offset="1" stop-color="#707c70"/></linearGradient>
+  <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#8e9780"/><stop offset="1" stop-color="#4f6156"/></linearGradient>
+  <linearGradient id="lightshaft" x2="0" y2="1"><stop stop-color="#ffe5a0" stop-opacity=".17"/><stop offset="1" stop-color="#ffe5a0" stop-opacity="0"/></linearGradient>
+  <linearGradient id="vignette" x2="0" y2="1"><stop stop-color="#182b26" stop-opacity=".13"/><stop offset=".55" stop-color="#182b26" stop-opacity="0"/><stop offset="1" stop-color="#182b26" stop-opacity=".3"/></linearGradient>
+  <pattern id="grain" width="80" height="70" patternUnits="userSpaceOnUse"><path d="M8 9h2m29 21h2m23 24h2M15 59h2m54-47h2M28 44h1" stroke="#f5ebc7" stroke-opacity=".13" stroke-width="1.5"/><path d="M21 17h2m33 26h2M8 34h2m37 24h2" stroke="#182f2b" stroke-opacity=".1"/></pattern>
+  <pattern id="holes" width="19" height="19" patternUnits="userSpaceOnUse"><circle cx="9.5" cy="9.5" r="1.8" fill="#514e37" opacity=".55"/><circle cx="9.5" cy="10.3" r="1.2" fill="#c0ac78" opacity=".22"/></pattern>
+  <pattern id="woodgrain" width="180" height="30" patternUnits="userSpaceOnUse"><path d="M0 8c35-6 56 5 90 0s57-2 90 0M0 22c45 4 60-6 90-2s54 6 90 1" stroke="#301f14" stroke-opacity=".13" stroke-width="2"/></pattern>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="7"/><feOffset dy="8"/><feColorMatrix type="matrix" values="0 0 0 0 0.09 0 0 0 0 0.17 0 0 0 0 0.15 0 0 0 .35 0"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="24"/></filter>
+  <g id="bolt"><circle r="5" fill="#423f30"/><circle cy="-1" r="3.5" fill="#a99a74"/><path d="m-2 1 4-3" stroke="#5e573e" stroke-width="1.4"/></g>
+  <g id="wheel"><circle r="51" fill="#23322d"/><circle r="43" stroke="#45534a" stroke-width="9"/><circle r="32" fill="#172721"/><circle r="26" fill="url(#metal)"/><circle r="20" fill="#536960"/><path d="M0-19v38M-19 0h38m-33-14 28 28m-28 0 28-28" stroke="#b3bba7" stroke-width="5"/><circle r="8" fill="#c6c6ac"/><circle r="3" fill="#5c6e62"/><path d="M-36-32-42-28m8 65-7-5M0-49v7m49 42h-7m-42 49v-7" stroke="#8a9280" stroke-opacity=".28" stroke-width="4"/></g>
+  <g id="wrench"><path d="M-10-39a17 17 0 0 0 4 29v59a6 6 0 0 0 12 0v-59a17 17 0 0 0 4-29v14L0-19l-10-6z" fill="url(#metal)" stroke="#626f60" stroke-width="2"/><circle cy="48" r="2.5" fill="#657460"/><path d="M-2-8v46" stroke="#e2dcc0" stroke-opacity=".5" stroke-width="2"/></g>
+  <g id="jar"><rect x="-20" y="-51" width="40" height="53" rx="8" fill="#b6b892" fill-opacity=".64" stroke="#dfd6ad" stroke-opacity=".5" stroke-width="2"/><rect x="-17" y="-35" width="34" height="33" rx="6" fill="#bf754a"/><path d="M-11-38v30" stroke="#fff3c9" stroke-opacity=".36" stroke-width="4" stroke-linecap="round"/><rect x="-22" y="-59" width="44" height="12" rx="3" fill="url(#brass)"/><rect x="-14" y="-27" width="28" height="15" rx="2" fill="#dace9c"/><path d="M-8-20H8" stroke="#af9c71" stroke-width="2"/></g>
+  <g id="tin"><path d="M-26-49h52V0h-52z" fill="#b46c51"/><ellipse cy="-49" rx="26" ry="5" fill="#d39d70"/><ellipse rx="26" ry="5" fill="#875640"/><path d="M-20-42v36" stroke="#d69368" stroke-width="4"/><path d="M-25-34h50v17h-50z" fill="#c6ba8d"/><path d="M-16-28h32m-26 6h20" stroke="#9c946e" stroke-width="2"/></g>
+  <g id="lamp"><path d="M0-128v110" stroke="#263e35" stroke-width="5"/><path d="M0-128v109" stroke="#9b9b77" stroke-width="1"/><rect x="-11" y="-29" width="22" height="23" rx="6" fill="#82724c"/><path d="M-63 22q9-11 22-17 5-30 29-33h24q24 3 29 33 13 6 22 17z" fill="url(#brass)" stroke="#594b32" stroke-width="3"/><path d="M-34-1q8-17 24-20" stroke="#f6d889" stroke-width="4" stroke-linecap="round" opacity=".5"/><ellipse cy="23" rx="65" ry="10" fill="#4f4630"/><ellipse cy="25" rx="55" ry="6" fill="#ffe5a0"/><ellipse cy="38" rx="65" ry="12" fill="#ffd979" opacity=".4" filter="url(#glow)"/></g>
+</defs>
+<!-- Structure and softly aged plaster -->
+<path fill="url(#wall)" d="M0 0h1600v1000H0z"/>
+<ellipse cx="810" cy="430" rx="670" ry="490" fill="url(#ambient)"/>
+<path d="M0 678h1600v112H0z" fill="#35584f"/><path d="M0 685h1600M0 779h1600" stroke="#9ba889" stroke-opacity=".23" stroke-width="4"/>
+<path d="M35 692v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87m96-87v87" stroke="#193c34" stroke-opacity=".28" stroke-width="3"/>
+<path d="M0 77h1600v31H0z" fill="#223f36" opacity=".35"/><path d="M0 26h1600v60H0z" fill="url(#timber)"/><path d="M0 26h1600v60H0z" fill="url(#woodgrain)"/><path d="M0 28h1600" stroke="#c99b61" stroke-opacity=".45" stroke-width="4"/>
+<path d="M67 0h38v790H67zM1498 0h38v790h-38z" fill="url(#timber)"/><path d="M72 0v786m1431-786v786" stroke="#bd9769" stroke-opacity=".45" stroke-width="4"/>
+<path d="m105 73 94 100-13 15-81-84m1393-31-94 100 13 15 81-84" fill="#775738" stroke="#543f2d" stroke-width="3"/>
+<use xlink:href="#bolt" x="85" y="55"/><use xlink:href="#bolt" x="1517" y="55"/><use xlink:href="#bolt" x="86" y="667"/><use xlink:href="#bolt" x="1516" y="667"/>
+<!-- Sun-warmed windows, kept high and to the sides -->
+<g filter="url(#shadow)">
+ <rect x="128" y="117" width="301" height="235" rx="5" fill="#314e43"/><rect x="139" y="126" width="278" height="214" fill="#b19361"/><rect x="150" y="137" width="256" height="190" fill="url(#window)"/>
+ <path d="M151 288q34-36 60-9 25-57 62-14 49-43 76-10 22-31 57-16v88H151z" fill="#7c9479" opacity=".35"/>
+ <path d="M151 183h255M151 251h255M235 137v190m88-190v190" stroke="#6c7556" stroke-width="10"/><path d="M149 139h257v188H149z" stroke="#e0c78d" stroke-width="4"/>
+ <path d="M127 341h304v15H127z" fill="#bd9860"/><path d="M127 356h304v8H127z" fill="#4f4e36"/>
+ <rect x="1179" y="117" width="293" height="235" rx="5" fill="#314e43"/><rect x="1190" y="126" width="270" height="214" fill="#b19361"/><rect x="1201" y="137" width="248" height="190" fill="url(#window)"/>
+ <path d="M1201 270q20-38 51-5 22-49 59-17 38-24 64 6 43-32 74 7v66h-248z" fill="#7c9479" opacity=".35"/>
+ <path d="M1201 183h248M1201 251h248m-167-114v190m83-190v190" stroke="#6c7556" stroke-width="10"/><path d="M1200 139h250v188h-250z" stroke="#e0c78d" stroke-width="4"/>
+ <path d="M1179 341h294v15h-294z" fill="#bd9860"/><path d="M1179 356h294v8h-294z" fill="#4f4e36"/>
+</g>
+<path d="m152 326 253 0 430 454H330zM1200 327h249l-100 453H891z" fill="url(#lightshaft)"/>
+<!-- The calm centre: a faint inset door and architectural seams -->
+<path d="M505 143h590v556H505z" fill="#315a54" opacity=".21"/><path d="M505 699V143h590v556" stroke="#284e45" stroke-width="8" opacity=".38"/><path d="M516 154h568v534H516z" stroke="#a0b29b" stroke-opacity=".1" stroke-width="3"/>
+<path d="M517 226h566M517 301h566M517 376h566M517 451h566M517 526h566M517 601h566" stroke="#a9bb9f" stroke-opacity=".075" stroke-width="2"/>
+<path d="M0 785h1600v215H0z" fill="url(#floor)"/>
+<!-- Perspective checkerboard with comfortably worn colours -->
+<g fill="#c0bfa1" opacity=".19">
+ <path d="m0 785 155 0-34 35H0zm310 0h155l-19 35H283zm310 0h155l-3 35H608zm310 0h155l12 35H934zm310 0h155l27 35h-162z"/>
+ <path d="m121 820 162 0-43 48H63zm325 0h162l-18 48H419zm326 0h162l10 48H768zm325 0h163l35 48h-176zm325 0h178v48h-127z"/>
+ <path d="M0 868h63L0 923zm240 0h179l-34 61H187zm350 0h178l-4 61H568zm354 0h175l28 61H956zm351 0h178l67 61h-201z"/>
+ <path d="m0 929 187 0-66 71H0zm385 0h183l-26 71H345zm379 0h192l14 71H758zm383 0h192l53 71h-212zm393 0h60v71h-7z"/>
+</g>
+<path d="M0 820h1600M0 868h1600M0 929h1600" stroke="#334c40" stroke-opacity=".17" stroke-width="2"/>
+<ellipse cx="802" cy="827" rx="488" ry="86" fill="#1b3d32" opacity=".08"/>
+<!-- Left tool station -->
+<g filter="url(#shadow)">
+ <rect x="128" y="403" width="292" height="220" rx="5" fill="#514f36"/><rect x="137" y="411" width="274" height="203" rx="2" fill="#97875b"/><rect x="137" y="411" width="274" height="203" fill="url(#holes)"/>
+ <path d="M143 416h262" stroke="#c0ac78" stroke-width="2"/>
+ <g transform="translate(175 478) rotate(9)"><use xlink:href="#wrench"/></g><g transform="translate(220 485) scale(.75) rotate(-7)"><use xlink:href="#wrench"/></g>
+ <path d="M265 454v53" stroke="#bfc4ac" stroke-width="7"/><rect x="255" y="499" width="20" height="55" rx="7" fill="#a9533c"/><path d="M260 508v32" stroke="#d49362" stroke-width="3"/>
+ <path d="M308 446v57" stroke="#a6b5a0" stroke-width="6"/><rect x="299" y="496" width="18" height="44" rx="6" fill="#d3ae58"/><path d="M304 504v26" stroke="#e6cb87" stroke-width="3"/>
+ <path d="m346 474 13 55" stroke="#9b6842" stroke-width="12" stroke-linecap="round"/><path d="m326 453 43-10 5 18-44 10z" fill="url(#metal)"/><path d="m367 445 15 9-12 8" stroke="#acb6a0" stroke-width="6"/>
+ <path d="M160 576h77m15 0h77m14 0h50" stroke="#d0c29b" stroke-width="5" stroke-linecap="round"/><path d="m172 567-7 9 7 8m17-18-6 10 6 8m68-10h11m18 0h16m61 0h15" stroke="#78816a" stroke-width="4"/>
+ <use xlink:href="#bolt" x="146" y="420"/><use xlink:href="#bolt" x="402" y="420"/>
+</g>
+<!-- Cabinet and butcher-block work surface -->
+<g filter="url(#shadow)">
+ <path d="M111 656h329v143H111z" fill="#314b40"/><rect x="118" y="653" width="313" height="136" rx="4" fill="url(#cabinet)"/>
+ <path d="M128 666h141v108H128zM281 666h138v108H281z" stroke="#2f5147" stroke-width="4"/><path d="M134 671h129m24 0h126" stroke="#b1b49b" stroke-opacity=".4" stroke-width="2"/>
+ <path d="M245 690v29m59-29v29" stroke="#263d33" stroke-width="9" stroke-linecap="round"/><path d="M245 688v25m59-25v25" stroke="#b49c68" stroke-width="5" stroke-linecap="round"/>
+ <rect x="102" y="634" width="345" height="25" rx="4" fill="url(#timber)"/><path d="M108 637h333" stroke="#deb581" stroke-opacity=".65" stroke-width="4"/><rect x="103" y="640" width="343" height="16" fill="url(#woodgrain)"/>
+ <path d="M124 788v22m296-22v22" stroke="#3a3a2a" stroke-width="14"/>
+ <path d="M141 624h65v10h-65z" fill="#405950"/><path d="M147 607h49v20h-49z" fill="#6c8e7b"/><path d="M153 592h14v31h-14zM184 592h15v31h-15z" fill="url(#metal)"/><path d="M144 603h62" stroke="#c9c4a6" stroke-width="7"/><path d="M174 622v20m-14-4h29" stroke="#6e7864" stroke-width="5"/>
+ <path d="M353 605h51v30h-51z" fill="#ba764e"/><path d="M350 601h57v8h-57z" fill="#d1a470"/><path d="M378 609v24" stroke="#ebc18a" stroke-width="7"/>
+</g>
+<!-- Right shelving: hardware, jars and racing souvenirs without lettering -->
+<g filter="url(#shadow)">
+ <path d="M1200 396h20v398h-20zm236 0h20v398h-20z" fill="#66513a"/><path d="M1204 400h4v390m232-390h4v390" stroke="#b68c56" stroke-opacity=".5" stroke-width="3"/>
+ <path d="M1182 469h291v17h-291zm0 133h291v17h-291zm0 135h291v20h-291z" fill="url(#timber)"/><path d="M1185 470h286m-286 133h286m-286 136h286" stroke="#c99f69" stroke-width="4"/>
+ <use xlink:href="#jar" x="1243" y="466"/><use xlink:href="#jar" x="1302" y="466" transform="rotate(-3 1302 466)"/>
+ <path d="M1342 416h93v50h-93z" fill="#b67b51"/><path d="M1340 408h97v15h-97z" fill="#ca9262"/><path d="M1380 409h15v57h-15z" fill="#dbc69a"/><path d="M1350 433h20" stroke="#8c5c40" stroke-width="3"/>
+ <use xlink:href="#tin" x="1225" y="594"/>
+ <g transform="translate(1301 593)"><path d="M-25-43h50V0h-50z" fill="#819899"/><ellipse cy="-43" rx="25" ry="5" fill="#b9beb0"/><path d="M-23-31h46v15h-46z" fill="#cebf8e"/><path d="M-17-24h34" stroke="#a2956f" stroke-width="2"/></g>
+ <path d="M1348 559h88v41h-88z" fill="#779173"/><path d="M1344 552h96v11h-96z" fill="#aab092"/><path d="M1380 553h17v47h-17z" fill="#c8b78b"/>
+ <path d="M1340 511h103v38h-103z" fill="#baaa77"/><path d="M1336 505h111v11h-111z" fill="#d1c18c"/><path d="M1383 506h15v42h-15z" fill="#947c55"/>
+ <g transform="translate(1249 684) scale(.94)"><use xlink:href="#wheel"/></g><g transform="translate(1373 684) scale(.94)"><use xlink:href="#wheel"/></g>
+ <path d="M1211 766h213v43h-213z" fill="#887047"/><path d="M1224 775h188m-188 16h188" stroke="#b19460" stroke-width="9"/><path d="M1216 768v39m202-39v39" stroke="#675536" stroke-width="9"/>
+</g>
+<!-- Soft little workshop accents at the extreme margins -->
+<path d="M34 294v204q0 21 21 21h13" stroke="#294a3f" stroke-width="7"/><path d="M33 293v199q0 19 18 19h17" stroke="#a2a88b" stroke-opacity=".28" stroke-width="2"/>
+<rect x="20" y="275" width="29" height="51" rx="5" fill="#6a7d65" stroke="#304d3f" stroke-width="3"/><circle cx="34" cy="290" r="5" fill="#b89b61"/>
+<path d="M1548 427h31v167h-31z" fill="#365148"/><path d="M1562 424v167" stroke="#b19767" stroke-width="7"/><path d="M1541 590h43l13 46h-67z" fill="#baaa79"/><path d="m1546 597-8 35m17-35-4 35m12-35v35m8-35 6 35" stroke="#796d45" stroke-width="2"/>
+<g transform="translate(62 783) rotate(-12)"><use xlink:href="#wheel"/></g>
+<!-- Low foreground bench lip gives the room a tactile frame -->
+<path d="M0 955q230-12 415 5l-12 40H0zM1253 965q160-22 347-9v44h-336z" fill="#59452f"/>
+<path d="M0 953q234-10 415 6l-7 16q-180-15-408-5zM1253 964q167-21 347-9v17q-178-12-340 8z" fill="#ac8555"/>
+<path d="M0 954q234-10 414 6m840 6q166-22 346-9" stroke="#d2ac71" stroke-width="4" opacity=".7"/>
+<path d="M0 976q200-8 402 7m872 0q160-18 326-4" stroke="#3f3124" stroke-width="3" opacity=".45"/>
+<!-- Hanging pools of honey-coloured light -->
+<path d="m520 159-197 586h395zM1104 159 919 745h387z" fill="url(#lightshaft)" opacity=".5"/>
+<g transform="translate(518 151)"><use xlink:href="#lamp"/></g><g transform="translate(1103 151)"><use xlink:href="#lamp"/></g>
+<path d="M0 0h1600v1000H0z" fill="url(#grain)" opacity=".7"/>
+<path d="M0 0h1600v1000H0z" fill="url(#vignette)"/>
+</svg>
