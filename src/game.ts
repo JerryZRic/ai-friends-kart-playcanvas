@@ -384,7 +384,16 @@ controls=bindRaceControls(canvas,{
   onClear:()=>{charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,
 });
 keys=controls.keys;mouseLook=controls.mouseLook;
-function updateHUD(){const feedback=coastHudFeedback(playerCombatant(),bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions);shell.updateHUD({...feedback,rank:finishRank||rank(),lap:routes?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos,LENGTH),elapsed,speed,charge,boost,shield,held,slideLabel:routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?'← A / 左键：灯巷捷径 · D / 右键 →：电车大道（默认）':'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});}
+function updateHUD(){
+  const feedback=coastHudFeedback(playerCombatant(),bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions);
+  const forkHint=routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?'← A / 左键：灯巷捷径 · D / 右键 →：电车大道（默认）':null;
+  shell.updateHUD({...feedback,
+    // chargeLabel takes precedence over slideLabel in the shared HUD. Feed the
+    // actual visible field so every fork presents its own route names.
+    chargeLabel:forkHint??feedback.chargeLabel,
+    rank:finishRank||rank(),lap:routes?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos,LENGTH),
+    elapsed,speed,charge,boost,shield,held,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
+}
 function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI();tone(1000,.4)}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;

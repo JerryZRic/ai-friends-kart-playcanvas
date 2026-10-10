@@ -159,8 +159,9 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       // The same pointer-bound controls used on touch feed the real fork decision.
       const routes=qa.routes,id=game.getState().selectedDriverId;
       routes.states.set(id,createRouteProgress({...createCursor(2),s:course.commonStart.length-.2}));qa.set({pos:routes.total(id),lane:2,speed:30});
+      qa.update(1/600);assert.match(element('chargeLabel').textContent,/灯巷捷径.*电车大道/,'physical fork guidance must use the visible charge field');
       element('touch-ArrowLeft').emit('pointerdown',{pointerId:7,preventDefault(){}});qa.update(1/60);element('touch-ArrowLeft').emit('pointerup',{pointerId:7});
-      assert.equal(game.getState().route.edgeId,'alley');
+      assert.equal(game.getState().route.edgeId,'alley');assert.doesNotMatch(element('chargeLabel').textContent||'',/灯巷捷径/,'ordinary driving feedback returns after the split');
       const heldCursor=JSON.stringify(game.getState().route);game.pause();qa.update(.1);assert.equal(JSON.stringify(game.getState().route),heldCursor);game.pause();
       game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
       const branches=new Set<string>();let minY=Infinity,maxY=-Infinity;
