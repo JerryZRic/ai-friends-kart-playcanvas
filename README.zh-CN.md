@@ -135,4 +135,4 @@ npm run build
 
 ## 六槽食物车库（仅 dev 测试）
 
-[打开独立测试车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：54 个食物主题、324 件原创零件，六槽自由混搭、真实 3D 预览、参数比较与方案保存。所选装配进入海岸比赛，保留六角色属性；同主题不额外加成，水上坐骑不变。本轮先实现组装和新车性能，电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)
+[打开独立测试车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：55 个食物主题、330 件零件（新增 000 纯白饭），“选整车 / 自由改装”双入口、六槽自由混搭、真实 3D 预览、参数比较与方案保存。浏览整车只预览；应用才替换六件，支持替换前收藏与撤销。所选装配进入海岸比赛，保留六角色属性；同主题不额外加成，水上坐骑不变。本轮先实现组装和新车性能，电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)

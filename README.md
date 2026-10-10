@@ -18,7 +18,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 ## Modular food garage (dev only)
 
-The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 54 food themes / 324 original parts, real 3D previews, comparisons and saved builds. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).
+The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 55 food themes / 330 parts (including approved 000 pure white rice), separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing is preview-only; apply replaces all six parts with optional save-before-replace and undo. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).
 
 ## Features
 

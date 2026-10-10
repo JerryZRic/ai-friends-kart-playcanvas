@@ -43,9 +43,9 @@ test('corrupt or blocked storage is recoverable; named builds never bind a drive
   assert.deepEqual(loadGarageState({getItem(){return saved;}}), state);
   assert.deepEqual(JSON.parse(parse(garageRaceEntry('gemini', mixed, '?flow=free')).searchParams.get('kart')!), mixed);
 });
-test('five editable tradeoff presets and all 324 parts remain freely available', () => {
+test('five editable tradeoff presets and all 330 parts remain freely available', () => {
   assert.deepEqual(kartPresets.map(p=>p.id), ['balanced','corner','straight','start-hill','impact']);
-  assert.equal(KART_SLOTS.reduce((n, slot)=>n+filterGarageParts(slot, '', '').length, 0),324);
+  assert.equal(KART_SLOTS.reduce((n, slot)=>n+filterGarageParts(slot, '', '').length, 0),330);
   const source = readFileSync('src/kart-garage.ts','utf8');
   assert.match(source,/data-starter/); assert.match(source,/applyBuild\(\{\.\.\.state.activeBuild/);
   assert.match(source,/电池容量（消耗未启用）/); assert.match(source,/耐久损耗/); assert.match(source,/无当前优势/);

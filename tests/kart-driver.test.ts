@@ -57,10 +57,10 @@ function handSurfaceDistances(model: pc.Entity) {
   return distances;
 }
 
-test('all 54 original food chassis fit all six unchanged drivers through five steering poses', async () => {
+test('all 55 food chassis fit all six unchanged drivers through five steering poses', async () => {
   const app = headlessApp();
   const chassisRecords = manifest.parts.filter((part: any) => part.slot === 'chassis');
-  assert.equal(chassisRecords.length, 54); assert.ok(chassisRecords.every((part: any) => part.available));
+  assert.equal(chassisRecords.length, 55); assert.ok(chassisRecords.every((part: any) => part.available));
   const drivers = new Map<string, DriverAsset>(); let poses = 0, maxGripError = 0, minSeat = Infinity, maxSeat = 0, maxRuntimeMeshBytes = 0, maxRuntimeMeshes = 0;
   try {
     for (const record of RUNTIME_MODELS) drivers.set(record.id, await parseLocalGLB(app, arrayBuffer(gunzipSync(readFileSync(`public/${record.path}`)))));
@@ -71,6 +71,19 @@ test('all 54 original food chassis fit all six unchanged drivers through five st
         for (const [id, driver] of drivers) {
           const fixture = assemblyFor(app, asset), racer = createModularRacer(app, driver, fixture.assembly, {id});
           const fit = racer.getState().fit, grips = ['L', 'R'].map(side => racer.model.findByName(`Grip.${side}`)!);
+          if (record.kitNumber === '000') {
+            const driverMeshes = new Set(meshes(racer.model));
+            const colored = meshes(racer.root).filter(mi => !driverMeshes.has(mi) && (mi.material as pc.StandardMaterial).diffuseVertexColor);
+            assert.ok(colored.length >= 4, 'rice static, steering and column materials use vertex color');
+            for (const mi of colored) {
+              const values: number[] = []; mi.mesh.getColors(values);
+              const format = mi.mesh.vertexBuffer.format.elements.find(element => element.name === pc.SEMANTIC_COLOR);
+              assert.ok(format, `split rice mesh retains COLOR: ${mi.node.name}`);
+              assert.equal(values.length, mi.mesh.vertexBuffer.numVertices * format.numComponents);
+              assert.ok(values.every(Number.isFinite)); assert.ok(new Set(values).size > 2, 'authored rice colors remain present');
+            }
+          }
+
           const center = new pc.Vec3(...fit.wheelCenter), neutral = grips.map(grip => grip.getPosition().clone().sub(center));
           const upperLengths = ['L', 'R'].map(side => racer.model.findByName(`UpperArm.${side}`)!.getPosition().distance(racer.model.findByName(`Forearm.${side}`)!.getPosition()));
           const lowerLengths = ['L', 'R'].map(side => racer.model.findByName(`Forearm.${side}`)!.getPosition().distance(racer.model.findByName(`Hand.${side}`)!.getPosition()));
@@ -94,7 +107,7 @@ test('all 54 original food chassis fit all six unchanged drivers through five st
             assert.ok(physicalAxis.distance(WHEEL_AXIS) < 1e-6); poses++;
           }
           for (const mesh of meshes(racer.model)) if (mesh.skinInstance) {const skin = mesh.skinInstance; skin.updateMatrixPalette(mesh.node, poses + 1); assert.ok([...skin.matrixPalette].every(Number.isFinite), 'retargeted skin palette remains finite');}
-          if (record.kitNumber === '054') {const contact = handSurfaceDistances(racer.model); assert.ok(contact.every(distance => distance < .035), `${id} actual deformed hand surfaces reach the physical food grips: ${contact}`); console.log(JSON.stringify({id, handSurfaceDistanceMillimeters: contact.map(value => value * 1000)}));}
+          if (record.kitNumber === '054' || record.kitNumber === '000') {const contact = handSurfaceDistances(racer.model); assert.ok(contact.every(distance => distance < .035), `${id} actual deformed hand surfaces reach the physical food grips: ${contact}`); console.log(JSON.stringify({id, handSurfaceDistanceMillimeters: contact.map(value => value * 1000)}));}
           racer.root.setPosition(3, 1.5, -7); racer.root.setEulerAngles(0, 47, 0); racer.update(10, -.5);
           assert.ok(racer.getState().fit.maxGripError < .002, 'world-transformed race actor remains fitted');
           racer.root.setLocalScale(.8, .8, .8); racer.update(10, .5); assert.ok(racer.getState().fit.maxGripError < .002, 'uniformly scaled race actor remains fitted');
@@ -105,8 +118,8 @@ test('all 54 original food chassis fit all six unchanged drivers through five st
         for (const source of sourceMeshes) assert.equal(meshBytes(source.mesh), source.hash, 'all borrowed source vertex/index/normal/UV data stay unchanged');
       } finally {disposeDriverAsset(asset);}
     }
-    assert.equal(poses, 54 * 6 * 5);
-    console.log(JSON.stringify({chassis: 54, drivers: 6, measuredSteeringPoses: poses, maxGripErrorMillimeters: maxGripError * 1000, seatSurfaceRangeMeters: [minSeat, maxSeat], maxRuntimeMeshBytes, maxRuntimeMeshes, evidence: 'PlayCanvas NullGraphicsDevice CPU pipeline'}));
+    assert.equal(poses, 55 * 6 * 5);
+    console.log(JSON.stringify({chassis: 55, drivers: 6, measuredSteeringPoses: poses, maxGripErrorMillimeters: maxGripError * 1000, seatSurfaceRangeMeters: [minSeat, maxSeat], maxRuntimeMeshBytes, maxRuntimeMeshes, evidence: 'PlayCanvas NullGraphicsDevice CPU pipeline'}));
   } finally {for (const driver of drivers.values()) disposeDriverAsset(driver); app.destroy();}
 });
 

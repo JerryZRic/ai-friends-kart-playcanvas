@@ -110,7 +110,7 @@ test('caller-provided label is escaped in text and attributes without injecting 
   assert.doesNotMatch(html, /<img|onerror="bad"/);
 });
 
-test('all characters, authored presets and 54 real full kits keep finite meaningful scores', () => {
+test('all characters, authored presets and 55 real full kits keep finite meaningful scores', () => {
   const kits = [...new Set(catalog.map(part => part.kitNumber))].map(number => Object.fromEntries(KART_SLOTS.map(slot => [slot, catalog.find(part => part.kitNumber === number && part.slot === slot)!.id])) as KartBuild);
   for (const driver of CHARACTER_PROFILES) for (const build of [defaultBuild, ...kartPresets.map(preset => preset.build), ...kits]) {
     const stats = combined(driver.id, build), html = render(stats, standard, false, driver.label);

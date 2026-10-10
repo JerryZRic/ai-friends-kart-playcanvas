@@ -10,13 +10,14 @@ const HIP_CLEARANCE = .14;
 const renders = (entity: pc.Entity) => entity.findComponents('render') as pc.RenderComponent[];
 const meshes = (entity: pc.Entity) => renders(entity).flatMap(render => render.meshInstances);
 interface Piece { mesh: pc.MeshInstance; indices: number[]; min: pc.Vec3; max: pc.Vec3; world: number[]; }
-interface MeshData { mesh: pc.MeshInstance; positions: number[]; normals: number[]; uvs: number[]; indices: number[]; pieces: Piece[]; }
+interface MeshData { mesh: pc.MeshInstance; positions: number[]; normals: number[]; uvs: number[]; colors: number[]; colorFormat?: {numComponents: number; dataType: number; normalize: boolean}; indices: number[]; pieces: Piece[]; }
 
 /** Original GLBs intentionally batch by material. Recover disconnected authored
  * solids by welded positions, without changing the shared asset's buffers. */
 function connectedPieces(mesh: pc.MeshInstance): MeshData {
-  const positions: number[] = [], normals: number[] = [], uvs: number[] = [], indices: number[] = [];
-  mesh.mesh.getPositions(positions); mesh.mesh.getNormals(normals); mesh.mesh.getUvs(0, uvs); mesh.mesh.getIndices(indices);
+  const positions: number[] = [], normals: number[] = [], uvs: number[] = [], colors: number[] = [], indices: number[] = [];
+  mesh.mesh.getPositions(positions); mesh.mesh.getNormals(normals); mesh.mesh.getUvs(0, uvs); mesh.mesh.getColors(colors); mesh.mesh.getIndices(indices);
+  const colorFormat = mesh.mesh.vertexBuffer?.format.elements.find(element => element.name === pc.SEMANTIC_COLOR);
   const count = positions.length / 3, parents = Array.from({length: count}, (_, i) => i), weld = new Map<string, number>();
   const find = (a: number): number => { while (parents[a] !== a) { parents[a] = parents[parents[a]]; a = parents[a]; } return a; };
   const join = (a: number, b: number) => { a = find(a); b = find(b); if (a !== b) parents[b] = a; };
@@ -35,7 +36,7 @@ function connectedPieces(mesh: pc.MeshInstance): MeshData {
     for (const i of indices) {point.set(world[i * 3], world[i * 3 + 1], world[i * 3 + 2]); min.min(point); max.max(point);}
     return {mesh, indices, min, max, world};
   });
-  return {mesh, positions, normals, uvs, indices, pieces};
+  return {mesh, positions, normals, uvs, colors, colorFormat, indices, pieces};
 }
 const isWheel = ({min, max}: Piece) => min.x > -.265 && max.x < .265 && min.y > .84 && max.y < 1.40 && min.z > .405 && max.z < .59;
 const isColumn = ({min, max}: Piece) => min.x > -.07 && max.x < .07 && min.y < .61 && max.y > 1.07 && min.z > .40 && max.z < .68;
@@ -102,7 +103,7 @@ function between(from: pc.Vec3, to: pc.Vec3) {
   const cross = new pc.Vec3().cross(a, b); return new pc.Quat(cross.x, cross.y, cross.z, 1 + dot).normalize();
 }
 function copyMesh(app: pc.AppBase, source: MeshData, selected: number[], transform?: (position: pc.Vec3, normal: pc.Vec3) => void) {
-  const mesh = new pc.Mesh(app.graphicsDevice), remap = new Map<number, number>(), positions: number[] = [], normals: number[] = [], uvs: number[] = [], indices: number[] = [];
+  const mesh = new pc.Mesh(app.graphicsDevice), remap = new Map<number, number>(), positions: number[] = [], normals: number[] = [], uvs: number[] = [], colors: number[] = [], indices: number[] = [];
   const p = new pc.Vec3(), n = new pc.Vec3();
   for (const original of selected) {
     let index = remap.get(original);
@@ -112,10 +113,13 @@ function copyMesh(app: pc.AppBase, source: MeshData, selected: number[], transfo
       n.set(source.normals[original * 3] || 0, source.normals[original * 3 + 1] || 0, source.normals[original * 3 + 2] || 0);
       transform?.(p, n); positions.push(p.x, p.y, p.z); normals.push(n.x, n.y, n.z);
       if (source.uvs.length) uvs.push(source.uvs[original * 2], source.uvs[original * 2 + 1]);
+      if (source.colorFormat) for (let c = 0; c < source.colorFormat.numComponents; c++) colors.push(source.colors[original * source.colorFormat.numComponents + c]);
     }
     indices.push(index);
   }
-  mesh.setPositions(positions); mesh.setNormals(normals); if (uvs.length) mesh.setUvs(0, uvs); mesh.setIndices(indices); mesh.update(pc.PRIMITIVE_TRIANGLES); return mesh;
+  mesh.setPositions(positions); mesh.setNormals(normals); if (uvs.length) mesh.setUvs(0, uvs);
+  if (colors.length && source.colorFormat) mesh.setVertexStream(pc.SEMANTIC_COLOR, colors, source.colorFormat.numComponents, undefined, source.colorFormat.dataType, source.colorFormat.normalize);
+  mesh.setIndices(indices); mesh.update(pc.PRIMITIVE_TRIANGLES); return mesh;
 }
 
 interface Arm { upper: pc.GraphNode; forearm: pc.GraphNode; hand: pc.GraphNode; grip: pc.GraphNode; }

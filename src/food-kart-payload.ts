@@ -59,7 +59,7 @@ async function hash(bytes: Uint8Array) {
 }
 function validSize(value: unknown, max = MAX_GLB): value is number { return Number.isSafeInteger(value) && Number(value) > 0 && Number(value) <= max; }
 function validateManifest(value: FoodKartManifest) {
-  if (value?.schemaVersion !== 1 || value.encoding !== 'food-kart-glb-image-chunks-v1' || value.units !== 'meter' || value.kits?.length !== 54 || value.parts?.length !== 324) throw new Error('Invalid food kart manifest');
+  if (value?.schemaVersion !== 1 || value.encoding !== 'food-kart-glb-image-chunks-v1' || value.units !== 'meter' || value.kits?.length !== 55 || value.parts?.length !== 330) throw new Error('Invalid food kart manifest');
   const ids = new Set<string>();
   for (const part of value.parts) {
     if (!/^\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(part.kitId) || part.kitNumber !== part.kitId.slice(0, 3) || !Object.hasOwn(slots, part.moduleId) || part.slot !== slots[part.moduleId]) throw new Error('Invalid food kart identity');

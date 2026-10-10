@@ -74,6 +74,129 @@
   },
   "parts": [
     {
+      "id": "kit000::01_BodyShell",
+      "partId": "kit000::01_BodyShell",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 车身",
+      "slot": "body",
+      "moduleId": "01_BodyShell",
+      "assetFilename": "01_BodyShell.glb",
+      "archetypeId": 3,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 25.0,
+        "drag_area_m2": 0.67,
+        "rigidity_factor": 1,
+        "durability_hp": 100.0
+      }
+    },
+    {
+      "id": "kit000::02_ChassisSuspension",
+      "partId": "kit000::02_ChassisSuspension",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 底盘",
+      "slot": "chassis",
+      "moduleId": "02_ChassisSuspension",
+      "assetFilename": "02_ChassisSuspension.glb",
+      "archetypeId": 5,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 35.0,
+        "corner_stability_factor": 1.03,
+        "cg_height_m": 0.5,
+        "recovery_seconds": 1.4,
+        "durability_hp": 104.0
+      }
+    },
+    {
+      "id": "kit000::04_Motor",
+      "partId": "kit000::04_Motor",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 电机",
+      "slot": "motor",
+      "moduleId": "04_Motor",
+      "assetFilename": "04_Motor.glb",
+      "archetypeId": 5,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 21.0,
+        "torque_nm": 115,
+        "max_rpm": 4400,
+        "power_kw": 26,
+        "efficiency": 0.91,
+        "durability_hp": 100.0
+      }
+    },
+    {
+      "id": "kit000::05_FinalDrive",
+      "partId": "kit000::05_FinalDrive",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 终传",
+      "slot": "transmission",
+      "moduleId": "05_FinalDrive",
+      "assetFilename": "05_FinalDrive.glb",
+      "archetypeId": 2,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 10.0,
+        "final_drive_ratio": 6.2,
+        "efficiency": 0.95,
+        "durability_hp": 100.0
+      }
+    },
+    {
+      "id": "kit000::06_Battery",
+      "partId": "kit000::06_Battery",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 电池",
+      "slot": "battery",
+      "moduleId": "06_Battery",
+      "assetFilename": "06_Battery.glb",
+      "archetypeId": 4,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 25.0,
+        "capacity_kwh": 1.15,
+        "output_kw": 27,
+        "durability_hp": 100.0
+      }
+    },
+    {
+      "id": "kit000::03_WheelsTires",
+      "partId": "kit000::03_WheelsTires",
+      "kitId": "000-white-rice",
+      "themeId": "000-white-rice",
+      "kitNumber": 0,
+      "themeName": "白饭",
+      "name": "白饭 · 轮胎",
+      "slot": "wheels",
+      "moduleId": "03_WheelsTires",
+      "assetFilename": "03_WheelsTires.glb",
+      "archetypeId": 5,
+      "archetypeLabel": "均衡",
+      "physicalDesign": {
+        "mass_kg": 22.0,
+        "grip_coefficient": 1.07,
+        "rolling_resistance": 0.019,
+        "durability_hp": 104.0
+      }
+    },
+    {
       "id": "kit001::01_BodyShell",
       "partId": "kit001::01_BodyShell",
       "kitId": "001-lemon-pastry",
@@ -6794,6 +6917,15 @@
         "battery": "kit027::06_Battery",
         "wheels": "kit042::03_WheelsTires"
       }
+    }
+  ],
+  "experimentalKits": [
+    {
+      "id": "000-white-rice",
+      "futureHidden": true,
+      "currentFreeTestVisible": true,
+      "sortOrder": 0,
+      "statPolicy": "Neutral reference design estimates; no exclusive or same-theme bonus"
     }
   ]
 }

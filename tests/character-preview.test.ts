@@ -56,12 +56,23 @@ test('all six original standing portraits preserve authored geometry, transforms
     for (const record of PORTRAIT_MODELS) {
       const asset = await parseLocalGLB(app, bytes(`public/${record.path}`, true));
       const authored = asset.resource.instantiateRenderEntity();
-      const transform = [...authored.getLocalTransform().data]; authored.destroy();
+      const transform = [...authored.getLocalTransform().data];
+      const authoredMeshes = (authored.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances);
+      const materials = authoredMeshes.map(mesh => mesh.material as pc.StandardMaterial);
+      const materialState = () => materials.map(material => ({
+        diffuse: material.diffuse.toArray(), emissive: material.emissive.toArray(),
+        emissiveIntensity: material.emissiveIntensity, opacity: material.opacity,
+        blendType: material.blendType, useLighting: material.useLighting,
+        diffuseMap: material.diffuseMap, emissiveMap: material.emissiveMap,
+      }));
+      const originalMaterials = materialState(); authored.destroy();
       const a = createCharacterPreviewModel(app, asset), b = createCharacterPreviewModel(app, asset);
       assert.deepEqual([...a.model.getLocalTransform().data], transform, `${record.id}: authored root preserved`);
       const meshes = (a.model.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances);
       const other = (b.model.findComponents('render') as pc.RenderComponent[]).flatMap(component => component.meshInstances);
       assert.ok(meshes.length > 0); assert.equal(meshes.length, other.length);
+      assert.deepEqual(meshes.map(mesh => mesh.material), materials, 'portrait borrows unchanged authored materials');
+      assert.deepEqual(materialState(), originalMaterials, 'preview adds no tint, emissive boost, gamma override or alpha change');
       assert.notEqual(meshes[0], other[0], 'each portrait owns independent mesh instances');
       assert.equal(meshes.every(mesh => !mesh.skinInstance), true, 'standing originals have no driving rig');
       assert.equal(a.model.anim, undefined); assert.equal(a.animated, false);

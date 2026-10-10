@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { loadFoodKartPayload, clearFoodKartPayloadCache, foodKartPayloadCacheStats, loadFoodKartManifest } from '../src/food-kart-payload.ts';
 import { verifyFoodKartAssets, reconstructFoodKartPart } from '../scripts/verify-food-kart-assets.mjs';
 const manifest = JSON.parse(readFileSync('public/models/food-karts/manifest.json', 'utf8'));
-const first = manifest.parts.find((p: any) => p.available), firstKit = manifest.kits.find((k: any) => k.id === first.kitId);
+const first = manifest.parts.find((p: any) => p.available && p.images.length > 0), firstKit = manifest.kits.find((k: any) => k.id === first.kitId);
 const hash = (bytes: ArrayBuffer | Uint8Array) => createHash('sha256').update(bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes).digest('hex');
 type RequestHandler = (path: string, data: Buffer, options: RequestInit, count: number) => Response | Promise<Response>;
 function mockFetch(handler?: RequestHandler) {
@@ -30,9 +30,9 @@ function modifiedBundle(change: (data: Buffer, changed: any) => void) {
   const kit = changed.kits.find((k: any) => k.id === first.kitId); kit.bundleSha256 = hash(bytes);
   return mockFetch((path, data) => response(path.endsWith('manifest.json') ? Buffer.from(JSON.stringify(changed)) : path === kit.bundlePath ? bytes : data));
 }
-test('all324 theme-bundled payloads reconstruct canonical GLBs and unchanged roots/anchors', () => {
+test('all330 theme-bundled payloads reconstruct canonical GLBs and unchanged roots/anchors', () => {
   const result = verifyFoodKartAssets();
-  assert.equal(result.verifiedParts, 324); assert.equal(result.expectedParts, 324); assert.equal(result.allComplete, true);
+  assert.equal(result.verifiedParts, 330); assert.equal(result.expectedParts, 330); assert.equal(result.allComplete, true);
   assert.ok(result.deliveryBytes < result.originalBytes / 2);
   assert.equal(result.deliveryBytes, manifest.kits.reduce((n: number, kit: any) => n + kit.bundleBytes, 0));
 });
@@ -73,7 +73,7 @@ test('manifest forbids external logical paths, bundle URLs and cross-kit identit
     finally { mock.restore(); }
   }
 });
-test('all324 restored modules pass the strict validator used before PlayCanvas import', async () => {
+test('all330 restored modules pass the strict validator used before PlayCanvas import', async () => {
   const { validateGLB } = await import('../src/asset-validation.ts');
   for (const part of manifest.parts) {
     const data = reconstructFoodKartPart(manifest, part);
@@ -81,7 +81,7 @@ test('all324 restored modules pass the strict validator used before PlayCanvas i
     const buffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer;
     assert.doesNotThrow(() => validateGLB(buffer), part.id);
   }
-  assert.equal(manifest.parts.length, 324);
+  assert.equal(manifest.parts.length, 330);
 });
 test('browser-decoded transport encoding preserves exact ZIP bytes and unknown manifest total', async () => {
   const mock = mockFetch((_path, data) => new Response(new Uint8Array(data), { headers: { 'content-encoding': 'gzip' } }));

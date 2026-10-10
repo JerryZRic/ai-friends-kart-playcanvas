@@ -1,0 +1,76 @@
+{
+  "kit": "000-white-rice",
+  "selectedVariant": "C_PlainRice",
+  "sourceBlendSha256": "e59b6681eb158af9f3ca89a9c53fb78f9be68449c0fafc8323dec8cfa7794af9",
+  "runtimeDerivation": "approved-pure-rice-optimized-v1",
+  "original54BundleHashesUnchanged": true,
+  "parts": [
+    {
+      "module": "01_BodyShell",
+      "sourceGlbSha256": "1c73bde569e377cf7994dc4745521795bfd17e5dc09785e35c3436c243cb8fa8",
+      "runtimeGlbSha256": "2bf2dfe605233e4482979ea6b61321cca1958068892cb335f4a19d06279ef6e5",
+      "sourceBytes": 1780496,
+      "runtimeBytes": 751836,
+      "runtimeTriangles": 30068,
+      "runtimePrimitives": 2,
+      "thumbnailSha256": "23966634ea38a7caabd3d6428342445d29d0e987c1cc48d08b732384d3851f6d"
+    },
+    {
+      "module": "02_ChassisSuspension",
+      "sourceGlbSha256": "3e8bdd6652dcec9606ad8d8d00ec543e3f74bdaa364ff527ce6e92c38bbb5e8a",
+      "runtimeGlbSha256": "222597b28b764748c64725edd7654404e165c8cab072ab4a1ece56fc36bb3a44",
+      "sourceBytes": 1048416,
+      "runtimeBytes": 363980,
+      "runtimeTriangles": 14498,
+      "runtimePrimitives": 2,
+      "thumbnailSha256": "ebd4a8b696680edea041d0e9341c3ac3bd199630a1d70200c4ea08e00b6a08fd"
+    },
+    {
+      "module": "03_WheelsTires",
+      "sourceGlbSha256": "a0e3ec1baf13e67ce786a24bb3abe12536f31f77626cb6989f13f73e4272eb1f",
+      "runtimeGlbSha256": "fd03c418372e15cad365a692876af3a3768d4911fdae7a687d4a4f19fd59bfe3",
+      "sourceBytes": 1305768,
+      "runtimeBytes": 519836,
+      "runtimeTriangles": 20664,
+      "runtimePrimitives": 8,
+      "thumbnailSha256": "8b3d3c7fd77ffc26412c0436a26b7057c53c232df8497a4438a72f551b8b6fb4"
+    },
+    {
+      "module": "04_Motor",
+      "sourceGlbSha256": "7b4b40c562f73a6b1c9049d6964ff010faef04eb06b00cd70e7ae17cb9dcb403",
+      "runtimeGlbSha256": "e55f37d4235db0929578de279e9d293217ae4d8aea6950fc64aa067c5c479e99",
+      "sourceBytes": 630744,
+      "runtimeBytes": 195600,
+      "runtimeTriangles": 7806,
+      "runtimePrimitives": 2,
+      "thumbnailSha256": "b542a4579b4fb9f05770733a0e6d7c739d221616b00f61358d2c7751bc22fdb6"
+    },
+    {
+      "module": "05_FinalDrive",
+      "sourceGlbSha256": "bc930f0a7bbb9975f1191d48245291be1470831db66559bc6eeb50a49e27648f",
+      "runtimeGlbSha256": "1dd27c32f26ade11804ecef2e6646d9e4e660fb1946c3dbde4f210ae12b6786a",
+      "sourceBytes": 577588,
+      "runtimeBytes": 200088,
+      "runtimeTriangles": 4788,
+      "runtimePrimitives": 2,
+      "thumbnailSha256": "de88d8a33ec5cf00fcba27efbd649a8e80e47e13c3c8862513c44539fc5afa7a"
+    },
+    {
+      "module": "06_Battery",
+      "sourceGlbSha256": "60a459663983ea470ca34a3a6dd124e81c08b77347bb17c719d3514861cb67c1",
+      "runtimeGlbSha256": "5707d5040d76617ff518bbacf92c9323dbdd8617e6b96807f8f977a2d8209188",
+      "sourceBytes": 934896,
+      "runtimeBytes": 299252,
+      "runtimeTriangles": 11888,
+      "runtimePrimitives": 2,
+      "thumbnailSha256": "2d13cb98679cf60e5acc5b84e24ac40d8fecd3eb7e943c3010c15c89172acc22"
+    }
+  ],
+  "fullFidelitySourcePreserved": true,
+  "simplifications": [
+    "Only rice-surface geometry decimated at 0.5 ratio; all other geometry retained",
+    "Base-color texture samples baked into vertex colors; micro normal maps omitted",
+    "Roughness grouped to 0.80 food / 0.50 ceramic",
+    "Source Blender and full-fidelity GLBs remain unchanged"
+  ]
+}

@@ -37,6 +37,20 @@ unchanged. See [portrait provenance and validation](PORTRAIT-ASSETS.md). Attribu
 race links remain unchanged. The six symbols are selection buttons, not model
 previews. Story content and background music are not included.
 
+The character viewer has a stationary, low-contrast mint/cream display corner,
+with a small shelf, two hanging utensils, a shallow platform and a soft procedural
+contact shadow. The room is actual native geometry behind an opaque canvas; it
+stays fixed while the original character rotates. Selection-only lighting uses
+ambient RGB (0.40, 0.43, 0.45), key 0.95, fill 0.30, exposure 1, explicit ACES tone
+mapping and sRGB output. This replaces the stronger ambient/key/fill combination
+and default linear tone mapping without modifying any original texture, material,
+model geometry, pose or racing/garage lighting. Room proportions follow each
+portrait's original bounds. The fixed stage uses 20 meshes, 8 shared materials and
+one 64×64 contact mask; no shadow maps, extra downloads or post-processing passes.
+Headless tests verify bounds, scene isolation and cleanup, not final GPU appearance;
+brightness and pale face/hair detail still need review in a WebGL2-capable browser.
+
+
 WebGL2 is required for all real 3D previews and races. Menu navigation remains usable
 if WebGL initialization fails; the cover adds no error/debug text. The character
 viewer reports loading failures with a retry control. Reduced-motion users get a
@@ -151,3 +165,9 @@ visual and frame-rate checks remain necessary, especially with all six models.
 Every dev publication includes the complete corresponding source and notices.
 All twelve driving/portrait character archives retain their exact authorized hashes and remain separate
 from the code license. No new model redistribution terms are introduced.
+
+## Whole-car selection and free customization
+
+The car step opens the dedicated “选整车” view inside the same 1440×900 garage. “自由改装” preserves the six individual slots and optional theme filter. “选择整车” is always available; it does not depend on selecting an optional filter first. Browsing changes only the 3D/stat preview. Applying “使用… · 替换六件” replaces all six slots atomically, never locks them, and offers undo.
+
+Replacing an unsaved mixed build opens a native keyboard-accessible dialog. Cancel/Escape leave the active build untouched. Optional “先收藏当前混搭” uses the normal name/quota checks, and failed browser persistence blocks replacement rather than falsely reporting a save. Undo restores the exact previous parts, comparison, editing ID/name, slot, filters and page. Character and race settings remain independent. Theme cars, functional tradeoff presets and named custom builds remain distinct.

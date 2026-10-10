@@ -1,8 +1,8 @@
 # Food kart runtime assets
 
-## Exact identity, lossless delivery
+## Original 001–054 identity and lossless delivery
 
-The collection contains the original **54 kits × 6 independently selectable modules = 324 parts**. Public IDs preserve the inventory join key (for example `kit001::01_BodyShell`), exact module filename/root name, original kit title, and original SHA-256. No model was regenerated or substituted.
+The original collection contains **54 kits × 6 independently selectable modules = 324 parts**, unchanged. DEV now adds approved **000 pure white rice**, giving **55 themes / 330 parts**. The 000 geometry preparation is separately described below; claims in this original-collection section apply to 001–054. Public IDs preserve the inventory join key (for example `kit001::01_BodyShell`), exact module filename/root name, original kit title, and original SHA-256. No model was regenerated or substituted.
 
 The public manifest is `models/food-karts/manifest.json`. It intentionally contains no private file paths, account identifiers, Library references, or recovery archive metadata.
 
@@ -29,7 +29,7 @@ Meshopt, Draco, geometry quantization, texture resizing, and lossy image encodin
 - `clearFoodKartPayloadCache()`
 - `foodKartPayloadCacheStats()`
 
-All URLs resolve below Vite's current `BASE_URL`, including the GitHub project and isolated dev preview. The public manifest allows only the expected same-origin collection paths. Downloads are bounded, integrity errors are not retried, transient network errors use the shared retry policy, and AbortSignal cancellation stops pending work. Progress reports actual transferred bytes and retry state. Manifest download is a separate progress stage and keeps its total unknown until a real size is available. Model totals report the selected theme ZIP, with failed-attempt bytes added when retrying, and do not imply all 54 themes are downloading. Selecting another module from a cached theme transfers zero model bytes. A mixed kart may require up to six selected-theme bundles.
+All URLs resolve below Vite's current `BASE_URL`, including the GitHub project and isolated dev preview. The public manifest allows only the expected same-origin collection paths. Downloads are bounded, integrity errors are not retried, transient network errors use the shared retry policy, and AbortSignal cancellation stops pending work. Progress reports actual transferred bytes and retry state. Manifest download is a separate progress stage and keeps its total unknown until a real size is available. Model totals report the selected theme ZIP, with failed-attempt bytes added when retrying, and do not imply all themes are downloading. Selecting another module from a cached theme transfers zero model bytes. A mixed kart may require up to six selected-theme bundles.
 
 The single CPU payload cache is a 24 MiB least-recently-used cache of hash-verified ZIP bytes. Entry views point into those bytes without duplicating them; reconstructed GLBs are not retained. No separate PNG cache is kept. Concurrent manifest and same-theme downloads are coalesced; each consumer can cancel independently, and the underlying transfer is aborted when its final consumer leaves. GPU assets belong to the assembly loader, not this byte cache.
 
@@ -43,7 +43,7 @@ The source chassis combines static edible geometry by material. It does not cont
 
 ## Verified budgets
 
-See [the generated per-kit budget](food-kart-asset-budget.json) for all 54 kits.
+See [the generated per-kit budget](food-kart-asset-budget.json) for all 55 runtime kits. The baseline figures below describe the unchanged original 001–054 collection; the generated budget includes 000.
 
 - Original standalone GLBs: **652,360,460 bytes**
 - Original GLBs individually gzipped: **553,912,436 bytes**
@@ -73,6 +73,22 @@ node scripts/verify-food-kart-assets.mjs
 node --import tsx --test tests/food-kart-payload.test.ts
 ```
 
-The build fails if any original is missing or differs from its inventory hash. `--allow-partial` is a development-only recovery aid; incomplete output must not be published. The independent verifier reads only the public ZIPs and manifest, validates complete ZIP membership and bundle hashes, reconstructs all 324 original hashes, checks identity roots and anchors, counts actual triangle primitives, validates PNG hashes and dimensions, and rejects private metadata in the public manifest. `reconstructFoodKartPart(manifest, part)` exports the same strict reconstruction path for geometry test fixtures. Strict verification rejects leftover loose model delivery files.
+The build fails if any original is missing or differs from its inventory hash. `--allow-partial` is a development-only recovery aid; incomplete output must not be published. The independent verifier reads only the public ZIPs and manifest, validates complete ZIP membership and bundle hashes, reconstructs all 330 runtime hashes, including all 324 unchanged originals, checks identity roots and anchors, counts actual triangle primitives, validates PNG hashes and dimensions, and rejects private metadata in the public manifest. `reconstructFoodKartPart(manifest, part)` exports the same strict reconstruction path for geometry test fixtures. Strict verification rejects leftover loose model delivery files.
 
 Original module render PNGs are converted separately to small WebP thumbnails for the garage. The 324 original thumbnail WebP bytes are carried in one `thumbnails.json` index; manifest `thumbnailIndex` records its path, byte count and SHA-256. They are actual source renders; transport optimization never uses the thumbnails as material textures.
+
+## 000 approved pure white rice
+
+The first testing theme is the user-selected C pure-rice design, without sesame or seaweed garnish. Its full-fidelity editable source and GLBs remain intact. The game uses a separately identified derivative: 89,712 triangles / 18 material primitives, compared with source 141,492 / 41. Only the rice-surface triangles were reduced (0.5 ratio); original base-color texture samples were baked into vertex colors. Micro normal maps are omitted and roughness is grouped into food (0.80) and ceramic (0.50). This is geometry/material optimization, not lossless preparation. The subsequent transport reconstructs the derivative's exact bytes.
+
+`docs/white-rice-runtime-provenance.json` records full-fidelity source and derivative hashes separately. For 000, `originalSha256` is the canonical runtime GLB hash required by the common transport; `sourceOriginalSha256` identifies the full-fidelity source GLB. Module roots, mounts, wheel pivots and the common assembly interface are retained. The driver adapter preserves COLOR streams when separating steering/chassis meshes. No live GPU performance claim follows from file-level primitive counts.
+
+000 has one 1,101,459-byte selected-theme bundle and no external image dependencies. Six actual optimized-module renders supply its thumbnails. The 324 existing thumbnail image bytes and all 54 existing bundle bytes are unchanged. `scripts/add-white-rice-assets.py` appends the new bundle while checking every old bundle hash, and the original 54-kit builder remains intentionally limited to its original inventory.
+
+All six 000 parts use the existing neutral reference design estimates, including a 208 kg aggregate with the modeled driver. These are game-design numbers, not measured real-world vehicle specifications. Full 000 assembly has 1.0 acceleration/speed/handling multipliers; mixing remains allowed, and same-theme identity grants no bonus. 000 is visible first in this free-test build, with future-hidden intent recorded without implementing an unlock system.
+
+To append 000 after rebuilding the original collection:
+
+```
+python scripts/add-white-rice-assets.py --source PATH_TO_APPROVED_000 --runtime runtime-optimized --thumbnails PATH_TO_APPROVED_000/runtime-optimized/thumbnails
+```

@@ -1,3 +1,4 @@
+import {wholeCars, wholeCarForBuild, filterWholeCars, needsWholeCarConfirmation, sameKartBuild, copyWholeCarUndo, type WholeCarUndo} from './kart-whole-cars';
 import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
 import {mountUiViewportNotice} from './ui-layout';
@@ -200,6 +201,9 @@ export function mountKartGarage(root: HTMLElement) {
   let state: GarageState = loadGarageState(), slot: KartSlot = 'body', theme = '', query = '', compareBuild: KartBuild = {...state.activeBuild};
   state.activeBuild = garageInitialBuild(search, state.activeBuild); compareBuild = {...state.activeBuild};
   let editingId: string | null = null, partPage = 0;
+  let activeTitle = wholeCarForBuild(state.activeBuild)?.name || '自由混搭', activeDescription = '六槽自由搭配，主题没有额外加成';
+  let mode: 'cars' | 'parts' = freeFlow || new URLSearchParams(search).get('view') === 'cars' ? 'cars' : 'parts';
+  let carQuery = '', carPage = 0, candidate = wholeCarForBuild(state.activeBuild) || wholeCars[0], undo: WholeCarUndo | null = null;
   let preview: ReturnType<typeof mountKartGaragePreview> | null = null, storageAvailable = true;
   let thumbnails:ReadonlyMap<string,string>=new Map();const thumbnailAbort=new AbortController();
   const themes = [...new Map(catalog.map(part => [part.themeId, part])).values()].sort((a, b) => a.kitNumber - b.kitNumber);
@@ -210,12 +214,17 @@ export function mountKartGarage(root: HTMLElement) {
     <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">01 / 我的装配台</span><h2 id="build-title">自由混搭</h2><p id="build-description" class="build-description">六槽自由搭配，主题没有额外加成</p></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="bench-scenery" aria-hidden="true"><span class="bench-lamp"></span><span class="bench-pegboard"></span><span class="bench-tool bench-tool-one"></span><span class="bench-tool bench-tool-two"></span><span class="bench-shelf"></span><span class="bench-box"></span><span class="bench-tin"></span><span class="bench-platform"></span><span class="bench-sticker">MIX<br>&amp; RACE</span></div><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转车辆、滚轮缩放、方向键调整视角、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>六个真实模块 · 一台你的赛车</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动旋转 <span>·</span> 滚轮缩放</p><div class="camera-buttons"><button id="preview-spin" aria-pressed="false" title="车辆缓慢旋转；手动调整后暂停 3.5 秒">旋转展示</button><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
     <aside class="performance-panel"><div class="panel-heading"><h2>试车仪表台</h2><span>CHECK / 02</span></div><div id="build-stats"></div><details class="performance-disclosure"><summary>这些参数如何影响比赛？</summary><p class="performance-note">设计估算先转为车辆倍率，再叠加角色属性；上方比赛平路上限与赛道 HUD 使用相同速度换算。当前试玩：重量、动力、极速、操控已参与海岸竞速；电量消耗、耐久损耗与翻车恢复暂未启用。电池容量和耐久均不提供当前优势；稳定性侧倾阈值仅为设计估算，不是角色增益或翻车机制。</p></details><a class="garage-start" id="garage-race" href="${garageRaceEntry(driver.id, state.activeBuild, search)}"><span><small>READY, SET...</small>${freeFlow ? '完成搭配 · 比赛设置' : '去日落海岸试跑'}</span><span>➜</span></a><p class="race-note">保留六名角色属性 · 水上坐骑不受影响</p></aside></section>
     <section class="build-shelf" aria-label="配方与已保存方案"><div class="shelf-tabs"><h2>灵感配方盒</h2><span>五种取舍，选后仍可自由编辑</span></div><div class="starter-list" id="starter-builds"></div><div class="save-row"><form id="save-build-form"><label for="build-name">收藏这套搭配</label><input id="build-name" name="name" maxlength="${MAX_BUILD_NAME_LENGTH}" placeholder="给你的车起个名字" autocomplete="off"><button id="save-build-submit" type="submit">保存新方案 ＋</button><button id="save-as-new" type="button" hidden>另存新方案</button><p id="edit-build-status">新方案 · 保存名称和六个零件，不绑定角色</p></form><p id="save-status" role="status" aria-live="polite">装配会自动保存在此浏览器</p></div><div id="saved-builds" class="saved-list"></div></section>
-    <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">PARTS & GOODIES / 零件百宝箱</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">外观主题（可选）<select id="theme-filter"><option value="">全部 54 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="找零件"></label><button id="apply-theme" title="按当前主题装配六个零件；没有套装加成" disabled>整套试装</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
+    <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">PARTS & GOODIES / 零件百宝箱</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">外观主题（可选）<select id="theme-filter"><option value="">全部 ${themes.length} 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="找零件"></label><button id="apply-theme" title="进入整车选择；浏览不会替换当前零件">选择整车 →</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
     <footer class="garage-footer"><span>原创食物模型 · DEV 独立测试</span><a href="./source.html">开源代码与模型许可 ↗</a><a data-garage-back href="${esc(back)}">返回角色选择</a></footer>`;
   const $ = <T extends HTMLElement = HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
   // Reuse the existing controls in native dialogs; there is only one source of state.
-  root.insertAdjacentHTML('beforeend', `<div class="garage-actions"><div class="workshop-actions"><button data-open-dialog="recipes-dialog">▤ 配方与收藏</button><button data-open-dialog="specs-dialog">◴ 详细参数</button><span id="compact-save-status" role="status">搭配自动保存</span></div></div><dialog id="recipes-dialog" class="workshop-dialog" aria-labelledby="recipes-title"><div class="dialog-heading"><h2 id="recipes-title">灵感配方与我的收藏</h2><button data-close-dialog aria-label="关闭配方与收藏">关闭 ×</button></div></dialog><dialog id="specs-dialog" class="workshop-dialog" aria-labelledby="specs-title"><div class="dialog-heading"><h2 id="specs-title">车辆设计与比赛参数</h2><button data-close-dialog aria-label="关闭详细参数">关闭 ×</button></div><div id="advanced-stats"></div></dialog>`);
+  root.insertAdjacentHTML('beforeend', `<div class="garage-actions"><div class="workshop-actions"><button data-open-dialog="recipes-dialog">▤ 配方与收藏</button><button data-open-dialog="specs-dialog">◴ 详细参数</button><button id="undo-whole-car" hidden>撤销换整车</button><span id="compact-save-status" role="status">搭配自动保存</span></div></div><dialog id="recipes-dialog" class="workshop-dialog" aria-labelledby="recipes-title"><div class="dialog-heading"><h2 id="recipes-title">灵感配方与我的收藏</h2><button data-close-dialog aria-label="关闭配方与收藏">关闭 ×</button></div></dialog><dialog id="specs-dialog" class="workshop-dialog" aria-labelledby="specs-title"><div class="dialog-heading"><h2 id="specs-title">车辆设计与比赛参数</h2><button data-close-dialog aria-label="关闭详细参数">关闭 ×</button></div><div id="advanced-stats"></div></dialog>`);
   $('#recipes-dialog').append($('.build-shelf'));
+  $('.garage-heading').insertAdjacentHTML('beforeend', '<nav class="garage-modes" aria-label="车辆选择方式"><button data-garage-mode="cars" aria-pressed="false">选整车</button><button data-garage-mode="parts" aria-pressed="false">自由改装</button></nav>');
+  $('.workshop-steps').textContent = '整车起步 · 随心混搭';
+  $('.slot-panel').insertAdjacentHTML('afterend', `<aside class="whole-car-info" hidden><p class="eyebrow">PICK YOUR RIDE</p><h2>一键装配<br>整台好味赛车</h2><p>每辆整车包含同主题的六个零件。先看车，再决定是否使用。</p><ol><li>挑选整车预览</li><li>确认替换六个零件</li><li>继续混搭或出发</li></ol><p class="car-rule">同主题没有额外加成<br>装配后仍可自由更换零件</p><button data-garage-mode="parts">保留当前搭配 · 去改装</button></aside>`);
+  $('.parts-library').insertAdjacentHTML('afterend', `<section class="whole-car-library" hidden aria-labelledby="whole-car-title"><div class="whole-car-heading"><h2 id="whole-car-title">好味整车展厅</h2><p>点选只预览，不会替换你的搭配</p><label>找整车<input id="car-search" type="search" placeholder="主题名称或编号"></label></div><div id="whole-car-grid" class="whole-car-grid" role="group" aria-label="可选整车主题"></div><div class="whole-car-footer"><p id="whole-car-status" role="status" aria-live="polite"></p><div><button id="cars-prev" aria-label="上一页整车">←</button><span id="cars-page" role="status"></span><button id="cars-next" aria-label="下一页整车">→</button><button id="use-whole-car">使用这辆车 · 替换六件</button></div></div></section>`);
+  root.insertAdjacentHTML('beforeend', `<dialog id="replace-car-dialog" class="workshop-dialog replace-car-dialog" aria-labelledby="replace-car-title"><div class="dialog-heading"><h2 id="replace-car-title">替换当前六个零件？</h2><button data-close-dialog aria-label="取消替换整车">取消 ×</button></div><p>当前是尚未收藏的混搭。使用整车会替换全部六个零件；之后仍可自由改装，也可以撤销这次替换。</p><p id="replace-car-summary"></p><label class="save-before-replace"><input type="checkbox" id="save-before-car">先收藏当前混搭</label><label for="replace-build-name">收藏名称</label><input id="replace-build-name" maxlength="${MAX_BUILD_NAME_LENGTH}" placeholder="给当前混搭起个名字"><p id="replace-car-error" role="alert"></p><div class="replace-car-actions"><button data-close-dialog>保留当前搭配</button><button id="confirm-whole-car">替换六个零件</button></div></dialog>`);
   $('#specs-dialog').append($('.performance-disclosure'));
   $('.garage-actions').append($('#garage-race'));
   $('.garage-footer').remove();
@@ -230,6 +239,42 @@ export function mountKartGarage(root: HTMLElement) {
     dialog.addEventListener('close', () => {dialogOpener?.focus({preventScroll: true}); dialogOpener = null;}, {signal: events.signal});
   });
   function persist(message = '当前装配已自动保存') {storageAvailable = saveGarageState(state); $('#save-status').textContent = storageAvailable ? message : '此浏览器无法保存；本次搭配仍可通过下方试跑入口带入比赛，离开后不会保留'; $('#save-status').dataset.error = String(!storageAvailable); $('#compact-save-status').textContent = storageAvailable ? '✓ 搭配已自动保存' : '⚠ 无法保存到浏览器'; $('#compact-save-status').dataset.error = String(!storageAvailable);}
+  function renderRaceAction(previewOnly = false) {$('#garage-race > span:first-child').innerHTML = `<small>${previewOnly ? '预览尚未应用' : 'READY, SET...'}</small>${previewOnly ? (freeFlow ? '保留当前搭配 · 下一步' : '用当前搭配试跑') : (freeFlow ? '完成搭配 · 比赛设置' : '去日落海岸试跑')}`;}
+  function renderCars() {
+    const page = garagePartPage(filterWholeCars(carQuery), carPage, 5); carPage = page.page;
+    $('#cars-page').textContent = `${page.page + 1} / ${page.pages}`;
+    $<HTMLButtonElement>('#cars-prev').disabled = page.page === 0; $<HTMLButtonElement>('#cars-next').disabled = page.page === page.pages - 1;
+    $('#whole-car-grid').innerHTML = page.items.length ? page.items.map(car => `<button class="whole-car-card" data-car="${esc(car.id)}" aria-pressed="${candidate.id === car.id}"><span class="car-mini-parts" aria-hidden="true">${KART_SLOTS.map(slot => {const image = thumbnails.get(car.build[slot]); return image ? `<img src="${image}" alt="" width="90" height="73" loading="lazy">` : `<span>${SLOT_ICONS[slot]}</span>`;}).join('')}</span><span><small>${String(car.number).padStart(3, '0')} · 六件整车</small><strong>${esc(car.name)}</strong><em>${sameKartBuild(car.build, state.activeBuild) ? '当前已装配' : candidate.id === car.id ? '正在预览' : '预览整车 →'}</em></span></button>`).join('') : '<p class="no-parts">没有找到整车，试试其他名称或编号</p>';
+    const applied = sameKartBuild(candidate.build, state.activeBuild);
+    $<HTMLButtonElement>('#use-whole-car').disabled = applied;
+    $('#use-whole-car').textContent = applied ? '这辆车已装配' : `使用${candidate.name} · 替换六件`;
+    if (mode === 'cars') renderRaceAction(!applied);
+    $('#whole-car-status').textContent = applied ? '当前整车仍可进入“自由改装”更换零件' : `预览：${candidate.name} · 当前装配尚未改变`;
+  }
+  function setMode(next: 'cars' | 'parts', focus = false) {
+    mode = next; root.dataset.garageMode = mode;
+    $('.slot-panel').hidden = mode === 'cars'; $('.whole-car-info').hidden = mode !== 'cars';
+    $('.parts-library').hidden = mode === 'cars'; $('.whole-car-library').hidden = mode !== 'cars';
+    root.querySelectorAll<HTMLElement>('[data-garage-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.garageMode === mode)));
+    if (mode === 'cars') {renderCars(); renderStats(candidate.build); void preview?.select(candidate.build); $('#build-title').textContent = `${candidate.name} · 整车预览`;}
+    else {renderRaceAction(); renderStats(); void preview?.select(state.activeBuild); $('#build-title').textContent = activeTitle;}
+    if (focus) $(`[data-garage-mode="${mode}"]`).focus({preventScroll:true});
+  }
+  function applyWholeCar() {
+    if (sameKartBuild(candidate.build, state.activeBuild)) return;
+    undo = copyWholeCarUndo({build: state.activeBuild, comparison: compareBuild, editingId, buildName: $<HTMLInputElement>('#build-name').value, title: activeTitle, description: activeDescription, slot, theme, query, page: partPage});
+    editingId = null; $<HTMLInputElement>('#build-name').value = ''; renderEditing();
+    applyBuild(candidate.build, `${candidate.name} · 整车`, '已替换六个零件，仍可自由改装；同主题无额外加成');
+    $('#undo-whole-car').hidden = false; renderCars();
+    $('#whole-car-status').textContent = `已装配${candidate.name}的六个零件，可自由改装或撤销`;
+  }
+  function requestWholeCar() {
+    if (needsWholeCarConfirmation(state, candidate.build)) {
+      dialogOpener = $('#use-whole-car'); $('#replace-car-summary').textContent = `将装配：${candidate.name}`;
+      $<HTMLInputElement>('#save-before-car').checked = false; $<HTMLInputElement>('#replace-build-name').value = ''; $('#replace-car-error').textContent = '';
+      $<HTMLDialogElement>('#replace-car-dialog').showModal();
+    } else applyWholeCar();
+  }
   function renderSlots() {
     $('#garage-slots').innerHTML = KART_SLOTS.map(name => {const part = byId.get(state.activeBuild[name])!; return `<button class="slot-choice" data-slot="${name}" aria-pressed="${slot === name}" aria-label="${SLOT_NAMES[name]}，已装配${esc(themeName(part))}" title="${SLOT_NAMES[name]} · ${esc(part.name)}"><span class="slot-icon" aria-hidden="true">${SLOT_ICONS[name]}</span><span><strong>${SLOT_NAMES[name]}</strong></span></button>`;}).join('');
     $('#current-slot-label').textContent = SLOT_NAMES[slot];
@@ -259,8 +304,8 @@ export function mountKartGarage(root: HTMLElement) {
     $('#parts-page').textContent = `${partPage + 1} / ${paged.pages}`;
     $<HTMLButtonElement>('#parts-prev').disabled = partPage === 0; $<HTMLButtonElement>('#parts-next').disabled = partPage === paged.pages - 1;
     $('#parts-count').textContent = `${filtered.length} 款${theme || query ? '符合筛选' : '可选'}`;
-    $('#parts-grid').innerHTML = filtered.length ? paged.items.map(part => {const thumbnail = thumbnails.get(part.id), hasThumb = !!thumbnail; return `<button class="part-card" style="--part-hue:${[24,162,204,346,44,276][(part.kitNumber - 1) % 6]}" data-part="${esc(part.id)}" aria-pressed="${state.activeBuild[slot] === part.id}"><span class="part-visual ${hasThumb ? '' : 'no-thumbnail'}">${hasThumb ? `<img src="${thumbnail}" alt="${esc(part.name)}原始模型模块图" loading="lazy" width="400" height="300">` : `<span aria-hidden="true">${SLOT_ICONS[slot]}</span><small>点选查看真实 3D</small>`}<span class="part-number">${String(part.kitNumber).padStart(3, '0')}</span><span class="part-selected" aria-hidden="true">${state.activeBuild[slot] === part.id ? '✓' : '+'}</span></span><span class="part-copy"><strong>${esc(part.name)}</strong><span class="part-type">${esc(part.archetypeLabel)}<span>装配 →</span></span><code>${esc(part.id)}</code></span></button>`;}).join('') : '<div class="no-parts"><strong>没有找到这个零件</strong><p>换个名称、零件 ID，或把主题切回“全部”</p><button id="clear-filters">清除筛选</button></div>';
-    $('#apply-theme').toggleAttribute('disabled', !theme);
+    $('#parts-grid').innerHTML = filtered.length ? paged.items.map(part => {const thumbnail = thumbnails.get(part.id), hasThumb = !!thumbnail; return `<button class="part-card" style="--part-hue:${[24,162,204,346,44,276][((part.kitNumber - 1) % 6 + 6) % 6]}" data-part="${esc(part.id)}" aria-pressed="${state.activeBuild[slot] === part.id}"><span class="part-visual ${hasThumb ? '' : 'no-thumbnail'}">${hasThumb ? `<img src="${thumbnail}" alt="${esc(part.name)}原始模型模块图" loading="lazy" width="400" height="300">` : `<span aria-hidden="true">${SLOT_ICONS[slot]}</span><small>点选查看真实 3D</small>`}<span class="part-number">${String(part.kitNumber).padStart(3, '0')}</span><span class="part-selected" aria-hidden="true">${state.activeBuild[slot] === part.id ? '✓' : '+'}</span></span><span class="part-copy"><strong>${esc(part.name)}</strong><span class="part-type">${esc(part.archetypeLabel)}<span>装配 →</span></span><code>${esc(part.id)}</code></span></button>`;}).join('') : '<div class="no-parts"><strong>没有找到这个零件</strong><p>换个名称、零件 ID，或把主题切回“全部”</p><button id="clear-filters">清除筛选</button></div>';
+
   }
   function renderEditing() {
     $<HTMLInputElement>('#build-name').setCustomValidity('');
@@ -274,6 +319,7 @@ export function mountKartGarage(root: HTMLElement) {
     $('#saved-builds').innerHTML = state.namedBuilds.map(saved => `<div class="saved-build"><button data-load-build="${esc(saved.id)}">↗ ${esc(saved.name)}</button><button class="delete-build" data-delete-build="${esc(saved.id)}" aria-label="删除已保存方案 ${esc(saved.name)}">×</button></div>`).join('');
   }
   function applyBuild(build: KartBuild, name = '自由混搭', description = '六槽自由搭配，主题没有额外加成') {
+    activeTitle = name; activeDescription = description;
     compareBuild = {...state.activeBuild}; state = {...state, activeBuild: resolveBuild(build)};
     replaceGarageBuildUrl(state.activeBuild, location, history);
     $('#build-title').textContent = name; $('#build-title').title = name; $('#build-description').textContent = description; $('#garage-race').setAttribute('href', garageRaceEntry(driver.id, state.activeBuild, search));
@@ -288,17 +334,38 @@ export function mountKartGarage(root: HTMLElement) {
     if (target.hasAttribute('data-close-dialog')) target.closest('dialog')?.close();
     if (target.id === 'parts-prev' || target.id === 'parts-next') {partPage += target.id === 'parts-next' ? 1 : -1; renderParts(); renderStats(); const button = $<HTMLButtonElement>(`#${target.id}`); if (button.disabled) $<HTMLButtonElement>(target.id === 'parts-next' ? '#parts-prev' : '#parts-next').focus({preventScroll:true});}
     if (target.dataset.slot) {partPage = 0; slot = target.dataset.slot as KartSlot; renderSlots(); renderParts(); renderStats(); $(`[data-slot="${slot}"]`).focus({preventScroll: true});}
+    if (target.dataset.part || target.dataset.starter || target.dataset.loadBuild) {undo = null; $('#undo-whole-car').hidden = true;}
     if (target.dataset.part) {const part = byId.get(target.dataset.part)!; if (part.id !== state.activeBuild[part.slot]) {applyBuild({...state.activeBuild, [part.slot]: part.id}); $(`[data-part="${part.id}"]`)?.focus({preventScroll: true});}}
-    if (target.dataset.starter) {const starter = kartPresets.find(value => value.id === target.dataset.starter); applyBuild(starter?.build || defaultBuild, starter?.name || '标准混搭', starter?.description);}
-    if (target.dataset.loadBuild) {const saved = state.namedBuilds.find(value => value.id === target.dataset.loadBuild); if (saved) {editingId = saved.id; $<HTMLInputElement>('#build-name').value = saved.name; applyBuild(saved.build, saved.name); renderEditing();}}
+    if (target.dataset.starter) {const starter = kartPresets.find(value => value.id === target.dataset.starter); applyBuild(starter?.build || defaultBuild, starter?.name || '标准混搭', starter?.description); setMode('parts');}
+    if (target.dataset.loadBuild) {const saved = state.namedBuilds.find(value => value.id === target.dataset.loadBuild); if (saved) {editingId = saved.id; $<HTMLInputElement>('#build-name').value = saved.name; applyBuild(saved.build, saved.name); renderEditing(); setMode('parts');}}
     if (target.dataset.deleteBuild) {state = {...state, namedBuilds: state.namedBuilds.filter(value => value.id !== target.dataset.deleteBuild)}; if (editingId === target.dataset.deleteBuild) {editingId = null; $<HTMLInputElement>('#build-name').value = '';} persist('已删除保存的方案；当前装配保持不变'); renderSaved(); renderEditing();}
     if (target.id === 'save-as-new') {editingId = null; renderEditing(); $<HTMLInputElement>('#build-name').focus();}
     if (target.id === 'clear-filters') {partPage = 0; theme = ''; query = ''; $<HTMLSelectElement>('#theme-filter').value = ''; $<HTMLInputElement>('#part-search').value = ''; renderParts();}
-    if (target.id === 'apply-theme' && theme) {const build = {...state.activeBuild}; for (const part of catalog.filter(value => value.themeId === theme)) build[part.slot] = part.id; applyBuild(build, `${themeName(byId.get(build.body)!)} · 整套`);}
+    if (target.id === 'apply-theme') {candidate = wholeCars.find(car => car.id === theme) || wholeCarForBuild(state.activeBuild) || wholeCars[0]; setMode('cars', true);}
+    if (target.dataset.garageMode) setMode(target.dataset.garageMode as 'cars' | 'parts', true);
+    if (target.dataset.car) {candidate = wholeCars.find(car => car.id === target.dataset.car)!; renderCars(); renderStats(candidate.build); $('#build-title').textContent = `${candidate.name} · 整车预览`; void preview?.select(candidate.build); $(`[data-car="${candidate.id}"]`).focus({preventScroll:true});}
+    if (target.id === 'cars-prev' || target.id === 'cars-next') {carPage += target.id === 'cars-next' ? 1 : -1; renderCars(); const button = $<HTMLButtonElement>(`#${target.id}`); if (button.disabled) $(target.id === 'cars-next' ? '#cars-prev' : '#cars-next').focus({preventScroll:true});}
+    if (target.id === 'use-whole-car') requestWholeCar();
+    if (target.id === 'confirm-whole-car') {
+      if ($<HTMLInputElement>('#save-before-car').checked) {
+        const result = upsertGarageNamedBuild(state, $<HTMLInputElement>('#replace-build-name').value, null, `build-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
+        if (result.ok === false) {$('#replace-car-error').textContent = result.reason; $<HTMLInputElement>('#replace-build-name').focus(); return;}
+        if (!saveGarageState(result.state)) {$('#replace-car-error').textContent = '浏览器未能保存收藏，尚未替换整车。请重试，或取消“先收藏”后再决定。'; return;}
+        state = result.state; renderSaved();
+      }
+      $<HTMLDialogElement>('#replace-car-dialog').close(); applyWholeCar(); dialogOpener = $('#undo-whole-car');
+    }
+    if (target.id === 'undo-whole-car' && undo) {
+      const restore = undo; undo = null; slot = restore.slot; theme = restore.theme; query = restore.query; partPage = restore.page;
+      editingId = restore.editingId; $<HTMLInputElement>('#build-name').value = restore.buildName; $<HTMLSelectElement>('#theme-filter').value = theme; $<HTMLInputElement>('#part-search').value = query;
+      applyBuild(restore.build, restore.title, restore.description); compareBuild = {...restore.comparison}; renderEditing(); setMode('parts', true);
+      $('#undo-whole-car').hidden = true; $('#compact-save-status').textContent = storageAvailable ? '已恢复换车前的六个零件' : '已恢复，本次无法保存到浏览器';
+    }
     if (target.id === 'preview-spin') preview?.toggleSpin(); if (target.id === 'preview-zoom-in') preview?.zoomBy(-.1); if (target.id === 'preview-zoom-out') preview?.zoomBy(.1); if (target.id === 'preview-reset') preview?.reset(); if (target.id === 'preview-retry') preview?.retry();
   }, {signal: events.signal});
   const comparePart = (event: Event) => {const target = (event.target as HTMLElement).closest<HTMLElement>('[data-part]'); if (!target) return; const part = byId.get(target.dataset.part!)!; renderStats({...state.activeBuild, [part.slot]: part.id});};
   $('#parts-grid').addEventListener('pointerover', comparePart); $('#parts-grid').addEventListener('focusin', comparePart); $('#parts-grid').addEventListener('pointerleave', () => renderStats()); $('#parts-grid').addEventListener('focusout', event => {if (!$('#parts-grid').contains((event as FocusEvent).relatedTarget as Node)) renderStats();});
+  $<HTMLInputElement>('#car-search').addEventListener('input', event => {carPage = 0; carQuery = (event.target as HTMLInputElement).value; renderCars();}, {signal: events.signal});
   $<HTMLSelectElement>('#theme-filter').addEventListener('change', event => {partPage = 0; theme = (event.target as HTMLSelectElement).value; renderParts(); renderStats();});
   $<HTMLInputElement>('#part-search').addEventListener('input', event => {partPage = 0; query = (event.target as HTMLInputElement).value; renderParts(); renderStats();});
   $('#save-build-form').addEventListener('submit', event => {
@@ -306,24 +373,25 @@ export function mountKartGarage(root: HTMLElement) {
     const result = upsertGarageNamedBuild(state, input.value, editingId, `build-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
     if (result.ok === false) {input.setCustomValidity(result.reason); input.reportValidity(); $('#save-status').textContent = result.reason; return;}
     input.setCustomValidity(''); const updating = editingId !== null; state = result.state; editingId = result.id;
-    const name = input.value.trim(); input.value = name; $('#build-title').textContent = name; $('#build-title').title = name;
+    const name = input.value.trim(); input.value = name; activeTitle = name; $('#build-title').textContent = name; $('#build-title').title = name;
     persist(`“${name}”已${updating ? '更新' : '保存'}在此浏览器`); renderSaved(); renderEditing();
   });
   $<HTMLInputElement>('#build-name').addEventListener('input', event => (event.target as HTMLInputElement).setCustomValidity(''));
   renderSlots(); renderStats(); renderParts(); renderSaved(); renderEditing();
-  void loadKartThumbnails(thumbnailAbort.signal).then(images=>{if(thumbnailAbort.signal.aborted)return;thumbnails=images;renderParts();$('#thumbnail-status').textContent='324 张原始模型缩略图已就绪';}).catch(()=>{if(!thumbnailAbort.signal.aborted)$('#thumbnail-status').textContent='缩略图未能加载；零件名称、参数与真实 3D 选择仍可使用';});
+  void loadKartThumbnails(thumbnailAbort.signal).then(images=>{if(thumbnailAbort.signal.aborted)return;thumbnails=images;renderParts();renderCars();$('#thumbnail-status').textContent=`${catalog.length} 张原始模型缩略图已就绪`;}).catch(()=>{if(!thumbnailAbort.signal.aborted)$('#thumbnail-status').textContent='缩略图未能加载；零件名称、参数与真实 3D 选择仍可使用';});
+  setMode(mode);
   preview = mountKartGaragePreview($<HTMLCanvasElement>('#kart-preview'), current => {
     const status = $('#preview-status'), detail = $('#preview-detail'), bar = $<HTMLProgressElement>('#preview-progress'), retry = $('#preview-retry'), overlay = $('#preview-message');
     const ready = current.stage === 'ready', failed = current.stage === 'failed'; overlay.dataset.state = current.stage; retry.hidden = !failed; bar.hidden = ready || failed;
-    $('#preview-badge').textContent = ready ? '已装配' : failed ? '预览未完成' : '正在准备'; $('#preview-badge').dataset.state = current.stage;
+    $('#preview-badge').textContent = ready ? (mode === 'cars' && !sameKartBuild(candidate.build, state.activeBuild) ? '仅预览' : '已装配') : failed ? '预览未完成' : '正在准备'; $('#preview-badge').dataset.state = current.stage;
     if (failed) {status.textContent = current.message; detail.textContent = '不会用占位模型替代缺失零件。参数和已选搭配仍可查看';}
-    else if (ready) {status.textContent = '六个原始模块已装配'; detail.textContent = '拖动与缩放，检查你的搭配';}
+    else if (ready) {status.textContent = mode === 'cars' && !sameKartBuild(candidate.build, state.activeBuild) ? '整车预览已就绪，当前搭配尚未改变' : '六个真实模块已装配'; detail.textContent = '拖动与缩放，检查你的搭配';}
     else {
       status.textContent = current.stage === 'retrying' ? `网络暂时中断，${Math.ceil((current.retryInMs || 0) / 1000)} 秒后重试` : current.stage === 'preparing' ? `正在解析真实模型 · ${current.completed} / 6` : `正在下载所选零件 · ${current.completed} / 6`;
       detail.textContent = `${bytes(current.receivedBytes)}${current.totalBytes ? ` / ${bytes(current.totalBytes)}` : ' 已接收'}${current.cachedBytes ? ` · 缓存复用 ${bytes(current.cachedBytes)}` : ''}${current.partId ? ` · ${current.partId}` : ''}`;
       if (current.totalBytes && current.totalBytes > 0) {bar.max = current.totalBytes; bar.value = current.receivedBytes;} else bar.removeAttribute('value');
     }
-  }, state.activeBuild);
+  }, mode === 'cars' ? candidate.build : state.activeBuild);
   const pagehide = () => {events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
   const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
   window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);

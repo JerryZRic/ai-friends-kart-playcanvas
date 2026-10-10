@@ -13,7 +13,7 @@ function headlessApp(){
 }
 
 test('same source pixels share real PlayCanvas textures across containers until final release',async()=>{
- const app=headlessApp(),pool=createKartTexturePool(),record=manifest.parts.find(p=>p.moduleId==='02_ChassisSuspension'),bytes=payload(record);
+ const app=headlessApp(),pool=createKartTexturePool(),record=manifest.parts.find(p=>p.moduleId==='02_ChassisSuspension'&&p.images.length>0),bytes=payload(record);
  const a=await parseLocalGLB(app,bytes),b=await parseLocalGLB(app,bytes);let extra:DriverAsset|undefined;
  try{
   const originalA=(a.resource as any).textures.map((asset:pc.Asset)=>asset.resource), originalB=(b.resource as any).textures.map((asset:pc.Asset)=>asset.resource);
@@ -34,11 +34,19 @@ test('same source pixels share real PlayCanvas textures across containers until 
 });
 
 test('different images retain separate textures and malformed adoption leaves normal ownership',async()=>{
- const app=headlessApp(),pool=createKartTexturePool(),records=[manifest.parts[0],manifest.parts.find(p=>p.kitNumber==='054'&&p.moduleId==='01_BodyShell')],assets:DriverAsset[]=[];
+ const app=headlessApp(),pool=createKartTexturePool(),records=[manifest.parts.find(p=>p.kitNumber==='001'&&p.moduleId==='01_BodyShell'),manifest.parts.find(p=>p.kitNumber==='054'&&p.moduleId==='01_BodyShell')],assets:DriverAsset[]=[];
  try{
   for(const record of records){const bytes=payload(record),asset=await parseLocalGLB(app,bytes);assets.push(asset);await pool.adopt(asset,bytes);}
   const count=pool.stats().textures;assert.ok(count>records[0].images.length);
   const bytes=payload(records[0]),invalid=await parseLocalGLB(app,bytes);assets.push(invalid);invalid.metadata={...invalid.metadata,images:[{uri:'bad'}]};
   const textures=(invalid.resource as any).textures;await assert.rejects(pool.adopt(invalid,bytes),/embedded image ranges/);assert.equal((invalid.resource as any).textures,textures);assert.equal(pool.stats().textures,count);
  }finally{for(const asset of assets){pool.release(asset);disposeDriverAsset(asset);}assert.equal(pool.stats().textures,0);app.destroy();}
+});
+
+
+test('vertex-color rice modules need no textures and release cleanly through the same pool', async()=>{
+ const app=headlessApp(),pool=createKartTexturePool(),record=manifest.parts.find(p=>p.kitNumber==='000'&&p.moduleId==='02_ChassisSuspension'),bytes=payload(record);
+ const asset=await parseLocalGLB(app,bytes);
+ try {await pool.adopt(asset,bytes);assert.equal(pool.stats().textures,0);assert.equal(pool.stats().pixels,0);assert.ok((asset.resource as any).materials.every(material=>material.resource.diffuseVertexColor));pool.release(asset);assert.equal(pool.stats().containers,0);}
+ finally {pool.release(asset);disposeDriverAsset(asset);app.destroy();}
 });

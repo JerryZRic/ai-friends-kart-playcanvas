@@ -1,0 +1,64 @@
+{
+  "method": "Actual PlayCanvas NullGraphicsDevice CPU import and rig/steering pipeline",
+  "scope": "All 55 shipped chassis including 000; six unchanged drivers; five steering inputs each",
+  "aggregate": {
+    "chassis": 55,
+    "drivers": 6,
+    "measuredSteeringPoses": 1650,
+    "maxGripErrorMillimeters": 0.07328459362337027,
+    "seatSurfaceRangeMeters": [
+      0.7357147518352761,
+      1.0568173835608414
+    ],
+    "maxRuntimeMeshBytes": 1039216,
+    "maxRuntimeMeshes": 10,
+    "evidence": "PlayCanvas NullGraphicsDevice CPU pipeline"
+  },
+  "riceHandSurfaceDistances": [
+    {
+      "id": "whale",
+      "handSurfaceDistanceMillimeters": [
+        15.43922598880316,
+        15.795072433366089
+      ]
+    },
+    {
+      "id": "gemini",
+      "handSurfaceDistanceMillimeters": [
+        24.34603809546761,
+        24.346001756187707
+      ]
+    },
+    {
+      "id": "gpt",
+      "handSurfaceDistanceMillimeters": [
+        26.622273197870594,
+        26.04380399086972
+      ]
+    },
+    {
+      "id": "claude",
+      "handSurfaceDistanceMillimeters": [
+        0.00017653341332084864,
+        0.00028332498515162933
+      ]
+    },
+    {
+      "id": "grok",
+      "handSurfaceDistanceMillimeters": [
+        27.421259376201927,
+        27.499908336883117
+      ]
+    },
+    {
+      "id": "glm",
+      "handSurfaceDistanceMillimeters": [
+        28.702284401430408,
+        30.101729533330744
+      ]
+    }
+  ],
+  "riceVertexColors": "Actual static, steering and column meshes retain finite COLOR streams with their original format",
+  "gpuVisualQA": false,
+  "browserVisualQA": "Pending; isolated cloud-browser tab crashed before page load"
+}

@@ -6,6 +6,23 @@
   "assemblyRule": "Place all six module roots at the identical identity transform. Do not recenter or rescale individual parts.",
   "kits": [
     {
+      "id": "000-white-rice",
+      "number": "000",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "theme": "Warm white steamed rice, no sesame or seaweed garnish, muted blue-green ceramic bowl and six distinct modular parts",
+      "partIds": [
+        "kit000::01_BodyShell",
+        "kit000::02_ChassisSuspension",
+        "kit000::03_WheelsTires",
+        "kit000::04_Motor",
+        "kit000::05_FinalDrive",
+        "kit000::06_Battery"
+      ],
+      "bundlePath": "models/food-karts/bundles/000-white-rice.zip",
+      "bundleBytes": 1101459,
+      "bundleSha256": "205a5006dd593e98c325a88e12528598e38c7f6290017dfba706da42c7acebbf"
+    },
+    {
       "id": "001-lemon-pastry",
       "number": "001",
       "title": "Citrus Crumb — Lemon Pastry modular kart 001",
@@ -925,6 +942,457 @@
     }
   ],
   "parts": [
+    {
+      "id": "kit000::01_BodyShell",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "01_BodyShell",
+      "slot": "body",
+      "filename": "01_BodyShell.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/01_BodyShell.glb.pack.gz",
+      "available": true,
+      "bytes": 382933,
+      "sha256": "a439cdecda0f38c7459c050dfdf436a3a5b350d000cd79e712ffa1d24b3d9d9f",
+      "decodedBytes": 751836,
+      "decodedSha256": "2bf2dfe605233e4482979ea6b61321cca1958068892cb335f4a19d06279ef6e5",
+      "originalSha256": "2bf2dfe605233e4482979ea6b61321cca1958068892cb335f4a19d06279ef6e5",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "mount_body_front": [
+          0.0,
+          0.47999998927116394,
+          0.6800000071525574
+        ],
+        "mount_body_rear": [
+          0.0,
+          0.5699999928474426,
+          -0.75
+        ]
+      },
+      "boundsGltf": [
+        [
+          -0.6800000071525574,
+          0.37124085426330566,
+          -0.7844354510307312
+        ],
+        [
+          0.6800000071525574,
+          1.0995492339134216,
+          1.4709999561309814
+        ]
+      ],
+      "triangles": 30068,
+      "materialPrimitives": 2,
+      "vertices": 15796,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "1c73bde569e377cf7994dc4745521795bfd17e5dc09785e35c3436c243cb8fa8",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
+    {
+      "id": "kit000::02_ChassisSuspension",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "02_ChassisSuspension",
+      "slot": "chassis",
+      "filename": "02_ChassisSuspension.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/02_ChassisSuspension.glb.pack.gz",
+      "available": true,
+      "bytes": 168201,
+      "sha256": "faefbdf1f48bf80b78d461406681512501d6bcb0d349748634f9d2be07815323",
+      "decodedBytes": 363980,
+      "decodedSha256": "222597b28b764748c64725edd7654404e165c8cab072ab4a1ece56fc36bb3a44",
+      "originalSha256": "222597b28b764748c64725edd7654404e165c8cab072ab4a1ece56fc36bb3a44",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "slot_battery": [
+          0.0,
+          0.4300000071525574,
+          -0.019999999552965164
+        ],
+        "slot_body_front": [
+          0.0,
+          0.47999998927116394,
+          0.6800000071525574
+        ],
+        "slot_body_rear": [
+          0.0,
+          0.5699999928474426,
+          -0.75
+        ],
+        "slot_final_drive": [
+          0.28999999165534973,
+          0.4350000023841858,
+          -1.0299999713897705
+        ],
+        "slot_motor": [
+          -0.2800000011920929,
+          0.6800000071525574,
+          -1.0299999713897705
+        ],
+        "slot_seat_reference": [
+          0.0,
+          0.7200000286102295,
+          -0.2199999988079071
+        ],
+        "slot_steering_reference": [
+          0.0,
+          1.1200000047683716,
+          0.49000000953674316
+        ],
+        "slot_wheel_LF": [
+          -0.9800000190734863,
+          0.4350000023841858,
+          1.0399999618530273
+        ],
+        "slot_wheel_LR": [
+          -0.9800000190734863,
+          0.4350000023841858,
+          -1.0299999713897705
+        ],
+        "slot_wheel_RF": [
+          0.9800000190734863,
+          0.4350000023841858,
+          1.0399999618530273
+        ],
+        "slot_wheel_RR": [
+          0.9800000190734863,
+          0.4350000023841858,
+          -1.0299999713897705
+        ]
+      },
+      "boundsGltf": [
+        [
+          -0.9110000133514404,
+          0.3385000005364418,
+          -1.2799999713897705
+        ],
+        [
+          0.9110000431537628,
+          1.3265995979309082,
+          1.2799999713897705
+        ]
+      ],
+      "triangles": 14498,
+      "materialPrimitives": 2,
+      "vertices": 7583,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "3e8bdd6652dcec9606ad8d8d00ec543e3f74bdaa364ff527ce6e92c38bbb5e8a",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
+    {
+      "id": "kit000::03_WheelsTires",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "03_WheelsTires",
+      "slot": "wheels",
+      "filename": "03_WheelsTires.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/03_WheelsTires.glb.pack.gz",
+      "available": true,
+      "bytes": 252764,
+      "sha256": "e834606c1f220c44cb55a115f6d03b47ef0c0db9842b6ca183b4c5848bbd6588",
+      "decodedBytes": 519836,
+      "decodedSha256": "fd03c418372e15cad365a692876af3a3768d4911fdae7a687d4a4f19fd59bfe3",
+      "originalSha256": "fd03c418372e15cad365a692876af3a3768d4911fdae7a687d4a4f19fd59bfe3",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "Wheel_LF_pivot": [
+          -0.9800000190734863,
+          0.4350000023841858,
+          1.0399999618530273
+        ],
+        "Wheel_LR_pivot": [
+          -0.9800000190734863,
+          0.4350000023841858,
+          -1.0299999713897705
+        ],
+        "Wheel_RF_pivot": [
+          0.9800000190734863,
+          0.4350000023841858,
+          1.0399999618530273
+        ],
+        "Wheel_RR_pivot": [
+          0.9800000190734863,
+          0.4350000023841858,
+          -1.0299999713897705
+        ]
+      },
+      "boundsGltf": [
+        [
+          -1.1675000470131636,
+          0.0,
+          -1.4649999737739563
+        ],
+        [
+          1.1675000470131636,
+          0.8700000047683716,
+          1.4749999642372131
+        ]
+      ],
+      "triangles": 20664,
+      "materialPrimitives": 8,
+      "vertices": 10756,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "a0e3ec1baf13e67ce786a24bb3abe12536f31f77626cb6989f13f73e4272eb1f",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
+    {
+      "id": "kit000::04_Motor",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "04_Motor",
+      "slot": "motor",
+      "filename": "04_Motor.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/04_Motor.glb.pack.gz",
+      "available": true,
+      "bytes": 93576,
+      "sha256": "55dd66a9828530e99362310d2ff0689f60512556e10545a5f35a6ef86e28447e",
+      "decodedBytes": 195600,
+      "decodedSha256": "e55f37d4235db0929578de279e9d293217ae4d8aea6950fc64aa067c5c479e99",
+      "originalSha256": "e55f37d4235db0929578de279e9d293217ae4d8aea6950fc64aa067c5c479e99",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "drive_output": [
+          0.15000000596046448,
+          0.7200000286102295,
+          -1.0299999713897705
+        ],
+        "mount_motor": [
+          -0.2800000011920929,
+          0.6800000071525574,
+          -1.0299999713897705
+        ]
+      },
+      "boundsGltf": [
+        [
+          -0.5899999737739563,
+          0.39100000262260437,
+          -1.3006330728530884
+        ],
+        [
+          0.16750000417232513,
+          0.9401166439056396,
+          -0.4773186445236206
+        ]
+      ],
+      "triangles": 7806,
+      "materialPrimitives": 2,
+      "vertices": 4053,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "7b4b40c562f73a6b1c9049d6964ff010faef04eb06b00cd70e7ae17cb9dcb403",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
+    {
+      "id": "kit000::05_FinalDrive",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "05_FinalDrive",
+      "slot": "finalDrive",
+      "filename": "05_FinalDrive.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/05_FinalDrive.glb.pack.gz",
+      "available": true,
+      "bytes": 50294,
+      "sha256": "90179e57222042065c3d717f2740315a2f2639f494ff87151133d049ab3d0397",
+      "decodedBytes": 200088,
+      "decodedSha256": "1dd27c32f26ade11804ecef2e6646d9e4e660fb1946c3dbde4f210ae12b6786a",
+      "originalSha256": "1dd27c32f26ade11804ecef2e6646d9e4e660fb1946c3dbde4f210ae12b6786a",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "input_pinion": [
+          0.20000000298023224,
+          0.75,
+          -1.0299999713897705
+        ],
+        "mount_final_drive": [
+          0.28999999165534973,
+          0.4350000023841858,
+          -1.0299999713897705
+        ]
+      },
+      "boundsGltf": [
+        [
+          -0.9100000262260437,
+          0.15800000727176666,
+          -1.2932907342910767
+        ],
+        [
+          0.9100000262260437,
+          0.8960000276565552,
+          -0.7667092680931091
+        ]
+      ],
+      "triangles": 4788,
+      "materialPrimitives": 2,
+      "vertices": 4682,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "bc930f0a7bbb9975f1191d48245291be1470831db66559bc6eeb50a49e27648f",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
+    {
+      "id": "kit000::06_Battery",
+      "kitId": "000-white-rice",
+      "kitNumber": "000",
+      "moduleId": "06_Battery",
+      "slot": "battery",
+      "filename": "06_Battery.glb",
+      "title": "WhiteRice 000 — user-selected pure rice ceramic bowl kit",
+      "path": "models/food-karts/parts/000-white-rice/06_Battery.glb.pack.gz",
+      "available": true,
+      "bytes": 152447,
+      "sha256": "4b1a671248e85a920602ae79074eb3ace0bf613f155cb56d6630fc7ce16a8565",
+      "decodedBytes": 299252,
+      "decodedSha256": "5707d5040d76617ff518bbacf92c9323dbdd8617e6b96807f8f977a2d8209188",
+      "originalSha256": "5707d5040d76617ff518bbacf92c9323dbdd8617e6b96807f8f977a2d8209188",
+      "images": [],
+      "rootTransform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "anchors": {
+        "mount_battery": [
+          0.0,
+          0.4300000071525574,
+          -0.019999999552965164
+        ],
+        "power_socket": [
+          -0.25999999046325684,
+          0.5099999904632568,
+          -0.5
+        ]
+      },
+      "boundsGltf": [
+        [
+          -0.39549998939037323,
+          0.3985000103712082,
+          -0.5269999951124191
+        ],
+        [
+          0.39549997448921204,
+          0.6410000324249268,
+          0.5041093826293945
+        ]
+      ],
+      "triangles": 11888,
+      "materialPrimitives": 2,
+      "vertices": 6252,
+      "materialCount": 2,
+      "embeddedImages": 0,
+      "sourceOriginalSha256": "60a459663983ea470ca34a3a6dd124e81c08b77347bb17c719d3514861cb67c1",
+      "runtimeDerivation": "approved-pure-rice-optimized-v1"
+    },
     {
       "id": "kit001::01_BodyShell",
       "kitId": "001-lemon-pastry",
@@ -68940,27 +69408,26 @@
     }
   ],
   "totals": {
-    "kits": 54,
-    "parts": 324,
-    "availableParts": 324,
-    "originalBytes": 652360460,
-    "originalGzipBytes": 553912436,
+    "kits": 55,
+    "parts": 330,
+    "availableParts": 330,
+    "originalBytes": 654691052,
     "embeddedImageBytes": 497784127,
     "uniqueImages": 1129,
     "sharedImageBytes": 115636488,
-    "packedGeometryBytes": 57267297,
-    "deliveryBytes": 173963078,
-    "triangles": 4311660,
-    "materialPrimitives": 2328,
+    "packedGeometryBytes": 58367512,
+    "deliveryBytes": 175064537,
+    "unbundledDeliveryBytes": 174004000,
+    "bundleCount": 55,
+    "maxBundleBytes": 4381875,
+    "triangles": 4401372,
+    "materialPrimitives": 2346,
     "maxPartPackedBytes": 800437,
-    "maxPartDecodedBytes": 3795840,
-    "unbundledDeliveryBytes": 172903785,
-    "bundleCount": 54,
-    "maxBundleBytes": 4381875
+    "maxPartDecodedBytes": 3795840
   },
   "thumbnailIndex": {
     "path": "models/food-karts/thumbnails.json",
-    "bytes": 1726572,
-    "sha256": "5218a21b997386eb21fd2c144e20baab42368427514c50998a56d3499e659fb1"
+    "bytes": 1785000,
+    "sha256": "3eee4970444c201a91f2222e5bff51ac7830d2baf7446a2871e8af61d9a38d02"
   }
 }

@@ -1,11 +1,11 @@
 {
-  "verifiedParts": 324,
-  "expectedParts": 324,
+  "verifiedParts": 330,
+  "expectedParts": 330,
   "allComplete": true,
-  "triangles": 4311660,
-  "materialPrimitives": 2328,
-  "originalBytes": 652360460,
-  "packedBytes": 57267297,
+  "triangles": 4401372,
+  "materialPrimitives": 2346,
+  "originalBytes": 654691052,
+  "packedBytes": 58367512,
   "uniqueTextures": 1129,
   "sharedTextureBytes": 115636488,
   "maxAssembledTriangles": 99156,
@@ -13,6 +13,22 @@
   "maxMixedTriangles": 163966,
   "maxMixedMaterialPrimitives": 58,
   "kits": [
+    {
+      "id": "000-white-rice",
+      "parts": 6,
+      "triangles": 89712,
+      "materialPrimitives": 18,
+      "packedGeometryBytes": 1100215,
+      "originalBytes": 2330592,
+      "bundleBytes": 1101459,
+      "unbundledLogicalBytes": 1100215,
+      "zipOverheadBytes": 1244,
+      "repeatedImagePixels": 0,
+      "uniqueImages": 0,
+      "sharedImageBytes": 0,
+      "estimatedRgba8MipsBytesWithoutGpuDedup": 0,
+      "estimatedRgba8MipsBytesWithGpuDedup": 0
+    },
     {
       "id": "001-lemon-pastry",
       "parts": 6,
@@ -878,11 +894,11 @@
       "estimatedRgba8MipsBytesWithGpuDedup": 7340032
     }
   ],
-  "bundleCount": 54,
+  "bundleCount": 55,
   "maxBundleBytes": 4381875,
-  "unbundledDeliveryBytes": 172903785,
-  "unbundledLogicalBytes": 173593406,
+  "unbundledDeliveryBytes": 174004000,
+  "unbundledLogicalBytes": 174693621,
   "crossKitDuplicateTextureBytes": 689621,
-  "deliveryBytes": 173963078,
-  "zipOverheadBytes": 369672
+  "deliveryBytes": 175064537,
+  "zipOverheadBytes": 370916
 }

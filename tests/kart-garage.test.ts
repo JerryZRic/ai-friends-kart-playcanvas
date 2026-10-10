@@ -24,9 +24,9 @@ function kit(number: string): KartBuild {return Object.fromEntries(KART_SLOTS.ma
 function deferred<T>() {let resolve!: (value: T) => void; const promise = new Promise<T>(done => resolve = done); return {promise, resolve};}
 const tick = () => new Promise(resolve => setTimeout(resolve, 0));
 
-test('garage filters exact IDs across six 54-part slots and passes a valid selected build to the race', () => {
+test('garage filters exact IDs across six 55-part slots and passes a valid selected build to the race', () => {
   for (const slot of KART_SLOTS) {
-    assert.equal(filterGarageParts(slot, '', '').length, 54);
+    assert.equal(filterGarageParts(slot, '', '').length, 55);
     const part = catalog.find(part => part.slot === slot)!;
     assert.deepEqual(filterGarageParts(slot, part.themeId, ''), [part]);
     assert.deepEqual(filterGarageParts(slot, '', part.id.toUpperCase()), [part]);
@@ -39,7 +39,7 @@ test('garage filters exact IDs across six 54-part slots and passes a valid selec
   assert.equal(new URL(garageRaceEntry('hostile', defaultBuild), 'https://example.com').searchParams.get('driver'), 'whale');
 });
 
-test('all 324 selection thumbnails derive from actual source modules and no placeholder masquerades as a preview', () => {
+test('all 330 selection thumbnails derive from actual source modules and no placeholder masquerades as a preview', () => {
   const indexBytes = readFileSync('public/models/food-karts/thumbnails.json');
   const index = JSON.parse(indexBytes.toString('utf8'));
   const sha256 = (bytes: Buffer | string) => createHash('sha256').update(bytes).digest('hex');
@@ -60,7 +60,7 @@ test('all 324 selection thumbnails derive from actual source modules and no plac
     assert.deepEqual([...bytes.subarray(23, 26)], [0x9d, 0x01, 0x2a], 'VP8 key-frame signature');
     assert.equal(bytes.readUInt16LE(26) & 0x3fff, 369, `${part.id} preserves source width`);
     assert.equal(bytes.readUInt16LE(28) & 0x3fff, 300, `${part.id} preserves source height`);
-    originalThumbnails.push([part.id, sha256(bytes)]);
+    if (part.kitNumber > 0) originalThumbnails.push([part.id, sha256(bytes)]);
   }
   // Captured from all original public WebPs before lossless JSON bundling.
   originalThumbnails.sort(([a], [b]) => a.localeCompare(b));

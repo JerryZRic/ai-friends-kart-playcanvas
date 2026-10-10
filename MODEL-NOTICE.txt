@@ -58,3 +58,12 @@ rights grant. Source hashes, crop coordinates and output hashes are recorded
 in docs/character-emblems.json. Original full sheets and private source
 references are not redistributed. Extraction preserves the original emblem
 pixels and colors, including surrounding motif stars; no AI redraw is used.
+
+000 pure white rice food kart (DEV)
+
+This original food-kart addition uses the owner-approved C pure-rice design.
+The public runtime derivative reduces rice-surface geometry and bakes base
+color to vertex colors; full-fidelity source and runtime hashes are separately
+recorded in docs/white-rice-runtime-provenance.json. These food-kart assets
+are separate from the six restricted third-party character models above.
+All 001–054 food-kart public bundles remain unchanged.

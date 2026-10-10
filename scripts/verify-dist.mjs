@@ -55,8 +55,8 @@ const files = inventory('dist'), archive = read('dist/source.zip');
 const entries = unzipSync(archive), prefix = 'ai-friends-kart-playcanvas-source/';
 const sourceEntries = new Map();
 
-check('all 324 food modules reconstruct exact verified originals', () => {
-  const verified=verifyFoodKartAssets(); assert.equal(verified.verifiedParts,324);
+check('all 330 food modules reconstruct exact verified runtime bytes', () => {
+  const verified=verifyFoodKartAssets(); assert.equal(verified.verifiedParts,330);
   for (const path of inventory('public/models/food-karts')) assert.equal(sha(read('public/models/food-karts/'+path)),sha(read('dist/models/food-karts/'+path)), 'Food artifact changed: '+path);
 });
 

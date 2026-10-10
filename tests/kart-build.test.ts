@@ -25,12 +25,12 @@ function assertBounds(build: KartBuild) {
   }
 }
 
-test('frozen catalog contains exactly 54 complete themes / 324 exact slot identities', () => {
-  assert.equal(catalog, parts); assert.equal(catalog.length, 324); assert.equal(themes.length, 54);
-  assert.equal(new Set(catalog.map(part => part.id)).size, 324);
-  assert.equal(new Set(themes.map(theme => theme.id)).size, 54);
+test('frozen catalog contains exactly 55 complete themes / 330 exact slot identities', () => {
+  assert.equal(catalog, parts); assert.equal(catalog.length, 330); assert.equal(themes.length, 55);
+  assert.equal(new Set(catalog.map(part => part.id)).size, 330);
+  assert.equal(new Set(themes.map(theme => theme.id)).size, 55);
   for (const slot of KART_SLOTS) {
-    assert.equal(partsBySlot[slot].length, 54);
+    assert.equal(partsBySlot[slot].length, 55);
     assert.equal(new Set(partsBySlot[slot].map(part => part.archetypeId)).size, 6);
     for (const part of partsBySlot[slot]) {
       assert.equal(part.slot, slot); assert.equal(part.id, part.partId); assert.equal(part.kitId, part.themeId);
@@ -41,7 +41,7 @@ test('frozen catalog contains exactly 54 complete themes / 324 exact slot identi
       assert.equal(getPart(part.id), part); assertBounds({...defaultBuild, [slot]: part.id});
     }
   }
-  for (let kit = 1; kit <= 54; kit++) assert.equal(validateBuild(sameTheme(kit)), true);
+  for (let kit = 0; kit <= 54; kit++) assert.equal(validateBuild(sameTheme(kit)), true);
   const payload = readFileSync(new URL('../src/kart-catalog.json', import.meta.url), 'utf8');
   assert.equal(/libfile_|source_library|\/workspace\/|asset_evidence|manifest_reference/.test(payload), false);
 });
@@ -105,13 +105,13 @@ test('same-theme identity never changes performance: physical equivalents are id
 test('all 46,656 six-archetype combinations and 2,000 full-catalog mixes stay finite and bounded', () => {
   for (let code = 0; code < 6 ** 6; code++) {
     let digits = code; const build = {...defaultBuild};
-    for (const slot of KART_SLOTS) {build[slot] = partsBySlot[slot][digits % 6].id; digits = Math.floor(digits / 6);}
+    for (const slot of KART_SLOTS) {build[slot] = partsBySlot[slot].filter(part => part.kitNumber > 0)[digits % 6].id; digits = Math.floor(digits / 6);}
     assertBounds(build);
   }
   let seed = 20261010;
   for (let count = 0; count < 2000; count++) {
     const build = {...defaultBuild};
-    for (const slot of KART_SLOTS) {seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; build[slot] = partsBySlot[slot][seed % 54].id;}
+    for (const slot of KART_SLOTS) {seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; build[slot] = partsBySlot[slot][seed % partsBySlot[slot].length].id;}
     assertBounds(build);
   }
 });

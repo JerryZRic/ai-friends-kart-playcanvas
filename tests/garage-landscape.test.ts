@@ -5,24 +5,24 @@ import {garagePartPage, filterGarageParts, garageRaceEntry, garageBackEntry, gar
 import {KART_SLOTS, defaultGarageState} from '../src/kart-build';
 import {kartPresets} from '../src/kart-presets';
 
-test('landscape six-card pagination reaches all 324 parts once, in catalog order', () => {
+test('landscape six-card pagination reaches all 330 parts once, in catalog order', () => {
   let count = 0;
   for (const slot of KART_SLOTS) {
     const all = filterGarageParts(slot, '', '');
     const first = garagePartPage(all, 0);
-    assert.equal(first.pages, 9);
+    assert.equal(first.pages, 10);
     const visited = [];
     for (let page = 0; page < first.pages; page++) {
       const result = garagePartPage(all, page);
       assert.equal(result.page, page);
-      assert.equal(result.items.length, 6);
+      assert.equal(result.items.length, Math.min(6, all.length - page * 6));
       visited.push(...result.items);
     }
     assert.deepEqual(visited, all);
-    assert.equal(new Set(visited.map(part => part.id)).size, 54);
+    assert.equal(new Set(visited.map(part => part.id)).size, 55);
     count += visited.length;
   }
-  assert.equal(count, 324);
+  assert.equal(count, 330);
 });
 
 test('pagination clamps stale pages after filters and handles empty and partial trays', () => {
@@ -35,7 +35,7 @@ test('pagination clamps stale pages after filters and handles empty and partial 
   assert.deepEqual(garagePartPage([], 8), {page: 0, pages: 1, items: []});
   assert.deepEqual(garagePartPage([0, 1, 2, 3, 4, 5, 6], 1), {page: 1, pages: 2, items: [6]});
   assert.equal(garagePartPage(all, -10).page, 0);
-  assert.equal(garagePartPage(all, 999).page, 8);
+  assert.equal(garagePartPage(all, 999).page, 9);
   assert.equal(garagePartPage(all, Number.NaN).page, 0);
 });
 

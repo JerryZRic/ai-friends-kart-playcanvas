@@ -3,6 +3,7 @@ import { decodeRuntimeBuffer, parseLocalGLB, instantiateRenderEntity, disposeDri
 import { fetchWithRetry } from './asset-download.js';
 import { resolveCharacter } from './character-profiles';
 import { readGameSettings } from './game-settings';
+import {createCharacterPreviewStage, PORTRAIT_CLEAR_COLOR} from './character-preview-stage';
 import portraitManifest from '../docs/portrait-models.json';
 
 /** Original standing figures are a distinct, non-commercial asset collection. */
@@ -183,6 +184,7 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   let aspect = 1, selected = resolveCharacter(driver).id, pointer: number | null = null, lastX = 0;
   let model: CharacterPreviewModel | null = null;
   let camera: pc.Entity | null = null;
+  let stage: ReturnType<typeof createCharacterPreviewStage> | null = null;
   let resizeObserver: ResizeObserver | null = null;
   let released: Promise<unknown> = Promise.resolve();
   const settings = readGameSettings(), motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -195,9 +197,11 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   function fit() {
     if (!model || !camera) return;
     const view = characterPreviewCamera(model.bounds, aspect);
+    stage?.fit(model.bounds);
     camera.setPosition(view.position); camera.lookAt(view.target);
     camera.camera!.aspectRatioMode = pc.ASPECT_MANUAL; camera.camera!.aspectRatio = aspect;
-    camera.camera!.fov = view.fov; camera.camera!.nearClip = view.nearClip; camera.camera!.farClip = view.farClip;
+    camera.camera!.fov = view.fov; camera.camera!.nearClip = .01;
+    camera.camera!.farClip = Math.max(view.farClip, view.distance + model.bounds.halfExtents.y * 16);
   }
   function draw(now: number) {
     frame = 0;
@@ -275,7 +279,7 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   function contextLost(event: Event) { event.preventDefault(); lost = true; cancelFrame(); }
   function contextRestored() { lost = false; resize(); }
   function releaseApp() {
-    const oldApp = app, oldSession = session; app = null; session = null; model = null; camera = null;
+    const oldApp = app, oldSession = session, oldStage = stage; app = null; session = null; model = null; camera = null; stage = null;
     // Container parsing cannot be interrupted halfway through texture callbacks.
     // Stop drawing now and let the owner release its result before its device.
     if (oldApp) {
@@ -283,7 +287,7 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
       const loseContext = context?.getExtension('WEBGL_lose_context');
       oldApp.root.enabled = false;
       released = (oldSession?.dispose() || Promise.resolve()).finally(() => {
-        oldApp.destroy();
+        oldStage?.dispose(); oldApp.destroy();
         // Returning to the roster creates a fresh canvas/context. Explicitly
         // release this context rather than waiting for browser garbage collection.
         if (disposed) loseContext?.loseContext();
@@ -297,12 +301,12 @@ export function mountCharacterPreview(canvas: HTMLCanvasElement, status: HTMLEle
   function initialize() {
     if (disposed || app) return;
     try {
-      app = new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality !== 'low', alpha: true, powerPreference: 'low-power'}});
+      app = new pc.Application(canvas, {graphicsDeviceOptions: {antialias: settings.quality !== 'low', alpha: false, powerPreference: 'low-power'}});
       app.setCanvasFillMode(pc.FILLMODE_NONE); app.setCanvasResolution(pc.RESOLUTION_AUTO);
-      app.scene.ambientLight = new pc.Color(.76, .79, .84);
-      camera = new pc.Entity('Character portrait camera', app); camera.addComponent('camera', {clearColor: new pc.Color(.08, .12, .19, 0), fov: 34}); app.root.addChild(camera);
-      const key = new pc.Entity('Portrait key light', app); key.addComponent('light', {type: 'directional', color: new pc.Color(1, .93, .86), intensity: 1.55, castShadows: false}); key.setLocalEulerAngles(35, -28, 0); app.root.addChild(key);
-      const fill = new pc.Entity('Portrait fill light', app); fill.addComponent('light', {type: 'directional', color: new pc.Color(.75, .88, 1), intensity: .65, castShadows: false}); fill.setLocalEulerAngles(-20, 145, 0); app.root.addChild(fill);
+      stage = createCharacterPreviewStage(app);
+      camera = new pc.Entity('Character portrait camera', app);
+      camera.addComponent('camera', {clearColor: PORTRAIT_CLEAR_COLOR, fov: 34, nearClip: .01, farClip: 20, toneMapping: pc.TONEMAP_ACES, gammaCorrection: pc.GAMMA_SRGB});
+      app.root.addChild(camera); camera.setPosition(0, .62, 2.7); camera.lookAt(0, .5, 0);
       session = createCharacterPreviewSession(app, {onState: display, onModel: next => { model = next; fit(); refresh(); }});
       app.start(); stopEngineFrame(); resize(); select(selected);
     } catch (error) { console.warn('Character preview WebGL initialization is unavailable.', error); unavailable(); }

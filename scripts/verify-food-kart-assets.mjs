@@ -144,7 +144,7 @@ function verifyThumbnails(manifest) {
   const bytes = readFileSync(`public/${record.path}`);
   if (bytes.length !== record.bytes || hash(bytes) !== record.sha256) throw new Error('Thumbnail index integrity');
   const index = JSON.parse(bytes);
-  if (index.schemaVersion !== 1 || !index.images || Object.keys(index.images).length !== manifest.parts.length) throw new Error('Expected exactly324 indexed thumbnails');
+  if (index.schemaVersion !== 1 || !index.images || Object.keys(index.images).length !== manifest.parts.length) throw new Error('Expected exactly330 indexed thumbnails');
   for (const part of manifest.parts) {
     const value = index.images[part.id];
     if (typeof value !== 'string' || !/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(value)) throw new Error(`Invalid thumbnail ${part.id}`);
@@ -157,7 +157,7 @@ export function verifyFoodKartAssets({ allowPartial = false, allowLoose = false 
   currentBundle = undefined;
   const text = readFileSync('public/models/food-karts/manifest.json', 'utf8'), manifest = JSON.parse(text);
   if (/libfile_|\/workspace\/|\/home\/agent|\.openai|sediment:\/\/|library_file|file_000000|version_id|archive_internal/i.test(text)) throw new Error('Private source metadata leaked into public manifest');
-  if (manifest.kits.length !== 54 || new Set(manifest.kits.map(kit => kit.id)).size !== 54 || manifest.parts.length !== 324 || new Set(manifest.parts.map(part => part.id)).size !== 324) throw new Error('Expected exactly54 kits and324 unique parts');
+  if (manifest.kits.length !== 55 || new Set(manifest.kits.map(kit => kit.id)).size !== 55 || manifest.parts.length !== 330 || new Set(manifest.parts.map(part => part.id)).size !== 330) throw new Error('Expected exactly55 kits and330 unique parts');
   if (!allowLoose && ['parts', 'textures'].some(directory => publicFiles(`public/models/food-karts/${directory}`).length)) throw new Error('Loose public food parts/textures must be removed after bundle verification');
   const expectedBundles = new Set(manifest.kits.filter(kit => manifest.parts.some(part => part.kitId === kit.id && part.available)).map(kit => `public/${kit.bundlePath}`));
   for (const path of publicFiles('public/models/food-karts/bundles')) if (!expectedBundles.has(path)) throw new Error(`Unexpected public food bundle ${path}`);
@@ -201,7 +201,7 @@ export function verifyFoodKartAssets({ allowPartial = false, allowLoose = false 
     perSlot.get(part.slot).push({ triangles: pt, materialPrimitives: pp, packedBytes: part.bytes });
   }
   const kits = [...perKit.values()].map(({ images, ...kit }) => ({ ...kit, uniqueImages: images.size, sharedImageBytes: [...images.values()].reduce((n, image) => n + image.bytes, 0), estimatedRgba8MipsBytesWithoutGpuDedup: Math.ceil(kit.repeatedImagePixels * 4 * 4 / 3), estimatedRgba8MipsBytesWithGpuDedup: Math.ceil([...images.values()].reduce((n, image) => n + image.width * image.height, 0) * 4 * 4 / 3) }));
-  const summary = { verifiedParts: verified, expectedParts: 324, allComplete: verified === 324, triangles, materialPrimitives: primitives, originalBytes, packedBytes, uniqueTextures: textures.size, sharedTextureBytes: [...textures.values()].reduce((n, image) => n + image.bytes, 0), maxAssembledTriangles: Math.max(0, ...kits.map(kit => kit.triangles)), maxAssembledMaterialPrimitives: Math.max(0, ...kits.map(kit => kit.materialPrimitives)), maxMixedTriangles: [...perSlot.values()].reduce((n, parts) => n + Math.max(...parts.map(part => part.triangles)), 0), maxMixedMaterialPrimitives: [...perSlot.values()].reduce((n, parts) => n + Math.max(...parts.map(part => part.materialPrimitives)), 0), kits };
+  const summary = { verifiedParts: verified, expectedParts: 330, allComplete: verified === 330, triangles, materialPrimitives: primitives, originalBytes, packedBytes, uniqueTextures: textures.size, sharedTextureBytes: [...textures.values()].reduce((n, image) => n + image.bytes, 0), maxAssembledTriangles: Math.max(0, ...kits.map(kit => kit.triangles)), maxAssembledMaterialPrimitives: Math.max(0, ...kits.map(kit => kit.materialPrimitives)), maxMixedTriangles: [...perSlot.values()].reduce((n, parts) => n + Math.max(...parts.map(part => part.triangles)), 0), maxMixedMaterialPrimitives: [...perSlot.values()].reduce((n, parts) => n + Math.max(...parts.map(part => part.materialPrimitives)), 0), kits };
   summary.bundleCount = kits.length;
   summary.maxBundleBytes = Math.max(0, ...kits.map(kit => kit.bundleBytes));
   summary.unbundledDeliveryBytes = summary.packedBytes + summary.sharedTextureBytes;
