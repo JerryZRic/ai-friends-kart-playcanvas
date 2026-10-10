@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { getNpcPresets } from '../src/kart-presets';
 import { CHARACTER_PROFILES, characterTuning } from '../src/character-profiles';
 import { defaultBuild, starterBuilds, defaultGarageState, GARAGE_STORAGE_KEY, KART_SLOTS, kartTuning, type KartBuild } from '../src/kart-build';
 import { raceKartBuild, buildForRacer, raceKartTuning, createRaceKartTuning, kartBuildKey, kartRoadContext } from '../src/kart-race';
@@ -49,15 +50,12 @@ test('race reads the real versioned garage key and safely handles damaged browse
   } finally {if (previous) Object.defineProperty(globalThis, 'localStorage', previous); else delete (globalThis as any).localStorage;}
 });
 
-test('active build follows the selected player while every opponent keeps the baseline six slots', () => {
+test('active build follows the selected player while every opponent uses its fixed curated six slots', () => {
   for (const selected of CHARACTER_PROFILES) for (const racer of CHARACTER_PROFILES) {
-    const expected = racer.id === selected.id ? saved : defaultBuild;
+    const expected = racer.id === selected.id ? saved : getNpcPresets('coast',20261010).find(p=>p.characterId===racer.id)!.build;
     assert.deepEqual(buildForRacer(racer.id, selected.id, saved), expected);
     assert.deepEqual(raceKartTuning(racer.id, selected.id, saved), kartTuning(racer.id, 'coast', expected));
-    if (racer.id !== selected.id) {
-      const tuning = raceKartTuning(racer.id, selected.id, saved), legacy = characterTuning(racer.id, 'coast');
-      assert.equal(tuning.acceleration, legacy.acceleration); assert.equal(tuning.maxSpeed, legacy.maxSpeed); assert.equal(tuning.steering, legacy.steering);
-    }
+    assert.deepEqual(raceKartTuning(racer.id, selected.id, saved), kartTuning(racer.id, 'coast', expected));
   }
   assert.equal(kartBuildKey(saved), KART_SLOTS.map(slot => saved[slot]).join('|'));
   for (const slot of KART_SLOTS) assert.notEqual(kartBuildKey({...saved, [slot]: defaultBuild[slot]}), kartBuildKey(saved));
@@ -68,7 +66,7 @@ test('compiled race tuning snapshots build selection and applies identical road 
   mutable.motor = defaultBuild.motor;
   for (const selected of CHARACTER_PROFILES) for (const racer of CHARACTER_PROFILES) {
     for (const context of [{speed: 0, grade: 0, curvature: 0}, {speed: 24, grade: .12, curvature: -.02}, {speed: 30, grade: -.1, curvature: .05}])
-      assert.deepEqual(tune(racer.id, selected.id, context), kartTuning(racer.id, 'coast', racer.id === selected.id ? saved : defaultBuild, context));
+      assert.deepEqual(tune(racer.id, selected.id, context), kartTuning(racer.id, 'coast', racer.id === selected.id ? saved : getNpcPresets('coast',20261010).find(p=>p.characterId===racer.id)!.build, context));
   }
   const corner = createRaceKartTuning(fromUrl), straight = createRaceKartTuning(saved);
   assert.ok(straight('whale', 'whale', {curvature: 0}).maxSpeed > corner('whale', 'whale', {curvature: 0}).maxSpeed);

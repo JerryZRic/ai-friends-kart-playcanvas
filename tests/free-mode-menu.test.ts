@@ -24,10 +24,10 @@ test('settings survive reload and reject corrupt values, unknown versions, missi
  assert.deepEqual(readGameSettings(blocked),DEFAULT_SETTINGS);assert.equal(saveGameSettings({...DEFAULT_SETTINGS},blocked),false);
  assert.equal(qualitySettings('low').shadows,false);assert.equal(qualitySettings('balanced').pixelRatioCap,1.7);assert.equal(qualitySettings('high').shadowResolution,2048);
 });
-test('menu URLs sanitize hostile states and preserve only selected map and driver on back',()=>{
- assert.deepEqual(parseMenuState('?screen=nonsense&driver=<script>&map=external&return=exit'),{screen:'main',driver:'whale',map:'coast',returnTo:'main'});
+test('menu URLs sanitize hostile states and preserve selected setup on back',()=>{
+ assert.deepEqual(parseMenuState('?screen=nonsense&driver=<script>&map=external&return=exit'),{screen:'main',driver:'whale',map:'coast',returnTo:'main',difficulty:'normal',seed:20261010});
  const state=parseMenuState('?screen=characters&driver=grok&map=waterpark');assert.equal(parseMenuState(menuQuery(state)).driver,'grok');
- assert.equal(menuQuery({...state,screen:'maps'}),'?screen=maps&map=waterpark');
+ assert.equal(parseMenuState(menuQuery({...state,screen:'maps'})).driver,'grok');
  assert.equal(raceEntry('coast','grok'),'./coast.html?driver=grok&autostart=1');assert.equal(raceEntry('waterpark','x'),'./waterpark.html?driver=whale&autostart=1');
  assert.equal(MAP_PROFILES.coast.entry,'./coast.html');
 });

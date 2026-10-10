@@ -192,3 +192,19 @@ test('the shared result table keeps all six authoritative rows and distinguishes
   assert.equal($('chargeLabel').textContent,'蓄力就绪');assert.equal($('charge').dataset.state,'ready');assert.ok(Math.abs(parseFloat($('charge').style.width)-87.5)<1e-9);assert.equal($('itemHelp').textContent,'出弯加速');
   shell.updateHUD(snapshot);assert.equal($('charge').style.width,'50%');assert.equal($('charge').dataset.state,'idle');assert.match($('chargeLabel').textContent,/释放漂移加速/);assert.equal($('itemHelp').textContent,'点击这里或按 E 使用');shell.dispose();
 });
+
+
+test('race exits preserve explicit difficulty seed and independent car while switching destinations', async () => {
+ const {kartPresets}=await import('../src/kart-presets');
+ const {parseMenuState}=await import('../src/menu-state');
+ const kart=JSON.stringify(kartPresets[1].build);
+ const search='?difficulty=hard&seed=42&kart='+encodeURIComponent(kart);
+ for(const map of ['coast','waterpark'] as const){
+  const links=raceNavigation(map,'glm',search);
+  for(const [key,url] of Object.entries(links)){
+   const state=parseMenuState(url.slice(url.indexOf('?')));
+   assert.equal(state.map,map);assert.equal(state.driver,'glm');assert.equal(state.difficulty,'hard');assert.equal(state.seed,42);assert.equal(state.kart,kart);
+   assert.equal(state.screen,key==='main'?'main':key==='changeMap'?'maps':'characters');
+  }
+ }
+});

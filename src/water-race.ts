@@ -1,4 +1,6 @@
 /** Deterministic fixed-step race rules. Rendering, wall time and loading cannot advance a race. */
+import { parseRaceOptions, type RaceOptions } from './race-options';
+import { npcSkill, npcDriving } from './npc-difficulty';
 import { raceOrder } from './driver-roster.js';
 import { characterTuning } from './character-profiles';
 import { newWaterState, stepWaterMotion, WATER_HANDLING, type WaterInput, type WaterState } from './waterpark-motion';
@@ -7,8 +9,8 @@ import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap
 import { advancePickup, resetPickup } from './item-pickups';
 import { createDynamicPickupDirector } from './dynamic-pickups';
 export const WATER_LAPS=3, WATER_CHECKPOINTS=8, WATER_COUNTDOWN=3;
-export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number};
-export type WaterRace={racers:WaterRacer[];countdown:number;elapsed:number;finished:boolean;remainder:number;seed:number;announcements:string[]};
+export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number;driftCooldown:number;aiBend:number};
+export type WaterRace={racers:WaterRacer[];countdown:number;elapsed:number;finished:boolean;remainder:number;seed:number;options:RaceOptions;announcements:string[]};
 /** Actual signed travel speed shared by movement, HUD, wake and rider animation.
  * Item and slide boosts use one multiplier, and neither accelerates reverse. */
 export function waterTravelSpeed(racer:WaterRacer){
@@ -17,8 +19,8 @@ export function waterTravelSpeed(racer:WaterRacer){
  const speed=Math.max(-Math.min(11,max*WATER_HANDLING.reverseRatio),Math.min(max,racer.speed));
  return speed*(speed>0&&(racer.boost>0||racer.motion.slideBoost>0)?RULES.boostFactor:1)*(racer.slow>0?RULES.slowFactor:1);
 }
-export function newWaterRace(selected:string):WaterRace {
- return {racers:raceOrder(selected).map((d,i)=>({...newBrain(i,(i%3-1)*4),id:d.id,total:-5*Math.floor(i/3)||0,lateral:(i%3-1)*4,speed:0,held:null,boost:0,shield:0,slow:0,motion:{...newWaterState(),distance:-5*Math.floor(i/3)||0,lane:(i%3-1)*4},checkpoint:0,finishTime:null,phase:i,warning:0})),countdown:WATER_COUNTDOWN,elapsed:0,finished:false,remainder:0,seed:47291,announcements:[]};
+export function newWaterRace(selected:string, options: RaceOptions = parseRaceOptions('')):WaterRace {
+ return {racers:raceOrder(selected).map((d,i)=>({...newBrain(i,(i%3-1)*4),id:d.id,total:-5*Math.floor(i/3)||0,lateral:(i%3-1)*4,speed:0,held:null,boost:0,shield:0,slow:0,motion:{...newWaterState(),distance:-5*Math.floor(i/3)||0,lane:(i%3-1)*4},checkpoint:0,finishTime:null,phase:i,warning:0,driftCooldown:0,aiBend:0})),countdown:WATER_COUNTDOWN,elapsed:0,finished:false,remainder:0,seed:options.seed,options:{...options},announcements:[]};
 }
 export function raceRandom(r:WaterRace){r.seed=(Math.imul(r.seed,1664525)+1013904223)>>>0;return r.seed/4294967296;}
 /** Sequential forward gates, never lap-count from modulo distance. Reverse and
@@ -45,6 +47,7 @@ export function clearWaterDynamicPickups(race:WaterRace){dynamicDirectors.get(ra
 function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPickup[]){
  if(race.finished)return;
  if(race.countdown>0){const waiting=Math.min(dt,race.countdown);race.countdown-=waiting;dt-=waiting;if(race.countdown<1e-9)race.countdown=0;if(dt<1e-9)return;}
+ const skill=npcSkill(race.options.difficulty);
  const beforeTime=race.elapsed,player=race.racers[0],line=WATER_RACE_LENGTH*WATER_LAPS;
  let playerCrossing=false;
  // Stop the whole simulation at the player's interpolated crossing, just like
@@ -62,17 +65,21 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
  race.elapsed+=dt;
  for(const b of boxes)if(!b.dynamic)advancePickup(b,dt,()=>raceRandom(race));
  const active=race.racers.filter(r=>r.finishTime===null);
- const previous=active.map(actor=>({actor,previous:actor.total,previousLane:actor.lateral,onPickup:()=>{actor.pickups++;actor.reaction=RULES.reaction;}}));
+ const previous=active.map(actor=>({actor,previous:actor.total,previousLane:actor.lateral,onPickup:()=>{actor.pickups++;actor.reaction=skill.reaction;}}));
  for(const racer of active){
   tickEffects(racer,dt);tickBrain(racer,dt);const wasWarning=racer.warning;racer.warning=Math.max(0,racer.warning-dt);
   const tuning=characterTuning(racer.id,'waterpark'),curvature=waterparkCurvature(racer.total),bend=curvature*22;
   let control=input;
   if(racer!==race.racers[0]){
-   if(racer.decisionIn<=0){racer.targetLane=planLane(racer,active,boxes,WATER_RACE_LENGTH,racer.phase,bend);racer.decisionIn=.2;}
+   if(racer.decisionIn<=0){racer.aiBend=waterparkCurvature(racer.total+skill.lookAhead*.5)*22;racer.targetLane=planLane(racer,active,boxes,WATER_RACE_LENGTH,racer.phase,racer.aiBend,skill);racer.decisionIn=skill.decision;}
    const steer=Math.max(-1,Math.min(1,(racer.targetLane-racer.lateral)*1.3-racer.motion.lateralSpeed*.5));
-   control={throttle:true,brake:false,steer};
+   racer.driftCooldown=Math.max(0,racer.driftCooldown-dt);
+   const decision=npcDriving(racer.speed,tuning.maxSpeed,racer.aiBend,skill,racer.motion.charge,racer.targetLane-racer.lateral);
+   const drift=decision.drift&&racer.driftCooldown===0&&Math.abs(steer)>.03;
+   if(racer.motion.drifting&&!drift)racer.driftCooldown=2;
+   control={throttle:decision.throttle,brake:decision.brake,steer,drift};
    if(wasWarning>0&&racer.warning===0){useWaterItem(race,racer);racer.warning=0;}
-   else if(racer.warning===0&&chooseItem(racer,active,WATER_RACE_LENGTH,bend))racer.warning=.5;
+   else if(racer.warning===0&&chooseItem(racer,active,WATER_RACE_LENGTH,bend,skill))racer.warning=.5;
   }
   const old=racer.total;
   const next=stepWaterMotion(racer.motion,control,dt,{...tuning,finishDistance:Infinity,curvature});

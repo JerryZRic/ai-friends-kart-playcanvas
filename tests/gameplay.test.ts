@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {npcDriving,npcSkill} from '../src/npc-difficulty';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
@@ -10,7 +11,7 @@ import { itemImage, type ItemDisplay, type ItemKind } from '../src/item-models';
 import { resetPickup, setPickupDisplay } from '../src/item-pickups';
 import { defaultBuild, starterBuilds, KART_SLOTS, GARAGE_STORAGE_KEY, buildStats, type KartBuild } from '../src/kart-build';
 import { clearFoodKartPayloadCache } from '../src/food-kart-payload';
-import { createRaceKartTuning, kartRoadContext } from '../src/kart-race';
+import { createRaceKartTuning, kartRoadContext, buildForRacer, stepRaceKartSpeed } from '../src/kart-race';
 
 const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
 const scenarios = [
@@ -92,7 +93,7 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
   // container parsing, six-slot assembly, cockpit fitting and rigs are real.
   const foodManifest=JSON.parse(readFileSync('public/models/food-karts/manifest.json','utf8'));
   const bundlePathFor=(id:string)=>foodManifest.kits.find(kit=>kit.id===foodManifest.parts.find(part=>part.id===id).kitId).bundlePath;
-  const missingBundlePath=bundlePathFor(defaultBuild.chassis);
+  const missingBundlePath=bundlePathFor((scenario.savedBuild||defaultBuild).chassis);
   let failFoodPart=true, pendingFoodSignal: AbortSignal | undefined;
   const foodRequests: string[]=[];
   globalThis.fetch=async (input,options:RequestInit={})=>{
@@ -195,8 +196,8 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
     assert.deepEqual(game.getState().kartBuild,scenario.savedBuild||defaultBuild);
     assert.equal(game.getState().modularKartsLoaded,true);assert.ok(storageReads.includes(GARAGE_STORAGE_KEY));
     assert.equal(storageWrites.includes(GARAGE_STORAGE_KEY),false,'starting a race never rewrites a saved build');
-    assertRacerBuild('whale',scenario.savedBuild||defaultBuild);for(const bot of qa.bots())assertRacerBuild(bot.id,defaultBuild);
-    assert.equal(foodRequests.filter(path=>path===bundlePathFor(defaultBuild.body)).length,1,'successful earlier parts survive a failed-slot retry');
+    assertRacerBuild('whale',scenario.savedBuild||defaultBuild);for(const bot of qa.bots())assertRacerBuild(bot.id,buildForRacer(bot.id,game.getState().selectedDriverId,scenario.savedBuild||defaultBuild,game.getState().raceOptions.seed));
+    assert.equal(foodRequests.filter(path=>path===bundlePathFor((scenario.savedBuild||defaultBuild).body)).length,1,'successful earlier parts survive a failed-slot retry');
     await t.test('model-ready return freezes race and input until camera arrives',()=>{
       assert.equal(game.getState().state,'returning');
       key('keydown','KeyW');qa.advanceFrame(.8);assert.equal(game.getState().state,'returning');assert.equal(game.getState().elapsed,0);assert.equal(game.getState().speed,0);
@@ -212,13 +213,13 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
         assert.notEqual(multipliers.acceleration,1);assert.notEqual(multipliers.speed,1);assert.notEqual(multipliers.handling,1);
         for(const profile of CHARACTER_PROFILES){
           qa.set({state:'menu'});assert.equal(game.selectDriver(profile.id),true);game.start();
-          assertRacerBuild(profile.id,scenario.savedBuild!);for(const bot of qa.bots())assertRacerBuild(bot.id,defaultBuild);
+          assertRacerBuild(profile.id,scenario.savedBuild!);for(const bot of qa.bots())assertRacerBuild(bot.id,buildForRacer(bot.id,game.getState().selectedDriverId,scenario.savedBuild||defaultBuild,game.getState().raceOptions.seed));
           qa.set({state:'running',countdown:0,elapsed:0,pos:0,lane:0,speed:0});
           const expected=tuningFor(profile.id,profile.id,kartRoadContext(0,0,qa.sample));
           key('keydown','KeyW');qa.update(.1);key('keyup','KeyW');
           assert.ok(Math.abs(game.getState().speed-expected.acceleration*.1)<1e-8,`${profile.id} saved parts alter actual acceleration`);
           assert.notEqual(expected.acceleration,characterTuning(profile.id,'coast').acceleration);
-          for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,'opponents retain default-build character acceleration');
+          for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-createRaceKartTuning(scenario.savedBuild||defaultBuild)(bot.id,profile.id,kartRoadContext(12+Math.floor(bot.phase/2)*5.2,0,qa.sample)).acceleration*.1)<1e-8,'opponents use their own curated build with the same character and road formulas');
           qa.set({noBots:true,pos:0,lane:0,speed:0,held:null,boost:0,shield:0,slow:0});
           key('keydown','KeyW');for(let frame=0;frame<300;frame++){qa.set({pos:0,lane:0});qa.update(1/60);}key('keyup','KeyW');
           const top=tuningFor(profile.id,profile.id,kartRoadContext(0,game.getState().speed,qa.sample));
@@ -253,8 +254,8 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
     const worldLayer = app.scene.layers.getLayerById(pc.LAYERID_WORLD)!;
     const displays: ItemDisplay[] = ['boost', 'shield', 'pulse', 'mystery'];
     const withRandom = <T>(random: () => number, action: () => T): T => {
-      const original = Math.random; Math.random = random;
-      try { return action(); } finally { Math.random = original; }
+      const original = qa.getRandom(); qa.setRandom(random);
+      try { return action(); } finally { qa.setRandom(original); }
     };
     const assertBoxVisible = (box) => {
       assert.equal(box.mesh.enabled, true);
@@ -334,10 +335,10 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
         key('keydown','KeyW');qa.update(.1);key('keyup','KeyW');
         const tuning=characterTuning(profile.id,'coast');
         assert.equal(game.getState().selectedDriverId,profile.id);
-        assert.equal(element('raceChangeCharacter').href,'index.html?screen=characters&map=coast&driver='+profile.id);
-        assert.equal(element('raceChangeMap').href,'index.html?screen=maps&map=coast&driver='+profile.id);
+        assert.equal(new URL(element('raceChangeCharacter').href,'http://localhost').searchParams.get('driver'),profile.id);
+        assert.equal(new URL(element('raceChangeMap').href,'http://localhost').searchParams.get('screen'),'maps');
         assert.ok(Math.abs(game.getState().speed-tuning.acceleration*.1)<1e-8);
-        for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-characterTuning(bot.id,'coast').acceleration*.1)<1e-8,`${bot.id} has its own acceleration`);
+        for(const bot of qa.bots())assert.ok(Math.abs(bot.speed-createRaceKartTuning(scenario.savedBuild||defaultBuild)(bot.id,profile.id,kartRoadContext(12+Math.floor(bot.phase/2)*5.2,0,qa.sample)).acceleration*.1)<1e-8,`${bot.id} has its own acceleration`);
         qa.set({noBots:true,pos:0,lane:0,speed:0});
         key('keydown','KeyW');for(let frame=0;frame<240;frame++){qa.set({pos:0,lane:0});qa.update(1/60);}key('keyup','KeyW');
         assert.ok(Math.abs(game.getState().speed-tuning.maxSpeed)<1e-6);
@@ -379,12 +380,12 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
     });
     await t.test('actual coast rival target slows at the hairpin and recovers on the sprint with bounded acceleration',()=>{
       game.start();const [bot]=parkBots();qa.set({state:'running',countdown:0,pos:1000,lane:-5,speed:0});
-      const tuning=characterTuning(bot.id,'coast'),straight=tuning.maxSpeed*(.9+bot.phase*.008);
+      const tune=createRaceKartTuning(defaultBuild), straight=tune(bot.id,game.getState().selectedDriverId,{curvature:0,grade:0}).maxSpeed;
       Object.assign(bot,{total:533,speed:straight,driving:true,decisionIn:0});qa.update(.1);
-      assert.ok(bot.cornerPace<=.861);assert.ok(bot.speed<straight);assert.ok(straight-bot.speed<=2.2*tuning.multipliers.acceleration+1e-9);
-      Object.assign(bot,{total:0,decisionIn:0,held:null,boost:0,slow:0});
-      for(let i=0;i<60;i++)qa.update(1/60);
-      assert.equal(bot.cornerPace,1);assert.ok(Math.abs(bot.speed-straight)<1e-9);
+      assert.ok(Math.abs(bot.aiBend)>.1);assert.ok(bot.speed<straight);assert.ok(straight-bot.speed<=3.8+1e-9,'physical braking remains bounded');
+      Object.assign(bot,{total:1284,lateral:0,targetLane:0,speed:0,decisionIn:0,held:null,boost:0,slow:0});
+      for(let i=0;i<300;i++){bot.total=1284;bot.lateral=0;bot.decisionIn=0;qa.update(1/60);}
+      assert.ok(Math.abs(bot.aiBend)<.01);assert.ok(Math.abs(bot.speed-tune(bot.id,game.getState().selectedDriverId,kartRoadContext(1284,bot.speed,qa.sample)).maxSpeed)<1e-6);
       const before=bot.speed;game.pause();qa.update(2);assert.equal(bot.speed,before);
       game.start();assert.ok(qa.bots().every(b=>b.cornerPace===1&&b.speed===0));
     });
@@ -714,7 +715,12 @@ for (const scenario of scenarios) test(scenario.name, async (t) => {
       Object.assign(boosted, { total: 400, speed: 40, boost: 3.3 });
       Object.assign(slowed, { total: 600, speed: 40, slow: 3 });
       const contextualTuning=createRaceKartTuning(defaultBuild);
-      const expected=[normal,boosted,slowed].map((bot,index)=>Math.min(40,contextualTuning(bot.id,game.getState().selectedDriverId,kartRoadContext(bot.total,40,qa.sample)).maxSpeed)*[1,1.34,.55][index]*.25);
+      const expected=[normal,boosted,slowed].map(bot=>{
+        const tuning=contextualTuning(bot.id,game.getState().selectedDriverId,kartRoadContext(bot.total,40,qa.sample)),boost=Math.max(0,bot.boost-.25),slow=Math.max(0,bot.slow-.25);
+        const control=npcDriving(40,tuning.maxSpeed*(boost>0?1.34:1)*(slow>0?.55:1),0,npcSkill(game.getState().raceOptions.difficulty));
+        return stepRaceKartSpeed(40,control,.25,tuning,boost,slow)*.25;
+      });
+      for(const bot of [normal,boosted,slowed])Object.assign(bot,{driving:true,aiBend:0,driftCooldown:2});
       qa.update(.25);
       assert.ok(Math.abs((normal.total - 200) - expected[0]) < 1e-6);
       assert.ok(Math.abs((boosted.total - 400) - expected[1]) < 1e-6);

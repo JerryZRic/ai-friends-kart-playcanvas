@@ -174,7 +174,8 @@ back, so corrupt data is not automatically overwritten.
 Saving rejects malformed states rather than quietly repairing and replacing
 them. It returns `false` for validation failure, unavailable storage, blocked
 storage or quota errors. Successful saves return `true`. Persistence is
-browser/origin-specific; stable and preview hosts have independent saves.
+browser/origin-specific. Stable and preview paths on the same host share the origin;
+this modular garage uses its own versioned key.
 
 ## Verification
 

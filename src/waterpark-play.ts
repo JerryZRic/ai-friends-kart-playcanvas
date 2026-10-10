@@ -1,4 +1,5 @@
 import * as pc from 'playcanvas';
+import {parseRaceOptions} from './race-options';
 import {mountRaceHud} from './race-hud';
 import {createRaceShell} from './race-shell';
 import {createRaceFrameClock} from './race-frame-clock';
@@ -26,6 +27,7 @@ import {DRIVERS,getDriver} from './driver-roster.js';
 mountRaceHud({subtitle:'SKY WATERPARK GRAND PRIX',canvasLabel:'晴空水上乐园 3D 赛道'});
 const $=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const canvas=$<HTMLCanvasElement>('game');
+const raceOptions=parseRaceOptions(globalThis.location?.search??'');
 const initialDriver=getDriver(new URLSearchParams(globalThis.location?.search??'').get('driver')).id;
 const shell=createRaceShell(document,canvas,{map:'waterpark',driver:initialDriver,track:{length:WATER_RACE_LENGTH,sample:sampleWaterpark}});
 const loadingUi=mountRaceLoadingUi(document,'waterpark');
@@ -46,7 +48,7 @@ try {
   // No placeholder character or empty mount ever enters the scene. A racer is
   // visible only after its actual, validated driver asset can be instantiated.
   let selected=initialDriver,mount:ReturnType<typeof createWaterMount>|undefined;
-  let mountedAsset:DriverAsset|undefined,race=newWaterRace(selected),clock=0,visualSteer=0;
+  let mountedAsset:DriverAsset|undefined,race=newWaterRace(selected,raceOptions),clock=0,visualSteer=0;
   let autostart=new URLSearchParams(globalThis.location?.search??'').get('autostart')==='1';
   const frameClock=createRaceFrameClock();
   const loadingCamera=createLoadingCamera({length:WATER_RACE_LENGTH,sample:sampleWaterpark});
@@ -109,7 +111,7 @@ try {
     const nextNpcs=new Map<string,ReturnType<typeof createWaterMount>>();
     try {
       // Build the available real riders before replacing the last usable set.
-      const nextRace=newWaterRace(id),asset=assets.get(id);
+      const nextRace=newWaterRace(id,raceOptions),asset=assets.get(id);
       if(asset)next=createWaterMount(app,asset,{id,color:getDriver(id).color});
       for(const racer of nextRace.racers.slice(1)){
         const npcAsset=assets.get(racer.id);if(!npcAsset)continue;
@@ -172,7 +174,7 @@ try {
     if(mode==='paused'){mode='riding';shell.setPaused(false,race.countdown);}
     else {
       const initial=mode==='menu';
-      race=newWaterRace(selected);resetWaterPickups(race,pickups);clock=0;visualSteer=0;lastAnnouncement='';controls.orbit.recenter(true);
+      race=newWaterRace(selected,raceOptions);resetWaterPickups(race,pickups);clock=0;visualSteer=0;lastAnnouncement='';controls.orbit.recenter(true);
       if(initial){
         const at=sampleWaterpark(race.racers[0].motion.distance,race.racers[0].motion.lane);
         mode='transition';loadingCamera.beginReturn({...chaseCamera({position:at.p,tangent:at.t,view,rearView:false,orbit:controls.orbit.step(0)}),fov:56});

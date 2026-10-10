@@ -14,11 +14,11 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 ## Dev free-mode playtest
 
-[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The tested free-mode build is now available at the stable root as well. The Windows release is separate.
+[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root retains the earlier free-mode release; new garage and NPC setup changes are isolated to dev. The Windows release is separate.
 
 ## Modular food garage (dev only)
 
-The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 54 food themes / 324 original parts, real 3D previews, comparisons and saved builds. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. No same-theme bonus. Battery wear/repair/economy are not active in this assembly-first preview. [Implementation and verification limits](docs/modular-garage.md).
+The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 54 food themes / 324 original parts, real 3D previews, comparisons and saved builds. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).
 
 ## Features
 

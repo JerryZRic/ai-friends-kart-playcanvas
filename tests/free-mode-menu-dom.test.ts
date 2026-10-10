@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {SETTINGS_KEY} from '../src/game-settings';
+import {garageRaceEntry} from '../src/kart-garage';
 /** DOM event contract tests, intentionally no GPU / visual-rendering claim. */
 test('menu repeated select/back/settings/exit, history and blocked storage work without WebGL',async()=>{
  const g=globalThis as any,names=['document','window','location','history','localStorage'];
@@ -9,7 +10,7 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  const storage=new Map<string,string>(),elements:Element[]=[];
  let deny=false;
  class Element extends EventTarget{
-  hidden=false;inert=false;attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
+  href='';hidden=false;inert=false;attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
   constructor(readonly tagName='DIV'){super();}
   set innerHTML(html:string){this.html=html;if(this===root)elements.length=0;this.owned=[];for(const m of html.matchAll(/<([a-z]+)\b([^>]*)>/g)){const el=new Element(m[1].toUpperCase());for(const a of m[2].matchAll(/([\w-]+)="([^"]*)"/g)){el.attrs[a[1]]=a[2];if(a[1].startsWith('data-'))el.dataset[a[1].slice(5)]=a[2];}el.disabled=/\bdisabled\b/.test(m[2]);el.checked=/\bchecked\b/.test(m[2]);el.value=el.attrs.value??'';elements.push(el);this.owned.push(el);}}
   get innerHTML(){return this.html;}
@@ -21,9 +22,10 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   focus(){g.document.activeElement=this;}
   click(){if(!this.disabled)this.dispatchEvent(new Event('click'));}
  }
+ const headerGarage=new Element('A'),wordmark=new Element('A');
  const root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];
  const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.push(url);location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[urls.length-1]=url;location.search=new URL(url,'https://test.invalid/dev/').search;}};
- g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,getElementById:(id:string)=>id==='menu'?root:elements.find(e=>e.attrs.id===id)};
+ g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu'?root:elements.find(e=>e.attrs.id===id)};
  let fallback:(()=>void)|undefined,firstBoot=true,failures=0;
  g.window=Object.assign(windowTarget,{scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.location=location;g.history=history;
  Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem:(k:string)=>{if(deny)throw Error();return storage.get(k)??null;},setItem:(k:string,v:string)=>{if(deny)throw Error();storage.set(k,v);}}});
@@ -53,19 +55,35 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
    key('ArrowLeft',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'waterpark');key('ArrowRight',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'coast');key('ArrowUp',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'waterpark');
    assert.equal(key('Tab',$('[data-map="waterpark"]')).defaultPrevented,false,'native Tab and button activation remain available');
    $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true','settings return retains the selected course');
-   $('[data-map="waterpark"]').click();assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');$('#confirm-map').click();$('[data-driver="grok"]').click();assert.match($('#start-race').attrs.href,/waterpark.html\?driver=grok/);
-   assert.equal(g.document.activeElement.dataset.driver,'grok');
+   $('[data-map="waterpark"]').click();assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');$('#confirm-map').click();$('[data-driver="grok"]').click();assert.equal($('#choose-vehicle').attrs['data-screen'],'vehicles');
+   assert.equal($('[data-driver="grok"]').attrs['aria-pressed'],'true');
    $('[data-screen="settings"]').click();const low=$('[value="low"]');low.dispatchEvent(new Event('change'));assert.equal(JSON.parse(storage.get(SETTINGS_KEY)!).quality,'low');
    const refraction=$('#refraction');refraction.checked=false;refraction.dispatchEvent(new Event('change'));assert.equal(JSON.parse(storage.get(SETTINGS_KEY)!).refraction,false);
-   key('Escape');assert.equal(root.className,'screen-characters');assert.match($('#start-race').attrs.href,/driver=grok/);
-   key('Escape');assert.equal(root.className,'screen-maps');$('[data-map="coast"]').click();$('#confirm-map').click();assert.match($('#start-race').attrs.href,/coast.html\?driver=whale/,'new map has no stale driver');
+   key('Escape');assert.equal(root.className,'screen-characters');assert.equal($('#choose-vehicle').attrs['data-screen'],'vehicles');
+   $('#choose-vehicle').click();assert.equal(root.className,'screen-vehicles');$('[data-screen="race-settings"]').click();assert.equal(root.className,'screen-race-settings');assert.match($('#start-race').attrs.href,/waterpark.html\?driver=grok/);
+   $('[value="hard"]').dispatchEvent(new Event('change'));assert.match($('#start-race').attrs.href,/difficulty=hard/);const seed=$('#race-seed');seed.value='77';seed.dispatchEvent(new Event('change'));assert.match($('#start-race').attrs.href,/seed=77/);
+   $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-race-settings');assert.match($('#start-race').attrs.href,/difficulty=hard.*seed=77/);key('Escape');assert.equal(root.className,'screen-vehicles');key('Escape');assert.equal(root.className,'screen-characters');
+   key('Escape');assert.equal(root.className,'screen-maps');$('[data-map="coast"]').click();$('#confirm-map').click();assert.match($('#choose-vehicle').attrs.href,/garage.html\?driver=grok/,'map changes preserve independent driver selection');
    key('Escape');key('Escape');$('[data-screen="exit"]').click();assert.equal(root.className,'screen-exit');assert.match(root.innerHTML,/关闭此标签页/);$('[data-screen="main"]').click();
   }
   location.search='?screen=maps&map=waterpark';windowTarget.dispatchEvent(new Event('popstate'));assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.equal(g.document.activeElement,root,'history restores screen focus');
-  location.search='?screen=characters&map=coast&driver=glm';windowTarget.dispatchEvent(new Event('popstate'));assert.match($('#start-race').attrs.href,/driver=glm/);
+  location.search='?screen=characters&map=coast&driver=glm';windowTarget.dispatchEvent(new Event('popstate'));assert.match($('#choose-vehicle').attrs.href,/driver=glm/);
   $('[data-screen="settings"]').click();deny=true;$('[value="high"]').dispatchEvent(new Event('change'));assert.match($('#settings-status').textContent,/无法保存/);
   $('#reset-settings').click();assert.equal(g.document.activeElement.attrs.id,'reset-settings');assert.match($('#settings-status').textContent,/无法保存/);
-  key('Escape');assert.match($('#start-race').attrs.href,/driver=glm/);
+  key('Escape');assert.match($('#choose-vehicle').attrs.href,/driver=glm/);
+  location.search='?screen=race-settings&map=coast&driver=glm&difficulty=hard&seed=12&kart=broken';windowTarget.dispatchEvent(new Event('popstate'));
+  assert.equal(root.className,'screen-race-settings');assert.match(root.innerHTML,/已选卡丁车/);assert.equal(root.querySelectorAll('.race-build-summary').length,1);
+  const snapshot=new URLSearchParams(location.search).get('kart');assert.ok(snapshot,'direct setup snapshots default car even when storage is denied');
+  assert.equal(new URL($('#start-race').attrs.href,'https://test.invalid').searchParams.get('kart'),snapshot);
+  $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-race-settings');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);
+  $('#back-vehicle').click();assert.match((location as any).href,/garage.html\?driver=glm.*difficulty=hard.*seed=12/);
+  $('[value="easy"]').dispatchEvent(new Event('change'));$('[value="hard"]').dispatchEvent(new Event('change'));const newSeed=$('#race-seed');newSeed.value='77';newSeed.dispatchEvent(new Event('change'));
+  const headerTarget=new URL(headerGarage.href,'https://test.invalid'),homeTarget=new URL(wordmark.href,'https://test.invalid');
+  for(const target of [headerTarget,homeTarget]){assert.equal(target.searchParams.get('difficulty'),'hard');assert.equal(target.searchParams.get('seed'),'77');assert.equal(target.searchParams.get('driver'),'glm');assert.equal(target.searchParams.get('kart'),snapshot);}
+  const completed=new URL(garageRaceEntry('glm',JSON.parse(snapshot),headerTarget.search),'https://test.invalid');
+  location.search=completed.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-race-settings');assert.match($('#start-race').attrs.href,/difficulty=hard.*seed=77/);
+  location.search=homeTarget.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-main');$('[data-screen="maps"]').click();assert.equal(new URLSearchParams(location.search).get('seed'),'77');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);
+
  }finally{for(const[n,d]of saved){if(d)Object.defineProperty(g,n,d);else delete g[n];}}
 });
 

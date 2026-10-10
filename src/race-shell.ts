@@ -1,6 +1,7 @@
 import { itemImage, type ItemKind } from './item-models';
 import { resolveCharacter } from './character-profiles';
 import { resolveMap, type MapId } from './map-profiles';
+import {parseMenuState, menuQuery, type MenuScreen} from './menu-state';
 
 /** Both maps keep their own simulation, but share every player-facing race flow. */
 export interface RaceHudSnapshot {
@@ -64,10 +65,17 @@ export function formatRaceTime(elapsed: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
-export function raceNavigation(map: MapId, driver: string) {
-  const mapId = resolveMap(map).id, driverId = resolveCharacter(driver).id;
-  const route = (screen: string) => `index.html?screen=${screen}&map=${mapId}&driver=${encodeURIComponent(driverId)}`;
-  return { main: 'index.html', changeMap: route('maps'), changeCharacter: route('characters') };
+export function raceNavigation(map: MapId, driver: string, search = globalThis.location?.search || '') {
+  const mapId = resolveMap(map).id as MapId, driverId = resolveCharacter(driver).id;
+  // Preserve complete explicit setup through race → map/character → garage.
+  // Legacy links without setup still retain their exact simple route shape.
+  if (!search) {
+    const route = (screen: string) => `index.html?screen=${screen}&map=${mapId}&driver=${encodeURIComponent(driverId)}`;
+    return {main:'index.html',changeMap:route('maps'),changeCharacter:route('characters')};
+  }
+  const state = {...parseMenuState(search),map:mapId,driver:driverId};
+  const route = (screen: MenuScreen) => `index.html${menuQuery({...state,screen})}`;
+  return {main:route('main'),changeMap:route('maps'),changeCharacter:route('characters')};
 }
 
 export function formatRaceResults(snapshot: RaceFinishSnapshot): string {

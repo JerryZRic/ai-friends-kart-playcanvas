@@ -1,3 +1,4 @@
+import { npcLine, type NpcSkill } from './npc-difficulty';
 import type { ItemKind } from './item-models';
 import { claimPickup, type PickupState } from './item-pickups';
 
@@ -39,7 +40,7 @@ export function activateItem(actor: Combatant, racers: readonly Combatant[], len
   }
   return { item, target, blocked };
 }
-export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[], length: number, bend: number): ItemKind | null {
+export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[], length: number, bend: number, skill?: NpcSkill): ItemKind | null {
   if (!actor.held || actor.reaction > 0 || actor.cooldown > 0) return null;
   const neighbors = racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: nearbyGap(actor.total, r.total, length) }));
   if (actor.held === 'shield') {
@@ -48,14 +49,14 @@ export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[
   }
   if (actor.held === 'pulse') { const target = pulseTarget(actor, racers, length); return target && target.shield <= 0 && target.slow < .5 ? 'pulse' : null; }
   const blocked = neighbors.some(({ r, gap }) => gap > 0 && gap < 24 && Math.abs(r.lateral - actor.lateral) < 2.3);
-  return actor.boost <= 0 && actor.slow <= 0 && actor.speed > 12 && Math.abs(actor.lateral) < 5.3 && Math.abs(bend) < .3 && !blocked ? 'boost' : null;
+  return actor.boost <= 0 && actor.slow <= 0 && actor.speed > 12 && Math.abs(actor.lateral) < 5.3 && Math.abs(bend) < (skill?.boostBend ?? .3) && !blocked ? 'boost' : null;
 }
 /** Local, bounded lane planning. Does not inspect pickups beyond 48 m or reverse. */
-export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number) {
-  let lane = Math.sin(actor.total / 90 + phase) * 2.6;
+export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill) {
+  let lane = skill ? npcLine(actor.total, phase, bend, skill) : Math.sin(actor.total / 90 + phase) * 2.6;
   if (!actor.held && Math.abs(bend) < .5) {
     const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled).map(box => ({ box, gap: forwardGap(actor.total, box.d, length) }))
-      .filter(({ box, gap }) => gap >= 2 && gap <= 48 && Math.abs(box.lateral) <= 5.2 && Math.abs(box.lateral - actor.lateral) <= RULES.lateralSpeed * gap / Math.max(12, actor.speed * (actor.boost > 0 ? RULES.boostFactor : 1)) + .65)
+      .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2 && Math.abs(box.lateral - actor.lateral) <= RULES.lateralSpeed * gap / Math.max(12, actor.speed * (actor.boost > 0 ? RULES.boostFactor : 1)) + .65)
       .filter(({ box, gap }) => !racers.some(r => r.id !== actor.id && Math.abs(nearbyGap(actor.total, r.total, length)) < Math.min(gap, 12) && Math.abs(r.lateral - box.lateral) < 1.8))
       .sort((a, b) => (a.gap + Math.abs(a.box.lateral - actor.lateral) * 4) - (b.gap + Math.abs(b.box.lateral - actor.lateral) * 4));
     if (candidates[0]) lane = candidates[0].box.lateral;
