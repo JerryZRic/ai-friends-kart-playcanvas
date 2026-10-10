@@ -29,6 +29,13 @@ export function garageBackEntry(driver: unknown, build: KartBuild, search = '') 
   if (new URLSearchParams(search).get('flow') === 'free') params.set('flow', 'free');
   return `./index.html?${params}`;
 }
+/** Returning home retains the current independent car and race setup too. */
+export function garageHomeEntry(driver: unknown, build: KartBuild, search = '') {
+  const url = garageBackEntry(driver, build, search);
+  const params = new URLSearchParams(url.slice(url.indexOf('?')));
+  params.delete('screen');
+  return `./index.html?${params}`;
+}
 /** Keep the current history entry authoritative after edits, including refresh/BFCache. */
 export function garageBuildSearch(search: string, build: KartBuild): string {
   const params = new URLSearchParams(search);
@@ -169,7 +176,7 @@ export function mountKartGarage(root: HTMLElement) {
   let thumbnails:ReadonlyMap<string,string>=new Map();const thumbnailAbort=new AbortController();
   const themes = [...new Map(catalog.map(part => [part.themeId, part])).values()].sort((a, b) => a.kitNumber - b.kitNumber);
   const back = garageBackEntry(driver.id, state.activeBuild, search);
-  root.innerHTML = `<header class="garage-header"><a class="garage-brand" href="./index.html"><span>AI FRIENDS</span>KART<span class="brand-dot">.</span></a><nav aria-label="车库导航"><a data-garage-back href="${esc(back)}">← 角色选择</a><span class="dev-stamp">DEV 试验工坊</span></nav></header>
+  root.innerHTML = `<header class="garage-header"><a class="garage-brand" data-garage-home href="${garageHomeEntry(driver.id, state.activeBuild, search)}"><span>AI FRIENDS</span>KART<span class="brand-dot">.</span></a><nav aria-label="车库导航"><a data-garage-back href="${esc(back)}">← 角色选择</a><span class="dev-stamp">DEV 试验工坊</span></nav></header>
     <div class="garage-heading"><div><p class="eyebrow">WELCOME TO THE LITTLE KART WORKSHOP</p><h1>好味改装工坊<span>！</span></h1><p><span>54 食物主题</span><span>324 零件全部开放</span><span>6 槽自由混搭</span></p></div><div class="driver-chip"><span style="color:${driver.color}">${driver.symbol}</span><div><small>本次试驾伙伴</small><strong>${driver.label}</strong><a data-garage-back href="${esc(back)}">更换角色 ↗</a></div></div></div>
     <section class="garage-workbench" aria-label="车辆装配台"><aside class="slot-panel"><div class="panel-heading"><h2>零件工具柜</h2><span>6 槽</span></div><div id="garage-slots" role="group" aria-label="选择零件槽位"></div><p class="slot-note"><strong>改装小贴士</strong><br>跨主题自由组合<br>同主题没有额外加成</p></aside>
     <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">01 / 我的装配台</span><h2 id="build-title">自由混搭</h2><p id="build-description" class="build-description">六槽自由搭配，主题没有额外加成</p></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="bench-scenery" aria-hidden="true"><span class="bench-lamp"></span><span class="bench-pegboard"></span><span class="bench-tool bench-tool-one"></span><span class="bench-tool bench-tool-two"></span><span class="bench-shelf"></span><span class="bench-box"></span><span class="bench-tin"></span><span class="bench-platform"></span><span class="bench-sticker">MIX<br>&amp; RACE</span></div><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转、滚轮缩放、方向键环绕、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>六个真实模块 · 一台你的赛车</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动环绕 <span>·</span> 滚轮缩放 <span>·</span> 方向键也可操作</p><div class="camera-buttons"><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
@@ -218,6 +225,7 @@ export function mountKartGarage(root: HTMLElement) {
     replaceGarageBuildUrl(state.activeBuild, location, history);
     $('#build-title').textContent = name; $('#build-description').textContent = description; $('#garage-race').setAttribute('href', garageRaceEntry(driver.id, state.activeBuild, search));
     root.querySelectorAll<HTMLAnchorElement>('[data-garage-back]').forEach(link => {link.href = garageBackEntry(driver.id, state.activeBuild, search);});
+    root.querySelectorAll<HTMLAnchorElement>('[data-garage-home]').forEach(link => {link.href = garageHomeEntry(driver.id, state.activeBuild, search);});
     persist(); renderSlots(); renderStats(); renderParts(); void preview?.select(state.activeBuild);
   }
   $('#starter-builds').innerHTML = kartPresets.map((build, index) => `<button data-starter="${esc(build.id)}" title="${esc(build.description)}"><small>${String(index + 1).padStart(2, '0')}</small><span><strong>${esc(build.name)}</strong><small class="preset-description">${esc(build.description)}</small></span><span aria-hidden="true">↗</span></button>`).join('');

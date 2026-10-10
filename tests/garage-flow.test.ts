@@ -105,3 +105,16 @@ test('edit refresh and settings-back history use the latest build instead of a s
   assert.equal(replaceGarageBuildUrl(mixed,current,{state:null,replaceState(){throw new Error('sandbox');}}),false);
   assert.match(readFileSync('src/kart-garage.ts','utf8'),/replaceGarageBuildUrl\(state.activeBuild, location, history\)/);
 });
+
+
+test('garage home link retains driver, latest car and options after editing', async () => {
+ const {garageHomeEntry}=await import('../src/kart-garage');
+ const {parseMenuState}=await import('../src/menu-state');
+ const url=garageHomeEntry('glm',kartPresets[2].build,'?flow=free&difficulty=hard&seed=77');
+ const state=parseMenuState(url.slice(url.indexOf('?')));
+ assert.equal(state.screen,'main');assert.equal(state.driver,'glm');assert.equal(state.map,'coast');assert.equal(state.difficulty,'hard');assert.equal(state.seed,77);
+ assert.deepEqual(JSON.parse(state.kart!),kartPresets[2].build);
+ const source=readFileSync('src/kart-garage.ts','utf8');
+ assert.match(source,/data-garage-home href="\$\{garageHomeEntry/);
+ assert.match(source,/\[data-garage-home\].*garageHomeEntry/);
+});
