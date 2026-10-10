@@ -1,3 +1,4 @@
+import {resolveMap} from './map-profiles';
 import {wholeCars, wholeCarForBuild, filterWholeCars, needsWholeCarConfirmation, sameKartBuild, copyWholeCarUndo, type WholeCarUndo} from './kart-whole-cars';
 import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
@@ -20,19 +21,21 @@ const byId = new Map(catalog.map(part => [part.id, part]));
 const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]!));
 const bytes = (size: number) => size < 1024 * 1024 ? `${(size / 1024).toFixed(0)} KB` : `${(size / 1024 / 1024).toFixed(1)} MB`;
 const themeName = (part: KartPart) => part.themeName;
+function garageMap(search:string){const profile=resolveMap(new URLSearchParams(search).get('map'));return profile.vehicle==='kart'?profile.id:'coast';}
 /** Navigation is explicit: free-mode completion never starts a race. */
 export function garageRaceEntry(driver: unknown, build: KartBuild, search = '') {
   const source = new URLSearchParams(search), options = parseRaceOptions(search);
   const params = new URLSearchParams({driver: resolveCharacter(driver).id, kart: JSON.stringify(resolveBuild(build)), difficulty: options.difficulty, seed: String(options.seed)});
   if (source.get('flow') === 'free') {
-    params.set('flow', 'free'); params.set('screen', 'race-settings'); params.set('map', 'coast');
+    params.set('flow', 'free'); params.set('screen', 'race-settings'); params.set('map', garageMap(search));
     return `./index.html?${params}`;
   }
+  if(garageMap(search)!=='coast')params.set('map',garageMap(search));
   params.set('autostart', '1'); return `./coast.html?${params}`;
 }
 export function garageBackEntry(driver: unknown, build: KartBuild, search = '') {
   const options = parseRaceOptions(search);
-  const params = new URLSearchParams({screen: 'characters', map: 'coast', driver: resolveCharacter(driver).id, kart: JSON.stringify(resolveBuild(build)), difficulty: options.difficulty, seed: String(options.seed)});
+  const params = new URLSearchParams({screen: 'characters', map: garageMap(search), driver: resolveCharacter(driver).id, kart: JSON.stringify(resolveBuild(build)), difficulty: options.difficulty, seed: String(options.seed)});
   if (new URLSearchParams(search).get('flow') === 'free') params.set('flow', 'free');
   return `./index.html?${params}`;
 }
@@ -212,7 +215,7 @@ export function mountKartGarage(root: HTMLElement) {
     <div class="garage-heading"><div><p class="eyebrow">WELCOME TO THE LITTLE KART WORKSHOP</p><h1>好味改装工坊<span>！</span></h1><p class="workshop-steps">选零件 · 看变化 · 出发</p></div><div class="driver-chip">${characterEmblem(driver.id)}<div><small>本次试驾伙伴</small><strong>${driver.label}</strong><a data-garage-back href="${esc(back)}">更换角色 ↗</a></div></div></div>
     <section class="garage-workbench" aria-label="车辆装配台"><aside class="slot-panel"><div class="panel-heading"><h2>选部件</h2><span>6 槽</span></div><div id="garage-slots" role="group" aria-label="选择零件槽位"></div><p class="slot-note"><strong>改装小贴士</strong><br>跨主题自由组合<br>同主题没有额外加成</p></aside>
     <section class="preview-panel" aria-label="当前装配的 3D 预览"><div class="preview-heading"><div><span class="eyebrow">01 / 我的装配台</span><h2 id="build-title">自由混搭</h2><p id="build-description" class="build-description">六槽自由搭配，主题没有额外加成</p></div><span class="preview-badge" id="preview-badge">正在准备</span></div><div class="garage-stage"><div class="bench-scenery" aria-hidden="true"><span class="bench-lamp"></span><span class="bench-pegboard"></span><span class="bench-tool bench-tool-one"></span><span class="bench-tool bench-tool-two"></span><span class="bench-shelf"></span><span class="bench-box"></span><span class="bench-tin"></span><span class="bench-platform"></span><span class="bench-sticker">MIX<br>&amp; RACE</span></div><div class="stage-grid" aria-hidden="true"></div><canvas id="kart-preview" tabindex="0" aria-label="完整六零件 3D 装配。拖动旋转车辆、滚轮缩放、方向键调整视角、加减号缩放、Home 回正"></canvas><div class="stage-labels" aria-hidden="true"><span>六个真实模块 · 一台你的赛车</span><span>3D / ORBIT VIEW</span></div><div class="preview-message" id="preview-message"><p id="preview-status" role="status" aria-live="polite">正在准备真实 3D 装配…</p><progress id="preview-progress" aria-label="所选零件实际下载字节"></progress><small id="preview-detail"></small><button id="preview-retry" hidden>重试所选装配</button></div></div><div class="preview-toolbar"><p>拖动旋转 <span>·</span> 滚轮缩放</p><div class="camera-buttons"><button id="preview-spin" aria-pressed="false" title="车辆缓慢旋转；手动调整后暂停 3.5 秒">旋转展示</button><button id="preview-zoom-in" aria-label="放大 3D 装配">＋</button><button id="preview-zoom-out" aria-label="缩小 3D 装配">−</button><button id="preview-reset">↺ 回正</button></div></div></section>
-    <aside class="performance-panel"><div class="panel-heading"><h2>试车仪表台</h2><span>CHECK / 02</span></div><div id="build-stats"></div><details class="performance-disclosure"><summary>这些参数如何影响比赛？</summary><p class="performance-note">设计估算先转为车辆倍率，再叠加角色属性；上方比赛平路上限与赛道 HUD 使用相同速度换算。当前试玩：重量、动力、极速、操控已参与海岸竞速；电量消耗、耐久损耗与翻车恢复暂未启用。电池容量和耐久均不提供当前优势；稳定性侧倾阈值仅为设计估算，不是角色增益或翻车机制。</p></details><a class="garage-start" id="garage-race" href="${garageRaceEntry(driver.id, state.activeBuild, search)}"><span><small>READY, SET...</small>${freeFlow ? '完成搭配 · 比赛设置' : '去日落海岸试跑'}</span><span>➜</span></a><p class="race-note">保留六名角色属性 · 水上坐骑不受影响</p></aside></section>
+    <aside class="performance-panel"><div class="panel-heading"><h2>试车仪表台</h2><span>CHECK / 02</span></div><div id="build-stats"></div><details class="performance-disclosure"><summary>这些参数如何影响比赛？</summary><p class="performance-note">设计估算先转为车辆倍率，再叠加角色属性；上方比赛平路上限与赛道 HUD 使用相同速度换算。当前试玩：重量、动力、极速、操控已参与海岸竞速；电量消耗、耐久损耗与翻车恢复暂未启用。电池容量和耐久均不提供当前优势；稳定性侧倾阈值仅为设计估算，不是角色增益或翻车机制。</p></details><a class="garage-start" id="garage-race" href="${garageRaceEntry(driver.id, state.activeBuild, search)}"><span><small>READY, SET...</small>${freeFlow ? '完成搭配 · 比赛设置' : `去${resolveMap(garageMap(search)).label}试跑`}</span><span>➜</span></a><p class="race-note">保留六名角色属性 · 水上坐骑不受影响</p></aside></section>
     <section class="build-shelf" aria-label="配方与已保存方案"><div class="shelf-tabs"><h2>灵感配方盒</h2><span>五种取舍，选后仍可自由编辑</span></div><div class="starter-list" id="starter-builds"></div><div class="save-row"><form id="save-build-form"><label for="build-name">收藏这套搭配</label><input id="build-name" name="name" maxlength="${MAX_BUILD_NAME_LENGTH}" placeholder="给你的车起个名字" autocomplete="off"><button id="save-build-submit" type="submit">保存新方案 ＋</button><button id="save-as-new" type="button" hidden>另存新方案</button><p id="edit-build-status">新方案 · 保存名称和六个零件，不绑定角色</p></form><p id="save-status" role="status" aria-live="polite">装配会自动保存在此浏览器</p></div><div id="saved-builds" class="saved-list"></div></section>
     <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">PARTS & GOODIES / 零件百宝箱</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">外观主题（可选）<select id="theme-filter"><option value="">全部 ${themes.length} 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="找零件"></label><button id="apply-theme" title="进入整车选择；浏览不会替换当前零件">选择整车 →</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
     <footer class="garage-footer"><span>原创食物模型 · DEV 独立测试</span><a href="./source.html">开源代码与模型许可 ↗</a><a data-garage-back href="${esc(back)}">返回角色选择</a></footer>`;
@@ -239,7 +242,7 @@ export function mountKartGarage(root: HTMLElement) {
     dialog.addEventListener('close', () => {dialogOpener?.focus({preventScroll: true}); dialogOpener = null;}, {signal: events.signal});
   });
   function persist(message = '当前装配已自动保存') {storageAvailable = saveGarageState(state); $('#save-status').textContent = storageAvailable ? message : '此浏览器无法保存；本次搭配仍可通过下方试跑入口带入比赛，离开后不会保留'; $('#save-status').dataset.error = String(!storageAvailable); $('#compact-save-status').textContent = storageAvailable ? '✓ 搭配已自动保存' : '⚠ 无法保存到浏览器'; $('#compact-save-status').dataset.error = String(!storageAvailable);}
-  function renderRaceAction(previewOnly = false) {$('#garage-race > span:first-child').innerHTML = `<small>${previewOnly ? '预览尚未应用' : 'READY, SET...'}</small>${previewOnly ? (freeFlow ? '保留当前搭配 · 下一步' : '用当前搭配试跑') : (freeFlow ? '完成搭配 · 比赛设置' : '去日落海岸试跑')}`;}
+  function renderRaceAction(previewOnly = false) {$('#garage-race > span:first-child').innerHTML = `<small>${previewOnly ? '预览尚未应用' : 'READY, SET...'}</small>${previewOnly ? (freeFlow ? '保留当前搭配 · 下一步' : '用当前搭配试跑') : (freeFlow ? '完成搭配 · 比赛设置' : `去${resolveMap(garageMap(search)).label}试跑`)}`;}
   function renderCars() {
     const page = garagePartPage(filterWholeCars(carQuery), carPage, 5); carPage = page.page;
     $('#cars-page').textContent = `${page.page + 1} / ${page.pages}`;

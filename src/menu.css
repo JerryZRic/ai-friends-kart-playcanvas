@@ -35,7 +35,7 @@ body[data-screen=maps] .masthead{height:76px;padding-top:18px;padding-bottom:18p
 .map-library-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
 .map-library-heading h2{font-size:13px;font-weight:700;margin:0;color:#d9e7df}
 .map-library-heading>span{font-size:9px;letter-spacing:1.6px;color:#89a8ad}
-.map-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.map-choices{max-height:490px;overflow-y:auto;scrollbar-gutter:stable;overscroll-behavior:contain;padding:3px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .map-choice{display:block;min-width:0;overflow:hidden;padding:0;text-align:left;border:1px solid #ffffff25;border-radius:14px;background:#17343d;box-shadow:0 8px 25px #071c2620;transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
 .map-choice:hover{border-color:#bbd9c5a1;background:#1d4047;transform:translateY(-2px)}
 .map-choice[aria-pressed=true]{border-color:var(--lime);background:#244340;box-shadow:0 0 0 1px var(--lime),0 8px 28px #081d2955}

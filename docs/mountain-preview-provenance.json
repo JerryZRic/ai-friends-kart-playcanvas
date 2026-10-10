@@ -1,0 +1,126 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime mesh positions, triangle indices, UVs, material values and procedural texture pixels. Lighting and renderer differ from PlayCanvas. No driver, vehicle, downloaded or third-party model assets.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate offline daylight, AgX view transform. All runtime static geometry included; peripheral scenery can lie outside the camera frame. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-scene.ts": "9a01f7e5b1536a042991a9f30ee82ddecddfa6df90ab3803016956d0fda36748"
+  },
+  "generatorHashes": {
+    "scripts/export-land-preview.ts": "f07a5cd2caae67c946dc29be27078b15d1eb5b91c90ed64a420a235bb9942a23",
+    "scripts/render-land-preview.py": "3eb1d0e98fc7c632e515bcca6fcfaf1bf84f810c641f14b00e381634d8264a23"
+  },
+  "batches": 20,
+  "triangles": 78158,
+  "routeLengthMetres": 3616.224747593308,
+  "views": {
+    "mountain-overview": {
+      "file": "mountain-overview.png",
+      "sha256": "e7e1f09e00cc1c5825bc2693aebc1f3107786a8466a8a4750a75ac7faf8247d8",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPosition": [
+        164.2877960205078,
+        -941.5020751953125,
+        1220.8311767578125
+      ],
+      "orthographicScale": 1184.8012452173714,
+      "routeScreenBounds": [
+        0.128721684217453,
+        0.060000259429216385,
+        0.8712782263755798,
+        0.9400002956390381
+      ]
+    },
+    "mountain-topdown": {
+      "file": "mountain-topdown.png",
+      "sha256": "9988b8b1dc6dd5f84e3d5c426b77c93ecd1948860e132872a452b58a7a973cee",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPosition": [
+        -10.420013427734375,
+        -47.963130950927734,
+        1522.8843994140625
+      ],
+      "orthographicScale": 1294.0611546128462,
+      "routeScreenBounds": [
+        0.16665823757648468,
+        0.06000003591179848,
+        0.8333417773246765,
+        0.9399999976158142
+      ]
+    },
+    "mountain-viaduct": {
+      "file": "mountain-viaduct.png",
+      "sha256": "1a568b0e56678bedea8d472d878a96bf997f971c4594f6d3763bb53f5c4a81a8",
+      "resolution": [
+        1600,
+        1000
+      ],
+      "cameraPosition": [
+        1044.7889404296875,
+        -895.533447265625,
+        617.0223388671875
+      ],
+      "orthographicScale": 270,
+      "routeScreenBounds": [
+        -1.3799729347229004,
+        -0.5876529812812805,
+        1.8589969873428345,
+        1.5735644102096558
+      ]
+    },
+    "mountain-chalet": {
+      "file": "mountain-chalet.png",
+      "sha256": "141950ba3585dd9158f8981ad434d7322f193463f3840c106ff28452dd7cf3dd",
+      "resolution": [
+        1600,
+        1000
+      ],
+      "cameraPosition": [
+        1115.206787109375,
+        -916.6551513671875,
+        739.3151245117188
+      ],
+      "orthographicScale": 100,
+      "routeScreenBounds": [
+        -8.807847023010254,
+        -2.3721864223480225,
+        0.2873787581920624,
+        4.4053568840026855
+      ]
+    },
+    "mountain-chalet-roadside": {
+      "file": "mountain-chalet-roadside.png",
+      "sha256": "ec59a934a89fbbf702a9c4085ecdbd3004217e6fcc2f4a809ea1c40c12013d9d",
+      "resolution": [
+        1600,
+        1000
+      ],
+      "cameraPosition": [
+        347.17645263671875,
+        173.52523803710938,
+        11.307414054870605
+      ],
+      "projection": "perspective",
+      "lensMillimetres": 36,
+      "heightAboveSampledRoadMetres": 2.1,
+      "description": "Actual road-centre camera position at roadside height, looking toward original modeled chalet. Offline image; no driver/HUD."
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/mountain-overview.webp",
+    "sha256": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

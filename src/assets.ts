@@ -230,11 +230,13 @@ export interface LoadOptions {
   fetchAsset?: typeof fetchStream; parse?: (buffer: ArrayBuffer) => Promise<DriverAsset>;
   validate?: (asset: DriverAsset) => any; maxConcurrent?: number; timeoutMs?: number; maxAttempts?: number;
   random?: () => number; wait?: any; signal?: AbortSignal;
+  /** Catalog IDs only; permits land scenes to omit unrelated coastal props. */
+  courseIds?: readonly string[];
 }
 async function loadAssets(app: pc.AppBase, runtime: boolean, options: LoadOptions = {}) {
   const { fetchAsset = fetchStream, parse = buffer => parseLocalGLB(app, buffer), validate = validateDriverContract, onProgress = () => {}, onStatus = () => {}, maxConcurrent = 2, timeoutMs = 60000, maxAttempts = 4, random, wait, signal } = options;
   const assets = new Map(options.existingDrivers || options.existing || []), failures = new Map<string, string>();
-  const files = runtime ? RUNTIME_MODELS : COURSE_FILES;
+  const files = runtime ? RUNTIME_MODELS : options.courseIds ? COURSE_FILES.filter(file=>options.courseIds!.includes(file.id)) : COURSE_FILES;
   const states = new Map<string, any>(files.map(record => [record.id, { ...record, stage: assets.has(record.id) ? 'ready' : 'queued', receivedBytes: assets.has(record.id) ? (assets.get(record.id)?.bytes || ('bytes' in record ? record.bytes : 0)) : 0, totalBytes: assets.get(record.id)?.bytes || ('bytes' in record ? record.bytes : 0), attempt: 0, maxAttempts: Math.max(1, Math.min(4, maxAttempts)), retryInMs: 0 } as any] as [string, any]));
   const pending = files.filter(record => !assets.has(record.id)); let next = 0, completed = files.length - pending.length;
   const emit = () => { const records = [...states.values()].map(value => ({ ...value })); onStatus({ phase: runtime ? 'drivers' : 'course', records, receivedBytes: records.reduce((sum, r) => sum + r.receivedBytes, 0), totalBytes: records.every(r => r.totalBytes > 0) ? records.reduce((sum, r) => sum + r.totalBytes, 0) : null, completed, total: files.length, loaded: assets.size, failed: failures.size }); };

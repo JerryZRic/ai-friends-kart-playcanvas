@@ -48,14 +48,14 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
    const ids=elements.map(e=>e.attrs.id).filter(Boolean);assert.equal(new Set(ids).size,ids.length,'map controls and preview IDs must be unique');
    assert.equal(elements.filter(e=>e.tagName==='CANVAS').length,1,'only the selected map creates a live preview');
    const preview=$('#title-backdrop');assert.equal(preview.dataset.backdropState,'unavailable','missing WebGL retains the static route poster');preview.dispatchEvent(new Event('webglcontextlost'));assert.equal(preview.dataset.previewFallback,'true');preview.dispatchEvent(new Event('webglcontextrestored'));assert.equal(preview.dataset.previewFallback,undefined);
-   const overviewImages=root.querySelectorAll('.map-overview');assert.equal(overviewImages.length,2);assert.deepEqual(overviewImages.map(e=>e.attrs.src),['./map-previews/coast-overview.webp','./map-previews/waterpark-overview.webp']);assert.ok(overviewImages.every(e=>e.attrs.alt.includes('3D 俯视全景')));
+   const overviewImages=root.querySelectorAll('.map-overview');assert.equal(overviewImages.length,3);assert.deepEqual(overviewImages.map(e=>e.attrs.src),['./map-previews/coast-overview.webp','./map-previews/waterpark-overview.webp','./map-previews/mountain-overview.webp']);assert.ok(overviewImages.every(e=>e.attrs.alt.includes('3D 俯视全景')));
    assert.ok(root.innerHTML.indexOf('class="map-library"')<root.innerHTML.indexOf('class="map-detail-panel"'),'route cards precede the scenic preview in reading order');
    assert.equal($('[data-map="coast"]').attrs.tabindex,'0');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'-1');
    const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map="coast"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'waterpark');assert.equal(urls.length,historyLength,'selection updates the existing history entry');
    assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.equal($('[data-map="coast"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');
-   key('ArrowDown',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'coast','arrow navigation wraps');
-   key('End',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'waterpark');key('Home',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'coast');
-   key('ArrowLeft',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'waterpark');key('ArrowRight',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'coast');key('ArrowUp',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'waterpark');
+   key('ArrowDown',$('[data-map="waterpark"]'));assert.equal(g.document.activeElement.dataset.map,'mountain');assert.match(root.innerHTML,/03 COURSES/);assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/mountain-overview.webp');key('ArrowDown',$('[data-map="mountain"]'));assert.equal(g.document.activeElement.dataset.map,'coast','arrow navigation wraps');
+   key('End',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'mountain');key('Home',$('[data-map="mountain"]'));assert.equal(g.document.activeElement.dataset.map,'coast');
+   key('ArrowLeft',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'mountain');key('ArrowRight',$('[data-map="mountain"]'));assert.equal(g.document.activeElement.dataset.map,'coast');key('ArrowUp',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,'mountain');$('[data-map="waterpark"]').click();
    assert.equal(key('Tab',$('[data-map="waterpark"]')).defaultPrevented,false,'native Tab and button activation remain available');
    $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true','settings return retains the selected course');
    $('[data-map="waterpark"]').click();assert.equal(root.className,'screen-maps');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');$('#confirm-map').click();$('[data-driver="grok"]').click();assert.equal($('#choose-vehicle').attrs['data-screen'],'vehicles');
@@ -86,6 +86,14 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   const completed=new URL(garageRaceEntry('glm',JSON.parse(snapshot),headerTarget.search),'https://test.invalid');
   location.search=completed.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-race-settings');assert.match($('#start-race').attrs.href,/difficulty=hard.*seed=77/);
   location.search=homeTarget.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-main');$('[data-screen="maps"]').click();assert.equal(new URLSearchParams(location.search).get('seed'),'77');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);
+
+  location.search='?screen=maps&map=mountain&driver=claude&difficulty=hard&seed=89';windowTarget.dispatchEvent(new Event('popstate'));
+  assert.equal($('.map-detail-panel').dataset['preview-map'],'mountain');$('#confirm-map').click();
+  const mountainGarage=new URL($('#choose-vehicle').attrs.href,'https://test.invalid');assert.equal(mountainGarage.searchParams.get('map'),'mountain');
+  const mountainSetup=new URL(garageRaceEntry('claude',JSON.parse(snapshot),mountainGarage.search),'https://test.invalid');
+  location.search=mountainSetup.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-race-settings');assert.match(root.innerHTML,/云岭盘山道/);
+  const mountainRace=new URL($('#start-race').attrs.href,'https://test.invalid');assert.equal(mountainRace.pathname,'/coast.html');assert.equal(mountainRace.searchParams.get('map'),'mountain');assert.equal(mountainRace.searchParams.get('kart'),snapshot);
+  $('[data-screen="settings"]').click();key('Escape');assert.equal(new URLSearchParams(location.search).get('map'),'mountain');$('#back-vehicle').click();assert.equal(new URL((location as any).href,'https://test.invalid').searchParams.get('map'),'mountain');
 
   windowTarget.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));assert.equal(shell.attrs['data-fixed-layout'],'1440x900','BFCache keeps layout mounted');
   windowTarget.dispatchEvent(new Event('pageshow'));assert.equal(shell.attrs['data-fixed-layout'],'1440x900');

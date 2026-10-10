@@ -1,0 +1,39 @@
+{
+  "kind": "unchanged-native-geometry-verification",
+  "baselineCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
+  "description": "The map-loader catalog was extended, without altering legacy coast/water rendered meshes or route arrays. Fresh exports from the accepted baseline and updated source were compared byte-for-byte after excluding only sourceHashes. Existing rendered image bytes remain unchanged.",
+  "maps": {
+    "coast": {
+      "geometryAndRouteSha256": "94ef03ed053773444d30f4853d98501cda1dc8ecc4799e525b10a3cfd74158d0",
+      "imageSha256": "1988b5e929b033fef1381a511b96f1e1ea4cd96eb5b4f1840650d8617f7f9769",
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "77fb29c458d675fc6ca9a6302057c91ae6f5d217280e9042df1d36cd600486bd",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      }
+    },
+    "waterpark": {
+      "geometryAndRouteSha256": "c9525efd224082c4d32919613eaf473909d0a7bc1ce30a6c94547ae1f731cd1e",
+      "imageSha256": "36e6cf3788a0757dcd1faf0218ec5984e778114fdfa27e5dfc976579ad751f2d",
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
+        "src/menu-backdrop.ts": "77fb29c458d675fc6ca9a6302057c91ae6f5d217280e9042df1d36cd600486bd",
+        "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+        "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+        "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+        "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+        "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+        "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+      }
+    }
+  }
+}

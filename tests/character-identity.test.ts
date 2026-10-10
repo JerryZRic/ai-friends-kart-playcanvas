@@ -62,7 +62,7 @@ test('menu, garage, selector, HUD and results share emblems; every entry loads e
   const code=readFileSync(file,'utf8');assert.ok(code.includes('characterEmblem('),file);assert.doesNotMatch(code,/\$\{(?:c|driver)\.symbol\}/);
  }
  for(const page of ['index.html','garage.html','coast.html','waterpark.html'])assert.ok(readFileSync(page,'utf8').includes('/src/character-emblems.css'),page);
- assert.ok(readFileSync('src/game.ts','utf8').includes("shell.updateNavigation('coast',selectedDriverId)"),'coast selector refreshes the selected HUD identity');
+ assert.ok(readFileSync('src/game.ts','utf8').includes("shell.updateNavigation(mapId,selectedDriverId)"),'shared land selector refreshes the selected HUD identity for the active map');
  const coast=readFileSync('coast.html','utf8');
  for(const [i,id] of ids.entries())assert.match(coast,new RegExp(`id="slot-${id}"[^>]*>[^<]*${names[i]}`));
 });

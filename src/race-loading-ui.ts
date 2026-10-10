@@ -52,6 +52,7 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
   return {
     retryButton,
     continueButton,
+    exitLink,
     update(snapshot: RaceLoadingSnapshot) {
       if (disposed) return;
       const value = snapshot.progress !== null && Number.isFinite(snapshot.progress) ? Math.max(0, Math.min(1, snapshot.progress)) : null;

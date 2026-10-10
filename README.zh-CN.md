@@ -16,6 +16,10 @@
 
 [打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。经测试的自由模式版本现已合入主分支，并发布到上方稳定版入口；Windows 版本单独发布。
 
+## 原创陆地赛道（dev）
+
+**云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在 dev 地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。本次是网页测试更新，不包含新的 Windows 打包。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

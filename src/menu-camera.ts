@@ -38,9 +38,16 @@ export function menuBackdropQuality(settings: GameSettings, width: number, heigh
 }
 
 type Point = [number, number, number];
-const route = (map: MapId) => map === 'coast'
-  ? {sample: sampleCoast, length: COAST_LENGTH, lane: 9}
-  : {sample: sampleWaterparkLoop, length: WATER_RACE_LENGTH, lane: 14};
+type PreviewRoute = {sample: typeof sampleCoast; length:number; lane:number};
+const extraRoutes=new Map<MapId,PreviewRoute>();
+/** Register generated land geometry only after its selected preview is loaded. */
+export function registerMenuRoute(map:MapId,preview:PreviewRoute){extraRoutes.set(map,preview);frameCache.delete(map);}
+function route(map:MapId):PreviewRoute {
+  const loaded=extraRoutes.get(map);if(loaded)return loaded;
+  if(map==='coast')return {sample:sampleCoast,length:COAST_LENGTH,lane:9};
+  if(map==='waterpark')return {sample:sampleWaterparkLoop,length:WATER_RACE_LENGTH,lane:14};
+  throw new Error(`Prepare ${map} geometry before requesting its preview camera.`);
+}
 const portraitWeight = (aspect: number) => smooth((1 - Math.max(.2, Number.isFinite(aspect) ? aspect : 16 / 9)) / .55);
 
 /** The route remains the source of truth after layout changes. Wide previews
@@ -48,7 +55,7 @@ const portraitWeight = (aspect: number) => smooth((1 - Math.max(.2, Number.isFin
  * sweep instead of cropping to empty infield. The study scene is not sampled. */
 function buildCameraAnchors(map: MapId, aspect = 16 / 9): Point[] {
   const {sample, length, lane} = route(map), portrait = portraitWeight(aspect);
-  const focus = map === 'coast' ? length * .71 : WATER_RACE_TOWER_DISTANCE;
+  const focus = map !== 'waterpark' ? length * .71 : WATER_RACE_TOWER_DISTANCE;
   const span = length * (1 - portrait * .74), points: Point[] = [];
   for (let i = 0; i <= 96; i++) for (const lateral of [-lane, lane]) {
     const p = sample(focus - span / 2 + i / 96 * span, lateral).p;
@@ -91,8 +98,8 @@ export function menuCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
   const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 16 / 9;
   const {points, target} = cameraFrame(map, safeAspect);
-  const angle = (map === 'coast' ? -2.16 : -1.92) + time * .0065;
-  const pitch = map === 'coast' ? .59 : .55;
+  const angle = (map !== 'waterpark' ? -2.16 : -1.92) + time * .0065;
+  const pitch = map !== 'waterpark' ? .59 : .55;
   const direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
   const right = [-Math.sin(angle), 0, Math.cos(angle)];
   const up = [-Math.cos(angle) * Math.sin(pitch), Math.cos(pitch), -Math.sin(angle) * Math.sin(pitch)];
@@ -113,7 +120,7 @@ export function menuCameraPose(map: MapId, seconds: number, aspect = 16 / 9) {
 export function coverTrackTarget(map: MapId, seconds: number): Point {
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
   const {sample, length} = route(map);
-  const distance = length * (map === 'coast' ? .69 : .165) + 24 * Math.sin(time * .05);
+  const distance = length * (map !== 'waterpark' ? .69 : .165) + 24 * Math.sin(time * .05);
   const point = sample(distance).p;
   return [point.x, point.y + .3, point.z];
 }
@@ -141,14 +148,14 @@ export function mapPreviewCameraPose(map: MapId, seconds: number, aspect = 16 / 
   const time = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
   const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 16 / 9;
   const {sample, length} = route(map);
-  const focalDistance = length * (map === 'coast' ? .69 : .165) + 18 * Math.sin(time * .13);
+  const focalDistance = length * (map !== 'waterpark' ? .69 : .165) + 18 * Math.sin(time * .13);
   const point = sample(focalDistance).p;
   const target: Point = [point.x, point.y + 1, point.z];
-  const angle = (map === 'coast' ? -2.16 : -1.92) + .62 * Math.sin(time * .17);
+  const angle = (map !== 'waterpark' ? -2.16 : -1.92) + .62 * Math.sin(time * .17);
   const pitch = .67 + .035 * Math.sin(time * .2);
   // A modest portrait allowance preserves a readable road width, not the full
   // route. Absolute metre distances prevent new longer maps zooming back out.
-  const distance = (map === 'coast' ? 105 : 98) + portraitWeight(safeAspect) * 16 + 12 * Math.sin(time * .25);
+  const distance = (map !== 'waterpark' ? 105 : 98) + portraitWeight(safeAspect) * 16 + 12 * Math.sin(time * .25);
   const direction = [Math.cos(angle) * Math.cos(pitch), Math.sin(pitch), Math.sin(angle) * Math.cos(pitch)];
   return {position: target.map((value, axis) => value + direction[axis] * distance) as Point, target, fov: 48};
 }

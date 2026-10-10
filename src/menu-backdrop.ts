@@ -4,9 +4,20 @@ import { createWaterparkScene } from './waterpark-scene';
 import { sample } from './track';
 import type { GameSettings } from './game-settings';
 import type { MapId } from './map-profiles';
-import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, mapPreviewCameraPose, coverCameraPose, type MenuPresentation, type MenuBackdropOptions } from './menu-camera';
+import { MENU_MAX_FPS, menuBackdropPhase, menuBackdropQuality, registerMenuRoute, mapPreviewCameraPose, coverCameraPose, type MenuPresentation, type MenuBackdropOptions } from './menu-camera';
 
 type MenuWorld = { map: MapId; camera: pc.Entity; update: (time: number, aspect: number) => void; destroy: () => void };
+
+// No mountain geometry or scenery enters the initial coast/water preview chunk.
+let createMountainWorld: ((app:pc.Application)=>ReturnType<typeof import('./land-scene').createLandScene>) | undefined;
+let mountainPreparation:Promise<void>|undefined;
+export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map!=='mountain')return Promise.resolve();
+  return mountainPreparation??=Promise.all([import('./land-scene'),import('./maps/mountain')]).then(([scene,{MOUNTAIN_TRACK}])=>{
+    registerMenuRoute('mountain',{sample:MOUNTAIN_TRACK.sample,length:MOUNTAIN_TRACK.length,lane:MOUNTAIN_TRACK.halfWidthAt(0)});
+    createMountainWorld=app=>scene.createLandScene(app,MOUNTAIN_TRACK,{preview:true});
+  }).catch(error=>{mountainPreparation=undefined;throw error;});
+}
 
 /** Small scenery-only palms replace GLB props in the coastal preview. No asset
  * registry request, character model, or gameplay animation is needed. */
@@ -49,14 +60,16 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   const quality = menuBackdropQuality(settings, 1, 1);
   const coast = map === 'coast' ? createCoastScene(app, {preview: true}) : null;
   const waterpark = map === 'waterpark' ? createWaterparkScene(app, {race: true}) : null;
-  const world = (coast ?? waterpark)!;
+  if(map==='mountain'&&!createMountainWorld)throw new Error('Prepare the mountain menu world before mounting.');
+  const land=map==='mountain'?createMountainWorld!(app):null;
+  const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {
     if (light.entity.name.includes('(reflection')) continue;
     light.castShadows = quality.shadows;
     light.shadowResolution = quality.shadowResolution;
     light.numCascades = 1;
-    light.shadowDistance = map === 'coast' ? 260 : 170;
+    light.shadowDistance = map !== 'waterpark' ? 260 : 170;
   }
   if (waterpark) {
     waterpark.reflection.setRefractionEnabled(quality.refraction);
@@ -88,6 +101,7 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
       waterpark?.reflection.destroy();
       world.root.destroy();
       if (coast) { coast.camera.destroy(); coast.sun.destroy(); }
+      if (land) { land.camera.destroy(); land.sun.destroy(); }
     },
   };
 }

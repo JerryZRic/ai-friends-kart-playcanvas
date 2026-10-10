@@ -21,12 +21,13 @@ export function menuQuery(state:MenuState):string{
 }
 export function raceEntry(map:MapId,driver:unknown,options?:RaceOptions&{kart?:string}):string{
  const p=new URLSearchParams({driver:resolveCharacter(driver).id,autostart:'1'});
- if(options){new URLSearchParams(raceOptionsQuery(options)).forEach((v,k)=>p.set(k,v));const kart=kartValue(options.kart);if(map==='coast'&&kart)p.set('kart',kart);}
+ if(map!=='coast'&&resolveMap(map).vehicle==='kart')p.set('map',map);
+ if(options){new URLSearchParams(raceOptionsQuery(options)).forEach((v,k)=>p.set(k,v));const kart=kartValue(options.kart);if(resolveMap(map).vehicle==='kart'&&kart)p.set('kart',kart);}
  return `${resolveMap(map).entry}?${p.toString()}`;
 }
 /** The workshop is a separate page so preview resources are released on navigation. */
-export function garageEntry(driver:unknown,options?:RaceOptions&{kart?:string}):string{
+export function garageEntry(driver:unknown,options?:RaceOptions&{kart?:string;map?:MapId}):string{
  const p=new URLSearchParams({driver:resolveCharacter(driver).id});
- if(options){p.set('flow','free');p.set('map','coast');new URLSearchParams(raceOptionsQuery(options)).forEach((v,k)=>p.set(k,v));const kart=kartValue(options.kart);if(kart)p.set('kart',kart);}
+ if(options){p.set('flow','free');p.set('map',resolveMap(options.map).vehicle==='kart'?resolveMap(options.map).id:'coast');new URLSearchParams(raceOptionsQuery(options)).forEach((v,k)=>p.set(k,v));const kart=kartValue(options.kart);if(kart)p.set('kart',kart);}
  return `./garage.html?${p.toString()}`;
 }
