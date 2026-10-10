@@ -2,7 +2,7 @@
 import * as pc from 'playcanvas';
 import {createCoastScene, placeKart as placeCoastKart} from './scene';
 import {LENGTH, sample, halfWidthAt} from './track';
-import {townPickupRows,quarryPickupRows,forestPickupRows,workshopPickupRows} from './land-course-pickups';
+import {townPickupRows,quarryPickupRows,forestPickupRows,workshopPickupRows,harvestPickupRows} from './land-course-pickups';
 import {resolveMap, type MapId} from './map-profiles';
 import type {LandTrack,LandSample} from './land-track';
 export type {CameraBlocker as CameraObstacle} from './land-camera';
@@ -12,14 +12,15 @@ import type {ForkCourse} from './land-routes';
 export async function loadLandCourse(search: string) {
   const requested=resolveMap(new URLSearchParams(search).get('map'));
   const mapId: MapId=requested.vehicle==='kart'?requested.id:'coast';
-  if(mapId==='town'||mapId==='quarry'||mapId==='forest'||mapId==='workshop') {
+  if(mapId==='town'||mapId==='quarry'||mapId==='forest'||mapId==='workshop'||mapId==='harvest') {
     // Each importer stays explicit so production splits the large scenery. A
     // single adapter feeds all original forks into the same kart runtime.
     const definition=mapId==='town'
       ? Promise.all([import('./maps/town'),import('./town-scenery')]).then(([map,scene])=>({track:map.TOWN_TRACK,routes:map.TOWN_COURSE,geometry:scene.buildTownSceneGeometry(map.TOWN_COURSE),theme:scene.TOWN_SCENE_THEME,pickups:townPickupRows(map.TOWN_COURSE)}))
       : mapId==='quarry' ? Promise.all([import('./maps/quarry'),import('./quarry-scenery')]).then(([map,scene])=>({track:map.QUARRY_TRACK,routes:map.QUARRY_COURSE,geometry:scene.buildQuarrySceneGeometry(map.QUARRY_COURSE),theme:scene.QUARRY_SCENE_THEME,pickups:quarryPickupRows(map.QUARRY_COURSE)}))
       : mapId==='forest' ? Promise.all([import('./maps/forest'),import('./forest-scenery')]).then(([map,scene])=>({track:map.FOREST_TRACK,routes:map.FOREST_COURSE,geometry:scene.buildForestSceneGeometry(map.FOREST_COURSE),theme:scene.FOREST_SCENE_THEME,pickups:forestPickupRows(map.FOREST_COURSE)}))
-      : Promise.all([import('./maps/workshop'),import('./workshop-scenery')]).then(([map,scene])=>({track:map.WORKSHOP_TRACK,routes:map.WORKSHOP_COURSE,geometry:scene.buildWorkshopSceneGeometry(map.WORKSHOP_COURSE),theme:scene.WORKSHOP_SCENE_THEME,pickups:workshopPickupRows(map.WORKSHOP_COURSE)}));
+      : mapId==='workshop' ? Promise.all([import('./maps/workshop'),import('./workshop-scenery')]).then(([map,scene])=>({track:map.WORKSHOP_TRACK,routes:map.WORKSHOP_COURSE,geometry:scene.buildWorkshopSceneGeometry(map.WORKSHOP_COURSE),theme:scene.WORKSHOP_SCENE_THEME,pickups:workshopPickupRows(map.WORKSHOP_COURSE)}))
+      : Promise.all([import('./maps/harvest'),import('./harvest-scenery')]).then(([map,scene])=>({track:map.HARVEST_TRACK,routes:map.HARVEST_COURSE,geometry:scene.buildHarvestSceneGeometry(map.HARVEST_COURSE),theme:scene.HARVEST_SCENE_THEME,pickups:harvestPickupRows(map.HARVEST_COURSE)}));
     const [{track,routes,geometry,theme,pickups},{createLandScene}]=await Promise.all([definition,import('./land-scene')]);
     const labels=routes.presentation?.branchLabels??{alley:'支线',boulevard:'主路'};
     return {id:mapId,profile:resolveMap(mapId),track,routes:routes as ForkCourse|null,length:track.length,sample:track.sample,halfWidthAt:track.halfWidthAt,

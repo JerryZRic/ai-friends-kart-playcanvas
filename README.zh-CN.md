@@ -28,6 +28,8 @@
 
 **发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开 dev 工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop)。
 
+**谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开 dev 收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

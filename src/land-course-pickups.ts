@@ -63,3 +63,22 @@ export const WORKSHOP_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:650,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const workshopPickupRows=(course:ForkCourse)=>routePickupRows(course,WORKSHOP_PICKUP_ROWS);
+
+/** Harvest rows use open grain/orchard shoulders, the center of the genuinely
+ * open barn, the broad contour and market return. All are beyond both 110m
+ * branch junction throats. The barn row is checked against emitted structure
+ * sightlines; it never uses canonical distance to find its physical support.
+ * Authored boxes keep the shared eight-second respawn. Only dynamic spawning
+ * promises the shared speed/acceleration-aware physical reaction corridor. */
+export const HARVEST_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+  {edgeId:'start',s:185,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:500,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:900,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:1230,lanes:[-3.5,3.5]},
+  {edgeId:'alley',s:157.71487126710332,lanes:[-2.2,2.2]},
+  {edgeId:'boulevard',s:230,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:180,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:480,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:650,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
+export const harvestPickupRows=(course:ForkCourse)=>routePickupRows(course,HARVEST_PICKUP_ROWS);

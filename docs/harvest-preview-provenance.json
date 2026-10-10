@@ -1,0 +1,296 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime harvest mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate late summer farm daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/harvest-scenery.ts": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "geometryTexturesRoutesThemeSha256": "10830ab8d606245fba10c26c671bf9dbcf83784f0364bd1c6fa31002a700b734",
+  "generatorHashes": {
+    "scripts/export-harvest-preview.ts": "02c2a352981b825985c5baceef3f3e1889e5ebd3615b5f3523045b13db8f5942",
+    "scripts/render-harvest-preview.py": "e7375d95c6f69b4b8abe8a752a849037e85fcbc10966f6e02d51afc80ef6be32"
+  },
+  "batches": 21,
+  "vertices": 178812,
+  "triangles": 108687,
+  "routeLengthsMetres": {
+    "start": 1455.4737229422667,
+    "alley": 426.3007265117428,
+    "boulevard": 516.7468731516695,
+    "finish": 814.7554591526211
+  },
+  "normalShading": {
+    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
+    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
+    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
+    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ at degenerate original oval poles. The render uses the preserved source vector attribute instead; no original triangles are removed."
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Barnyard Cut (alley), Golden Contour (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "barnyardLapLength": 2696.5299086066307,
+    "contourLapLength": 2786.9760552465577
+  },
+  "originalModels": {
+    "glb": {
+      "file": "harvest-original-scene.glb",
+      "sha256": "40d0227873482b0db350d2291c299851fca9a77334a88a9545a37cef1ab6c269",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "harvest-original-scene.blend",
+      "sha256": "a1dde121c5e6c4f3c58a022a554f23b167748fe39b45de73ae99257e0bb8cfa4",
+      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "harvest-overview": {
+      "file": "harvest-overview.png",
+      "sha256": "c89cdc3d7551b9a66e9d3627ffe28f73d4cf67e69236324db069b3c13c94933d",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        832.0369262695312,
+        763.2643432617188,
+        1057.0863037109375
+      ],
+      "cameraQuaternionBlender": [
+        0.4108216464519501,
+        0.17670752108097076,
+        0.35341495275497437,
+        0.8216434121131897
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Amberwind Harvest circuit on connected grain terraces and orchard terrain, with both physical fork roads, drive-through barn, windmill, granary, silos, press and market. Exact emitted source geometry and approximate offline light.",
+      "routeScreenBounds": [
+        0.26490917801856995,
+        0.24256519973278046,
+        0.7943349480628967,
+        0.8516784310340881
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.27822116017341614,
+          0.27683719992637634,
+          0.46960508823394775,
+          0.44798901677131653
+        ],
+        "boulevard": [
+          0.2649092674255371,
+          0.24256519973278046,
+          0.46960508823394775,
+          0.44798901677131653
+        ]
+      },
+      "orthographicScaleMetres": 1535.43212890625,
+      "fittedSubjectScreenBounds": [
+        0.16856256127357483,
+        0.06999997049570084,
+        0.8314374089241028,
+        0.9299999475479126
+      ]
+    },
+    "harvest-topdown": {
+      "file": "harvest-topdown.png",
+      "sha256": "6090916ed5d58b759c1a402936ca6f258c0c34bf2b8159ab0f74c0651b449920",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -18.79275131225586,
+        100.43844604492188,
+        1517.5499267578125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: the drive-through Barnyard Cut and broad Golden Contour. Real road width, split/merge throats, terraced terrain and planted orchard rows are retained.",
+      "routeScreenBounds": [
+        0.15007686614990234,
+        0.10434966534376144,
+        0.8933707475662231,
+        0.8788464665412903
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.21878963708877563,
+          0.37525832653045654,
+          0.3342317044734955,
+          0.768775463104248
+        ],
+        "boulevard": [
+          0.15007686614990234,
+          0.37525832653045654,
+          0.3342317044734955,
+          0.768775463104248
+        ]
+      },
+      "orthographicScaleMetres": 1093.0484619140625,
+      "fittedSubjectScreenBounds": [
+        0.09931080043315887,
+        0.06999999284744263,
+        0.9006891846656799,
+        0.9299999475479126
+      ]
+    },
+    "harvest-barn-passage": {
+      "file": "harvest-barn-passage.png",
+      "sha256": "3c096cea67357aa4e823f7257a22169990f6ebe07f331ce9bf965e1940c4f17c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        281.1315612792969,
+        -63.148380279541016,
+        18.100000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6500416994094849,
+        0.7598868608474731,
+        0.0031981393694877625,
+        0.0027358336374163628
+      ],
+      "projection": "PERSP",
+      "description": "Real source barn passage from 2.1 m above the independently sampled Barnyard Cut approach. Open portals, actual structural posts, roof supports and through-road are unmodified; no removed wall, hidden mesh or gameplay claim.",
+      "routeScreenBounds": [
+        -5782.81298828125,
+        -236.0070343017578,
+        1914.4525146484375,
+        217.38699340820312
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -6.563759803771973,
+          -3.3460397720336914,
+          19.414037704467773,
+          10.551340103149414
+        ],
+        "boulevard": [
+          -124.09012603759766,
+          -236.0070343017578,
+          1263.077880859375,
+          9.270584106445312
+        ]
+      },
+      "lensMillimetres": 29.0,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 94.23489743943789,
+      "heightAboveSampledRoadMetres": 2.1
+    },
+    "harvest-windmill-detail": {
+      "file": "harvest-windmill-detail.png",
+      "sha256": "90c04f85817765d4480da574a3067015c71a75f84beaf1ecbebdc0a9a2bebec0",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        654.253662109375,
+        1087.2305908203125,
+        585.0616455078125
+      ],
+      "cameraQuaternionBlender": [
+        0.2660441994667053,
+        0.18355895578861237,
+        0.5374175906181335,
+        0.7789152264595032
+      ],
+      "projection": "ORTHO",
+      "description": "Original windmill construction: masonry tower, actual static slatted sails, supported axle and grounded foundation. All source mesh batches remain visible; no animated machinery or gameplay claim.",
+      "routeScreenBounds": [
+        -3.6036477088928223,
+        -2.422471523284912,
+        4.425711631774902,
+        1.354645848274231
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -3.3418686389923096,
+          -2.292470932006836,
+          -0.9063984751701355,
+          -0.9048122763633728
+        ],
+        "boulevard": [
+          -3.6036477088928223,
+          -2.422471523284912,
+          -0.9063984751701355,
+          -0.9048122763633728
+        ]
+      },
+      "orthographicScaleMetres": 108.09661865234375,
+      "fittedSubjectScreenBounds": [
+        0.3054567277431488,
+        0.06999427080154419,
+        0.6945498585700989,
+        0.9299941658973694
+      ]
+    },
+    "harvest-orchard-detail": {
+      "file": "harvest-orchard-detail.png",
+      "sha256": "6401043d5585f701dbbfdc9b67496616e8847b51e794cb0d66be223f2bd820b6",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -293.3322448730469,
+        -211.56971740722656,
+        28.46681022644043
+      ],
+      "cameraQuaternionBlender": [
+        0.06156616657972336,
+        0.054887548089027405,
+        0.6631931066513062,
+        0.7438896894454956
+      ],
+      "projection": "PERSP",
+      "description": "Nearby lower-front perspective of the actual orchard press, including threaded static horizontal spindles, basket presses, supporting frame, stone trough and grounded foundation. All roof, posts and surrounding terrain remain unmodified; no hidden geometry.",
+      "routeScreenBounds": [
+        -1.6008456945419312,
+        0.49854472279548645,
+        4.036354064941406,
+        0.9179586172103882
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          1.0309094190597534,
+          0.6502929329872131,
+          2.3730242252349854,
+          0.7017841339111328
+        ],
+        "boulevard": [
+          1.0309094190597534,
+          0.6502026915550232,
+          2.39375901222229,
+          0.7017841339111328
+        ]
+      },
+      "lensMillimetres": 24.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/harvest-overview.webp",
+    "sha256": "e9790843325ae649bddc0bf0c64b66957f4ef1fbf30ad14049d0103b426cfa02",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}
