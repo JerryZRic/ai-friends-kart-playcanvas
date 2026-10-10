@@ -24,6 +24,8 @@
 
 **赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开 dev 采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry)。
 
+**杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开 dev 杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

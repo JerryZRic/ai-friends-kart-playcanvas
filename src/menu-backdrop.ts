@@ -15,7 +15,13 @@ let createTownWorld:typeof createMountainWorld;
 let townPreparation:Promise<void>|undefined;
 let createQuarryWorld:typeof createMountainWorld;
 let quarryPreparation:Promise<void>|undefined;
+let createForestWorld:typeof createMountainWorld;
+let forestPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='forest')return forestPreparation??=Promise.all([import('./land-scene'),import('./maps/forest'),import('./forest-scenery')]).then(([scene,{FOREST_TRACK,FOREST_COURSE},{buildForestSceneGeometry,FOREST_SCENE_THEME}])=>{
+    registerMenuRoute('forest',{sample:FOREST_TRACK.sample,length:FOREST_TRACK.length,lane:FOREST_TRACK.halfWidthAt(0)});
+    createForestWorld=app=>scene.createLandScene(app,FOREST_TRACK,{preview:true,geometry:buildForestSceneGeometry(FOREST_COURSE),theme:FOREST_SCENE_THEME});
+  }).catch(error=>{forestPreparation=undefined;throw error;});
   if(map==='quarry')return quarryPreparation??=Promise.all([import('./land-scene'),import('./maps/quarry'),import('./quarry-scenery')]).then(([scene,{QUARRY_TRACK,QUARRY_COURSE},{buildQuarrySceneGeometry,QUARRY_SCENE_THEME}])=>{
     registerMenuRoute('quarry',{sample:QUARRY_TRACK.sample,length:QUARRY_TRACK.length,lane:QUARRY_TRACK.halfWidthAt(0)});
     createQuarryWorld=app=>scene.createLandScene(app,QUARRY_TRACK,{preview:true,geometry:buildQuarrySceneGeometry(QUARRY_COURSE),theme:QUARRY_SCENE_THEME});
@@ -75,7 +81,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   if(map==='mountain'&&!createMountainWorld)throw new Error('Prepare the mountain menu world before mounting.');
   if(map==='town'&&!createTownWorld)throw new Error('Prepare the town menu world before mounting.');
   if(map==='quarry'&&!createQuarryWorld)throw new Error('Prepare the quarry menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):null;
+  if(map==='forest'&&!createForestWorld)throw new Error('Prepare the forest menu world before mounting.');
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

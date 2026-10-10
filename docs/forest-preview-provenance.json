@@ -1,0 +1,199 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime forest mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate cool cedar daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/forest-scenery.ts": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "2bf7be1b2d11476bea7362861169f183deb101290cdacf2c00521e272306c234"
+  },
+  "geometryTexturesRoutesThemeSha256": "2afa707ac933b2ccbb258a209526a28c1281060b11568fe96e94bf34608097d1",
+  "generatorHashes": {
+    "scripts/export-forest-preview.ts": "efa4f383660afc61a2f8c4b3a17b5e5f23f40b8cde42014386b71523ed507440",
+    "scripts/render-forest-preview.py": "71ba3055b8cc504909692bc9010270f4f9a0ba0a155c6a25b288f56b6b211a10"
+  },
+  "batches": 21,
+  "vertices": 140018,
+  "triangles": 107780,
+  "routeLengthsMetres": {
+    "start": 1120.5480641511485,
+    "alley": 295.12727701508993,
+    "boulevard": 359.2384938967034,
+    "finish": 1382.5470495830305
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples from start, Lens Service Path (alley), Observatory Rim (boulevard) and finish; overview/topdown also include all emitted non-terrain camera-component bounds, including full tree crowns and original landmarks.",
+  "lapLengthsMetres": {
+    "serviceLapLength": 2798.222390749269,
+    "rimLapLength": 2862.3336076308824
+  },
+  "originalModels": {
+    "glb": {
+      "file": "forest-original-scene.glb",
+      "sha256": "c83f2b6bcc19e1d83faee5b5abecaf75d7ecc74752d822d8aec93d9f632d4b1f",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "forest-original-scene.blend",
+      "sha256": "6dc198cf4443c3ba67de61afa93a3f6d77ee0cc0db0a7bf269457e7724c19581",
+      "note": "Editable original mesh batches, packed source procedural textures, UVs, runtime-derived normals and approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "forest-overview": {
+      "file": "forest-overview.png",
+      "sha256": "c872b6675d414fc1d915be6d486a47558dd83c78a6cfc16a8e8a90d087f1aaac",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        957.1185302734375,
+        661.4415893554688,
+        906.7635498046875
+      ],
+      "cameraQuaternionBlender": [
+        0.39774948358535767,
+        0.20443879067897797,
+        0.4088777005672455,
+        0.795499324798584
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original CedarLight Observatory forest circuit, both physical fork roads, connected cedar ridge and root valley, banked bowl, open canopy viaduct and modeled forest station. Peripheral terrain extends beyond the full-road frame.",
+      "routeScreenBounds": [
+        0.13274231553077698,
+        0.0897856131196022,
+        0.8019176125526428,
+        0.7594863176345825
+      ],
+      "orthographicScaleMetres": 1136.4019775390625
+    },
+    "forest-topdown": {
+      "file": "forest-topdown.png",
+      "sha256": "a20784e675eee4a8d97b9b018a0be789a486397896f0cf1a8bbfff540acda103",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -10.229453086853027,
+        -123.17124938964844,
+        1524.133544921875
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry: pale narrow Lens Service Path cuts through the inner observatory plateau; the broad Observatory Rim follows the outer arc. Both independent roads retain their actual split/merge throats. Upper canopy viaduct crosses the earlier root-valley road at its real separate elevation.",
+      "routeScreenBounds": [
+        0.3396010994911194,
+        0.1065315529704094,
+        0.6435027718544006,
+        0.8561738133430481
+      ],
+      "orthographicScaleMetres": 1525.753662109375
+    },
+    "forest-canopy-passage": {
+      "file": "forest-canopy-passage.png",
+      "sha256": "81530b9a0d076726a8da4040cb4c8618c95a4343f9e7359a65353b31691d8404",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1329.5908203125,
+        587.91015625,
+        488.13958740234375
+      ],
+      "cameraQuaternionBlender": [
+        0.4386691451072693,
+        0.3185676336288452,
+        0.49376264214515686,
+        0.6799135804176331
+      ],
+      "projection": "ORTHO",
+      "description": "Actual two-level canopy crossing: upper laminated timber viaduct, shallow source chords, separated sleepers, outside-corridor grounded supports and the open root-valley road below. This view retains every emitted source mesh and its true clearance.",
+      "routeScreenBounds": [
+        -2.892049551010132,
+        -0.6917548775672913,
+        2.6491615772247314,
+        1.6250327825546265
+      ],
+      "orthographicScaleMetres": 145.0
+    },
+    "forest-observatory-detail": {
+      "file": "forest-observatory-detail.png",
+      "sha256": "68418e59fb4d64f829bc56f5d0e24f55ea33c36f77024de8d9e2561a73fadd63",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -378.3980712890625,
+        987.22021484375,
+        434.3265075683594
+      ],
+      "cameraQuaternionBlender": [
+        0.11028639227151871,
+        0.08444886654615402,
+        -0.6020660996437073,
+        -0.7862707376480103
+      ],
+      "projection": "ORTHO",
+      "description": "Southwestern three-quarter detail of the original observatory: genuinely open copper dome slit with a double-fork survey instrument, articulated shutter edges, stepped masonry plinth and offset stair tower. The view uses only actual emitted source geometry.",
+      "routeScreenBounds": [
+        -5.266515254974365,
+        -4.506400108337402,
+        3.0397536754608154,
+        1.0698537826538086
+      ],
+      "orthographicScaleMetres": 68.0
+    },
+    "forest-station-detail": {
+      "file": "forest-station-detail.png",
+      "sha256": "1762ec8083d934cdb4ddfac355457ab90314497d97844e11e3d59a854a644615",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        909.4088745117188,
+        1492.6318359375,
+        683.3885498046875
+      ],
+      "cameraQuaternionBlender": [
+        0.24195046722888947,
+        0.1491243839263916,
+        0.5030508637428284,
+        0.8161872625350952
+      ],
+      "projection": "ORTHO",
+      "description": "Original grounded forestry station: pitched workshop roof, open lean-to, supported cut logs with modeled end grain, recessed doors and windows, masonry foundations and neighboring cedar landform. Source geometry is unchanged.",
+      "routeScreenBounds": [
+        -4.929262161254883,
+        0.7722324728965759,
+        3.513204574584961,
+        9.0606689453125
+      ],
+      "orthographicScaleMetres": 76.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/forest-overview.webp",
+    "sha256": "bbad3d3b001635ebbe5779bc5a8653b2634b50d010959ee49a01c9b4ef059439",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

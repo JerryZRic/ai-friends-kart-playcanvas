@@ -30,3 +30,19 @@ export const QUARRY_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:1040,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const quarryPickupRows=(course:ForkCourse)=>routePickupRows(course,QUARRY_PICKUP_ROWS);
+
+/** Edge-local forest rows use the broad root/bowl exits and level branch
+ * pockets. No row sits in a split/merge throat or either viaduct crossing deck.
+ * Static rows preserve normal cooldown respawn; only dynamic appearances claim
+ * the speed/acceleration-dependent reaction guarantee in the shared director. */
+export const FOREST_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+  {edgeId:'start',s:185,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:555,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:905,lanes:[-3.5,3.5]},
+  {edgeId:'alley',s:175,lanes:[-2.2,2.2]},
+  {edgeId:'boulevard',s:175,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:185,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:595,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:1045,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
+export const forestPickupRows=(course:ForkCourse)=>routePickupRows(course,FOREST_PICKUP_ROWS);
