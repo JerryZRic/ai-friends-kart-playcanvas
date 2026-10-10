@@ -124,3 +124,9 @@ character-independent saved builds, deterministic skill decisions, shared tuning
 actual model selection, cancellation, retries, race lifecycle and all six driver
 fits through the real PlayCanvas NullGraphicsDevice pipeline. Browser GPU rendering,
 mobile memory pressure and real-device frame rate still require hardware testing.
+
+## Landscape workshop layout
+
+The garage uses a viewport-height cockpit at landscape widths of at least 1000 CSS pixels and heights of at least 680 CSS pixels. Six drawers, the real assembly preview, character-plus-car comparison, a six-item horizontal tray and bottom actions stay on the main screen. The tray pages through all 54 parts per slot; changing filters resets its page. Smaller or portrait windows use a flowing fallback.
+
+Recipes and named-build editing share a native modal dialog, while detailed design estimates and explanations live in a second dialog. Escape or the visible close button dismisses each dialog and returns focus to its opener. The actual build state, preview cancellation, camera controls and race navigation remain shared with the existing garage flow. The requested common desktop sizes are layout targets; browser verification records the actual available viewport rather than claiming unperformed device coverage.

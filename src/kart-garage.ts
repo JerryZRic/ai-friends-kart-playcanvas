@@ -71,6 +71,13 @@ export function filterGarageParts(slot: KartSlot, theme: string, query: string) 
   return partsBySlot[slot].filter(part => (!theme || part.themeId === theme) && (!needle || `${part.id} ${part.name} ${part.themeName} ${part.archetypeLabel}`.toLocaleLowerCase().includes(needle)));
 }
 
+/** Bounded horizontal tray: every filtered part remains reachable without page scrolling. */
+export function garagePartPage<T>(parts: readonly T[], requested: number, size = 6) {
+  const pageSize = Math.max(1, Math.floor(size)), pages = Math.max(1, Math.ceil(parts.length / pageSize));
+  const page = Math.max(0, Math.min(pages - 1, Math.floor(requested) || 0));
+  return {page, pages, items: parts.slice(page * pageSize, (page + 1) * pageSize)};
+}
+
 /** One preview app per mounted garage. Latest builds own their own abort signal;
  * stale results are disposed and never presented as the current selection. */
 export function mountKartGaragePreview(canvas: HTMLCanvasElement, onStatus: (state: KartAssemblyProgress | {stage: 'failed'; message: string}) => void, initial: KartBuild) {
@@ -171,7 +178,7 @@ export function mountKartGarage(root: HTMLElement) {
   const driver = resolveCharacter(new URLSearchParams(search).get('driver'));
   let state: GarageState = loadGarageState(), slot: KartSlot = 'body', theme = '', query = '', compareBuild: KartBuild = {...state.activeBuild};
   state.activeBuild = garageInitialBuild(search, state.activeBuild); compareBuild = {...state.activeBuild};
-  let editingId: string | null = null;
+  let editingId: string | null = null, partPage = 0;
   let preview: ReturnType<typeof mountKartGaragePreview> | null = null, storageAvailable = true;
   let thumbnails:ReadonlyMap<string,string>=new Map();const thumbnailAbort=new AbortController();
   const themes = [...new Map(catalog.map(part => [part.themeId, part])).values()].sort((a, b) => a.kitNumber - b.kitNumber);
@@ -185,7 +192,20 @@ export function mountKartGarage(root: HTMLElement) {
     <section class="parts-library" aria-labelledby="parts-heading"><div class="library-heading"><div><p class="eyebrow">PARTS & GOODIES / 零件百宝箱</p><h2 id="parts-heading">挑选<span id="current-slot-label">车壳</span></h2><p id="parts-count"></p></div><div class="library-filters"><label for="theme-filter">外观主题（可选）<select id="theme-filter"><option value="">全部 54 个主题</option>${themes.map(part => `<option value="${esc(part.themeId)}">${String(part.kitNumber).padStart(3, '0')} · ${esc(themeName(part))}</option>`).join('')}</select></label><label for="part-search">搜索<input type="search" id="part-search" placeholder="名称 / 类型 / 零件 ID"></label><button id="apply-theme" disabled>按主题试装（无套装加成）</button></div></div><p class="comparison-hint">悬停或聚焦零件可比较属性，点选后载入实际 3D 模块。仅按需下载涉及的主题包。</p><p id="thumbnail-status" class="comparison-hint" role="status">正在加载零件缩略图…</p><div class="parts-grid" id="parts-grid" role="group" aria-label="可选零件"></div></section>
     <footer class="garage-footer"><span>原创食物模型 · DEV 独立测试</span><a href="./source.html">开源代码与模型许可 ↗</a><a data-garage-back href="${esc(back)}">返回角色选择</a></footer>`;
   const $ = <T extends HTMLElement = HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
-  function persist(message = '当前装配已自动保存') {storageAvailable = saveGarageState(state); $('#save-status').textContent = storageAvailable ? message : '此浏览器无法保存；本次搭配仍可通过下方试跑入口带入比赛，离开后不会保留'; $('#save-status').dataset.error = String(!storageAvailable);}
+  // Reuse the existing controls in native dialogs; there is only one source of state.
+  root.insertAdjacentHTML('beforeend', `<div class="garage-actions"><div class="workshop-actions"><button data-open-dialog="recipes-dialog">▤ 配方与收藏</button><button data-open-dialog="specs-dialog">◴ 详细参数</button><span id="compact-save-status" role="status">搭配自动保存</span></div></div><dialog id="recipes-dialog" class="workshop-dialog" aria-labelledby="recipes-title"><div class="dialog-heading"><h2 id="recipes-title">灵感配方与我的收藏</h2><button data-close-dialog aria-label="关闭配方与收藏">关闭 ×</button></div></dialog><dialog id="specs-dialog" class="workshop-dialog" aria-labelledby="specs-title"><div class="dialog-heading"><h2 id="specs-title">车辆设计与比赛参数</h2><button data-close-dialog aria-label="关闭详细参数">关闭 ×</button></div><div id="advanced-stats"></div></dialog>`);
+  $('#recipes-dialog').append($('.build-shelf'));
+  $('#specs-dialog').append($('.performance-disclosure'));
+  $('.garage-actions').append($('#garage-race'));
+  $('.garage-footer').remove();
+  $('.garage-actions').insertAdjacentHTML('beforeend', '<a class="license-link" href="./source.html" aria-label="开源代码与模型许可">许可 ↗</a>');
+  $('.race-note').remove();
+  $('.parts-library').insertAdjacentHTML('beforeend', '<div class="parts-pagination"><span id="tray-hint">悬停比较 · 点击装配</span><div><button id="parts-prev" aria-label="上一页零件">←</button><span id="parts-page" role="status" aria-live="polite"></span><button id="parts-next" aria-label="下一页零件">→</button></div></div>');
+  let dialogOpener: HTMLElement | null = null;
+  root.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
+    dialog.addEventListener('close', () => {dialogOpener?.focus({preventScroll: true}); dialogOpener = null;}, {signal: events.signal});
+  });
+  function persist(message = '当前装配已自动保存') {storageAvailable = saveGarageState(state); $('#save-status').textContent = storageAvailable ? message : '此浏览器无法保存；本次搭配仍可通过下方试跑入口带入比赛，离开后不会保留'; $('#save-status').dataset.error = String(!storageAvailable); $('#compact-save-status').textContent = storageAvailable ? '✓ 搭配已自动保存' : '⚠ 无法保存到浏览器'; $('#compact-save-status').dataset.error = String(!storageAvailable);}
   function renderSlots() {
     $('#garage-slots').innerHTML = KART_SLOTS.map((name, index) => {const part = byId.get(state.activeBuild[name])!; return `<button class="slot-choice" data-slot="${name}" aria-pressed="${slot === name}"><span class="slot-icon" aria-hidden="true">${SLOT_ICONS[name]}</span><span><strong><small>0${index + 1}</small> ${SLOT_NAMES[name]}</strong><span>${esc(themeName(part))}</span></span><span class="slot-chevron" aria-hidden="true">${slot === name ? '→' : '·'}</span></button>`;}).join('');
     $('#current-slot-label').textContent = SLOT_NAMES[slot];
@@ -202,11 +222,19 @@ export function mountKartGarage(root: HTMLElement) {
       ['设计极速', 'topSpeedKph', 'km/h', 1, false], ['设计起步', 'launchAcceleration', 'm/s²', 2, false], ['设计抓地', 'lateralGripG', 'g', 2, false], ['整车质量', 'massKg', 'kg', 1, true],
     ] as const;
     $('#build-stats').innerHTML = `<p class="comparison-title">${prospective ? '此零件装上后 / 与当前比较' : '当前装配 / 与上次装配比较'}</p><div class="game-speed-summary"><div class="speed-dial" aria-hidden="true"><svg viewBox="0 0 200 126"><path class="dial-track" d="M28.6 120 A76 76 0 1 1 171.4 120"/><path class="dial-zone" d="M28.6 68 A76 76 0 0 1 168.9 61.9"/><path class="dial-redline" d="M168.9 61.9 A76 76 0 0 1 171.4 120"/><g class="dial-ticks"><path d="M28.6 120.0L38.9 116.2M24.0 91.3L35.0 91.7M30.6 63.1L40.6 67.6M47.2 39.3L54.8 47.2M71.5 23.5L75.7 33.7M100.0 18.0L100.0 29.0M128.5 23.5L124.3 33.7M152.8 39.3L145.2 47.2M169.4 63.1L159.4 67.6M176.0 91.3L165.0 91.7M171.4 120.0L161.1 116.2"/></g><text x="40" y="112">0</text><text x="89" y="49">120</text><text x="142" y="112">240</text><g class="dial-needle" style="transform:rotate(${Math.max(-110, Math.min(110, raceTuning.maxSpeed * 3.6 / 240 * 220 - 110))}deg)"><path d="M97 96L100 32L103 96Z"/><circle cx="100" cy="94" r="8"/></g></svg></div><span>${esc(driver.label)} · 比赛平路上限</span><strong class="speed-readout">${(raceTuning.maxSpeed * 3.6).toFixed(1)} <small>km/h</small></strong><p>已叠加角色属性 · 未计道具加速<br>弯道上限依抓地调整</p></div>${combinedMarkup}<p class="design-spec-caption">以下为设计估算，用于生成车辆倍率</p><div class="spec-rows">${rows.map(([name, key, unit, digits, inverse]) => {const value = Number(displayed[key]), delta = value - Number(baseline[key]); return `<div class="spec-row"><div><span>${name}</span><small class="stat-delta ${Math.abs(delta) < .005 ? 'neutral' : (delta > 0) !== inverse ? 'positive' : 'negative'}">${Math.abs(delta) < .005 ? '—' : `${delta > 0 ? '+' : ''}${delta.toFixed(digits)}`}</small></div><strong>${value.toFixed(digits)} <small>${unit}</small></strong></div>`;}).join('')}</div><div class="race-multipliers"><h3>比赛车辆系数</h3>${[['加速', displayed.multipliers.acceleration], ['极速', displayed.multipliers.speed], ['转向', displayed.multipliers.handling]].map(([label, value]) => `<div><span>${label}</span><meter min="0.65" max="1.35" value="${value}" aria-label="${label}系数 ${Number(value).toFixed(2)}"></meter><strong>×${Number(value).toFixed(2)}</strong></div>`).join('')}</div><details class="more-stats"><summary>更多估算参数</summary><dl><div><dt>驱动功率</dt><dd>${displayed.drivePowerKw.toFixed(1)} kW</dd></div><div><dt>电池容量（消耗未启用）</dt><dd>${displayed.batteryKwh.toFixed(1)} kWh</dd></div><div><dt>耐久损耗</dt><dd>未启用 · 无当前优势</dd></div><div><dt>终传齿比（设计）</dt><dd>${physical.transmission.final_drive_ratio.toFixed(2)} : 1</dd></div><div><dt>风阻面积 CdA（设计）</dt><dd>${physical.body.drag_area_m2.toFixed(3)} m²</dd></div><div><dt>轮胎摩擦系数（设计）</dt><dd>${physical.wheels.grip_coefficient.toFixed(2)}（无量纲）</dd></div><div><dt>侧倾阈值</dt><dd>${displayed.rollThresholdG.toFixed(2)} g</dd></div></dl></details>`;
+    collectAdvancedStats();
+  }
+    function collectAdvancedStats() {
+    const advanced = $('#advanced-stats'); advanced.replaceChildren();
+    for (const selector of ['.design-spec-caption', '.spec-rows', '.race-multipliers', '.more-stats']) {const element = $('#build-stats').querySelector(selector); if (element) advanced.append(element);}
   }
   function renderParts() {
     const filtered = filterGarageParts(slot, theme, query);
+    const paged = garagePartPage(filtered, partPage); partPage = paged.page;
+    $('#parts-page').textContent = `${partPage + 1} / ${paged.pages}`;
+    $<HTMLButtonElement>('#parts-prev').disabled = partPage === 0; $<HTMLButtonElement>('#parts-next').disabled = partPage === paged.pages - 1;
     $('#parts-count').textContent = `${filtered.length} / 54 件${theme || query ? '符合筛选' : '可选'} · 当前槽位一次装备一件`;
-    $('#parts-grid').innerHTML = filtered.length ? filtered.map(part => {const thumbnail = thumbnails.get(part.id), hasThumb = !!thumbnail; return `<button class="part-card" style="--part-hue:${[24,162,204,346,44,276][(part.kitNumber - 1) % 6]}" data-part="${esc(part.id)}" aria-pressed="${state.activeBuild[slot] === part.id}"><span class="part-visual ${hasThumb ? '' : 'no-thumbnail'}">${hasThumb ? `<img src="${thumbnail}" alt="${esc(part.name)}原始模型模块图" loading="lazy" width="400" height="300">` : `<span aria-hidden="true">${SLOT_ICONS[slot]}</span><small>点选查看真实 3D</small>`}<span class="part-number">${String(part.kitNumber).padStart(3, '0')}</span><span class="part-selected" aria-hidden="true">${state.activeBuild[slot] === part.id ? '✓' : '+'}</span></span><span class="part-copy"><strong>${esc(part.name)}</strong><span class="part-type">${esc(part.archetypeLabel)}<span>装配 →</span></span><code>${esc(part.id)}</code></span></button>`;}).join('') : '<div class="no-parts"><strong>没有找到这个零件</strong><p>换个名称、零件 ID，或把主题切回“全部”</p><button id="clear-filters">清除筛选</button></div>';
+    $('#parts-grid').innerHTML = filtered.length ? paged.items.map(part => {const thumbnail = thumbnails.get(part.id), hasThumb = !!thumbnail; return `<button class="part-card" style="--part-hue:${[24,162,204,346,44,276][(part.kitNumber - 1) % 6]}" data-part="${esc(part.id)}" aria-pressed="${state.activeBuild[slot] === part.id}"><span class="part-visual ${hasThumb ? '' : 'no-thumbnail'}">${hasThumb ? `<img src="${thumbnail}" alt="${esc(part.name)}原始模型模块图" loading="lazy" width="400" height="300">` : `<span aria-hidden="true">${SLOT_ICONS[slot]}</span><small>点选查看真实 3D</small>`}<span class="part-number">${String(part.kitNumber).padStart(3, '0')}</span><span class="part-selected" aria-hidden="true">${state.activeBuild[slot] === part.id ? '✓' : '+'}</span></span><span class="part-copy"><strong>${esc(part.name)}</strong><span class="part-type">${esc(part.archetypeLabel)}<span>装配 →</span></span><code>${esc(part.id)}</code></span></button>`;}).join('') : '<div class="no-parts"><strong>没有找到这个零件</strong><p>换个名称、零件 ID，或把主题切回“全部”</p><button id="clear-filters">清除筛选</button></div>';
     $('#apply-theme').toggleAttribute('disabled', !theme);
   }
   function renderEditing() {
@@ -231,20 +259,23 @@ export function mountKartGarage(root: HTMLElement) {
   $('#starter-builds').innerHTML = kartPresets.map((build, index) => `<button data-starter="${esc(build.id)}" title="${esc(build.description)}"><small>${String(index + 1).padStart(2, '0')}</small><span><strong>${esc(build.name)}</strong><small class="preset-description">${esc(build.description)}</small></span><span aria-hidden="true">↗</span></button>`).join('');
   root.addEventListener('click', event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('button'); if (!target) return;
-    if (target.dataset.slot) {slot = target.dataset.slot as KartSlot; renderSlots(); renderParts(); renderStats(); $(`[data-slot="${slot}"]`).focus({preventScroll: true});}
+    if (target.dataset.openDialog) {dialogOpener = target; $<HTMLDialogElement>(`#${target.dataset.openDialog}`).showModal();}
+    if (target.hasAttribute('data-close-dialog')) target.closest('dialog')?.close();
+    if (target.id === 'parts-prev' || target.id === 'parts-next') {partPage += target.id === 'parts-next' ? 1 : -1; renderParts(); renderStats(); const button = $<HTMLButtonElement>(`#${target.id}`); if (button.disabled) $<HTMLButtonElement>(target.id === 'parts-next' ? '#parts-prev' : '#parts-next').focus({preventScroll:true});}
+    if (target.dataset.slot) {partPage = 0; slot = target.dataset.slot as KartSlot; renderSlots(); renderParts(); renderStats(); $(`[data-slot="${slot}"]`).focus({preventScroll: true});}
     if (target.dataset.part) {const part = byId.get(target.dataset.part)!; if (part.id !== state.activeBuild[part.slot]) {applyBuild({...state.activeBuild, [part.slot]: part.id}); $(`[data-part="${part.id}"]`)?.focus({preventScroll: true});}}
     if (target.dataset.starter) {const starter = kartPresets.find(value => value.id === target.dataset.starter); applyBuild(starter?.build || defaultBuild, starter?.name || '标准混搭', starter?.description);}
     if (target.dataset.loadBuild) {const saved = state.namedBuilds.find(value => value.id === target.dataset.loadBuild); if (saved) {editingId = saved.id; $<HTMLInputElement>('#build-name').value = saved.name; applyBuild(saved.build, saved.name); renderEditing();}}
     if (target.dataset.deleteBuild) {state = {...state, namedBuilds: state.namedBuilds.filter(value => value.id !== target.dataset.deleteBuild)}; if (editingId === target.dataset.deleteBuild) {editingId = null; $<HTMLInputElement>('#build-name').value = '';} persist('已删除保存的方案；当前装配保持不变'); renderSaved(); renderEditing();}
     if (target.id === 'save-as-new') {editingId = null; renderEditing(); $<HTMLInputElement>('#build-name').focus();}
-    if (target.id === 'clear-filters') {theme = ''; query = ''; $<HTMLSelectElement>('#theme-filter').value = ''; $<HTMLInputElement>('#part-search').value = ''; renderParts();}
+    if (target.id === 'clear-filters') {partPage = 0; theme = ''; query = ''; $<HTMLSelectElement>('#theme-filter').value = ''; $<HTMLInputElement>('#part-search').value = ''; renderParts();}
     if (target.id === 'apply-theme' && theme) {const build = {...state.activeBuild}; for (const part of catalog.filter(value => value.themeId === theme)) build[part.slot] = part.id; applyBuild(build, `${themeName(byId.get(build.body)!)} · 整套`);}
     if (target.id === 'preview-zoom-in') preview?.zoomBy(-.1); if (target.id === 'preview-zoom-out') preview?.zoomBy(.1); if (target.id === 'preview-reset') preview?.reset(); if (target.id === 'preview-retry') preview?.retry();
   }, {signal: events.signal});
   const comparePart = (event: Event) => {const target = (event.target as HTMLElement).closest<HTMLElement>('[data-part]'); if (!target) return; const part = byId.get(target.dataset.part!)!; renderStats({...state.activeBuild, [part.slot]: part.id});};
   $('#parts-grid').addEventListener('pointerover', comparePart); $('#parts-grid').addEventListener('focusin', comparePart); $('#parts-grid').addEventListener('pointerleave', () => renderStats()); $('#parts-grid').addEventListener('focusout', event => {if (!$('#parts-grid').contains((event as FocusEvent).relatedTarget as Node)) renderStats();});
-  $<HTMLSelectElement>('#theme-filter').addEventListener('change', event => {theme = (event.target as HTMLSelectElement).value; renderParts(); renderStats();});
-  $<HTMLInputElement>('#part-search').addEventListener('input', event => {query = (event.target as HTMLInputElement).value; renderParts(); renderStats();});
+  $<HTMLSelectElement>('#theme-filter').addEventListener('change', event => {partPage = 0; theme = (event.target as HTMLSelectElement).value; renderParts(); renderStats();});
+  $<HTMLInputElement>('#part-search').addEventListener('input', event => {partPage = 0; query = (event.target as HTMLInputElement).value; renderParts(); renderStats();});
   $('#save-build-form').addEventListener('submit', event => {
     event.preventDefault(); const input = $<HTMLInputElement>('#build-name');
     const result = upsertGarageNamedBuild(state, input.value, editingId, `build-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`);
