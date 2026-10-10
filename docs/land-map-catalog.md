@@ -27,3 +27,17 @@ The cloud environment cannot perform reliable WebGL/GPU visual or FPS verificati
 ## Sources and licensing
 
 Route coordinates, procedural meshes, textures and rendering scripts are original project work distributed with the repository's AGPL-3.0-only corresponding source. No Nintendo/T-Time map or artwork was copied. The reusable map-only package contains no character model; the game's existing character models retain separate non-commercial restrictions. See `MODEL-NOTICE.txt` and `LICENSE`.
+
+## Lantern Terrace Rally / 灯阶旧城环线
+
+The second original land course extends the same race runtime with a physical fork. Steer left into Lantern Alley or right onto Tram Boulevard before the signed junction. Both choices rejoin the market circuit; NPCs choose routes deterministically from the race seed. The narrow technical alley saves distance, while the broader boulevard offers a more forgiving line. Route comparison uses the same kart and actual shared driving helpers, not hidden route speed multipliers.
+
+Each racer retains its own physical edge, metres travelled and per-lap route history. Canonical progress is used only for standings and checkpoint order. Reverse movement retraces the chosen edge; reset, camera, road support, collisions, pickups and traffic use the physical branch. A high street viaduct crosses the lower circuit with measured overhead clearance. Branch separation also prevents items or traffic from affecting racers across disconnected streets.
+
+The original town scene includes terracotta-roofed houses, timber arcades, market stalls, a clock tower, parked tram, citrus trees, lanterns, masonry abutments and road-edge details. Shared junctions are kept open, overlapping merge surfaces are deduplicated, and scenery is checked against both driveable ribbons. Modules and geometry load only after selecting this course. All normal garage, character, difficulty, seed, loading, pause, settings and results flows remain shared.
+
+Town previews use exported runtime geometry and procedural textures. Counts and headless lifecycle checks are engineering budgets, not measured FPS. The same GPU and device-playtesting limitations above apply.
+
+Current town environment budget: 20 material batches, 95,630 triangles and four shared procedural textures. The complete boulevard lap is approximately 1,526 m; the alley lap is approximately 1,437 m. Full-scene meshes include architecture and props, not the six vehicles or item/effect pools.
+
+A controlled same-kart native-runtime lap, with no traffic or items, measured 42.000 s through a corrected alley line and 42.783 s through a corrected boulevard line. An uncorrected alley run took 43.333 s. This validates a modest shortcut reward that rail scrapes can lose; it is one automated control recipe, not a promise of player times or competitive balance across every build. Pure driving tests also cover all six character builds on both routes at 30, 60, 120, 144 and 240 Hz.

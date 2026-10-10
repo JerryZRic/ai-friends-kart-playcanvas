@@ -100,7 +100,7 @@ export function placeKart(entity: pc.Entity, distance: number, lateral: number, 
   entity.setRotation(yaw);
   return s;
 }
-export interface ItemBox extends PickupState { d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity>; dynamic?: boolean }
+export interface ItemBox extends PickupState { edgeId?:string; s?:number; d: number; lateral: number; mesh: pc.Entity; base: number; models: Record<ItemDisplay, pc.Entity>; dynamic?: boolean }
 export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 
 export function createCoastScene(app: pc.Application, options: { preview?: boolean } = {}) {

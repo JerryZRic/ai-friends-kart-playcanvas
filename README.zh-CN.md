@@ -20,6 +20,8 @@
 
 **云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在 dev 地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。本次是网页测试更新，不包含新的 Windows 打包。
 
+**灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开 dev 旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

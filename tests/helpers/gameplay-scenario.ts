@@ -14,7 +14,7 @@ import { clearFoodKartPayloadCache } from '../../src/food-kart-payload';
 import { createRaceKartTuning, kartRoadContext, buildForRacer, stepRaceKartSpeed } from '../../src/kart-race';
 
 const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
-export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;courseFailure?:boolean};
+export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;courseFailure?:boolean};
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
@@ -28,7 +28,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   const previousLocation=g.location, previousStorage=Object.getOwnPropertyDescriptor(g,'localStorage');
   const storageReads: string[] = [], storageWrites: string[] = [];
   Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem(key:string){storageReads.push(key);return key===GARAGE_STORAGE_KEY&&scenario.savedBuild?JSON.stringify({version:1,activeBuild:scenario.savedBuild,namedBuilds:[]}):null;},setItem(key:string){storageWrites.push(key);}}});
-  g.location={search:'?driver=whale&autostart=1'+(scenario.mountain?'&map=mountain':''),href:'http://localhost/coast.html?driver=whale&autostart=1'+(scenario.mountain?'&map=mountain':'')};
+  g.location={search:'?driver=whale&autostart=1'+(scenario.town?'&map=town':scenario.mountain?'&map=mountain':''),href:'http://localhost/coast.html?driver=whale&autostart=1'+(scenario.town?'&map=town':scenario.mountain?'&map=mountain':'')};
   clearFoodKartPayloadCache();
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
   const elements = new Map<string, any>(), events: Record<string, Function[]> = {}, docEvents: Record<string, Function[]> = {};
@@ -133,11 +133,11 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   source = source.replace(/app = new pc\.Application\(canvas,.*?\);/, 'app = (globalThis as any).__testApp;');
   source = source.replace("import.meta.env.DEV || new URLSearchParams(location.search).has('qa')", 'true');
   source = source.replace('app.start();', '// Manual NullGraphicsDevice stepping.');
-  if(scenario.courseFailure)source=source.replace("import {loadLandCourse} from './land-course';","const loadLandCourse = async (_search:string):Promise<any> => {throw new Error('Injected mountain chunk failure');};");
-  const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
+  if(scenario.courseFailure)source=source.replace("import {loadLandCourse,placeLandFrame} from './land-course';","import {placeLandFrame} from './land-course'; const loadLandCourse = async (_search:string):Promise<any> => {throw new Error('Injected mountain chunk failure');};");
+  const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':scenario.town?'town':scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
   try {
-    if(scenario.mountain){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
+    if(scenario.mountain||scenario.town){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
       await assert.rejects(import(copy.href+'?run='+Date.now()),/Injected mountain chunk failure/);
       assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);
@@ -147,6 +147,64 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     }
     await import(copy.href + '?run=' + Date.now());
     const game = g.window.neonKart, qa = game.debug;
+    if(scenario.town){
+      const {TOWN_COURSE:course}=await import('../../src/maps/town');
+      const {sampleCursor,createCursor,createRouteProgress}=await import('../../src/land-routes');
+      for(let i=0;i<1600&&!game.getState().modelsLoaded;i++)await new Promise(resolve=>setTimeout(resolve,5));
+      assert.equal(game.getState().modelsLoaded,true,game.getState().loading.error||'town loading completes');
+      assert.equal(game.getState().map,'town');assert.equal(qa.controllers.size,6);assert.equal(qa.courseAssets.size,1);
+      for(let i=0;i<600&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
+      assert.equal(game.getState().state,'running');
+      const start=game.getState().pos;qa.set({pos:course.canonicalLength*2,speed:40});qa.update(1/60);assert.equal(game.getState().pos,start);assert.equal(game.getState().validatedLaps,0);
+      // The same pointer-bound controls used on touch feed the real fork decision.
+      const routes=qa.routes,id=game.getState().selectedDriverId;
+      routes.states.set(id,createRouteProgress({...createCursor(2),s:course.commonStart.length-.2}));qa.set({pos:routes.total(id),lane:2,speed:30});
+      element('touch-ArrowLeft').emit('pointerdown',{pointerId:7,preventDefault(){}});qa.update(1/60);element('touch-ArrowLeft').emit('pointerup',{pointerId:7});
+      assert.equal(game.getState().route.edgeId,'alley');
+      const heldCursor=JSON.stringify(game.getState().route);game.pause();qa.update(.1);assert.equal(JSON.stringify(game.getState().route),heldCursor);game.pause();
+      game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
+      const branches=new Set<string>();let minY=Infinity,maxY=-Infinity;
+      qa.keys.KeyW=true;
+      for(let frame=0;frame<28000&&game.getState().state==='running';frame++){
+        // Corrective driving, shared by both courses: hold a supported lane,
+        // and use the ordinary A key at the physical split for the short route.
+        const c=routes.cursor(id),near=routes.nearFork(id);
+        qa.keys.KeyA=near&&c.lateral<2.6;qa.keys.KeyD=!near&&c.lateral>1.5||near&&c.lateral>3.4;
+        if(!near&&c.lateral<-.5){qa.keys.KeyA=true;qa.keys.KeyD=false;}
+        qa.update(1/60);
+        if(frame%100===0){qa.draw(0);const state=game.getState(),p=sampleCursor(course,state.route,state.lane).p;
+          assert.ok(qa.player().getPosition().distance(p)<.13,'player uses physical selected branch support');
+          assert.ok([state.pos,state.speed,state.lane,p.y].every(Number.isFinite));minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);
+          for(const bot of qa.bots()){const cursor=routes.cursor(bot.id);if(cursor.edgeId==='alley'||cursor.edgeId==='boulevard')branches.add(cursor.edgeId);assert.ok(bot.mesh.getPosition().distance(sampleCursor(course,cursor,bot.lateral).p)<.13,'NPC renders on its own branch');}
+        }
+      }
+      qa.keys.KeyW=qa.keys.KeyA=qa.keys.KeyD=false;
+      assert.equal(game.getState().state,'finished',JSON.stringify(game.getState()));assert.equal(game.getState().validatedLaps,3);assert.equal(branches.size,2,'seeded actual NPC field traverses both streets');assert.ok(maxY-minY>18);
+      assert.ok(Object.values(game.getState().route.choiceByLap).includes('alley'));
+      const alleyTime=game.getState().elapsed;
+      game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);assert.deepEqual(game.getState().route.choiceByLap,{});
+      qa.keys.KeyW=true;
+      for(let frame=0;frame<28000&&game.getState().state==='running';frame++)qa.update(1/60);
+      qa.keys.KeyW=false;assert.equal(game.getState().state,'finished');assert.equal(game.getState().validatedLaps,3);assert.deepEqual(Object.values(game.getState().route.choiceByLap),['boulevard','boulevard','boulevard']);
+      t.diagnostic(`Measured three-lap native run: corrective alley ${alleyTime.toFixed(2)}s; neutral boulevard ${game.getState().elapsed.toFixed(2)}s (traffic/items active; not a controlled balance result)`);
+      const benchmark=(branch:'alley'|'boulevard',corrective:boolean)=>{
+        game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
+        qa.set({noBots:true,held:'shield'});for(const box of qa.boxes()){box.cool=Infinity;box.mesh.enabled=false;}
+        qa.keys.KeyW=true;let railFrames=0,branchStart=0,branchEnd=0,branchRailFrames=0;
+        for(let frame=0;frame<12000&&game.getState().validatedLaps<1;frame++){
+          const c=routes.cursor(id),near=routes.nearFork(id),target=near?(branch==='alley'?2.6:-2.6):0;
+          qa.keys.KeyA=near||corrective?c.lateral<target-.35:false;qa.keys.KeyD=near||corrective?c.lateral>target+.35:false;
+          qa.update(1/60);const state=game.getState();if(state.route.edgeId===branch&&branchStart===0)branchStart=state.elapsed;if(state.route.edgeId==='finish'&&branchEnd===0)branchEnd=state.elapsed;if(Math.abs(state.lane)>=routes.limit(id)-.02){railFrames++;if(state.route.edgeId===branch)branchRailFrames++;}
+        }
+        qa.keys.KeyW=qa.keys.KeyA=qa.keys.KeyD=false;assert.equal(game.getState().validatedLaps,1);
+        assert.equal(game.getState().route.choiceByLap[0],branch);return {seconds:game.getState().elapsed,railSeconds:railFrames/60,branchSeconds:branchEnd-branchStart,branchRailSeconds:branchRailFrames/60};
+      };
+      const balance={boulevard:benchmark('boulevard',false),boulevardCorrected:benchmark('boulevard',true),alleyNoCorrection:benchmark('alley',false),alleyCorrected:benchmark('alley',true)};
+      t.diagnostic('Controlled actual-runtime first-lap benchmark (same kart, no NPCs or item effects): '+JSON.stringify(balance));
+      assert.ok(balance.alleyCorrected.seconds<balance.alleyNoCorrection.seconds,'steering away from alley rails has a real measured benefit');
+      const cleanAdvantage=balance.boulevardCorrected.seconds-balance.alleyCorrected.seconds;assert.ok(cleanAdvantage>.3&&cleanAdvantage<1.1,`clean alley advantage ${cleanAdvantage}s`);assert.ok(balance.alleyNoCorrection.seconds>balance.boulevardCorrected.seconds,'uncorrected rail contact loses the clean alley advantage');
+      game.start();qa.draw(0);assert.ok(qa.player().getPosition().distance(sampleCursor(course,game.getState().route,-2).p)<.13);return;
+    }
     if(scenario.mountain){
       const {MOUNTAIN_TRACK:track}=await import('../../src/maps/mountain');
       for(let i=0;i<1600&&!game.getState().modelsLoaded;i++)await new Promise(resolve=>setTimeout(resolve,5));

@@ -44,16 +44,23 @@ export interface RaceFinishSnapshot {
   trackLength: number;
 }
 
-export interface RaceMapTrack {
+export interface RaceMapPath {
   length: number;
   sample: (distance: number) => { p: { x: number; z: number } };
   samples?: number;
+  /** Additional branch paths are open unless explicitly closed. */
+  closed?: boolean;
+}
+export interface RaceMapTrack extends RaceMapPath {
+  extraPaths?: readonly RaceMapPath[];
 }
 
 export interface RaceMapRacer {
   total: number;
   color?: string;
   player?: boolean;
+  /** Actual route-local world position; total remains ranking progress only. */
+  position?: { x: number; z: number };
 }
 
 const positive = (value: number, fallback = 1) => Number.isFinite(value) && value > 0 ? value : fallback;
@@ -110,9 +117,14 @@ export function renderRaceResults(snapshot: RaceFinishSnapshot): string {
 export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceMapTrack) {
   const context = canvas?.getContext('2d');
   const length = positive(track.length);
-  const samples = clamp(count(track.samples, 160), 16, 1024);
-  const points = Array.from({ length: samples }, (_, i) => track.sample(i / samples * length).p);
-  const valid = points.filter(point => Number.isFinite(point.x) && Number.isFinite(point.z));
+  const paths = [track, ...(track.extraPaths ?? [])].map((path, index) => {
+    const samples = clamp(count(path.samples, 160), 16, 1024);
+    const closed = path.closed ?? index === 0;
+    const points = Array.from({ length: samples + (closed ? 0 : 1) }, (_, i) => path.sample(i / samples * positive(path.length)).p)
+      .filter(point => Number.isFinite(point.x) && Number.isFinite(point.z));
+    return { points, closed };
+  });
+  const valid = paths.flatMap(path => path.points);
   const minX = Math.min(...valid.map(point => point.x)), maxX = Math.max(...valid.map(point => point.x));
   const minZ = Math.min(...valid.map(point => point.z)), maxZ = Math.max(...valid.map(point => point.z));
   return {
@@ -125,17 +137,19 @@ export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceM
       const scale = Math.min((width - padding * 2) / positive(maxX - minX), (height - padding * 2) / positive(maxZ - minZ));
       const coord = (point: { x: number; z: number }) => [width / 2 + (point.x - (minX + maxX) / 2) * scale, height / 2 + (point.z - (minZ + maxZ) / 2) * scale];
       context.beginPath();
-      valid.forEach((point, i) => {
-        const [x, y] = coord(point);
-        if (i) context.lineTo(x, y); else context.moveTo(x, y);
-      });
-      context.closePath();
+      for (const path of paths) {
+        path.points.forEach((point, i) => {
+          const [x, y] = coord(point);
+          if (i) context.lineTo(x, y); else context.moveTo(x, y);
+        });
+        if (path.closed) context.closePath();
+      }
       context.strokeStyle = '#163b4bbb'; context.lineWidth = 12; context.stroke();
       context.strokeStyle = '#eef5e9bb'; context.lineWidth = 4; context.stroke();
       // Draw the player last, so clustered starts never hide their position.
       for (const racer of [...racers.filter(racer => !racer.player), ...racers.filter(racer => racer.player)]) {
         const total = Number.isFinite(racer.total) ? racer.total : 0;
-        const point = track.sample(((total % length) + length) % length).p;
+        const point = racer.position ?? track.sample(((total % length) + length) % length).p;
         if (!Number.isFinite(point.x) || !Number.isFinite(point.z)) continue;
         const [x, y] = coord(point);
         context.beginPath(); context.arc(x, y, racer.player ? 5.5 : 3.5, 0, Math.PI * 2);

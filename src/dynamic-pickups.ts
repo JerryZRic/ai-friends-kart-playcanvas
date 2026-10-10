@@ -22,6 +22,16 @@ export interface DynamicPickupTrack {
   sample(distance: number, lateral?: number): { p: Point; t: Point };
   /** Safe pickup-centre lane limit, after allowing for the box's half-width. */
   laneLimit?(distance: number): number;
+  /** Certify the ENTIRE unwrapped target-to-box corridor as eligible common road.
+   * Reject split/merge/branch and blind overpass zones, not just the endpoint. */
+  eligibility?(from: number, to: number, racerId: string): boolean;
+  /** Actual position on the racer's own route, for cross-route 3D spawn safety. */
+  racerPosition?(racer: DynamicPickupRacer): Point;
+  /** Signed nearest PHYSICAL distance to a common-road candidate; null means
+   * unreachable on this route. Null still requires world-position clearance. */
+  racerGap?(racer: DynamicPickupRacer, distance: number): number | null;
+  /** Actual route/deck position for authored and pooled pickup centres. */
+  pickupPosition?(box: Pick<RacingPickup, 'd' | 'lateral'>): Point;
 }
 export interface DynamicPickupRacer {
   id: string; total: number; lateral: number;
@@ -134,18 +144,25 @@ export function createDynamicPickupDirector(pool: readonly RacingPickup[], track
     for (const racer of racers) {
       // Every racer blocks an immediate spawn, including leaders, lapped racers,
       // stationary racers, racers with an item and those travelling in reverse.
-      const gap = nearby(racer.total, d, track.length), window = reach(racer) + rules.clearance;
-      if (Math.abs(gap) < rules.clearance) return false;
-      if (racer.travelSpeed > 0 && wrap(d - racer.total, track.length) < window) return false;
-      if (racer.travelSpeed < 0 && wrap(racer.total - d, track.length) < window) return false;
-      if (racer.travelSpeed === 0 && Math.abs(gap) < window) return false;
+      const gap = track.racerGap ? track.racerGap(racer, d) : nearby(racer.total, d, track.length);
+      if (gap !== null && !Number.isFinite(gap)) return false;
+      const absoluteGap = gap === null ? Infinity : Math.abs(gap);
+      // A physical route gap cannot be wrapped by canonical lap length. Missing
+      // directions are unreachable within this bounded local reaction window.
+      const forward = track.racerGap ? gap !== null && gap >= 0 ? gap : Infinity : wrap(d - racer.total, track.length);
+      const backward = track.racerGap ? gap !== null && gap <= 0 ? -gap : Infinity : wrap(racer.total - d, track.length);
+      const window = reach(racer) + rules.clearance;
+      if (absoluteGap < rules.clearance) return false;
+      if (racer.travelSpeed > 0 && forward < window) return false;
+      if (racer.travelSpeed < 0 && backward < window) return false;
+      if (racer.travelSpeed === 0 && absoluteGap < window) return false;
       // Near a stop, a racer can brake and change direction within this same
       // reaction window. Protect that reachable distance on the opposite side.
       const oppositeTime = racer.acceleration > 0 ? Math.max(0, rules.reactionSeconds - Math.abs(racer.travelSpeed) / racer.acceleration) : 0;
       const oppositeWindow = pickupReactionDistance(0, racer.maxSpeed, racer.acceleration, oppositeTime) + rules.clearance;
-      if (racer.travelSpeed > 0 && wrap(racer.total - d, track.length) < oppositeWindow) return false;
-      if (racer.travelSpeed < 0 && wrap(d - racer.total, track.length) < oppositeWindow) return false;
-      const racerPoint = track.sample(racer.total, racer.lateral).p;
+      if (racer.travelSpeed > 0 && backward < oppositeWindow) return false;
+      if (racer.travelSpeed < 0 && forward < oppositeWindow) return false;
+      const racerPoint = track.racerPosition ? track.racerPosition(racer) : track.sample(racer.total, racer.lateral).p;
       if (!finitePoint(racerPoint) || distance(point, racerPoint) < rules.clearance) return false;
     }
     return true;
@@ -161,7 +178,7 @@ export function createDynamicPickupDirector(pool: readonly RacingPickup[], track
       if (gap < rules.densityRadius && ++neighbors >= rules.maximumNearby) return false;
       if (gap < rules.pickupGap && Math.abs(box.lateral - lateral) < rules.pickupLaneGap) return false;
       if (pooled.has(box as RacingPickup) && gap < rules.dynamicGap) return false;
-      const other = track.sample(box.d, box.lateral).p;
+      const other = track.pickupPosition ? track.pickupPosition(box) : track.sample(box.d, box.lateral).p;
       if (!finitePoint(other) || distance(point, other) < rules.worldPickupGap) return false;
     }
     return true;
@@ -218,6 +235,7 @@ export function createDynamicPickupDirector(pool: readonly RacingPickup[], track
       // Fair, reachable choices: favour the target's current local corridor, but
       // never pin the item to their exact line or secretly put it in inventory.
       const lateral = clamp(target.lateral + (random() * 2 - 1) * 3.6, -limit, limit);
+      if (track.eligibility && !track.eligibility(target.total, target.total + ahead, target.id)) continue;
       if (!visible(target, ahead, d, lateral) || !safeFromRacers(d, lateral, racers) || !uncrowded(d, lateral, frame.staticBoxes ?? [])) continue;
       slot.box.d = d; slot.box.lateral = lateral;
       resetPickup(slot.box, random); // Same display/reward distribution at every rank.

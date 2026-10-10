@@ -20,5 +20,5 @@ test('mountain menu image records current runtime geometry and complete offline 
   assert.ok(Math.min(...bounds.slice(0,2))>=.059&&Math.max(...bounds.slice(2))<=.941,key);
  }
  const coast=JSON.parse(readFileSync('docs/map-preview-provenance.json','utf8'));
- assert.deepEqual(Object.keys(MAP_PROFILES).sort(),[...Object.keys(coast.maps),'mountain'].sort());
+ assert.deepEqual(Object.keys(MAP_PROFILES).sort(),[...Object.keys(coast.maps),'mountain','town'].sort());
 });

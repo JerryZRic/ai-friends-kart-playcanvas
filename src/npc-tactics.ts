@@ -9,7 +9,17 @@ export interface Combatant {
   held: ItemKind | null; boost: number; shield: number; slow: number;
 }
 export interface Brain { bump: number; decisionIn: number; reaction: number; cooldown: number; targetLane: number; pulseFlash: number; pickups: number; uses: number }
-export interface RacingPickup extends PickupState { d: number; lateral: number; dynamic?: boolean }
+export interface RacingPickup extends PickupState { d: number; lateral: number; dynamic?: boolean; edgeId?: string; s?: number }
+/** Signed physical route metres; null excludes incompatible branches/decks.
+ * Omitted callbacks retain the original single-loop calculations. */
+export interface RouteInteractions {
+  gap?(actor: Combatant, other: Combatant): number | null;
+  pickupGap?(actor: Combatant, box: RacingPickup): number | null;
+}
+const routeValue = (gap: number | null) => gap !== null && Number.isFinite(gap) ? gap : Infinity;
+const racerGap = (actor: Combatant, other: Combatant, length: number, routes?: RouteInteractions, forward = false) => routes?.gap
+  ? routeValue(routes.gap(actor, other))
+  : (forward ? forwardGap : nearbyGap)(actor.total, other.total, length);
 export const newBrain = (phase: number, lane: number): Brain => ({ bump: 0, decisionIn: phase * .047, reaction: 0, cooldown: 0, targetLane: lane, pulseFlash: 0, pickups: 0, uses: 0 });
 const clamp = (n: number, low: number, high: number) => Math.max(low, Math.min(high, n));
 export const forwardGap = (from: number, to: number, length: number) => { const gap = (to - from) % length; return gap < 0 ? gap + length : gap; };
@@ -21,12 +31,12 @@ export function tickEffects(r: Combatant, dt: number) {
 export function tickBrain(b: Brain, dt: number) {
   for (const key of ['bump', 'decisionIn', 'reaction', 'cooldown', 'pulseFlash'] as const) b[key] = Math.max(0, b[key] - Math.max(0, dt));
 }
-export function pulseTarget(actor: Combatant, racers: readonly Combatant[], length: number) {
-  return racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: forwardGap(actor.total, r.total, length) }))
+export function pulseTarget(actor: Combatant, racers: readonly Combatant[], length: number, routes?: RouteInteractions) {
+  return racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: racerGap(actor, r, length, routes, true) }))
     .filter(t => t.gap > .1 + 1e-8 && t.gap < RULES.pulseRange - 1e-8).sort((a, b) => a.gap - b.gap || a.r.id.localeCompare(b.r.id))[0]?.r;
 }
 /** A shield stops the nearest incoming pulse; it never skips through to a rear target. */
-export function activateItem(actor: Combatant, racers: readonly Combatant[], length: number) {
+export function activateItem(actor: Combatant, racers: readonly Combatant[], length: number, routes?: RouteInteractions) {
   const item = actor.held;
   if (!item) return null;
   actor.held = null;
@@ -34,35 +44,35 @@ export function activateItem(actor: Combatant, racers: readonly Combatant[], len
   if (item === 'boost') actor.boost = Math.max(actor.boost, RULES.boost);
   else if (item === 'shield') actor.shield = Math.max(actor.shield, RULES.shield);
   else {
-    target = pulseTarget(actor, racers, length);
+    target = pulseTarget(actor, racers, length, routes);
     if (target) { blocked = target.shield > 0; if (!blocked) target.slow = Math.max(target.slow, RULES.slow); }
     else actor.boost = Math.max(actor.boost, 1.9); // Preserve the player's no-target fallback.
   }
   return { item, target, blocked };
 }
-export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[], length: number, bend: number, skill?: NpcSkill): ItemKind | null {
+export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[], length: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions): ItemKind | null {
   if (!actor.held || actor.reaction > 0 || actor.cooldown > 0) return null;
-  const neighbors = racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: nearbyGap(actor.total, r.total, length) }));
+  const neighbors = racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: racerGap(actor, r, length, routes) }));
   if (actor.held === 'shield') {
     const threatened = neighbors.some(({ r, gap }) => (Math.abs(gap) < 10 && Math.abs(r.lateral - actor.lateral) < 2.3 && (Math.abs(gap) < 4 || (gap > 0 ? actor.speed > r.speed : r.speed > actor.speed))) || (gap < -.1 && gap > -60 && r.held === 'pulse'));
     return actor.shield <= 0 && threatened ? 'shield' : null;
   }
-  if (actor.held === 'pulse') { const target = pulseTarget(actor, racers, length); return target && target.shield <= 0 && target.slow < .5 ? 'pulse' : null; }
+  if (actor.held === 'pulse') { const target = pulseTarget(actor, racers, length, routes); return target && target.shield <= 0 && target.slow < .5 ? 'pulse' : null; }
   const blocked = neighbors.some(({ r, gap }) => gap > 0 && gap < 24 && Math.abs(r.lateral - actor.lateral) < 2.3);
   return actor.boost <= 0 && actor.slow <= 0 && actor.speed > 12 && Math.abs(actor.lateral) < 5.3 && Math.abs(bend) < (skill?.boostBend ?? .3) && !blocked ? 'boost' : null;
 }
 /** Local, bounded lane planning. Does not inspect pickups beyond 48 m or reverse. */
-export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill) {
+export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions) {
   let lane = skill ? npcLine(actor.total, phase, bend, skill) : Math.sin(actor.total / 90 + phase) * 2.6;
   if (!actor.held && Math.abs(bend) < .5) {
-    const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled).map(box => ({ box, gap: forwardGap(actor.total, box.d, length) }))
+    const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled).map(box => ({ box, gap: routes?.pickupGap ? routeValue(routes.pickupGap(actor, box)) : forwardGap(actor.total, box.d, length) }))
       .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2 && Math.abs(box.lateral - actor.lateral) <= RULES.lateralSpeed * gap / Math.max(12, actor.speed * (actor.boost > 0 ? RULES.boostFactor : 1)) + .65)
-      .filter(({ box, gap }) => !racers.some(r => r.id !== actor.id && Math.abs(nearbyGap(actor.total, r.total, length)) < Math.min(gap, 12) && Math.abs(r.lateral - box.lateral) < 1.8))
+      .filter(({ box, gap }) => !racers.some(r => r.id !== actor.id && Math.abs(racerGap(actor, r, length, routes)) < Math.min(gap, 12) && Math.abs(r.lateral - box.lateral) < 1.8))
       .sort((a, b) => (a.gap + Math.abs(a.box.lateral - actor.lateral) * 4) - (b.gap + Math.abs(b.box.lateral - actor.lateral) * 4));
     if (candidates[0]) lane = candidates[0].box.lateral;
   }
   const traffic = racers.filter(r => r.id !== actor.id && Math.abs(r.lateral - lane) < 1.9)
-    .map(r => ({ r, gap: nearbyGap(actor.total, r.total, length) })).filter(t => t.gap > -2 && t.gap < 12).sort((a, b) => a.gap - b.gap)[0];
+    .map(r => ({ r, gap: racerGap(actor, r, length, routes) })).filter(t => t.gap > -2 && t.gap < 12).sort((a, b) => a.gap - b.gap)[0];
   if (traffic) lane = traffic.r.lateral + (actor.lateral >= traffic.r.lateral ? 2.4 : -2.4);
   return clamp(lane, -5.2, 5.2);
 }
@@ -70,14 +80,22 @@ export function moveLane(lane: number, target: number, dt: number) {
   return clamp(lane + clamp(target - lane, -RULES.lateralSpeed * Math.max(0, dt), RULES.lateralSpeed * Math.max(0, dt)), -5.2, 5.2);
 }
 export interface PickupRacer { actor: Combatant; previous: number; previousLane: number; onPickup?: (kind: ItemKind) => void }
+/** Authoritative full-frame earliest contact fraction, or null for no contact.
+ * The adapter must include route/deck eligibility and all legal movement substeps. */
+export type PickupContact = (racer: PickupRacer, box: RacingPickup) => number | null;
 /** Swept collision, ordered by time of contact, prevents tunnelling and player-first bias.
  * Exact ties use stable racer IDs rather than frame iteration order. */
-export function collectPickups(racers: readonly PickupRacer[], boxes: readonly RacingPickup[], length: number, rng = Math.random) {
+export function collectPickups(racers: readonly PickupRacer[], boxes: readonly RacingPickup[], length: number, rng = Math.random, contact?: PickupContact) {
   const claims: { racer: PickupRacer; box: RacingPickup; time: number; index: number }[] = [];
   boxes.forEach((box, index) => {
     if (box.cool > 0 || !box.mesh.enabled) return;
     for (const racer of racers) {
       if (racer.actor.held) continue;
+      if (contact) {
+        const time = contact(racer, box);
+        if (time !== null && Number.isFinite(time) && time >= 0 && time <= 1) claims.push({ racer, box, time, index });
+        continue;
+      }
       const travel = racer.actor.total - racer.previous;
       // Cover the start's nearest copy and the next crossed lap seam in either direction.
       const base = Math.round((racer.previous - box.d) / length);

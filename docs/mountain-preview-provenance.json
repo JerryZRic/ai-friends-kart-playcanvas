@@ -7,7 +7,7 @@
     "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
     "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/land-scene.ts": "9a01f7e5b1536a042991a9f30ee82ddecddfa6df90ab3803016956d0fda36748"
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
   },
   "generatorHashes": {
     "scripts/export-land-preview.ts": "f07a5cd2caae67c946dc29be27078b15d1eb5b91c90ed64a420a235bb9942a23",
@@ -122,5 +122,11 @@
       1280,
       720
     ]
+  },
+  "compatibilityVerification": {
+    "kind": "unchanged-native-geometry-verification",
+    "baselineCommit": "099e923c3d2bbb77d23714b39fd2870d9906137e",
+    "description": "After optional town geometry/theme injection, fresh mountain mesh, UV, texture, material and route arrays match the original export exactly. Existing preview image bytes remain unchanged.",
+    "geometryAndRouteSha256": "113eae4c34f1f4c92416790e7504726e47e359809c6dd7f68d245b04c8915a3a"
   }
 }

@@ -1,0 +1,222 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime town mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "94b8f6bb67d26e991aedf02eaef0bb2c0ed7636ca275cf0fcc5aa2673a5d1990",
+    "src/maps/town.ts": "2bf3845509fc6f91cd869167bf629fe759ae04426788e1ba0c61e049703a49da",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+  },
+  "geometryTexturesRoutesThemeSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118",
+  "generatorHashes": {
+    "scripts/export-town-preview.ts": "25ac7fd69e0476de828a18f2d8861bbfdb009a881bd12b249f8aa32028eef17d",
+    "scripts/render-town-preview.py": "74e7ca22c99d22150dd7d1e7d7f4300fafa28fe245a54ecf7128ab0f01a523b2"
+  },
+  "batches": 20,
+  "vertices": 184438,
+  "triangles": 95630,
+  "routeLengthsMetres": {
+    "start": 356.6891077959268,
+    "alley": 389.11353614856137,
+    "boulevard": 478.22800422379737,
+    "finish": 691.0178076986851
+  },
+  "framingSource": "Union of left/right routeRoadSamples from start, alley, boulevard and finish; overview/topdown additionally include roadside landmark bounds.",
+  "lapLengthsMetres": {
+    "alleyLapLength": 1436.8204516431733,
+    "boulevardLapLength": 1525.9349197184092
+  },
+  "originalModels": {
+    "glb": {
+      "file": "town-original-scene.glb",
+      "sha256": "826a4eb8d547147c402ae78f3d12567994c3c357be9e428a87d853affdd6351a",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "town-original-scene.blend",
+      "sha256": "1a7ccda0454935dbfe7258cf1fb0aa8bd4be861db8be102c945927854a3baa16",
+      "note": "Editable original mesh batches, packed source procedural textures, UVs, runtime-derived normals and approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "town-overview": {
+      "file": "town-overview.png",
+      "sha256": "913c84f0260cf3ec61c8281e3a745478075fc7e77e1fb4998aad26bae70b7d27",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        939.2576293945312,
+        431.0544128417969,
+        1094.623291015625
+      ],
+      "cameraQuaternionBlender": [
+        0.4948309361934662,
+        0.20043830573558807,
+        0.3174503743648529,
+        0.7837041020393372
+      ],
+      "projection": "ORTHO",
+      "description": "Full town overview with both actual route ribbons and modeled roadside landmarks inside the frame; distant garden terrain may extend outside it.",
+      "routeScreenBounds": [
+        0.16601161658763885,
+        0.12354642897844315,
+        0.8381823897361755,
+        0.8561968803405762
+      ],
+      "orthographicScaleMetres": 692.1987915039062
+    },
+    "town-topdown": {
+      "file": "town-topdown.png",
+      "sha256": "725bda852e44f00e5fd0fe87992840279fe9f7eb568064868e663bd44f62cda7",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -4.8085832595825195,
+        -16.524078369140625,
+        1518.37548828125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead geometry view: pale, narrow Lantern Alley is the inner fork; dark, broad Tram Boulevard is the outer fork. Both roads come from independent runtime samplers, including shared split/merge throats. No schematic or invented connecting road.",
+      "routeScreenBounds": [
+        0.314632773399353,
+        0.10271519422531128,
+        0.693293035030365,
+        0.8752840161323547
+      ],
+      "orthographicScaleMetres": 774.4051513671875
+    },
+    "town-bridge": {
+      "file": "town-bridge.png",
+      "sha256": "ed9656c952ad412450f9965459a50ca1a862de1376c0c91d3d8f69d4d334f930",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        859.521728515625,
+        1096.4854736328125,
+        624.32177734375
+      ],
+      "cameraQuaternionBlender": [
+        0.2778370678424835,
+        0.1814069002866745,
+        0.5157347917556763,
+        0.7898833751678467
+      ],
+      "projection": "ORTHO",
+      "description": "Original high masonry bridge, setback piers and lower street; geometry and clearances unchanged from the runtime.",
+      "routeScreenBounds": [
+        -1.1719658374786377,
+        -0.4851831793785095,
+        1.851623296737671,
+        1.6643357276916504
+      ],
+      "orthographicScaleMetres": 145.0
+    },
+    "town-market-street": {
+      "file": "town-market-street.png",
+      "sha256": "a908646459b98d217c26a8c8b0e04a28887618c53d274942f5539d1fc7072a45",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        111.01622772216797,
+        113.13862609863281,
+        8.389309883117676
+      ],
+      "cameraQuaternionBlender": [
+        0.015295775607228279,
+        0.015735827386379242,
+        0.7168899774551392,
+        0.6968408823013306
+      ],
+      "projection": "PERSP",
+      "description": "Perspective from 2.1 m above actual sampled start road centre. Original source scenery only; no driver, HUD or vehicle.",
+      "routeScreenBounds": [
+        -508.6976318359375,
+        -26.002206802368164,
+        1095.7591552734375,
+        53.54450607299805
+      ],
+      "lensMillimetres": 32.0,
+      "roadEdge": "start",
+      "roadDistanceMetres": 41.96342444657963,
+      "heightAboveSampledRoadMetres": 2.1
+    },
+    "town-clocktower-street": {
+      "file": "town-clocktower-street.png",
+      "sha256": "da770a96151ff4d3173c166371a08dbf2d20deaf7e78496ef8d9089c6cf37ba9",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -102.98571014404297,
+        68.1833724975586,
+        23.76227569580078
+      ],
+      "cameraQuaternionBlender": [
+        0.6552174091339111,
+        0.7424221634864807,
+        0.10469818115234375,
+        0.09240031987428665
+      ],
+      "projection": "PERSP",
+      "description": "Perspective from 2.1 m above actual sampled finish road centre. Original source scenery only; no driver, HUD or vehicle.",
+      "routeScreenBounds": [
+        -776.6800537109375,
+        -44.642581939697266,
+        359.3480529785156,
+        87.89173126220703
+      ],
+      "lensMillimetres": 32.0,
+      "roadEdge": "finish",
+      "roadDistanceMetres": 301.28975997274557,
+      "heightAboveSampledRoadMetres": 2.1
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/town-overview.webp",
+    "sha256": "50d661ee48729b1cf5924d9352cf396228399b48b2b8fbecc95f43db8e565fcc",
+    "resolution": [
+      1280,
+      720
+    ]
+  },
+  "renderSourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "ed4cb1350d06015fec830d9e39af9fbe0e4c5886c2fb34fbbef36669db8f8008",
+    "src/maps/town.ts": "9ebec29b53f3bbc235beb41c6bea25688db4ee273b02cb09465278ca66f3f2de",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+  },
+  "equivalentSourceRefresh": {
+    "changedFiles": [
+      "src/land-routes.ts",
+      "src/maps/town.ts"
+    ],
+    "proof": "Full re-export of geometry, normals, indices, UVs, material values, procedural texture pixels, all four physical route sample arrays, landmarks and theme has an identical content SHA-256. Only shared-throat behavior metadata/logic changed; finished render pixels remain unchanged.",
+    "identicalContentSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118"
+  }
+}

@@ -9,8 +9,8 @@
       "sourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
-        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
-        "src/menu-backdrop.ts": "77fb29c458d675fc6ca9a6302057c91ae6f5d217280e9042df1d36cd600486bd",
+        "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
+        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
@@ -25,8 +25,8 @@
       "sourceHashes": {
         "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
         "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
-        "src/scene.ts": "40fc414cd027e568a3489c8e1553c6041bb4f2b02b3e609f18706904e9e93a1e",
-        "src/menu-backdrop.ts": "77fb29c458d675fc6ca9a6302057c91ae6f5d217280e9042df1d36cd600486bd",
+        "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
+        "src/menu-backdrop.ts": "920160d2f6d197d3dc0ac524af8e3a8711c8b6ae4943202ff76ea6f117c342ab",
         "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
         "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
         "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",

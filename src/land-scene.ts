@@ -5,17 +5,36 @@ import type { ItemBox } from './scene';
 import { createPickupVisual } from './pickup-visual';
 import { resetPickup } from './item-pickups';
 import { DYNAMIC_PICKUP_CAPACITY } from './dynamic-pickups';
-import { buildLandSceneGeometry, landTexturePixels, type LandSurfaceTexture } from './land-scenery';
+import { buildLandSceneGeometry, landTexturePixels, type LandSurfaceTexture, type LandSceneGeometry } from './land-scenery';
 export { buildLandSceneGeometry, landTexturePixels } from './land-scenery';
 export type { LandSceneGeometry, LandGeometryBatch } from './land-scenery';
 
 const color = (hex: string) => new pc.Color().fromString(hex);
 
+export interface LandSceneTheme {
+  textureLabel: string; ambient: string; sky: string; fogStart: number; fogEnd: number;
+  cameraName: string; sunName: string; sunColor: string; sunIntensity: number;
+  sunEuler: readonly [number, number, number];
+}
+export interface LandSceneOptions {
+  preview?: boolean;
+  /** Same immutable source geometry can feed the runtime and offline exporter. */
+  geometry?: LandSceneGeometry;
+  theme?: Partial<LandSceneTheme>;
+  pickups?: readonly {d:number; lateral:number; p?:pc.Vec3; edgeId?:string; s?:number}[];
+}
+export const MOUNTAIN_SCENE_THEME: Readonly<LandSceneTheme> = Object.freeze({
+  textureLabel: 'mountain', ambient: '#b6c8d1', sky: '#c4d6da', fogStart: 390, fogEnd: 1250,
+  cameraName: 'Alpine chase camera', sunName: 'Alpine afternoon key light',
+  sunColor: '#fff0d5', sunIntensity: 1.8, sunEuler: [48, -32, 0] as const,
+});
+
 /** Original, static-batched land environment. Deliberately contains no ocean,
  * coast scene import or external asset download. All course meshes derive from
  * the exact LandTrack passed by the playable race/menu/offline preview. */
-export function createLandScene(app: pc.Application, track: LandTrack, options: {preview?: boolean} = {}) {
-  const geometry=buildLandSceneGeometry(track);
+export function createLandScene(app: pc.Application, track: LandTrack, options: LandSceneOptions = {}) {
+  const geometry=options.geometry ?? buildLandSceneGeometry(track);
+  const theme={...MOUNTAIN_SCENE_THEME,...options.theme};
   const root=new pc.Entity(`${track.label} original land circuit`,app);app.root.addChild(root);
   const materials: pc.Material[]=[],textures: pc.Texture[]=[];
   const textureCache=new Map<LandSurfaceTexture,pc.Texture>();
@@ -26,7 +45,7 @@ export function createLandScene(app: pc.Application, track: LandTrack, options: 
     if(texture!=='none') {
       let tex=textureCache.get(texture);
       if(!tex) {
-        tex=new pc.Texture(app.graphicsDevice,{name:`Original mountain ${texture}`,width:64,height:64,format:pc.PIXELFORMAT_RGBA8,mipmaps:true});
+        tex=new pc.Texture(app.graphicsDevice,{name:`Original ${theme.textureLabel} ${texture}`,width:64,height:64,format:pc.PIXELFORMAT_RGBA8,mipmaps:true});
         tex.addressU=tex.addressV=pc.ADDRESS_REPEAT;tex.minFilter=pc.FILTER_LINEAR_MIPMAP_LINEAR;tex.magFilter=pc.FILTER_LINEAR;
         (tex.lock() as Uint8Array).set(landTexturePixels(texture));tex.unlock();textureCache.set(texture,tex);textures.push(tex);
       }
@@ -42,13 +61,13 @@ export function createLandScene(app: pc.Application, track: LandTrack, options: 
     mesh.setUvs(0,batch.uvs);mesh.setIndices(batch.indices);mesh.update(pc.PRIMITIVE_TRIANGLES);
     entity(batch.name,mesh,makeMaterial(batch.name,batch.color,batch.roughness,batch.metalness,batch.texture),!/valley floor|Distant/.test(batch.name));
   }
-  app.scene.ambientLight=color('#b6c8d1');app.scene.exposure=1;
-  app.scene.fog.type=pc.FOG_LINEAR;app.scene.fog.color=color('#c4d6da');app.scene.fog.start=390;app.scene.fog.end=1250;
-  const camera=new pc.Entity('Alpine chase camera',app);
-  camera.addComponent('camera',{fov:56,nearClip:.12,farClip:2200,clearColor:color('#c4d6da'),toneMapping:pc.TONEMAP_ACES,gammaCorrection:pc.GAMMA_SRGB});app.root.addChild(camera);
+  app.scene.ambientLight=color(theme.ambient);app.scene.exposure=1;
+  app.scene.fog.type=pc.FOG_LINEAR;app.scene.fog.color=color(theme.sky);app.scene.fog.start=theme.fogStart;app.scene.fog.end=theme.fogEnd;
+  const camera=new pc.Entity(theme.cameraName,app);
+  camera.addComponent('camera',{fov:56,nearClip:.12,farClip:2200,clearColor:color(theme.sky),toneMapping:pc.TONEMAP_ACES,gammaCorrection:pc.GAMMA_SRGB});app.root.addChild(camera);
   const start=track.sample(0),behind=track.sample(-32).p;camera.setPosition(behind.x,behind.y+15,behind.z);camera.lookAt(start.p.clone().add(new pc.Vec3(0,2,0)));
-  const sun=new pc.Entity('Alpine afternoon key light',app);
-  sun.addComponent('light',{type:'directional',color:color('#fff0d5'),intensity:1.8,castShadows:true,shadowDistance:180,shadowResolution:2048,shadowBias:.14,normalOffsetBias:.09,numCascades:2});sun.setEulerAngles(48,-32,0);app.root.addChild(sun);
+  const sun=new pc.Entity(theme.sunName,app);
+  sun.addComponent('light',{type:'directional',color:color(theme.sunColor),intensity:theme.sunIntensity,castShadows:true,shadowDistance:180,shadowResolution:2048,shadowBias:.14,normalOffsetBias:.09,numCascades:2});sun.setEulerAngles(...theme.sunEuler);app.root.addChild(sun);
   // Compatibility handle for the existing shared race animation path. No
   // entity uses it and no water geometry/material shader is allocated.
   const oceanMaterial=new pc.StandardMaterial();oceanMaterial.name='Unused land animation compatibility';oceanMaterial.setParameter('time',0);materials.push(oceanMaterial);
@@ -56,10 +75,13 @@ export function createLandScene(app: pc.Application, track: LandTrack, options: 
   const shield=new pc.Entity('Land energy shield',app);root.addChild(shield);shield.enabled=false;
   const flames: {mesh:pc.Entity;side:number}[]=[],particles:pc.Entity[]=[];
   if(!options.preview) {
-    for(const {d,lateral} of track.pickups) {
-      const p=track.sample(d,lateral).p.clone();p.y+=1.25;
+    for(const pickup of options.pickups ?? track.pickups) {
+      const {d,lateral}=pickup, source=pickup as NonNullable<LandSceneOptions['pickups']>[number];
+      const p=(source.p ?? track.sample(d,lateral).p).clone();p.y+=1.25;
       const visual=createPickupVisual(app,root);visual.mesh.setPosition(p);
-      const box:ItemBox={d,lateral,...visual,cool:0,base:p.y,display:'mystery'};resetPickup(box);boxes.push(box);
+      const box:ItemBox={d,lateral,...visual,cool:0,base:p.y,display:'mystery'};
+      if(source.edgeId!==undefined)Object.assign(box,{edgeId:source.edgeId,s:source.s});
+      resetPickup(box);boxes.push(box);
     }
     for(let i=0;i<DYNAMIC_PICKUP_CAPACITY;i++) {
       const p=track.sample(0).p.clone();p.y+=1.25;const visual=createPickupVisual(app,root);visual.mesh.setPosition(p);visual.mesh.enabled=false;
