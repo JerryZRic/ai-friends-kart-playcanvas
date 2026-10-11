@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,unlinkSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
+import {createInstrumentedSourceFiles} from './helpers/instrumented-source-files';
 import {gunzipSync} from 'node:zlib';
 import {setMaxListeners} from 'node:events';
 import * as pc from 'playcanvas';
@@ -70,6 +71,9 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     options.onStatus({loaded:assets.size,total:6,receivedBytes:100,totalBytes:null});
     return{assets,failures};
   };
+  const sourceFiles=createInstrumentedSourceFiles();
+  let destroyed=0;app.on('destroy',()=>destroyed++);
+  try {
   let source=readFileSync('src/waterpark-play.ts','utf8');
   source=source.replace('loadBundledDrivers,type DriverAsset','loadBundledDrivers as unusedLoader,type DriverAsset');
   source=source.replace("const canvas=$<HTMLCanvasElement>('game');","const loadBundledDrivers=(globalThis as any).__waterparkLoad;\nconst canvas=$<HTMLCanvasElement>('game');");
@@ -77,7 +81,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
   source=source.replace('const events=new AbortController();','const events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
   source=source.replace('app.start(); void load();','void load();');
   source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); Object.defineProperty(globalThis,'__waterparkControls',{configurable:true,get:()=>({keys:controls.keys,orbit:controls.orbit,mouseLook:controls.mouseLook,view,mode,world,pickups})}); const npcMounts=");
-  const copy=new URL('../src/.waterpark-play-test.ts',import.meta.url);writeFileSync(copy,source);
+  const copy=sourceFiles.write('waterpark-play-test',source);
   const emit=(target:EventTarget,type:string,data:any={})=>{const event=new Event(type,{cancelable:true});Object.assign(event,data);target.dispatchEvent(event);return event;};
   const key=(type:string,code:string,target:any=canvas)=>{const event=new Event(type,{cancelable:true});Object.defineProperty(event,'target',{value:target});Object.assign(event,{code,repeat:false});windowTarget.dispatchEvent(event);return event;};
   const observedDynamicSpawns=new Set<string>();
@@ -93,9 +97,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
   const poolState=()=>dynamicPool().map(box=>({d:box.d,lateral:box.lateral,cool:box.cool,display:box.display,enabled:box.mesh.enabled}));
   const settle=async()=>{for(let i=0;i<30;i++)await new Promise(resolve=>setTimeout(resolve,1));};
   const snapshot=()=>{const result:number[]=[];for(const entity of app.root.findComponents('render') as pc.RenderComponent[]){result.push(...Array.from(entity.entity.getWorldTransform().data));}return result;};
-  let destroyed=0;app.on('destroy',()=>destroyed++);
-  try {
-    await import(copy.href+'?run='+Date.now());
+    await import(copy.url.href);
     assert.equal(app.maxDeltaTime,Infinity,'engine must not silently clamp real frame delta to 0.1s');
     assert.equal(g.__waterparkControls.pickups.length,18);assert.equal(dynamicPool().length,4);dynamicPool().forEach(assertPickupHidden);
     step(1,0);dynamicPool().forEach(assertPickupHidden);
@@ -322,7 +324,9 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     emit(windowTarget,'pagehide',{persisted:false});assert.equal(destroyed,1);
     assert.deepEqual(errors,[]);
   } finally {
-    if(!destroyed)app.destroy();unlinkSync(copy);console.error=originalError;
+    try {
+    if(!destroyed)app.destroy();console.error=originalError;
     for(const[name,descriptor]of saved){if(descriptor)Object.defineProperty(g,name,descriptor);else delete g[name];}
+    } finally {sourceFiles.cleanup();}
   }
 });

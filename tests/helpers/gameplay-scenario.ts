@@ -2,7 +2,8 @@ import type {TestContext} from 'node:test';
 import {createHash} from 'node:crypto';
 import {npcDriving,npcSkill} from '../../src/npc-difficulty';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
+import {createInstrumentedSourceFiles} from './instrumented-source-files';
 import { gunzipSync } from 'node:zlib';
 import * as pc from 'playcanvas';
 import { CHARACTER_PROFILES, characterTuning } from '../../src/character-profiles';
@@ -129,6 +130,8 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     onStatus({ records: RUNTIME_MODELS.map(r => ({ id: r.id, stage: 'ready', receivedBytes: 100, totalBytes: 100 })), receivedBytes: 600, totalBytes: 600, completed: 6, total: 6, loaded: 6, failed: 0 });
     return { drivers, failures };
   };
+  const sourceFiles=createInstrumentedSourceFiles();
+  try {
   let source = readFileSync('src/game.ts', 'utf8');
   source = source.replace('loadCourseAssets, loadBundledDrivers,', 'loadCourseAssets as unusedCourseLoader, loadBundledDrivers as unusedDriverLoader,');
   source = source.replace('declare global', 'const loadCourseAssets = (globalThis as any).__loadCourseAssets, loadBundledDrivers = (globalThis as any).__loadBundledDrivers;\ndeclare global');
@@ -140,45 +143,41 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   // Garden-only observation hook: the already-built production source geometry
   // is exposed from an otherwise byte-identical temporary loader. No second
   // scene allocation, alternate builder, or production runtime edit is used.
-  const gardenCourseCopy=scenario.garden&&!scenario.courseFailure?new URL('../../src/.land-course-garden-test.ts',import.meta.url):null;
-  if(gardenCourseCopy){
+  if(scenario.garden&&!scenario.courseFailure){
     const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker='    const labels=routes.presentation';
     assert.equal(original.split(marker).length,2);
-    writeFileSync(gardenCourseCopy,original.replace(marker,'    (globalThis as any).__gardenSourceGeometry=geometry;\n'+marker));
-    source=source.replace("from './land-course';","from './.land-course-garden-test';");
+    const gardenCourseCopy=sourceFiles.write('land-course-garden-test',original.replace(marker,'    (globalThis as any).__gardenSourceGeometry=geometry;\n'+marker));
+    source=source.replace("from './land-course';",`from '${gardenCourseCopy.specifier}';`);
   }
   // Airfield-only observation of the already-built source; production has no
   // testing API and there is no duplicate scene or alternate geometry build.
-  const airfieldCourseCopy=scenario.airfield&&!scenario.courseFailure?new URL('../../src/.land-course-airfield-test.ts',import.meta.url):null;
-  if(airfieldCourseCopy){
+  if(scenario.airfield&&!scenario.courseFailure){
     const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker='    const labels=routes.presentation';
     assert.equal(original.split(marker).length,2);
-    writeFileSync(airfieldCourseCopy,original.replace(marker,'    (globalThis as any).__airfieldSourceGeometry=geometry;\n'+marker));
-    source=source.replace("from './land-course';","from './.land-course-airfield-test';");
+    const airfieldCourseCopy=sourceFiles.write('land-course-airfield-test',original.replace(marker,'    (globalThis as any).__airfieldSourceGeometry=geometry;\n'+marker));
+    source=source.replace("from './land-course';",`from '${airfieldCourseCopy.specifier}';`);
   }
   // Mountain observation hook reads the exact already-created production geometry.
   // Baseline source lacks it; baseline controls are captured without a second scene.
-  const mountainCourseCopy=scenario.mountainAudit&&!scenario.courseFailure&&readFileSync('src/land-course.ts','utf8').includes("./mountain-scenery")?new URL('../../src/.land-course-mountain-test.ts',import.meta.url):null;
-  if(mountainCourseCopy){
+  if(scenario.mountainAudit&&!scenario.courseFailure&&readFileSync('src/land-course.ts','utf8').includes("./mountain-scenery")){
     const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker="    return {id:mapId,profile:resolveMap(mapId),forkHint:''";
     assert.equal(original.split(marker).length,2);
-    writeFileSync(mountainCourseCopy,original.replace(marker,'    (globalThis as any).__mountainSourceGeometry=geometry;\n'+marker));
-    source=source.replace("from './land-course';","from './.land-course-mountain-test';");
+    const mountainCourseCopy=sourceFiles.write('land-course-mountain-test',original.replace(marker,'    (globalThis as any).__mountainSourceGeometry=geometry;\n'+marker));
+    source=source.replace("from './land-course';",`from '${mountainCourseCopy.specifier}';`);
   }
   if(scenario.mountainAudit)source=source.replace('player: () => player, bots: () => bots, boxes: () => boxes,','player: () => player, bots: () => bots, boxes: () => boxes, mountainProgress:()=>({player:playerProgress,bots:[...botProgress.entries()]}),');
-  const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':forkMap?forkMap:scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
+  const copy=sourceFiles.write(`game-test-${scenario.courseFailure?'course-failure':forkMap?forkMap:scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}`,source);
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
-  try {
     if(scenario.mountain||forkMap){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
-      await assert.rejects(import(copy.href+'?run='+Date.now()),/Injected mountain chunk failure/);
+      await assert.rejects(import(copy.url.href),/Injected mountain chunk failure/);
       assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);
       assert.equal(element('raceLoadingRetry').disabled,false);assert.equal(element('raceLoadingRetry').hidden,false);
       assert.equal(element('raceLoadingExit').hidden,false);assert.match(element('raceLoadingExit').href,new RegExp('map='+(forkMap||'mountain')));
       if(scenario.garden||scenario.airfield){let reloads=0;const before=g.location.href;g.location.reload=()=>reloads++;element('raceLoadingRetry').click();assert.equal(reloads,1,'native retry invokes shared page reload');assert.equal(g.location.href,before,'retry preserves selected map and driver query');}
       assert.equal(element('loadingMapName').textContent,forkMap==='airfield'?'铜翼空港':forkMap==='garden'?'蔓穹花园':forkMap==='caldera'?'玄岩环冕':forkMap==='snow'?'霜环雪站':forkMap==='desert'?'星砂古驿':forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':forkMap==='forest'?'杉影星台环线':'云岭盘山道');return;
     }
-    await import(copy.href + '?run=' + Date.now());
+    await import(copy.url.href);
     const game = g.window.neonKart, qa = game.debug;
     if(forkMap){
       const course=forkMap==='airfield'?(await import('../../src/maps/airfield')).AIRFIELD_COURSE:forkMap==='garden'?(await import('../../src/maps/garden')).GARDEN_COURSE:forkMap==='caldera'?(await import('../../src/maps/caldera')).CALDERA_COURSE:forkMap==='snow'?(await import('../../src/maps/snow')).SNOW_COURSE:forkMap==='desert'?(await import('../../src/maps/desert')).DESERT_COURSE:forkMap==='harvest'?(await import('../../src/maps/harvest')).HARVEST_COURSE:forkMap==='workshop'?(await import('../../src/maps/workshop')).WORKSHOP_COURSE:forkMap==='forest'?(await import('../../src/maps/forest')).FOREST_COURSE:forkMap==='quarry'?(await import('../../src/maps/quarry')).QUARRY_COURSE:(await import('../../src/maps/town')).TOWN_COURSE;
@@ -1399,13 +1398,15 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     await settleAppDisposal();assert.equal(app.graphicsDevice,null,'last pending task closes the app exactly once');
 
   } finally {
+    try {
     if(app.graphicsDevice){events.pagehide?.forEach(fn=>fn({persisted:false}));await settleAppDisposal();}
     clearFoodKartPayloadCache();if(previousStorage)Object.defineProperty(g,'localStorage',previousStorage);else delete g.localStorage;
-    pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
-    if(gardenCourseCopy)unlinkSync(gardenCourseCopy);delete g.__gardenSourceGeometry;
-    if(airfieldCourseCopy)unlinkSync(airfieldCourseCopy);delete g.__airfieldSourceGeometry;
-    if(mountainCourseCopy)unlinkSync(mountainCourseCopy);delete g.__mountainSourceGeometry;
+    pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; if(app.graphicsDevice)app.destroy();
+    delete g.__gardenSourceGeometry;
+    delete g.__airfieldSourceGeometry;
+    delete g.__mountainSourceGeometry;
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
     g.gc?.();
+    } finally {sourceFiles.cleanup();}
   }
 }
