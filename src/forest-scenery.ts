@@ -19,6 +19,8 @@ export interface ForestSceneGeometry extends LandSceneGeometry {
   groundedDetails:{kind:string;x:number;z:number;bottom:number;terrainY:number}[];
   sightlines:{name:string;eye:number[];target:number[];radius:number}[];
   dome:{center:number[];radius:number;slitYaw:number;slitHalfAngle:number;faces:number[][][]};
+  woodlandBeds:{id:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;footprint:number[][];radius:number;bottom:number;terrainLow:number;terrainHigh:number;min:number[];max:number[];ownedTreeSeeds:number[];ownedRootContacts:{treeSeed:number;kind:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number}[]}[];
+  woodlandBanks:{id:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;footprint:number[][];radius:number;bottom:number;terrainLow:number;terrainHigh:number;min:number[];max:number[]}[];
 }
 export const FOREST_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({
   textureLabel:'cedarlight woodland',ambient:'#aac2b8',sky:'#c6d8ce',fogStart:680,fogEnd:1480,
@@ -61,6 +63,7 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
   const sourceFaces=sampleRoadFootprints(edges),roadIndex=new RoadFootprintIndex(sourceFaces);
   const props:LandPropPlacement[]=[],roadSamples:ForestSceneGeometry['roadSamples']=[],routeRoadSamples:ForestSceneGeometry['routeRoadSamples']=[];
   const roadFaces:ForestSceneGeometry['roadFaces']=[],roadUndersideFaces:ForestSceneGeometry['roadUndersideFaces']=[],foundations:ForestSceneGeometry['foundations']=[];
+  const woodlandBanks:ForestSceneGeometry['woodlandBanks']=[],woodlandBeds:ForestSceneGeometry['woodlandBeds']=[];
   const cameraObstacles:ForestSceneGeometry['cameraObstacles']=[],components:ForestSceneGeometry['components']=[],landmarks:ForestSceneGeometry['landmarks']=[];
   const trestleMembers:ForestSceneGeometry['trestleMembers']=[],structures:ForestSceneGeometry['structures']=[],trees:ForestSceneGeometry['trees']=[],groundedDetails:ForestSceneGeometry['groundedDetails']=[];
   const point=(e:SceneryRoadEdge,s:number,l=0,h=0)=>e.sample(s,l).p.clone().add(vec(0,h,0));
@@ -208,11 +211,30 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
   };
   // Solid wedge boughs have horizontal arms, dipping tips and exposed gaps.
   // They deliberately avoid the familiar repeated-cone pine silhouette.
-  const bough=(kind:string,b:Batch,p:pc.Vec3,yaw:number,length:number,width:number,drop:number)=>{
-    const at=local(p,yaw),v=[at(0,0,0),at(length*.42,.35,-width*.7),at(length*.42,.35,width*.7),at(length,-drop,0),at(length*.40,-.65,-width*.78),at(length*.40,-.65,width*.78)],start=b.positions.length/3;
+  const bough=(kind:string,b:Batch,p:pc.Vec3,yaw:number,length:number,width:number,drop:number,volume=0)=>{
+    // Ordinary woodland crowns gain thickness from their own reach. The
+    // original nine landmark cedars keep volume=0 and identical vertices.
+    const crest=.35+length*.13*volume,belly=.65+length*.19*volume;
+    const at=local(p,yaw),v=[at(0,0,0),at(length*.42,crest,-width*.7),at(length*.42,crest,width*.7),at(length,-drop-length*.21*volume,0),at(length*.40,-belly,-width*.78),at(length*.40,-belly,width*.78)],start=b.positions.length/3;
     v.forEach(q=>b.vertex(q));for(const f of [[0,2,1],[1,2,3],[0,1,4],[1,3,4],[0,5,2],[2,5,3],[0,4,5],[4,3,5]])b.indices.push(...f.map(i=>start+i));bound(kind,b,start);return v;
   };
-  const tree=(p:pc.Vec3,height:number,radius:number,seed:number,kind='cedar-cluster-tree',hero=false,fullness=1)=>{
+  // One smooth shared-index crown envelope replaces five or six disconnected
+  // fans on ordinary cedars only. Four faces per side exactly reuse the former
+  // eight-triangle-per-fan allocation, with softly scalloped, leaning contours.
+  const cedarCrown=(kind:string,b:Batch,p:pc.Vec3,yaw:number,radius:number,sides:number,seed:number)=>{
+    const at=local(p,yaw),start=b.positions.length/3;
+    b.vertex(at(radius*.035,radius*.36,-radius*.04));
+    for(let ring=0;ring<2;ring++)for(let i=0;i<sides;i++){
+      const angle=i/sides*Math.PI*2,scallop=.94+.06*noise(seed+i*17),r=radius*(ring?scallop:.47*scallop);
+      const y=radius*(ring?-.23-.035*Math.sin(angle*3+seed):.07+.015*Math.cos(angle*2+seed));
+      b.vertex(at(Math.cos(angle)*r,y,Math.sin(angle)*r));
+    }
+    const bottom=b.positions.length/3;b.vertex(at(0,-radius*.29,0));
+    for(let i=0;i<sides;i++){const j=(i+1)%sides,a=start+1+i,c=start+1+j,u=a+sides,v=c+sides;
+      b.indices.push(start,c,a,a,c,u,c,v,u,bottom,u,v);
+    }bound(kind,b,start);
+  };
+  const tree=(p:pc.Vec3,height:number,radius:number,seed:number,kind='cedar-cluster-tree',hero=false,fullness=1,volume=0)=>{
     p.y=terrainMeshY(p.x,p.z);const lean=(noise(seed+31)-.5)*2.3,az=noise(seed+52)*Math.PI*2,at=local(p,az),baseRadius=hero?.95:.5+height*.013;
     const foot=baseRadius*1.5+.15,footprint=[vec(p.x-foot,0,p.z-foot),vec(p.x+foot,0,p.z-foot),vec(p.x+foot,0,p.z+foot),vec(p.x-foot,0,p.z+foot)],rootBottom=terrainExtrema(footprint).low-.35;groundedDetails.push({kind:'cedar-trunk-foot',x:p.x,z:p.z,bottom:rootBottom,terrainY:p.y});
     const path=[vec(p.x,rootBottom,p.z),at(lean*.12,height*.30,0),at(lean*.62,height*.67,.25),at(lean,height,.5)];
@@ -225,8 +247,14 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
     }
     const layers=hero?5:3;
     for(let layer=0;layer<layers;layer++){
-      const fraction=hero?.42+layer*.12:.43+layer*.23,center=at(lean*fraction,height*fraction,.35*fraction),reach=radius*(1-layer*(hero?.155:.25)),arms=hero?6:5;
-      for(let j=0;j<arms;j++){const yaw=az+j*Math.PI*2/arms+layer*.57,branch=hero&&layer<3;
+      const fraction=volume?(hero?.36+layer*.125:[.34,.59,.83][layer]):(hero?.42+layer*.12:.43+layer*.23);
+      const center=at(lean*fraction,height*fraction,.35*fraction),reach=radius*(1-layer*(hero?.155:volume?.23:.25)),arms=hero?6:5;
+      if(volume){
+        cedarCrown('cedar-coherent-crown-layer',[needles,litNeedles,blueNeedles][(seed+layer)%3],center,az+layer*.57,reach,arms*2,seed+layer*31);
+        if(hero&&layer<3)for(let j=0;j<arms;j++){const yaw=az+j*Math.PI*2/arms+layer*.57;
+          tube('cedar-visible-bough-branch',bark,[center,center.clone().add(vec(Math.cos(yaw)*reach*.77,-.3,Math.sin(yaw)*reach*.77))],[.17,.035],5,false,true,false);
+        }
+      }else for(let j=0;j<arms;j++){const yaw=az+j*Math.PI*2/arms+layer*.57,branch=hero&&layer<3;
         if(branch)tube('cedar-visible-bough-branch',bark,[center,center.clone().add(vec(Math.cos(yaw)*reach*.77,-.3,Math.sin(yaw)*reach*.77))],[.17,.035],5,false,true,false);
         bough('cedar-opaque-bough-fan',[needles,litNeedles,blueNeedles][(j+layer+seed)%3],center,-yaw+Math.PI/2,reach*(.9+noise(seed+j*13+layer)*.15),reach*.28*fullness,.65+layer*.08);
       }
@@ -370,8 +398,24 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
       Object.assign(plan.prop,{kind:'near-route-cedar-cluster',x:p.x,y:p.y,z:p.z,radius:r+3});found=true;break;
     }if(found)break;}
   }
+  // Asymmetric woodland screens: three close silhouettes with a deliberate
+  // gap to the next group, rather than evenly spaced solitary umbrellas.
+  // All proposals retain the existing full-crown +18m route reservation.
+  const screens=[
+    {kind:'ridge-cluster-0',points:[[-228,15],[-254,35],[-272,64],[-280,99],[-323,170]],heights:[28,33,25,36,35]},
+    {kind:'ridge-cluster-1',points:[[-138,368],[-162,385],[-145,420],[-180,440],[-146,472],[-168,493],[-170,535],[-212,520]],heights:[34,30,39,32,31,37,35,29]},
+    {kind:'ridge-cluster-2',points:[[-119,373],[-129,408],[-121,452]],heights:[19,17,21],radii:[8,7.5,8.8]},
+  ];
+  for(const screen of screens){const plans=cedarPlans.filter(p=>p.kind===screen.kind);
+    screen.points.forEach(([x,z],i)=>{const plan=plans[i];if(!plan)return;const r=screen.radii?.[i]??(12.8+(i%2)*1.2),height=screen.heights[i],p=vec(x,terrainMeshY(x,z),z);
+      if(!clearAt(p,r+3,18)||blocksSight(p,r+3,height))return;
+      if(props.some(q=>q!==plan.prop&&!/cedar-cluster/.test(q.kind)&&Math.hypot(q.x-p.x,q.z-p.z)<q.radius+r+5))return;
+      if(cedarPlans.some(q=>q!==plan&&Math.hypot(q.p.x-p.x,q.p.z-p.z)<Math.max(8,(q.r+r)*.68)))return;
+      plan.p=p;plan.r=r;plan.height=height;plan.fullness=2.7;Object.assign(plan.prop,{x,y:p.y,z,radius:r+3});
+    });
+  }
   trees.splice(treeStart);
-  for(const plan of cedarPlans)tree(plan.p,plan.height,plan.r,plan.seed,plan.kind,plan.hero,plan.fullness);
+  for(const plan of cedarPlans)tree(plan.p,plan.height,plan.r,plan.seed,plan.kind,plan.hero,Math.max(plan.fullness,2.5+(plan.seed%3)*.12),1.45+(plan.seed%3)*.08);
   const findPlot=(e:SceneryRoadEdge,s:number,r:number,side:number,margin=7)=>{for(const extra of [0,5,11,18]){const p=point(e,s,side*(e.halfWidthAt(s)+r+margin+extra));if(freeAt(p,r))return p;}return null;};
   for(const side of [-1,1]){
     const e=course.commonStart,s=e.length-88,p=findPlot(e,s,3.6,side);if(!p)continue;const yaw=e.sample(s).angle,at=groundPad('forest-fork-wayfinding',p,yaw,5.8,1.8),raise=e.sample(s).p.y-p.y;
@@ -388,6 +432,79 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
     }groundedDetails.push({kind:'fern-root',x:p.x,z:p.z,bottom:p.y-.07,terrainY:p.y});
     if(i%4===0){const footprint=[vec(p.x-1.25,0,p.z-1.25),vec(p.x+1.25,0,p.z-1.25),vec(p.x+1.25,0,p.z+1.25),vec(p.x-1.25,0,p.z+1.25)],a=vec(p.x,terrainExtrema(footprint).low-.5,p.z),b=p.clone().add(vec(.3,.85,.1));tube('soil-embedded-shale-fin',shale,[a,b],[1.1,.62],5,true,true,false);groundedDetails.push({kind:'shale-foot',x:p.x,z:p.z,bottom:a.y,terrainY:p.y});}
   }
+  // Few long, low shale shoulders connect the pale route to cedar groups.
+  // Every original primitive is already emitted; banks only append new data.
+  const woodlandBank=(id:string,e:SceneryRoadEdge,s:number,side:number,width:number,depth:number,crest:number)=>{
+    const radius=Math.hypot(width/2,depth/2),p=findPlot(e,s,radius,side,5.6);if(!p)return;
+    const yaw=e.sample(s).angle,at=local(p,yaw),outline=[[-.5,-.30],[-.30,-.5],[.30,-.5],[.5,-.30],[.5,.30],[.30,.5],[-.30,.5],[-.5,.30]];
+    const footprint=outline.map(([x,z])=>at(x*width,0,z*depth)),{low,high}=terrainExtrema(footprint);
+    if(!Number.isFinite(low)||high-low>2.8)return;
+    p.y=terrainMeshY(p.x,p.z);if(blocksSight(vec(p.x,low,p.z),radius,high-low+crest+.4))return;
+    const bottom=low-.5,start=shale.positions.length/3,indexStart=shale.indices.length;
+    const lower=footprint.map(q=>vec(q.x,bottom,q.z));
+    const top=outline.map(([x,z],i)=>{const q=at(x*width*.73,0,z*depth*.73);q.y=high+crest*(.60+.14*((i+3)%3));return q;});
+    [...lower,...top,vec(p.x+.18*width,high+crest,p.z)].forEach(q=>shale.vertex(q));
+    for(let i=0;i<8;i++){const j=(i+1)%8;shale.indices.push(start+i,start+8+i,start+j,start+j,start+8+i,start+8+j,start+16,start+8+j,start+8+i);}
+    for(let i=1;i<7;i++)shale.indices.push(start,start+i,start+i+1);
+    bound(id,shale,start,false);const component=components[components.length-1];
+    const triangles:number[][][]=[];for(let i=indexStart;i<shale.indices.length;i+=3)triangles.push(shale.indices.slice(i,i+3).map(j=>shale.positions.slice(j*3,j*3+3)));
+    cameraObstacles.push({kind:id,min:component.min,max:component.max,triangles});
+    woodlandBanks.push({id,batch:shale.name,vertexStart:start,vertexEnd:shale.positions.length/3,indexStart,indexEnd:shale.indices.length,footprint:footprint.map(tuple),radius,bottom,terrainLow:low,terrainHigh:high,min:component.min,max:component.max});
+    record(id,p,radius);groundedDetails.push({kind:'woodland-bank-buried-base',x:p.x,z:p.z,bottom,terrainY:p.y});
+  };
+  const bankPlans=[
+    [course.commonStart,350,-1],[course.commonStart,392,-1],[course.commonStart,465,1],
+    [course.commonStart,660,-1],[course.commonStart,705,-1],
+    [course.commonStart,1060,-1],[course.commonStart,1095,-1],
+    [course.commonFinish,385,1],[course.commonFinish,475,1],[course.commonFinish,545,-1],
+    [course.commonFinish,820,-1],[course.alternates.alley,150,-1],
+  ] as const;
+  bankPlans.forEach(([e,s,side],i)=>woodlandBank('woodland-bank-'+i,e,s,side,6+(i%2)*.6,15+(i%3),1.65+(i%3)*.28));
+  // Broad soil/understory beds follow every exact terrain triangle beneath
+  // ordinary cedar groups. The top is separated from that unchanged surface
+  // everywhere; closed side walls descend to a wholly buried common base.
+  const woodlandBed=(id:string,x:number,z:number,width:number,depth:number,yaw:number)=>{
+    const p=vec(x,terrainMeshY(x,z),z),radius=Math.hypot(width/2,depth/2),at=local(p,yaw);
+    if(!clearAt(p,radius,5)||props.some(q=>!/cedar-cluster/.test(q.kind)&&Math.hypot(q.x-x,q.z-z)<q.radius+radius+2))return;
+    const outline=[[-.5,-.30],[-.30,-.5],[.30,-.5],[.5,-.30],[.5,.30],[.30,.5],[-.30,.5],[-.5,.30]],footprint=outline.map(([a,b])=>at(a*width,0,b*depth));
+    const inside=(q:pc.Vec3)=>footprint.every((a,i)=>{const b=footprint[(i+1)%footprint.length];return (b.x-a.x)*(q.z-a.z)-(b.z-a.z)*(q.x-a.x)>=1e-7;});
+    const ownedTreeSeeds=cedarPlans.filter(q=>inside(q.p)).map(q=>q.seed);if(!ownedTreeSeeds.length)return;
+    const {low,high}=terrainExtrema(footprint);if(!Number.isFinite(low)||blocksSight(vec(x,low,z),radius,high-low+.6))return;
+    // Independently witnessed natural bed/root contact at the middle fork
+    // group. Only these three exact grounded base members are owned; the
+    // remainder of tree 1015 and every other tree retain their own checks.
+    const ownedRootContacts=id==='woodland-bed-fork-middle'?[
+      {treeSeed:1015,kind:'cedar-tapered-trunk',batch:bark.name,vertexStart:2808,vertexEnd:2838,indexStart:13152,indexEnd:13320},
+      {treeSeed:1015,kind:'cedar-grounded-root',batch:roots.name,vertexStart:42067,vertexEnd:42086,indexStart:63849,indexEnd:63939},
+      {treeSeed:1015,kind:'cedar-grounded-root',batch:roots.name,vertexStart:42086,vertexEnd:42105,indexStart:63939,indexEnd:64029},
+    ]:[];
+    const start=earth.positions.length/3,indexStart=earth.indices.length,bottom=low-.5,top:pc.Vec3[]=[],faces:number[][]=[],lookup=new Map<string,number>();
+    const vertex=(q:pc.Vec3)=>{const key=q.x.toFixed(8)+','+q.z.toFixed(8),old=lookup.get(key);if(old!==undefined)return old;
+      const dx=q.x-x,dz=q.z-z,u=(dx*Math.cos(yaw)-dz*Math.sin(yaw))/(width/2),v=(dx*Math.sin(yaw)+dz*Math.cos(yaw))/(depth/2);
+      const i=top.length;top.push(vec(q.x,q.y+.05+.50*smooth(1-Math.hypot(u,v)),q.z));lookup.set(key,i);return i;};
+    const x0=clamp(Math.floor((Math.min(...footprint.map(q=>q.x))-minX)/dx),0,nx-1),x1=clamp(Math.floor((Math.max(...footprint.map(q=>q.x))-minX)/dx),0,nx-1);
+    const z0=clamp(Math.floor((Math.min(...footprint.map(q=>q.z))-minZ)/dz),0,nz-1),z1=clamp(Math.floor((Math.max(...footprint.map(q=>q.z))-minZ)/dz),0,nz-1);
+    for(let row=z0;row<=z1;row++)for(let col=x0;col<=x1;col++){const i=row*(nx+1)+col;
+      for(const tri of [[i,i+nx+1,i+1],[i+1,i+nx+1,i+nx+2]]){const polygon=intersectRoadFootprint(tri.map(k=>vec(...moss.positions.slice(k*3,k*3+3) as [number,number,number])),footprint);
+        for(let j=1;j<polygon.length-1;j++){const points=[polygon[0],polygon[j],polygon[j+1]];if(footprintArea(points)>1e-8)faces.push(points.map(vertex));}
+      }
+    }
+    const count=top.length;top.forEach(q=>earth.vertex(q));top.forEach(q=>earth.vertex(vec(q.x,bottom,q.z)));
+    const edges=new Map<string,{a:number;b:number;count:number}>();
+    for(const tri of faces){earth.indices.push(...tri.map(i=>start+i),...tri.slice().reverse().map(i=>start+count+i));
+      for(let j=0;j<3;j++){const a=tri[j],b=tri[(j+1)%3],key=Math.min(a,b)+','+Math.max(a,b),edge=edges.get(key);if(edge)edge.count++;else edges.set(key,{a,b,count:1});}
+    }
+    for(const {a,b,count:n} of edges.values())if(n===1)earth.indices.push(start+b,start+a,start+count+b,start+a,start+count+a,start+count+b);
+    bound(id,earth,start,false);const component=components[components.length-1],triangles:number[][][]=[];
+    for(let i=indexStart;i<earth.indices.length;i+=3)triangles.push(earth.indices.slice(i,i+3).map(j=>earth.positions.slice(j*3,j*3+3)));
+    cameraObstacles.push({kind:id,min:component.min,max:component.max,triangles});
+    woodlandBeds.push({id,batch:earth.name,vertexStart:start,vertexEnd:earth.positions.length/3,indexStart,indexEnd:earth.indices.length,footprint:footprint.map(tuple),radius,bottom,terrainLow:low,terrainHigh:high,min:component.min,max:component.max,ownedTreeSeeds,ownedRootContacts});
+    record(id,p,radius);groundedDetails.push({kind:'woodland-bed-buried-base',x,z,bottom,terrainY:p.y});
+  };
+  woodlandBed('woodland-bed-bowl-near',-241,25,34,22,.65);
+  woodlandBed('woodland-bed-bowl-middle',-277,82,24,48,0);
+  woodlandBed('woodland-bed-fork-near',-147,377,36,24,.3);
+  woodlandBed('woodland-bed-fork-middle',-154,480,38,28,0);
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}
-  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,roadUndersideFaces,foundations,cameraObstacles,components,landmarks,trestleMembers,trees,groundedDetails,sightlines,dome,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
+  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,roadUndersideFaces,foundations,cameraObstacles,components,landmarks,trestleMembers,trees,groundedDetails,sightlines,dome,woodlandBanks,woodlandBeds,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
 }
