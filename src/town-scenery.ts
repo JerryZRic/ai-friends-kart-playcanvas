@@ -357,14 +357,14 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     groundPad('potted-citrus-tree',p,0,2.5,2.5);cylinder(roof,p,1.1,1.15,10);cylinder(masonry,p.clone().add(vec(0,1.1,0)),1.2,.18,10);
     wood.box(p.clone().add(vec(0,2,0)),vec(.22,2.1,.22));ellipsoid(foliage,p.clone().add(vec(0,3.3,0)),vec(1.9,1.6,1.9));
     for(let j=0;j<3;j++){const a=j/3*Math.PI*2;ellipsoid(fruit,p.clone().add(vec(Math.cos(a)*1.65,3.1+(j%3)*.4,Math.sin(a)*1.65)),vec(.16,.17,.16),5,3);}
-    record('potted-citrus-tree',p,2.1,5,false);
+    record('potted-citrus-tree',p,2.1,5);
   }
   // Lantern poles and wayfinding arrows stay out of the shared throats too.
   for(const edge of edges)for(let s=24;s<edge.length;s+=31){
     if(junction(edge,s))continue;const p=point(edge,s,edge.halfWidthAt(s)+6);if(!freeAt(p,1))continue;
     groundPad('copper-street-lantern',p,0,1.2,1.2);brass.box(p.clone().add(vec(0,2.3,0)),vec(.14,4.6,.14));brass.box(p.clone().add(vec(0,4.45,0)),vec(1.1,.15,.16));
     brass.box(p.clone().add(vec(.45,3.92,0)),vec(.61,.82,.61));glow.box(p.clone().add(vec(.45,3.93,0)),vec(.65,.55,.65));roof.cone(p.clone().add(vec(.45,4.34,0)),.52,.40,4,Math.PI/4);
-    record('copper-street-lantern',p,1,4.8,false);
+    record('copper-street-lantern',p,1,4.8);
   }
   // Two roadside boards express an actual choice; signs are not fake exits.
   for(const side of [-1,1]){
