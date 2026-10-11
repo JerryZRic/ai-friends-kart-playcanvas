@@ -1,151 +1,337 @@
 {
   "kind": "offline-native-geometry-render",
-  "description": "Exact original static runtime mesh positions, triangle indices, UVs, material values and procedural texture pixels. Lighting and renderer differ from PlayCanvas. No driver, vehicle, downloaded or third-party model assets.",
-  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate offline daylight, AgX view transform. All runtime static geometry included; peripheral scenery can lie outside the camera frame. No gameplay/GPU or FPS claim.",
+  "description": "Exact enriched Mountain runtime mesh positions, indices, UVs, material values, procedural pixels and float32 calculated normals, including the two selected original Alpine props. All source batches enabled. Offline render/material/lighting response differs from PlayCanvas.",
   "sourceHashes": {
     "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
     "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
     "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+    "src/mountain-scenery.ts": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+    "src/alpine-props.ts": "a37d3f0a3fe56818bc3f0f5e8ba274bae60512491a5fe1f86e1df09071f60cd3",
+    "src/generated/alpine-props.json": "72ad18f51a5e1808913d150844867060248c65769fc13f08dda7f9cd81a0f152",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
   },
+  "geometryContentSha256": "af8ee62bb63dc04c2e1e8cc4602dfa095f69f974ed747a735d39b7e2917ca2b4",
+  "geometryFileSha256": "43425fdff3f50e029c1e9e3c1d2fff4641a98d796951a60c25cd31d666f4dd8f",
+  "cameraPackageSha256": "f4a6886daabd929842ebb54ba931ec9c4cddd0cc0aeaa6e4bf3009c3141b44f7",
+  "frozenRenderSettingsSha256": "d12474530e048491a81746d809107bfe6e9dd0ba0bb1b5c8cf3a45def4c901e7",
   "generatorHashes": {
-    "scripts/export-land-preview.ts": "f07a5cd2caae67c946dc29be27078b15d1eb5b91c90ed64a420a235bb9942a23",
-    "scripts/render-land-preview.py": "3eb1d0e98fc7c632e515bcca6fcfaf1bf84f810c641f14b00e381634d8264a23"
+    "scripts/export-mountain-enrichment-preview.ts": "017d60da44df30aca6c925a636efc8b6d6e5cea13da30b5b0d1a49921b006dee",
+    "scripts/render-mountain-final.py": "c88a9ade4b8145f6e5ab8c3dff65922a9908d34a8e1ab8f798261050895c801b",
+    "scripts/export-land-preview.ts": "a145701295de2c2f087f2523bd508ae46c91287f0850797a85b10f9555ccc7f9",
+    "scripts/render-mountain-comparison.py": "403bcadef67600664ff4062fdbe73327c1f0ff2b2622925001dfc3f06d15b466",
+    "scripts/render-mountain-terrace-detail.py": "8cdec40a54f2bde2c600ad2da54e356fe04c93e331f1415f978063b28a21a841",
+    "scripts/export-mountain-models.ts": "3415bbce1d723c3a6a05e53d988f631686718804892892bed5b447e1c0985dd6",
+    "scripts/prepare-mountain-final-input.mjs": "1bc46f10b27e9cccbae493a4de9e9a11a536c952c2309eeae5c2b20ef6aa2cdf",
+    "scripts/verify-mountain-blender.py": "019367a9399aefdb1cb011ef1d11a6489547cb4813e5ee3e38ec3298ebe99f16",
+    "scripts/compare-mountain-scenes.py": "8dd1fa4d7702b42fa84bb8b4f39fa77be65be90af56b668f21c116dce8b41195"
   },
-  "batches": 20,
-  "triangles": 78158,
-  "routeLengthMetres": 3616.224747593308,
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples for final artwork; AgX and approximate offline lighting. No gameplay/GPU or FPS claim.",
+  "offlineTranslation": {
+    "renderer": "Blender Cycles CPU",
+    "threads": 2,
+    "samples": 12,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0,
+    "gamma": 1,
+    "worldColorSource": "#b6c8d1",
+    "worldEnergy": 0.7,
+    "backgroundColorSource": "#c4d6da",
+    "sunColorSource": "#fff0d5",
+    "sunEnergy": 1.8,
+    "sunDirectionSource": [
+      0.3938067591356942,
+      -0.6691306063588581,
+      -0.6302225544146036
+    ],
+    "sunAngleRadians": 0.09,
+    "fogEnabled": false,
+    "notice": "Exact source geometry, UVs, texture pixels and float32 runtime normals. Offline PBR/material response, shadows, ambient, fog and color transform differ from PlayCanvas. Identical settings and camera package must be used for paired scenery comparisons."
+  },
+  "normalShading": "Original runtime float32 normal FLOAT_VECTOR POINT attribute, source loop-vertex mapping, (x,y,z)->(x,-z,y), OBJECT->WORLD NORMAL, normalize, multiply (1-2*Backfacing), Principled BSDF Normal",
+  "meshReadbackAudit": {
+    "batches": 22,
+    "vertices": 181125,
+    "triangles": 109984,
+    "errors": []
+  },
   "views": {
     "mountain-overview": {
-      "file": "mountain-overview.png",
-      "sha256": "e7e1f09e00cc1c5825bc2693aebc1f3107786a8466a8a4750a75ac7faf8247d8",
+      "id": "mountain-overview",
+      "projection": "ORTHO",
+      "directionBlender": [
+        0.12,
+        -0.6,
+        0.8
+      ],
+      "fit": "All original road edges with 6% safety margin; every source batch remains enabled including peripheral scenery",
       "resolution": [
         1920,
         1080
       ],
-      "cameraPosition": [
+      "aspect": 1.7777777777777777,
+      "nearClip": 0.12,
+      "farClip": 10000,
+      "cameraPositionBlender": [
         164.2877960205078,
-        -941.5020751953125,
+        -941.5021362304688,
         1220.8311767578125
       ],
-      "orthographicScale": 1184.8012452173714,
+      "cameraQuaternionBlenderWXYZ": [
+        0.9425708055496216,
+        0.3191404342651367,
+        0.03160112351179123,
+        0.09333288669586182
+      ],
+      "targetBlender": [
+        -14.43002986907959,
+        -47.9129753112793,
+        29.379070281982422
+      ],
+      "orthographicScaleMetres": 1184.801122877333,
+      "description": "Frozen original overview pose, same aspect/framing, higher resolution and samples only; every source batch remains enabled.",
+      "file": "mountain-overview.png",
+      "sha256": "8298ce05bf926a15a907714da1e34ebea7db9499f799a07e3bdb403a65544188",
       "routeScreenBounds": [
-        0.128721684217453,
-        0.060000259429216385,
-        0.8712782263755798,
-        0.9400002956390381
-      ]
+        0.12872163951396942,
+        0.06000017374753952,
+        0.8712782859802246,
+        0.9400002360343933
+      ],
+      "sunQuaternionBlenderWXYZ": [
+        0.8781562447547913,
+        0.3909803628921509,
+        -0.11211179941892624,
+        -0.25180721282958984
+      ],
+      "exposure": 0.0,
+      "samples": 48
     },
     "mountain-topdown": {
-      "file": "mountain-topdown.png",
-      "sha256": "9988b8b1dc6dd5f84e3d5c426b77c93ecd1948860e132872a452b58a7a973cee",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "cameraPosition": [
+      "id": "mountain-topdown",
+      "projection": "ORTHO",
+      "cameraPositionBlender": [
         -10.420013427734375,
-        -47.963130950927734,
+        -47.963134765625,
         1522.8843994140625
       ],
-      "orthographicScale": 1294.0611546128462,
+      "cameraQuaternionBlenderWXYZ": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "targetBlender": [
+        -10.420013427734375,
+        -47.963134765625,
+        22.884431838989258
+      ],
+      "orthographicScaleMetres": 980.3742148659446,
+      "resolution": [
+        1920,
+        1440
+      ],
+      "aspect": 1.3333333333333333,
+      "nearClip": 0.12,
+      "farClip": 10000,
+      "description": "Additive final vertical source view with separately recorded road-edge fit. Not substituted for any frozen comparison camera. Every original source batch stays enabled, including terrain and landmarks.",
+      "file": "mountain-topdown.png",
+      "sha256": "0e8799955282bff83babb6b6c33c2c208d2a7c6ffffa5a6942f68abc74f967d9",
       "routeScreenBounds": [
-        0.16665823757648468,
-        0.06000003591179848,
-        0.8333417773246765,
-        0.9399999976158142
-      ]
+        0.059999994933605194,
+        0.06441109627485275,
+        0.9399999976158142,
+        0.9355888962745667
+      ],
+      "sunQuaternionBlenderWXYZ": [
+        0.8781562447547913,
+        0.3909803628921509,
+        -0.11211179941892624,
+        -0.25180721282958984
+      ],
+      "exposure": 0.0,
+      "samples": 48
     },
-    "mountain-viaduct": {
-      "file": "mountain-viaduct.png",
-      "sha256": "1a568b0e56678bedea8d472d878a96bf997f971c4594f6d3763bb53f5c4a81a8",
+    "mountain-terrace-props-front": {
+      "kind": "additive-offline-source-architecture-view",
+      "file": "mountain-terrace-props-front.png",
+      "sha256": "9deb35131a94595136e108e46cd2211fd2d7a71c627436bc4b31acab7eb66d3f",
+      "sourceGeometrySha256": "43425fdff3f50e029c1e9e3c1d2fff4641a98d796951a60c25cd31d666f4dd8f",
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/mountain-scenery.ts": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+        "src/alpine-props.ts": "a37d3f0a3fe56818bc3f0f5e8ba274bae60512491a5fe1f86e1df09071f60cd3",
+        "src/generated/alpine-props.json": "72ad18f51a5e1808913d150844867060248c65769fc13f08dda7f9cd81a0f152",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+        "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+        "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+        "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+        "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+      },
+      "sourceBlendSha256": "64f5ef74106c93de54a072aed24fb17842a8eac14265fc92d564ca0df0856342",
       "resolution": [
         1600,
         1000
       ],
-      "cameraPosition": [
-        1044.7889404296875,
-        -895.533447265625,
-        617.0223388671875
+      "samples": 48,
+      "description": "Additive map-station/porch detail. Physical eye is 1.6 m above the exact emitted apron bedding top. The relief map front is clearly visible; the picnic table is partly occluded by the retained porch column, so this is not a clear showcase of both props. Source bounds prove frustum containment, not absence of occlusion. This is not a gameplay chase view or a before/after replacement. All source batches stay enabled; saved source-normal shader and equal final light remain unchanged.",
+      "physicalFootPointSource": [
+        398.8431279722736,
+        9.028174492418259,
+        -178.25225186708977
       ],
-      "orthographicScale": 270,
-      "routeScreenBounds": [
-        -1.3799729347229004,
-        -0.5876529812812805,
-        1.8589969873428345,
-        1.5735644102096558
-      ]
-    },
-    "mountain-chalet": {
-      "file": "mountain-chalet.png",
-      "sha256": "141950ba3585dd9158f8981ad434d7322f193463f3840c106ff28452dd7cf3dd",
-      "resolution": [
-        1600,
-        1000
+      "supportComponentIndex": 2090,
+      "supportKind": "lookout-pale-masonry-bedding",
+      "heightAbovePhysicalApronMetres": 1.6,
+      "positionSource": [
+        398.8431279722736,
+        10.628174492418259,
+        -178.25225186708977
       ],
-      "cameraPosition": [
-        1115.206787109375,
-        -916.6551513671875,
-        739.3151245117188
+      "targetSource": [
+        392.0023206427855,
+        10.058174492418258,
+        -168.99396611427235
       ],
-      "orthographicScale": 100,
-      "routeScreenBounds": [
-        -8.807847023010254,
-        -2.3721864223480225,
-        0.2873787581920624,
-        4.4053568840026855
-      ]
-    },
-    "mountain-chalet-roadside": {
-      "file": "mountain-chalet-roadside.png",
-      "sha256": "ec59a934a89fbbf702a9c4085ecdbd3004217e6fcc2f4a809ea1c40c12013d9d",
-      "resolution": [
-        1600,
-        1000
+      "cameraPositionBlender": [
+        398.8431396484375,
+        178.25225830078125,
+        10.628174781799316
       ],
-      "cameraPosition": [
-        347.17645263671875,
-        173.52523803710938,
-        11.307414054870605
+      "cameraQuaternionBlenderWXYZ": [
+        0.22661086916923523,
+        0.21566760540008545,
+        0.6547974348068237,
+        0.6880227327346802
       ],
-      "projection": "perspective",
-      "lensMillimetres": 36,
-      "heightAboveSampledRoadMetres": 2.1,
-      "description": "Actual road-centre camera position at roadside height, looking toward original modeled chalet. Offline image; no driver/HUD."
+      "lensMillimetres": 28,
+      "sensorWidthMillimetres": 36,
+      "aspect": 1.6,
+      "selectedPropsScreenBounds": [
+        0.055631961673498154,
+        0.16809381544589996,
+        0.6180318593978882,
+        0.9295439124107361
+      ],
+      "exposure": 0.0,
+      "allSourceBatchesEnabled": true,
+      "generatorSha256": "8cdec40a54f2bde2c600ad2da54e356fe04c93e331f1415f978063b28a21a841",
+      "renderedWithGeneratorSha256": "8d750d3cfc3e4fc610f2f4641717bc281653f9ef730b5e000962ed4ceb7629b6",
+      "metadataRevision": "Description-only correction after pixel review; camera, image, mesh visibility, shader and lighting unchanged."
     }
+  },
+  "finalRenderTranslation": {
+    "renderer": "Blender Cycles CPU",
+    "threads": 2,
+    "samples": 48,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0,
+    "gamma": 1,
+    "worldColorSource": "#b6c8d1",
+    "worldEnergy": 0.7,
+    "backgroundColorSource": "#c4d6da",
+    "sunColorSource": "#fff0d5",
+    "sunEnergy": 1.8,
+    "sunDirectionSource": [
+      0.3938067591356942,
+      -0.6691306063588581,
+      -0.6302225544146036
+    ],
+    "sunAngleRadians": 0.09,
+    "fogEnabled": false,
+    "notice": "Exact source geometry, UVs, texture pixels and float32 runtime normals. Offline PBR/material response, shadows, ambient, fog and color transform differ from PlayCanvas. Identical settings and camera package must be used for paired scenery comparisons."
+  },
+  "finalDeliveryNotice": "Same frozen overview pose at higher final sampling/resolution. Additive topdown and apron detail are separately recorded. Prior Mountain compatibility receipts are historical; this current enriched geometry intentionally differs.",
+  "editableBlender": {
+    "file": "mountain-enriched-source-scene.blend",
+    "sha256": "64f5ef74106c93de54a072aed24fb17842a8eac14265fc92d564ca0df0856342",
+    "byteLength": 4398203,
+    "notice": "Complete source meshes, original UVs, packed procedural pixels and float32 source-normal POINT shader; approximate offline light/material response."
+  },
+  "batches": 22,
+  "triangles": 109984,
+  "vertices": 181125,
+  "routeLengthMetres": 3616.224747593308,
+  "pairedComparison": {
+    "description": "Eleven immutable same-camera/equal-light before/after views. Eight shared 56-degree chase views plus overview, separate 36mm chalet architecture and an additive frozen lower-underpass approach. No source meshes hidden or altered for pictures.",
+    "manifest": {
+      "equalFrozenCamerasAndLight": true,
+      "views": 11,
+      "unretouchedNativePairs": true,
+      "beforeSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+        "src/land-course.ts": "68e147fb9604644dba7e4230baccb4ce7d1bc21febf88455bb9b0dbf7c68a0cd",
+        "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+        "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+        "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+      },
+      "afterSourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/mountain-scenery.ts": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+        "src/alpine-props.ts": "a37d3f0a3fe56818bc3f0f5e8ba274bae60512491a5fe1f86e1df09071f60cd3",
+        "src/generated/alpine-props.json": "72ad18f51a5e1808913d150844867060248c65769fc13f08dda7f9cd81a0f152",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+        "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+        "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+        "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+        "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+      },
+      "outputs": {
+        "mountain-basin-hairpin-paired.png": "6720782423ffbd3ff7e565d169ede530e0fc45719a68a6d7f7bee8af0b48eb48",
+        "mountain-chalet-architecture-paired.png": "8df5d569f00f571332e4059cd1b702d3c76b11e2dabd519ebb5465dbb05a8a70",
+        "mountain-eastern-hairpin-paired.png": "97d7386d7d52898a82e8d0831d34dc00850ede657bccedb44869668dfdc27001",
+        "mountain-eleven-view-paired-contact-sheet.jpg": "7ffc215dedfa1f60faf1445df0452ed7a038f4d85527044d22e5741137885c16",
+        "mountain-lower-underpass-approach-paired.png": "f2b58afb7b8e4f61c0152884d2930a31d3a3d5e72b5bf7a814109646e1cc5b06",
+        "mountain-lower-underpass-paired.png": "8100c35f52ec97d0d80b496713ab02d61a84df1da49a778fbd0dba7c777e2fa1",
+        "mountain-overview-paired.png": "d76ddeec05a92587fa627eafedaa8031fa9374ba93c128fdaa4db4afdbaba8ef",
+        "mountain-pine-switchback-paired.png": "90ed0444a481ff3d09fc084dd99093dcdc5c4958e7a0c1d03aabf924a16fe763",
+        "mountain-summit-paired.png": "28fa687c5ddea4643ef24adc5e89fc02763189b1b2967da7987ac182260d28a1",
+        "mountain-upper-viaduct-paired.png": "e648f0282caadab39603c43cfe8ff2c27ae73727b686c3b78eed10305bd55019",
+        "mountain-valley-chalet-paired.png": "1d7e8b43915937db5a25264f69bbaaf8b79a564975ebb77f3af6924716851d49",
+        "mountain-western-esses-paired.png": "7cf2199046a71a6f7b5fbbe5e1fbc9d71a28fa764ce234591add0221c97e5e6e"
+      }
+    },
+    "scope": "All preview files are reproducible offline artifacts, not browser gameplay capture or a claim that the files are served at these paths."
   },
   "menuAsset": {
     "file": "public/map-previews/mountain-overview.webp",
-    "sha256": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
+    "sha256": "99857171254cf68b71e054c5c900ffa43c9a1d935255529c73e316b5ba1938db",
     "resolution": [
       1280,
       720
-    ]
-  },
-  "compatibilityVerification": {
-    "kind": "unchanged-native-geometry-verification",
-    "baselineCommit": "099e923c3d2bbb77d23714b39fd2870d9906137e",
-    "description": "Fresh mountain exports after optional town geometry/theme injection and quarry catalog integration match the original complete export exactly after excluding only sourceHashes, including geometry, normals, indices, UVs, materials, textures, route arrays and metadata. Existing preview image bytes remain unchanged.",
-    "geometryAndRouteSha256": "113eae4c34f1f4c92416790e7504726e47e359809c6dd7f68d245b04c8915a3a",
-    "verificationFile": "docs/legacy-preview-compatibility.json",
-    "normalizedExportSha256": "86740dca028d283e4475d8c271c08e06ca4108bf67ba63cf1b5ceef8dc79b9d2"
-  },
-  "renderSourceHashes": {
-    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
-    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
-    "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
-    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/land-scene.ts": "9a01f7e5b1536a042991a9f30ee82ddecddfa6df90ab3803016956d0fda36748"
-  },
-  "workshopCameraCompatibility": {
-    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
-    "changedFiles": [],
-    "excludedFields": [
-      "sourceHashes"
     ],
-    "exactExportEqual": true,
-    "normalizedExportSha256": "86740dca028d283e4475d8c271c08e06ca4108bf67ba63cf1b5ceef8dc79b9d2",
-    "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed."
-  }
+    "derivedFrom": "mountain-overview.png",
+    "description": "Current enriched scene, CPU source render; original menu image preserved as the historical baseline"
+  },
+  "priorScene": {
+    "commit": "769911cc562b9330a57f043e9a7f9a2f0a976dac",
+    "batches": 20,
+    "triangles": 78158,
+    "menuAssetSha256": "a957f52429b0a142a98affd6318cbd27e8f4db5c6a8d2eb79a05dd2c66de2e3f",
+    "notice": "Historical pre-enrichment scene. Road/gameplay remain protected; scenery and this menu image intentionally change."
+  },
+  "verificationDocument": "docs/mountain-enrichment-verification.md",
+  "selectedPropNotice": "ALPINE-PROP-NOTICE.txt"
 }

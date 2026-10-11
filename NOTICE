@@ -46,3 +46,13 @@ This edition does not bundle Three.js. PlayCanvas and fflate retain their MIT te
 Modular food garage dev preview (2026): six-slot assembly, original 54-theme food
 modules, build persistence, and coast handling composition. Original food asset
 provenance is separate from third-party characters; see FOOD-ASSET-NOTICE.txt.
+
+Mountain scene enrichment dev preview (2026): selected original Alpine Campsite
+relief-map station and picnic-table geometry, narrowly retained authoring source,
+and deterministic shared-scene conversion are included at the user's request.
+The original standalone pack did not state a separate license or offer a blanket
+ownership warranty; this notice does not claim it was previously AGPL or CC0.
+The derivative game integration follows this project's existing distribution
+terms. Original provenance, material/normal adaptations and selected source
+hashes are documented in ALPINE-PROP-NOTICE.txt and models/alpine-campsite/.
+These original props are separate from the restricted third-party characters.

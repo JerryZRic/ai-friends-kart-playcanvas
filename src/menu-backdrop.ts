@@ -73,9 +73,9 @@ export function prepareMenuWorld(map:MapId):Promise<void>{
     createTownWorld=app=>scene.createLandScene(app,TOWN_TRACK,{preview:true,geometry:buildTownSceneGeometry(TOWN_COURSE),theme:TOWN_SCENE_THEME});
   }).catch(error=>{townPreparation=undefined;throw error;});
   if(map!=='mountain')return Promise.resolve();
-  return mountainPreparation??=Promise.all([import('./land-scene'),import('./maps/mountain')]).then(([scene,{MOUNTAIN_TRACK}])=>{
+  return mountainPreparation??=Promise.all([import('./land-scene'),import('./maps/mountain'),import('./mountain-scenery')]).then(([scene,{MOUNTAIN_TRACK},{buildMountainSceneGeometry}])=>{
     registerMenuRoute('mountain',{sample:MOUNTAIN_TRACK.sample,length:MOUNTAIN_TRACK.length,lane:MOUNTAIN_TRACK.halfWidthAt(0)});
-    createMountainWorld=app=>scene.createLandScene(app,MOUNTAIN_TRACK,{preview:true});
+    createMountainWorld=app=>scene.createLandScene(app,MOUNTAIN_TRACK,{preview:true,geometry:buildMountainSceneGeometry(MOUNTAIN_TRACK)});
   }).catch(error=>{mountainPreparation=undefined;throw error;});
 }
 

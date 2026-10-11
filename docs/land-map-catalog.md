@@ -10,11 +10,12 @@ The new land course is selected from Free Mode and uses the same kart garage, si
 - Track-constrained arcade support, with grade force, road grip and rolling resistance shared by player and NPCs. This is not a free-roaming rigidbody suspension simulation
 - Canonical unwrapped distance and twelve ordered checkpoint gates per lap; bounded reverse subtracts physical progress and never grants gate credit, while teleport/skipped-gate movements cannot manufacture laps
 - Multi-sample NPC turn look-ahead avoids mistaking an S-bend for a straight; difficulty changes decisions rather than vehicle physics
-- Original modeled guardrails/reflectors, limestone shoulders, stone strata, viaduct piers, terrain heightfield, clustered spruces and timber lookout chalet
+- Original modeled guardrails/reflectors, limestone shoulders, connected terrain with local mineral exposures, grounded viaduct piers, section-specific spruce groups and a cedar lookout with a supported porch, balcony and approach steps
+- Two selected original Alpine Campsite props: a picnic table and ranger relief-map station. Their full-detail source meshes remain unchanged; explicit foundations and tiny relief mounts belong to the integration. See [scene comparison and provenance](mountain-scene-enrichment.md) and `ALPINE-PROP-NOTICE.txt`
 
 ## Geometry and loading budget
 
-The first mountain environment uses 20 static material batches and 78,158 environment triangles, with shared 64×64 procedural textures. Gameplay item pools and six assembled vehicles are additional. These counts are source/headless measurements, not measured GPU frame rate. Mountain modules load only when selected; coastal props are not downloaded for the mountain race. Existing character and kart downloads are shared and retain their established license terms.
+The enriched mountain environment uses 22 static material batches, 181,125 vertices and 109,984 environment triangles, with the existing four shared 64×64 procedural textures. Its original baseline was 20 batches and 78,158 triangles. The added geometry supports connected terrain, grounded architecture and two selected full-detail original Alpine props; this is a visual-detail increase within the 24-batch/110,000-triangle budget, not a measured rendering-speed improvement. Gameplay item pools and six assembled vehicles are additional. These counts are source/headless measurements, not measured GPU frame rate. Mountain modules load only when selected; coastal props are not downloaded for the mountain race. Existing character and kart downloads are shared and retain their established license terms.
 
 Preview, race and offline render all consume the same authored map module and scene geometry. The `.blend`/geometry deliverable is an editable snapshot of those original meshes. Public menu artwork is a CPU offline render with approximate lighting, not a browser gameplay screenshot.
 

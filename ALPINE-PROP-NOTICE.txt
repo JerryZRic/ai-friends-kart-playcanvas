@@ -1,0 +1,64 @@
+Selected Alpine Campsite props in the Mountain001 dev scene
+
+Original set: Alpine Campsite, version 1.0, authored with Blender 4.3.2.
+Selected original assets: 04_ridge_picnic_table and 12_ranger_relief_map_station.
+The individual full-detail GLBs are retained byte-for-byte under
+models/alpine-campsite/glb/. Their SHA-256 digests are recorded in
+models/alpine-campsite/selected-manifest.json. No other theme-pack assets,
+collection presentation, original full collection scene, or reference artwork
+are included in this integration.
+
+The original package described its meshes and scene composition as original
+procedural work authored for the user's request, with no third-party model,
+texture, illustration, font or project code incorporated. It identified some
+geometry helpers as part of an earlier self-authored theme pipeline. It did not
+state a standalone license. Its provenance statement was explicitly not a
+blanket license or ownership guarantee; applicable platform terms still apply.
+This notice does not claim that the original package was CC0 or previously AGPL,
+or supply a broader ownership/commercial-use warranty.
+
+At the user's explicit request, these selected original props and their
+reproducible source are integrated into the existing AGPL-3.0-only game. The
+game's corresponding source and derivative integration are supplied under its
+existing LICENSE; this preserves the original package's provenance and caveat.
+The separately restricted character assets remain governed by MODEL-NOTICE.txt
+and are not included in this prop integration.
+
+Derivative changes are limited and reviewable:
+- source/generate-selected.py retains the selected original geometry and helper
+  expressions, excluding unrelated props and presentation/render operations
+- scripts/convert-alpine-props.mjs reads only the two verified source GLBs and
+  produces src/generated/alpine-props.json deterministically
+- Original local positions, triangle indices/winding and UV0 are retained at
+  unit scale; placement applies an explicit Y rotation and translation
+- Original normals remain in the GLBs. The shared scene renderer deliberately
+  recalculates normals from the same positions/topology, as for other scenery
+- Original opaque PBR materials are remapped to the Mountain shared palette;
+  material identities and original PBR values are retained in the derived data
+  for review. Shared wood/stone texture, roughness, color and metalness can differ
+- Complete projected footprints, exact source bounds, lowest source vertices
+  and a separately labeled low support band are derived from all source geometry
+- The Mountain scene seats both props on separately modeled stone pads with an
+  explicit 3 cm bedding embed; the original local geometry is not reshaped
+- The original map station contains separately authored relief solids with small
+  spacing gaps, not a Boolean-unioned board. src/mountain-scenery.ts adds nine
+  separate integration-only mounting boxes: two board-to-backing stand-offs,
+  one lake boss, three snowcap bosses, one trail-pin backing and two pine-emblem
+  backings. These add 108 triangles in existing materials, with separate source
+  component/contact/camera provenance; no original primitive is replaced or moved
+- The original picnic's cloth folds and central tabletop plank contain two tiny
+  exposed coincident-face strips, approximately 1.14 square centimetres combined.
+  Two separately modeled coral contact-edge bindings, each 8 x 68 x 8 mm,
+  cover those strips and meet both original shapes. Their 24 triangles are
+  integration-only visible trim; all original coral/cedar buffers remain exact
+
+Full detail is retained for this single close-to-mid-distance lookout pair:
+6,152 triangles across 15 source material primitives. The integration adds no
+new material batches and makes no claim of measured FPS or GPU improvement.
+That original-prop count excludes the scene's new pads and 132 mounting/trim
+triangles (nine station mounts plus two picnic bindings).
+The selected authoring script reproduces the original props; the game scene
+builder independently reproduces the pads, mounting additions and edge bindings.
+LOD switching and other Alpine props are outside this selected integration.
+
+See models/alpine-campsite/README.md for reproduction and material mapping.

@@ -1,0 +1,60 @@
+{
+  "title": "Alpine Campsite",
+  "source_version": "1.0",
+  "authoring_blender_version": "4.3.2",
+  "units": "metres",
+  "runtime_up_axis": "Y",
+  "runtime_front_axis": "+Z",
+  "original_provenance": "Original procedural mesh geometry and scene composition authored for this request. No third-party mesh, texture, illustration, font or project code was incorporated. Geometry helpers follow the earlier self-authored theme pipeline. Use remains subject to applicable platform terms; this statement is provenance, not a blanket license or ownership guarantee.",
+  "selection": "One full-detail picnic table and one full-detail relief-map station for the existing Mountain lookout. No dynamic LOD, additional theme props, collection presentation, or third-party assets are included.",
+  "geometry_policy": "Original local positions, indices, winding and UV0 are preserved; placement may apply only a documented unit-scale Y rotation and translation. Original normals remain in the source GLBs; the shared scene renderer recalculates normals.",
+  "assets": [
+    {
+      "id": "04_ridge_picnic_table",
+      "description": "Cedar picnic table with green A-frame legs, cross braces, woven runner and two enamel mugs",
+      "triangles": 4152,
+      "materials": 6,
+      "material_names": [
+        "Alpine_pine",
+        "Alpine_cedar",
+        "Alpine_brass",
+        "Alpine_coral",
+        "Alpine_cream",
+        "Alpine_charcoal"
+      ],
+      "file": "glb/04_ridge_picnic_table.glb",
+      "sha256": "6d5167ff29f35309b20f91319255ef715dca1036e7ba8d24c40cb15a39ccb837",
+      "dimensions_blender_xyz_m": [
+        2.38,
+        2.15,
+        1.120515
+      ],
+      "lod": 0
+    },
+    {
+      "id": "12_ranger_relief_map_station",
+      "description": "Roofed ranger trailhead station with raised landscape map, trail pins, wooden frame and stone footings",
+      "triangles": 2000,
+      "materials": 9,
+      "material_names": [
+        "Alpine_cedar",
+        "Alpine_slate",
+        "Alpine_bark",
+        "Alpine_cream",
+        "Alpine_sage",
+        "Alpine_water",
+        "Alpine_coral",
+        "Alpine_gold",
+        "Alpine_pine"
+      ],
+      "file": "glb/12_ranger_relief_map_station.glb",
+      "sha256": "26e573817be069912992563e82899d9c305ff33dc73fadbf1ca659c3e0c54ba9",
+      "dimensions_blender_xyz_m": [
+        2.298766,
+        1.254996,
+        2.696
+      ],
+      "lod": 0
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, writeFileSync, copyFileSync, lstatSync } fro
 import { zipSync } from 'fflate';
 const outputDir = process.argv[2] || 'dist';
 if (!['dist', 'dist-waterpark'].includes(outputDir)) throw new Error('Unsupported build output directory');
-const rootFiles = ['.gitignore','package.json','package-lock.json','tsconfig.json','vite.config.ts','index.html','garage.html','coast.html','waterpark.html','waterpark-study.html','LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt'];
+const rootFiles = ['.gitignore','package.json','package-lock.json','tsconfig.json','vite.config.ts','index.html','garage.html','coast.html','waterpark.html','waterpark-study.html','LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt'];
 const roots = ['src','tests','scripts','docs','models','.github','public'];
 const files = [...rootFiles];
 function visit(dir) {
@@ -24,7 +24,7 @@ for (const path of [...new Set(files)].sort()) {
   archive[`ai-friends-kart-playcanvas-source/${path}`] = [new Uint8Array(readFileSync(path)), { mtime: new Date(1980, 0, 1), level: 9 }];
 }
 writeFileSync(`${outputDir}/source.zip`, zipSync(archive));
-for (const name of ['LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt']) copyFileSync(name, `${outputDir}/${name}`);
+for (const name of ['LICENSE','NOTICE','MODEL-NOTICE.txt','FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt','THIRD-PARTY-NOTICES.txt','SOURCE.txt']) copyFileSync(name, `${outputDir}/${name}`);
 writeFileSync(`${outputDir}/.nojekyll`, '');
 for (const page of ['index.html', 'garage.html', 'coast.html', 'waterpark.html']) {
   const html = readFileSync(`${outputDir}/${page}`, 'utf8');

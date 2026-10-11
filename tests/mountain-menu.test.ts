@@ -35,8 +35,9 @@ test('legacy coast and water links retain exact entry semantics',()=>{
 });
 test('mountain preview imports are lazy and stale navigation is gated after preparation',()=>{
  const source=readFileSync('src/menu-backdrop.ts','utf8'),menu=readFileSync('src/menu.ts','utf8');
- assert.match(source,/Promise\.all\(\[import\('\.\/land-scene'\),import\('\.\/maps\/mountain'\)\]/);
- assert.doesNotMatch(source,/^import .* from ['"]\.\/(?:land-scene|maps\/mountain)/m);
+ assert.match(source,/Promise\.all\(\[import\('\.\/land-scene'\),import\('\.\/maps\/mountain'\),import\('\.\/mountain-scenery'\)\]/);
+ assert.doesNotMatch(source,/^import .* from ['"]\.\/(?:land-scene|maps\/mountain|mountain-scenery)/m);
+ assert.match(source,/geometry:buildMountainSceneGeometry\(MOUNTAIN_TRACK\)/);
  assert.match(menu,/await prepareMenuWorld\(state.map\)/);
  assert.match(menu,/version!==renderVersion\|\|\(state.screen/);
  assert.match(readFileSync('src/menu.css','utf8'),/\.map-choices\{[^}]*max-height:490px;overflow-y:auto/);
@@ -60,6 +61,8 @@ test('lazy mountain preview uses actual mountain geometry and releases native re
    assert.ok(menuCameraAnchors('mountain',aspect).some(point=>point[1]>8));
    const world=createMenuWorld(app as any,'mountain',DEFAULT_SETTINGS);world.update(time,aspect);
    assert.equal(app.assets.list().length,0,'preview never requests racer/prop GLBs');
+   assert.ok(app.root.findByName('Stratified granite and retaining masonry'),'menu uses enriched terrain/architecture batches');
+   assert.ok(app.root.findByName('Lookout cedar timber'),'menu uses enriched lookout geometry');
    const position=world.camera.getPosition().toArray();position.forEach((v,i)=>assert.ok(Math.abs(v-pose.position[i])<.0001));
    world.destroy();world.destroy();assert.equal(app.root.children.length,0);
    assert.equal(app.graphicsDevice.buffers.size,buffers);assert.equal(app.graphicsDevice.textures.size,textures);assert.equal(app.scene.layers.layerList.length,layers);

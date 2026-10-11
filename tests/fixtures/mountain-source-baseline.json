@@ -1,0 +1,1376 @@
+{
+  "baseCommit": "769911cc562b9330a57f043e9a7f9a2f0a976dac",
+  "protectedSources": {
+    "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+    "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/race-controls.ts": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
+    "src/race-frame-clock.ts": "466677232a59d77b85cebc13d12f3e265371cad8be8075f703378f9f88dc3d11",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b",
+    "src/kart-race.ts": "0c669a77b97ab8b118eb3b6dc4ac6bdcab8734042b21f466708dcf64372a93d5",
+    "src/kart-build.ts": "1f14753cb41b290787b07a6bc70d9227e6de57611225400edb0e7ca2ab507927",
+    "src/kart-presets.ts": "36365b69d836fcdbbbce8b4c94ce1e0e8a039e394b70a243cfb947d3d09f02eb",
+    "src/kart-assembly.ts": "a51bfb18bb0a320bb6b5262b2364bb2f16b649e65258becf09cb75c416019cbe",
+    "src/kart-driver.ts": "315a7d2296b9e64db411a1d796fbaaefcb96d12870403600b8da366266b4ebef",
+    "src/character-profiles.ts": "1d35323dab31a8f943209f7e98d107916441a95ba5d06ff82ce92ba09986573d",
+    "src/coast-race-feedback.ts": "7c47a102876776ec90d6578adfeedb634b6a1968786f9ea7ccd58146d0986a1a",
+    "src/coast-race-rules.ts": "5393ca7d10b0532e753c7416dc79da37eb62fc8edb8fe7861cfa9b6faaea7639",
+    "src/item-models.ts": "0d63264651616c2e6408f733ae4032618d5b4e6f5232d060e9322d5498afe061",
+    "src/item-pickups.ts": "d068f11e624ee3a454051ae0ff7d80c8c5075d08b61d648c2697db57868b6d39",
+    "src/dynamic-pickups.ts": "50ad37f3abfb1bdf0db9e669b08b23e892574c9806c7cdd5f3b9f046cb71ff04",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/food-kart-payload.ts": "3f26bf7934d6f3e2bd6189065af40c47158870be3d72b26f86a50fdc2b738379",
+    "src/assets.ts": "f8ca6442bdb762ed896399f221bd34e1fdca4ff79533841abf9dcff82af0633a",
+    "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+    "src/race-options.ts": "47a8eb7ca331a1a43aa736383d1af8291210daef4fff2708ba4b70d2133f8026",
+    "src/driver-roster.js": "45262c05d1583e73051ea743d74f0520afe40c5f7152f5a16b725aca08492e13",
+    "src/kart-catalog.json": "8d67b16f77aeb8667823b604d61b3fd802a2f68ba23c775f3f9c5fcf226d0ba9"
+  },
+  "route": {
+    "length": 3616.224747593308,
+    "sampleStations": 4098,
+    "lanes": 5,
+    "floatCount": 319644,
+    "frameSHA256": "b09f9015035e24a9e51e9b5b38938f72fb8315ff3de76e47cbaef4b9e532badd",
+    "surfaceSHA256": "e14919d9cec329ce400ee923e00a49ad44244409aa2ff301bb4455cc8ca8e354",
+    "sections": [
+      {
+        "name": "Valley grid straight",
+        "from": 0,
+        "to": 325.4602272833977
+      },
+      {
+        "name": "Terraced climb and eastern hairpin",
+        "from": 325.4602272833977,
+        "to": 831.731691946461
+      },
+      {
+        "name": "Summit horseshoe",
+        "from": 831.731691946461,
+        "to": 1265.6786616576578
+      },
+      {
+        "name": "Cloud viaduct upper deck",
+        "from": 1265.6786616576578,
+        "to": 1699.6256313688548
+      },
+      {
+        "name": "Western downhill esses",
+        "from": 1699.6256313688548,
+        "to": 2314.3838384597175
+      },
+      {
+        "name": "Pine switchback",
+        "from": 2314.3838384597175,
+        "to": 2748.330808170914
+      },
+      {
+        "name": "Granite basin hairpin",
+        "from": 2748.330808170914,
+        "to": 3109.9532829302448
+      },
+      {
+        "name": "Viaduct underpass and recovery straight",
+        "from": 3109.9532829302448,
+        "to": 3616.224747593308
+      }
+    ],
+    "pickups": [
+      {
+        "d": 198.89236111763196,
+        "lateral": -3.5
+      },
+      {
+        "d": 198.89236111763196,
+        "lateral": 0
+      },
+      {
+        "d": 198.89236111763196,
+        "lateral": 3.5
+      },
+      {
+        "d": 524.3525884010296,
+        "lateral": -3.5
+      },
+      {
+        "d": 524.3525884010296,
+        "lateral": 0
+      },
+      {
+        "d": 524.3525884010296,
+        "lateral": 3.5
+      },
+      {
+        "d": 831.731691946461,
+        "lateral": -3.5
+      },
+      {
+        "d": 831.731691946461,
+        "lateral": 0
+      },
+      {
+        "d": 831.731691946461,
+        "lateral": 3.5
+      },
+      {
+        "d": 1121.0296717539254,
+        "lateral": -3.5
+      },
+      {
+        "d": 1121.0296717539254,
+        "lateral": 0
+      },
+      {
+        "d": 1121.0296717539254,
+        "lateral": 3.5
+      },
+      {
+        "d": 1464.57102277529,
+        "lateral": -3.5
+      },
+      {
+        "d": 1464.57102277529,
+        "lateral": 0
+      },
+      {
+        "d": 1464.57102277529,
+        "lateral": 3.5
+      },
+      {
+        "d": 1826.1934975346207,
+        "lateral": -3.5
+      },
+      {
+        "d": 1826.1934975346207,
+        "lateral": 0
+      },
+      {
+        "d": 1826.1934975346207,
+        "lateral": 3.5
+      },
+      {
+        "d": 2133.5726010800518,
+        "lateral": -3.5
+      },
+      {
+        "d": 2133.5726010800518,
+        "lateral": 0
+      },
+      {
+        "d": 2133.5726010800518,
+        "lateral": 3.5
+      },
+      {
+        "d": 2495.1950758393823,
+        "lateral": -3.5
+      },
+      {
+        "d": 2495.1950758393823,
+        "lateral": 0
+      },
+      {
+        "d": 2495.1950758393823,
+        "lateral": 3.5
+      },
+      {
+        "d": 2874.89867433668,
+        "lateral": -3.5
+      },
+      {
+        "d": 2874.89867433668,
+        "lateral": 0
+      },
+      {
+        "d": 2874.89867433668,
+        "lateral": 3.5
+      },
+      {
+        "d": 3290.7645203099105,
+        "lateral": -3.5
+      },
+      {
+        "d": 3290.7645203099105,
+        "lateral": 0
+      },
+      {
+        "d": 3290.7645203099105,
+        "lateral": 3.5
+      },
+      {
+        "d": 3507.7380051655086,
+        "lateral": -3.5
+      },
+      {
+        "d": 3507.7380051655086,
+        "lateral": 0
+      },
+      {
+        "d": 3507.7380051655086,
+        "lateral": 3.5
+      }
+    ]
+  },
+  "roads": [
+    {
+      "name": "Mountain banked tarmac",
+      "vertices": 3344,
+      "triangles": 1672,
+      "positionF64LE": "065e833a6abef9819a32e8f042d0f34a2d7af76787de009540a937909eb8a526",
+      "indexU32LE": "8f06e90c90d519366976c924eefb5f63db6c9c44e3fb9867352b74bf7f7e1658",
+      "uvF64LE": "b36848306bc52cd62ad40ef96e1cedfa7cef74edcda2d4d158929d02941bf470"
+    },
+    {
+      "name": "Weathered aggregate tarmac",
+      "vertices": 304,
+      "triangles": 152,
+      "positionF64LE": "80c033c3b32e2e63d24825713f178b0f2853cb938ec3e8a8b98f5725f8f7f739",
+      "indexU32LE": "ac180b3c141e7cb9095e32b4ad5f6bd1c9dd85fdbdfd7c0c1f1874219f827bd2",
+      "uvF64LE": "5b5ca0deaf9ad476bd178e509d6961070a65d3faabd62825d5f6a5f1a9c87648"
+    },
+    {
+      "name": "Underpass dressed stone roadway",
+      "vertices": 192,
+      "triangles": 96,
+      "positionF64LE": "83d4bd74343b6249e884ee96559f94e3b522720a1cd5e73227c95c23fba51197",
+      "indexU32LE": "daa40d18b87cce3c87e017974f01078043a85af53b07f8b71a309a3cab917bd6",
+      "uvF64LE": "9242903a157a02345eea3d9389c0fe02a15e2287624ddcd87d762ab0616215c9"
+    }
+  ],
+  "baseline": {
+    "batches": 20,
+    "vertices": 130173,
+    "triangles": 78158,
+    "terrain": [
+      {
+        "name": "Forest valley floor",
+        "vertices": 11449,
+        "triangles": 22472
+      }
+    ]
+  },
+  "protectedPlacementSHA256": "4dad90b29b5943161beb04df6d06e00398b2edd91bfcfef4dc14657064630f79",
+  "isolatedSceneSources": {
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
+    "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+    "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e",
+    "src/maps/desert.ts": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636",
+    "src/maps/snow.ts": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268",
+    "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+    "src/quarry-scenery.ts": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "src/forest-scenery.ts": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "src/workshop-scenery.ts": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+    "src/harvest-scenery.ts": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+    "src/desert-scenery.ts": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
+    "src/snow-scenery.ts": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+    "src/caldera-scenery.ts": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+    "src/garden-scenery.ts": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "src/airfield-scenery.ts": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+    "src/water-mount.ts": "bae8bb81628f4d884134c0471c8e437160884f016a8ee4b92400c89f608e61ff",
+    "src/water-race.ts": "40fa79727854751c07ba6df16804aef7e63631cfe6ba2382e7319cdfb4629323",
+    "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+    "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+    "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+    "src/waterpark-input.ts": "89bd126cd8e7cd9f6cd162cccc4ded66fbcbcd55e002910eeaa6a782679e12aa",
+    "src/waterpark-lifetime.ts": "c699b4ea2b15477ce0d03afb9940d6754fcd07c1a803877f5d707b720faff8e3",
+    "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+    "src/waterpark-motion.ts": "0e38f791fe7bd8c247900cf23e008da0f74aa19c102b8353fae29840a7ca4171",
+    "src/waterpark-performance-ui.ts": "6f6d0ef8ec13c2bbc7f0f943f77bd90801d9f7957083f288a5df2f822a31a930",
+    "src/waterpark-performance.ts": "f3f9507462dd217c9fcb447c716b702da464b6b6119d9609e72e6c4c8afa91b1",
+    "src/waterpark-play.ts": "beffd88ad637408adf17531c10225721ff7c5ceb0fa82962995424c40adb9c05",
+    "src/waterpark-preview.ts": "a94ffdf5e5039185229dcf422606db8de4e03e72bd058d52f54f0eec07e4ea7c",
+    "src/waterpark-reflection.ts": "9ea1ae30a34f1f9c2546ab7d814c209ea641065f3d92689e3bc34de33ac9dbbd",
+    "src/waterpark-refraction.ts": "01515de9f1d4f34261cda8b727dfe3fbc9bf52b3b37a4b9fdd5aa4a97aec35eb",
+    "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+    "src/waterpark-surface.ts": "2c1eaeaf00e625f13ce673cd032028c1650b60094aae6fd848ff1f55a0601c74",
+    "src/waterpark-wake.ts": "ff98c354d7e84bc4ac872042b9558177ef6ab9b7345e15c6575df5fbbd562cba",
+    "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c"
+  },
+  "unrelatedLoaderSHA256": "845551e0aeb87da438ad38e5c006ae813dc693c41816cf50c88e10ff40fa5b54",
+  "unrelatedMenuSHA256": "2efb5ba5b12c81ab028fd470e9a2ca252b16f8de1bb1740baf3af8cc2134b3ab",
+  "originalPiers": {
+    "count": 46,
+    "authoredWidth": 1.5,
+    "authoredDepth": 2.2,
+    "placements": [
+      {
+        "kind": "viaduct-pier",
+        "x": 84.48317988745376,
+        "y": -12.11751800212954,
+        "z": 113.62511641251014,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 59.58598087202993,
+        "y": -12.11751800212954,
+        "z": 128.8565999153005,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 75.46241064011834,
+        "y": -12.11751800212954,
+        "z": 98.91323777426479,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 50.59729827549409,
+        "y": -12.11751800212954,
+        "z": 113.88989789379232,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 66.57164267719895,
+        "y": -12.11751800212954,
+        "z": 84.08985921743717,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 41.65508739904324,
+        "y": -12.11751800212954,
+        "z": 98.92778603019097,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 57.741827737357724,
+        "y": -12.11751800212954,
+        "z": 69.20166247335962,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 32.77596260993789,
+        "y": -12.11751800212954,
+        "z": 83.956496470292,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 48.93884897486976,
+        "y": -12.11751800212954,
+        "z": 54.272002332055656,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 23.946666375005176,
+        "y": -12.11751800212954,
+        "z": 68.98222778387328,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 40.14054215952505,
+        "y": -12.11751800212954,
+        "z": 39.314512843156656,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 15.143798792554946,
+        "y": -12.11751800212954,
+        "z": 54.016989127943454,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 31.325182623031516,
+        "y": -12.11751800212954,
+        "z": 24.342375753160958,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 6.345428880651312,
+        "y": -12.11751800212954,
+        "z": 39.07369112461423,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": 22.470332059683695,
+        "y": -12.11751800212954,
+        "z": 9.368305495202538,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -20.256845194091348,
+        "y": -12.11751800212954,
+        "z": -5.840181386812571,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -3.6390030851533055,
+        "y": -12.11751800212954,
+        "z": -35.27859514094056,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -28.927809825803216,
+        "y": -12.11751800212954,
+        "z": -21.08457206053759,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -12.036451252953878,
+        "y": -12.11751800212954,
+        "z": -50.366716439889366,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -37.412829622388045,
+        "y": -12.11751800212954,
+        "z": -36.329669425246045,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -20.426355395129637,
+        "y": -12.11751800212954,
+        "z": -65.5570996314219,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -45.80709218159298,
+        "y": -12.11751800212954,
+        "z": -51.527925368987255,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -28.89720156920214,
+        "y": -12.11751800212954,
+        "z": -80.79993462010287,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -54.19940025518315,
+        "y": -12.11751800212954,
+        "z": -66.62976795776174,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -37.54277097870879,
+        "y": -12.11751800212954,
+        "z": -96.04675980622434,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -62.67668387450955,
+        "y": -12.11751800212954,
+        "z": -81.5805671982053,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -46.46680042894557,
+        "y": -12.11751800212954,
+        "z": -111.24637283986878,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -71.32746760075707,
+        "y": -12.11751800212954,
+        "z": -96.316114408368,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -55.78861020059245,
+        "y": -12.11751800212954,
+        "z": -126.33948324379432,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -80.24477431495083,
+        "y": -12.11751800212954,
+        "z": -110.75649384635284,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -65.63952514144557,
+        "y": -12.11751800212954,
+        "z": -141.25795784874006,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -89.53863112182194,
+        "y": -12.11751800212954,
+        "z": -124.79006782193588,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -76.17623278095243,
+        "y": -12.11751800212954,
+        "z": -155.9107576675887,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -99.33116280387597,
+        "y": -12.11751800212954,
+        "z": -138.26228084665746,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -86.82737622337925,
+        "y": -12.11751800212954,
+        "z": -169.76220143911908,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -109.94621075864873,
+        "y": -12.11751800212954,
+        "z": -151.82438263731686,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -97.52681382285438,
+        "y": -12.11751800212954,
+        "z": -183.60190010876622,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -120.61127654240964,
+        "y": -12.11751800212954,
+        "z": -165.31740690557345,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -108.61614225370857,
+        "y": -12.11751800212954,
+        "z": -197.4448616730714,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -131.36934027553554,
+        "y": -12.11751800212954,
+        "z": -178.4117017882732,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -120.37134236766202,
+        "y": -12.11751800212954,
+        "z": -211.09962172210015,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -142.4024821793182,
+        "y": -12.11751800212954,
+        "z": -190.8902798006156,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -133.10157906750663,
+        "y": -12.11751800212954,
+        "z": -224.31025246765233,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -153.88027204996246,
+        "y": -12.11751800212954,
+        "z": -202.4889236774776,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -147.12620953530802,
+        "y": -12.11751800212954,
+        "z": -236.71361510232867,
+        "radius": 2.4
+      },
+      {
+        "kind": "viaduct-pier",
+        "x": -165.9458953582864,
+        "y": -12.11751800212954,
+        "z": -212.8927790432861,
+        "radius": 2.4
+      }
+    ],
+    "records": [
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          83.26935259281241,
+          -12.11751800212954,
+          112.2953861958673
+        ],
+        "max": [
+          85.6970071820951,
+          42.87011618989766,
+          114.95484662915298
+        ],
+        "positionF64LE": "761145d64d4e29867eeac2c08b70d6521edec24c538cbb73e2ea678fd718d5b3",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          58.37215357738859,
+          -12.11751800212954,
+          127.52686969865765
+        ],
+        "max": [
+          60.79980816667127,
+          42.87011618989766,
+          130.18633013194338
+        ],
+        "positionF64LE": "6d2253b1dafc367c10a43413e23ca92fc35d58b193dc5f8168b8e81c96e240ac",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          74.25239451285992,
+          -12.11751800212954,
+          97.58399374599993
+        ],
+        "max": [
+          76.67242676737675,
+          42.792565022489725,
+          100.24248180252964
+        ],
+        "positionF64LE": "4238b3a43a1d9310165ddb89f78fbb81c8277d5d8b17cca1d61227860c2592ae",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          49.38728214823568,
+          -12.11751800212954,
+          112.56065386552747
+        ],
+        "max": [
+          51.8073144027525,
+          42.792565022489725,
+          115.21914192205718
+        ],
+        "positionF64LE": "ddee38a843ae2db552d076b557e7f07fb1e68e4e321ca54bbcbb5b3475ef5bfb",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          65.36442707147872,
+          -12.11751800212954,
+          82.76100760557713
+        ],
+        "max": [
+          67.77885828291919,
+          42.71761287486498,
+          85.4187108292972
+        ],
+        "positionF64LE": "9d08d7e0d49b12a768eb6550a39473cbc8bf06df5acccf9719e1c7f41942616e",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          40.447871793323,
+          -12.11751800212954,
+          97.59893441833094
+        ],
+        "max": [
+          42.862303004763476,
+          42.71761287486498,
+          100.256637642051
+        ],
+        "positionF64LE": "beceba3c9bf32841af8340e45fa279122dc3b16eb436d5bd7fffbdb76d9cc68c",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          56.53649037736131,
+          -12.11751800212954,
+          67.87309018759002
+        ],
+        "max": [
+          58.94716509735414,
+          42.6420051789476,
+          70.53023475912921
+        ],
+        "positionF64LE": "91cac647a45f8c123affd9ef39fd759063bd0ab0315c94dd03b888d6d15946b0",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          31.57062524994148,
+          -12.11751800212954,
+          82.6279241845224
+        ],
+        "max": [
+          33.981299969934305,
+          42.6420051789476,
+          85.28506875606159
+        ],
+        "positionF64LE": "c655c429d9dfb82b17bf39f100b47b1025fd2b6c417f06eb30087d2da6733622",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          47.73452442996293,
+          -12.11751800212954,
+          52.94358593114321
+        ],
+        "max": [
+          50.14317351977658,
+          42.56251765605256,
+          55.6004187329681
+        ],
+        "positionF64LE": "e8b91737fd5511684ba568e1fcc87ceb9ca2df0be74ae19a28e947175497f6cc",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          22.742341830098354,
+          -12.11751800212954,
+          67.65381138296084
+        ],
+        "max": [
+          25.150990919911997,
+          42.56251765605256,
+          70.31064418478573
+        ],
+        "positionF64LE": "def2d933541cf18914a08b4e9632f0e3a82170b2e9dcd703cfbd164c872eff23",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          38.936394897550535,
+          -12.11751800212954,
+          37.986124103121945
+        ],
+        "max": [
+          41.34468942149956,
+          42.47245244830246,
+          40.64290158319137
+        ],
+        "positionF64LE": "95835f906cf89f51b0b8b556ffcf1796af83aca0a62652a3c702bb0e3fbe77e8",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          13.939651530580434,
+          -12.11751800212954,
+          52.68860038790874
+        ],
+        "max": [
+          16.34794605452946,
+          42.47245244830246,
+          55.345377867978165
+        ],
+        "positionF64LE": "3641c581c43688443933364476bed602e5691d29bd318ecd45a22ae3de3e8ad2",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          30.120382249337784,
+          -12.11751800212954,
+          23.013885661223767
+        ],
+        "max": [
+          32.529982996725245,
+          42.36316108827127,
+          25.67086584509815
+        ],
+        "positionF64LE": "47799089f546aa4a8b9ced281ee05c99f3299b36cfea62a23ac6f7ac8eb1558c",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          5.14062850695758,
+          -12.11751800212954,
+          37.74520103267704
+        ],
+        "max": [
+          7.5502292543450436,
+          42.36316108827127,
+          40.40218121655142
+        ],
+        "positionF64LE": "962a2d4255e9ab4c830b55bd7c702f912db315871381f865f9cf962ed83731f3",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          21.264029054033582,
+          -12.11751800212954,
+          8.039588006298679
+        ],
+        "max": [
+          23.67663506533381,
+          42.23942340138139,
+          10.697022984106397
+        ],
+        "positionF64LE": "8ba8a0b70e6b30d4dd67af557bb437f97ac6d46e547493fbb4ca13f41d1c8ce9",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -21.456542022019555,
+          -12.11751800212954,
+          -7.167839906579114
+        ],
+        "max": [
+          -19.05714836616314,
+          41.91623253781091,
+          -4.512522867046028
+        ],
+        "positionF64LE": "e1480349e13ee5cbb4e7de84711ebdcfd4d0f497eb18de490b28ef6e88081528",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -4.83143177830554,
+          -12.11751800212954,
+          -36.604919125847154
+        ],
+        "max": [
+          -2.4465743920010707,
+          41.83020725832819,
+          -33.952271156033966
+        ],
+        "positionF64LE": "9c8be03462a89393c3e1a3c62827706f7a63743e347645253d27abf2df7e91bd",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -30.12023851895545,
+          -12.11751800212954,
+          -22.410896045444176
+        ],
+        "max": [
+          -27.735381132650982,
+          41.83020725832819,
+          -19.758248075631002
+        ],
+        "positionF64LE": "ec4902c81a430b157e16c65aebeacd43b5f9736fcab7fdb917549cd953f970ba",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -13.22518042231738,
+          -12.11751800212954,
+          -51.692297057346096
+        ],
+        "max": [
+          -10.847722083590376,
+          41.752308906180716,
+          -49.041135822432636
+        ],
+        "positionF64LE": "914bcc5570520197ddf6fddcdc5cdae0eef390aedeae5400c9ce84d2673a4fd6",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -38.60155879175155,
+          -12.11751800212954,
+          -37.655250042702775
+        ],
+        "max": [
+          -36.22410045302454,
+          41.752308906180716,
+          -35.004088807789316
+        ],
+        "positionF64LE": "55e52b27e49ccce390782aad699700b776bb5fb2caaff4b8fa124464f3c070cb",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -21.61489232609498,
+          -12.11751800212954,
+          -66.88264048395952
+        ],
+        "max": [
+          -19.23781846416429,
+          41.649634620393996,
+          -64.23155877888429
+        ],
+        "positionF64LE": "7a903395d3d59c358a4356dc7878c25438899e9efd490a186358cb642ecdd65e",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -46.99562911255832,
+          -12.11751800212954,
+          -52.853466221524876
+        ],
+        "max": [
+          -44.61855525062764,
+          41.649634620393996,
+          -50.202384516449634
+        ],
+        "positionF64LE": "14fdee717a56e8cbb97d946173b645ba12b7ec0ac3c336fa15c9bbd23811d2c8",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -30.089050367358382,
+          -12.11751800212954,
+          -82.12614486395911
+        ],
+        "max": [
+          -27.705352771045895,
+          41.50451237646537,
+          -79.47372437624664
+        ],
+        "positionF64LE": "d13fa18bcb8da6260c044028df2d67dc6d50b09746d7969bf26dcdbce6e552dc",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -55.39124905333939,
+          -12.11751800212954,
+          -67.95597820161798
+        ],
+        "max": [
+          -53.007551457026906,
+          41.50451237646537,
+          -65.3035577139055
+        ],
+        "positionF64LE": "af72bd9bea272f318e0a208f737296d6641cda7d478cd99138b8c7808494de8a",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -38.741490818626325,
+          -12.11751800212954,
+          -97.37424898473235
+        ],
+        "max": [
+          -36.34405113879125,
+          41.32971835449712,
+          -94.71927062771634
+        ],
+        "positionF64LE": "0cde1d1bc2232fc9df114854223ed558033b4cbdc90de9486bf9db5e5e643450",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -63.87540371442709,
+          -12.11751800212954,
+          -82.9080563767133
+        ],
+        "max": [
+          -61.47796403459201,
+          41.32971835449712,
+          -80.2530780196973
+        ],
+        "positionF64LE": "2650538b4b6de1ec8371acec104d236b9ac5884f7ced21e1f0849111923a98e6",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -47.6760493201442,
+          -12.11751800212954,
+          -112.57551226983017
+        ],
+        "max": [
+          -45.257551537746934,
+          41.10957154576499,
+          -109.9172334099074
+        ],
+        "positionF64LE": "7c7866694e4fdba7cf57392714165ca65373925d3f5e8a73f849804ba83d7de8",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -72.5367164919557,
+          -12.11751800212954,
+          -97.64525383832938
+        ],
+        "max": [
+          -70.11821870955845,
+          41.10957154576499,
+          -94.98697497840661
+        ],
+        "positionF64LE": "a7d1531e3443a86801b73228865cc3394c5003f4d5fcb5560af9ea2a36fe866b",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -57.01214848477502,
+          -12.11751800212954,
+          -127.6701857791716
+        ],
+        "max": [
+          -54.565071916409885,
+          40.82599725570286,
+          -125.00878070841704
+        ],
+        "positionF64LE": "7a751f4943ae656a9a4d04731a8b883cd1c2db4f7a9734184b89063140249d24",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -81.46831259913341,
+          -12.11751800212954,
+          -112.08719638173012
+        ],
+        "max": [
+          -79.02123603076825,
+          40.82599725570286,
+          -109.42579131097555
+        ],
+        "positionF64LE": "0a297955295e9a34ab7a7fa5496963978b1d9abd0867b6f3ffa0368f9cfffb7c",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -66.88112462007511,
+          -12.11751800212954,
+          -142.589296017035
+        ],
+        "max": [
+          -64.39792566281604,
+          40.457150201594786,
+          -139.92661968044513
+        ],
+        "positionF64LE": "12dc2a04aa128f2031c148d8773c313cfa4c4ec7be5d998d56f5ac65f56e096b",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -90.78023060045147,
+          -12.11751800212954,
+          -126.12140599023081
+        ],
+        "max": [
+          -88.2970316431924,
+          40.457150201594786,
+          -123.45872965364094
+        ],
+        "positionF64LE": "c6287407f08220d4ae5d8e153b751131330d4a1fb61184f143a838c6a5385197",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -77.43937528331351,
+          -12.11751800212954,
+          -157.24027808143032
+        ],
+        "max": [
+          -74.91309027859135,
+          40.01320612993426,
+          -154.5812372537471
+        ],
+        "positionF64LE": "9c6c9e6e7b57df674658a93b2e95b6350c2f3e656c16d22007f9f2728858125f",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -100.59430530623705,
+          -12.11751800212954,
+          -139.59180126049907
+        ],
+        "max": [
+          -98.06802030151489,
+          40.01320612993426,
+          -136.93276043281585
+        ],
+        "positionF64LE": "33f232d980f38c6cf3fa60398fb4fd61de2744ce74bda67d5d1fc19163ca8d44",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -88.0942371959353,
+          -12.11751800212954,
+          -171.09104287801875
+        ],
+        "max": [
+          -85.56051525082319,
+          39.65263947192332,
+          -168.4333600002194
+        ],
+        "positionF64LE": "6eeac60babb405a75c08d2c072d83cf1a5d94775d791fbc30f8b459dad4ba627",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -111.21307173120479,
+          -12.11751800212954,
+          -153.15322407621653
+        ],
+        "max": [
+          -108.67934978609267,
+          39.65263947192332,
+          -150.4955411984172
+        ],
+        "positionF64LE": "6683610ce5cb019e25c05cb2d098e99f097c3b0b969a4d0639accf53dd45fa2b",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -98.7976372161354,
+          -12.11751800212954,
+          -184.9298739547745
+        ],
+        "max": [
+          -96.25599042957336,
+          38.93421667184161,
+          -182.27392626275793
+        ],
+        "positionF64LE": "7df6545fadaff065548cc4b80b78a9d17fcfde1d5fad7137e3d0ba0e5b79d94d",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -121.88209993569066,
+          -12.11751800212954,
+          -166.64538075158174
+        ],
+        "max": [
+          -119.34045314912862,
+          38.93421667184161,
+          -163.98943305956516
+        ],
+        "positionF64LE": "13b0a662dab9256b1ea012684f64ea0738511f6e4cf81c81fbea469fe0037d5f",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -109.89702235845624,
+          -12.11751800212954,
+          -198.76986222441857
+        ],
+        "max": [
+          -107.33526214896091,
+          38.113131009135714,
+          -196.1198611217242
+        ],
+        "positionF64LE": "8e6ad4264e504e22024fbc4c235f3843e9ee2dbcc91c5dc374c38ddd9e8c8146",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -132.6502203802832,
+          -12.11751800212954,
+          -179.7367023396204
+        ],
+        "max": [
+          -130.08846017078787,
+          38.113131009135714,
+          -177.08670123692602
+        ],
+        "positionF64LE": "69ccd6e3c6990a5a5f660ef9f459c0362ca602e3858b03eacec6371041d8ce9d",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -121.66736864156209,
+          -12.11751800212954,
+          -212.41736997019913
+        ],
+        "max": [
+          -119.07531609376196,
+          37.19931387627834,
+          -209.78187347400117
+        ],
+        "positionF64LE": "354723dc03e5dd3fa8f60db89b01f47759211dd4629ac6c422793805e8fd9003",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -143.6985084532183,
+          -12.11751800212954,
+          -192.20802804871457
+        ],
+        "max": [
+          -141.10645590541813,
+          37.19931387627834,
+          -189.5725315525166
+        ],
+        "positionF64LE": "9e53cb54ba876c54939167ee80ac201c095a771fd3742e06729360c4bfd58ed2",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -134.41513056327338,
+          -12.11751800212954,
+          -225.61228785400394
+        ],
+        "max": [
+          -131.7880275717399,
+          36.206679597603625,
+          -223.00821708130073
+        ],
+        "positionF64LE": "a2c1cb98c87891478dac0bc1d0b5fb14c90e2c69c7c3544c3ce2eb85ff6eaa0e",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -155.1938235457292,
+          -12.11751800212954,
+          -203.7909590638292
+        ],
+        "max": [
+          -152.5667205541957,
+          36.206679597603625,
+          -201.186888291126
+        ],
+        "positionF64LE": "9b92ff25e42dbe1cd873302c35eca6573543f8739c9774e6dda031b5c8c276ec",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -148.45412532739357,
+          -12.11751800212954,
+          -237.98468028488062
+        ],
+        "max": [
+          -145.79829374322247,
+          35.15968268013086,
+          -235.44254991977672
+        ],
+        "positionF64LE": "66fc20b82f7233c6292b6ac80d37ce92086c01df502aac4139c1404bb8057e3f",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      },
+      {
+        "vertices": 24,
+        "triangles": 12,
+        "min": [
+          -167.27381115037196,
+          -12.11751800212954,
+          -214.16384422583806
+        ],
+        "max": [
+          -164.61797956620086,
+          35.15968268013086,
+          -211.62171386073416
+        ],
+        "positionF64LE": "2b49ad46430b536844e60810cfb48308d39d0805219b0b27d37b5dc2af9a1a03",
+        "indexU32LE": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7"
+      }
+    ]
+  }
+}

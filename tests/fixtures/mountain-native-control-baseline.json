@@ -1,0 +1,1610 @@
+{
+  "baseCommit": "769911cc562b9330a57f043e9a7f9a2f0a976dac",
+  "scope": "All-frame complete player/NPC physical/control/checkpoint/item digest with full 90-frame samples. Camera output intentionally excluded.",
+  "control": {
+    "frames": 19343,
+    "sha256": "27cf89ead18334a7f9be62df8a015a13d662293a36bb1987b99698d2e0a04307",
+    "sampleCount": 336,
+    "samplesSHA256": "7d470a7c970984edf1f1cb7ff7bede62512ca635612d8fef05490523c8fd069a",
+    "first": {
+      "label": "race-start",
+      "player": {
+        "state": "running",
+        "pos": -0.00001144255927613863,
+        "lane": -2.0000002489504354,
+        "speed": -0.0006865535565685508,
+        "elapsed": 0.01666666666666101,
+        "charge": 0,
+        "boost": 0,
+        "shield": 0,
+        "slow": 0,
+        "held": null,
+        "drifting": false,
+        "steerVis": 0,
+        "validatedLaps": 0,
+        "checkpoints": 0,
+        "lap": 1,
+        "rank": 6,
+        "standings": [
+          {
+            "id": "glm",
+            "total": 22.40478472811765,
+            "finishedAt": null
+          },
+          {
+            "id": "claude",
+            "total": 17.206357231895865,
+            "finishedAt": null
+          },
+          {
+            "id": "grok",
+            "total": 17.204597011895867,
+            "finishedAt": null
+          },
+          {
+            "id": "gpt",
+            "total": 12.00555920711936,
+            "finishedAt": null
+          },
+          {
+            "id": "gemini",
+            "total": 12.004329827119362,
+            "finishedAt": null
+          },
+          {
+            "id": "whale",
+            "total": -0.00001144255927613863,
+            "finishedAt": null
+          }
+        ],
+        "kartBuild": {
+          "body": "kit028::01_BodyShell",
+          "chassis": "kit023::02_ChassisSuspension",
+          "motor": "kit033::04_Motor",
+          "transmission": "kit025::05_FinalDrive",
+          "battery": "kit019::06_Battery",
+          "wheels": "kit031::03_WheelsTires"
+        },
+        "npcBuilds": [
+          {
+            "id": "gemini",
+            "build": {
+              "body": "kit005::01_BodyShell",
+              "chassis": "kit004::02_ChassisSuspension",
+              "motor": "kit004::04_Motor",
+              "transmission": "kit006::05_FinalDrive",
+              "battery": "kit003::06_Battery",
+              "wheels": "kit003::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 37.3758,
+              "acceleration": 15.753528000000003,
+              "steering": 8.693999999999999,
+              "multipliers": {
+                "topSpeed": 0.8899,
+                "acceleration": 0.8751960000000001,
+                "steering": 1.242
+              },
+              "characterMultipliers": {
+                "topSpeed": 1,
+                "acceleration": 0.92,
+                "steering": 1.08
+              },
+              "buildMultipliers": {
+                "acceleration": 0.9513,
+                "speed": 0.8899,
+                "handling": 1.15
+              },
+              "stats": {
+                "massKg": 189.4,
+                "launchAcceleration": 7.3419,
+                "accelerationIndex": 5.3047,
+                "topSpeedKph": 103.573,
+                "zeroTo50Seconds": 1.93,
+                "lateralGripG": 1.276,
+                "rollThresholdG": 1.5591,
+                "cruisePowerKw": 2.0552,
+                "cruiseMinutes": 23.35,
+                "batteryKwh": 0.8,
+                "drivePowerKw": 18.819,
+                "recoverySeconds": 1.8,
+                "wheelRpmCapKph": 103.573,
+                "multipliers": {
+                  "acceleration": 0.9513,
+                  "speed": 0.8899,
+                  "handling": 1.15
+                },
+                "accelerationMultiplier": 0.9513,
+                "speedMultiplier": 0.8899,
+                "handlingMultiplier": 1.15
+              }
+            }
+          },
+          {
+            "id": "gpt",
+            "build": {
+              "body": "kit002::01_BodyShell",
+              "chassis": "kit006::02_ChassisSuspension",
+              "motor": "kit001::04_Motor",
+              "transmission": "kit002::05_FinalDrive",
+              "battery": "kit004::06_Battery",
+              "wheels": "kit002::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 46.3176,
+              "acceleration": 20.223,
+              "steering": 5.95,
+              "multipliers": {
+                "topSpeed": 1.1028,
+                "acceleration": 1.1235,
+                "steering": 0.85
+              },
+              "characterMultipliers": {
+                "topSpeed": 1,
+                "acceleration": 1,
+                "steering": 1
+              },
+              "buildMultipliers": {
+                "acceleration": 1.1235,
+                "speed": 1.1028,
+                "handling": 0.85
+              },
+              "stats": {
+                "massKg": 194.4,
+                "launchAcceleration": 7.5326,
+                "accelerationIndex": 6.2649,
+                "topSpeedKph": 128.341,
+                "zeroTo50Seconds": 1.88,
+                "lateralGripG": 0.9312,
+                "rollThresholdG": 1.2704,
+                "cruisePowerKw": 1.7049,
+                "cruiseMinutes": 35.19,
+                "batteryKwh": 1,
+                "drivePowerKw": 24.252,
+                "recoverySeconds": 1.4,
+                "wheelRpmCapKph": 128.341,
+                "multipliers": {
+                  "acceleration": 1.1235,
+                  "speed": 1.1028,
+                  "handling": 0.85
+                },
+                "accelerationMultiplier": 1.1235,
+                "speedMultiplier": 1.1028,
+                "handlingMultiplier": 0.85
+              }
+            }
+          },
+          {
+            "id": "claude",
+            "build": {
+              "body": "kit001::01_BodyShell",
+              "chassis": "kit003::02_ChassisSuspension",
+              "motor": "kit005::04_Motor",
+              "transmission": "kit005::05_FinalDrive",
+              "battery": "kit001::06_Battery",
+              "wheels": "kit005::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 35.4816,
+              "acceleration": 22.987800000000004,
+              "steering": 6.828863999999999,
+              "multipliers": {
+                "topSpeed": 0.8448,
+                "acceleration": 1.2771000000000001,
+                "steering": 0.975552
+              },
+              "characterMultipliers": {
+                "topSpeed": 0.96,
+                "acceleration": 1.08,
+                "steering": 0.96
+              },
+              "buildMultipliers": {
+                "acceleration": 1.1825,
+                "speed": 0.88,
+                "handling": 1.0162
+              },
+              "stats": {
+                "massKg": 191.4,
+                "launchAcceleration": 10.3755,
+                "accelerationIndex": 6.594,
+                "topSpeedKph": 92.389,
+                "zeroTo50Seconds": 1.45,
+                "lateralGripG": 1.12,
+                "rollThresholdG": 1.225,
+                "cruisePowerKw": 2.4397,
+                "cruiseMinutes": 28.28,
+                "batteryKwh": 1.15,
+                "drivePowerKw": 20.24,
+                "recoverySeconds": 1.15,
+                "wheelRpmCapKph": 92.389,
+                "multipliers": {
+                  "acceleration": 1.1825,
+                  "speed": 0.88,
+                  "handling": 1.0162
+                },
+                "accelerationMultiplier": 1.1825,
+                "speedMultiplier": 0.88,
+                "handlingMultiplier": 1.0162
+              }
+            }
+          },
+          {
+            "id": "grok",
+            "build": {
+              "body": "kit006::01_BodyShell",
+              "chassis": "kit004::02_ChassisSuspension",
+              "motor": "kit003::04_Motor",
+              "transmission": "kit006::05_FinalDrive",
+              "battery": "kit003::06_Battery",
+              "wheels": "kit005::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 42.289128,
+              "acceleration": 16.695936,
+              "steering": 7.512287999999999,
+              "multipliers": {
+                "topSpeed": 1.0068840000000001,
+                "acceleration": 0.9275519999999999,
+                "steering": 1.073184
+              },
+              "characterMultipliers": {
+                "topSpeed": 1.08,
+                "acceleration": 0.96,
+                "steering": 0.96
+              },
+              "buildMultipliers": {
+                "acceleration": 0.9662,
+                "speed": 0.9323,
+                "handling": 1.1179
+              },
+              "stats": {
+                "massKg": 204.4,
+                "launchAcceleration": 7.8691,
+                "accelerationIndex": 5.388,
+                "topSpeedKph": 108.505,
+                "zeroTo50Seconds": 1.83,
+                "lateralGripG": 1.232,
+                "rollThresholdG": 1.5591,
+                "cruisePowerKw": 2.2475,
+                "cruiseMinutes": 21.36,
+                "batteryKwh": 0.8,
+                "drivePowerKw": 19.674,
+                "recoverySeconds": 1.8,
+                "wheelRpmCapKph": 108.505,
+                "multipliers": {
+                  "acceleration": 0.9662,
+                  "speed": 0.9323,
+                  "handling": 1.1179
+                },
+                "accelerationMultiplier": 0.9662,
+                "speedMultiplier": 0.9323,
+                "handlingMultiplier": 1.1179
+              }
+            }
+          },
+          {
+            "id": "glm",
+            "build": {
+              "body": "kit004::01_BodyShell",
+              "chassis": "kit005::02_ChassisSuspension",
+              "motor": "kit003::04_Motor",
+              "transmission": "kit001::05_FinalDrive",
+              "battery": "kit001::06_Battery",
+              "wheels": "kit001::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 43.68,
+              "acceleration": 17.403912,
+              "steering": 7.140000000000001,
+              "multipliers": {
+                "topSpeed": 1.04,
+                "acceleration": 0.9668839999999999,
+                "steering": 1.02
+              },
+              "characterMultipliers": {
+                "topSpeed": 1.04,
+                "acceleration": 0.94,
+                "steering": 1.02
+              },
+              "buildMultipliers": {
+                "acceleration": 1.0286,
+                "speed": 1,
+                "handling": 1
+              },
+              "stats": {
+                "massKg": 202.4,
+                "launchAcceleration": 7.5069,
+                "accelerationIndex": 5.7359,
+                "topSpeedKph": 116.381,
+                "zeroTo50Seconds": 1.89,
+                "lateralGripG": 1.1021,
+                "rollThresholdG": 1.372,
+                "cruisePowerKw": 2.0279,
+                "cruiseMinutes": 34.03,
+                "batteryKwh": 1.15,
+                "drivePowerKw": 22.477,
+                "recoverySeconds": 1.4,
+                "wheelRpmCapKph": 116.381,
+                "multipliers": {
+                  "acceleration": 1.0286,
+                  "speed": 1,
+                  "handling": 1
+                },
+                "accelerationMultiplier": 1.0286,
+                "speedMultiplier": 1,
+                "handlingMultiplier": 1
+              }
+            }
+          }
+        ],
+        "raceOptions": {
+          "difficulty": "normal",
+          "seed": 20261010
+        }
+      },
+      "bots": [
+        {
+          "id": "gemini",
+          "phase": 0,
+          "color": "#a5a4ff",
+          "total": 12.004329827119362,
+          "lateral": -3.1172000000000284,
+          "speed": 0.25978962716176507,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.08400091786054126,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": null,
+          "bump": 0,
+          "decisionIn": 0.28,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -0.16877095709248424,
+          "pulseFlash": 0,
+          "pickups": 0,
+          "uses": 0
+        },
+        {
+          "id": "gpt",
+          "phase": 1,
+          "color": "#f4e4c8",
+          "total": 12.00555920711936,
+          "lateral": 3.2,
+          "speed": 0.33355242716173994,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": null,
+          "bump": 0,
+          "decisionIn": 0.03033333333333899,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": 3.2,
+          "pulseFlash": 0,
+          "pickups": 0,
+          "uses": 0
+        },
+        {
+          "id": "claude",
+          "phase": 2,
+          "color": "#eeac8e",
+          "total": 17.206357231895865,
+          "lateral": -3.2,
+          "speed": 0.3814339137521184,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": null,
+          "bump": 0,
+          "decisionIn": 0.07733333333333899,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -3.2,
+          "pulseFlash": 0,
+          "pickups": 0,
+          "uses": 0
+        },
+        {
+          "id": "grok",
+          "phase": 3,
+          "color": "#b89bdb",
+          "total": 17.204597011895867,
+          "lateral": 3.2,
+          "speed": 0.27582071375215417,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": null,
+          "bump": 0,
+          "decisionIn": 0.124333333333339,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": 3.2,
+          "pulseFlash": 0,
+          "pickups": 0,
+          "uses": 0
+        },
+        {
+          "id": "glm",
+          "phase": 4,
+          "color": "#9cddad",
+          "total": 22.40478472811765,
+          "lateral": -3.2,
+          "speed": 0.28708368705924703,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": null,
+          "bump": 0,
+          "decisionIn": 0.171333333333339,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -3.2,
+          "pulseFlash": 0,
+          "pickups": 0,
+          "uses": 0
+        }
+      ],
+      "progress": {
+        "player": {
+          "distance": -0.00001144255927613863,
+          "nextCheckpoint": 1,
+          "checkpoints": 12,
+          "passedCheckpoints": 0,
+          "laps": 0
+        },
+        "bots": [
+          [
+            "gemini",
+            {
+              "distance": 12.004329827119362,
+              "nextCheckpoint": 1,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 0
+            }
+          ],
+          [
+            "gpt",
+            {
+              "distance": 12.00555920711936,
+              "nextCheckpoint": 1,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 0
+            }
+          ],
+          [
+            "claude",
+            {
+              "distance": 17.206357231895865,
+              "nextCheckpoint": 1,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 0
+            }
+          ],
+          [
+            "grok",
+            {
+              "distance": 17.204597011895867,
+              "nextCheckpoint": 1,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 0
+            }
+          ],
+          [
+            "glm",
+            {
+              "distance": 22.40478472811765,
+              "nextCheckpoint": 1,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 0
+            }
+          ]
+        ]
+      },
+      "boxes": [
+        {
+          "d": 198.89236111763196,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 11.838257180446101,
+          "display": "boost"
+        },
+        {
+          "d": 198.89236111763196,
+          "lateral": 0,
+          "cool": 0,
+          "base": 11.925964531250962,
+          "display": "shield"
+        },
+        {
+          "d": 198.89236111763196,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 12.013671882055823,
+          "display": "pulse"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 30.725482349503668,
+          "display": "pulse"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": 0,
+          "cool": 0,
+          "base": 30.169637953810987,
+          "display": "boost"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 29.613793558118306,
+          "display": "pulse"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 44.957925177730864,
+          "display": "boost"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": 0,
+          "cool": 0,
+          "base": 45.09916857988848,
+          "display": "mystery"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 45.24041198204609,
+          "display": "pulse"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 47.094313511656445,
+          "display": "boost"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": 0,
+          "cool": 0,
+          "base": 47.13830505156559,
+          "display": "pulse"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 47.18229659147473,
+          "display": "mystery"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 44.91657740148245,
+          "display": "shield"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": 0,
+          "cool": 0,
+          "base": 44.92008924056207,
+          "display": "boost"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 44.92360107964169,
+          "display": "mystery"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 31.80424830536023,
+          "display": "pulse"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": 0,
+          "cool": 0,
+          "base": 31.69969481175487,
+          "display": "boost"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 31.595141318149512,
+          "display": "pulse"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 18.983504585005836,
+          "display": "boost"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": 0,
+          "cool": 0,
+          "base": 18.860213384570695,
+          "display": "pulse"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 18.736922184135555,
+          "display": "shield"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.665667681594927,
+          "display": "shield"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.723751604947283,
+          "display": "mystery"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.78183552829964,
+          "display": "pulse"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.389669767906511,
+          "display": "shield"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.25,
+          "display": "shield"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.110330232093489,
+          "display": "boost"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.278684789702563,
+          "display": "shield"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.25,
+          "display": "boost"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.221315210297437,
+          "display": "mystery"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.154098705645755,
+          "display": "shield"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.237121022049177,
+          "display": "mystery"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.3201433384526,
+          "display": "shield"
+        },
+        {
+          "d": 0,
+          "lateral": 0,
+          "cool": null,
+          "base": 9.25,
+          "display": "mystery",
+          "dynamic": true
+        },
+        {
+          "d": 0,
+          "lateral": 0,
+          "cool": null,
+          "base": 9.25,
+          "display": "mystery",
+          "dynamic": true
+        },
+        {
+          "d": 0,
+          "lateral": 0,
+          "cool": null,
+          "base": 9.25,
+          "display": "mystery",
+          "dynamic": true
+        },
+        {
+          "d": 0,
+          "lateral": 0,
+          "cool": null,
+          "base": 9.25,
+          "display": "mystery",
+          "dynamic": true
+        }
+      ]
+    },
+    "finish": {
+      "label": "race-finished",
+      "player": {
+        "state": "finished",
+        "pos": 10848.674242779925,
+        "lane": -4.734668872156612,
+        "speed": 37.70177299001592,
+        "elapsed": 322.35022026515753,
+        "charge": 0,
+        "boost": 0,
+        "shield": 0,
+        "slow": 0,
+        "held": null,
+        "drifting": false,
+        "steerVis": 0,
+        "validatedLaps": 3,
+        "checkpoints": 0,
+        "lap": 3,
+        "rank": 6,
+        "standings": [
+          {
+            "id": "gpt",
+            "total": 10848.674242779925,
+            "finishedAt": 250.7722671566771
+          },
+          {
+            "id": "glm",
+            "total": 10848.674242779925,
+            "finishedAt": 260.7820643162994
+          },
+          {
+            "id": "grok",
+            "total": 10848.674242779925,
+            "finishedAt": 270.255510378509
+          },
+          {
+            "id": "gemini",
+            "total": 10848.674242779925,
+            "finishedAt": 314.0986209725346
+          },
+          {
+            "id": "claude",
+            "total": 10848.674242779925,
+            "finishedAt": 320.78796329416036
+          },
+          {
+            "id": "whale",
+            "total": 10848.674242779925,
+            "finishedAt": 322.35022026515753
+          }
+        ],
+        "kartBuild": {
+          "body": "kit028::01_BodyShell",
+          "chassis": "kit023::02_ChassisSuspension",
+          "motor": "kit033::04_Motor",
+          "transmission": "kit025::05_FinalDrive",
+          "battery": "kit019::06_Battery",
+          "wheels": "kit031::03_WheelsTires"
+        },
+        "npcBuilds": [
+          {
+            "id": "gemini",
+            "build": {
+              "body": "kit005::01_BodyShell",
+              "chassis": "kit004::02_ChassisSuspension",
+              "motor": "kit004::04_Motor",
+              "transmission": "kit006::05_FinalDrive",
+              "battery": "kit003::06_Battery",
+              "wheels": "kit003::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 37.3758,
+              "acceleration": 15.753528000000003,
+              "steering": 8.693999999999999,
+              "multipliers": {
+                "topSpeed": 0.8899,
+                "acceleration": 0.8751960000000001,
+                "steering": 1.242
+              },
+              "characterMultipliers": {
+                "topSpeed": 1,
+                "acceleration": 0.92,
+                "steering": 1.08
+              },
+              "buildMultipliers": {
+                "acceleration": 0.9513,
+                "speed": 0.8899,
+                "handling": 1.15
+              },
+              "stats": {
+                "massKg": 189.4,
+                "launchAcceleration": 7.3419,
+                "accelerationIndex": 5.3047,
+                "topSpeedKph": 103.573,
+                "zeroTo50Seconds": 1.93,
+                "lateralGripG": 1.276,
+                "rollThresholdG": 1.5591,
+                "cruisePowerKw": 2.0552,
+                "cruiseMinutes": 23.35,
+                "batteryKwh": 0.8,
+                "drivePowerKw": 18.819,
+                "recoverySeconds": 1.8,
+                "wheelRpmCapKph": 103.573,
+                "multipliers": {
+                  "acceleration": 0.9513,
+                  "speed": 0.8899,
+                  "handling": 1.15
+                },
+                "accelerationMultiplier": 0.9513,
+                "speedMultiplier": 0.8899,
+                "handlingMultiplier": 1.15
+              }
+            }
+          },
+          {
+            "id": "gpt",
+            "build": {
+              "body": "kit002::01_BodyShell",
+              "chassis": "kit006::02_ChassisSuspension",
+              "motor": "kit001::04_Motor",
+              "transmission": "kit002::05_FinalDrive",
+              "battery": "kit004::06_Battery",
+              "wheels": "kit002::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 46.3176,
+              "acceleration": 20.223,
+              "steering": 5.95,
+              "multipliers": {
+                "topSpeed": 1.1028,
+                "acceleration": 1.1235,
+                "steering": 0.85
+              },
+              "characterMultipliers": {
+                "topSpeed": 1,
+                "acceleration": 1,
+                "steering": 1
+              },
+              "buildMultipliers": {
+                "acceleration": 1.1235,
+                "speed": 1.1028,
+                "handling": 0.85
+              },
+              "stats": {
+                "massKg": 194.4,
+                "launchAcceleration": 7.5326,
+                "accelerationIndex": 6.2649,
+                "topSpeedKph": 128.341,
+                "zeroTo50Seconds": 1.88,
+                "lateralGripG": 0.9312,
+                "rollThresholdG": 1.2704,
+                "cruisePowerKw": 1.7049,
+                "cruiseMinutes": 35.19,
+                "batteryKwh": 1,
+                "drivePowerKw": 24.252,
+                "recoverySeconds": 1.4,
+                "wheelRpmCapKph": 128.341,
+                "multipliers": {
+                  "acceleration": 1.1235,
+                  "speed": 1.1028,
+                  "handling": 0.85
+                },
+                "accelerationMultiplier": 1.1235,
+                "speedMultiplier": 1.1028,
+                "handlingMultiplier": 0.85
+              }
+            }
+          },
+          {
+            "id": "claude",
+            "build": {
+              "body": "kit001::01_BodyShell",
+              "chassis": "kit003::02_ChassisSuspension",
+              "motor": "kit005::04_Motor",
+              "transmission": "kit005::05_FinalDrive",
+              "battery": "kit001::06_Battery",
+              "wheels": "kit005::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 35.4816,
+              "acceleration": 22.987800000000004,
+              "steering": 6.828863999999999,
+              "multipliers": {
+                "topSpeed": 0.8448,
+                "acceleration": 1.2771000000000001,
+                "steering": 0.975552
+              },
+              "characterMultipliers": {
+                "topSpeed": 0.96,
+                "acceleration": 1.08,
+                "steering": 0.96
+              },
+              "buildMultipliers": {
+                "acceleration": 1.1825,
+                "speed": 0.88,
+                "handling": 1.0162
+              },
+              "stats": {
+                "massKg": 191.4,
+                "launchAcceleration": 10.3755,
+                "accelerationIndex": 6.594,
+                "topSpeedKph": 92.389,
+                "zeroTo50Seconds": 1.45,
+                "lateralGripG": 1.12,
+                "rollThresholdG": 1.225,
+                "cruisePowerKw": 2.4397,
+                "cruiseMinutes": 28.28,
+                "batteryKwh": 1.15,
+                "drivePowerKw": 20.24,
+                "recoverySeconds": 1.15,
+                "wheelRpmCapKph": 92.389,
+                "multipliers": {
+                  "acceleration": 1.1825,
+                  "speed": 0.88,
+                  "handling": 1.0162
+                },
+                "accelerationMultiplier": 1.1825,
+                "speedMultiplier": 0.88,
+                "handlingMultiplier": 1.0162
+              }
+            }
+          },
+          {
+            "id": "grok",
+            "build": {
+              "body": "kit006::01_BodyShell",
+              "chassis": "kit004::02_ChassisSuspension",
+              "motor": "kit003::04_Motor",
+              "transmission": "kit006::05_FinalDrive",
+              "battery": "kit003::06_Battery",
+              "wheels": "kit005::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 42.289128,
+              "acceleration": 16.695936,
+              "steering": 7.512287999999999,
+              "multipliers": {
+                "topSpeed": 1.0068840000000001,
+                "acceleration": 0.9275519999999999,
+                "steering": 1.073184
+              },
+              "characterMultipliers": {
+                "topSpeed": 1.08,
+                "acceleration": 0.96,
+                "steering": 0.96
+              },
+              "buildMultipliers": {
+                "acceleration": 0.9662,
+                "speed": 0.9323,
+                "handling": 1.1179
+              },
+              "stats": {
+                "massKg": 204.4,
+                "launchAcceleration": 7.8691,
+                "accelerationIndex": 5.388,
+                "topSpeedKph": 108.505,
+                "zeroTo50Seconds": 1.83,
+                "lateralGripG": 1.232,
+                "rollThresholdG": 1.5591,
+                "cruisePowerKw": 2.2475,
+                "cruiseMinutes": 21.36,
+                "batteryKwh": 0.8,
+                "drivePowerKw": 19.674,
+                "recoverySeconds": 1.8,
+                "wheelRpmCapKph": 108.505,
+                "multipliers": {
+                  "acceleration": 0.9662,
+                  "speed": 0.9323,
+                  "handling": 1.1179
+                },
+                "accelerationMultiplier": 0.9662,
+                "speedMultiplier": 0.9323,
+                "handlingMultiplier": 1.1179
+              }
+            }
+          },
+          {
+            "id": "glm",
+            "build": {
+              "body": "kit004::01_BodyShell",
+              "chassis": "kit005::02_ChassisSuspension",
+              "motor": "kit003::04_Motor",
+              "transmission": "kit001::05_FinalDrive",
+              "battery": "kit001::06_Battery",
+              "wheels": "kit001::03_WheelsTires"
+            },
+            "tuning": {
+              "maxSpeed": 43.68,
+              "acceleration": 17.403912,
+              "steering": 7.140000000000001,
+              "multipliers": {
+                "topSpeed": 1.04,
+                "acceleration": 0.9668839999999999,
+                "steering": 1.02
+              },
+              "characterMultipliers": {
+                "topSpeed": 1.04,
+                "acceleration": 0.94,
+                "steering": 1.02
+              },
+              "buildMultipliers": {
+                "acceleration": 1.0286,
+                "speed": 1,
+                "handling": 1
+              },
+              "stats": {
+                "massKg": 202.4,
+                "launchAcceleration": 7.5069,
+                "accelerationIndex": 5.7359,
+                "topSpeedKph": 116.381,
+                "zeroTo50Seconds": 1.89,
+                "lateralGripG": 1.1021,
+                "rollThresholdG": 1.372,
+                "cruisePowerKw": 2.0279,
+                "cruiseMinutes": 34.03,
+                "batteryKwh": 1.15,
+                "drivePowerKw": 22.477,
+                "recoverySeconds": 1.4,
+                "wheelRpmCapKph": 116.381,
+                "multipliers": {
+                  "acceleration": 1.0286,
+                  "speed": 1,
+                  "handling": 1
+                },
+                "accelerationMultiplier": 1.0286,
+                "speedMultiplier": 1,
+                "handlingMultiplier": 1
+              }
+            }
+          }
+        ],
+        "raceOptions": {
+          "difficulty": "normal",
+          "seed": 20261010
+        }
+      },
+      "bots": [
+        {
+          "id": "gemini",
+          "phase": 0,
+          "color": "#a5a4ff",
+          "total": 10848.674242779925,
+          "lateral": 0.601061222809256,
+          "speed": 36.29704903160232,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.1002505333628354,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": 314.0986209725346,
+          "bump": 0,
+          "decisionIn": 0,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": 0.601061222809256,
+          "pulseFlash": 0,
+          "pickups": 13,
+          "uses": 12
+        },
+        {
+          "id": "gpt",
+          "phase": 1,
+          "color": "#f4e4c8",
+          "total": 10848.674242779925,
+          "lateral": 0.605648773124276,
+          "speed": 44.31848597487203,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.09987988204754317,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": 250.7722671566771,
+          "bump": 0,
+          "decisionIn": 0,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": 0.605648773124276,
+          "pulseFlash": 0,
+          "pickups": 8,
+          "uses": 7
+        },
+        {
+          "id": "claude",
+          "phase": 2,
+          "color": "#eeac8e",
+          "total": 10848.674242779925,
+          "lateral": -0.29351667514591384,
+          "speed": 34.55953831730485,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.09959385857385038,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": 320.78796329416036,
+          "bump": 0,
+          "decisionIn": 0,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -0.29351667514591384,
+          "pulseFlash": 0,
+          "pickups": 27,
+          "uses": 26
+        },
+        {
+          "id": "grok",
+          "phase": 3,
+          "color": "#b89bdb",
+          "total": 10848.674242779925,
+          "lateral": -1.2789323265649795,
+          "speed": 41.34938866038856,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.1002800066216143,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": 270.255510378509,
+          "bump": 0,
+          "decisionIn": 0,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -1.2789323265649795,
+          "pulseFlash": 0,
+          "pickups": 2,
+          "uses": 1
+        },
+        {
+          "id": "glm",
+          "phase": 4,
+          "color": "#9cddad",
+          "total": 10848.674242779925,
+          "lateral": -1.4047667162474144,
+          "speed": 42.25553342301645,
+          "driving": true,
+          "cornerPace": 1,
+          "aiBend": 0.0994958478095797,
+          "driftCharge": 0,
+          "driftCooldown": 0,
+          "aiDrifting": false,
+          "held": null,
+          "boost": 0,
+          "shield": 0,
+          "slow": 0,
+          "finishedAt": 260.7820643162994,
+          "bump": 0,
+          "decisionIn": 0,
+          "reaction": 0,
+          "cooldown": 0,
+          "targetLane": -1.4047667162474144,
+          "pulseFlash": 0,
+          "pickups": 10,
+          "uses": 9
+        }
+      ],
+      "progress": {
+        "player": {
+          "distance": 10849.294301277463,
+          "nextCheckpoint": 37,
+          "checkpoints": 12,
+          "passedCheckpoints": 0,
+          "laps": 3
+        },
+        "bots": [
+          [
+            "gemini",
+            {
+              "distance": 10848.674242779925,
+              "nextCheckpoint": 37,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 3
+            }
+          ],
+          [
+            "gpt",
+            {
+              "distance": 10848.674242779925,
+              "nextCheckpoint": 37,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 3
+            }
+          ],
+          [
+            "claude",
+            {
+              "distance": 10848.674242779925,
+              "nextCheckpoint": 37,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 3
+            }
+          ],
+          [
+            "grok",
+            {
+              "distance": 10848.674242779925,
+              "nextCheckpoint": 37,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 3
+            }
+          ],
+          [
+            "glm",
+            {
+              "distance": 10848.674242779925,
+              "nextCheckpoint": 37,
+              "checkpoints": 12,
+              "passedCheckpoints": 0,
+              "laps": 3
+            }
+          ]
+        ]
+      },
+      "boxes": [
+        {
+          "d": 198.89236111763196,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 11.838257180446101,
+          "display": "shield"
+        },
+        {
+          "d": 198.89236111763196,
+          "lateral": 0,
+          "cool": 0,
+          "base": 11.925964531250962,
+          "display": "pulse"
+        },
+        {
+          "d": 198.89236111763196,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 12.013671882055823,
+          "display": "mystery"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 30.725482349503668,
+          "display": "pulse"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": 0,
+          "cool": 0,
+          "base": 30.169637953810987,
+          "display": "pulse"
+        },
+        {
+          "d": 524.3525884010296,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 29.613793558118306,
+          "display": "pulse"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 44.957925177730864,
+          "display": "shield"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": 0,
+          "cool": 0,
+          "base": 45.09916857988848,
+          "display": "mystery"
+        },
+        {
+          "d": 831.731691946461,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 45.24041198204609,
+          "display": "mystery"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 47.094313511656445,
+          "display": "mystery"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": 0,
+          "cool": 0,
+          "base": 47.13830505156559,
+          "display": "shield"
+        },
+        {
+          "d": 1121.0296717539254,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 47.18229659147473,
+          "display": "boost"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 44.91657740148245,
+          "display": "mystery"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": 0,
+          "cool": 0,
+          "base": 44.92008924056207,
+          "display": "boost"
+        },
+        {
+          "d": 1464.57102277529,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 44.92360107964169,
+          "display": "mystery"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 31.80424830536023,
+          "display": "pulse"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": 0,
+          "cool": 0,
+          "base": 31.69969481175487,
+          "display": "shield"
+        },
+        {
+          "d": 1826.1934975346207,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 31.595141318149512,
+          "display": "shield"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 18.983504585005836,
+          "display": "pulse"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": 0,
+          "cool": 0,
+          "base": 18.860213384570695,
+          "display": "boost"
+        },
+        {
+          "d": 2133.5726010800518,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 18.736922184135555,
+          "display": "shield"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.665667681594927,
+          "display": "boost"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.723751604947283,
+          "display": "boost"
+        },
+        {
+          "d": 2495.1950758393823,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.78183552829964,
+          "display": "pulse"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.389669767906511,
+          "display": "shield"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.25,
+          "display": "shield"
+        },
+        {
+          "d": 2874.89867433668,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.110330232093489,
+          "display": "pulse"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.278684789702563,
+          "display": "shield"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.25,
+          "display": "pulse"
+        },
+        {
+          "d": 3290.7645203099105,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.221315210297437,
+          "display": "mystery"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": -3.5,
+          "cool": 0,
+          "base": 9.154098705645755,
+          "display": "shield"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": 0,
+          "cool": 0,
+          "base": 9.237121022049177,
+          "display": "mystery"
+        },
+        {
+          "d": 3507.7380051655086,
+          "lateral": 3.5,
+          "cool": 0,
+          "base": 9.3201433384526,
+          "display": "shield"
+        },
+        {
+          "d": 3261.9804005019378,
+          "lateral": 0.28151920509026906,
+          "cool": null,
+          "base": 9.251365677789584,
+          "display": "shield",
+          "dynamic": true
+        },
+        {
+          "d": 2201.358768634447,
+          "lateral": -0.8123071895912289,
+          "cool": null,
+          "base": 16.799612285842507,
+          "display": "boost",
+          "dynamic": true
+        },
+        {
+          "d": 981.3885237719041,
+          "lateral": 0.30587760978964185,
+          "cool": null,
+          "base": 48.25097320966972,
+          "display": "pulse",
+          "dynamic": true
+        },
+        {
+          "d": 0,
+          "lateral": 0,
+          "cool": null,
+          "base": 9.25,
+          "display": "mystery",
+          "dynamic": true
+        }
+      ]
+    }
+  }
+}

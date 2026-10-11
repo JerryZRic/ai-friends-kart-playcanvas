@@ -1,4 +1,5 @@
 import type {TestContext} from 'node:test';
+import {createHash} from 'node:crypto';
 import {npcDriving,npcSkill} from '../../src/npc-difficulty';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
@@ -14,7 +15,7 @@ import { clearFoodKartPayloadCache } from '../../src/food-kart-payload';
 import { createRaceKartTuning, kartRoadContext, buildForRacer, stepRaceKartSpeed } from '../../src/kart-race';
 
 const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
-export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;quarry?:boolean;forest?:boolean;workshop?:boolean;harvest?:boolean;desert?:boolean;snow?:boolean;caldera?:boolean;garden?:boolean;airfield?:boolean;airfieldAudit?:(context:any)=>Promise<void>;gardenAudit?:(context:any)=>Promise<void>;courseFailure?:boolean};
+export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;quarry?:boolean;forest?:boolean;workshop?:boolean;harvest?:boolean;desert?:boolean;snow?:boolean;caldera?:boolean;garden?:boolean;airfield?:boolean;mountainAudit?:(context:any)=>Promise<void>;airfieldAudit?:(context:any)=>Promise<void>;gardenAudit?:(context:any)=>Promise<void>;courseFailure?:boolean};
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
@@ -155,6 +156,16 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     writeFileSync(airfieldCourseCopy,original.replace(marker,'    (globalThis as any).__airfieldSourceGeometry=geometry;\n'+marker));
     source=source.replace("from './land-course';","from './.land-course-airfield-test';");
   }
+  // Mountain observation hook reads the exact already-created production geometry.
+  // Baseline source lacks it; baseline controls are captured without a second scene.
+  const mountainCourseCopy=scenario.mountainAudit&&!scenario.courseFailure&&readFileSync('src/land-course.ts','utf8').includes("./mountain-scenery")?new URL('../../src/.land-course-mountain-test.ts',import.meta.url):null;
+  if(mountainCourseCopy){
+    const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker="    return {id:mapId,profile:resolveMap(mapId),forkHint:''";
+    assert.equal(original.split(marker).length,2);
+    writeFileSync(mountainCourseCopy,original.replace(marker,'    (globalThis as any).__mountainSourceGeometry=geometry;\n'+marker));
+    source=source.replace("from './land-course';","from './.land-course-mountain-test';");
+  }
+  if(scenario.mountainAudit)source=source.replace('player: () => player, bots: () => bots, boxes: () => boxes,','player: () => player, bots: () => bots, boxes: () => boxes, mountainProgress:()=>({player:playerProgress,bots:[...botProgress.entries()]}),');
   const copy = new URL(`../../src/.game-test-${scenario.courseFailure?'course-failure':forkMap?forkMap:scenario.mountain?'mountain':scenario.cancelDuringParts?'cancel':scenario.savedBuild?'saved':'default'}.ts`, import.meta.url); writeFileSync(copy, source);
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
   try {
@@ -576,16 +587,22 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       for(let i=0;i<300&&game.getState().state==='returning';i++)qa.advanceFrame(1/60);
       for(let i=0;i<240&&game.getState().state==='countdown';i++)qa.advanceFrame(1/60);
       assert.equal(game.getState().state,'running');
+      const controlHash=createHash('sha256'),controlSamples:any[]=[];let controlFrames=0;
+      const recordMountainControl=(label:string)=>{if(!scenario.mountainAudit)return;const state=game.getState(),fields=['state','pos','lane','speed','elapsed','charge','boost','shield','slow','held','drifting','steerVis','validatedLaps','checkpoints','lap','rank','standings','kartBuild','npcBuilds','raceOptions'];
+        const scalars=(object:any)=>Object.fromEntries(Object.entries(object).filter(([,value])=>value===null||['number','string','boolean'].includes(typeof value)));
+        const snapshot={label,player:Object.fromEntries(fields.map(k=>[k,state[k]])),bots:qa.bots().map(scalars),progress:qa.mountainProgress(),boxes:qa.boxes().map(scalars)};
+        const serialized=JSON.stringify(snapshot);controlHash.update(serialized+'\n');if(controlFrames%90===0||label!=='race-frame')controlSamples.push(snapshot);controlFrames++;};
+      recordMountainControl('race-start');
       const start=game.getState().pos;
       qa.set({pos:track.length*2,speed:42});qa.update(1/60);
       assert.equal(game.getState().pos,start,'invalid shortcut restores last accepted support');
-      assert.equal(game.getState().validatedLaps,0);
-      qa.keys.KeyS=true;for(let i=0;i<120;i++)qa.update(1/60);qa.keys.KeyS=false;
+      assert.equal(game.getState().validatedLaps,0);recordMountainControl('rejected-shortcut');
+      qa.keys.KeyS=true;for(let i=0;i<120;i++){qa.update(1/60);recordMountainControl('reverse-frame');}qa.keys.KeyS=false;
       assert.ok(game.getState().pos<start,'reverse subtracts unwrapped distance');assert.equal(game.getState().lap,1);
       qa.keys.KeyW=true;
       let highest=-Infinity,lowest=Infinity,samples=0;
       for(let frame=0;frame<36000&&game.getState().state==='running';frame++){
-        qa.update(1/60);
+        qa.update(1/60);recordMountainControl('race-frame');
         if(frame%90===0){
           qa.draw(0);const state=game.getState(),support=track.sample(state.pos,state.lane);
           const actual=qa.player().getPosition();
@@ -604,7 +621,9 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       qa.keys.KeyW=false;assert.ok(samples>50);assert.ok(highest-lowest>25,`real car position climbs mountain: ${JSON.stringify({highest,lowest,state:game.getState().state,pos:game.getState().pos,speed:game.getState().speed,laps:game.getState().validatedLaps,checkpoints:game.getState().checkpoints})}`);
       assert.equal(game.getState().state,'finished');assert.equal(game.getState().lap,3);assert.equal(game.getState().validatedLaps,3);
       assert.ok(qa.bots().every(bot=>bot.total>track.length*1.8),'AI traverses the technical circuit');
-      assert.match(element('raceChangeMap').href,/map=mountain/);
+      assert.match(element('raceChangeMap').href,/map=mountain/);recordMountainControl('race-finished');
+      const control={frames:controlFrames,sha256:controlHash.digest('hex'),samples:controlSamples};
+      await scenario.mountainAudit?.({qa,game,track,app,key,canvas,docEvents,events,t,touch,element,control,geometry:g.__mountainSourceGeometry});
       game.start();assert.equal(game.getState().pos,0);assert.equal(game.getState().lap,1);
       qa.draw(0);assert.ok(qa.player().getPosition().distance(track.sample(0,-2).p)<.13,'restart altitude correct');
       return;
@@ -1385,6 +1404,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; unlinkSync(copy); if(app.graphicsDevice)app.destroy();
     if(gardenCourseCopy)unlinkSync(gardenCourseCopy);delete g.__gardenSourceGeometry;
     if(airfieldCourseCopy)unlinkSync(airfieldCourseCopy);delete g.__airfieldSourceGeometry;
+    if(mountainCourseCopy)unlinkSync(mountainCourseCopy);delete g.__mountainSourceGeometry;
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
     g.gc?.();
   }

@@ -1,0 +1,170 @@
+{
+  "kind": "bounded-headless-camera-query-benchmark",
+  "script": "scripts/benchmark-mountain-camera.mjs",
+  "scriptSha256": "2aa3d60b288bbd030889846d2f020a32081da73b5c69ea8b7de53df9439706f2",
+  "method": "Separate processes, 1200 unique legal-lane camera inputs, 120 warmup queries, three measured rounds (3600 queries), exact Float64 output comparison outside timed and memory samples. Both grouping arrangements derive from the same enriched scene. Timing is host-specific; cold setup and peak RSS did not improve in this final receipt. No GPU or FPS claim.",
+  "receipts": {
+    "grouped": {
+      "mode": "grouped",
+      "environment": {
+        "node": "v24.19.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "heapLimitMiB": 448,
+        "explicitGC": true
+      },
+      "sourceSHA256": {
+        "../src/mountain-scenery.ts": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+        "../src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+        "../src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+      },
+      "blockers": 270,
+      "triangles": 67708,
+      "exactTriangleMultisetSHA256": "6d25059c5de071e871679655c563c1e4b232466d7fff76e655cc9ba9ce376e2f",
+      "heightfieldSHA256": "71890deca28c533a5aff4512ccc6c7afe30541164d73c97e5c758e77436aa4ee",
+      "inputSHA256": "6482484256f7ab2ca012ddd817637e848171181a5a5e34c010e528b10d2cb40f",
+      "outputSHA256": "a3aa2160578bf77bc11f085db3e8ce36ac909290d78e6da81d83b7fdd993be58",
+      "equivalentOutputSHA256": "a3aa2160578bf77bc11f085db3e8ce36ac909290d78e6da81d83b7fdd993be58",
+      "samples": 3600,
+      "uniqueInputs": 1200,
+      "warmupQueries": 120,
+      "buildMs": 1487.920159,
+      "setupMs": 51.98215500000015,
+      "queryMs": {
+        "min": 0.23704099999986283,
+        "median": 0.32180600000037884,
+        "p95": 0.5640349999998762,
+        "max": 3.4506200000000717,
+        "mean": 0.36997437555555457
+      },
+      "rounds": [
+        {
+          "min": 0.24058600000034858,
+          "median": 0.32512099999985367,
+          "p95": 0.5867189999999027,
+          "max": 2.702212000000145,
+          "mean": 0.37214135916666047
+        },
+        {
+          "min": 0.23704099999986283,
+          "median": 0.3182710000000952,
+          "p95": 0.5480720000000474,
+          "max": 2.3187330000000657,
+          "mean": 0.35879102166667776
+        },
+        {
+          "min": 0.23847299999988536,
+          "median": 0.322798000000148,
+          "p95": 0.5654769999996461,
+          "max": 3.4506200000000717,
+          "mean": 0.3789907458333255
+        }
+      ],
+      "memory": {
+        "before": {
+          "heapUsedMiB": 32.17645263671875,
+          "rssMiB": 115.67578125,
+          "maxRSSMiB": 116.34375
+        },
+        "afterBuild": {
+          "heapUsedMiB": 66.31172180175781,
+          "rssMiB": 273.17578125,
+          "maxRSSMiB": 279.703125
+        },
+        "afterSetup": {
+          "heapUsedMiB": 68.75284576416016,
+          "rssMiB": 321.8671875,
+          "maxRSSMiB": 333.36328125
+        },
+        "afterQueries": {
+          "heapUsedMiB": 68.99689483642578,
+          "rssMiB": 321.9921875,
+          "maxRSSMiB": 333.36328125
+        }
+      },
+      "notice": "Separate-process bounded headless CPU setup/query sample. Both groupings contain the same current enriched geometry. This is neither original-empty-blocker comparison nor GPU/FPS or universal performance evidence."
+    },
+    "consolidated": {
+      "mode": "consolidated",
+      "environment": {
+        "node": "v24.19.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "heapLimitMiB": 448,
+        "explicitGC": true
+      },
+      "sourceSHA256": {
+        "../src/mountain-scenery.ts": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+        "../src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+        "../src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+      },
+      "blockers": 2,
+      "triangles": 67708,
+      "exactTriangleMultisetSHA256": "6d25059c5de071e871679655c563c1e4b232466d7fff76e655cc9ba9ce376e2f",
+      "heightfieldSHA256": "71890deca28c533a5aff4512ccc6c7afe30541164d73c97e5c758e77436aa4ee",
+      "inputSHA256": "6482484256f7ab2ca012ddd817637e848171181a5a5e34c010e528b10d2cb40f",
+      "outputSHA256": "a3aa2160578bf77bc11f085db3e8ce36ac909290d78e6da81d83b7fdd993be58",
+      "equivalentOutputSHA256": "a3aa2160578bf77bc11f085db3e8ce36ac909290d78e6da81d83b7fdd993be58",
+      "samples": 3600,
+      "uniqueInputs": 1200,
+      "warmupQueries": 120,
+      "buildMs": 1501.175213,
+      "setupMs": 53.90226900000016,
+      "queryMs": {
+        "min": 0.029253000000153406,
+        "median": 0.08899199999996199,
+        "p95": 0.24709600000005594,
+        "max": 2.797864000000118,
+        "mean": 0.11443540833332766
+      },
+      "rounds": [
+        {
+          "min": 0.03541300000006231,
+          "median": 0.09248699999989185,
+          "p95": 0.25956399999995483,
+          "max": 2.797864000000118,
+          "mean": 0.12111930583332917
+        },
+        {
+          "min": 0.029253000000153406,
+          "median": 0.0878299999999399,
+          "p95": 0.24106700000038472,
+          "max": 2.197755000000143,
+          "mean": 0.11068866166665468
+        },
+        {
+          "min": 0.03075600000011036,
+          "median": 0.08739900000000489,
+          "p95": 0.25026100000013685,
+          "max": 2.3401260000000548,
+          "mean": 0.11149825749999916
+        }
+      ],
+      "memory": {
+        "before": {
+          "heapUsedMiB": 32.174232482910156,
+          "rssMiB": 116.546875,
+          "maxRSSMiB": 117.20703125
+        },
+        "afterBuild": {
+          "heapUsedMiB": 66.30815124511719,
+          "rssMiB": 276.921875,
+          "maxRSSMiB": 293.0625
+        },
+        "afterSetup": {
+          "heapUsedMiB": 68.29976654052734,
+          "rssMiB": 329.71484375,
+          "maxRSSMiB": 343.0703125
+        },
+        "afterQueries": {
+          "heapUsedMiB": 68.51634216308594,
+          "rssMiB": 330.46484375,
+          "maxRSSMiB": 343.0703125
+        }
+      },
+      "notice": "Separate-process bounded headless CPU setup/query sample. Both groupings contain the same current enriched geometry. This is neither original-empty-blocker comparison nor GPU/FPS or universal performance evidence."
+    }
+  }
+}

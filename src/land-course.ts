@@ -34,9 +34,10 @@ export async function loadLandCourse(search: string) {
       placeKart:(entity:pc.Entity,distance:number,lateral:number,angle=0)=>placeLandKart(entity,track,distance,lateral,angle)};
   }
   if(mapId==='mountain') {
-    const [{MOUNTAIN_TRACK:track},{createLandScene}]=await Promise.all([import('./maps/mountain'),import('./land-scene')]);
-    return {id:mapId,profile:resolveMap(mapId),forkHint:'',cameraObstacles:[] as readonly CameraObstacle[],track, routes:null as ForkCourse|null, length:track.length, sample:track.sample, halfWidthAt:track.halfWidthAt,
-      createScene:(app:pc.Application)=>createLandScene(app,track),
+    const [{MOUNTAIN_TRACK:track},{createLandScene},{buildMountainSceneGeometry}]=await Promise.all([import('./maps/mountain'),import('./land-scene'),import('./mountain-scenery')]);
+    const geometry=buildMountainSceneGeometry(track);
+    return {id:mapId,profile:resolveMap(mapId),forkHint:'',cameraObstacles:geometry.cameraObstacles,track, routes:null as ForkCourse|null, length:track.length, sample:track.sample, halfWidthAt:track.halfWidthAt,
+      createScene:(app:pc.Application)=>createLandScene(app,track,{geometry}),
       placeKart:(entity:pc.Entity,distance:number,lateral:number,angle=0)=>placeLandKart(entity,track,distance,lateral,angle)};
   }
   return {id:'coast' as MapId,profile:resolveMap('coast'),forkHint:'',cameraObstacles:[] as readonly CameraObstacle[],track:null as LandTrack|null,routes:null as ForkCourse|null,length:LENGTH,sample,halfWidthAt,
