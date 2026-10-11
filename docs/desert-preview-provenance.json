@@ -1,0 +1,345 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime desert mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm desert daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/desert.ts": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/desert-scenery.ts": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "geometryTexturesRoutesThemeSha256": "109b35000d6a18ec2cf2cf32787644bb65d4a1fc0149029d68c18d109aa08a50",
+  "generatorHashes": {
+    "scripts/export-desert-preview.ts": "a3bec407f93a19f9b9601c7cdc7cf6d4e382e51de3d1c4417a48d3404bd82e24",
+    "scripts/render-desert-preview.py": "8d50a35da756df7a5a31de44a1b133eca812154d76749070455840bdea355231"
+  },
+  "batches": 22,
+  "vertices": 133911,
+  "triangles": 107224,
+  "routeLengthsMetres": {
+    "start": 1501.1606892319999,
+    "alley": 527.7831907192183,
+    "boulevard": 584.8322648642281,
+    "finish": 697.5813569881483
+  },
+  "normalShading": {
+    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
+    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
+    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
+    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Archway Weave (alley), Sailcourt Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "archwayLapLength": 2726.5252369393666,
+    "sailcourtLapLength": 2783.5743110843764
+  },
+  "originalModels": {
+    "glb": {
+      "file": "desert-original-scene.glb",
+      "sha256": "7290285eb0b1e55393a05784ba7498ebb5d363f0c1e6900e8327932f11bfd392",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "desert-original-scene.blend",
+      "sha256": "f1a3c640200642b3d1da3323240d7e57802c42aece19c23eaed37f6510c35dff",
+      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "desert-overview": {
+      "file": "desert-overview.png",
+      "sha256": "700cfce12188e7fe2674c4b75389e0833ab354872b5362ebc123309b75d78723",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        99.06704711914062,
+        1237.9564208984375,
+        746.8687133789062
+      ],
+      "cameraQuaternionBlender": [
+        0.07274259626865387,
+        0.042401961982250214,
+        0.5018057823181152,
+        0.8608725666999817
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Sunweave Caravan circuit, connected dune ascent and wind-carved sandstone descent, both physical fork roads, two open stone arches, caravan sailcourt, beacon, kiln and waystation. Exact emitted source geometry with approximate offline light.",
+      "routeScreenBounds": [
+        0.1732025146484375,
+        0.28570425510406494,
+        0.826827883720398,
+        0.6862961649894714
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.36283668875694275,
+          0.6122848391532898,
+          0.7153316140174866,
+          0.6835803985595703
+        ],
+        "boulevard": [
+          0.36283668875694275,
+          0.5563721656799316,
+          0.7153316140174866,
+          0.6761693358421326
+        ]
+      },
+      "orthographicScaleMetres": 1407.3927001953125,
+      "fittedSubjectScreenBounds": [
+        0.070000059902668,
+        0.17629177868366241,
+        0.9300000071525574,
+        0.8237079381942749
+      ]
+    },
+    "desert-topdown": {
+      "file": "desert-topdown.png",
+      "sha256": "6a61efb58179f7191b53c558dbd6574e8085c3d0ad7de0bf6b3517d7b5b2b47d",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -112.50003051757812,
+        -5.0,
+        1520.45361328125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: the technical Archway Weave and broad banked Sailcourt Sweep. Actual road widths, branch ownership, split/merge throats and complete connected landform are retained.",
+      "routeScreenBounds": [
+        0.1226077526807785,
+        0.15986701846122742,
+        0.883607029914856,
+        0.8062429428100586
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.38022834062576294,
+          0.7451077103614807,
+          0.7729223370552063,
+          0.8062429428100586
+        ],
+        "boulevard": [
+          0.38022834062576294,
+          0.6104887127876282,
+          0.7729223370552063,
+          0.7665083408355713
+        ]
+      },
+      "orthographicScaleMetres": 1273.2559814453125,
+      "fittedSubjectScreenBounds": [
+        0.07000000774860382,
+        0.09159814566373825,
+        0.9299999475479126,
+        0.9084018468856812
+      ]
+    },
+    "desert-driver-reveal": {
+      "file": "desert-driver-reveal.png",
+      "sha256": "fc2d437b901eb660c9846a4b2f85d0eca9afa2c578f1d549d0d05def3d3f7f24",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        315.4349670410156,
+        -34.676177978515625,
+        35.58488464355469
+      ],
+      "cameraQuaternionBlender": [
+        0.2895244061946869,
+        0.2744292914867401,
+        0.6308256983757019,
+        0.6655246615409851
+      ],
+      "projection": "PERSP",
+      "description": "Blueprint driver-eye pose on the real start road at 1050 m, exactly 1.6 m above source support. The original carved sandstone shoulder and connected dune landform frame the next bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle.",
+      "routeScreenBounds": [
+        -438.55987548828125,
+        -149.1083526611328,
+        4601.73193359375,
+        15.888448715209961
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.5546376705169678,
+          0.5028290748596191,
+          0.945258378982544,
+          0.5388396978378296
+        ],
+        "boulevard": [
+          0.5546376705169678,
+          0.5028290748596191,
+          1.0766915082931519,
+          0.5388396978378296
+        ]
+      },
+      "lensMillimetres": 30.0,
+      "roadEdge": "start",
+      "roadDistanceMetres": 1050,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "carved-canyon",
+        "edge": "start",
+        "s": 1050,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          315.43495292484647,
+          33.984883735033016,
+          34.67617661840397
+        ],
+        "driverEye": [
+          315.43495292484647,
+          35.58488373503302,
+          34.67617661840397
+        ],
+        "driverLook": [
+          292.0903757976689,
+          33.87547970077837,
+          56.42926857522389
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        292.0903757976689,
+        33.87547970077837,
+        56.42926857522389
+      ]
+    },
+    "desert-arch-passage": {
+      "file": "desert-arch-passage.png",
+      "sha256": "8886777bb5b5b556b5131a32d27190052ef51ba3a8e5203dcaf841e93480a8be",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -200.43447875976562,
+        -288.4808349609375,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.4230544865131378,
+        0.5552268624305725,
+        0.5695681571960449,
+        0.4339817464351654
+      ],
+      "projection": "PERSP",
+      "description": "Low approach on the actual Archway Weave, exactly 1.6 m above source road. Both genuinely open stone rings, seated piers and crown blocks, the flush through-road and daylight between arches remain unmodified. No cutaway, hidden wall or gameplay claim.",
+      "routeScreenBounds": [
+        -2558.5068359375,
+        -1485.2626953125,
+        70908.359375,
+        53.803741455078125
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -6.262643337249756,
+          -1.9242143630981445,
+          32.09797668457031,
+          13.544185638427734
+        ],
+        "boulevard": [
+          -135.92031860351562,
+          -7.354691505432129,
+          620.749755859375,
+          2.8232247829437256
+        ]
+      },
+      "lensMillimetres": 21.0,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 258.72575808588084,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "twin-arch-approach",
+        "edge": "alley",
+        "s": 258.72575808588084,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -200.4344805814387,
+          18,
+          288.4808492184638
+        ],
+        "driverEye": [
+          -200.4344805814387,
+          19.6,
+          288.4808492184638
+        ],
+        "driverLook": [
+          -232.01196855626918,
+          19.6,
+          290.3922366953077
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -260.0,
+        36.0,
+        290.0
+      ]
+    },
+    "desert-caravan-detail": {
+      "file": "desert-caravan-detail.png",
+      "sha256": "429abd55faa6a6151a8fa73a1ebcc53e21c6ab5cfeed2908fb61aa56417d016c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -181.8203125,
+        -149.6459503173828,
+        20.68000030517578
+      ],
+      "cameraQuaternionBlender": [
+        0.21516215801239014,
+        0.26618191599845886,
+        0.7307283878326416,
+        0.5906678438186646
+      ],
+      "projection": "PERSP",
+      "description": "Nearby low perspective of the original grounded caravan sailcourt with connected timber frames, actual cloth surfaces, seated posts, rope ties and source-built detail. All scenery remains visible and unchanged; approximate offline material response.",
+      "routeScreenBounds": [
+        -1173.5496826171875,
+        -78.89094543457031,
+        2042.4310302734375,
+        45.80268478393555
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -864.1005859375,
+          -19.283477783203125,
+          1450.35546875,
+          42.058536529541016
+        ],
+        "boulevard": [
+          -68.29690551757812,
+          -51.400936126708984,
+          442.05712890625,
+          6.585840702056885
+        ]
+      },
+      "lensMillimetres": 22.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/desert-overview.webp",
+    "sha256": "d3636ef280894592a810df5e163f5f698c721599f13b8383126a62ef66fa6024",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

@@ -14,7 +14,7 @@ import { clearFoodKartPayloadCache } from '../../src/food-kart-payload';
 import { createRaceKartTuning, kartRoadContext, buildForRacer, stepRaceKartSpeed } from '../../src/kart-race';
 
 const savedRaceBuild = starterBuilds.find(build => build.id === 'mixed_straight')!.build;
-export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;quarry?:boolean;forest?:boolean;workshop?:boolean;harvest?:boolean;courseFailure?:boolean};
+export type GameScenario={name:string;savedBuild?:KartBuild;cancelDuringParts:boolean;mountain?:boolean;town?:boolean;quarry?:boolean;forest?:boolean;workshop?:boolean;harvest?:boolean;desert?:boolean;courseFailure?:boolean};
 
 /** Runs the actual game module with a real PlayCanvas NullGraphicsDevice.
  * DOM events and image pixels are mocked, not race code, meshes, glTFs or rigs.
@@ -28,7 +28,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   const previousLocation=g.location, previousStorage=Object.getOwnPropertyDescriptor(g,'localStorage');
   const storageReads: string[] = [], storageWrites: string[] = [];
   Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem(key:string){storageReads.push(key);return key===GARAGE_STORAGE_KEY&&scenario.savedBuild?JSON.stringify({version:1,activeBuild:scenario.savedBuild,namedBuilds:[]}):null;},setItem(key:string){storageWrites.push(key);}}});
-  const forkMap=scenario.harvest?'harvest':scenario.workshop?'workshop':scenario.forest?'forest':scenario.quarry?'quarry':scenario.town?'town':null;
+  const forkMap=scenario.desert?'desert':scenario.harvest?'harvest':scenario.workshop?'workshop':scenario.forest?'forest':scenario.quarry?'quarry':scenario.town?'town':null;
   g.location={search:'?driver=whale&autostart=1'+(forkMap?'&map='+forkMap:scenario.mountain?'&map=mountain':''),href:'http://localhost/coast.html?driver=whale&autostart=1'+(forkMap?'&map='+forkMap:scenario.mountain?'&map=mountain':'')};
   clearFoodKartPayloadCache();
   const loggedErrors: unknown[] = []; console.error = (...args) => { loggedErrors.push(args[0]); };
@@ -144,12 +144,12 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);
       assert.equal(element('raceLoadingRetry').disabled,false);assert.equal(element('raceLoadingRetry').hidden,false);
       assert.equal(element('raceLoadingExit').hidden,false);assert.match(element('raceLoadingExit').href,new RegExp('map='+(forkMap||'mountain')));
-      assert.equal(element('loadingMapName').textContent,forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':forkMap==='forest'?'杉影星台环线':'云岭盘山道');return;
+      assert.equal(element('loadingMapName').textContent,forkMap==='desert'?'星砂古驿':forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':forkMap==='forest'?'杉影星台环线':'云岭盘山道');return;
     }
     await import(copy.href + '?run=' + Date.now());
     const game = g.window.neonKart, qa = game.debug;
     if(forkMap){
-      const course=forkMap==='harvest'?(await import('../../src/maps/harvest')).HARVEST_COURSE:forkMap==='workshop'?(await import('../../src/maps/workshop')).WORKSHOP_COURSE:forkMap==='forest'?(await import('../../src/maps/forest')).FOREST_COURSE:forkMap==='quarry'?(await import('../../src/maps/quarry')).QUARRY_COURSE:(await import('../../src/maps/town')).TOWN_COURSE;
+      const course=forkMap==='desert'?(await import('../../src/maps/desert')).DESERT_COURSE:forkMap==='harvest'?(await import('../../src/maps/harvest')).HARVEST_COURSE:forkMap==='workshop'?(await import('../../src/maps/workshop')).WORKSHOP_COURSE:forkMap==='forest'?(await import('../../src/maps/forest')).FOREST_COURSE:forkMap==='quarry'?(await import('../../src/maps/quarry')).QUARRY_COURSE:(await import('../../src/maps/town')).TOWN_COURSE;
       const {sampleCursor,createCursor,createRouteProgress}=await import('../../src/land-routes');
       for(let i=0;i<1600&&!game.getState().modelsLoaded;i++)await new Promise(resolve=>setTimeout(resolve,5));
       assert.equal(game.getState().modelsLoaded,true,game.getState().loading.error||`${forkMap} loading completes`);
@@ -160,13 +160,13 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       // The same pointer-bound controls used on touch feed the real fork decision.
       const routes=qa.routes,id=game.getState().selectedDriverId;
       routes.states.set(id,createRouteProgress({...createCursor(2),s:course.commonStart.length-.2}));qa.set({pos:routes.total(id),lane:2,speed:30});
-      qa.update(1/600);assert.match(element('chargeLabel').textContent,forkMap==='harvest'?/谷仓折线.*麦浪外环/:forkMap==='workshop'?/工具柜弯道.*木台外沿/:forkMap==='forest'?/星台旧径.*星台外环/:forkMap==='quarry'?/石脊窄道.*重载环坡/:/灯巷捷径.*电车大道/);
+      qa.update(1/600);assert.match(element('chargeLabel').textContent,forkMap==='desert'?/拱廊折径.*风帆庭环/:forkMap==='harvest'?/谷仓折线.*麦浪外环/:forkMap==='workshop'?/工具柜弯道.*木台外沿/:forkMap==='forest'?/星台旧径.*星台外环/:forkMap==='quarry'?/石脊窄道.*重载环坡/:/灯巷捷径.*电车大道/);
       element('touch-ArrowLeft').emit('pointerdown',{pointerId:7,preventDefault(){}});qa.update(1/60);element('touch-ArrowLeft').emit('pointerup',{pointerId:7});
       assert.equal(game.getState().route.edgeId,'alley');
-      assert.doesNotMatch(element('chargeLabel').textContent||'',/谷仓折线|麦浪外环|工具柜弯道|木台外沿|星台旧径|星台外环|石脊窄道|重载环坡|灯巷捷径|电车大道/);
+      assert.doesNotMatch(element('chargeLabel').textContent||'',/拱廊折径|风帆庭环|谷仓折线|麦浪外环|工具柜弯道|木台外沿|星台旧径|星台外环|石脊窄道|重载环坡|灯巷捷径|电车大道/);
       const heldCursor=JSON.stringify(game.getState().route);game.pause();qa.update(.1);assert.equal(JSON.stringify(game.getState().route),heldCursor);game.pause();
-      if(forkMap==='forest'||forkMap==='workshop'||forkMap==='harvest'){
-        assert.equal(element('loadingMapName').textContent,forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':'杉影星台环线');
+      if(forkMap==='forest'||forkMap==='workshop'||forkMap==='harvest'||forkMap==='desert'){
+        assert.equal(element('loadingMapName').textContent,forkMap==='desert'?'星砂古驿':forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':'杉影星台环线');
         assert.match(element('raceChangeMap').href,new RegExp('map='+forkMap));assert.match(element('raceGarage').href,new RegExp('map='+forkMap));
         assert.equal(element('perf-body').hidden,true);element('perf-toggle').click();assert.equal(element('perf-body').hidden,false);element('perf-toggle').click();assert.equal(element('perf-body').hidden,true);
         // Right touch selection is an independent native input path. Reset its
@@ -232,6 +232,58 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
         for(const box of fixed){const p=course.edges[box.edgeId].sample(box.s,box.lateral).p,mesh=box.mesh.getPosition();assert.equal(mesh.x,Math.fround(p.x),'native pickup X equals float32 source');assert.equal(mesh.z,Math.fround(p.z),'native pickup Z equals float32 source');assert.ok(Math.abs(box.base-p.y-1.25)<1e-7);}
       }
 
+      if(forkMap==='desert'){
+        const {DESERT_ARCHES:arches}=await import('../../src/maps/desert');
+        const {resetCursor}=await import('../../src/land-routes');
+        // The same actual kart, cursor and camera traverse both separated open
+        // rings. No nearest-world support lookup or whole-building box is used.
+        for(const s of [arches.straightFromS-12,arches.straightFromS,arches.straightFromS+8,arches.centerS,arches.straightToS-8,arches.straightToS,arches.straightToS+12])for(const lane of [-4.5,0,4.5]){
+          const cursor={...createCursor(lane),edgeId:'alley' as const,s,choiceByLap:{0:'alley' as const}};
+          const reset=resetCursor(course,cursor);assert.equal(reset.edgeId,'alley');assert.equal(reset.s,s);assert.equal(reset.lateral,0);assert.ok(Math.abs(sampleCursor(course,reset).p.y-arches.floorY)<1e-8);
+          routes.states.set(id,createRouteProgress(cursor));qa.set({pos:routes.total(id),lane,speed:0});
+          for(const view of [0,1])for(const rear of [false,true]){
+            if(game.getState().camera!==view){key('keydown','KeyZ');key('keyup','KeyZ');}
+            if(rear)canvas.emit('mousedown',{button:2});else docEvents.mouseup?.forEach(fn=>fn({button:2}));
+            assert.equal(!!qa.keys.RearView,rear);qa.orbit.recenter(true);qa.draw(1);
+            const state=game.getState(),support=sampleCursor(course,state.route,state.lane),actual=qa.player().getPosition(),camera=qa.world.camera.getPosition();
+            assert.equal(state.route.edgeId,'alley');assert.ok(actual.distance(support.p)<.13,'native arch kart stays on its physical stone support');
+            assert.ok([camera.x,camera.y,camera.z].every(Number.isFinite));
+            assert.ok(Math.abs(support.p.y-arches.floorY)<1e-8);assert.ok(camera.y<arches.undersideY-.45,'native default camera remains within conservative open aperture');
+          }
+          key('keydown','KeyS');for(let frame=0;frame<30;frame++)qa.update(1/60);key('keyup','KeyS');qa.draw(0);
+          assert.ok(game.getState().speed<0);assert.equal(game.getState().route.edgeId,'alley');
+          assert.ok(qa.player().getPosition().distance(sampleCursor(course,game.getState().route,game.getState().lane).p)<.13,'native reverse stays on the actual arch lane');
+        }
+        docEvents.mouseup?.forEach(fn=>fn({button:2}));assert.equal(qa.keys.RearView,false);
+        assert.equal(game.getState().modularKartsLoaded,true);assert.equal(game.getState().npcBuilds.length,5);
+        for(const slot of KART_SLOTS)assert.ok(game.getState().kartBuild[slot]);
+        for(const bot of game.getState().npcBuilds)for(const slot of KART_SLOTS)assert.ok(bot.build[slot]);
+        for(const s of [arches.straightFromS+8,arches.straightToS-8])for(const lane of [-4.5,0,4.5]){
+          for(const racer of [{id,mesh:qa.player()},...qa.bots()]){routes.states.set(racer.id,createRouteProgress({...createCursor(lane),edgeId:'alley',s,choiceByLap:{0:'alley'}}));if(racer.id!==id)Object.assign(racer,{total:routes.total(racer.id),lateral:lane,targetLane:lane});}
+          qa.set({pos:routes.total(id),lane,speed:0});qa.draw(0);
+          for(const racer of [{id,mesh:qa.player()},...qa.bots()])for(const render of racer.mesh.findComponents('render'))for(const instance of render.meshInstances){
+            const min=instance.aabb.getMin(),max=instance.aabb.getMax();
+            assert.ok(max.y<arches.undersideY,'entire native assembled kart/driver stays below the conservative arch ring');
+            assert.ok(min.z>arches.centerZ-arches.innerHalfWidth&&max.z<arches.centerZ+arches.innerHalfWidth,'entire native assembled kart/driver stays between real piers');
+          }
+        }
+        const fixed=qa.boxes().filter(box=>!box.dynamic);assert.equal(fixed.length,18);
+        for(const box of fixed){const p=course.edges[box.edgeId].sample(box.s,box.lateral).p,mesh=box.mesh.getPosition();assert.equal(mesh.x,Math.fround(p.x),'native pickup X equals float32 physical source');assert.equal(mesh.z,Math.fround(p.z),'native pickup Z equals float32 physical source');assert.ok(Math.abs(box.base-p.y-1.25)<1e-7);}
+        qa.set({noBots:true});
+        for(const box of fixed){
+          resetPickup(box);setPickupDisplay(box,'shield');
+          const choiceByLap=box.edgeId==='alley'||box.edgeId==='boulevard'?{0:box.edgeId}:{};
+          routes.states.set(id,createRouteProgress({...createCursor(box.lateral),edgeId:box.edgeId,s:box.s-3,choiceByLap}));
+          qa.set({pos:routes.total(id),lane:box.lateral,speed:30,held:null,shield:0,boost:0,slow:0,hit:0});qa.update(.1);
+          assert.equal(game.getState().held,'shield',`${box.edgeId}:${box.s} native swept pickup uses its own physical row`);
+          assert.equal(box.cool,8);assert.equal(box.mesh.enabled,false);
+        }
+        const last=fixed[fixed.length-1];game.pause();qa.update(9);assert.equal(last.cool,8,'native pause freezes the unchanged fixed-box cooldown');game.pause();
+        routes.states.set(id,createRouteProgress({...createCursor(),s:20}));qa.set({pos:routes.total(id),lane:0,speed:0,held:'shield'});
+        for(let frame=0;frame<31;frame++)qa.update(.25);assert.equal(last.cool,.25);assert.equal(last.mesh.enabled,false);
+        qa.update(.25);assert.equal(last.cool,0);assert.equal(last.mesh.enabled,true,'fixed desert boxes retain the original eight-second respawn');
+      }
+
       game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);
       const branches=new Set<string>();let minY=Infinity,maxY=-Infinity;
       qa.keys.KeyW=true;
@@ -251,7 +303,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       qa.keys.KeyW=qa.keys.KeyA=qa.keys.KeyD=false;
       assert.equal(game.getState().state,'finished',JSON.stringify(game.getState()));assert.equal(game.getState().validatedLaps,3);assert.equal(branches.size,2,'seeded actual NPC field traverses both physical alternatives');assert.ok(maxY-minY>18);
       assert.ok(Object.values(game.getState().route.choiceByLap).includes('alley'));
-      if(forkMap==='workshop'||forkMap==='harvest'){assert.equal(game.getState().standings.length,6);assert.ok(Number.isFinite(game.getState().standings.find(row=>row.id===id).finishedAt));assert.ok(Object.values(qa.keys).every(v=>!v));}
+      if(forkMap==='workshop'||forkMap==='harvest'||forkMap==='desert'){assert.equal(game.getState().standings.length,6);assert.ok(Number.isFinite(game.getState().standings.find(row=>row.id===id).finishedAt));assert.ok(Object.values(qa.keys).every(v=>!v));}
       const alleyTime=game.getState().elapsed;
       game.start();for(let i=0;i<200&&game.getState().state!=='running';i++)qa.advanceFrame(1/60);assert.deepEqual(game.getState().route.choiceByLap,{});
       qa.keys.KeyW=true;
@@ -275,11 +327,11 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
       // Workshop's long spool can leave a neutral kart too far across the road
       // to reach the cabinet in the unchanged 80m window. Isolate a genuine
       // branch-driving error instead: normal approach, then 3s stale decisions.
-      // Harvest uses this same bounded recipe and reports its own measured cost.
-      const balance=forkMap==='workshop'||forkMap==='harvest'
+      // Harvest and desert use this bounded recipe and report their own measured cost.
+      const balance=forkMap==='workshop'||forkMap==='harvest'||forkMap==='desert'
         ? {boulevard:benchmark('boulevard',true,3),boulevardCorrected:benchmark('boulevard',true),alleyNoCorrection:benchmark('alley',true,3),alleyCorrected:benchmark('alley',true)}
         : {boulevard:benchmark('boulevard',false),boulevardCorrected:benchmark('boulevard',true),alleyNoCorrection:benchmark('alley',false),alleyCorrected:benchmark('alley',true)};
-      t.diagnostic('Controlled actual-runtime first-lap benchmark (same kart, no NPCs or item effects): '+JSON.stringify(forkMap==='harvest'?{errorInput:'3s held steering decisions only on the selected branch; corrective approach',contourStale:balance.boulevard,contourClean:balance.boulevardCorrected,barnStale:balance.alleyNoCorrection,barnClean:balance.alleyCorrected}:forkMap==='workshop'?{errorInput:'3s held steering decisions only on the selected branch; corrective approach',rimStale:balance.boulevard,rimClean:balance.boulevardCorrected,cabinetStale:balance.alleyNoCorrection,cabinetClean:balance.alleyCorrected}:balance));
+      t.diagnostic('Controlled actual-runtime first-lap benchmark (same kart, no NPCs or item effects): '+JSON.stringify(forkMap==='desert'?{errorInput:'3s held steering decisions only on the selected branch; corrective approach',sweepStale:balance.boulevard,sweepClean:balance.boulevardCorrected,weaveStale:balance.alleyNoCorrection,weaveClean:balance.alleyCorrected}:forkMap==='harvest'?{errorInput:'3s held steering decisions only on the selected branch; corrective approach',contourStale:balance.boulevard,contourClean:balance.boulevardCorrected,barnStale:balance.alleyNoCorrection,barnClean:balance.alleyCorrected}:forkMap==='workshop'?{errorInput:'3s held steering decisions only on the selected branch; corrective approach',rimStale:balance.boulevard,rimClean:balance.boulevardCorrected,cabinetStale:balance.alleyNoCorrection,cabinetClean:balance.alleyCorrected}:balance));
       assert.ok(balance.alleyCorrected.seconds<balance.alleyNoCorrection.seconds,'corrective steering away from rails has a real measured benefit');
       const cleanAdvantage=balance.boulevardCorrected.seconds-balance.alleyCorrected.seconds;
       assert.ok(forkMap==='harvest'?cleanAdvantage>1.5&&cleanAdvantage<2:cleanAdvantage>.3&&cleanAdvantage<1.1,`clean alley advantage ${cleanAdvantage}s`);
@@ -291,6 +343,13 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
         // this build a small barn win; the clear loss is against a clean contour.
         assert.ok(balance.alleyNoCorrection.seconds<balance.boulevard.seconds);
         t.diagnostic('Harvest interpretation: the clean barn saving is physical; the 3s branch error loses to a clean contour, but does not reverse identical 3s stale driving on this build. No universal human-balance claim.');
+      }
+      if(forkMap==='desert'){
+        assert.equal(balance.alleyCorrected.railSeconds,0);assert.equal(balance.boulevardCorrected.railSeconds,0);
+        assert.ok(Math.abs(balance.alleyCorrected.seconds-74.43333333333334)<1/60+1e-7);assert.ok(Math.abs(balance.boulevardCorrected.seconds-75.43333333333334)<1/60+1e-7);
+        assert.ok(balance.alleyNoCorrection.seconds>balance.boulevard.seconds,'the native 3s branch-only error also loses to equally stale broad driving');
+        assert.ok(balance.alleyNoCorrection.branchRailSeconds>balance.boulevard.branchRailSeconds);
+        t.diagnostic('Desert interpretation: the 57.049m physical shortcut rewards clean driving; this tested 3s steering-delay recipe loses to both clean and equally stale broad-route driving. It is not a universal human-difficulty guarantee.');
       }
       game.start();qa.draw(0);assert.ok(qa.player().getPosition().distance(sampleCursor(course,game.getState().route,-2).p)<.13);return;
     }

@@ -8,6 +8,7 @@ export const MAP_PROFILES=Object.freeze({
  forest:Object.freeze({id:'forest',label:'杉影星台环线',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 杉林天文台双路线竞速',tag:'CEDARLIGHT OBSERVATORY',detail:'穿过根谷连续弯与倾斜林碗，选择镜台便道或观星环路，再沿高架林冠桥返回山谷。',icon:'♧'}),
  workshop:Object.freeze({id:'workshop',label:'发条工坊回旋道',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 巨型钟表工坊双路线竞速',tag:'CLOCKWIND WORKSHOP',detail:'沿木制螺旋坡绕钟芯爬升，跨过旧路线，在工具柜便道与工作台外环之间选线，再穿过抽屉台阶返回起点。',icon:'⚙'}),
  harvest:Object.freeze({id:'harvest',label:'谷风麦垄回环',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 麦田果园双路线竞速',tag:'AMBERWIND HARVEST',detail:'沿麦垄梯田攀上风车山脊，在果园起伏弯后选择穿仓便道或金色田埂外环，穿过收获集市返回低地。',icon:'❋'}),
+ desert:Object.freeze({id:'desert',label:'星砂古驿',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 沙丘古驿双路线竞速',tag:'SUNWEAVE CARAVAN',detail:'沿起伏沙脊攀上砂岩高地，穿过风蚀弯廊，在双石拱折径与风帆庭环之间选线，再沿低地古道返回。',icon:'☼'}),
 });
 export type MapId=keyof typeof MAP_PROFILES;
 export function resolveMap(id:unknown){return MAP_PROFILES[typeof id==='string'&&Object.prototype.hasOwnProperty.call(MAP_PROFILES,id)?id as MapId:'coast'];}

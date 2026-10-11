@@ -21,7 +21,13 @@ let createWorkshopWorld:typeof createMountainWorld;
 let workshopPreparation:Promise<void>|undefined;
 let createHarvestWorld:typeof createMountainWorld;
 let harvestPreparation:Promise<void>|undefined;
+let createDesertWorld:typeof createMountainWorld;
+let desertPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='desert')return desertPreparation??=Promise.all([import('./land-scene'),import('./maps/desert'),import('./desert-scenery')]).then(([scene,{DESERT_TRACK,DESERT_COURSE},{buildDesertSceneGeometry,DESERT_SCENE_THEME}])=>{
+    registerMenuRoute('desert',{sample:DESERT_TRACK.sample,length:DESERT_TRACK.length,lane:DESERT_TRACK.halfWidthAt(0)});
+    createDesertWorld=app=>scene.createLandScene(app,DESERT_TRACK,{preview:true,geometry:buildDesertSceneGeometry(DESERT_COURSE),theme:DESERT_SCENE_THEME});
+  }).catch(error=>{desertPreparation=undefined;throw error;});
   if(map==='harvest')return harvestPreparation??=Promise.all([import('./land-scene'),import('./maps/harvest'),import('./harvest-scenery')]).then(([scene,{HARVEST_TRACK,HARVEST_COURSE},{buildHarvestSceneGeometry,HARVEST_SCENE_THEME}])=>{
     registerMenuRoute('harvest',{sample:HARVEST_TRACK.sample,length:HARVEST_TRACK.length,lane:HARVEST_TRACK.halfWidthAt(0)});
     createHarvestWorld=app=>scene.createLandScene(app,HARVEST_TRACK,{preview:true,geometry:buildHarvestSceneGeometry(HARVEST_COURSE),theme:HARVEST_SCENE_THEME});
@@ -96,7 +102,8 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   if(map==='forest'&&!createForestWorld)throw new Error('Prepare the forest menu world before mounting.');
   if(map==='workshop'&&!createWorkshopWorld)throw new Error('Prepare the workshop menu world before mounting.');
   if(map==='harvest'&&!createHarvestWorld)throw new Error('Prepare the harvest menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):null;
+  if(map==='desert'&&!createDesertWorld)throw new Error('Prepare the desert menu world before mounting.');
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):map==='desert'?createDesertWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

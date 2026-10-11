@@ -30,6 +30,8 @@
 
 **谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开 dev 收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest)。
 
+**星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开 dev 沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

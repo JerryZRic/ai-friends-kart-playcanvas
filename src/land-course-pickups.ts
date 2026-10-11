@@ -82,3 +82,22 @@ export const HARVEST_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:650,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const harvestPickupRows=(course:ForkCourse)=>routePickupRows(course,HARVEST_PICKUP_ROWS);
+
+/** Physical desert rows use the open dune/canyon pockets, the daylight between
+ * two genuinely separate stone arches and the broad sailcourt. Branch rows
+ * clear the complete junction overlaps, not merely the 40m shared tail.
+ * Actual emitted meshes and the unchanged default camera verify visibility.
+ * Fixed rows retain the shared eight-second cooldown; reaction-gap guarantees
+ * belong only to the dynamic director's physical common-road corridors. */
+export const DESERT_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+  {edgeId:'start',s:185,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:650,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:950,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:1200,lanes:[-3.5,3.5]},
+  {edgeId:'alley',s:318.72575808588084,lanes:[-2.2,2.2]},
+  {edgeId:'boulevard',s:200,lanes:[-3.5,3.5]},
+  {edgeId:'boulevard',s:365,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:220,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:540,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
+export const desertPickupRows=(course:ForkCourse)=>routePickupRows(course,DESERT_PICKUP_ROWS);
