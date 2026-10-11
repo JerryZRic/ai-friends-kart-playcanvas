@@ -34,6 +34,8 @@
 
 **霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开 dev 雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow)。
 
+**玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开 dev 玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

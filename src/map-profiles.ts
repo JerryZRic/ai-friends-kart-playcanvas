@@ -10,6 +10,7 @@ export const MAP_PROFILES=Object.freeze({
  harvest:Object.freeze({id:'harvest',label:'谷风麦垄回环',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 麦田果园双路线竞速',tag:'AMBERWIND HARVEST',detail:'沿麦垄梯田攀上风车山脊，在果园起伏弯后选择穿仓便道或金色田埂外环，穿过收获集市返回低地。',icon:'❋'}),
  desert:Object.freeze({id:'desert',label:'星砂古驿',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 沙丘古驿双路线竞速',tag:'SUNWEAVE CARAVAN',detail:'沿起伏沙脊攀上砂岩高地，穿过风蚀弯廊，在双石拱折径与风帆庭环之间选线，再沿低地古道返回。',icon:'☼'}),
  snow:Object.freeze({id:'snow',label:'霜环雪站',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 雪岭车站双路线竞速',tag:'FROSTLOOP DEPOT',detail:'攀上两座相向的雪岭弯谷，越过鞍部，在车站维修折径与宽阔雪台之间选线，沿层叠石坡返回。',icon:'❄'}),
+ caldera:Object.freeze({id:'caldera',label:'玄岩环冕',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 玄岩火山双路线竞速',tag:'BASALT CROWN',detail:'沿冷却火山的高环壁降入钩形石谷，在节理折径与宽阔灰台间选线，穿过双孔石桥，再攀上桥面返回。',icon:'◈'}),
 });
 export type MapId=keyof typeof MAP_PROFILES;
 export function resolveMap(id:unknown){return MAP_PROFILES[typeof id==='string'&&Object.prototype.hasOwnProperty.call(MAP_PROFILES,id)?id as MapId:'coast'];}

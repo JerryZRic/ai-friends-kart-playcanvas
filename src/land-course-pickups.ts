@@ -120,3 +120,21 @@ export const SNOW_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:1020,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const snowPickupRows=(course:ForkCourse)=>routePickupRows(course,SNOW_PICKUP_ROWS);
+
+/** Physical caldera rows occupy low bowl, separated lower branches and rim
+ * pockets outside junction overlaps. Actual emitted geometry verifies their
+ * visibility. Fixed boxes retain the shared eight-second respawn; only dynamic
+ * appearances promise the speed/acceleration-aware physical reaction gap. */
+export const CALDERA_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+ {edgeId:'start',s:260,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:650,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:950,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:1420,lanes:[-3.5,3.5]},
+ {edgeId:'alley',s:225,lanes:[-2.2,2.2]},
+ {edgeId:'boulevard',s:175,lanes:[-3.5,3.5]},
+ {edgeId:'boulevard',s:310,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:190,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:570,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:900,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)}))as RoutePickupRow[]);
+export const calderaPickupRows=(course:ForkCourse)=>routePickupRows(course,CALDERA_PICKUP_ROWS);

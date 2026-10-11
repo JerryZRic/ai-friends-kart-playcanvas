@@ -1,0 +1,238 @@
+"""Render exact runtime caldera mesh batches, normals, UVs and procedural textures.
+blender -b -t 2 --python scripts/render-caldera-preview.py -- OUTPUT_DIR [draft|final] [view,...]
+CPU only: final renders use two threads and 48 samples. No gameplay/FPS claim.
+"""
+import bpy, json, math, sys, hashlib
+from pathlib import Path
+from mathutils import Vector
+from bpy_extras.object_utils import world_to_camera_view
+from PIL import Image
+
+def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def xyz(p): return Vector((p[0], -p[2], p[1]))
+def linear(v): return v / 12.92 if v <= .04045 else ((v + .055) / 1.055) ** 2.4
+def rgb(hex): return tuple(linear(int(hex.lstrip('#')[i:i+2], 16) / 255) for i in (0, 2, 4))
+
+args=sys.argv[sys.argv.index('--')+1:]
+out=Path(args[0]).resolve(); mode=args[1] if len(args)>1 else 'final'; draft=mode=='draft'
+selected=set(args[2].split(',')) if len(args)>2 else None
+view_names={'caldera-overview','caldera-topdown','caldera-driver-reveal','caldera-twin-arch-passage','caldera-wind-tooth'}
+assert mode in {'draft','final'}, 'Expected draft or final render mode'
+assert selected is None or selected <= view_names, 'Unknown requested view'
+root=Path(__file__).resolve().parents[1]
+data=json.loads((out/'caldera-geometry.json').read_text())
+for path,digest in data['sourceHashes'].items(): assert sha(root/path)==digest, 'Stale caldera geometry: '+path
+bpy.ops.wm.read_factory_settings(use_empty=True)
+geometry_collection=bpy.data.collections.new('Original runtime static mesh batches'); bpy.context.scene.collection.children.link(geometry_collection)
+images={}
+for name,record in data['textures'].items():
+    image=bpy.data.images.new('Original runtime '+name,width=record['width'],height=record['height'])
+    image.colorspace_settings.name='Non-Color'; image.pixels=[v/255 for v in record['pixels']]
+    image.pack(); images[name]=image
+for record in data['geometry']['batches']:
+    positions=record['positions']; indices=record['indices']; uvs=record['uvs']; normals=record['normals']
+    mesh=bpy.data.meshes.new(record['name'])
+    mesh.from_pydata([xyz(positions[i:i+3]) for i in range(0,len(positions),3)],[],[indices[i:i+3] for i in range(0,len(indices),3)])
+    mesh.update(); layer=mesh.uv_layers.new(name='Original runtime UV')
+    for loop in mesh.loops: layer.data[loop.index].uv=uvs[loop.vertex_index*2:loop.vertex_index*2+2]
+    for polygon in mesh.polygons: polygon.use_smooth=True
+    source_normals=[xyz(normals[i:i+3]) for i in range(0,len(normals),3)]
+    mesh.normals_split_custom_set_from_vertices(source_normals)
+    # Blender's compact custom-corner encoding can be unstable at degenerate
+    # poles or other awkward source topology. Preserve every original source
+    # vector exactly at float32 in a POINT attribute and use it for shading.
+    normal_attribute=mesh.attributes.new('Original runtime normal','FLOAT_VECTOR','POINT')
+    normal_attribute.data.foreach_set('vector',[value for normal in source_normals for value in normal])
+    obj=bpy.data.objects.new(record['name'],mesh); geometry_collection.objects.link(obj)
+    obj['source']='buildCalderaSceneGeometry(CALDERA_COURSE)'; obj['source_material_color']=record['color']; obj['source_texture']=record['texture']
+    material=bpy.data.materials.new(record['name']); material.use_nodes=True; material.use_backface_culling=False
+    shader=material.node_tree.nodes.get('Principled BSDF'); color=rgb(record['color'])
+    shader.inputs['Base Color'].default_value=(*color,1)
+    shader.inputs['Roughness'].default_value=record['roughness']; shader.inputs['Metallic'].default_value=record['metalness']
+    source_attribute=material.node_tree.nodes.new('ShaderNodeAttribute'); source_attribute.name='Original runtime normal attribute'
+    source_attribute.attribute_type='GEOMETRY'; source_attribute.attribute_name='Original runtime normal'
+    normal_transform=material.node_tree.nodes.new('ShaderNodeVectorTransform'); normal_transform.name='Original normal object to world'
+    normal_transform.vector_type='NORMAL'; normal_transform.convert_from='OBJECT'; normal_transform.convert_to='WORLD'
+    normal_normalize=material.node_tree.nodes.new('ShaderNodeVectorMath'); normal_normalize.name='Normalize original runtime normal'; normal_normalize.operation='NORMALIZE'
+    material.node_tree.links.new(source_attribute.outputs['Vector'],normal_transform.inputs['Vector'])
+    material.node_tree.links.new(normal_transform.outputs['Vector'],normal_normalize.inputs[0])
+    # Match runtime StandardMaterial.twoSidedLighting=true on original
+    # double-sided triangles without changing any source winding or vector.
+    facing=material.node_tree.nodes.new('ShaderNodeNewGeometry'); facing.name='Original runtime double-sided facing'
+    sign=material.node_tree.nodes.new('ShaderNodeMath'); sign.name='Original runtime backface normal sign'; sign.operation='MULTIPLY_ADD'
+    sign.inputs[1].default_value=-2; sign.inputs[2].default_value=1
+    normal_side=material.node_tree.nodes.new('ShaderNodeVectorMath'); normal_side.name='Original runtime two-sided normal'; normal_side.operation='SCALE'
+    material.node_tree.links.new(facing.outputs['Backfacing'],sign.inputs[0])
+    material.node_tree.links.new(normal_normalize.outputs['Vector'],normal_side.inputs[0])
+    material.node_tree.links.new(sign.outputs[0],normal_side.inputs['Scale'])
+    material.node_tree.links.new(normal_side.outputs['Vector'],shader.inputs['Normal'])
+    if record['texture']!='none':
+        texture=material.node_tree.nodes.new('ShaderNodeTexImage'); texture.image=images[record['texture']]
+        texture.interpolation='Linear'; texture.extension='REPEAT'
+        multiply=material.node_tree.nodes.new('ShaderNodeMixRGB'); multiply.blend_type='MULTIPLY'
+        multiply.inputs[0].default_value=1; multiply.inputs[2].default_value=(*color,1)
+        material.node_tree.links.new(texture.outputs['Color'],multiply.inputs[1]); material.node_tree.links.new(multiply.outputs[0],shader.inputs['Base Color'])
+    mesh.materials.append(material)
+
+scene=bpy.context.scene
+scene['provenance']='Exact original runtime caldera static meshes; approximate offline lighting/material response. Not a gameplay capture.'
+world=bpy.data.worlds.new('Offline warm dry-land daylight'); scene.world=world; world.use_nodes=True
+world.node_tree.nodes['Background'].inputs[0].default_value=(*rgb(data['theme']['sky']),1)
+world.node_tree.nodes['Background'].inputs[1].default_value=.7
+bpy.ops.object.light_add(type='SUN'); sun=bpy.context.object; sun.name='Approximate offline warm dry-land sunlight'
+sun.rotation_euler=(math.radians(-35),0,math.radians(-16)); sun.data.energy=2.25; sun.data.angle=.09
+sun.data.color=(1,.963,.902)
+scene.render.engine='CYCLES'; scene.cycles.device='CPU'; scene.cycles.samples=16 if draft else 48
+scene.cycles.use_denoising=False; scene.cycles.seed=17; scene.render.threads_mode='FIXED'; scene.render.threads=2
+scene.render.image_settings.file_format='PNG'; scene.render.resolution_percentage=100
+scene.view_settings.view_transform='AgX'; scene.view_settings.exposure=0; scene.render.film_transparent=False
+scene.render.use_stamp=True; scene.render.use_stamp_note=True
+scene.render.stamp_note_text='OFFLINE EXACT-SOURCE PREVIEW | Cycles CPU | Approximate lighting / materials'
+scene.render.stamp_font_size=16
+for flag in ['date','time','render_time','frame','frame_range','memory','hostname','camera','lens','scene','marker','filename','sequencer_strip']:
+    key='use_stamp_'+flag
+    if hasattr(scene.render,key):setattr(scene.render,key,False)
+scene.render.use_stamp_labels=False
+bpy.ops.object.camera_add(); camera=bpy.context.object; camera.name='Caldera overview'; scene.camera=camera
+camera.data.sensor_fit='HORIZONTAL'; camera.data.clip_start=.1; camera.data.clip_end=10000
+
+edges={edge['id']:edge for edge in data['route']['edges']}
+anchors=[xyz(p) for sample in data['geometry']['routeRoadSamples'] for p in (sample['left'],sample['right'])]
+anchors += [xyz(p) for edge in data['route']['edges'] for sample in edge['samples'] for p in (sample['left'],sample['right'])]
+anchors += [xyz(p) for face in data['geometry']['roadFaces'] for p in face['points']]
+# Every actual non-floor opaque member contributes its emitted bounds, so
+# full-route views include complete basalt landform components and original landmarks.
+fit_anchors=anchors+[xyz((obstacle['min' if x==0 else 'max'][0], obstacle['min' if y==0 else 'max'][1], obstacle['min' if z==0 else 'max'][2]))
+    for obstacle in data['geometry']['cameraObstacles'] if 'heightfield' not in obstacle for x in [0,1] for y in [0,1] for z in [0,1]]
+fit_anchors += [xyz((component['min' if x==0 else 'max'][0],component['min' if y==0 else 'max'][1],component['min' if z==0 else 'max'][2]))
+    for component in data['geometry']['components'] for x in [0,1] for y in [0,1] for z in [0,1]]
+mean=sum(anchors,Vector())/len(anchors)
+manifest={
+    'kind':data['kind'],'description':data['description'],
+    'renderer':'Blender '+bpy.app.version_string+' Cycles CPU, 2 threads, '+str(scene.cycles.samples)+' samples. Approximate warm dry-land daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.',
+    'sourceHashes':data['sourceHashes'],
+    'geometryTexturesRoutesThemeSha256':data['contentSha256'],
+    'generatorHashes':{p:sha(root/p) for p in ['scripts/export-caldera-preview.ts','scripts/render-caldera-preview.py']},
+    'batches':len(data['geometry']['batches']),
+    'vertices':sum(len(b['positions'])//3 for b in data['geometry']['batches']),
+    'triangles':sum(len(b['indices'])//3 for b in data['geometry']['batches']),
+    'routeLengthsMetres':{e['id']:e['length'] for e in data['route']['edges']},
+    'normalShading':{'storage':'Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision','mapping':'Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector','shader':'Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true','blenderCornerEncodingNotice':'Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed.'},
+    'framingSource':'Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Jointline Cut (alley), Ashen Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.',
+    'lapLengthsMetres':{k:data['route'][k] for k in ['jointlineCutLapLength','ashenSweepLapLength']},
+    'originalModels':{'glb':{'file':'caldera-original-scene.glb','sha256':sha(out/'caldera-original-scene.glb'),'note':'Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime.'}},
+    'views':{},
+}
+if not draft and selected and (out/'caldera-preview-provenance.json').exists():
+    previous=json.loads((out/'caldera-preview-provenance.json').read_text())
+    assert previous['sourceHashes']==data['sourceHashes'],'Partial rerender requires unchanged geometry'
+    assert previous['generatorHashes']==manifest['generatorHashes'],'Changed generators require a complete rerender'
+    manifest['views']=previous['views']
+    for key in ['menuAsset']:
+        if key in previous:manifest[key]=previous[key]
+
+def wanted(name): return selected is None or name in selected
+def render(name,description,width=1920,height=1080):
+    scene.render.resolution_x=width//2 if draft else width; scene.render.resolution_y=height//2 if draft else height
+    bpy.context.view_layer.update()
+    projected=[world_to_camera_view(scene,camera,p) for p in anchors]
+    bounds=[min(p.x for p in projected),min(p.y for p in projected),max(p.x for p in projected),max(p.y for p in projected)]
+    destination=out/(name+('-draft' if draft else '')+'.png'); scene.render.filepath=str(destination)
+    bpy.ops.render.render(write_still=True)
+    assert destination.stat().st_size<10*1024*1024, 'Preview exceeds 10 MiB'
+    result={'file':destination.name,'sha256':sha(destination),'resolution':[scene.render.resolution_x,scene.render.resolution_y],
+        'cameraPositionBlender':list(camera.location),'cameraQuaternionBlender':list(camera.rotation_euler.to_quaternion()),
+        'projection':camera.data.type,'description':description,'routeScreenBounds':bounds}
+    result['physicalBranchScreenBounds']={}
+    for edge_id in ['alley','boulevard']:
+        projected_branch=[world_to_camera_view(scene,camera,xyz(point)) for sample in edges[edge_id]['samples'] for point in (sample['left'],sample['right'])]
+        result['physicalBranchScreenBounds'][edge_id]=[min(p.x for p in projected_branch),min(p.y for p in projected_branch),max(p.x for p in projected_branch),max(p.y for p in projected_branch)]
+    if camera.data.type=='ORTHO':result['orthographicScaleMetres']=camera.data.ortho_scale
+    else:result['lensMillimetres']=camera.data.lens
+    manifest['views'][name]=result
+    return destination,bounds
+def ortho(name,target,direction,scale=None,fit=None,width=1920,height=1080,description='',whole_route=True):
+    camera.name=name; camera.data.type='ORTHO'; direction=Vector(direction).normalized(); aspect=width/height
+    camera.rotation_euler=(-direction).to_track_quat('-Z','Y').to_euler()
+    if fit:
+        right=camera.rotation_euler.to_matrix()@Vector((1,0,0)); up=camera.rotation_euler.to_matrix()@Vector((0,1,0))
+        xx=[(p-target).dot(right) for p in fit]; yy=[(p-target).dot(up) for p in fit]
+        target=target+right*((min(xx)+max(xx))/2)+up*((min(yy)+max(yy))/2)
+        scale=max(max(xx)-min(xx),(max(yy)-min(yy))*aspect)/.86
+    camera.location=target+direction*1500; camera.data.ortho_scale=scale
+    destination,bounds=render(name,description,width,height)
+    if fit:
+        projected=[world_to_camera_view(scene,camera,p) for p in fit]
+        subject_bounds=[min(p.x for p in projected),min(p.y for p in projected),max(p.x for p in projected),max(p.y for p in projected)]
+        manifest['views'][name]['fittedSubjectScreenBounds']=subject_bounds
+        assert min(subject_bounds[:2])>=.06 and max(subject_bounds[2:])<=.94, subject_bounds
+    if fit and whole_route:
+        assert min(bounds[:2])>=.06 and max(bounds[2:])<=.94, bounds
+        for branch_bounds in manifest['views'][name]['physicalBranchScreenBounds'].values():assert min(branch_bounds[:2])>=.06 and max(branch_bounds[2:])<=.94, branch_bounds
+    return destination
+def landmark(kind): return next(p for p in data['geometry']['landmarks'] if p['kind']==kind)
+def detail_anchors(kind):
+    return [xyz((c['min' if x==0 else 'max'][0],c['min' if y==0 else 'max'][1],c['min' if z==0 else 'max'][2]))
+        for c in data['geometry']['components'] if c.get('landmark')==kind for x in [0,1] for y in [0,1] for z in [0,1]]
+def perspective(name,position,target,lens=30,width=1800,height=1125,description=''):
+    camera.name=name; camera.data.type='PERSP'; camera.data.lens=lens; camera.location=xyz(position)
+    camera.rotation_euler=(xyz(target)-camera.location).to_track_quat('-Z','Y').to_euler()
+    return render(name,description,width,height)
+def driver_pose(name,pose_id,lens=30,target=None,description=''):
+    pose=next(row for row in data['route']['driverReviewPoses'] if row['id']==pose_id)
+    perspective(name,pose['driverEye'],target or pose['driverLook'],lens=lens,description=description)
+    manifest['views'][name].update({'roadEdge':pose['edge'],'roadDistanceMetres':pose['s'],
+        'heightAboveSampledRoadMetres':pose['heightAboveSampledRoadMetres'],
+        'sourceDriverPose':pose,'lookTargetSourceCoordinates':target or pose['driverLook']})
+
+if wanted('caldera-overview'):
+    destination=ortho('caldera-overview',mean,(.30,.91,.66),fit=fit_anchors,description='Complete original Basalt Crown circuit: asymmetric connected high caldera rim, hooked low bowl, both real lower fork roads, thick twin-arch viaduct and original geology landmarks. Exact emitted source geometry; approximate offline CPU lighting/materials.')
+    if not draft:
+        webp=root/'public/map-previews/caldera-overview.webp'; webp.parent.mkdir(parents=True,exist_ok=True)
+        with Image.open(destination) as im: im.resize((1280,720),Image.Resampling.LANCZOS).convert('RGB').save(webp,'WEBP',quality=94,method=6)
+        assert webp.stat().st_size<500000, 'Menu poster exceeds 500 kB'
+        manifest['menuAsset']={'file':'public/map-previews/caldera-overview.webp','sha256':sha(webp),'resolution':[1280,720]}
+if wanted('caldera-topdown'):
+    ortho('caldera-topdown',mean,(0,0,1),fit=fit_anchors,width=1920,height=1440,
+        description='True overhead original source geometry with both complete physical alternatives: Jointline Cut and Ashen Sweep. Actual banked widths, split/merge unions, connected basalt/ash/ochre terrain and upper viaduct remain unchanged. The upper road naturally occludes lower road fragments at the real crossing; no cutaway is used.')
+if wanted('caldera-driver-reveal'):
+    driver_pose('caldera-driver-reveal','climbing-rim',lens=30,
+        description='Frozen source-design driver eye on the real start road at 266.96907609010907 m, exactly 1.6 m above support. The connected cooled basalt rim and dry terraces frame the upcoming bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.')
+if wanted('caldera-twin-arch-passage'):
+    pose=next(row for row in data['route']['passageReviewPoses'] if row['id']=='jointline-arch-approach')
+    target=[-294,30,-346]
+    perspective('caldera-twin-arch-passage',pose['driverEye'],target,lens=6.5,
+        description='Actual lower Jointline Cut road support at 52 m, eye exactly 1.6 m above it, ultra-wide architectural view toward the real stone apertures and grounded central pier. The original thick upper road, genuine underside and support masonry remain fully present. The camera looks upward through a 6.5 mm ultra-wide offline architectural lens; this is not the gameplay camera FOV or a decorative bridge.')
+    manifest['views']['caldera-twin-arch-passage'].update({'roadEdge':pose['edge'],'roadDistanceMetres':pose['s'],'heightAboveSampledRoadMetres':1.6,'sourceDriverPose':pose,'lookTargetSourceCoordinates':target,'upperRoadIsRealPhysicalCrossing':True})
+if wanted('caldera-wind-tooth'):
+    p=landmark('wind-carved-tooth')['position']
+    perspective('caldera-wind-tooth',[p[0]-32,p[1]+8,p[2]-62],[p[0],p[1]+13,p[2]],lens=28,
+        description='Original asymmetric Wind-carved Tooth: a genuine daylight erosion window through thick basalt, broad bearing feet, an attached companion shoulder and connected talus. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.')
+
+if not draft:
+    # Save the scene with the overview camera, regardless of the final detail view.
+    overview=manifest['views'].get('caldera-overview')
+    if overview:
+        from mathutils import Quaternion
+        camera.name='Caldera source overview'; camera.location=overview['cameraPositionBlender']; camera.rotation_euler=Quaternion(overview['cameraQuaternionBlender']).to_euler()
+        camera.data.type='ORTHO'; camera.data.ortho_scale=overview['orthographicScaleMetres']
+        scene.render.resolution_x=1920; scene.render.resolution_y=1080
+    scene.render.filepath='//caldera-overview.png'
+    assert scene.render.filepath=='//caldera-overview.png'
+    assert len(geometry_collection.objects)==len(data['geometry']['batches'])
+    assert sum(len(obj.data.vertices) for obj in geometry_collection.objects)==manifest['vertices']
+    assert sum(len(obj.data.polygons) for obj in geometry_collection.objects)==manifest['triangles']
+    assert all(image.packed_file is not None for image in images.values())
+    assert all(not obj.hide_render and not obj.hide_viewport and not obj.modifiers for obj in geometry_collection.objects)
+    bpy.ops.wm.save_as_mainfile(filepath=str(out/'caldera-original-scene.blend'))
+    manifest['originalModels']['blend']={'file':'caldera-original-scene.blend','sha256':sha(out/'caldera-original-scene.blend'),'note':'Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera.'}
+    # Preserve the truthful render record even if behavior-only source is being
+    # edited concurrently. A later identical-content re-export can prove that
+    # such edits do not require rerendering; never silently replace this proof.
+    (out/'caldera-render-record.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    for path,digest in data['sourceHashes'].items(): assert sha(root/path)==digest,'Source changed during render: '+path
+    (root/'docs').mkdir(parents=True,exist_ok=True)
+    (root/'docs/caldera-preview-provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    (out/'caldera-preview-provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
+if draft: (out/'caldera-draft-provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print('CALDERA_RENDER_COMPLETE',flush=True)
