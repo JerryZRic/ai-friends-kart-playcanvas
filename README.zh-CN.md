@@ -32,6 +32,8 @@
 
 **星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开 dev 沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert)。
 
+**霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开 dev 雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

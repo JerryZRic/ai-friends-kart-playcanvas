@@ -1,0 +1,316 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime snow mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. Original stationary service vehicles remain included.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate soft winter daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/snow.ts": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/snow-scenery.ts": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "geometryTexturesRoutesThemeSha256": "47033a59c619ea4afdcde12da67ca96ad7fda21c3a6815dbbcbc22a354c3e952",
+  "generatorHashes": {
+    "scripts/export-snow-preview.ts": "881004bc2865895bea49b359fca7fd7f58f131a9dda2402e783a7826e76fdc4a",
+    "scripts/render-snow-preview.py": "6741a8262c9cf9c13685c7ada0bf61e1cde23d873486e7d26bf5374de5de4ad6"
+  },
+  "batches": 23,
+  "vertices": 155970,
+  "triangles": 106286,
+  "routeLengthsMetres": {
+    "start": 1804.37166902813,
+    "alley": 518.3166696310494,
+    "boulevard": 568.5820115628107,
+    "finish": 1212.2364284845742
+  },
+  "normalShading": {
+    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
+    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
+    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
+    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Service Cut (alley), Terrace Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "serviceCutLapLength": 3534.9247671437533,
+    "terraceSweepLapLength": 3585.1901090755155
+  },
+  "originalModels": {
+    "glb": {
+      "file": "snow-original-scene.glb",
+      "sha256": "3b3de49c18a07e9ce39397aadeda7b5b488b74e9acd3a51e204bd91eb1cab9a2",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "snow-original-scene.blend",
+      "sha256": "78b3bf04ef9b94e72a5be3ba09fe16c01dc4d63e0189f5e488d8d24ef953617e",
+      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "snow-overview": {
+      "file": "snow-overview.png",
+      "sha256": "0b139cade6f5b10db41ca85fd5e74ef0e571e659c5ae8a6c60ea84ffe3f251ed",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        307.8783264160156,
+        1678.2403564453125,
+        840.2438354492188
+      ],
+      "cameraQuaternionBlender": [
+        0.09326677024364471,
+        0.052087705582380295,
+        0.48480311036109924,
+        0.8680749535560608
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Frostloop Depot circuit, connected opposing highland snow bowls, low saddle, both physical fork roads, station clock hall, open roundhouse and plow shed. Exact emitted source geometry; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        0.29631686210632324,
+        0.20052559673786163,
+        0.7302161455154419,
+        0.735417366027832
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.37115567922592163,
+          0.2556075155735016,
+          0.4346325099468231,
+          0.4879205822944641
+        ],
+        "boulevard": [
+          0.32541781663894653,
+          0.2556075155735016,
+          0.4346325099468231,
+          0.4879205822944641
+        ]
+      },
+      "orthographicScaleMetres": 1898.8438720703125,
+      "fittedSubjectScreenBounds": [
+        0.12500117719173431,
+        0.06999984383583069,
+        0.8749988079071045,
+        0.9299997091293335
+      ]
+    },
+    "snow-topdown": {
+      "file": "snow-topdown.png",
+      "sha256": "e44fe5c30cfd5adb73f44f8c28da29d2d21a96510bb9abec763e0288133b93ba",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        29.999982833862305,
+        400.0000305175781,
+        1521.903564453125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: technical Service Cut and broad banked Terrace Sweep. Actual road widths, split/merge union, continuous snow/slate landform and complete original architecture remain unchanged.",
+      "routeScreenBounds": [
+        0.3345586359500885,
+        0.16098469495773315,
+        0.671496570110321,
+        0.8097511529922485
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.3941858112812042,
+          0.24671238660812378,
+          0.4213850498199463,
+          0.5294520854949951
+        ],
+        "boulevard": [
+          0.3345586359500885,
+          0.24671238660812378,
+          0.40258732438087463,
+          0.5294520854949951
+        ]
+      },
+      "orthographicScaleMetres": 2263.566162109375,
+      "fittedSubjectScreenBounds": [
+        0.2481849044561386,
+        0.07000000029802322,
+        0.7518150806427002,
+        0.9300000071525574
+      ]
+    },
+    "snow-driver-reveal": {
+      "file": "snow-driver-reveal.png",
+      "sha256": "6696b0b22b3a4f46605d767bdc18ddd99edc61156d86c081e3930abe9d911e95",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -53.03474426269531,
+        144.59286499023438,
+        33.04854965209961
+      ],
+      "cameraQuaternionBlender": [
+        0.6392238736152649,
+        0.665096640586853,
+        -0.2783430218696594,
+        -0.26751530170440674
+      ],
+      "projection": "PERSP",
+      "description": "Blueprint driver eye on the real start road at 380 m, exactly 1.6 m above source support. Connected snow shoulder and slate relief frame the next banked bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -946106.0,
+        -82064.3984375,
+        1058.2042236328125,
+        100.1304931640625
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.17065714299678802,
+          0.39122483134269714,
+          0.6789289712905884,
+          0.4187871813774109
+        ],
+        "boulevard": [
+          0.17065714299678802,
+          0.39122483134269714,
+          0.6789289712905884,
+          0.4187871813774109
+        ]
+      },
+      "lensMillimetres": 30.0,
+      "roadEdge": "start",
+      "roadDistanceMetres": 380,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "ascending-bowl",
+        "edge": "start",
+        "s": 380,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -53.03474267419315,
+          31.448548029983336,
+          -144.59285786499228
+        ],
+        "driverEye": [
+          -53.03474267419315,
+          33.04854802998334,
+          -144.59285786499228
+        ],
+        "driverLook": [
+          -30.289118333192196,
+          34.31597002648913,
+          -167.0085102550393
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -30.289118333192196,
+        34.31597002648913,
+        -167.0085102550393
+      ]
+    },
+    "snow-plow-depot": {
+      "file": "snow-plow-depot.png",
+      "sha256": "2a737ba66a2c19f14c0e6900bdcc3ac8d69a16e63bcb042381b11d28f886f833",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -50.669036865234375,
+        844.702392578125,
+        20.875394821166992
+      ],
+      "cameraQuaternionBlender": [
+        0.17102520167827606,
+        0.16205881536006927,
+        -0.6684589385986328,
+        -0.7054430842399597
+      ],
+      "projection": "PERSP",
+      "description": "Nearby source-built open plow shed, load-bearing trusses and original stationary wedge plow with actual seated wheels and blade supports. Every terrain, rail, support and architecture mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -2541.721923828125,
+        -90.38509368896484,
+        608.1421508789062,
+        179.68118286132812
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -0.8540918827056885,
+          0.5433045625686646,
+          0.4444930851459503,
+          0.5609289407730103
+        ],
+        "boulevard": [
+          -0.8540918827056885,
+          0.5433045625686646,
+          0.4444930851459503,
+          0.5610998272895813
+        ]
+      },
+      "lensMillimetres": 28.0
+    },
+    "snow-clock-hall": {
+      "file": "snow-clock-hall.png",
+      "sha256": "d2f4317d2f62a86739eb7deb1d14409926e3664533874ca73be291de5b893459",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        419.37841796875,
+        564.5060424804688,
+        24.06999969482422
+      ],
+      "cameraQuaternionBlender": [
+        0.20742104947566986,
+        0.22542104125022888,
+        -0.7004992365837097,
+        -0.6445639133453369
+      ],
+      "projection": "PERSP",
+      "description": "Original depot clock hall with bronze twelve-tick dial, snow-capped slate roof, open platform porch and grounded cart details. Source-built complete assembly without cutaway or hidden terrain; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -36928.484375,
+        -1306.2578125,
+        124094.546875,
+        4446.072265625
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -9756.2158203125,
+          -8.216912269592285,
+          200.40457153320312,
+          422.98150634765625
+        ],
+        "boulevard": [
+          -465.50689697265625,
+          -13.859537124633789,
+          79.8026123046875,
+          86.11055755615234
+        ]
+      },
+      "lensMillimetres": 26.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/snow-overview.webp",
+    "sha256": "79f163a3d6271544e645e873c450f60069736424f2711ee759d41c2cc1ac2f75",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

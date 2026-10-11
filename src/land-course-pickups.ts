@@ -101,3 +101,22 @@ export const DESERT_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
   {edgeId:'finish',s:540,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
 export const desertPickupRows=(course:ForkCourse)=>routePickupRows(course,DESERT_PICKUP_ROWS);
+
+/** Physical snow rows occupy the open bowl, service-yard, terrace and return
+ * pockets, outside both spatial junction overlaps. Actual emitted-source
+ * camera and bob-envelope checks separately verify their visible approaches.
+ * Fixed rows retain the shared eight-second respawn; only dynamic appearances
+ * promise the speed/acceleration-aware physical reaction corridor. */
+export const SNOW_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+  {edgeId:'start',s:300,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:700,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:1160,lanes:[-3.5,3.5]},
+  {edgeId:'start',s:1460,lanes:[-3.5,3.5]},
+  {edgeId:'alley',s:320,lanes:[-2.2,2.2]},
+  {edgeId:'boulevard',s:160,lanes:[-3.5,3.5]},
+  {edgeId:'boulevard',s:380,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:220,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:740,lanes:[-3.5,3.5]},
+  {edgeId:'finish',s:1020,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)})) as RoutePickupRow[]);
+export const snowPickupRows=(course:ForkCourse)=>routePickupRows(course,SNOW_PICKUP_ROWS);
