@@ -60,17 +60,17 @@ const projectedArea=(poly:pc.Vec3[])=>Math.abs(poly.reduce((sum,p,i)=>{const q=p
  * open edge, including BOTH choices. Nothing uses a canonical interpolated
  * lap coordinate to infer branch geometry or the height of a bridge. */
 export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeometry {
-  const cobble=new Batch('Lantern Alley pale cobbled road','#b8a78a',.96,'stone');
+  const cobble=new Batch('Lantern Alley pale cobbled road','#b8ab91',.96,'asphalt');
   const boulevard=new Batch('Tram Boulevard dark paved road','#66675e',.98,'asphalt');
-  const common=new Batch('Market and civic warm stone road','#928a76',.98,'stone');
+  const common=new Batch('Market and civic warm stone road','#a19a87',.98,'asphalt');
   const paving=new Batch('Cream sidewalk coping and civic columns','#e4d2b0',.96,'stone');
   const masonry=new Batch('Ochre terrace retaining masonry','#b19b78',1,'stone');
   const dark=new Batch('Street bridge soffit and shadowed masonry','#777261',1,'stone');
   const ground=new Batch('Town garden earth and distant terraces','#998b68',1,'grass');
-  const cream=new Batch('Ivory plaster facades','#ecd8aa',.95,'stone');
-  const peach=new Batch('Warm apricot plaster facades','#d89d6f',.95,'stone');
-  const rose=new Batch('Dusty rose plaster facades','#bd8372',.95,'stone');
-  const roof=new Batch('Terracotta tiled roofs and chimney caps','#a6553e',.95,'stone');
+  const cream=new Batch('Ivory plaster facades','#e5d4b3',.97,'none');
+  const peach=new Batch('Warm apricot plaster facades','#cd9c79',.97,'none');
+  const rose=new Batch('Dusty rose plaster facades','#b8887c',.97,'none');
+  const roof=new Batch('Terracotta tiled roofs and chimney caps','#a75e47',.97,'none');
   const wood=new Batch('Timber shop beams eaves and market counters','#684b35',.94,'wood');
   const teal=new Batch('Teal shutters doors balcony rails and tram','#34736c',.7,'wood');
   const glass=new Batch('Deep blue shop windows and clock faces','#354c51',.3,'none',.15);
@@ -81,6 +81,20 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
   const foliage=new Batch('Citrus tree rounded foliage','#547a46',1,'grass');
   const fruit=new Batch('Orange fruit and market produce','#e9a439',.83);
   const batches=[cobble,boulevard,common,paving,masonry,dark,ground,cream,peach,rose,roof,wood,teal,glass,brass,glow,plum,linen,foliage,fruit];
+  // Town-local metre UVs distinguish small masonry courses from calm plaster.
+  // This touches material coordinates only; every protected position/index stays exact.
+  for(const batch of [paving,masonry]){
+    const box=batch.box.bind(batch);
+    batch.box=(p,size,yaw=0)=>{
+      const start=batch.positions.length/3;box(p,size,yaw);
+      const spans=[[size.x,size.y],[size.x,size.y],[size.z,size.y],[size.z,size.y],[size.x,size.z],[size.x,size.z]];
+      for(let face=0;face<6;face++)for(let corner=0;corner<4;corner++){
+        const i=(start+face*4+corner)*2;
+        batch.uvs[i]=(corner%2)*spans[face][0]*.42;
+        batch.uvs[i+1]=Math.floor(corner/2)*spans[face][1]*1.15;
+      }
+    };
+  }
   const edges=edgesOf(course),props:LandPropPlacement[]=[],cameraObstacles:TownCameraObstacle[]=[],landmarks:TownSceneGeometry['landmarks']=[];
   const roadFaces:TownSceneGeometry['roadFaces']=[],foundations:TownSceneGeometry['foundations']=[];
   const roadSamples:LandSceneGeometry['roadSamples']=[],routeRoadSamples:TownSceneGeometry['routeRoadSamples']=[],structures:LandSceneGeometry['structures']=[];
@@ -189,22 +203,81 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     cameraObstacles.push({kind:kind+'-foundation',min:[Math.min(...footprint.map(q=>q.x)),bottom,Math.min(...footprint.map(q=>q.z))],max:[Math.max(...footprint.map(q=>q.x)),p.y+.02,Math.max(...footprint.map(q=>q.z))]});
   }
   function local(p:pc.Vec3,yaw:number){const c=Math.cos(yaw),s=Math.sin(yaw);return (x:number,y:number,z:number)=>vec(p.x+x*c+z*s,p.y+y,p.z-x*s+z*c);}
-  function house(p:pc.Vec3,yaw:number,width:number,depth:number,height:number,seed:number){
+  let legacyPlanning=true;
+  function house(p:pc.Vec3,yaw:number,width:number,depth:number,height:number,seed:number,padWidth=width+.5,frontSide=1,distant=false,wingCount=2){
+    // Preserve the original furnishing/sign/support placement survey before
+    // replacing architecture. Decorative regrouping cannot displace a bridge pier.
+    if(legacyPlanning){record('legacy-terrace-house',p,Math.hypot(width/2+.8,depth/2+1.6),height+3.6,false);return;}
     const at=local(p,yaw),put=(batch:Batch,x:number,y:number,z:number,a:number,b:number,c:number)=>batch.box(at(x,y,z),vec(a,b,c),yaw);
     const wall=[cream,peach,rose][seed%3],roofY=height+2.3;
-    groundPad('terrace-house',p,yaw,width+.5,depth+.5);put(wall,0,height/2,0,width,height,depth);
+    if(distant){
+      // One grounded joined-wing building, read as a quiet distant town silhouette.
+      // The central party wall is a true butt join; roofs terminate at it, with
+      // overhangs only around the outside. No tiny facade dressing or new batch.
+      const padDepth=depth+(wingCount===3?3:.8);
+      groundPad('terrace-house',p,yaw,padWidth,padDepth);
+      for(let wing=0;wing<wingCount;wing++){
+        const x0=-width/2+wing*width/wingCount,x1=x0+width/wingCount,mid=(x0+x1)/2;
+        const h=height+(wingCount===3?[0,1.8,.6][wing]:wing*1.8),setback=wingCount===3?[-1,1,-.5][wing]:0;
+        const facade=wing?cream:peach;put(facade,mid,h/2,setback,width/wingCount,h,depth);
+        for(const z of [setback-depth/2,setback+depth/2])facade.tri(at(x0,h,z),at(mid,h+3,z),at(x1,h,z));
+        const left=x0-(wing===0?.35:0),right=x1+(wing===wingCount-1?.35:0);
+        roof.quad(at(left,h,setback-depth/2-.35),at(mid,h+3.08,setback-depth/2-.35),at(left,h,setback+depth/2+.35),at(mid,h+3.08,setback+depth/2+.35));
+        roof.quad(at(mid,h+3.08,setback-depth/2-.35),at(right,h,setback-depth/2-.35),at(mid,h+3.08,setback+depth/2+.35),at(right,h,setback+depth/2+.35));
+      }
+      record('terrace-house',p,Math.hypot(padWidth/2,padDepth/2),height+5.2);return;
+    }
+    groundPad('terrace-house',p,yaw,padWidth,depth+2.4);
+    const footing=foundations[foundations.length-1],front=frontSide*(depth/2+1.2);
+    let streetFloor=-Infinity;
+    for(let i=0;i<=16;i++){const q=at((i/16-.5)*padWidth,0,front);streetFloor=Math.max(streetFloor,terrainMeshY(q.x,q.z)+.15);}
+    if(p.y-streetFloor>4.8){
+      // Occupied lower workshops replace the exposed front of a tall retaining
+      // base. Remove that masonry face before building genuine recessed bays;
+      // there is no coplanar wall skin or overlapping visible surface.
+      const face=frontSide===1?1:0;masonry.indices.splice(masonry.indices.length-36+face*6,6);
+      const low=streetFloor-p.y,high=-.08,openingBottom=low+.3,openingTop=Math.min(high-.55,low+3.8);
+      const faceQuad=(batch:Batch,x0:number,x1:number,y0:number,y1:number,z:number)=>{
+        const left=frontSide===1?x1:x0,right=frontSide===1?x0:x1;
+        batch.quad(at(left,y0,z),at(right,y0,z),at(left,y1,z),at(right,y1,z));
+      };
+      const half=padWidth/2,back=front-frontSide*.32,z0=Math.min(front,back),z1=Math.max(front,back);
+      // The perimeter meets the retained footing sides/bottom/top at shared
+      // edges only. Unlike boxes, these infill quads have no duplicate end faces.
+      faceQuad(wall,-half,half,footing.bottom-p.y,openingBottom,front);
+      faceQuad(wall,-half,half,openingTop,high,front);
+      for(const [x0,x1] of [[-half,-half+.6],[-.3,.3],[half-.6,half]])faceQuad(wall,x0,x1,openingBottom,openingTop,front);
+      for(const [x0,x1] of [[-half+.6,-.3],[.3,half-.6]]){
+        // Genuine reveal jambs, sill and soffit close onto an inset glass back.
+        wall.quad(at(x0,openingBottom,z0),at(x0,openingBottom,z1),at(x0,openingTop,z0),at(x0,openingTop,z1));
+        wall.quad(at(x1,openingBottom,z1),at(x1,openingBottom,z0),at(x1,openingTop,z1),at(x1,openingTop,z0));
+        paving.quad(at(x0,openingBottom,z0),at(x1,openingBottom,z0),at(x0,openingBottom,z1),at(x1,openingBottom,z1));
+        wall.quad(at(x1,openingTop,z0),at(x0,openingTop,z0),at(x1,openingTop,z1),at(x0,openingTop,z1));
+        faceQuad(glass,x0,x1,openingBottom,openingTop,back);
+        put(wood,(x0+x1)/2,openingBottom+.16,front-frontSide*.12,x1-x0-.16,.20,.12);
+        put(wood,(x0+x1)/2,(openingBottom+openingTop)/2,front-frontSide*.12,.15,openingTop-openingBottom-.22,.12);
+      }
+      // Inset ends avoid coincident side patches on an exposed row-end footing.
+      put(paving,0,openingTop+.12,front-frontSide*.02,padWidth-.24,.24,.32);
+      put(wood,0,high-.28,front-frontSide*.02,padWidth-.24,.3,.32);
+      // The projecting cornice is below the ordinary house volume: include it
+      // in the foundation obstacle rather than leaving a camera-visible lip.
+      const obstacle=cameraObstacles[cameraObstacles.length-1];
+      for(const axis of [0,2]){obstacle.min[axis]-=.2;obstacle.max[axis]+=.2;}
+    }
+    put(wall,0,height/2,0,width,height,depth);
     for(const z of [-depth/2,depth/2])wall.tri(at(-width/2,height,z),at(0,roofY,z),at(width/2,height,z));
     roof.quad(at(-width/2-.65,height,-depth/2-.65),at(0,roofY+.1,-depth/2-.65),at(-width/2-.65,height,depth/2+.65),at(0,roofY+.1,depth/2+.65));
     roof.quad(at(0,roofY+.1,-depth/2-.65),at(width/2+.65,height,-depth/2-.65),at(0,roofY+.1,depth/2+.65),at(width/2+.65,height,depth/2+.65));
     for(const x of [-width/2,width/2])put(wood,x,height-.15,0,.2,.28,depth+1.3);
     put(roof,0,roofY+.13,0,.28,.2,depth+1.4);
     // Individually modeled raised tile courses give the roofs a tiled silhouette.
-    for(let j=1;j<=4;j++)for(const side of [-1,1])put(roof,side*j*(width/2+.6)/5,roofY+.08-j*2.4/5,0,.10,.11,depth+1.22);
+    for(let j=1;j<=3;j++)for(const side of [-1,1])put(roof,side*j*(width/2+.6)/4,roofY+.08-j*2.4/4,0,.10,.11,depth+1.22);
     put(cream,width*.28,height+.5,depth*.18,1.1,3.2,1.1);put(roof,width*.28,height+2.15,depth*.18,1.45,.22,1.45);
     for(const side of [-1,1]){
       const z=side*(depth/2+.06);
       put(teal,0,1.35,z,1.6,2.7,.16);put(brass,.5,1.25,z+side*.13,.1,.1,.12);
-      for(const y of [3.8,6.8].filter(y=>y<height-1))for(const x of [-width*.29,width*.29]){
+      for(const y of (height<6?[2.35]:[3.8,6.8].filter(y=>y<height-1)))for(const x of [-width*.29,width*.29]){
         put(glass,x,y,z,1.25,1.7,.12);put(paving,x,y-.92,z,1.7,.18,.36);
         put(wood,x,y,z+side*.1,.09,1.75,.12);put(wood,x,y,z+side*.1,1.28,.09,.12);
         for(const q of [-1,1]){put(teal,x+q*.92,y,z,.45,1.85,.16);}
@@ -213,13 +286,13 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       if(seed%2===0){for(const x of [-width*.46,width*.46])put(wood,x,height*.48,z,.22,height*.96,.22);put(wood,0,2.9,z,width,.2,.22);
         for(const q of [-1,1])wood.quad(at(q*width*.46,2.85,z+side*.18),at(q*width*.46,3.10,z+side*.18),at(q*width*.23,4.3,z+side*.18),at(q*width*.23,4.55,z+side*.18));
       }
-      if(seed%3!==1&&side===1){
+      if(seed%3!==1&&side===frontSide){
         put(wood,0,3.05,z+side*.7,width*.7,.25,1.4);put(teal,0,4.12,z+side*1.35,width*.72,.14,.15);
-        for(let x=-width*.33;x<=width*.34;x+=.75)put(teal,x,3.6,z+side*1.35,.10,1,.10);
+        for(let x=-width*.33;x<=width*.34;x+=1.3)put(teal,x,3.6,z+side*1.35,.10,1,.10);
         for(const x of [-width*.32,width*.32])put(wood,x,2.5,z+side*.70,.20,1.1,.20);
       }
     }
-    const radius=Math.hypot(width/2+.8,depth/2+1.6);record('terrace-house',p,radius,roofY+1.3);
+    const radius=Math.hypot(Math.max(width/2+.8,padWidth/2),depth/2+1.6);record('terrace-house',p,radius,roofY+1.3);
   }
   // Give prominent landmarks first choice of clear plots; later architecture
   // respects their full footprint as well as the union of both road choices.
@@ -262,28 +335,20 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       if(freeAt(p,radius)){house(p,edge.sample(s).angle+Math.PI/2,width,depth,height,seed);houses++;}
     }
   }
-  // Arcade bays are separate open architectural elements beside the boulevard.
+  // Keep the old architectural reservations for the furnishing survey only.
   for(let i=0;i<10;i++){
-    const site=plot(course.alternates.boulevard,.13+i*.068,4.4,-1);if(!site)continue;
-    const {p,yaw}=site,at=local(p,yaw);
-    groundPad('open-arcade-bay',p,yaw,6.8,5.2);
-    for(const x of [-2.7,2.7])for(const z of [-2,2]){cylinder(paving,at(x,0,z),.35,4.5,8);paving.box(at(x,.18,z),vec(.95,.35,.95),yaw);}
-    paving.box(at(0,4.8,0),vec(6.4,.7,4.8),yaw);roof.box(at(0,5.22,0),vec(6.8,.15,5.2),yaw);
-    // Faceted semicircular arch intrados above the open center, rather than a
-    // solid wall masquerading as an arch. Kept out of the racing corridor.
-    for(let j=0;j<10;j++)for(const z of [-2,2]){
-      const a=j/10*Math.PI,b=(j+1)/10*Math.PI;
-      paving.quad(at(Math.cos(a)*2.35,2.7+Math.sin(a)*1.65,z-.3),at(Math.cos(a)*2.8,2.7+Math.sin(a)*2.1,z-.3),at(Math.cos(b)*2.35,2.7+Math.sin(b)*1.65,z+.3),at(Math.cos(b)*2.8,2.7+Math.sin(b)*2.1,z+.3));
-    }
-    record('open-arcade-bay',p,4.4,5.4);
+    const site=plot(course.alternates.boulevard,.13+i*.068,4.4,-1);if(site)record('legacy-open-arcade-bay',site.p,4.4,5.4,false);
   }
-  for(let i=0;i<16;i++){
-    const edge=i<10?course.commonStart:course.alternates.alley,site=plot(edge,.12+(i%10)*.075,3.5,i%2?1:-1);if(!site)continue;
-    const {p,yaw}=site,at=local(p,yaw),put=(b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>b.box(at(x,y,z),vec(w,h,d),yaw);
+  function marketStall(p:pc.Vec3,yaw:number){
+    const at=local(p,yaw),put=(b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>b.box(at(x,y,z),vec(w,h,d),yaw);
     groundPad('striped-market-stall',p,yaw,5.2,3.3);put(wood,0,.65,0,4.5,1.3,2.7);for(const x of [-2.1,2.1])for(const z of [-1.15,1.15])put(wood,x,1.8,z,.14,3.6,.14);
     for(let strip=0;strip<6;strip++){const x=-2.6+strip*.87;(strip%2?linen:plum).quad(at(x,3.45,-1.6),at(x+.87,3.45,-1.6),at(x,3.0,1.7),at(x+.87,3.0,1.7));}
     for(let j=0;j<7;j++)ellipsoid(j%3?fruit:foliage,at(-1.7+j*.55,1.5,.2),vec(.26,.25,.35),6,3);
     put(plum,0,2.82,1.68,5.25,.34,.10);record('striped-market-stall',p,3.5,3.7);
+  }
+  for(let i=0;i<16;i++){
+    const edge=i<10?course.commonStart:course.alternates.alley,site=plot(edge,.12+(i%10)*.075,3.5,i%2?1:-1);if(!site)continue;
+    record('legacy-striped-market-stall',site.p,3.5,3.7,false);
   }
   for(const edge of edges)for(let i=0;i<Math.ceil(edge.length/28);i++){
     const s=(i+.5)*28;if(s>=edge.length||junction(edge,s))continue;
@@ -291,7 +356,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     if(!freeAt(p,2.1))continue;
     groundPad('potted-citrus-tree',p,0,2.5,2.5);cylinder(roof,p,1.1,1.15,10);cylinder(masonry,p.clone().add(vec(0,1.1,0)),1.2,.18,10);
     wood.box(p.clone().add(vec(0,2,0)),vec(.22,2.1,.22));ellipsoid(foliage,p.clone().add(vec(0,3.3,0)),vec(1.9,1.6,1.9));
-    for(let j=0;j<7;j++){const a=j/7*Math.PI*2;ellipsoid(fruit,p.clone().add(vec(Math.cos(a)*1.65,3.1+(j%3)*.4,Math.sin(a)*1.65)),vec(.16,.17,.16),5,3);}
+    for(let j=0;j<3;j++){const a=j/3*Math.PI*2;ellipsoid(fruit,p.clone().add(vec(Math.cos(a)*1.65,3.1+(j%3)*.4,Math.sin(a)*1.65)),vec(.16,.17,.16),5,3);}
     record('potted-citrus-tree',p,2.1,5,false);
   }
   // Lantern poles and wayfinding arrows stay out of the shared throats too.
@@ -343,6 +408,107 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     }
     landmarks.push({kind:'street-bridge',label:'High masonry street bridge with open lower street',position:tuple(edge.sample((from+to)/2).p)});
   }
+  // Signs, tower, tram, trees, lanterns and structural supports above retain
+  // their original anchors. Recompose houses, arcades and loose market stalls.
+  for(let i=props.length-1;i>=0;i--)if(props[i].kind.startsWith('legacy-'))props.splice(i,1);
+  legacyPlanning=false;
+  const revealCorridors=[
+    {eye:vec(-43.63245009956036,0,222.59712340061606),target:tram?.p,spread:15},
+    {eye:vec(-68.14486270301028,0,-45.30996534604241),target:tower?.p,spread:13},
+  ];
+  const keepsReveal=(p:pc.Vec3,r:number)=>revealCorridors.every(({eye,target,spread})=>{
+    if(!target)return true;const dx=target.x-eye.x,dz=target.z-eye.z,len2=dx*dx+dz*dz;
+    const t=((p.x-eye.x)*dx+(p.z-eye.z)*dz)/len2;
+    return t<0||t>1.08||Math.hypot(p.x-eye.x-t*dx,p.z-eye.z-t*dz)>r+spread*Math.max(0,t);
+  });
+  // Connected rows are designed as one street wall. Each house retains its own
+  // terrain-grounded stepped footing and closed rear face; adjoining caps meet
+  // edge-to-edge, so no giant bounding box fills courtyards or a second branch.
+  const districts=[
+    {edge:course.commonStart,s:95,side:-1,setback:30,width:12,depth:9.4,height:8.4,count:3},
+    {edge:course.commonStart,s:109,side:1,setback:29,width:11.8,depth:8.5,height:10.6,count:4},
+    {edge:course.commonStart,s:142,side:-1,setback:33,width:10.5,depth:9,height:8.2,count:5},
+    {edge:course.alternates.alley,s:134,side:1,setback:26,width:11.2,depth:9.4,height:12,count:3},
+    {edge:course.alternates.alley,s:193,side:1,setback:28,width:10.1,depth:8.8,height:10,count:4},
+    {edge:course.alternates.alley,s:264,side:1,setback:28,width:12.2,depth:10,height:9.4,count:3},
+    {edge:course.alternates.boulevard,s:168,side:-1,setback:40,width:15,depth:12,height:9.4,count:3},
+    {edge:course.alternates.boulevard,s:246,side:-1,setback:42,width:12,depth:10.8,height:11.8,count:4},
+    {edge:course.alternates.boulevard,s:325,side:-1,setback:40,width:15,depth:12,height:9.2,count:3},
+    {edge:course.commonFinish,s:300,side:1,setback:32,width:12.4,depth:10.2,height:9.6,count:4},
+    {edge:course.commonFinish,s:445,side:1,setback:34,width:12.4,depth:10.2,height:8.2,count:4},
+    {edge:course.commonFinish,s:551,side:1,setback:31,width:11.8,depth:10,height:8.6,count:2},
+    {edge:course.commonFinish,s:349,side:-1,setback:29,width:11.5,depth:8.5,height:4.2,count:2},
+    {edge:course.commonFinish,s:429,side:-1,setback:29,width:11.5,depth:8.5,height:4.2,count:2},
+  ];
+  for(const [district,d] of [...districts.entries()].sort((a,b)=>(a[1].height<5?-1:0)-(b[1].height<5?-1:0))){
+    const spacing=d.width+1.5,radius=Math.hypot(spacing/2,d.depth/2+1.6);
+    let row:{p:pc.Vec3;yaw:number}[]|undefined;
+    search:for(const extra of [0,7,14,22,32,44])for(const shift of [0,8,-8,16,-16,25,-25]){
+      const s=d.s+shift,frame=d.edge.sample(s),yaw=frame.angle+Math.PI/2;
+      const center=point(d.edge,s,d.side*(d.setback+extra)),at=local(center,yaw);
+      const candidate=Array.from({length:d.count},(_,i)=>({p:at((i-(d.count-1)/2)*spacing,0,0),yaw}));
+      if(candidate.every(({p})=>freeAt(p,radius)&&(d.height<5||keepsReveal(p,radius)))){row=candidate;break search;}
+    }
+    if(!row)throw new Error('No union-clear town district '+district);
+    row.forEach(({p,yaw},i)=>house(p,yaw,d.width,d.depth,d.height+[0,1.4,-.6,.7,-.3][i],district*7+i,spacing,-d.side));
+  }
+  // Two return-straight houses remain in place as a route landmark. Reuse the
+  // other two as broad, connected roof silhouettes beyond the two horizon gaps.
+  // These are real closed building masses on the original terrain, not billboards.
+  for(const [index,site] of [
+    {x:175,z:237,yaw:Math.PI/2,width:36,depth:14,height:12,wings:2},
+    {x:-208,z:-82,yaw:1.0,width:58,depth:16,height:8,wings:3},
+  ].entries()){
+    const p=vec(site.x,terrainMeshY(site.x,site.z)+.06,site.z),radius=Math.hypot((site.width+.8)/2,(site.depth+(site.wings===3?3:.8))/2);
+    if(!freeAt(p,radius))throw new Error('Distant town roofline must clear all roads and props');
+    house(p,site.yaw,site.width,site.depth,site.height,80+index,site.width+.8,1,true,site.wings);
+  }
+  // Nine real open bays form three continuous, backed market-hall runs. Broad
+  // arch openings and one cornice read at driving distance; no arch crosses road.
+  for(const [run,s] of [171,246,325].entries()){
+    const edge=course.alternates.boulevard,spacing=6.9,radius=Math.hypot(spacing/2,3.4);
+    let row:{p:pc.Vec3;yaw:number}[]|undefined;
+    search:for(const shift of [0,9,-9,18,-18,30,-30])for(const extra of [0,7,14,22,34,46]){
+      const frame=edge.sample(s+shift),yaw=frame.angle+Math.PI/2,center=point(edge,s+shift,-(25+extra)),at=local(center,yaw);
+      const candidate=Array.from({length:3},(_,i)=>({p:at((i-1)*spacing,0,0),yaw}));
+      if(candidate.every(({p})=>freeAt(p,radius)&&keepsReveal(p,radius))){row=candidate;break search;}
+    }
+    if(!row)throw new Error('No union-clear market hall '+run);
+    // All three bays share one level while each footing reaches actual terrain.
+    let top=Math.max(...row.map(({p})=>p.y));
+    for(const {p,yaw} of row){const at=local(p,yaw);for(let x=0;x<=16;x++)for(let z=0;z<=16;z++){const q=at((x/16-.5)*spacing,0,(z/16-.5)*6.8);top=Math.max(top,terrainMeshY(q.x,q.z)+.06);}}
+    for(const [i,{p,yaw}] of row.entries()){
+      p.y=top;groundPad('open-arcade-bay',p,yaw,spacing,6.8);const at=local(p,yaw),put=(b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>b.box(at(x,y,z),vec(w,h,d),yaw);
+      const wall=[cream,peach,rose][run];put(wall,0,2.8,-2.8,spacing,5.6,.6);
+      for(const x of [-3.05,3.05]){put(paving,x,2.25,2.65,.6,4.5,.65);put(paving,x,.22,2.65,.9,.44,.9);}
+      put(paving,0,5.35,0,spacing,.45,6.6);put(roof,0,5.72,0,spacing,.3,6.8);
+      put(wood,0,4.85,2.65,spacing,.22,.32);
+      // Closed annular arch band, with proper front/back and curved intrados.
+      for(let j=0;j<10;j++){
+        const a=j/10*Math.PI,b=(j+1)/10*Math.PI;
+        const q=(angle:number,outer:boolean,z:number)=>at(Math.cos(angle)*(outer?3.0:2.5),2.65+Math.sin(angle)*(outer?2.45:1.95),z);
+        paving.quad(q(a,false,2.3),q(a,true,2.3),q(b,false,2.3),q(b,true,2.3));
+        paving.quad(q(b,false,3),q(b,true,3),q(a,false,3),q(a,true,3));
+        paving.quad(q(a,false,3),q(a,false,2.3),q(b,false,3),q(b,false,2.3));
+        paving.quad(q(a,true,2.3),q(a,true,3),q(b,true,2.3),q(b,true,3));
+      }
+      if(i===0||i===2)put(wall,(i===0?-1:1)*3.12,2.8,0,.45,5.6,5.2);
+      put(teal,0,2.3,-2.42,2.25,3.2,.15);put(brass,0,4.55,2.85,.6,.25,.13);
+      record('open-arcade-bay',p,radius,5.95);
+    }
+  }
+  // Shops take spatial priority over loose stalls. Re-house the same fourteen
+  // stalls beside the completed market/alley groups, outside both road choices.
+  let marketStalls=0;
+  for(let pass=0;pass<3&&marketStalls<14;pass++)for(let i=0;i<16&&marketStalls<14;i++){
+    const edge=i<10?course.commonStart:course.alternates.alley;
+    const site=plot(edge,.12+(i%10)*.075+pass*.013,3.5,i%2?1:-1);
+    if(site){marketStall(site.p,site.yaw);marketStalls++;}
+  }
+  if(marketStalls!==14)throw new Error('Town market needs fourteen terrain-grounded stalls');
+  // Pale alley texture reads as small paving, never broad undulations. Source
+  // road/terrain/support triangles and normals remain bit-for-bit untouched.
+  for(let i=0;i<cobble.uvs.length;i++)cobble.uvs[i]*=7;
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
   for(const batch of used)for(let i=0;i<batch.positions.length;i++){const a=i%3;min[a]=Math.min(min[a],batch.positions[i]);max[a]=Math.max(max[a],batch.positions[i]);}
   return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,foundations,cameraObstacles,landmarks,bounds:{min,max}};
