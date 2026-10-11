@@ -1,0 +1,731 @@
+{
+  "schema": "forest-enrichment-preview-audit-v1",
+  "baselineCommit": "a5ffb65ec9e12f0e80b9643b03335650235b04a1",
+  "baselineSourceSha256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+  "candidateSourceSha256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+  "baselineRenderRecordSha256": "f4017a489aeec08676a95a5079befd43864f5325ad09f3f1b6f8165f7da2224f",
+  "candidateRenderRecordSha256": "29a46e32a3f1580733336270b8e62e6d324acfe63a32cdbbfbaeae3c60769ae8",
+  "frozenCameraManifestSha256": "f6868522204c512e8a1f4fd1431d3445173eee82bc890949fdd26c3b5a0d1c76",
+  "pairs": [
+    {
+      "name": "forest-chase-root-valley-underpass",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "bc07136bf6238aa456064d489ae0b7234f24a882278046b0f005c20cb79205b3",
+      "candidateSha256": "9de05e7e8e6eaae1cf4056808a90f09bc904622bb5ea4a5272f0f4f7ac0fe715",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 268334,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 3.9552734375
+    },
+    {
+      "name": "forest-chase-cedar-bowl-entry",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "5ac8c4b9b54fc6b186d5557d2abce168ccc5a44c8cffe7328adaf922e02977ed",
+      "candidateSha256": "80f3b1970a971288f058c9302aec520a31ff1df1ce8258bb6c68e0603e754f2c",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 246356,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 9.452193287037037
+    },
+    {
+      "name": "forest-chase-bowl-exit-reveal",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "105b33f2d56e1512ef5efd29c724456bbd7e408ecf262e4b48b39fe21f4213bb",
+      "candidateSha256": "de2b4fc715c79b9ab5fc25863bfb7a22ce3b524639a011f886687305f6c26822",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 153137,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 0.5662554253472222
+    },
+    {
+      "name": "forest-chase-fork-decision",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "5e9fb127866e00e30e22bff796255095af472f513fbce712c2ed403e3b857b30",
+      "candidateSha256": "e203fffaa0f9ffad62a1f7b0eb76dca112e673a0bada489f614629b831352c50",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 212616,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 7.681411313657407
+    },
+    {
+      "name": "forest-chase-service-observatory",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "b1a172bd288e2e8cd2b999748aeeedf608b19fc24704f30e27d479733800cc66",
+      "candidateSha256": "47a9c72b8b8bf57f6b83282e07d3d098dcdd6ccc0b67120ff2f2ee649d0cc02d",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 79859,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 0.5718500434027778
+    },
+    {
+      "name": "forest-chase-rim-summit",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "ac5750c5e02d09639d13de0126bd63b5d2477630e21ac96fe8b8c04c166d113c",
+      "candidateSha256": "84254c7a43b158e655c914c968a840b33340f6706d6f00f3919c0e64bb347710",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 28460,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 0.04240234375
+    },
+    {
+      "name": "forest-chase-upper-canopy-crossing",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "6982b889b80f01b8025993f6730a72cc839de925fa1644799842b0ce6ef46d72",
+      "candidateSha256": "9865ad784db646bfe1033a43e7a1b973c19593c7ec2f43f73ae988718b589c87",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 120356,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 3.2857139756944442
+    },
+    {
+      "name": "forest-chase-sunbreak-return",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "d779305c57b869a148e2ce8b5ca3536f643a7d854d17aafc32db6a18206d4bea",
+      "candidateSha256": "cf13258ecc42efaa3fd33f146eac56067061b9c65088314fd073f694347cb420",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 253292,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 5.8461689814814815
+    },
+    {
+      "name": "forest-chase-forestry-station-approach",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "b80b921c762b82266e3d55660acb6c223e5c57af13d8695a3d69e18d553e061f",
+      "candidateSha256": "bb6fcab032886323ce50519898a818b5f6e3ac28032eac613d546806cd4d24a6",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 33793,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 0.23077256944444444
+    },
+    {
+      "name": "forest-landmark-bowl-exit-reveal",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "e6ac7e24d803129ca0c92251b8df7ca52e50469e35bde7bafb90646264610524",
+      "candidateSha256": "fa60586ea0081955ac45c0d3ddd0f4089650370e298fc6c571852c6eb298f23c",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 120613,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 2.3237532552083335
+    },
+    {
+      "name": "forest-landmark-decision-straight",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "36ecd951da85f43b69bc01a056fb525546b8ab9b1011173f25c9753fa584af56",
+      "candidateSha256": "c3b7d16fc126549e92f5ec38c72b720d051f45ceb5b81ba8722174be0bb63719",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 65606,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 0.1287405960648148
+    },
+    {
+      "name": "forest-landmark-rim-summit",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "2146fb27a1dc4d6dcf3de387f3b7f95894fdcb1b4c032801513656c29707f87c",
+      "candidateSha256": "fec79f7f323fee176b6019b0426d10c0ee51be1a17c2e1fdc167e1f7c0ae9979",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 64694,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 1.8783879484953703
+    },
+    {
+      "name": "forest-landmark-merge-departure",
+      "resolution": [
+        1280,
+        720
+      ],
+      "baselineSha256": "71d21b11114a35a7abdc67eb22a41a7218cfb6d97e130765d5c20dec5f268d26",
+      "candidateSha256": "7d332ba823015ab88babace2cb6e43b6afe75f278c70e0a3ffdfab13f1346728",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 45210,
+      "totalPixels": 921600,
+      "meanAbsoluteRgbByteDifference": 1.270814525462963
+    },
+    {
+      "name": "forest-overview",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "baselineSha256": "cb228c450dc21ba3a5ab310e14e58f33e9a61dffc48bdd51259ba6d4d2befbda",
+      "candidateSha256": "ff41f984e90c00c69aa87042a99bf5031785611e4e5cbd8a6dad2d6fcc1fb085",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 509848,
+      "totalPixels": 2073600,
+      "meanAbsoluteRgbByteDifference": 1.5069180812757201
+    },
+    {
+      "name": "forest-topdown",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "baselineSha256": "4bcb78653b453f212c6d7fa6282d93d808968d1f8ea0f787fe47656739bc4afb",
+      "candidateSha256": "ceb770b1f426d5e814ed960f1b1bfc518f6a9ebb82277b71f986b8d700208e81",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 436802,
+      "totalPixels": 2764800,
+      "meanAbsoluteRgbByteDifference": 0.6296876205632717
+    },
+    {
+      "name": "forest-canopy-passage",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "c6ed91bf0603348e213a0a796607b94f409685acb4ed5845db483556547201c3",
+      "candidateSha256": "f03b79527a228126e010267ecc154e0143a1ce86570bd5a0765583ec6f1d4b86",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 1101895,
+      "totalPixels": 2025000,
+      "meanAbsoluteRgbByteDifference": 4.827483456790123
+    },
+    {
+      "name": "forest-observatory-detail",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "1fa94dbed780adf1b50bd7804db203878e35b650ef5f37cc69ccae78931d507b",
+      "candidateSha256": "ad94f320e05291c8dec24a53a707c4802721dfdd2fc3e47e8c0a39c39e195968",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 412501,
+      "totalPixels": 2025000,
+      "meanAbsoluteRgbByteDifference": 0.15202106995884773
+    },
+    {
+      "name": "forest-station-detail",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "3420b7907cdb03d5b33706619d1ab7e6c870cdc5673c5481411a2b2cef153ce4",
+      "candidateSha256": "c72b7f8a48e61867f796b34b80fab6979a46385f4ad15a0681a5749e908d76c2",
+      "matchedCameraAndRenderInputs": true,
+      "changedPixels": 72085,
+      "totalPixels": 2025000,
+      "meanAbsoluteRgbByteDifference": 0.022209382716049383
+    }
+  ],
+  "acceptedFourViewExactPixelEquality": [
+    {
+      "name": "forest-chase-root-valley-underpass",
+      "exactRgbaPixelMatch": true,
+      "rgbaPixelSha256": "213471f4877cc4d9a298a3920bb68b921870262946c91e16587d11e4ed128490",
+      "exactPngFileMatch": false,
+      "approvedPngSha256": "7c18d9ac28553201c5dd290466bd53c9197e84f3078016a0bc7c0234226acd84",
+      "finalPngSha256": "9de05e7e8e6eaae1cf4056808a90f09bc904622bb5ea4a5272f0f4f7ac0fe715",
+      "differentNonvisualMetadataFields": [
+        "Date",
+        "RenderTime",
+        "cycles.ViewLayer.render_time",
+        "cycles.ViewLayer.synchronization_time",
+        "cycles.ViewLayer.total_time"
+      ]
+    },
+    {
+      "name": "forest-chase-cedar-bowl-entry",
+      "exactRgbaPixelMatch": true,
+      "rgbaPixelSha256": "af2a5461eea129b6ea0b90f59a759c895db025d79f48ee630e80a9b7f211a468",
+      "exactPngFileMatch": false,
+      "approvedPngSha256": "2251f0f34aeb8da0bb5e754ad8fbbf241e59d0c41e8314762a2f19543c58d7f3",
+      "finalPngSha256": "80f3b1970a971288f058c9302aec520a31ff1df1ce8258bb6c68e0603e754f2c",
+      "differentNonvisualMetadataFields": [
+        "Date",
+        "RenderTime",
+        "cycles.ViewLayer.render_time",
+        "cycles.ViewLayer.total_time"
+      ]
+    },
+    {
+      "name": "forest-chase-fork-decision",
+      "exactRgbaPixelMatch": true,
+      "rgbaPixelSha256": "7c9618f2b54d9a41180482df82f05cff8d6ed64524557f65785208d8f73c767f",
+      "exactPngFileMatch": false,
+      "approvedPngSha256": "5cf28e2fed781cfa52e7498f6b69985e9bc4a4983fea6d37d5ea72017e3704ba",
+      "finalPngSha256": "e203fffaa0f9ffad62a1f7b0eb76dca112e673a0bada489f614629b831352c50",
+      "differentNonvisualMetadataFields": [
+        "Date",
+        "RenderTime",
+        "cycles.ViewLayer.render_time",
+        "cycles.ViewLayer.synchronization_time",
+        "cycles.ViewLayer.total_time"
+      ]
+    },
+    {
+      "name": "forest-chase-upper-canopy-crossing",
+      "exactRgbaPixelMatch": true,
+      "rgbaPixelSha256": "579278e242f6b8ee5acb5f416210e2572c8a0ac8ae6ff3c7b13d265a78df4b7e",
+      "exactPngFileMatch": false,
+      "approvedPngSha256": "b3039b8f972120f3aa11a9cb906ce7cdff08000f1976f8c5f2d95de891a41ab7",
+      "finalPngSha256": "9865ad784db646bfe1033a43e7a1b973c19593c7ec2f43f73ae988718b589c87",
+      "differentNonvisualMetadataFields": [
+        "Date",
+        "RenderTime",
+        "cycles.ViewLayer.render_time",
+        "cycles.ViewLayer.synchronization_time",
+        "cycles.ViewLayer.total_time"
+      ]
+    }
+  ],
+  "sheets": [
+    {
+      "file": "forest-final-four-view-before-after.png",
+      "sha256": "22ff4147756152bc24bc7d6933442b1a9b424b858fef40dda62c503eb3e4bae7",
+      "views": [
+        "forest-chase-root-valley-underpass",
+        "forest-chase-cedar-bowl-entry",
+        "forest-chase-fork-decision",
+        "forest-chase-upper-canopy-crossing"
+      ],
+      "resolution": [
+        1956,
+        2508
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-01.png",
+      "sha256": "9cb893561d97d0107c84def71ce017786708b7bced60008873d974853251e549",
+      "views": [
+        "forest-chase-root-valley-underpass",
+        "forest-chase-cedar-bowl-entry",
+        "forest-chase-bowl-exit-reveal"
+      ],
+      "resolution": [
+        1956,
+        2098
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-02.png",
+      "sha256": "d0849a7c8d406d799d75a9269e1bd37fe2338294999101aabf9c28426fa797b5",
+      "views": [
+        "forest-chase-fork-decision",
+        "forest-chase-service-observatory",
+        "forest-chase-rim-summit"
+      ],
+      "resolution": [
+        1956,
+        2098
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-03.png",
+      "sha256": "fb043769b3033911bef5c9d67cd98248aa4bc315612fb578a151767ba4ee0f3a",
+      "views": [
+        "forest-chase-upper-canopy-crossing",
+        "forest-chase-sunbreak-return",
+        "forest-chase-forestry-station-approach"
+      ],
+      "resolution": [
+        1956,
+        2098
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-04.png",
+      "sha256": "152a38c3a33f4bd763a5d488f38805f6e8d8065b1be6841f33e49901a7bd6ff1",
+      "views": [
+        "forest-landmark-bowl-exit-reveal",
+        "forest-landmark-decision-straight",
+        "forest-landmark-rim-summit"
+      ],
+      "resolution": [
+        1956,
+        2098
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-05.png",
+      "sha256": "e5ab191b411d394304766f24374315c9d88dbde697378b70cca623b5fd30b288",
+      "views": [
+        "forest-landmark-merge-departure",
+        "forest-overview",
+        "forest-topdown"
+      ],
+      "resolution": [
+        1956,
+        2458
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    },
+    {
+      "file": "forest-final-all-views-06.png",
+      "sha256": "6bee462c87531ffdb094d24cd55b2acbf63c9c06324cf72a4f22e3df6d9991e3",
+      "views": [
+        "forest-canopy-passage",
+        "forest-observatory-detail",
+        "forest-station-detail"
+      ],
+      "resolution": [
+        1956,
+        2098
+      ],
+      "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+    }
+  ],
+  "notice": "Exact matched source cameras and shader input evidence; PNGs are offline static CPU rendering, not gameplay or runtime GPU evidence. Pixel differences are descriptive, not a perceptual quality metric.",
+  "artifactPathConvention": "PNG and model names refer to the accompanying baseline/candidate and comparison evidence sets; they are not repository-hosted runtime assets.",
+  "reopenedModelVerification": {
+    "baseline": {
+      "status": "passed",
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+        "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/forest-scenery.ts": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+        "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+      },
+      "reopenedBlendSha256": "0f2d6f512488dcdd3d1f2f802e900f01ac37955856b263b2cc4ef26bbd1c8160",
+      "glbSha256": "fb988440369f7d989294d1a339243d1f8843745c4ce9e39da5f70e11059c76fb",
+      "geometrySha256": "6d13ad9ae3869e7fbae3ab79a7c3c0fcbd609e2427d47ea303623186ca3500ad",
+      "verifierSha256": "fd03d1c0386f07e9c77207ffde640bc9878fe74609b141b80762a0f48fc42ce0",
+      "batches": 21,
+      "vertices": 140018,
+      "triangles": 107780,
+      "exactFloat32PositionsNormalsUvsAndIndices": true,
+      "explicitSourceNormalShaderLinksVerified": true,
+      "objectTransformsIdentity": true,
+      "normalTransform": "Source (x,y,z) to Blender (x,-z,y) is an orthogonal determinant +1 rotation; OBJECT to WORLD NORMAL transform, normalized and double-sided sign matches runtime convention",
+      "nativeCustomCornerEncodingBypassed": true,
+      "packedSourceTexturePixelsExact": true,
+      "packedBlendTextureKinds": [
+        "asphalt",
+        "grass",
+        "stone",
+        "wood"
+      ],
+      "unusedExportedTextureKinds": [],
+      "unusedTextureNote": "Blender omits unused image data on save; every used source texture is packed, and all four exported source PNG sets remain exact in the GLB and texture directory",
+      "externalLinkedLibraries": 0,
+      "imagePaths": {
+        "Original runtime asphalt": "",
+        "Original runtime grass": "",
+        "Original runtime stone": "",
+        "Original runtime wood": ""
+      },
+      "reviewCameras": 13,
+      "catalogCameras": 5,
+      "glbExactAccessors": 84,
+      "glbMaterialRecords": 21,
+      "reopenedMaterialColorsTextureLinksLightingAndCameraSensorsVerified": true,
+      "glbEmbeddedTexturePixelSets": 4,
+      "notice": "Exact geometry/normal-data/shader-path verification; offline material/light response remains approximate, not runtime GPU or performance evidence"
+    },
+    "candidate-final": {
+      "status": "passed",
+      "sourceHashes": {
+        "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+        "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+        "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+        "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+        "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+        "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+        "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+        "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+        "src/forest-scenery.ts": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+        "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+        "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+      },
+      "reopenedBlendSha256": "fb7c6c87f8509db30824629367786cfb6bcbaa8ace3ba6dd674915e352e1c116",
+      "glbSha256": "d5f12fd0b646ca2249d78cbac8ea022caab4a52c1e0aa858880f2b5033b8aadc",
+      "geometrySha256": "cfa10cc3cbdc3e02a782f3bf2cb0b5a9543e32f06f3eee22a68d7aba4faef403",
+      "verifierSha256": "fd03d1c0386f07e9c77207ffde640bc9878fe74609b141b80762a0f48fc42ce0",
+      "batches": 21,
+      "vertices": 138214,
+      "triangles": 108772,
+      "exactFloat32PositionsNormalsUvsAndIndices": true,
+      "explicitSourceNormalShaderLinksVerified": true,
+      "objectTransformsIdentity": true,
+      "normalTransform": "Source (x,y,z) to Blender (x,-z,y) is an orthogonal determinant +1 rotation; OBJECT to WORLD NORMAL transform, normalized and double-sided sign matches runtime convention",
+      "nativeCustomCornerEncodingBypassed": true,
+      "packedSourceTexturePixelsExact": true,
+      "packedBlendTextureKinds": [
+        "asphalt",
+        "grass",
+        "stone",
+        "wood"
+      ],
+      "unusedExportedTextureKinds": [],
+      "unusedTextureNote": "Blender omits unused image data on save; every used source texture is packed, and all four exported source PNG sets remain exact in the GLB and texture directory",
+      "externalLinkedLibraries": 0,
+      "imagePaths": {
+        "Original runtime asphalt": "",
+        "Original runtime grass": "",
+        "Original runtime stone": "",
+        "Original runtime wood": ""
+      },
+      "reviewCameras": 13,
+      "catalogCameras": 5,
+      "glbExactAccessors": 84,
+      "glbMaterialRecords": 21,
+      "reopenedMaterialColorsTextureLinksLightingAndCameraSensorsVerified": true,
+      "glbEmbeddedTexturePixelSets": 4,
+      "notice": "Exact geometry/normal-data/shader-path verification; offline material/light response remains approximate, not runtime GPU or performance evidence"
+    }
+  },
+  "visualReview": {
+    "inspectedAll18MatchedPairs": true,
+    "acceptedFourViewsDecodedRgbaExact": true,
+    "scope": "Incremental sparse stylized woodland. Bowl/fork grouping and crown volumes are clearer; several road/sky stretches remain intentionally open. Fixed review frames are not a universal landmark visibility or orbit-clearance claim."
+  },
+  "catalog": {
+    "provenanceFile": "docs/forest-preview-provenance.json",
+    "provenanceSha256": "29a46e32a3f1580733336270b8e62e6d324acfe63a32cdbbfbaeae3c60769ae8",
+    "posterFile": "public/map-previews/forest-overview.webp",
+    "posterSha256": "0ebf689ea0e6b20a90dec2ba82ac20e15ef953defad470dac6630e1b7a4df5a4"
+  },
+  "comparisonTool": {
+    "file": "scripts/compose-forest-enrichment-comparison.py",
+    "sha256": "e08bbeb48021f5a7007c292646651fbc89749595a9fcf2e09011af73f05a00a9",
+    "sheetFont": [
+      "DejaVu Sans",
+      "Book"
+    ],
+    "portableCliReproduction": "All seven initial composed PNGs reproduced byte-for-byte; the final clearer baseline label was independently reconstructed with every other sheet pixel identical",
+    "sheets": [
+      {
+        "file": "forest-final-four-view-before-after.png",
+        "sha256": "22ff4147756152bc24bc7d6933442b1a9b424b858fef40dda62c503eb3e4bae7",
+        "views": [
+          "forest-chase-root-valley-underpass",
+          "forest-chase-cedar-bowl-entry",
+          "forest-chase-fork-decision",
+          "forest-chase-upper-canopy-crossing"
+        ],
+        "resolution": [
+          1956,
+          2508
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-01.png",
+        "sha256": "9cb893561d97d0107c84def71ce017786708b7bced60008873d974853251e549",
+        "views": [
+          "forest-chase-root-valley-underpass",
+          "forest-chase-cedar-bowl-entry",
+          "forest-chase-bowl-exit-reveal"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-02.png",
+        "sha256": "d0849a7c8d406d799d75a9269e1bd37fe2338294999101aabf9c28426fa797b5",
+        "views": [
+          "forest-chase-fork-decision",
+          "forest-chase-service-observatory",
+          "forest-chase-rim-summit"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-03.png",
+        "sha256": "fb043769b3033911bef5c9d67cd98248aa4bc315612fb578a151767ba4ee0f3a",
+        "views": [
+          "forest-chase-upper-canopy-crossing",
+          "forest-chase-sunbreak-return",
+          "forest-chase-forestry-station-approach"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-04.png",
+        "sha256": "152a38c3a33f4bd763a5d488f38805f6e8d8065b1be6841f33e49901a7bd6ff1",
+        "views": [
+          "forest-landmark-bowl-exit-reveal",
+          "forest-landmark-decision-straight",
+          "forest-landmark-rim-summit"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-05.png",
+        "sha256": "e5ab191b411d394304766f24374315c9d88dbde697378b70cca623b5fd30b288",
+        "views": [
+          "forest-landmark-merge-departure",
+          "forest-overview",
+          "forest-topdown"
+        ],
+        "resolution": [
+          1956,
+          2458
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "forest-final-all-views-06.png",
+        "sha256": "6bee462c87531ffdb094d24cd55b2acbf63c9c06324cf72a4f22e3df6d9991e3",
+        "views": [
+          "forest-canopy-passage",
+          "forest-observatory-detail",
+          "forest-station-detail"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      }
+    ]
+  },
+  "acceptedArtSourceSha256": "a7d54f17d62f8da9b5b616c009d1e67dd40091ac3cd94198e566c9768374fc71",
+  "labelOnlyRevision": {
+    "header": "BEFORE: original Forest at published dev a5ffb65e",
+    "allSevenSheetsVerified": [
+      {
+        "file": "forest-final-all-views-01.png",
+        "previousSha256": "2605acd63e8326c5fbce713a43728da83ed5f4bba905da8c72bc08a014a29ac7",
+        "sha256": "9cb893561d97d0107c84def71ce017786708b7bced60008873d974853251e549",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-four-view-before-after.png",
+        "previousSha256": "bf887d4366baac87f89aaa9941c4585c2ecffc20a7d6682667c18ae4975efde5",
+        "sha256": "22ff4147756152bc24bc7d6933442b1a9b424b858fef40dda62c503eb3e4bae7",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-all-views-03.png",
+        "previousSha256": "79112b8976c7aedcf692e9da1c55a77bb54c11d67e1dd14d4917ef101128f8ca",
+        "sha256": "fb043769b3033911bef5c9d67cd98248aa4bc315612fb578a151767ba4ee0f3a",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-all-views-06.png",
+        "previousSha256": "01802f1bac30581c1fc9ea6303dc69fc733f60d5351dbbb60cc64c403d548d88",
+        "sha256": "6bee462c87531ffdb094d24cd55b2acbf63c9c06324cf72a4f22e3df6d9991e3",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-all-views-02.png",
+        "previousSha256": "7ab31ea4c299049d5ad484a04efc7368f329737acf98bee1d33b652de73ab803",
+        "sha256": "d0849a7c8d406d799d75a9269e1bd37fe2338294999101aabf9c28426fa797b5",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-all-views-05.png",
+        "previousSha256": "d3f07780fd4c6d007eb0c9f3a26e32d608444af0ced893927b26fb8c3f5cdea1",
+        "sha256": "e5ab191b411d394304766f24374315c9d88dbde697378b70cca623b5fd30b288",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      },
+      {
+        "file": "forest-final-all-views-04.png",
+        "previousSha256": "d8866d4031497bd4bc728faeb8ea9b34ebbc818feca1bd16fdb4405f1b7e7442",
+        "sha256": "152a38c3a33f4bd763a5d488f38805f6e8d8065b1be6841f33e49901a7bd6ff1",
+        "changedPixelBounds": [
+          91,
+          45,
+          440,
+          62
+        ],
+        "allOtherPixelsExact": true,
+        "independentLabelOnlyReconstructionExact": true
+      }
+    ]
+  }
+}
