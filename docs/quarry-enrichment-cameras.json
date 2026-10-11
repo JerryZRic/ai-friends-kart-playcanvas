@@ -1,0 +1,477 @@
+{
+  "schema": "quarry-frozen-camera-manifest-v1",
+  "notice": "Frozen before/after exact source-geometry review. Offline CPU rendering only, no driver, vehicle, HUD, gameplay, GPU or performance claim. No candidate camera refitting. All original catalog poses retained.",
+  "baselineSourceCommit": "3a0e97db08bc2c6036d6a8e7000e1c9437551337",
+  "baselineSourceTree": "53751230de3c89645c15bd2c7ff358b4f39623da",
+  "baselineManifestSha256": "305be59c82bb5727bd5a86d7a7305d443dd4579ce1bb32d23cce5bc0a951468b",
+  "render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "threads": 2,
+    "denoise": false,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0.35,
+    "filmTransparent": false,
+    "imageFormat": "PNG",
+    "colorMode": "RGBA",
+    "pixelAspect": [
+      1,
+      1
+    ],
+    "resolutionPercentage": 100,
+    "blenderVersion": "4.3.2",
+    "adaptiveSampling": false,
+    "look": "None",
+    "gamma": 1.0,
+    "displayDevice": "sRGB",
+    "maxBounces": 12,
+    "diffuseBounces": 4,
+    "glossyBounces": 4,
+    "transmissionBounces": 12,
+    "transparentMaxBounces": 8,
+    "filterWidth": 1.5,
+    "lightSamplingThreshold": 0.009999999776482582,
+    "sampleClampDirect": 0.0,
+    "sampleClampIndirect": 10.0,
+    "filmExposure": 1.0,
+    "colorDepth": "8",
+    "compression": 15
+  },
+  "lighting": {
+    "worldColorHex": "#e5caa0",
+    "worldStrength": 0.7,
+    "sunEulerRadians": [
+      0.5235987755982988,
+      -0.4886921905584123,
+      -0.6108652381980153
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09,
+    "sunColorLinear": [
+      1,
+      0.9,
+      0.74
+    ]
+  },
+  "views": [
+    {
+      "name": "quarry-forward-lower-crossing",
+      "roadEdge": "start",
+      "roadDistanceMetres": 90,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        -43.20490840988853,
+        8.003324674952783,
+        -170.5858238626269
+      ],
+      "sourceTarget": [
+        -8.512678957974716,
+        7.356697709595614,
+        -166.72431430753176
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        -43.20491027832031,
+        170.58583068847656,
+        8.003324508666992
+      ],
+      "cameraQuaternionBlender": [
+        0.4758802354335785,
+        0.46714645624160767,
+        -0.5220283269882202,
+        -0.5317882299423218
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    },
+    {
+      "name": "quarry-forward-hopper-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 280,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        134.28797012104306,
+        12.941036373231206,
+        -109.79924086882761
+      ],
+      "sourceTarget": [
+        154.79061512181926,
+        13.487027726329297,
+        -81.73563610275004
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        134.2879638671875,
+        109.79924011230469,
+        12.941036224365234
+      ],
+      "cameraQuaternionBlender": [
+        0.21766433119773865,
+        0.22111062705516815,
+        -0.6774687170982361,
+        -0.6669095754623413
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    },
+    {
+      "name": "quarry-forward-cut-face-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 395,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        148.80280125219275,
+        18.937960822115812,
+        -6.0229575815905845
+      ],
+      "sourceTarget": [
+        122.82970849966435,
+        20.21893873824777,
+        16.766566289448733
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        148.80279541015625,
+        6.022957801818848,
+        18.93796157836914
+      ],
+      "cameraQuaternionBlender": [
+        0.28629055619239807,
+        0.29710060358047485,
+        0.6559378504753113,
+        0.6320716142654419
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    },
+    {
+      "name": "quarry-forward-fork-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 575,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        -14.944216314153913,
+        29.47208478719224,
+        58.019633796625314
+      ],
+      "sourceTarget": [
+        -41.81169480340722,
+        28.255202470035368,
+        80.2135869690076
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        -14.94421672821045,
+        -58.01963424682617,
+        29.472084045410156
+      ],
+      "cameraQuaternionBlender": [
+        0.3065153956413269,
+        0.29599905014038086,
+        0.6284391283988953,
+        0.6507666110992432
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    },
+    {
+      "name": "quarry-forward-derrick-approach",
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 180,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        53.58388246455642,
+        31.280526486311928,
+        264.62426764057784
+      ],
+      "sourceTarget": [
+        88.42656124783258,
+        31.408333602102964,
+        265.50637301817756
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        53.58388137817383,
+        -264.624267578125,
+        31.280527114868164
+      ],
+      "cameraQuaternionBlender": [
+        0.49272632598876953,
+        0.49453645944595337,
+        -0.507215142250061,
+        -0.5053586363792419
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    },
+    {
+      "name": "quarry-forward-conveyor-approach",
+      "roadEdge": "finish",
+      "roadDistanceMetres": 225,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sourceEye": [
+        245.83599595864553,
+        33.443516681701794,
+        -117.1761539103326
+      ],
+      "sourceTarget": [
+        230.5558533198403,
+        33.254379612417374,
+        -148.59253485990808
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        245.83599853515625,
+        117.17615509033203,
+        33.44351577758789
+      ],
+      "cameraQuaternionBlender": [
+        0.6909335851669312,
+        0.6872031092643738,
+        0.15825635194778442,
+        0.1591154783964157
+      ],
+      "projection": "PERSP",
+      "lensMillimetres": 31,
+      "description": "Forward view from exact physical road sampler, eye road+2.1m, look 35m ahead at road+1.2m. Static offline source geometry only; no driver, vehicle or HUD.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24
+    }
+  ],
+  "catalogViews": [
+    {
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        957.9686889648438,
+        610.795654296875,
+        1040.79052734375
+      ],
+      "cameraQuaternionBlender": [
+        0.45346754789352417,
+        0.20000626146793365,
+        0.35050061345100403,
+        0.7946785688400269
+      ],
+      "projection": "ORTHO",
+      "description": "Full dry sandstone quarry overview with both physical fork roads, extraction benches, industrial landmarks and timber crossing inside the frame; distant terrain may extend outside it.",
+      "orthographicScaleMetres": 872.1063842773438,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "lensMillimetres": 50,
+      "renderByDefault": true,
+      "samples": 24,
+      "name": "quarry-overview",
+      "poseSource": "Exact historical Quarry catalog transform before scene enrichment"
+    },
+    {
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        20.026559829711914,
+        36.46587371826172,
+        1522.5396728515625
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry: pale narrow Carved Shelf is the inner S fork; broad compacted Haul Road is the outer fork. Independent runtime samplers retain actual shared split/merge throats. Dry-Cut Trestle crosses the working-floor road at a separate elevation; no invented connecting road.",
+      "orthographicScaleMetres": 1029.8004150390625,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "lensMillimetres": 50,
+      "renderByDefault": true,
+      "samples": 24,
+      "name": "quarry-topdown",
+      "poseSource": "Exact historical Quarry catalog transform before scene enrichment"
+    },
+    {
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -1388.6304931640625,
+        587.2149658203125,
+        412.379638671875
+      ],
+      "cameraQuaternionBlender": [
+        0.4727156162261963,
+        0.36188262701034546,
+        -0.48840993642807007,
+        -0.6379942297935486
+      ],
+      "projection": "ORTHO",
+      "description": "Original timber trestle, shallow upper chords, cross sleepers, externally grounded bents and open lower working-floor road. Runtime geometry, support placement and clearances are unchanged.",
+      "orthographicScaleMetres": 155,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "lensMillimetres": 50,
+      "renderByDefault": true,
+      "samples": 24,
+      "name": "quarry-timber-overpass",
+      "poseSource": "Exact historical Quarry catalog transform before scene enrichment"
+    },
+    {
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        53.2629508972168,
+        -264.5684509277344,
+        31.263671875
+      ],
+      "cameraQuaternionBlender": [
+        0.3263188600540161,
+        0.37394964694976807,
+        -0.6541147828102112,
+        -0.5707989931106567
+      ],
+      "projection": "PERSP",
+      "description": "Perspective from 2.1 m above actual sampled boulevard road centre. Original source scenery only; no driver, HUD or vehicle. Looks toward the original asymmetric timber counterweight derrick beside Haul Road.",
+      "lensMillimetres": 31,
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 179.67381011300247,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "renderByDefault": true,
+      "samples": 24,
+      "name": "quarry-derrick-street",
+      "poseSource": "Exact historical Quarry catalog transform before scene enrichment"
+    },
+    {
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1005.7254638671875,
+        -918.5145263671875,
+        731.8622436523438
+      ],
+      "cameraQuaternionBlender": [
+        0.8174378871917725,
+        0.49466732144355774,
+        0.15279504656791687,
+        0.25249388813972473
+      ],
+      "projection": "ORTHO",
+      "description": "Three-quarter original double conveyor transfer, showing both distinct belts, support legs, diagonal braces, rollers, stone loads, transfer chute and full grounded foundation. Source geometry is unchanged.",
+      "orthographicScaleMetres": 76,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "lensMillimetres": 50,
+      "renderByDefault": true,
+      "samples": 24,
+      "name": "quarry-conveyor-detail",
+      "poseSource": "Exact historical Quarry catalog transform before scene enrichment"
+    }
+  ],
+  "baselineGeometryContract": {
+    "geometryJsonSha256": "ea9740d5ff8bf05abbc1d81bb0ef60de8ee06312cbbe69351c492f4ffc35c890",
+    "glbSha256": "e4755f9b41f07be50a60a485cfdfef40da2f00216358d0e8461f539e188c84fb",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/quarry-scenery.ts": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+    },
+    "scenerySnapshot": "docs/scene-baselines/quarry-scenery.ts.txt",
+    "additionalProtectedSourceHashes": {}
+  }
+}
