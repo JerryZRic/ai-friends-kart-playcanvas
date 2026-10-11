@@ -12,6 +12,8 @@ export interface QuarrySceneGeometry extends LandSceneGeometry {
   foundations:{kind:string;top:number;bottom:number;footprint:number[][];masonryVertexStart:number;pavingVertexStart:number}[];
   cameraObstacles:(CameraBlocker&{kind:string})[];
   landmarks:{kind:string;label:string;position:number[]}[];
+  extractionTerraces:{site:number;level:number;bottom:number[][];top:number[][];oxideTop:number[][]}[];
+  extractionFootprints:{site:number;footprint:number[][];bottom:number;top:number}[];
   terrainGrid:{minX:number;minZ:number;dx:number;dz:number;columns:number;rows:number};
   trestleMembers:{kind:string;points:number[][];minimumRoadClearance:number}[];
 }
@@ -30,12 +32,12 @@ const local=(p:pc.Vec3,yaw:number)=>{const c=Math.cos(yaw),s=Math.sin(yaw);retur
 /** Original, entirely dry sandstone working quarry. All roads, structures,
  * supports and the offline artifact consume the same physical edge samplers. */
 export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGeometry {
-  const haul=new Batch('Quarry compacted haul road','#b89a73',.98,'asphalt');
+  const haul=new Batch('Quarry compacted haul road','#897963',.98,'asphalt');
   const shelf=new Batch('Quarry sawn pale shelf road','#dcc197',.97,'stone');
   const soffit=new Batch('Quarry deck underside and shadow cut','#594536',1,'stone');
-  const sandstone=new Batch('Quarry amber sandstone cut faces','#bb7848',1,'stone');
+  const sandstone=new Batch('Quarry amber sandstone cut faces','#bb7848',1,'none');
   const strata=new Batch('Quarry red oxide horizontal strata','#a65837',1,'stone');
-  const ground=new Batch('Quarry continuous dry working floor','#8f7960',1,'stone');
+  const ground=new Batch('Quarry continuous dry working floor','#927c60',1,'none');
   const timber=new Batch('Quarry dark structural timber','#4a3427',.98,'wood');
   const sunWood=new Batch('Quarry sunlit timber edges','#96704b',.96,'wood');
   const iron=new Batch('Quarry dark iron plates and bolts','#45413a',.64,'none',.45);
@@ -43,7 +45,7 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   const ochre=new Batch('Quarry ochre route boards','#d6a747',.9,'wood');
   const ivory=new Batch('Quarry ivory wayfinding and race marks','#f0dfb6',.88);
   const dust=new Batch('Quarry dry cut chips and dust facets','#c39d6f',1,'stone');
-  const pale=new Batch('Quarry freshly sawn sandstone edges','#d6ad78',1,'stone');
+  const pale=new Batch('Quarry freshly sawn sandstone edges','#d6b98c',1,'stone');
   const darkStrata=new Batch('Quarry deep fractured oxide seams','#783f2c',1,'stone');
   const greyWood=new Batch('Quarry silvered cassette sleepers','#82725e',1,'wood');
   const rust=new Batch('Quarry weathered iron wheel rims','#926044',.83,'none',.32);
@@ -55,6 +57,7 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   const props:LandPropPlacement[]=[],roadSamples:QuarrySceneGeometry['roadSamples']=[],routeRoadSamples:QuarrySceneGeometry['routeRoadSamples']=[];
   const roadFaces:QuarrySceneGeometry['roadFaces']=[],roadUndersideFaces:QuarrySceneGeometry['roadUndersideFaces']=[],foundations:QuarrySceneGeometry['foundations']=[];
   const cameraObstacles:QuarrySceneGeometry['cameraObstacles']=[],landmarks:QuarrySceneGeometry['landmarks']=[],trestleMembers:QuarrySceneGeometry['trestleMembers']=[],structures:QuarrySceneGeometry['structures']=[];
+  const extractionFootprints:QuarrySceneGeometry['extractionFootprints']=[],extractionTerraces:QuarrySceneGeometry['extractionTerraces']=[];
   const sourceFaces=sampleRoadFootprints(edges),roadIndex=new RoadFootprintIndex(sourceFaces);
   const support=edges.flatMap(edge=>Array.from({length:Math.ceil(edge.length/2)+1},(_,i)=>{
     const s=edge.length*i/Math.ceil(edge.length/2),f=edge.sample(s),half=edge.halfWidthAt(s);
@@ -62,7 +65,28 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   }));
   const point=(edge:SceneryRoadEdge,s:number,l:number,h=0)=>edge.sample(s,l).p.clone().add(vec(0,h,0));
   const clearAt=(p:pc.Vec3,r:number,margin=5)=>roadIndex.clearAt(p.x,p.z,r+margin);
-  const freeAt=(p:pc.Vec3,r:number)=>clearAt(p,r)&&props.every(q=>Math.hypot(q.x-p.x,q.z-p.z)>q.radius+r+2);
+  const pointSegmentDistance=(p:pc.Vec3,a:pc.Vec3,b:pc.Vec3)=>{
+    const x=b.x-a.x,z=b.z-a.z,t=clamp(((p.x-a.x)*x+(p.z-a.z)*z)/(x*x+z*z||1),0,1);
+    return Math.hypot(p.x-a.x-t*x,p.z-a.z-t*z);
+  };
+  const inPolygon=(p:pc.Vec3,polygon:pc.Vec3[])=>{
+    const crosses=polygon.map((a,i)=>{const b=polygon[(i+1)%polygon.length];return(b.x-a.x)*(p.z-a.z)-(b.z-a.z)*(p.x-a.x);});
+    return crosses.every(v=>v>=-1e-9)||crosses.every(v=>v<=1e-9);
+  };
+  const clearOfRock=(p:pc.Vec3,r:number)=>extractionFootprints.every(f=>{
+    const poly=f.footprint.map(q=>vec(...q as [number,number,number]));
+    return !inPolygon(p,poly)&&poly.every((a,i)=>pointSegmentDistance(p,a,poly[(i+1)%poly.length])>r+1);
+  });
+  const freeAt=(p:pc.Vec3,r:number)=>clearAt(p,r)&&clearOfRock(p,r)&&props.every(q=>Math.hypot(q.x-p.x,q.z-p.z)>q.radius+r+2);
+  // Whole convex-footprint exclusion, including the interior and full edge
+  // distances. Long quarry cuts cannot use a centre-only circular reservation.
+  const clearPolygon=(polygon:pc.Vec3[],margin=5)=>roadIndex.query(
+    Math.min(...polygon.map(p=>p.x))-margin,Math.max(...polygon.map(p=>p.x))+margin,
+    Math.min(...polygon.map(p=>p.z))-margin,Math.max(...polygon.map(p=>p.z))+margin).every(f=>{
+      if(footprintArea(intersectRoadFootprint(polygon,f.points))>1e-8)return false;
+      return polygon.every(p=>f.points.every((a,i)=>pointSegmentDistance(p,a,f.points[(i+1)%3])>margin))&&
+        f.points.every(p=>polygon.every((a,i)=>pointSegmentDistance(p,a,polygon[(i+1)%polygon.length])>margin));
+    });
   const bound=(kind:string,batch:Batch,start:number)=>{
     const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
     for(let i=start;i<batch.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],batch.positions[i]);max[j]=Math.max(max[j],batch.positions[i]);}
@@ -80,14 +104,25 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     for(const f of [[0,1,2,3],[5,4,7,6],[4,0,6,2],[1,5,3,7],[2,3,6,7],[4,5,0,1]])batch.quad(v[f[0]],v[f[1]],v[f[2]],v[f[3]]);
     if(obstacle)bound(kind,batch,start);return v;
   };
-  const solid=(kind:string,batch:Batch,polygon:pc.Vec3[],bottom:number,top:number,obstacle=true)=>{
-    const start=batch.positions.length;
+  const solid=(kind:string,batch:Batch,polygon:pc.Vec3[],bottom:number,top:number,obstacle=true,profile?:{top:pc.Vec3[];shift:(p:pc.Vec3)=>number;bottomFlat?:boolean})=>{
+    const start=batch.positions.length,indexStart=batch.indices.length,upper=profile?.top??polygon,shift=profile?.shift??(()=>0);
     for(let i=1;i<polygon.length-1;i++){
-      const t=[polygon[0],polygon[i],polygon[i+1]].map(p=>vec(p.x,top,p.z));
+      const t=[upper[0],upper[i],upper[i+1]].map(p=>vec(p.x,top+shift(p),p.z));
       const normal=new pc.Vec3().cross(t[1].clone().sub(t[0]),t[2].clone().sub(t[0]));if(normal.y<0)[t[1],t[2]]=[t[2],t[1]];batch.tri(t[0],t[1],t[2]);
     }
-    for(let i=0;i<polygon.length;i++){const a=polygon[i],b=polygon[(i+1)%polygon.length];batch.quad(vec(a.x,bottom,a.z),vec(b.x,bottom,b.z),vec(a.x,top,a.z),vec(b.x,top,b.z));}
-    if(obstacle)bound(kind,batch,start);
+    let along=0;
+    for(let i=0;i<polygon.length;i++){
+      const a=polygon[i],b=polygon[(i+1)%polygon.length],c=upper[i],d=upper[(i+1)%polygon.length],length=Math.hypot(b.x-a.x,b.z-a.z),uvStart=batch.uvs.length;
+      const ya=bottom+(profile?.bottomFlat?0:shift(a)),yb=bottom+(profile?.bottomFlat?0:shift(b)),yc=top+shift(c),yd=top+shift(d);
+      batch.quad(vec(a.x,ya,a.z),vec(b.x,yb,b.z),vec(c.x,yc,c.z),vec(d.x,yd,d.z));
+      // Rock side UVs use actual metres along the face and vertical height.
+      // Assign the visible source face, never a coincident color skin.
+      batch.uvs.splice(uvStart,8,along*.6,ya*.6,(along+length)*.6,yb*.6,along*.6,yc*.6,(along+length)*.6,yd*.6);along+=length;
+    }
+    if(obstacle){
+      bound(kind,batch,start);const obstacle=cameraObstacles[cameraObstacles.length-1];
+      if(kind.startsWith('extraction-bench'))obstacle.triangles=Array.from({length:(batch.indices.length-indexStart)/3},(_,i)=>batch.indices.slice(indexStart+i*3,indexStart+i*3+3).map(j=>batch.positions.slice(j*3,j*3+3)));
+    }
   };
 
   // A connected heightfield approaches the working roads and is capped by the
@@ -201,8 +236,9 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     ivory.quad(point(e,s,-w+col*w/8,.026),point(e,s,-w+(col+1)*w/8,.026),point(e,t,-w+col*w/8,.026),point(e,t,-w+(col+1)*w/8,.026));
   }
 
-  // Five asymmetric extraction benches establish an original stepped quarry
-  // silhouette. Whole circumcircles are road-clear before any rock is emitted.
+  // Five extraction anchors remain. The two outer sites now form broad,
+  // connected working cuts with tapered ends, rather than detached display mesas.
+  // Each actual convex terrace footprint is checked against all road ribbons.
   const benchSites=[[-205,125,46,31],[-105,285,48,43],[70,-64,24,24],[325,55,53,49],[-85,-325,54,40]];
   const shape=[[-.92,-.50],[-.43,-.91],[.34,-.95],[.91,-.45],[.88,.37],[.28,.86],[-.42,.80],[-.97,.21]];
   for(let k=0;k<benchSites.length;k++){
@@ -217,19 +253,56 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     const scales=k===1?[1,.91,.64]:k===3?[1,.86,.79,.58]:[1,.87,.74,.61,.48];
     const shiftsX=k===1?[0,.03,.17]:k===3?[0,-.03,-.12,-.19]:[-.025,.045,-.025,.045,-.025];
     const shiftsZ=k===1?[0,.04,.06]:k===3?[0,.05,.04,.02]:[0,-.012,-.024,-.036,-.048];
-    const outer=cutShape.map(([a,b])=>vec(x+a*radius,0,z+b*radius)),{low,high}=terrainExtrema(outer),base=high+.08;
+    const northCuts=[
+      [[-196,310],[-153,302],[195,312],[265,321],[240,344],[-133,357],[-195,338]],
+      [[-151,328],[-124,316],[154,324],[218,330],[172,339],[-140,342]],
+      [[-140,331],[-125,323],[-68,326],[-61,333],[-76,339],[-135,338]],
+    ];
+    const southCuts=[
+      [[-141,-352],[-84,-370],[147,-360],[213,-309],[191,-277],[-126,-285]],
+      [[-125,-347],[-70,-364],[131,-344],[183,-309],[160,-288],[-117,-300]],
+      [[-110,-342],[-63,-354],[61,-339],[122,-312],[87,-298],[-103,-309]],
+      [[-99,-338],[-56,-345],[-9,-335],[20,-316],[-17,-308],[-94,-316]],
+      [[-89,-331],[-69,-337],[-56,-329],[-60,-321],[-79,-316],[-90,-322]],
+    ];
+    const eastCuts=[
+      [[284,-222],[341,-237],[390,-190],[389,103],[316,111],[281,74]],
+      [[300,-180],[347,-200],[377,-180],[376,93],[324,93],[299,69]],
+      [[314,-120],[344,-135],[365,-111],[363,80],[328,78],[312,59]],
+      [[317,44],[336,41],[351,49],[350,63],[331,69],[316,62]],
+    ];
+    const terrace=(level:number)=>k===1?northCuts[level].map(([a,b])=>vec(a,0,b)):
+      k===3?eastCuts[level].map(([a,b])=>vec(a,0,b)):k===4?southCuts[level].map(([a,b])=>vec(a,0,b)):
+      cutShape.map(([a,b])=>{
+        const scale=scales[level],stretch=k===1?[3.1,2.1,1.15][level]:k===2?1.12:1;
+        const shift=k===1?[47,22,0][level]:0,depth=k===1?1.5:k===2?1.18:1;
+        return vec(x+radius*(a*scale*stretch+shiftsX[level])+shift,0,z+radius*(b*scale*depth+shiftsZ[level])+(k===1?28:k===2?4:0));
+      });
+    const outer=terrace(0);
+    for(let level=0;level<scales.length;level++)if(!clearPolygon(terrace(level)))throw new Error('Extraction footprint intersects road: '+k+':'+level);
+    const {low,high}=terrainExtrema(k===0?cutShape.map(([a,b])=>vec(x+a*radius,0,z+b*radius)):outer),base=high+.08;
+    extractionFootprints.push({site:k,footprint:outer.map(tuple),bottom:low-.5,top:base+levels[1]*height});
     // Wider lower benches have solid sides reaching below the entire floor.
     for(let level=0;level<scales.length;level++){
-      const scale=scales[level],poly=cutShape.map(([a,b])=>vec(x+radius*(a*scale+shiftsX[level]),0,z+radius*(b*scale+shiftsZ[level])));
+      const poly=terrace(level);
       const bottom=level===0?low-.5:base+levels[level]*height,top=base+levels[level+1]*height;
-      const lower=level===0?bottom:bottom-.06,bandTop=lower+(top-lower)*.18;
-      solid('extraction-bench-oxide-band',level%2?darkStrata:strata,poly,lower,bandTop);
-      solid('extraction-bench-cut-face',level%2?pale:sandstone,poly,bandTop,top);
-      // Thin vertical saw grooves are proud relief cut strips, spaced broadly.
-      const a=poly[0],b=poly[1];for(let j=1;j<7;j++){
-        const q=a.clone().lerp(a,b,j/7),r=a.clone().lerp(a,b,(j+.08)/7),out=vec(q.x-x,0,q.z-z).normalize().mulScalar(.015);
-        darkStrata.quad(vec(q.x+out.x,bandTop+.1,q.z+out.z),vec(r.x+out.x,bandTop+.1,r.z+out.z),vec(q.x+out.x,top-.12,q.z+out.z),vec(r.x+out.x,top-.12,r.z+out.z));
+      const lower=level===0?bottom:bottom-.06,bandTop=lower+(top-lower)*[.10,.06,.14,.08,.11][level];
+      // Broad bedding planes tilt gently across the working cut. Battered,
+      // chamfered upper edges keep the silhouette geological, with unequal
+      // terrace setbacks rather than a stack of perfectly vertical boxes.
+      const shift=(q:pc.Vec3)=>k===1?(q.x-x)*-.015+(q.z-z)*.009:k===3?(q.x-x)*.012+(q.z-z)*.007:k===4?(q.x-x)*-.011+(q.z-z)*.015:0;
+      const center=poly.reduce((sum,q)=>sum.add(q),vec(0,0,0)).mulScalar(1/poly.length);
+      let upperPoly=poly;
+      for(const inset of [.025,.015,.005,0]){
+        const candidate=poly.map(q=>q.clone().lerp(q,center,inset));
+        if(level===scales.length-1||terrace(level+1).every(q=>inPolygon(q,candidate))){upperPoly=candidate;break;}
       }
+      const safeBandTop=level===0?Math.max(bandTop,lower+.2-Math.min(...poly.map(shift))):bandTop;
+      solid('extraction-bench-oxide-band',level%2?darkStrata:strata,poly,lower,safeBandTop,true,{top:poly,shift,bottomFlat:level===0});
+      solid('extraction-bench-cut-face',level%2?pale:sandstone,poly,safeBandTop,top,true,{top:upperPoly,shift});
+      extractionTerraces.push({site:k,level,bottom:poly.map(q=>[q.x,lower+(level?shift(q):0),q.z]),oxideTop:poly.map(q=>[q.x,safeBandTop+shift(q),q.z]),top:upperPoly.map(q=>[q.x,top+shift(q),q.z])});
+      if(level===0)extractionFootprints[extractionFootprints.length-1].top=Math.max(...upperPoly.map(q=>top+shift(q)));
+
     }
     landmarks.push({kind:'extraction-bench',label:(k===1?'Elongated three-break north extraction wall ':k===3?'Asymmetric four-break east cut face ':'Five-tier saw-cut extraction bench ')+(k+1),position:[x,base,z]});
   }
@@ -356,6 +429,19 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     }
     record(plot.kind,p,plot.r,plot.label);
   }
+  // Expanded rock must clear the fixed machinery as well as the road. The
+  // conservative member rectangles include the whole unchanged foundation,
+  // frame, rigging, hoist and counterweight, so a skyline cannot bury the yard.
+  for(const obstacle of cameraObstacles.filter(o=>/^(hopper-|derrick-|conveyor-|cassette-yard-|monolith-|sawn-face-|feed-hopper-|stepped-cut-face-|timber-counterweight-derrick-|double-belt-transfer-|stone-cassette-yard-|strata-monolith-)/.test(o.kind))){
+    const [a,b]=[obstacle.min,obstacle.max],rectangle=[vec(a[0],0,a[2]),vec(b[0],0,a[2]),vec(b[0],0,b[2]),vec(a[0],0,b[2])];
+    for(const f of extractionFootprints){
+      const polygon=f.footprint.map(q=>vec(...q as [number,number,number]));
+      const separate=footprintArea(intersectRoadFootprint(polygon,rectangle))<1e-8&&
+        polygon.every(p=>rectangle.every((q,i)=>pointSegmentDistance(p,q,rectangle[(i+1)%4])>1))&&
+        rectangle.every(p=>polygon.every((q,i)=>pointSegmentDistance(p,q,polygon[(i+1)%polygon.length])>1));
+      if(!separate)throw new Error('Extraction mass intersects fixed machinery: '+f.site+':'+obstacle.kind);
+    }
+  }
 
   // The one named crossing is a true timber trestle, never a terrain bridge.
   // Shallow upper chords remain inside the reserved 2.4 m structural envelope.
@@ -402,16 +488,60 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
 
   // Loading-area detail is grouped in small working sets rather than scattered
   // noise: separated stone blocks, visible sleepers, open crib bins and spoil.
-  const findPlot=(edge:SceneryRoadEdge,s:number,r:number,side:number)=>{
+  const openServiceAprons:{p:pc.Vec3,r:number}[]=[];
+  const findPlot=(edge:SceneryRoadEdge,s:number,r:number,side:number,minimumExtra=0)=>{
     for(const extra of [0,4,9,15]){
-      const p=point(edge,s,side*(edge.halfWidthAt(s)+r+7+extra));if(freeAt(p,r))return p;
+      const p=point(edge,s,side*(edge.halfWidthAt(s)+r+7+extra+minimumExtra));if(freeAt(p,r)&&openServiceAprons.every(a=>Math.hypot(a.p.x-p.x,a.p.z-p.z)>a.r+r+2))return p;
     }return null;
   };
+  // Three low open service buildings connect machinery with legible loading
+  // destinations. Their large shaded openings are real empty space; each post,
+  // beam, wall and roof plane has its own bound, never a solid shelter AABB.
+  for(const plot of [
+    {edge:course.commonStart,s:355,side:1,label:'hopper-service-shelter'},
+    {edge:course.alternates.boulevard,s:260,side:-1,label:'derrick-service-shelter'},
+    {edge:course.commonFinish,s:303,side:-1,label:'conveyor-receiving-shelter'},
+  ]){
+    const narrow=plot.label==='derrick-service-shelter',sx=narrow?.78:1,sz=narrow?.70:1,r=narrow?10:13,p=findPlot(plot.edge,plot.s,r,plot.side,narrow?8:0);if(!p)continue;
+    const yaw=plot.edge.sample(plot.s).angle;groundPad(plot.label,p,yaw,21*sx,14*sz);const raw=local(p,yaw),at=(x:number,y:number,z:number)=>raw(x*sx,y,z*sz);
+    const put=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>box(kind,b,at(x,y,z),vec(w*sx,h,d*sz),yaw);
+    for(const x of [-9,0,9])for(const z of [-5.8,5.8]){
+      put('service-shelter-stone-shoe',footing,x,.35,z,1.3,.7,1.3);
+      put('service-shelter-upright',timber,x,3.2,z,.56,5,.56);
+    }
+    for(const z of [-5.8,5.8])put('service-shelter-long-beam',timber,0,5.85,z,19.8,.6,.65);
+    for(const x of [-9,0,9]){
+      put('service-shelter-cross-beam',sunWood,x,6.18,0,.55,.45,13.2);
+      beam('service-shelter-open-brace',sunWood,at(x,3.4,-5.8),at(x,6.18,-3.4),.25);
+    }
+    put('service-shelter-weathered-cover',greyWood,0,6.5,0,21,.25,14);
+    // A single rear timber screen leaves both front bays and both ends open.
+    put('service-shelter-rear-screen',sunWood,0,2.4,5.95,18,3.4,.20);
+    for(const x of [-5,5]){
+      for(const side of [-1,1])put('service-shelter-stock-sleeper',greyWood,x+side*1.2,.24,2,.45,.48,3.6);
+      for(let layer=0;layer<3;layer++)put('service-shelter-stone-stock',layer===1?sandstone:pale,x,.48+.75*(layer+.5),2,3.3,.75,3.1);
+    }
+    record(plot.label,p,r);
+    // Preserve the reviewed empty loading apron after setting this shelter back.
+    // This is a placement reservation only, never a solid mesh or camera blocker.
+    if(narrow)openServiceAprons.push({p:point(plot.edge,plot.s,plot.side*(plot.edge.halfWidthAt(plot.s)+r+7)),r});
+  }
+  const loadingPockets=[
+    {edge:course.commonStart,from:246,side:1},
+    {edge:course.commonStart,from:373,side:-1},
+    {edge:course.alternates.boulevard,from:132,side:-1},
+    {edge:course.alternates.boulevard,from:245,side:-1},
+    {edge:course.commonFinish,from:174,side:-1},
+    {edge:course.commonFinish,from:786,side:1},
+    {edge:course.commonFinish,from:957,side:1},
+  ];
   for(let i=0;i<28;i++){
-    const edge=i<14?course.commonStart:course.commonFinish,s=i<14?45+i*34:710+(i-14)*27;if(s>edge.length-30)continue;
-    const p=findPlot(edge,s,4.5,i%2?1:-1);if(!p)continue;
+    const pocket=loadingPockets[Math.floor(i/4)],edge=pocket.edge,s=pocket.from+(i%4)*12;
+    const p=findPlot(edge,s,4.5,pocket.side);if(!p)continue;
     const yaw=edge.sample(s).angle;groundPad('roadside-stone-workset',p,yaw,6.8,5.4);const at=local(p,yaw);
-    for(const x of [-2.3,2.3])box('workset-timber-sleeper',greyWood,at(x,.24,0),vec(.65,.48,4.6),yaw);
+    // Each of the three relocated stones has a real sleeper from pad to base.
+    // The middle support repairs the inherited 0.48 m unsupported centre gap.
+    for(const x of [-2.3,0,2.3])box('workset-timber-sleeper',greyWood,at(x,.24,0),vec(.65,.48,4.6),yaw);
     for(let j=0;j<3;j++){
       const h=1.4+((i+j)%3)*.4;box('workset-cut-stone',j%2?sandstone:pale,at(-2.1+j*2.1,.48+h/2,0),vec(1.75,h,3.5),yaw);
       box('workset-iron-lifting-cleat',rust,at(-2.1+j*2.1,h+.55,0),vec(.4,.14,.25),yaw,false);
@@ -456,5 +586,5 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
   for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}
   return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,roadUndersideFaces,foundations,cameraObstacles,landmarks,trestleMembers,
-    terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
+    extractionFootprints,extractionTerraces,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
 }
