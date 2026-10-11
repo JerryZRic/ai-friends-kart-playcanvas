@@ -38,6 +38,8 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 **Verdant Canopy / 蔓穹花园** links planted ascent folds, a petal terrace and a low basin, with a technical path beneath a genuinely open timber arbor or a broader outer garden arc. [Open the dev garden catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden).
 
+**Copperwing Airfield / 铜翼空港** connects a launch runway, reversing observation ridge and descending uplands, with a narrow open-frame hangar route or a broader perimeter taxiway. Original static aircraft exhibits remain outside the kart racing lanes. [Open the dev airfield catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield).
+
 ## Modular food garage (dev only)
 
 The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 55 food themes / 330 parts (including approved 000 pure white rice), separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing is preview-only; apply replaces all six parts with optional save-before-replace and undo. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).

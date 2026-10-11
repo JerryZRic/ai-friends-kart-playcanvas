@@ -156,3 +156,22 @@ export const GARDEN_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
  {edgeId:'finish',s:870,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)}))as RoutePickupRow[]);
 export const gardenPickupRows=(course:ForkCourse)=>routePickupRows(course,GARDEN_PICKUP_ROWS);
+
+/** Frozen physical Airfield rows occupy the runway, observation ridge, open
+ * hangar cut, perimeter taxiway and descending return. Initial visibility is
+ * checked over the actual 40m approach and emitted source geometry. Fixed
+ * rows retain the shared eight-second respawn; only dynamic appearances
+ * promise the speed/acceleration-dependent physical reaction corridor. */
+export const AIRFIELD_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+ {edgeId:'start',s:95,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:265,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:620,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:1060,lanes:[-3.5,3.5]},
+ {edgeId:'alley',s:210,lanes:[-2.2,2.2]},
+ {edgeId:'boulevard',s:155,lanes:[-3.5,3.5]},
+ {edgeId:'boulevard',s:280,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:285,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:720,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:1000,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)}))as RoutePickupRow[]);
+export const airfieldPickupRows=(course:ForkCourse)=>routePickupRows(course,AIRFIELD_PICKUP_ROWS);

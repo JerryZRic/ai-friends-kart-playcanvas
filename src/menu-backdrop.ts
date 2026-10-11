@@ -29,7 +29,13 @@ let createCalderaWorld:typeof createMountainWorld;
 let calderaPreparation:Promise<void>|undefined;
 let createGardenWorld:typeof createMountainWorld;
 let gardenPreparation:Promise<void>|undefined;
+let createAirfieldWorld:typeof createMountainWorld;
+let airfieldPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='airfield')return airfieldPreparation??=Promise.all([import('./land-scene'),import('./maps/airfield'),import('./airfield-scenery')]).then(([scene,{AIRFIELD_TRACK,AIRFIELD_COURSE},{buildAirfieldSceneGeometry,AIRFIELD_SCENE_THEME}])=>{
+    registerMenuRoute('airfield',{sample:AIRFIELD_TRACK.sample,length:AIRFIELD_TRACK.length,lane:AIRFIELD_TRACK.halfWidthAt(0)});
+    createAirfieldWorld=app=>scene.createLandScene(app,AIRFIELD_TRACK,{preview:true,geometry:buildAirfieldSceneGeometry(AIRFIELD_COURSE),theme:AIRFIELD_SCENE_THEME});
+  }).catch(error=>{airfieldPreparation=undefined;throw error;});
   if(map==='garden')return gardenPreparation??=Promise.all([import('./land-scene'),import('./maps/garden'),import('./garden-scenery')]).then(([scene,{GARDEN_TRACK,GARDEN_COURSE},{buildGardenSceneGeometry,GARDEN_SCENE_THEME}])=>{
     registerMenuRoute('garden',{sample:GARDEN_TRACK.sample,length:GARDEN_TRACK.length,lane:GARDEN_TRACK.halfWidthAt(0)});
     createGardenWorld=app=>scene.createLandScene(app,GARDEN_TRACK,{preview:true,geometry:buildGardenSceneGeometry(GARDEN_COURSE),theme:GARDEN_SCENE_THEME});
@@ -122,9 +128,10 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   if(map==='harvest'&&!createHarvestWorld)throw new Error('Prepare the harvest menu world before mounting.');
   if(map==='desert'&&!createDesertWorld)throw new Error('Prepare the desert menu world before mounting.');
   if(map==='snow'&&!createSnowWorld)throw new Error('Prepare the snow menu world before mounting.');
+  if(map==='airfield'&&!createAirfieldWorld)throw new Error('Prepare the airfield menu world before mounting.');
   if(map==='garden'&&!createGardenWorld)throw new Error('Prepare the garden menu world before mounting.');
   if(map==='caldera'&&!createCalderaWorld)throw new Error('Prepare the caldera menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):map==='desert'?createDesertWorld!(app):map==='snow'?createSnowWorld!(app):map==='caldera'?createCalderaWorld!(app):map==='garden'?createGardenWorld!(app):null;
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):map==='desert'?createDesertWorld!(app):map==='snow'?createSnowWorld!(app):map==='caldera'?createCalderaWorld!(app):map==='garden'?createGardenWorld!(app):map==='airfield'?createAirfieldWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

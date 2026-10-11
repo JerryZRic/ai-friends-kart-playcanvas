@@ -38,6 +38,8 @@
 
 **蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开 dev 蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden)。
 
+**铜翼空港 / Copperwing Airfield** 串联起步跑道、观景山脊连续弯与下降丘陵，可选择通透机库中的窄线或外围宽滑行道。原创静态飞机展品布置在赛车道路之外。[打开 dev 铜翼空港地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型
