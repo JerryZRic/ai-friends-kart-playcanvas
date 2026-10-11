@@ -27,7 +27,13 @@ let createSnowWorld:typeof createMountainWorld;
 let snowPreparation:Promise<void>|undefined;
 let createCalderaWorld:typeof createMountainWorld;
 let calderaPreparation:Promise<void>|undefined;
+let createGardenWorld:typeof createMountainWorld;
+let gardenPreparation:Promise<void>|undefined;
 export function prepareMenuWorld(map:MapId):Promise<void>{
+  if(map==='garden')return gardenPreparation??=Promise.all([import('./land-scene'),import('./maps/garden'),import('./garden-scenery')]).then(([scene,{GARDEN_TRACK,GARDEN_COURSE},{buildGardenSceneGeometry,GARDEN_SCENE_THEME}])=>{
+    registerMenuRoute('garden',{sample:GARDEN_TRACK.sample,length:GARDEN_TRACK.length,lane:GARDEN_TRACK.halfWidthAt(0)});
+    createGardenWorld=app=>scene.createLandScene(app,GARDEN_TRACK,{preview:true,geometry:buildGardenSceneGeometry(GARDEN_COURSE),theme:GARDEN_SCENE_THEME});
+  }).catch(error=>{gardenPreparation=undefined;throw error;});
   if(map==='caldera')return calderaPreparation??=Promise.all([import('./land-scene'),import('./maps/caldera'),import('./caldera-scenery')]).then(([scene,{CALDERA_TRACK,CALDERA_COURSE},{buildCalderaSceneGeometry,CALDERA_SCENE_THEME}])=>{
     registerMenuRoute('caldera',{sample:CALDERA_TRACK.sample,length:CALDERA_TRACK.length,lane:CALDERA_TRACK.halfWidthAt(0)});
     createCalderaWorld=app=>scene.createLandScene(app,CALDERA_TRACK,{preview:true,geometry:buildCalderaSceneGeometry(CALDERA_COURSE),theme:CALDERA_SCENE_THEME});
@@ -116,8 +122,9 @@ export function createMenuWorld(app: pc.Application, map: MapId, settings: GameS
   if(map==='harvest'&&!createHarvestWorld)throw new Error('Prepare the harvest menu world before mounting.');
   if(map==='desert'&&!createDesertWorld)throw new Error('Prepare the desert menu world before mounting.');
   if(map==='snow'&&!createSnowWorld)throw new Error('Prepare the snow menu world before mounting.');
+  if(map==='garden'&&!createGardenWorld)throw new Error('Prepare the garden menu world before mounting.');
   if(map==='caldera'&&!createCalderaWorld)throw new Error('Prepare the caldera menu world before mounting.');
-  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):map==='desert'?createDesertWorld!(app):map==='snow'?createSnowWorld!(app):map==='caldera'?createCalderaWorld!(app):null;
+  const land=map==='mountain'?createMountainWorld!(app):map==='town'?createTownWorld!(app):map==='quarry'?createQuarryWorld!(app):map==='forest'?createForestWorld!(app):map==='workshop'?createWorkshopWorld!(app):map==='harvest'?createHarvestWorld!(app):map==='desert'?createDesertWorld!(app):map==='snow'?createSnowWorld!(app):map==='caldera'?createCalderaWorld!(app):map==='garden'?createGardenWorld!(app):null;
   const world = (coast ?? waterpark ?? land)!;
   if (coast) addCoastPalms(app, coast.root);
   for (const light of app.root.findComponents('light') as pc.LightComponent[]) {

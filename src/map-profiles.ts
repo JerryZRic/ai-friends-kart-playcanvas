@@ -11,6 +11,7 @@ export const MAP_PROFILES=Object.freeze({
  desert:Object.freeze({id:'desert',label:'星砂古驿',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 沙丘古驿双路线竞速',tag:'SUNWEAVE CARAVAN',detail:'沿起伏沙脊攀上砂岩高地，穿过风蚀弯廊，在双石拱折径与风帆庭环之间选线，再沿低地古道返回。',icon:'☼'}),
  snow:Object.freeze({id:'snow',label:'霜环雪站',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 雪岭车站双路线竞速',tag:'FROSTLOOP DEPOT',detail:'攀上两座相向的雪岭弯谷，越过鞍部，在车站维修折径与宽阔雪台之间选线，沿层叠石坡返回。',icon:'❄'}),
  caldera:Object.freeze({id:'caldera',label:'玄岩环冕',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 玄岩火山双路线竞速',tag:'BASALT CROWN',detail:'沿冷却火山的高环壁降入钩形石谷，在节理折径与宽阔灰台间选线，穿过双孔石桥，再攀上桥面返回。',icon:'◈'}),
+ garden:Object.freeze({id:'garden',label:'蔓穹花园',vehicle:'kart',entry:'./coast.html',description:'卡丁车 · 台地花园双路线竞速',tag:'VERDANT CANOPY',detail:'穿过层叠花园的连续弯与花瓣高台，在通透木架曲径和外园宽弧之间选线，沿起伏南坡返回低地。',icon:'❀'}),
 });
 export type MapId=keyof typeof MAP_PROFILES;
 export function resolveMap(id:unknown){return MAP_PROFILES[typeof id==='string'&&Object.prototype.hasOwnProperty.call(MAP_PROFILES,id)?id as MapId:'coast'];}

@@ -36,6 +36,8 @@
 
 **玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开 dev 玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera)。
 
+**蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开 dev 蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden)。
+
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型

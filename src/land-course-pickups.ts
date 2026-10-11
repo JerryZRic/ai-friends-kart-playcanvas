@@ -138,3 +138,21 @@ export const CALDERA_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
  {edgeId:'finish',s:900,lanes:[-3.5,3.5]},
 ].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)}))as RoutePickupRow[]);
 export const calderaPickupRows=(course:ForkCourse)=>routePickupRows(course,CALDERA_PICKUP_ROWS);
+
+/** Frozen physical Garden rows: the last row is 40m beyond the superseded
+ * candidate, after the deepened basin. Both lanes use their actual edge support.
+ * Authored boxes keep the shared eight-second cooldown; only dynamic spawns
+ * promise the speed/acceleration-aware physical reaction corridor. */
+export const GARDEN_PICKUP_ROWS:readonly RoutePickupRow[]=Object.freeze([
+ {edgeId:'start',s:80,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:260,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:655,lanes:[-3.5,3.5]},
+ {edgeId:'start',s:1000,lanes:[-3.5,3.5]},
+ {edgeId:'alley',s:150,lanes:[-2.2,2.2]},
+ {edgeId:'boulevard',s:155,lanes:[-3.5,3.5]},
+ {edgeId:'boulevard',s:280,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:170,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:460,lanes:[-3.5,3.5]},
+ {edgeId:'finish',s:870,lanes:[-3.5,3.5]},
+].map(row=>Object.freeze({...row,lanes:Object.freeze(row.lanes)}))as RoutePickupRow[]);
+export const gardenPickupRows=(course:ForkCourse)=>routePickupRows(course,GARDEN_PICKUP_ROWS);
