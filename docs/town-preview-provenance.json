@@ -1,7 +1,7 @@
 {
   "kind": "offline-native-geometry-render",
   "description": "Exact original static runtime town mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
-  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm daylight, AgX view transform, +0.35 exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, frozen per-view samples. No gameplay/GPU or FPS claim.",
   "sourceHashes": {
     "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
     "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
@@ -10,44 +10,354 @@
     "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
     "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+    "src/town-scenery.ts": "bbf08dadb171bd3c2d807204931a36b7f57e70a55317abe385d9cbe72b2e376b",
     "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
   },
-  "geometryTexturesRoutesThemeSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118",
   "generatorHashes": {
     "scripts/export-town-preview.ts": "25ac7fd69e0476de828a18f2d8861bbfdb009a881bd12b249f8aa32028eef17d",
-    "scripts/render-town-preview.py": "74e7ca22c99d22150dd7d1e7d7f4300fafa28fe245a54ecf7128ab0f01a523b2"
+    "scripts/render-town-preview.py": "74e7ca22c99d22150dd7d1e7d7f4300fafa28fe245a54ecf7128ab0f01a523b2",
+    "scripts/render-town-enrichment-preview.py": "baa865a5accd92fb0502db67295d756bc777c63bd79838747e567c7feb7ca288",
+    "docs/town-enrichment-cameras.json": "dec89b28d9e028a1ad1487ca99c5576959930586b3b7d40b3645a9f24f2fdc4e"
   },
+  "geometryTexturesRoutesThemeSha256": "8e12780bb4b36d5a07db92f47c70f6d06c3bdff8669a710a8624c1f2f72871e5",
+  "geometryJsonSha256": "1b0c6726357befa12752c90b377de40d6412fa83ea622a148bb819fc8b18ce3e",
+  "frozenCameraManifestSha256": "dec89b28d9e028a1ad1487ca99c5576959930586b3b7d40b3645a9f24f2fdc4e",
+  "verifiedRenderSettings": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "threads": 2,
+    "denoise": false,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0.3499999940395355,
+    "filmTransparent": false,
+    "imageFormat": "PNG",
+    "colorMode": "RGBA",
+    "pixelAspect": [
+      1.0,
+      1.0
+    ],
+    "resolutionPercentage": 100,
+    "blenderVersion": "4.3.2",
+    "adaptiveSampling": false,
+    "look": "None",
+    "gamma": 1.0,
+    "displayDevice": "sRGB",
+    "maxBounces": 12,
+    "diffuseBounces": 4,
+    "glossyBounces": 4,
+    "transmissionBounces": 12,
+    "transparentMaxBounces": 8,
+    "filterWidth": 1.5,
+    "lightSamplingThreshold": 0.009999999776482582,
+    "sampleClampDirect": 0.0,
+    "sampleClampIndirect": 10.0,
+    "filmExposure": 1.0,
+    "colorDepth": "8",
+    "compression": 15
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#ecdac3",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      0.5235987901687622,
+      -0.48869219422340393,
+      -0.6108652353286743
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.8999999761581421,
+      0.7400000095367432
+    ]
+  },
+  "normalShading": {
+    "storage": "Exact float32 Original runtime normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Original loop vertex indices interpolate the corresponding source normal attribute",
+    "shader": "Attribute Vector -> OBJECT to WORLD NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled Normal",
+    "runtimeMatch": "Identity mesh object transforms and StandardMaterial.twoSidedLighting=true; exact normal data and transform convention, approximate offline light/material response",
+    "historicalNotice": "Native custom-corner encoding differs on inherited ellipsoid-pole and adjacent positive-area faces. It is bypassed for shading without deleting or moving source geometry. Both archived baseline and current candidate use this same correction."
+  },
+  "sourceIdentity": "current-candidate",
   "batches": 20,
-  "vertices": 184438,
-  "triangles": 95630,
+  "vertices": 171140,
+  "triangles": 89092,
   "routeLengthsMetres": {
     "start": 356.6891077959268,
     "alley": 389.11353614856137,
     "boulevard": 478.22800422379737,
     "finish": 691.0178076986851
   },
-  "framingSource": "Union of left/right routeRoadSamples from start, alley, boulevard and finish; overview/topdown additionally include roadside landmark bounds.",
   "lapLengthsMetres": {
     "alleyLapLength": 1436.8204516431733,
     "boulevardLapLength": 1525.9349197184092
   },
+  "framingSource": "Sixteen immutable before/after cameras; original legacy topdown/bridge catalog poses; no new geometry refit",
   "originalModels": {
     "glb": {
       "file": "town-original-scene.glb",
-      "sha256": "826a4eb8d547147c402ae78f3d12567994c3c357be9e428a87d853affdd6351a",
-      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+      "sha256": "eb3998fb066e2d2d3f4a0c771af5775311c69e4f14cf57009f93f86fbb38f732",
+      "note": "Exact original runtime geometry at float32 precision, original UVs/normals/material values and embedded original procedural textures; approximate glTF PBR response"
     },
     "blend": {
       "file": "town-original-scene.blend",
-      "sha256": "1a7ccda0454935dbfe7258cf1fb0aa8bd4be861db8be102c945927854a3baa16",
-      "note": "Editable original mesh batches, packed source procedural textures, UVs, runtime-derived normals and approximate offline lighting/camera."
+      "sha256": "ad5444542ccf847755eed52c4ec9b24b1cb6e76b68ad2fe30f7c6f259f781b39",
+      "note": "Editable exact float32 source meshes/UVs/normal POINT attributes, explicit source-normal shader, packed original textures, frozen daylight and 125 review cameras plus legacy topdown/bridge"
     }
   },
   "views": {
+    "town-alley-bend-low-forward": {
+      "name": "town-alley-bend-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -24.57660484313965,
+        -110.08087921142578,
+        27.338163375854492
+      ],
+      "cameraQuaternionBlender": [
+        0.5832874774932861,
+        0.5070985555648804,
+        -0.4163138270378113,
+        -0.4788627326488495
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.19474634528160095,
+          0.13640500605106354,
+          -0.9713227152824402,
+          -24.57660484313965
+        ],
+        [
+          -0.980853796005249,
+          0.027082841843366623,
+          -0.1928541511297226,
+          -110.08087921142578
+        ],
+        [
+          8.558276931580622e-08,
+          0.9902830719947815,
+          0.13906748592853546,
+          27.338163375854492
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "b6356d5ecf54281e66009856ed21106937d38c9ae52ff452f1f35673675e88a4",
+      "file": "town-alley-bend-low-forward.png",
+      "sha256": "58a6c52c1988c86bd175ee7325a3fbbb50132a0fcd8142d128910f1b8033084c",
+      "routeScreenBounds": [
+        -804.0142211914062,
+        -267.36004638671875,
+        479.0957946777344,
+        42.87946319580078
+      ]
+    },
+    "town-market-frontage-low-forward": {
+      "name": "town-market-frontage-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        104.38520812988281,
+        102.4945068359375,
+        10.605672836303711
+      ],
+      "cameraQuaternionBlender": [
+        0.23580095171928406,
+        0.20500069856643677,
+        0.6232502460479736,
+        0.7168902158737183
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8047451972961426,
+          -0.08255332708358765,
+          0.5878521203994751,
+          104.38520812988281
+        ],
+        [
+          0.5936204195022583,
+          -0.11191393435001373,
+          0.79692542552948,
+          102.4945068359375
+        ],
+        [
+          -1.0345967638158982e-08,
+          0.9902828931808472,
+          0.13906751573085785,
+          10.605672836303711
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "bd5f0b537983176fbd62d644e6811d1cd5be9bd464d3f10961bddeb82e308006",
+      "file": "town-market-frontage-low-forward.png",
+      "sha256": "daf231eb6d9102a62daa7d99253ba3367c88265724db25a96981482ac554c019",
+      "routeScreenBounds": [
+        -784.9861450195312,
+        -97.44916534423828,
+        114.10459899902344,
+        13.015928268432617
+      ]
+    },
+    "town-tram-arcade-approach-low-forward": {
+      "name": "town-tram-arcade-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -43.632450103759766,
+        -222.5971221923828,
+        30.244028091430664
+      ],
+      "cameraQuaternionBlender": [
+        0.5169402956962585,
+        0.4494176208972931,
+        -0.4780062437057495,
+        -0.5498241186141968
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.061593059450387955,
+          0.138803631067276,
+          -0.9884026646614075,
+          -43.632450103759766
+        ],
+        [
+          -0.9981013536453247,
+          -0.008565519005060196,
+          0.06099456921219826,
+          -222.5971221923828
+        ],
+        [
+          8.33327291616115e-08,
+          0.9902828931808472,
+          0.1390676647424698,
+          30.244028091430664
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "7a7916ee7098000bfb05e898c636a9daf903367d27ecfcd4984b1b0a4788a552",
+      "file": "town-tram-arcade-approach-low-forward.png",
+      "sha256": "bf8c375df12d9dd96adf9f24f51139848a9bee8833a702fde58870cabe26601e",
+      "routeScreenBounds": [
+        -2386.217529296875,
+        -190.85763549804688,
+        792.8585205078125,
+        142.0537872314453
+      ]
+    },
+    "town-civic-far-approach-low-forward": {
+      "name": "town-civic-far-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -68.14485931396484,
+        45.309967041015625,
+        28.153106689453125
+      ],
+      "cameraQuaternionBlender": [
+        0.6507755517959595,
+        0.5657714009284973,
+        0.3322182595729828,
+        0.38213229179382324
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.4872118830680847,
+          -0.12144552916288376,
+          0.8647980690002441,
+          -68.14485931396484
+        ],
+        [
+          0.873283863067627,
+          0.06775526702404022,
+          -0.48247775435447693,
+          45.309967041015625
+        ],
+        [
+          1.755815048909426e-09,
+          0.9902830123901367,
+          0.13906750082969666,
+          28.153106689453125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "0fafcacf00f28dd7b4dc382351c62913672dcd19e6b112458a8fd4b19348fa55",
+      "file": "town-civic-far-approach-low-forward.png",
+      "sha256": "dcc817065297274007435f982e33b9931097e44b46a190bffb04f86266d199f3",
+      "routeScreenBounds": [
+        -837.5923461914062,
+        -290.510498046875,
+        465.5572204589844,
+        129.43626403808594
+      ]
+    },
     "town-overview": {
-      "file": "town-overview.png",
-      "sha256": "913c84f0260cf3ec61c8281e3a745478075fc7e77e1fb4998aad26bae70b7d27",
+      "name": "town-overview",
+      "description": "Full town overview with both actual route ribbons and modeled roadside landmarks inside the frame; distant garden terrain may extend outside it.",
       "resolution": [
         1920,
         1080
@@ -63,75 +373,55 @@
         0.3174503743648529,
         0.7837041020393372
       ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.42993372678756714,
+          -0.6483436226844788,
+          0.6283372044563293,
+          939.2576293945312
+        ],
+        [
+          0.9028605222702026,
+          -0.30873528122901917,
+          0.2992081642150879,
+          431.0544128417969
+        ],
+        [
+          1.1293774093701359e-07,
+          0.6959404945373535,
+          0.7180994749069214,
+          1094.623291015625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
       "projection": "ORTHO",
-      "description": "Full town overview with both actual route ribbons and modeled roadside landmarks inside the frame; distant garden terrain may extend outside it.",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 50.0,
+      "clipStart": 0.10000000149011612,
+      "clipEnd": 10000.0,
+      "orthographicScaleMetres": 692.1987915039062,
+      "samples": 48,
+      "renderByDefault": true,
+      "baselineImageSha256": "294b14d81ac3285208ebd0c3c3800d1ff754883a18482d46d5a65588e5687a03",
+      "file": "town-overview.png",
+      "sha256": "239a358945652c9dfa660902c5f8acadc3f4937f94aa8ac9327e61edcfa766af",
       "routeScreenBounds": [
-        0.16601161658763885,
-        0.12354642897844315,
+        0.1660115122795105,
+        0.12354627251625061,
         0.8381823897361755,
-        0.8561968803405762
-      ],
-      "orthographicScaleMetres": 692.1987915039062
-    },
-    "town-topdown": {
-      "file": "town-topdown.png",
-      "sha256": "725bda852e44f00e5fd0fe87992840279fe9f7eb568064868e663bd44f62cda7",
-      "resolution": [
-        1920,
-        1440
-      ],
-      "cameraPositionBlender": [
-        -4.8085832595825195,
-        -16.524078369140625,
-        1518.37548828125
-      ],
-      "cameraQuaternionBlender": [
-        7.549790126404332e-8,
-        0,
-        0,
-        -1
-      ],
-      "projection": "ORTHO",
-      "description": "True overhead geometry view: pale, narrow Lantern Alley is the inner fork; dark, broad Tram Boulevard is the outer fork. Both roads come from independent runtime samplers, including shared split/merge throats. No schematic or invented connecting road.",
-      "routeScreenBounds": [
-        0.314632773399353,
-        0.10271519422531128,
-        0.693293035030365,
-        0.8752840161323547
-      ],
-      "orthographicScaleMetres": 774.4051513671875
-    },
-    "town-bridge": {
-      "file": "town-bridge.png",
-      "sha256": "ed9656c952ad412450f9965459a50ca1a862de1376c0c91d3d8f69d4d334f930",
-      "resolution": [
-        1800,
-        1125
-      ],
-      "cameraPositionBlender": [
-        859.521728515625,
-        1096.4854736328125,
-        624.32177734375
-      ],
-      "cameraQuaternionBlender": [
-        0.2778370678424835,
-        0.1814069002866745,
-        0.5157347917556763,
-        0.7898833751678467
-      ],
-      "projection": "ORTHO",
-      "description": "Original high masonry bridge, setback piers and lower street; geometry and clearances unchanged from the runtime.",
-      "routeScreenBounds": [
-        -1.1719658374786377,
-        -0.4851831793785095,
-        1.851623296737671,
-        1.6643357276916504
-      ],
-      "orthographicScaleMetres": 145
+        0.8561967611312866
+      ]
     },
     "town-market-street": {
-      "file": "town-market-street.png",
-      "sha256": "a908646459b98d217c26a8c8b0e04a28887618c53d274942f5539d1fc7072a45",
+      "name": "town-market-street",
+      "description": "Perspective from 2.1 m above actual sampled start road centre. Original source scenery only; no driver, HUD or vehicle.",
       "resolution": [
         1800,
         1125
@@ -147,22 +437,54 @@
         0.7168899774551392,
         0.6968408823013306
       ],
-      "projection": "PERSP",
-      "description": "Perspective from 2.1 m above actual sampled start road centre. Original source scenery only; no driver, HUD or vehicle.",
-      "routeScreenBounds": [
-        -508.6976318359375,
-        -26.002206802368164,
-        1095.7591552734375,
-        53.54450607299805
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9990369081497192,
+          0.0012442703591659665,
+          0.0438615120947361,
+          111.01622772216797
+        ],
+        [
+          0.04387915879487991,
+          0.02833033725619316,
+          0.9986351132392883,
+          113.13862609863281
+        ],
+        [
+          -4.078111714989063e-08,
+          0.9995978474617004,
+          -0.02835771255195141,
+          8.389309883117676
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
       ],
-      "lensMillimetres": 32,
-      "roadEdge": "start",
-      "roadDistanceMetres": 41.96342444657963,
-      "heightAboveSampledRoadMetres": 2.1
+      "projection": "PERSP",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 32.0,
+      "clipStart": 0.10000000149011612,
+      "clipEnd": 10000.0,
+      "samples": 48,
+      "renderByDefault": true,
+      "baselineImageSha256": "271e860984ee8f6b4baaf71b73a3220276ca674b7f6912267a2f60cde63d9513",
+      "file": "town-market-street.png",
+      "sha256": "43f464304041d21c440480c98ab630f6a94b75d1a119e19252fbe0d305f575b0",
+      "routeScreenBounds": [
+        -508.6963195800781,
+        -26.002138137817383,
+        1095.7642822265625,
+        53.544315338134766
+      ]
     },
     "town-clocktower-street": {
-      "file": "town-clocktower-street.png",
-      "sha256": "da770a96151ff4d3173c166371a08dbf2d20deaf7e78496ef8d9089c6cf37ba9",
+      "name": "town-clocktower-street",
+      "description": "Perspective from 2.1 m above actual sampled finish road centre. Original source scenery only; no driver, HUD or vehicle.",
       "resolution": [
         1800,
         1125
@@ -178,57 +500,800 @@
         0.10469818115234375,
         0.09240031987428665
       ],
-      "projection": "PERSP",
-      "description": "Perspective from 2.1 m above actual sampled finish road centre. Original source scenery only; no driver, HUD or vehicle.",
-      "routeScreenBounds": [
-        -776.6800537109375,
-        -44.642581939697266,
-        359.3480529785156,
-        87.89173126220703
+      "cameraMatrixWorldBlender": [
+        [
+          0.961000919342041,
+          0.03437590226531029,
+          0.2744002342224121,
+          -102.98571014404297
+        ],
+        [
+          0.27654510736465454,
+          -0.11945697665214539,
+          -0.9535475373268127,
+          68.1833724975586
+        ],
+        [
+          -5.1215522489655996e-08,
+          0.9922441244125366,
+          -0.12430475652217865,
+          23.76227569580078
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
       ],
-      "lensMillimetres": 32,
-      "roadEdge": "finish",
-      "roadDistanceMetres": 301.28975997274557,
-      "heightAboveSampledRoadMetres": 2.1
+      "projection": "PERSP",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 32.0,
+      "clipStart": 0.10000000149011612,
+      "clipEnd": 10000.0,
+      "samples": 48,
+      "renderByDefault": true,
+      "baselineImageSha256": "78e6a4e1c4ab2a02d0a52398bee5523639855d7f12cf697b9a339f47b3261ce0",
+      "file": "town-clocktower-street.png",
+      "sha256": "5201c2c922d207ce4bee661ddd1989e441728221a79c781936f13e1ce17d2396",
+      "routeScreenBounds": [
+        -776.6497192382812,
+        -44.64348220825195,
+        359.3552551269531,
+        87.8883056640625
+      ]
+    },
+    "town-market-underpass-approach-low-forward": {
+      "name": "town-market-underpass-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        55.214683532714844,
+        61.131256103515625,
+        10.599993705749512
+      ],
+      "cameraQuaternionBlender": [
+        0.34968534111976624,
+        0.3040096163749695,
+        0.5814158916473389,
+        0.6687705516815186
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.5705966949462891,
+          -0.114206463098526,
+          0.8132504224777222,
+          55.214683532714844
+        ],
+        [
+          0.821230411529541,
+          -0.07935159653425217,
+          0.5650521516799927,
+          61.131256103515625
+        ],
+        [
+          1.2915107561184413e-07,
+          0.9902828931808472,
+          0.139067605137825,
+          10.599993705749512
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "b3b74b382d84de8cc4c1920e97767442fe82f0d87517711eb78b7ea58c211f37",
+      "file": "town-market-underpass-approach-low-forward.png",
+      "sha256": "440e9004e43dc62555860bde5ab5be6b901ccdf1a93a3a1e287ac122aee25d96",
+      "routeScreenBounds": [
+        -1289.1717529296875,
+        -328.38763427734375,
+        999.5548095703125,
+        22.243104934692383
+      ]
+    },
+    "town-fork-approach-low-forward": {
+      "name": "town-fork-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -73.63381958007812,
+        -14.096044540405273,
+        15.420389175415039
+      ],
+      "cameraQuaternionBlender": [
+        0.4016112685203552,
+        0.34915295243263245,
+        0.5554803609848022,
+        0.638938307762146
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.43360117077827454,
+          -0.12531442940235138,
+          0.8923487663269043,
+          -73.63381958007812
+        ],
+        [
+          0.9011048674583435,
+          -0.060299891978502274,
+          0.4293878376483917,
+          -14.096044540405273
+        ],
+        [
+          4.8328423929433484e-08,
+          0.9902828931808472,
+          0.13906757533550262,
+          15.420389175415039
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "1a77a15509470dace240a22d7fa29ca37f9da0c8eda1efd4c36b171f063e583f",
+      "file": "town-fork-approach-low-forward.png",
+      "sha256": "d8c6cadad8166ac19f37b82804f95d39bb5c43b43f0e94360f2458445e63a853",
+      "routeScreenBounds": [
+        -746.0626831054688,
+        -1723.7950439453125,
+        15475.025390625,
+        96.43738555908203
+      ]
+    },
+    "town-alley-bend-high-forward": {
+      "name": "town-alley-bend-high-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -28.990446090698242,
+        -110.95723724365234,
+        30.638164520263672
+      ],
+      "cameraQuaternionBlender": [
+        0.6128395795822144,
+        0.47095727920532227,
+        -0.38664284348487854,
+        -0.5031243562698364
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.19474618136882782,
+          0.2524845600128174,
+          -0.9478004574775696,
+          -28.990446090698242
+        ],
+        [
+          -0.980853796005249,
+          0.05013001337647438,
+          -0.18818368017673492,
+          -110.95723724365234
+        ],
+        [
+          -7.753403963306482e-08,
+          0.9663016200065613,
+          0.2574129104614258,
+          30.638164520263672
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "11cf559e2c2c8211a2027353f052583e1e3255e2bed360ffae84eade7e31fee2",
+      "file": "town-alley-bend-high-forward.png",
+      "sha256": "4b746437a339992996e59e7113ec2966555faab135aadd57869d5af3de14ba74",
+      "routeScreenBounds": [
+        -1446.537353515625,
+        -118.07325744628906,
+        171.24124145507812,
+        90.5223159790039
+      ]
+    },
+    "town-tram-arcade-approach-high-forward": {
+      "name": "town-tram-arcade-approach-high-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -48.123905181884766,
+        -222.31996154785156,
+        33.544029235839844
+      ],
+      "cameraQuaternionBlender": [
+        0.5431310534477234,
+        0.417387455701828,
+        -0.44393831491470337,
+        -0.577680766582489
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.06159283593297005,
+          0.25692418217658997,
+          -0.9644669890403748,
+          -48.123905181884766
+        ],
+        [
+          -0.998101532459259,
+          -0.01585494913160801,
+          0.05951708182692528,
+          -222.31996154785156
+        ],
+        [
+          -4.240617101913813e-08,
+          0.966301679611206,
+          0.25741276144981384,
+          33.544029235839844
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "cd9848c718274902e98314032b38a24de726ce504544329fd01936bd69641a5a",
+      "file": "town-tram-arcade-approach-high-forward.png",
+      "sha256": "9d1ab22bfb6853b806248ff31f73129d6868685b5d16710ab339a1c8daf99410",
+      "routeScreenBounds": [
+        -1082.98681640625,
+        -51.2781982421875,
+        733.2471923828125,
+        70.06175231933594
+      ]
+    },
+    "town-boulevard-merge-approach-low-forward": {
+      "name": "town-boulevard-merge-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        127.46954345703125,
+        -163.72372436523438,
+        28.592660903930664
+      ],
+      "cameraQuaternionBlender": [
+        0.7546729445457458,
+        0.6560976505279541,
+        0.0014076668303459883,
+        0.00161916168872267
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.9999908208847046,
+          -0.0005967416800558567,
+          0.00424931338056922,
+          127.46954345703125
+        ],
+        [
+          0.0042910100892186165,
+          0.13906635344028473,
+          -0.9902739524841309,
+          -163.72372436523438
+        ],
+        [
+          2.03211947269466e-10,
+          0.9902830719947815,
+          0.1390676200389862,
+          28.592660903930664
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "97ec42b8ff519821a2e1d03bfccbbb9241b68ae91e69da3b432c9515579c5733",
+      "file": "town-boulevard-merge-approach-low-forward.png",
+      "sha256": "41610c1edc680511fcea18d99f03c63da8738a36de4d55dbf0dac5d6a8a3dbd0",
+      "routeScreenBounds": [
+        -429.57415771484375,
+        -139.2765350341797,
+        22339.244140625,
+        1093.41357421875
+      ]
+    },
+    "town-alley-merge-approach-low-forward": {
+      "name": "town-alley-merge-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        122.5160903930664,
+        -157.9490203857422,
+        28.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7315372824668884,
+        0.6359840631484985,
+        -0.16121552884578705,
+        -0.18543732166290283
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.8792451024055481,
+          0.0662476196885109,
+          -0.4717407822608948,
+          122.5160903930664
+        ],
+        [
+          -0.4763697385787964,
+          0.12227437645196915,
+          -0.8707014918327332,
+          -157.9490203857422
+        ],
+        [
+          -2.2894232287740124e-08,
+          0.9902830123901367,
+          0.13906748592853546,
+          28.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "a383cf34fe17df88851e4516365806d92b64243f9c22c37947304e926c886fff",
+      "file": "town-alley-merge-approach-low-forward.png",
+      "sha256": "e8ac7f49c98df422b9109bdc43aec73ec605281659dca4d8a74a22351bcd3da8",
+      "routeScreenBounds": [
+        -2130.062255859375,
+        -202.26638793945312,
+        172.66217041015625,
+        34.06285858154297
+      ]
+    },
+    "town-upper-bridge-approach-low-forward": {
+      "name": "town-upper-bridge-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        46.370243072509766,
+        9.683096885681152,
+        31.947492599487305
+      ],
+      "cameraQuaternionBlender": [
+        0.615424633026123,
+        0.5350379943847656,
+        0.37973734736442566,
+        0.43679091334342957
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.3300262987613678,
+          -0.1312759667634964,
+          0.9347991347312927,
+          46.370243072509766
+        ],
+        [
+          0.9439718127250671,
+          0.04589585214853287,
+          -0.326819509267807,
+          9.683096885681152
+        ],
+        [
+          3.0403867867789813e-08,
+          0.9902830123901367,
+          0.13906756043434143,
+          31.947492599487305
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "0a3e108cd57fec25903c7fee3ccc727e05122e6d56ccbd5956325f112915a642",
+      "file": "town-upper-bridge-approach-low-forward.png",
+      "sha256": "c5023137c2cf966dcaa20dad47e6c3a90d906fa95945f0903381394e3fce51e4",
+      "routeScreenBounds": [
+        -1194.7132568359375,
+        -887.4991455078125,
+        559.2953491210938,
+        106.64644622802734
+      ]
+    },
+    "town-civic-approach-low-forward": {
+      "name": "town-civic-approach-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -101.66841125488281,
+        66.93737030029297,
+        25.735225677490234
+      ],
+      "cameraQuaternionBlender": [
+        0.6805139780044556,
+        0.5916253328323364,
+        0.2836293578147888,
+        0.32624319195747375
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.626239538192749,
+          -0.10842147469520569,
+          0.7720549702644348,
+          -101.66841125488281
+        ],
+        [
+          0.779630720615387,
+          0.08708968758583069,
+          -0.6201543211936951,
+          66.93737030029297
+        ],
+        [
+          -1.1078533646013966e-08,
+          0.9902828931808472,
+          0.13906770944595337,
+          25.735225677490234
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36.0,
+      "sensorHeightMillimetres": 24.0,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200.0,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "572e40a2542b1b0ec067ee0e36d52ac198b88552b3887aa453788f55696ba549",
+      "file": "town-civic-approach-low-forward.png",
+      "sha256": "c3de8e3f94e84c2b020e395f374552641e16e4ddf7fc0f6bf67a876598340419",
+      "routeScreenBounds": [
+        -248.77206420898438,
+        -96.40483093261719,
+        645.7396850585938,
+        154.3011932373047
+      ]
+    },
+    "town-fork-advance-decision-low-forward": {
+      "name": "town-fork-advance-decision-low-forward",
+      "resolution": [
+        1280,
+        800
+      ],
+      "cameraPositionBlender": [
+        -54.276573181152344,
+        -8.156281471252441,
+        13.17757511138916
+      ],
+      "cameraQuaternionBlender": [
+        0.4392746686935425,
+        0.3818967342376709,
+        0.5334988832473755,
+        0.6136543154716492
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.32238534092903137,
+          -0.13164262473583221,
+          0.9374102354049683,
+          -54.276573181152344
+        ],
+        [
+          0.9466085433959961,
+          -0.0448334701359272,
+          0.3192526698112488,
+          -8.156281471252441
+        ],
+        [
+          6.768522098354879e-08,
+          0.9902828931808472,
+          0.1390676498413086,
+          13.17757511138916
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.56871795654297,
+      "clipStart": 0.11999999731779099,
+      "clipEnd": 2200,
+      "samples": 32,
+      "renderByDefault": true,
+      "baselineImageSha256": "488edd5e9b75ba7adac7285482f0cd66ba679437dfb3d1bb196f11b8b4dd1fe8",
+      "file": "town-fork-advance-decision-low-forward.png",
+      "sha256": "6e810fe9f706e14fb86a4ce19596784738d671e0245d73df8c2d9ba39483b008",
+      "routeScreenBounds": [
+        -3603.692138671875,
+        -258.74688720703125,
+        2716.61767578125,
+        314.24066162109375
+      ]
+    },
+    "town-topdown": {
+      "cameraPositionBlender": [
+        -4.8085832595825195,
+        -16.524078369140625,
+        1518.37548828125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "orthographicScaleMetres": 774.4051513671875,
+      "description": "True overhead geometry view: pale, narrow Lantern Alley is the inner fork; dark, broad Tram Boulevard is the outer fork. Both roads come from independent runtime samplers, including shared split/merge throats. No schematic or invented connecting road.",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "name": "town-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "poseSource": "Pre-enrichment town-topdown catalog pose",
+      "poseSourceProvenanceSha256": "a3c166f52a36d4f485f864185f67c65da12023e8792c962cca4594b862fbed34",
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          -4.8085832595825195
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          -16.524078369140625
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1518.37548828125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "town-topdown.png",
+      "sha256": "d51010837b30de1b6358b6545062b3eebf6b57c77d313c897cde6206a0206269",
+      "routeScreenBounds": [
+        0.314632773399353,
+        0.10271519422531128,
+        0.693293035030365,
+        0.8752840161323547
+      ]
+    },
+    "town-bridge": {
+      "cameraPositionBlender": [
+        859.521728515625,
+        1096.4854736328125,
+        624.32177734375
+      ],
+      "cameraQuaternionBlender": [
+        0.2778370678424835,
+        0.1814069002866745,
+        0.5157347917556763,
+        0.7898833751678467
+      ],
+      "projection": "ORTHO",
+      "orthographicScaleMetres": 145,
+      "description": "Original high masonry bridge, setback piers and lower street; geometry and clearances unchanged from the runtime.",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "poseSourceProvenanceSha256": "a3c166f52a36d4f485f864185f67c65da12023e8792c962cca4594b862fbed34",
+      "name": "town-bridge",
+      "poseSource": "Pre-enrichment town-bridge catalog pose",
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7797962427139282,
+          -0.2518020570278168,
+          0.5731610655784607,
+          859.521728515625
+        ],
+        [
+          0.6260334849357605,
+          -0.31364843249320984,
+          0.7139375805854797,
+          1096.4854736328125
+        ],
+        [
+          1.0470284905750304e-07,
+          0.915543794631958,
+          0.4022183120250702,
+          624.32177734375
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "town-bridge.png",
+      "sha256": "c9b01ca85b58aab03315de033ac580eaaa3ae0ad76e49f17cd0d1e7947376f52",
+      "routeScreenBounds": [
+        -1.17196524143219,
+        -0.4851832687854767,
+        1.851623773574829,
+        1.6643357276916504
+      ]
     }
   },
   "menuAsset": {
     "file": "public/map-previews/town-overview.webp",
-    "sha256": "50d661ee48729b1cf5924d9352cf396228399b48b2b8fbecc95f43db8e565fcc",
+    "sha256": "4d6471b5c80a9944d3ed249b512e0043b2942326094caf629b6ff3f0684038b0",
     "resolution": [
       1280,
       720
-    ]
-  },
-  "renderSourceHashes": {
-    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
-    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
-    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
-    "src/land-routes.ts": "ed4cb1350d06015fec830d9e39af9fbe0e4c5886c2fb34fbbef36669db8f8008",
-    "src/maps/town.ts": "9ebec29b53f3bbc235beb41c6bea25688db4ee273b02cb09465278ca66f3f2de",
-    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
-    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
-    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
-  },
-  "equivalentSourceRefresh": {
-    "changedFiles": [
-      "src/land-routes.ts",
-      "src/maps/town.ts"
     ],
-    "proof": "The current complete export matches both the accepted town export and original Blender render input exactly after excluding only top-level sourceHashes. This includes geometry, normals, indices, UVs, materials, procedural texture pixels, all four physical route sample arrays, landmarks, checkpoint gates and theme. Prior shared-throat logic and current branch-label presentation changes do not change the exported payload. Finished render pixels remain unchanged.",
-    "identicalContentSha256": "228a4d93bee627f28a3c6257f5c4b74d0811723987df81a1be3e9144810aa118",
-    "verificationFile": "docs/legacy-preview-compatibility.json",
-    "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17"
+    "sourceView": "town-overview"
   },
-  "workshopCameraCompatibility": {
-    "baselineTree": "3994b1ab0e7dcefd7a99051267ee3094cad45055",
-    "changedFiles": [],
-    "excludedFields": [
-      "sourceHashes"
-    ],
-    "exactExportEqual": true,
-    "normalizedExportSha256": "a4f4513d34c6f87af6ff0ee645777f484c021fcc5e24805a8614165755481e17",
-    "proof": "Fresh complete export equals the accepted original geometry export after excluding only top-level sourceHashes. Geometry, materials, texture pixels, normals, route data, theme and metadata remain identical. Original render pixels are unchanged; no rerender is claimed."
+  "comparisonSourceHashes": {
+    "archivedBaseline": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/town-scenery.ts": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+    },
+    "currentCandidate": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/town-scenery.ts": "bbf08dadb171bd3c2d807204931a36b7f57e70a55317abe385d9cbe72b2e376b",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+    }
+  },
+  "comparisonRecords": {
+    "baseline": {
+      "file": "town-corrected-baseline-provenance.json",
+      "sha256": "6b35158f61fba94279df79242c11dc689fd9f55969b2682a4b75ff83baa3fc49",
+      "artifactContext": "Separate corrected-baseline output bundle; its relative image/model names are not candidate files"
+    },
+    "candidateActualRender": {
+      "file": "town-render-record.json",
+      "sha256": "057d92153f5143d218c6e54c44eb23f86d8271b002cda36620e8635e897c2f4c"
+    },
+    "pairedViews": 16,
+    "additionalLegacyCatalogViews": 2,
+    "sameCorrectedShaderCamerasLightingExposure": true
+  },
+  "modelVerification": {
+    "file": "reopened-model-verification.json",
+    "sha256": "4193ca277c6b3331bed44b5d3727b3c062a91ec9e5cdf5533ff3d9619a62ae95"
+  },
+  "packagingGeneratorHashes": {
+    "scripts/finalize-town-catalog.py": "c2812ae03ce41c7e1beff376a1321dfdbbf28cbecd378d9f62e0b1e3c9ca5d9c"
+  },
+  "catalogPackaging": {
+    "onlyRuntimePoster": "public/map-previews/town-overview.webp",
+    "excludedUnusedPublicTopdownWebp": {
+      "sha256": "d2f42bc2d11b0d5184732ed360ef4358ae002eed18b6c1108d16a5663ac69ffd",
+      "archivedAs": "town-topdown-unused-export.webp"
+    },
+    "topdownDelivery": "town-topdown.png",
+    "originalRenderEvidenceUnchanged": true,
+    "notice": "Topdown PNG remains a reusable catalog view; its unused WebP byproduct is excluded from public runtime assets. Render generator hashes still identify the exact bytes that produced the images."
   }
 }
