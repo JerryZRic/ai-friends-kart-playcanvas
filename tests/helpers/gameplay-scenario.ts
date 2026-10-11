@@ -130,7 +130,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     onStatus({ records: RUNTIME_MODELS.map(r => ({ id: r.id, stage: 'ready', receivedBytes: 100, totalBytes: 100 })), receivedBytes: 600, totalBytes: 600, completed: 6, total: 6, loaded: 6, failed: 0 });
     return { drivers, failures };
   };
-  const sourceFiles=createInstrumentedSourceFiles();
+  const sourceFiles=createInstrumentedSourceFiles(undefined,scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);
   try {
   let source = readFileSync('src/game.ts', 'utf8');
   source = source.replace('loadCourseAssets, loadBundledDrivers,', 'loadCourseAssets as unusedCourseLoader, loadBundledDrivers as unusedDriverLoader,');
