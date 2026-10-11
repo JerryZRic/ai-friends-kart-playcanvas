@@ -14,7 +14,9 @@ test('both town bridge decks and branch roads retain finite unobstructed cameras
   const safe=safeLandCamera(anchor,desired,boxes);assert.ok(Object.values(safe).every(Number.isFinite));
   if(Math.hypot(safe.x-desired.x,safe.y-desired.y,safe.z-desired.z)>.01)clipped++;
   const checked=safeLandCamera(anchor,safe,boxes);assert.ok(Math.hypot(safe.x-checked.x,safe.y-checked.y,safe.z-checked.z)<1e-6,'post-smoothing safety pose is unobstructed');
-  for(const box of boxes)assert.ok(!(safe.x>box.min[0]&&safe.x<box.max[0]&&safe.y>box.min[1]&&safe.y<box.max[1]&&safe.z>box.min[2]&&safe.z<box.max[2]),'camera remains outside facade/bridge volumes');
+  // Mesh blocker bounds are a broadphase, not a solid building; emitted-face
+  // whole-boom/motion clearance is checked by town-enrichment-camera.test.ts.
+  for(const box of boxes)if(!box.triangles)assert.ok(!(safe.x>box.min[0]&&safe.x<box.max[0]&&safe.y>box.min[1]&&safe.y<box.max[1]&&safe.z>box.min[2]&&safe.z<box.max[2]),'camera remains outside facade/bridge volumes');
   poses++;
  }
  assert.ok(poses>1500);assert.ok(clipped>0,'test exercises actual facade or soffit obstructions');
