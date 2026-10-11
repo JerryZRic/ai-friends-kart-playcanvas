@@ -1,0 +1,53 @@
+{
+  "schema": "forest-enrichment-camera-audit-v1",
+  "baselineSourceCommit": "a5ffb65ec9e12f0e80b9643b03335650235b04a1",
+  "baselineSourceTree": "31a857424d0ac0600ea9ab738efac92628377c81",
+  "baselineSourceSha256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+  "candidateSourceSha256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+  "finiteCoverage": {
+    "staticStations": 218,
+    "staticInputPoses": 31392,
+    "safeAndGenuinelyInterpolatedStaticSegments": 62784,
+    "motionWindows": 105,
+    "motionRuns": 630,
+    "motionFrames": 21420,
+    "motionBoomAndMovementSegments": 42840,
+    "motionRatesHz": [
+      30,
+      60
+    ],
+    "actualPreviousPostSafetyPoseRetained": true,
+    "fixedSourceReviewSegments": 9,
+    "totalCandidateSegmentInspections": 105633
+  },
+  "sourceGeometry": {
+    "batches": 21,
+    "vertices": 138214,
+    "triangles": 108772,
+    "changedIndexedFaces": 16544,
+    "degenerateFaces": 0
+  },
+  "clearance": {
+    "strictIndependentMarginMetres": 0.3,
+    "newViolatingWitnesses": 0,
+    "changedFaceViolations": 0,
+    "unchangedFaceRegressions": 0,
+    "actualSurfaceIntersections": 0,
+    "inheritedNearFaceWitnesses": 721,
+    "distinctInheritedSegmentLabels": 221,
+    "minimumInheritedGapMetres": 0.11335568368899696,
+    "witnessDefinition": "One exact emitted indexed-face identity/multiplicity plus one exact labeled camera segment. Several face witnesses may belong to the same segment; 721 is not a count of 721 input poses.",
+    "inheritedByBatch": {
+      "Forest pale road coping and foundation caps": 51,
+      "Forest laminated viaduct and ranger timber": 649,
+      "Forest dark root collars and soffits": 21
+    },
+    "inheritedProof": "All 721 witnesses preserve identical face geometry/multiplicity, exact anchor/end segment and no worse gap. No broad region/material exemption; no same-anchor shortening exception was needed."
+  },
+  "limitations": [
+    "Finite CPU indexed-source checks only; no browser/GPU capture, full native vehicle clearance or FPS certification.",
+    "The inherited original coping/timber/soffit near-face gaps remain below 0.3 m and are explicitly reported; this is a zero-new-regression result, not universal 0.3 m clearance.",
+    "Archived baseline runtime replay is diagnostic, not a requirement to keep camera outputs unchanged; all 105624 runtime replay paths happened to remain identical for this candidate.",
+    "Existing Forest independent tests separately retain 61,488 safe + 61,488 smoothed booms, 3,000 bidirectional seam frames, 96 pickup rays/framing checks and four observatory center rays with 3 m cedar reservations."
+  ]
+}

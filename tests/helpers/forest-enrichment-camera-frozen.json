@@ -1,0 +1,733 @@
+{
+  "schema": "forest-enrichment-camera-plan-v1",
+  "baselineSourceCommit": "a5ffb65ec9e12f0e80b9643b03335650235b04a1",
+  "baselineSourceTree": "31a857424d0ac0600ea9ab738efac92628377c81",
+  "baselineSourceSha256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+  "dependencies": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+    "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+    "src/race-controls.ts": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b"
+  },
+  "static": {
+    "stepMetres": 35,
+    "endpointOffsetsMetres": [
+      0,
+      3,
+      -3
+    ],
+    "laneFractions": [
+      -1,
+      0,
+      1
+    ],
+    "views": [
+      0,
+      1
+    ],
+    "rearViews": [
+      false,
+      true
+    ],
+    "yaws": [
+      -3.141592653589793,
+      -1.5707963267948966,
+      0,
+      1.5707963267948966
+    ],
+    "pitches": [
+      -0.28,
+      0,
+      0.78
+    ],
+    "maximumStations": 260
+  },
+  "targetStations": [
+    {
+      "edge": "start",
+      "s": 406.2366530619097,
+      "reason": "forest-chase-root-valley-underpass"
+    },
+    {
+      "edge": "start",
+      "s": 650,
+      "reason": "forest-chase-cedar-bowl-entry"
+    },
+    {
+      "edge": "start",
+      "s": 850,
+      "reason": "forest-chase-bowl-exit-reveal"
+    },
+    {
+      "edge": "start",
+      "s": 1030,
+      "reason": "forest-chase-fork-decision"
+    },
+    {
+      "edge": "alley",
+      "s": 110,
+      "reason": "forest-chase-service-observatory"
+    },
+    {
+      "edge": "boulevard",
+      "s": 160,
+      "reason": "forest-chase-rim-summit"
+    },
+    {
+      "edge": "finish",
+      "s": 417.3205033850164,
+      "reason": "forest-chase-upper-canopy-crossing"
+    },
+    {
+      "edge": "finish",
+      "s": 840,
+      "reason": "forest-chase-sunbreak-return"
+    },
+    {
+      "edge": "finish",
+      "s": 1182,
+      "reason": "forest-chase-forestry-station-approach"
+    },
+    {
+      "edge": "start",
+      "s": 441.2366530619097,
+      "reason": "exact lower crossing deck"
+    },
+    {
+      "edge": "finish",
+      "s": 452.3205033850164,
+      "reason": "exact upper crossing deck"
+    },
+    {
+      "edge": "start",
+      "s": 350,
+      "reason": "woodland-bank-0 complete low mass"
+    },
+    {
+      "edge": "start",
+      "s": 705,
+      "reason": "woodland-bank-4 complete low mass"
+    },
+    {
+      "edge": "finish",
+      "s": 545,
+      "reason": "woodland-bank-9 complete low mass"
+    },
+    {
+      "edge": "alley",
+      "s": 150,
+      "reason": "woodland-bank-11 complete low mass"
+    },
+    {
+      "edge": "start",
+      "s": 698.0954517305283,
+      "reason": "woodland-bed-bowl-near nearest frozen baseline road sample"
+    },
+    {
+      "edge": "start",
+      "s": 738.5430422814388,
+      "reason": "woodland-bed-bowl-middle nearest frozen baseline road sample"
+    },
+    {
+      "edge": "start",
+      "s": 1077.1043557816522,
+      "reason": "woodland-bed-fork-near nearest frozen baseline road sample"
+    },
+    {
+      "edge": "boulevard",
+      "s": 32.93019527386448,
+      "reason": "woodland-bed-fork-middle nearest frozen baseline road sample"
+    }
+  ],
+  "loadingPockets": [
+    {
+      "edge": "start",
+      "from": 338,
+      "count": 9,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "start",
+      "from": 693,
+      "count": 9,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "finish",
+      "from": 533,
+      "count": 9,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "alley",
+      "from": 138,
+      "count": 9,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "start",
+      "from": 674.0954517305283,
+      "count": 17,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "start",
+      "from": 714.5430422814388,
+      "count": 17,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "start",
+      "from": 1053.1043557816522,
+      "count": 17,
+      "spacingMetres": 3
+    },
+    {
+      "edge": "boulevard",
+      "from": 8.930195273864477,
+      "count": 17,
+      "spacingMetres": 3
+    }
+  ],
+  "motion": {
+    "stepMetres": 40,
+    "windowMetres": 40,
+    "ratesHz": [
+      30,
+      60
+    ],
+    "speedMetresPerSecond": 55,
+    "laneFractions": [
+      -1,
+      0,
+      1
+    ],
+    "dampingRate": 8,
+    "maximumWindows": 120
+  },
+  "frozenSourceViews": [
+    {
+      "name": "forest-chase-root-valley-underpass",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        2.0262571106318656,
+        15.950470537144502,
+        -34.421915624178794
+      ],
+      "sourceTarget": [
+        21.986541735106492,
+        12.350470537144503,
+        -18.336294992490323
+      ],
+      "cameraPositionBlender": [
+        2.026257038116455,
+        34.42191696166992,
+        15.950470924377441
+      ],
+      "cameraQuaternionBlender": [
+        -0.3256998658180237,
+        -0.28315702080726624,
+        0.591851532459259,
+        0.6807741522789001
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 406.2366530619097,
+      "sourceRoad": [
+        10.201871846117783,
+        11.350470537144503,
+        -27.833340383893113
+      ],
+      "sourceAnchor": [
+        10.201871846117783,
+        12.700470537144502,
+        -27.833340383893113
+      ],
+      "sourceDesiredEye": [
+        2.0262571106318656,
+        15.950470537144502,
+        -34.421915624178794
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-cedar-bowl-entry",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -135.04885044265527,
+        24.778128066556448,
+        54.7451236599461
+      ],
+      "sourceTarget": [
+        -158.96765490319967,
+        21.17812806655645,
+        63.96743066930555
+      ],
+      "cameraPositionBlender": [
+        -135.04884338378906,
+        -54.74512481689453,
+        24.778127670288086
+      ],
+      "cameraQuaternionBlender": [
+        0.42699095606803894,
+        0.3712174892425537,
+        0.540984034538269,
+        0.6222640872001648
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 650,
+      "sourceRoad": [
+        -144.84585153166054,
+        20.17812806655645,
+        58.52252616193466
+      ],
+      "sourceAnchor": [
+        -144.84585153166054,
+        21.52812806655645,
+        58.52252616193466
+      ],
+      "sourceDesiredEye": [
+        -135.04885044265527,
+        24.778128066556448,
+        54.7451236599461
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-bowl-exit-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -193.34764849240628,
+        36.72468548402386,
+        208.79083663687086
+      ],
+      "sourceTarget": [
+        -169.58267604828063,
+        33.12468548402386,
+        218.40261265000126
+      ],
+      "cameraPositionBlender": [
+        -193.34764099121094,
+        -208.79083251953125,
+        36.72468566894531
+      ],
+      "cameraQuaternionBlender": [
+        -0.421894371509552,
+        -0.3667866289615631,
+        0.5439979434013367,
+        0.6257307529449463
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 850,
+      "sourceRoad": [
+        -183.6136560890928,
+        32.12468548402386,
+        212.727763343356
+      ],
+      "sourceAnchor": [
+        -183.6136560890928,
+        33.47468548402386,
+        212.727763343356
+      ],
+      "sourceDesiredEye": [
+        -193.34764849240628,
+        36.72468548402386,
+        208.79083663687086
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-fork-decision",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -75,
+        38.6,
+        318.95193584885266
+      ],
+      "sourceTarget": [
+        -75,
+        35,
+        344.5870709839878
+      ],
+      "cameraPositionBlender": [
+        -75,
+        -318.9519348144531,
+        38.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0,
+        0,
+        0.6560992002487183,
+        0.7546746730804443
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1030,
+      "sourceRoad": [
+        -75,
+        34,
+        329.45193584885266
+      ],
+      "sourceAnchor": [
+        -75,
+        35.35,
+        329.45193584885266
+      ],
+      "sourceDesiredEye": [
+        -75,
+        38.6,
+        318.95193584885266
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-service-observatory",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -6.469045861968218,
+        38.6,
+        467.0781558771565
+      ],
+      "sourceTarget": [
+        15.87481465814724,
+        35,
+        454.51184971924897
+      ],
+      "cameraPositionBlender": [
+        -6.469045639038086,
+        -467.0781555175781,
+        38.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.6514286398887634,
+        0.5663391351699829,
+        -0.3312493562698364,
+        -0.3810178339481354
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 110,
+      "sourceRoad": [
+        2.682867487599368,
+        34,
+        461.93107106709107
+      ],
+      "sourceAnchor": [
+        2.682867487599368,
+        35.35,
+        461.93107106709107
+      ],
+      "sourceDesiredEye": [
+        -6.469045861968218,
+        38.6,
+        467.0781558771565
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-rim-summit",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        16.756317520100822,
+        38.6,
+        521.355680259563
+      ],
+      "sourceTarget": [
+        42.39002011071649,
+        35,
+        521.0846730779177
+      ],
+      "cameraPositionBlender": [
+        16.756317138671875,
+        -521.3556518554688,
+        38.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5364488959312439,
+        0.46637803316116333,
+        -0.46147340536117554,
+        -0.530807375907898
+      ],
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 160,
+      "sourceRoad": [
+        27.255730758323477,
+        34,
+        521.2446773180035
+      ],
+      "sourceAnchor": [
+        27.255730758323477,
+        35.35,
+        521.2446773180035
+      ],
+      "sourceDesiredEye": [
+        16.756317520100822,
+        38.6,
+        521.355680259563
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-upper-canopy-crossing",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        71.20462332743736,
+        40.662876689683685,
+        18.896969709942177
+      ],
+      "sourceTarget": [
+        48.99869888554552,
+        37.062876689683684,
+        6.088493099602048
+      ],
+      "cameraPositionBlender": [
+        71.20462036132812,
+        -18.896968841552734,
+        40.66287612915039
+      ],
+      "cameraQuaternionBlender": [
+        0.6534901857376099,
+        0.5681313872337341,
+        0.3281659185886383,
+        0.37747111916542053
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 417.3205033850164,
+      "sourceRoad": [
+        62.109207781127424,
+        36.062876689683684,
+        13.650693312348988
+      ],
+      "sourceAnchor": [
+        62.109207781127424,
+        37.412876689683685,
+        13.650693312348988
+      ],
+      "sourceDesiredEye": [
+        71.20462332743736,
+        40.662876689683685,
+        18.896969709942177
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-sunbreak-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -187.224464411746,
+        21.295798747582467,
+        -208.5343637002349
+      ],
+      "sourceTarget": [
+        -172.93592890113894,
+        17.695798747582465,
+        -229.81811117004767
+      ],
+      "cameraPositionBlender": [
+        -187.22445678710938,
+        208.53436279296875,
+        21.295799255371094
+      ],
+      "cameraQuaternionBlender": [
+        0.7219395041465759,
+        0.627639889717102,
+        -0.1911395788192749,
+        -0.21985727548599243
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 840,
+      "sourceRoad": [
+        -181.3719646269586,
+        16.695798747582465,
+        -217.25206100336854
+      ],
+      "sourceAnchor": [
+        -181.3719646269586,
+        18.045798747582467,
+        -217.25206100336854
+      ],
+      "sourceDesiredEye": [
+        -187.224464411746,
+        21.295798747582467,
+        -208.5343637002349
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "forest-chase-forestry-station-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        125.95393302254324,
+        12.6,
+        -317.23242184865484
+      ],
+      "sourceTarget": [
+        151.57956877007607,
+        9,
+        -317.9302369612793
+      ],
+      "cameraPositionBlender": [
+        125.95393371582031,
+        317.232421875,
+        12.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5408498644828796,
+        0.4702041745185852,
+        -0.4575742781162262,
+        -0.5263224244117737
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 1182,
+      "sourceRoad": [
+        136.45004212946628,
+        8,
+        -317.5182427988442
+      ],
+      "sourceAnchor": [
+        136.45004212946628,
+        9.35,
+        -317.5182427988442
+      ],
+      "sourceDesiredEye": [
+        125.95393302254324,
+        12.6,
+        -317.23242184865484
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    }
+  ],
+  "scope": "Finite CPU source audit of current, post-smoothing, moving and rear/orbit-switching camera booms against actual emitted indexed triangles. Static35m grid with3m densification around all4new banks and4new woodland beds plus authored woodland/crossing targets; contiguous40m motion windows,30/60Hz at55m/s. The retained Forest independent audit separately supplies12m/3m stations,8yaw angles,3000bidirectional seam frames,96pickup rays and4observatory rays. No GPU, browser, vehicle clearance or performance claim.",
+  "targetSource": "Bed targets are nearest1.5m exported baseline route samples to approved bed centers; all route positions remain exact."
+}

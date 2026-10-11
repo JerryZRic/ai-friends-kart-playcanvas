@@ -6,7 +6,7 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 const hash=(bytes:string|Buffer)=>createHash('sha256').update(bytes).digest('hex');
 const receipt=JSON.parse(readFileSync('tests/fixtures/quarry-enrichment-source-inventory.json','utf8'));
-const reviewedPaths=['src/quarry-scenery.ts','tests/quarry-scene.test.ts','tests/quarry-gameplay-camera.test.ts','tests/mountain-enrichment-contract.test.ts','tests/helpers/town-enrichment-geometry-worker.ts','tests/fixtures/town-enrichment-protected.json','tests/fixtures/reviewed-scene-revisions.json'];
+const reviewedPaths=['src/forest-scenery.ts','tests/forest-scene.test.ts','src/quarry-scenery.ts','tests/quarry-scene.test.ts','tests/quarry-gameplay-camera.test.ts','tests/mountain-enrichment-contract.test.ts','tests/helpers/town-enrichment-geometry-worker.ts','tests/fixtures/town-enrichment-protected.json','tests/fixtures/reviewed-scene-revisions.json'];
 test('Quarry only exact reviewed scene and QA contracts can differ from original full source inventory',()=>{
  assert.equal(receipt.schema,'quarry-enrichment-source-inventory-v1');assert.equal(receipt.baselineSourceCommit,'3a0e97db08bc2c6036d6a8e7000e1c9437551337');assert.equal(receipt.baselineSourceTree,'53751230de3c89645c15bd2c7ff358b4f39623da');assert.equal(Object.keys(receipt.sourceInventory).length,448);
  assert.deepEqual(Object.keys(receipt.reviewedChanges).sort(),reviewedPaths.sort());

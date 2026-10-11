@@ -76,8 +76,9 @@ test('grounded fork signs stand above the approach road with their full boards v
   const roadY=FOREST_COURSE.commonStart.sample(FOREST_COURSE.commonStart.length-88).p.y,boards=geometry.components.filter(c=>c.kind==='fork-sign-cream-board');assert.equal(boards.length,2);for(const b of boards){assert.ok(b.min[1]>roadY+2.89);assert.ok(b.max[1]>roadY+4.69);}
 });
 
-test('bounded cedar composition redistributes existing trees into broad near-route groups without more geometry',()=>{
-  assert.equal(geometry.trees.length,99);assert.equal(geometry.batches.reduce((n,b)=>n+b.indices.length/3,0),107780);
+test('bounded cedar enrichment retains 99 trees and its precise reviewed 108772-triangle budget',()=>{
+  assert.equal(geometry.trees.length,99);assert.equal(geometry.batches.reduce((n,b)=>n+b.indices.length/3,0),108772);
+  assert.equal(geometry.woodlandBanks.length,4);assert.equal(geometry.woodlandBeds.length,4);
   const near=geometry.trees.filter(t=>t.kind.startsWith('near-route-'));assert.ok(near.length>=45);assert.ok(near.every(t=>t.radius>10.4));
   for(const kind of ['root-valley','outer-bowl','canopy-return','sunbreak-shoulder'])assert.ok(near.filter(t=>t.kind==='near-route-'+kind).length>=6,kind);
   assert.ok(geometry.trees.filter(t=>t.kind.startsWith('ridge-cluster-')).length>=35,'retain connected distant screens and negative space');

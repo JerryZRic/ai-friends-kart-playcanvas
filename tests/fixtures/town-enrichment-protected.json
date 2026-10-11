@@ -446,10 +446,11 @@
   "themeSha256": "377e01bc4da57a94a41a7fb598c57c80e4464d8c2f3d57028a220cf08b899e5f",
   "originalScenerySha256": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
   "reviewedTestContractChanges": {
-    "tests/mountain-enrichment-contract.test.ts": "bb8a0934c0c3f4f0534f9f112e0c548497b109e5515008a8b6fb504192a0ee80",
+    "tests/mountain-enrichment-contract.test.ts": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
     "tests/town-gameplay-camera.test.ts": "6444c557009a271986184828a50942f4b58020568b7bba2a9bdf397f9a1ab2f7",
     "tests/quarry-scene.test.ts": "9bc08e35f64475fa5f727da1b4ecaf26c3ae1cd38c1ee31ae55eb59461b8fbfd",
-    "tests/quarry-gameplay-camera.test.ts": "ca11ca65299c52c3788b198e4c35b6a7152e7c54b1ccac9da919b9b8a9c6ecf5"
+    "tests/quarry-gameplay-camera.test.ts": "ca11ca65299c52c3788b198e4c35b6a7152e7c54b1ccac9da919b9b8a9c6ecf5",
+    "tests/forest-scene.test.ts": "7db79e1a8b64aadc56db0d83260766b556eec26559fb62f7f798f7aa3b2c5b3f"
   },
   "reviewedArtifactRevisions": {
     "docs/town-preview-provenance.json": {

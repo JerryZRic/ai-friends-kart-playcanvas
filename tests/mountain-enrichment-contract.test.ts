@@ -17,10 +17,10 @@ test('Mountain emitted original road positions indices and UVs remain bit-identi
  const geometry=buildMountainSceneGeometry(MOUNTAIN_TRACK);assert.deepEqual(mountainRoadContract(geometry),golden.roads);assert.equal(geometry.roadSamples.length,960);assert.equal(MOUNTAIN_TRACK.sections.length,8);assert.deepEqual(mountainPierContract(geometry),golden.originalPiers,'all forty-six original pier placements and exact emitted dimensions/topology remain pristine');
 });
 
-test('Mountain isolation preserves unrelated inputs with only exact separately reviewed Town and Quarry scenery revisions',()=>{
+test('Mountain isolation preserves unrelated inputs with only exact separately reviewed Town Quarry and Forest scenery revisions',()=>{
  assert.equal(reviewed.schemaVersion,1);
  assert.equal(reviewed.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');
- assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/quarry-scenery.ts','src/town-scenery.ts']);
+ assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/forest-scenery.ts','src/quarry-scenery.ts','src/town-scenery.ts']);
  for(const file of mountainIsolatedSceneSources){
   const revision=reviewed.revisions[file];
   if(revision){

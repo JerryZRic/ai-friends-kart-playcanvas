@@ -1,0 +1,152 @@
+{
+  "schema": "forest-enrichment-independent-audit-v1",
+  "baselineSourceCommit": "a5ffb65ec9e12f0e80b9643b03335650235b04a1",
+  "baselineSourceTree": "31a857424d0ac0600ea9ab738efac92628377c81",
+  "baselineSourceSha256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+  "candidateSourceSha256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+  "geometry": {
+    "sourceSha256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+    "baselineSourceSha256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "counts": {
+      "batches": 21,
+      "vertices": 138214,
+      "triangles": 108772,
+      "trees": 99
+    },
+    "protectedComponents": 21286,
+    "emittedComponents": 22649,
+    "changedComponents": 464,
+    "changedFaces": 16544,
+    "treeVertices": 95778,
+    "rootFootprints": 372,
+    "cameraVertices": 80208,
+    "bankFootprints": 4,
+    "bedFootprints": 4,
+    "bankTerrainCells": 242,
+    "bankCameraFaces": 992,
+    "bedTopFaces": 278,
+    "intentionalBedTreeContacts": 7,
+    "intentionalBoundaryBaseContacts": 3,
+    "coflushPairs": 0,
+    "durationSeconds": 11.117,
+    "maxRSSKiB": 440852,
+    "limitations": [
+      "CPU indexed source geometry; no GPU, browser, native vehicle or performance claim",
+      "Camera coverage uses conservative source blocker volumes; separate whole-boom checks use actual indexed triangles",
+      "Exact original protected geometry is unchanged; unrelated original contacts are not re-certified"
+    ]
+  },
+  "camera": {
+    "strictFaceMarginMetres": 0.3,
+    "static": {
+      "stations": 218,
+      "poses": 31392,
+      "booms": 62784,
+      "lanes": [
+        -1,
+        0,
+        1
+      ],
+      "views": [
+        0,
+        1
+      ],
+      "rearViews": [
+        false,
+        true
+      ],
+      "yaws": [
+        -3.141592653589793,
+        -1.5707963267948966,
+        0,
+        1.5707963267948966
+      ],
+      "pitches": [
+        -0.28,
+        0,
+        0.78
+      ],
+      "retractions": 4615
+    },
+    "motion": {
+      "runs": 630,
+      "frames": 21420,
+      "previousFrames": 20790,
+      "ratesHz": [
+        30,
+        60
+      ],
+      "laneFractions": [
+        -1,
+        0,
+        1
+      ],
+      "windowMetres": 40,
+      "speedMetresPerSecond": 55,
+      "actualPreviousRetained": true,
+      "productionDampingRate": 8,
+      "rawSmoothingCorrections": 1228,
+      "windowCount": 105
+    },
+    "frozenSourceViews": 9,
+    "geometry": {
+      "batches": 21,
+      "triangles": 108772,
+      "changedFaces": 16544,
+      "degenerateFaces": 0,
+      "inspections": 105633,
+      "minimumClearance": 0.11335568368899696
+    },
+    "totalInheritedWitnesses": 721,
+    "newFailures": 0,
+    "changedMeshFailures": 0,
+    "unchangedMeshRegressions": 0,
+    "exactIntersections": 0,
+    "inheritedMinimumGapMetres": 0.11335568368899696,
+    "inheritedByBatch": {
+      "Forest pale road coping and foundation caps": 51,
+      "Forest laminated viaduct and ranger timber": 649,
+      "Forest dark root collars and soffits": 21
+    },
+    "inheritedProofKinds": {
+      "exact-segment-face-witness": 721
+    },
+    "archivedRuntimeReplay": {
+      "scope": "Nongating geometry diagnostics for archived baseline runtime booms; fixed source-review poses remain gated separately",
+      "totalFailures": 721,
+      "newFailures": 0,
+      "inheritedFailures": 721,
+      "changedMeshFailures": 0,
+      "unchangedMeshRegressions": 0,
+      "minimumObservedViolationGap": 0.11335568368899696
+    },
+    "acceptanceContract": "Gate actual candidate safe/interpolated/moving booms and nine fixed source-review poses. Archived baseline runtime replay is diagnostic. Inherit only exact witnesses or proved same-anchor collinear shortening of the same-label baseline segment on unchanged indexed-face geometry/multiplicity with no worse clearance or intersection.",
+    "limitations": [
+      "Finite CPU source audit of current, post-smoothing, moving and rear/orbit-switching camera booms against actual emitted indexed triangles. Static 35 m grid with 3 m densification around all four new banks and four new woodland beds plus authored woodland/crossing targets; contiguous 40 m motion windows, 30/60 Hz at 55 m/s. The retained Forest independent audit separately supplies 12 m/3 m stations, eight yaw angles, 3,000 bidirectional seam frames, 96 pickup rays and four observatory rays. No GPU, browser, vehicle clearance or performance claim.",
+      "Inherited failures remain reported witnesses with exact identity or numerical subsegment proof; no face batch, region or camera mode is excluded"
+    ]
+  },
+  "retainedOriginalForestSuite": {
+    "tests": 72,
+    "passed": 72,
+    "previewAssets": {
+      "tests": 1,
+      "passed": 1,
+      "scope": "Source-current final catalog poster and provenance, verified after the matched offline CPU renders completed"
+    },
+    "safeBooms": 61488,
+    "genuinelySmoothedBooms": 61488,
+    "bidirectionalSeamFrames": 3000,
+    "pickupSightAndFramingRays": 96,
+    "observatoryCenterRays": 4,
+    "observatoryCedarReservationMetres": 3
+  },
+  "notice": "Finite CPU indexed-source checks, not a GPU/browser capture, full native vehicle clearance or FPS claim. The original 721 near-face witnesses remain visible and are inherited only by exact indexed face identity/multiplicity and identical camera path. No scene region or material batch is exempted.",
+  "focusedSharedContracts": {
+    "tests": 4,
+    "passed": 4,
+    "scope": "Two Forest exact-inventory tests, actual Quarry inventory consumer and actual Mountain isolation consumer; Town reviewed-revision logic is checked through the focused Forest test, with the full Town geometry helper reserved for exact-head CI"
+  },
+  "distinctLocalTestCount": 80,
+  "typecheck": "passed"
+}
