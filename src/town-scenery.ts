@@ -254,11 +254,11 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
         paving.quad(at(x0,openingBottom,z0),at(x1,openingBottom,z0),at(x0,openingBottom,z1),at(x1,openingBottom,z1));
         wall.quad(at(x1,openingTop,z0),at(x0,openingTop,z0),at(x1,openingTop,z1),at(x0,openingTop,z1));
         faceQuad(glass,x0,x1,openingBottom,openingTop,back);
-        put(wood,(x0+x1)/2,openingBottom+.16,front-frontSide*.12,x1-x0-.16,.20,.12);
-        put(wood,(x0+x1)/2,(openingBottom+openingTop)/2,front-frontSide*.12,.15,openingTop-openingBottom-.22,.12);
+        put(wood,(x0+x1)/2,openingBottom+.10,front-frontSide*.12,x1-x0-.16,.20,.12);
+        put(wood,(x0+x1)/2,(openingBottom+openingTop)/2,front-frontSide*.12,.15,openingTop-openingBottom-.22,.14);
       }
       // Inset ends avoid coincident side patches on an exposed row-end footing.
-      put(paving,0,openingTop+.12,front-frontSide*.02,padWidth-.24,.24,.32);
+      put(paving,0,openingTop+.14,front-frontSide*.02,padWidth-.24,.24,.32);
       put(wood,0,high-.28,front-frontSide*.02,padWidth-.24,.3,.32);
       // The projecting cornice is below the ordinary house volume: include it
       // in the foundation obstacle rather than leaving a camera-visible lip.
@@ -279,16 +279,16 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       put(teal,0,1.35,z,1.6,2.7,.16);put(brass,.5,1.25,z+side*.13,.1,.1,.12);
       for(const y of (height<6?[2.35]:[3.8,6.8].filter(y=>y<height-1)))for(const x of [-width*.29,width*.29]){
         put(glass,x,y,z,1.25,1.7,.12);put(paving,x,y-.92,z,1.7,.18,.36);
-        put(wood,x,y,z+side*.1,.09,1.75,.12);put(wood,x,y,z+side*.1,1.28,.09,.12);
+        put(wood,x,y,z+side*.1,.09,1.75,.14);put(wood,x,y,z+side*.1,1.28,.09,.12);
         for(const q of [-1,1]){put(teal,x+q*.92,y,z,.45,1.85,.16);}
       }
       // Half timber ground floor shopfront, chunky eaves and an actual canopy.
-      if(seed%2===0){for(const x of [-width*.46,width*.46])put(wood,x,height*.48,z,.22,height*.96,.22);put(wood,0,2.9,z,width,.2,.22);
-        for(const q of [-1,1])wood.quad(at(q*width*.46,2.85,z+side*.18),at(q*width*.46,3.10,z+side*.18),at(q*width*.23,4.3,z+side*.18),at(q*width*.23,4.55,z+side*.18));
+      if(seed%2===0){for(const x of [-width*.46,width*.46])put(wood,x,height*.48,z,.22,height*.96,.22);put(wood,0,2.9,z,width-.02,.2,.24);
+        for(const q of [-1,1])wood.quad(at(q*width*.46,2.85,z+side*.10),at(q*width*.46,3.10,z+side*.10),at(q*width*.23,4.3,z+side*.10),at(q*width*.23,4.55,z+side*.10));
       }
       if(seed%3!==1&&side===frontSide){
         put(wood,0,3.05,z+side*.7,width*.7,.25,1.4);put(teal,0,4.12,z+side*1.35,width*.72,.14,.15);
-        for(let x=-width*.33;x<=width*.34;x+=1.3)put(teal,x,3.6,z+side*1.35,.10,1,.10);
+        for(let x=-width*.33;x<=width*.34;x+=1.3)put(teal,x,3.6,z+side*1.32,.10,1,.10);
         for(const x of [-width*.32,width*.32])put(wood,x,2.5,z+side*.70,.20,1.1,.20);
       }
     }
@@ -344,7 +344,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     groundPad('striped-market-stall',p,yaw,5.2,3.3);put(wood,0,.65,0,4.5,1.3,2.7);for(const x of [-2.1,2.1])for(const z of [-1.15,1.15])put(wood,x,1.8,z,.14,3.6,.14);
     for(let strip=0;strip<6;strip++){const x=-2.6+strip*.87;(strip%2?linen:plum).quad(at(x,3.45,-1.6),at(x+.87,3.45,-1.6),at(x,3.0,1.7),at(x+.87,3.0,1.7));}
     for(let j=0;j<7;j++)ellipsoid(j%3?fruit:foliage,at(-1.7+j*.55,1.5,.2),vec(.26,.25,.35),6,3);
-    put(plum,0,2.82,1.68,5.25,.34,.10);record('striped-market-stall',p,3.5,3.7);
+    put(plum,0,2.84,1.68,5.25,.34,.10);record('striped-market-stall',p,3.5,3.7);
   }
   for(let i=0;i<16;i++){
     const edge=i<10?course.commonStart:course.alternates.alley,site=plot(edge,.12+(i%10)*.075,3.5,i%2?1:-1);if(!site)continue;
@@ -479,9 +479,9 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     for(const {p,yaw} of row){const at=local(p,yaw);for(let x=0;x<=16;x++)for(let z=0;z<=16;z++){const q=at((x/16-.5)*spacing,0,(z/16-.5)*6.8);top=Math.max(top,terrainMeshY(q.x,q.z)+.06);}}
     for(const [i,{p,yaw}] of row.entries()){
       p.y=top;groundPad('open-arcade-bay',p,yaw,spacing,6.8);const at=local(p,yaw),put=(b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>b.box(at(x,y,z),vec(w,h,d),yaw);
-      const wall=[cream,peach,rose][run];put(wall,0,2.8,-2.8,spacing,5.6,.6);
-      for(const x of [-3.05,3.05]){put(paving,x,2.25,2.65,.6,4.5,.65);put(paving,x,.22,2.65,.9,.44,.9);}
-      put(paving,0,5.35,0,spacing,.45,6.6);put(roof,0,5.72,0,spacing,.3,6.8);
+      const wall=[cream,peach,rose][run];put(wall,0,2.5625,-2.8,spacing,5.125,.6);
+      for(const x of [-3.05,3.05]){put(paving,x,2.25,2.65,.6,4.5,.65);put(paving,x,.22,2.65,.8,.44,.9);}
+      put(paving,0,5.35,0,spacing,.45,6.6);put(roof,0,5.725,0,spacing,.3,6.8);
       put(wood,0,4.85,2.65,spacing,.22,.32);
       // Closed annular arch band, with proper front/back and curved intrados.
       for(let j=0;j<10;j++){
@@ -493,7 +493,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
         paving.quad(q(a,true,2.3),q(a,true,3),q(b,true,2.3),q(b,true,3));
       }
       if(i===0||i===2)put(wall,(i===0?-1:1)*3.12,2.8,0,.45,5.6,5.2);
-      put(teal,0,2.3,-2.42,2.25,3.2,.15);put(brass,0,4.55,2.85,.6,.25,.13);
+      put(teal,0,2.3,-2.425,2.25,3.2,.15);put(brass,0,4.55,2.85,.6,.25,.13);
       record('open-arcade-bay',p,radius,5.95);
     }
   }
