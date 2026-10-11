@@ -1,0 +1,3638 @@
+{
+  "baselineCommit": "f42be1c415143089bbc0b6d8b6215e404d9ddf24",
+  "baselineBuilderSHA256": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+  "sourceProof": "All baseline src files equal the explicit sealed commit; actual emitted faces independently measured with the unchanged finite cylinder and strict margin.",
+  "snapshot": {
+    "routeFractions": [
+      0.875,
+      0.935
+    ],
+    "stationStep": 0.5,
+    "stations": 434,
+    "radius": 16.510905486980416,
+    "margin": 0.3,
+    "betweenStations": 0.75,
+    "maxAdjacentLaneTravel": 0.5087058812598392,
+    "pierContacts": 1359,
+    "sceneryContacts": 9432,
+    "pierCandidates": 1660,
+    "sceneryCandidates": 14819,
+    "minPierMargin": -7.1481132978289015,
+    "originalPierEnvelopeClear": false,
+    "sceneryEnvelopeClear": false,
+    "pierGroups": [
+      {
+        "identity": "viaduct-bent-6",
+        "kinds": [
+          "source-exact-viaduct-pier"
+        ],
+        "contacts": 266,
+        "stationIds": [
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180,
+          181,
+          182,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          194,
+          195,
+          196,
+          197,
+          198
+        ],
+        "faces": [
+          6118,
+          6123,
+          6119,
+          6122,
+          6117,
+          6120,
+          6121,
+          6116
+        ],
+        "componentIds": [
+          84
+        ],
+        "minimumMargin": -2.7454767969477647,
+        "witness": {
+          "station": 179,
+          "d": 3253.6966541441448,
+          "triangle": 6118,
+          "identity": "viaduct-bent-6",
+          "kind": "source-exact-viaduct-pier",
+          "gap": -2.7454767969477647,
+          "polygon": [
+            [
+              5.14062850695758,
+              9.016928136900741,
+              38.50716128466981
+            ],
+            [
+              5.14062850695758,
+              25.843977350079676,
+              38.50716128466981
+            ],
+            [
+              5.5323960310130165,
+              25.843977350079676,
+              38.27612595959646
+            ],
+            [
+              5.93146486588317,
+              9.016928136900738,
+              38.04078486486647
+            ]
+          ]
+        },
+        "groundedEvidence": null
+      },
+      {
+        "identity": "viaduct-bent-9",
+        "kinds": [
+          "source-exact-viaduct-pier"
+        ],
+        "contacts": 404,
+        "stationIds": [
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219,
+          220,
+          221,
+          222,
+          223,
+          224,
+          225,
+          226,
+          227,
+          228,
+          229,
+          230,
+          231,
+          232,
+          233,
+          234,
+          235,
+          236,
+          237,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          245,
+          246,
+          247,
+          248,
+          249,
+          250,
+          251,
+          252,
+          253,
+          254,
+          255,
+          256,
+          257,
+          258,
+          259,
+          260
+        ],
+        "faces": [
+          6223,
+          6228,
+          6222,
+          6227,
+          6229,
+          6226,
+          6224,
+          6225
+        ],
+        "componentIds": [
+          96
+        ],
+        "minimumMargin": -6.097308801123557,
+        "witness": {
+          "station": 234,
+          "d": 3281.1966541441448,
+          "triangle": 6222,
+          "identity": "viaduct-bent-9",
+          "kind": "source-exact-viaduct-pier",
+          "gap": -6.097308801123557,
+          "polygon": [
+            [
+              -19.05714836616314,
+              9.002407743669991,
+              -5.262922761013878
+            ],
+            [
+              -19.05714836616314,
+              25.858497743310426,
+              -5.262922761013878
+            ],
+            [
+              -19.44312750828166,
+              25.858497743310426,
+              -5.039919131490694
+            ],
+            [
+              -19.848296683186827,
+              9.002407743669991,
+              -4.805828252696466
+            ]
+          ]
+        },
+        "groundedEvidence": null
+      },
+      {
+        "identity": "viaduct-bent-7",
+        "kinds": [
+          "source-exact-viaduct-pier"
+        ],
+        "contacts": 245,
+        "stationIds": [
+          229,
+          230,
+          231,
+          232,
+          233,
+          234,
+          235,
+          236,
+          237,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          245,
+          246,
+          247,
+          248,
+          249,
+          250,
+          251,
+          252,
+          253,
+          254,
+          255,
+          256,
+          257,
+          258,
+          259,
+          260,
+          261,
+          262,
+          263,
+          264,
+          265,
+          266
+        ],
+        "faces": [
+          6150,
+          6155,
+          6151,
+          6154,
+          6152,
+          6149,
+          6153,
+          6148
+        ],
+        "componentIds": [
+          89
+        ],
+        "minimumMargin": -2.479072747791351,
+        "witness": {
+          "station": 248,
+          "d": 3288.1966541441448,
+          "triangle": 6150,
+          "identity": "viaduct-bent-7",
+          "kind": "source-exact-viaduct-pier",
+          "gap": -2.479072747791351,
+          "polygon": [
+            [
+              21.264029054033582,
+              9.011131307308816,
+              8.804982267774893
+            ],
+            [
+              21.264029054033582,
+              25.849774179671602,
+              8.804982267774893
+            ],
+            [
+              21.652996901475905,
+              25.849774179671602,
+              8.574201375068252
+            ],
+            [
+              22.052620504355534,
+              9.011131307308808,
+              8.337098250926662
+            ]
+          ]
+        },
+        "groundedEvidence": null
+      },
+      {
+        "identity": "viaduct-bent-10",
+        "kinds": [
+          "source-exact-viaduct-pier"
+        ],
+        "contacts": 444,
+        "stationIds": [
+          273,
+          274,
+          275,
+          276,
+          277,
+          278,
+          279,
+          280,
+          281,
+          282,
+          283,
+          284,
+          285,
+          286,
+          287,
+          288,
+          289,
+          290,
+          291,
+          292,
+          293,
+          294,
+          295,
+          296,
+          297,
+          298,
+          299,
+          300,
+          301,
+          302,
+          303,
+          304,
+          305,
+          306,
+          307,
+          308,
+          309,
+          310,
+          311,
+          312,
+          313,
+          314,
+          315,
+          316,
+          317,
+          318,
+          319,
+          320,
+          321,
+          322,
+          323,
+          324,
+          325,
+          326,
+          327,
+          328,
+          329,
+          330,
+          331
+        ],
+        "faces": [
+          6254,
+          6255,
+          6260,
+          6259,
+          6261,
+          6258,
+          6256,
+          6257
+        ],
+        "componentIds": [
+          101
+        ],
+        "minimumMargin": -7.1481132978289015,
+        "witness": {
+          "station": 303,
+          "d": 3315.6966541441448,
+          "triangle": 6254,
+          "identity": "viaduct-bent-10",
+          "kind": "source-exact-viaduct-pier",
+          "gap": -7.1481132978289015,
+          "polygon": [
+            [
+              -2.4465743920010707,
+              9.010751126828737,
+              -34.6864686242676
+            ],
+            [
+              -2.4465743920010707,
+              25.85015436015168,
+              -34.6864686242676
+            ],
+            [
+              -2.834032052715854,
+              25.85015436015168,
+              -34.46898930844035
+            ],
+            [
+              -3.242325806572,
+              9.010751126828737,
+              -34.23981472951639
+            ]
+          ]
+        },
+        "groundedEvidence": null
+      }
+    ],
+    "sceneryGroups": [
+      {
+        "identity": "spruce-3-0-2",
+        "kinds": [
+          "spruce-attached-bough-tier",
+          "spruce-ground-rooted-trunk"
+        ],
+        "contacts": 2430,
+        "stationIds": [
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106
+        ],
+        "faces": [
+          97055,
+          97056,
+          88723,
+          88724,
+          88731,
+          88732,
+          97057,
+          88725,
+          88733,
+          88707,
+          88708,
+          88722,
+          88730,
+          97054,
+          97071,
+          97072,
+          97079,
+          97080,
+          88709,
+          97073,
+          97081,
+          88706,
+          97070,
+          97078,
+          97058,
+          88726,
+          88734,
+          88710,
+          97074,
+          97082,
+          82220,
+          82221,
+          82225,
+          82228,
+          88711,
+          97059,
+          82223,
+          82224,
+          82226,
+          82227,
+          82229,
+          88704,
+          88705,
+          88712,
+          88720,
+          88721,
+          88727,
+          88728,
+          97052,
+          97053,
+          97060,
+          97068,
+          97069,
+          97075,
+          97076,
+          97077,
+          82222,
+          88729,
+          97083,
+          88735
+        ],
+        "componentIds": [
+          770,
+          771,
+          769,
+          772,
+          768
+        ],
+        "minimumMargin": -4.4221381382739935,
+        "witness": {
+          "station": 81,
+          "d": 3204.6966541441448,
+          "triangle": 97057,
+          "identity": "spruce-3-0-2",
+          "kind": "spruce-attached-bough-tier",
+          "gap": -4.4221381382739935,
+          "polygon": [
+            [
+              -17.727151001303696,
+              9.040247376735003,
+              81.26169345125413
+            ],
+            [
+              -15.66242779487333,
+              14.647084362610325,
+              82.22558685642585
+            ],
+            [
+              -16.62451879583517,
+              9.040247376735003,
+              80.16002317510933
+            ]
+          ]
+        },
+        "groundedEvidence": {
+          "kind": "spruce-ground-rooted-trunk",
+          "batch": "Spruce trunks and fence timber",
+          "assembly": "spruce-3-0-2",
+          "role": "vegetation",
+          "solid": true,
+          "vertices": 24,
+          "triangles": 12,
+          "positions": "05205ea5a6994fa0c293102616dced0d94989298554a3e8ee13e6ea085ddefbc",
+          "indices": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7",
+          "uvs": "86e37908f900b8cdb6997afba2d3538f00f2bd8dd7bf342bb39c589217c9f49c"
+        }
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "kinds": [
+          "rooted-low-layered-talus"
+        ],
+        "contacts": 285,
+        "stationIds": [
+          192,
+          193,
+          194,
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219
+        ],
+        "faces": [
+          106422,
+          106423,
+          106421,
+          106424,
+          106442,
+          106440,
+          106441,
+          106425,
+          106443,
+          106444,
+          106420,
+          106439,
+          106458,
+          106459
+        ],
+        "componentIds": [
+          2085
+        ],
+        "minimumMargin": -0.9540896742599649,
+        "witness": {
+          "station": 204,
+          "d": 3266.1966541441448,
+          "triangle": 106422,
+          "identity": "rooted-low-layered-talus#66",
+          "kind": "rooted-low-layered-talus",
+          "gap": -0.9540896742599649,
+          "polygon": [
+            [
+              -30.616221049679176,
+              9.007716780803145,
+              5.569561299865808
+            ],
+            [
+              -30.761289334093757,
+              10.25932705796462,
+              5.464163021773837
+            ],
+            [
+              -31.039592601246703,
+              9.007716780803145,
+              5.953986240550833
+            ]
+          ]
+        },
+        "groundedEvidence": {
+          "kind": "rooted-low-layered-talus",
+          "batch": "Connected muted granite slopes",
+          "assembly": null,
+          "role": "terrain",
+          "solid": true,
+          "vertices": 208,
+          "triangles": 96,
+          "positions": "aba5ea7961da7394812155abc212114caaed206de9be40b806cbe768ff063220",
+          "indices": "30f49bd1db05de3d2535a8829530159316fee0d9ef496d2f1a5999258227def5",
+          "uvs": "1a55cac21467260c9640b458cf8268ca1f67a0acca1ab9b1b2f4aa8db53aff9a"
+        }
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "kinds": [
+          "spruce-attached-bough-tier",
+          "spruce-ground-rooted-trunk"
+        ],
+        "contacts": 3158,
+        "stationIds": [
+          321,
+          322,
+          323,
+          324,
+          325,
+          326,
+          327,
+          328,
+          329,
+          330,
+          331,
+          332,
+          333,
+          334,
+          335,
+          336,
+          337,
+          338,
+          339,
+          340,
+          341,
+          342,
+          343,
+          344,
+          345,
+          346,
+          347,
+          348,
+          349,
+          350,
+          351,
+          352,
+          353,
+          354,
+          355,
+          356,
+          357,
+          358,
+          359,
+          360,
+          361,
+          362,
+          363,
+          364,
+          365,
+          366,
+          367,
+          368,
+          369,
+          370,
+          371,
+          372,
+          373,
+          374,
+          375,
+          376,
+          377,
+          378,
+          379,
+          380,
+          381,
+          382
+        ],
+        "faces": [
+          97085,
+          97086,
+          88737,
+          88738,
+          97084,
+          88736,
+          88752,
+          88753,
+          88754,
+          88761,
+          88762,
+          97087,
+          88739,
+          88755,
+          88763,
+          97101,
+          97102,
+          97109,
+          97110,
+          97100,
+          97103,
+          97111,
+          88744,
+          88760,
+          88764,
+          88765,
+          88766,
+          88767,
+          97092,
+          82244,
+          82245,
+          82247,
+          82248,
+          82249,
+          82252,
+          82253,
+          88740,
+          88741,
+          88742,
+          88743,
+          88756,
+          88757,
+          88758,
+          88759,
+          97088,
+          97089,
+          97090,
+          97091,
+          97104,
+          97105,
+          97106,
+          97107,
+          97108,
+          97112,
+          97113,
+          97114,
+          97115,
+          82246,
+          82250,
+          82251
+        ],
+        "componentIds": [
+          778,
+          777,
+          779,
+          780,
+          776
+        ],
+        "minimumMargin": -7.203118978749231,
+        "witness": {
+          "station": 351,
+          "d": 3339.6966541441448,
+          "triangle": 97086,
+          "identity": "spruce-3-1-0",
+          "kind": "spruce-attached-bough-tier",
+          "gap": -7.203118978749231,
+          "polygon": [
+            [
+              40.917231468480686,
+              9.03749189292967,
+              -38.89621773140522
+            ],
+            [
+              43.31476532371867,
+              17.06176047667325,
+              -39.451584925324305
+            ],
+            [
+              41.12116468564643,
+              9.03749189292967,
+              -40.567254028482985
+            ]
+          ]
+        },
+        "groundedEvidence": {
+          "kind": "spruce-ground-rooted-trunk",
+          "batch": "Spruce trunks and fence timber",
+          "assembly": "spruce-3-1-0",
+          "role": "vegetation",
+          "solid": true,
+          "vertices": 24,
+          "triangles": 12,
+          "positions": "d6371271318a94525d3f39c415ca3d32618862617b96e4f0c0c72fecf07854ac",
+          "indices": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7",
+          "uvs": "ab113bf637d889464ab47cc79172ae5463dc5c3a9b14cfab5cb54f5a1b2dd8cc"
+        }
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "kinds": [
+          "spruce-attached-bough-tier",
+          "spruce-ground-rooted-trunk"
+        ],
+        "contacts": 3559,
+        "stationIds": [
+          331,
+          332,
+          333,
+          334,
+          335,
+          336,
+          337,
+          338,
+          339,
+          340,
+          341,
+          342,
+          343,
+          344,
+          345,
+          346,
+          347,
+          348,
+          349,
+          350,
+          351,
+          352,
+          353,
+          354,
+          355,
+          356,
+          357,
+          358,
+          359,
+          360,
+          361,
+          362,
+          363,
+          364,
+          365,
+          366,
+          367,
+          368,
+          369,
+          370,
+          371,
+          372,
+          373,
+          374,
+          375,
+          376,
+          377,
+          378,
+          379,
+          380,
+          381,
+          382,
+          383,
+          384,
+          385,
+          386,
+          387,
+          388,
+          389,
+          390,
+          391,
+          392,
+          393,
+          394,
+          395,
+          396
+        ],
+        "faces": [
+          97116,
+          97117,
+          97118,
+          88768,
+          88769,
+          88770,
+          88784,
+          88785,
+          88786,
+          88793,
+          88794,
+          97119,
+          97132,
+          97133,
+          97134,
+          97141,
+          97142,
+          88771,
+          88776,
+          88787,
+          88792,
+          88795,
+          88796,
+          88797,
+          88798,
+          88799,
+          97124,
+          97135,
+          97143,
+          82268,
+          82269,
+          82271,
+          82272,
+          82273,
+          82276,
+          82277,
+          97140,
+          97144,
+          97145,
+          97146,
+          97147,
+          88772,
+          88773,
+          97120,
+          97121,
+          82270,
+          82274,
+          82275,
+          88774,
+          88775,
+          88788,
+          88789,
+          88790,
+          88791,
+          97122,
+          97123,
+          97136,
+          97137,
+          97138,
+          97139
+        ],
+        "componentIds": [
+          786,
+          785,
+          787,
+          788,
+          784
+        ],
+        "minimumMargin": -8.993853213569192,
+        "witness": {
+          "station": 364,
+          "d": 3346.1966541441448,
+          "triangle": 97118,
+          "identity": "spruce-3-1-1",
+          "kind": "spruce-attached-bough-tier",
+          "gap": -8.993853213569192,
+          "polygon": [
+            [
+              41.95977798598415,
+              9.044982676503471,
+              -45.34439053640038
+            ],
+            [
+              44.022084979498054,
+              15.688152139896427,
+              -45.822105437270395
+            ],
+            [
+              42.13519694786944,
+              9.044982676503471,
+              -46.78177997486442
+            ]
+          ]
+        },
+        "groundedEvidence": {
+          "kind": "spruce-ground-rooted-trunk",
+          "batch": "Spruce trunks and fence timber",
+          "assembly": "spruce-3-1-1",
+          "role": "vegetation",
+          "solid": true,
+          "vertices": 24,
+          "triangles": 12,
+          "positions": "5bcb8ca773c19594f290e517f83028194800cb8d21091f12939f2130b004137e",
+          "indices": "1d8cc5c30046c7b635dd2780344365cf526286967062beadb1ba9ecf930cb7d7",
+          "uvs": "95f3bd90b55f494856e8d7300f91dba2f0857af1e1b02b5ba634ac466f1ae181"
+        }
+      }
+    ],
+    "stationGroups": [
+      {
+        "identity": "spruce-3-0-2",
+        "station": 55,
+        "d": 3191.6966541441448,
+        "contacts": 2,
+        "minimumMargin": 0.2670660979054347
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 56,
+        "d": 3192.1966541441448,
+        "contacts": 6,
+        "minimumMargin": -0.051106324758080746
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 57,
+        "d": 3192.6966541441448,
+        "contacts": 9,
+        "minimumMargin": -0.3604110064412396
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 58,
+        "d": 3193.1966541441448,
+        "contacts": 18,
+        "minimumMargin": -0.6603663590146134
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 59,
+        "d": 3193.6966541441448,
+        "contacts": 21,
+        "minimumMargin": -0.9504711966757853
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 60,
+        "d": 3194.1966541441448,
+        "contacts": 24,
+        "minimumMargin": -1.2302059066708573
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 61,
+        "d": 3194.6966541441448,
+        "contacts": 27,
+        "minimumMargin": -1.4990340893702374
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 62,
+        "d": 3195.1966541441448,
+        "contacts": 34,
+        "minimumMargin": -1.7564047270711889
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 63,
+        "d": 3195.6966541441448,
+        "contacts": 56,
+        "minimumMargin": -2.001754936673228
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 64,
+        "d": 3196.1966541441448,
+        "contacts": 58,
+        "minimumMargin": -2.2350385828059736
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 65,
+        "d": 3196.6966541441448,
+        "contacts": 59,
+        "minimumMargin": -2.4552994183328867
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 66,
+        "d": 3197.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.661722776425588
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 67,
+        "d": 3197.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.853733236167642
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 68,
+        "d": 3198.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.0316226372169535
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 69,
+        "d": 3198.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.206116634352769
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 70,
+        "d": 3199.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.380593219365929
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 71,
+        "d": 3199.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.555052473097815
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 72,
+        "d": 3200.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.7214143029282667
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 73,
+        "d": 3200.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.8712616043193577
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 74,
+        "d": 3201.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.004376586153349
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 75,
+        "d": 3201.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.119983462499254
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 76,
+        "d": 3202.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.217465524004464
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 77,
+        "d": 3202.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.296439076729024
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 78,
+        "d": 3203.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.356589954853353
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 79,
+        "d": 3203.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.397680204979173
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 80,
+        "d": 3204.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.419553373606961
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 81,
+        "d": 3204.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.4221381382739935
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 82,
+        "d": 3205.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.40545009722182
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 83,
+        "d": 3205.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.3695916234071674
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 84,
+        "d": 3206.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.314555488003096
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 85,
+        "d": 3206.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.240582413838915
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 86,
+        "d": 3207.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.148081302648807
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 87,
+        "d": 3207.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.037469613909984
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 88,
+        "d": 3208.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.909226176664406
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 89,
+        "d": 3208.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.763882345229268
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 90,
+        "d": 3209.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.602646153949845
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 91,
+        "d": 3209.6966541441448,
+        "contacts": 59,
+        "minimumMargin": -3.437313467847419
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 92,
+        "d": 3210.1966541441448,
+        "contacts": 59,
+        "minimumMargin": -3.2721390212313928
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 93,
+        "d": 3210.6966541441448,
+        "contacts": 59,
+        "minimumMargin": -3.107124627032828
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 94,
+        "d": 3211.1966541441448,
+        "contacts": 59,
+        "minimumMargin": -2.934507455623404
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 95,
+        "d": 3211.6966541441448,
+        "contacts": 58,
+        "minimumMargin": -2.7467124759599297
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 96,
+        "d": 3212.1966541441448,
+        "contacts": 57,
+        "minimumMargin": -2.5445294660324134
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 97,
+        "d": 3212.6966541441448,
+        "contacts": 56,
+        "minimumMargin": -2.3285716470874096
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 98,
+        "d": 3213.1966541441448,
+        "contacts": 54,
+        "minimumMargin": -2.099456306208662
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 99,
+        "d": 3213.6966541441448,
+        "contacts": 37,
+        "minimumMargin": -1.8577991150795032
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 100,
+        "d": 3214.1966541441448,
+        "contacts": 28,
+        "minimumMargin": -1.6042091945771233
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 101,
+        "d": 3214.6966541441448,
+        "contacts": 24,
+        "minimumMargin": -1.3392849285852684
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 102,
+        "d": 3215.1966541441448,
+        "contacts": 24,
+        "minimumMargin": -1.0636105043129085
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 103,
+        "d": 3215.6966541441448,
+        "contacts": 18,
+        "minimumMargin": -0.7777531583108619
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 104,
+        "d": 3216.1966541441448,
+        "contacts": 12,
+        "minimumMargin": -0.4808914248615679
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 105,
+        "d": 3216.6966541441448,
+        "contacts": 6,
+        "minimumMargin": -0.17460153925209454
+      },
+      {
+        "identity": "spruce-3-0-2",
+        "station": 106,
+        "d": 3217.1966541441448,
+        "contacts": 6,
+        "minimumMargin": 0.14037705503864828
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 192,
+        "d": 3260.1966541441448,
+        "contacts": 3,
+        "minimumMargin": 0.23356045957429217
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 193,
+        "d": 3260.6966541441448,
+        "contacts": 7,
+        "minimumMargin": 0.057128695260946216
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 194,
+        "d": 3261.1966541441448,
+        "contacts": 7,
+        "minimumMargin": -0.10740208564513765
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 195,
+        "d": 3261.6966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.25819393721745243
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 196,
+        "d": 3262.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.3949251356317376
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 197,
+        "d": 3262.6966541441448,
+        "contacts": 11,
+        "minimumMargin": -0.5172986217845157
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 198,
+        "d": 3263.1966541441448,
+        "contacts": 11,
+        "minimumMargin": -0.6250473342353189
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 199,
+        "d": 3263.6966541441448,
+        "contacts": 12,
+        "minimumMargin": -0.7184587927506314
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 200,
+        "d": 3264.1966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.7969383707036073
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 201,
+        "d": 3264.6966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.8598467779641581
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 202,
+        "d": 3265.1966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.9070566939086433
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 203,
+        "d": 3265.6966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.9384839468998365
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 204,
+        "d": 3266.1966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.9540896742599649
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 205,
+        "d": 3266.6966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.9538811332330894
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 206,
+        "d": 3267.1966541441448,
+        "contacts": 14,
+        "minimumMargin": -0.9379118495258751
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 207,
+        "d": 3267.6966541441448,
+        "contacts": 11,
+        "minimumMargin": -0.9062832765337241
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 208,
+        "d": 3268.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.8588053701669764
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 209,
+        "d": 3268.6966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.7954058204310499
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 210,
+        "d": 3269.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.7165523833685477
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 211,
+        "d": 3269.6966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.6256973292564183
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 212,
+        "d": 3270.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.5337849156976233
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 213,
+        "d": 3270.6966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.44170833240798757
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 214,
+        "d": 3271.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.34946648142834746
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 215,
+        "d": 3271.6966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.2570075842400925
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 216,
+        "d": 3272.1966541441448,
+        "contacts": 10,
+        "minimumMargin": -0.1561096444658574
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 217,
+        "d": 3272.6966541441448,
+        "contacts": 7,
+        "minimumMargin": -0.04017416798484419
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 218,
+        "d": 3273.1966541441448,
+        "contacts": 6,
+        "minimumMargin": 0.0905568703121169
+      },
+      {
+        "identity": "rooted-low-layered-talus#66",
+        "station": 219,
+        "d": 3273.6966541441448,
+        "contacts": 2,
+        "minimumMargin": 0.23511328972460532
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 321,
+        "d": 3324.6966541441448,
+        "contacts": 2,
+        "minimumMargin": 0.10351972094793638
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 322,
+        "d": 3325.1966541441448,
+        "contacts": 5,
+        "minimumMargin": -0.2932323170958995
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 323,
+        "d": 3325.6966541441448,
+        "contacts": 12,
+        "minimumMargin": -0.6841873972858821
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 324,
+        "d": 3326.1966541441448,
+        "contacts": 19,
+        "minimumMargin": -1.0687437105144149
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 325,
+        "d": 3326.6966541441448,
+        "contacts": 22,
+        "minimumMargin": -1.4464477817581542
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 326,
+        "d": 3327.1966541441448,
+        "contacts": 29,
+        "minimumMargin": -1.8168114160477398
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 327,
+        "d": 3327.6966541441448,
+        "contacts": 57,
+        "minimumMargin": -2.1793088879568163
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 328,
+        "d": 3328.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.5333743685863297
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 329,
+        "d": 3328.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.8785826537757178
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 330,
+        "d": 3329.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.2143270395933907
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 331,
+        "d": 3329.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.5396630363771724
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 331,
+        "d": 3329.6966541441448,
+        "contacts": 3,
+        "minimumMargin": 0.054541743562193545
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 332,
+        "d": 3330.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.853850690113708
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 332,
+        "d": 3330.1966541441448,
+        "contacts": 11,
+        "minimumMargin": -0.37653892648080856
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 333,
+        "d": 3330.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.1561070425487525
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 333,
+        "d": 3330.6966541441448,
+        "contacts": 17,
+        "minimumMargin": -0.8051252917986602
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 334,
+        "d": 3331.1966541441448,
+        "contacts": 29,
+        "minimumMargin": -1.2292365049970435
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 334,
+        "d": 3331.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.445607765315538
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 335,
+        "d": 3331.6966541441448,
+        "contacts": 41,
+        "minimumMargin": -1.648522487627483
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 335,
+        "d": 3331.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.72148913500763
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 336,
+        "d": 3332.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.0627736674194885
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 336,
+        "d": 3332.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.982961162660406
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 337,
+        "d": 3332.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.4717997857659295
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 337,
+        "d": 3332.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.229218692493026
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 338,
+        "d": 3333.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.8747148773162934
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 338,
+        "d": 3333.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.459043472684469
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 339,
+        "d": 3333.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.271008607080068
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 339,
+        "d": 3333.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.671480851169733
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 340,
+        "d": 3334.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.660120821358575
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 340,
+        "d": 3334.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.86558225787212
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 341,
+        "d": 3334.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.041437442450848
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 341,
+        "d": 3334.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.0404212649861915
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 342,
+        "d": 3335.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.414284227782533
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 342,
+        "d": 3335.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.203520328075468
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 343,
+        "d": 3335.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.778023669060154
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 343,
+        "d": 3335.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.366423778895621
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 344,
+        "d": 3336.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.132212291026958
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 344,
+        "d": 3336.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.5293886696848915
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 345,
+        "d": 3336.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.475471809986322
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 345,
+        "d": 3336.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.690820354577351
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 346,
+        "d": 3337.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.806843697298728
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 346,
+        "d": 3337.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.834868650225857
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 347,
+        "d": 3337.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.125291751763923
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 347,
+        "d": 3337.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.9563481872875155
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 348,
+        "d": 3338.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.429702953661225
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 348,
+        "d": 3338.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.054482918359941
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 349,
+        "d": 3338.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.718888342317198
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 349,
+        "d": 3338.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.128624096149954
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 350,
+        "d": 3339.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.991618981749836
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 350,
+        "d": 3339.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.178276763856397
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 351,
+        "d": 3339.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.24696365992056
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 351,
+        "d": 3339.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.203118978749231
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 352,
+        "d": 3340.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.483073492563745
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 352,
+        "d": 3340.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.202893061352722
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 353,
+        "d": 3340.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.698555451415933
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 353,
+        "d": 3340.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.177632293343738
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 354,
+        "d": 3341.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.892018905129337
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 354,
+        "d": 3341.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.127555523761492
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 355,
+        "d": 3341.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.062384344521465
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 355,
+        "d": 3341.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.053060482292475
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 356,
+        "d": 3342.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.22396112691312
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 356,
+        "d": 3342.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.954708598815833
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 357,
+        "d": 3342.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.38541564029414
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 357,
+        "d": 3342.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.833206952198216
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 358,
+        "d": 3343.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.54694965562521
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 358,
+        "d": 3343.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.68908375009517
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 359,
+        "d": 3343.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.692893724975509
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 359,
+        "d": 3343.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.523474955855356
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 360,
+        "d": 3344.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.811498616240916
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 360,
+        "d": 3344.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.342973887877809
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 361,
+        "d": 3344.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.901640150944258
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 361,
+        "d": 3344.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.161852811549274
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 362,
+        "d": 3345.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.962431781175855
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 362,
+        "d": 3345.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.980765600902288
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 363,
+        "d": 3345.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.993267290644878
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 363,
+        "d": 3345.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.799521662840101
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 364,
+        "d": 3346.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.993853213569192
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 364,
+        "d": 3346.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.606509869914566
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 365,
+        "d": 3346.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.96413657227124
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 365,
+        "d": 3346.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.39517170194309
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 366,
+        "d": 3347.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.904434117673238
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 366,
+        "d": 3347.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.166774359006171
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 367,
+        "d": 3347.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.815428377892156
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 367,
+        "d": 3347.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.922347749545947
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 368,
+        "d": 3348.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.698075203208868
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 368,
+        "d": 3348.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.662854765604237
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 369,
+        "d": 3348.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.553562957038514
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 369,
+        "d": 3348.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.3892365700831615
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 370,
+        "d": 3349.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.383316287524115
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 370,
+        "d": 3349.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.1024038179195355
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 371,
+        "d": 3349.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.202306296656571
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 371,
+        "d": 3349.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.8032305803971695
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 372,
+        "d": 3350.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -8.021015603218432
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 372,
+        "d": 3350.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.4919309118926343
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 373,
+        "d": 3350.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.839888384511472
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 373,
+        "d": 3350.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.1698946223737536
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 374,
+        "d": 3351.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.648517235349193
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 374,
+        "d": 3351.1966541441448,
+        "contacts": 59,
+        "minimumMargin": -2.8380322433686835
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 375,
+        "d": 3351.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.435523484394391
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 375,
+        "d": 3351.6966541441448,
+        "contacts": 58,
+        "minimumMargin": -2.496855861393252
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 376,
+        "d": 3352.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -7.202306269168625
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 376,
+        "d": 3352.1966541441448,
+        "contacts": 43,
+        "minimumMargin": -2.1470237816083912
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 377,
+        "d": 3352.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.950276511890557
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 377,
+        "d": 3352.6966541441448,
+        "contacts": 28,
+        "minimumMargin": -1.7891500898191666
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 378,
+        "d": 3353.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.680816649783486
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 378,
+        "d": 3353.1966541441448,
+        "contacts": 24,
+        "minimumMargin": -1.4238065412605287
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 379,
+        "d": 3353.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.394677774105512
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 379,
+        "d": 3353.6966541441448,
+        "contacts": 20,
+        "minimumMargin": -1.0507784114653198
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 380,
+        "d": 3354.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -6.0934622437090304
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 380,
+        "d": 3354.1966541441448,
+        "contacts": 13,
+        "minimumMargin": -0.6710369377138825
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 381,
+        "d": 3354.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.778556399518358
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 381,
+        "d": 3354.6966541441448,
+        "contacts": 5,
+        "minimumMargin": -0.2852778836265131
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 382,
+        "d": 3355.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.451091171654987
+      },
+      {
+        "identity": "spruce-3-1-0",
+        "station": 382,
+        "d": 3355.1966541441448,
+        "contacts": 2,
+        "minimumMargin": 0.10607231132998507
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 383,
+        "d": 3355.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -5.112117640047135
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 384,
+        "d": 3356.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.762606443420305
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 385,
+        "d": 3356.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.403450579300957
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 386,
+        "d": 3357.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -4.034707295756563
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 387,
+        "d": 3357.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.657558952018558
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 388,
+        "d": 3358.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -3.272978702930052
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 389,
+        "d": 3358.6966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.8815943278157476
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 390,
+        "d": 3359.1966541441448,
+        "contacts": 60,
+        "minimumMargin": -2.483978119790093
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 391,
+        "d": 3359.6966541441448,
+        "contacts": 58,
+        "minimumMargin": -2.080649972627823
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 392,
+        "d": 3360.1966541441448,
+        "contacts": 36,
+        "minimumMargin": -1.6720829337863705
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 393,
+        "d": 3360.6966541441448,
+        "contacts": 28,
+        "minimumMargin": -1.2578129128569202
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 394,
+        "d": 3361.1966541441448,
+        "contacts": 21,
+        "minimumMargin": -0.8387399982861936
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 395,
+        "d": 3361.6966541441448,
+        "contacts": 12,
+        "minimumMargin": -0.41558516744205676
+      },
+      {
+        "identity": "spruce-3-1-1",
+        "station": 396,
+        "d": 3362.1966541441448,
+        "contacts": 3,
+        "minimumMargin": 0.011323657084577832
+      }
+    ],
+    "witnesses": [
+      {
+        "station": 55,
+        "d": 3191.6966541441448,
+        "triangle": 97055,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2670660979054347,
+        "polygon": [
+          [
+            -16.96916438437579,
+            9.044742720242688,
+            84.09006787692036
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.86191139635151,
+            9.044742720242688,
+            82.81390809262024
+          ]
+        ]
+      },
+      {
+        "station": 55,
+        "d": 3191.6966541441448,
+        "triangle": 97056,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2670660979054347,
+        "polygon": [
+          [
+            -17.86191139635151,
+            9.044742720242688,
+            82.81390809262024
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.725495586658223,
+            9.044742720242688,
+            81.26246626344253
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 88723,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.10389507010889076,
+        "polygon": [
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 88724,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.10389507010889076,
+        "polygon": [
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 88731,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.10389507010889076,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 88732,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.10389507010889076,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 97055,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.051106324758080746,
+        "polygon": [
+          [
+            -16.969203288994386,
+            9.044575925368648,
+            84.09012338690114
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.861976880146266,
+            9.044575925368648,
+            82.81392560832576
+          ]
+        ]
+      },
+      {
+        "station": 56,
+        "d": 3192.1966541441448,
+        "triangle": 97056,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.051106324758080746,
+        "polygon": [
+          [
+            -17.861976880146266,
+            9.044575925368648,
+            82.81392560832576
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.7255570090338,
+            9.044575925368648,
+            81.26243758907951
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 97057,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.16333616355824176,
+        "polygon": [
+          [
+            -17.725618562838378,
+            9.044408773593997,
+            81.26240885336031
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -16.62380473147418,
+            9.044408773593997,
+            80.16155623737548
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88723,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.20547498383022855,
+        "polygon": [
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88724,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.20547498383022855,
+        "polygon": [
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88725,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2787762571860597,
+        "polygon": [
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -16.558308718358163,
+            10.347207128416223,
+            80.3021730665821
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88731,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.20547498383022855,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88732,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.20547498383022855,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 88733,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2787762571860597,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ],
+          [
+            -16.558308718358163,
+            10.347207128416223,
+            80.3021730665821
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 97055,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.3604110064412396,
+        "polygon": [
+          [
+            -16.96924227685944,
+            9.044408773593997,
+            84.09017901565984
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.862042504060476,
+            9.044408773593997,
+            82.81394316151066
+          ]
+        ]
+      },
+      {
+        "station": 57,
+        "d": 3192.6966541441448,
+        "triangle": 97056,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.3604110064412396,
+        "polygon": [
+          [
+            -17.862042504060476,
+            9.044408773593997,
+            82.81394316151066
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.725618562838378,
+            9.044408773593997,
+            81.26240885336031
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97057,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.17005307695360017,
+        "polygon": [
+          [
+            -17.7256802501462,
+            9.044241259286029,
+            81.26238005531658
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -16.62383347566786,
+            9.044241259286029,
+            80.16149452495696
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88707,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.17852691313663982,
+        "polygon": [
+          [
+            -16.486586969732624,
+            9.044241259286029,
+            83.40151561799564
+          ],
+          [
+            -15.66242779487333,
+            11.835626171021874,
+            82.22558685642585
+          ],
+          [
+            -17.049642788830912,
+            9.044241259286029,
+            82.59664124372114
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88708,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.17852691313663982,
+        "polygon": [
+          [
+            -17.049642788830912,
+            9.044241259286029,
+            82.59664124372114
+          ],
+          [
+            -15.66242779487333,
+            11.835626171021874,
+            82.22558685642585
+          ],
+          [
+            -16.9636052950791,
+            9.044241259286029,
+            81.618146397821
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88722,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.1386208109339364,
+        "polygon": [
+          [
+            -15.478421362048687,
+            10.347207128416223,
+            84.33941392331289
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88723,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.5055863203977609,
+        "polygon": [
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88724,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.5055863203977609,
+        "polygon": [
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88725,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.052355893595780856,
+        "polygon": [
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -16.558308718358163,
+            10.347207128416223,
+            80.3021730665821
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88730,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.1386208109339364,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -15.478421362048687,
+            10.347207128416223,
+            84.33941392331289
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88731,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.5055863203977609,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88732,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.5055863203977609,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -17.712188697131758,
+            10.347207128416223,
+            82.77386003614365
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 88733,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.052355893595780856,
+        "polygon": [
+          [
+            -13.548762129136922,
+            10.347207128416223,
+            82.411438112844
+          ],
+          [
+            -17.58505895041698,
+            10.347207128416223,
+            81.32802756826821
+          ],
+          [
+            -16.558308718358163,
+            10.347207128416223,
+            80.3021730665821
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97054,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.036203503742385124,
+        "polygon": [
+          [
+            -15.464963126095457,
+            9.044241259286029,
+            84.49401929766739
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -16.96928134928477,
+            9.044241259286029,
+            84.09023476507105
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97055,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.6603663590146134,
+        "polygon": [
+          [
+            -16.96928134928477,
+            9.044241259286029,
+            84.09023476507105
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.86210827030554,
+            9.044241259286029,
+            82.81396075276643
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97056,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.6603663590146134,
+        "polygon": [
+          [
+            -17.86210827030554,
+            9.044241259286029,
+            82.81396075276643
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -17.7256802501462,
+            9.044241259286029,
+            81.26238005531658
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97071,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2607363334204038,
+        "polygon": [
+          [
+            -16.439290475275193,
+            13.158665320004674,
+            83.33403192085254
+          ],
+          [
+            -15.66242779487333,
+            20.27000074578723,
+            82.22558685642585
+          ],
+          [
+            -16.97003388769336,
+            13.158665320004674,
+            82.57534733314237
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97072,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2607363334204038,
+        "polygon": [
+          [
+            -16.97003388769336,
+            13.158665320004674,
+            82.57534733314237
+          ],
+          [
+            -15.66242779487333,
+            20.27000074578723,
+            82.22558685642585
+          ],
+          [
+            -16.888933876858072,
+            13.158665320004674,
+            81.65300593122184
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97079,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2607363334204038,
+        "polygon": [
+          [
+            -14.314054870179413,
+            13.158665320004674,
+            82.3441471406926
+          ],
+          [
+            -16.439290475275193,
+            13.158665320004674,
+            83.33403192085254
+          ],
+          [
+            -16.97003388769336,
+            13.158665320004674,
+            82.57534733314237
+          ]
+        ]
+      },
+      {
+        "station": 58,
+        "d": 3193.1966541441448,
+        "triangle": 97080,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.2607363334204038,
+        "polygon": [
+          [
+            -14.314054870179413,
+            13.158665320004674,
+            82.3441471406926
+          ],
+          [
+            -16.97003388769336,
+            13.158665320004674,
+            82.57534733314237
+          ],
+          [
+            -16.888933876858072,
+            13.158665320004674,
+            81.65300593122184
+          ]
+        ]
+      },
+      {
+        "station": 59,
+        "d": 3193.6966541441448,
+        "triangle": 88709,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": 0.16149052188895396,
+        "polygon": [
+          [
+            -16.963683551907245,
+            9.044073376787841,
+            81.61810986447826
+          ],
+          [
+            -15.66242779487333,
+            11.835626171021874,
+            82.22558685642585
+          ],
+          [
+            -16.268768853032174,
+            9.044073376787841,
+            80.92380140476709
+          ]
+        ]
+      },
+      {
+        "station": 59,
+        "d": 3193.6966541441448,
+        "triangle": 97057,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.4951097407569165,
+        "polygon": [
+          [
+            -17.725742073040433,
+            9.044073376787841,
+            81.26235119397582
+          ],
+          [
+            -15.66242779487333,
+            14.647084362610325,
+            82.22558685642585
+          ],
+          [
+            -16.6238622830402,
+            9.044073376787841,
+            80.16143267689684
+          ]
+        ]
+      },
+      {
+        "station": 59,
+        "d": 3193.6966541441448,
+        "triangle": 88707,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.11327984875823915,
+        "polygon": [
+          [
+            -16.486636537207392,
+            9.044073376787841,
+            83.40158634197833
+          ],
+          [
+            -15.66242779487333,
+            11.835626171021874,
+            82.22558685642585
+          ],
+          [
+            -17.0497262202193,
+            9.044073376787841,
+            82.59666356007645
+          ]
+        ]
+      },
+      {
+        "station": 59,
+        "d": 3193.6966541441448,
+        "triangle": 88708,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.11327984875823915,
+        "polygon": [
+          [
+            -17.0497262202193,
+            9.044073376787841,
+            82.59666356007645
+          ],
+          [
+            -15.66242779487333,
+            11.835626171021874,
+            82.22558685642585
+          ],
+          [
+            -16.96368355190724,
+            9.044073376787841,
+            81.61810986447826
+          ]
+        ]
+      },
+      {
+        "station": 59,
+        "d": 3193.6966541441448,
+        "triangle": 88722,
+        "identity": "spruce-3-0-2",
+        "kind": "spruce-attached-bough-tier",
+        "gap": -0.11990806855038016,
+        "polygon": [
+          [
+            -15.478421362048687,
+            10.347207128416223,
+            84.33941392331289
+          ],
+          [
+            -15.66242779487333,
+            17.458542554198775,
+            82.22558685642585
+          ],
+          [
+            -16.880212537124898,
+            10.347207128416223,
+            83.96314938985147
+          ]
+        ]
+      }
+    ],
+    "witnessCap": 40
+  },
+  "exactRestoredBuffers": {
+    "spruce-3-0-2": [
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce shaded boughs",
+        "assembly": "spruce-3-0-2",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "83f377398030b36b6871d9cf287345312259984dd4d5fa4f83a385f986df7c41",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "c66b8735568af09baafa20000c33ec1442adfb3af20b9a872a26633957ffa26b"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce fresh alpine tips",
+        "assembly": "spruce-3-0-2",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "2f5796e33d5e8aba57a86946c7dd246e44d2aa80cff7b2f5d1845b70751ef78f",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "9bae87a5fe47e03e017b5d94833ef94dc3137e3193f6d73e874e5316fd03c403"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce shaded boughs",
+        "assembly": "spruce-3-0-2",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "1e6e01d13edd8838828b341adfb8762baa5b80c1692bd8193a075ab848d79471",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "4cce0513c857357c43431715e674111e5b3644a709467f8e6a3413e32afdf312"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce fresh alpine tips",
+        "assembly": "spruce-3-0-2",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "5c7b529104870d05e636691b053f5967ac44732ac54a142d934285b0fae82818",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "1a7dbca5432cbe557086b7b0e5f789aef86a2673c6ebae43e03a571953f7d9b3"
+      }
+    ],
+    "spruce-3-1-1": [
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce shaded boughs",
+        "assembly": "spruce-3-1-1",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "7ea4458594f43f2ce12a8b5b699f9f336d1a087f597d45281221831bb24cdb80",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "ed8290e9b95af8aed2fb2d7ebfbc63f519ca34135fcdefcc06d10e2301c38be1"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce fresh alpine tips",
+        "assembly": "spruce-3-1-1",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "25b07e2ff14819d41d70a9c2fa8c5dc6635d8b930a7a5aada466f90dc370fb53",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "074064bad8318612fc4f472e8e016542bf429e37928ed0c4722b9f6f0201612f"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce shaded boughs",
+        "assembly": "spruce-3-1-1",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "a803c965089b3c414cd5a05793458320493519c2ef528782bb2a36b2dc2a0934",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "6313b4f33fa1a1461cffb8c34e2f6d8a434c9f4546e42fa81dd3cd6ee6422ee6"
+      },
+      {
+        "kind": "spruce-attached-bough-tier",
+        "batch": "Spruce fresh alpine tips",
+        "assembly": "spruce-3-1-1",
+        "role": "vegetation",
+        "solid": true,
+        "vertices": 48,
+        "triangles": 16,
+        "positions": "25ae4a35f74cd28bd6b084b79ad145487324ccbf61bf756c8d300fc9363b1650",
+        "indices": "80fc1615f9fb52112da4a5b41f0221f733d159c4a413f5f31a6d87f9d2f62d56",
+        "uvs": "5814b1adee322bd60e36c6991caa48dd8f7b5bf61acafd9b181fd129e798c17c"
+      }
+    ],
+    "rooted-low-layered-talus#66": [
+      {
+        "kind": "rooted-low-layered-talus",
+        "batch": "Connected muted granite slopes",
+        "assembly": null,
+        "role": "terrain",
+        "solid": true,
+        "vertices": 208,
+        "triangles": 96,
+        "positions": "aba5ea7961da7394812155abc212114caaed206de9be40b806cbe768ff063220",
+        "indices": "30f49bd1db05de3d2535a8829530159316fee0d9ef496d2f1a5999258227def5",
+        "uvs": "1a55cac21467260c9640b458cf8268ca1f67a0acca1ab9b1b2f4aa8db53aff9a"
+      }
+    ]
+  }
+}

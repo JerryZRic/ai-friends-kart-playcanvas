@@ -18,7 +18,7 @@ A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and 
 
 ## New original land course (dev)
 
-**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [dev map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). This web preview is separate from Windows packaging.
+**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [dev map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). [Current roadside art pass](docs/mountain-roadside-art-pass.md). This web preview is separate from Windows packaging.
 
 **Lantern Terrace Rally / 灯阶旧城环线** adds a hillside market-town circuit with a real steering-selected alley/boulevard fork, grade-separated streets and original architecture. Both player and NPC routes share the existing kart runtime. [Open the dev town catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town).
 

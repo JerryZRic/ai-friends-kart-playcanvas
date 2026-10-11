@@ -1,0 +1,19 @@
+{
+  "baselineCommit": "f42be1c415143089bbc0b6d8b6215e404d9ddf24",
+  "baselineBuilderSHA256": "847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009",
+  "sourceProof": "Generated solely from the sealed first-pass checkout, with all src files verified equal to the explicit commit before execution. Never regenerated from the second-pass candidate.",
+  "selectedFamilies": [
+    "spruce-",
+    "rooted-low-layered-talus",
+    "rowan-",
+    "planting-island-grounded-granite",
+    "autumn-copper-rooted-shrub",
+    "watch-platform-"
+  ],
+  "unchanged": {
+    "components": 405,
+    "vertices": 109865,
+    "triangles": 83464,
+    "componentBufferSHA256": "9e7b207f3403a42a6ef0b651cfc8bec84a32ed937de2bf981d08496364074338"
+  }
+}

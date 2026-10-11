@@ -1,4 +1,6 @@
-# Cloudridge Pass: existing-scene enrichment
+# Cloudridge Pass: first structural scene-enrichment pass
+
+This page preserves the first-pass design and measurements at builder SHA `847253b5…`. See [the subsequent roadside art pass](mountain-roadside-art-pass.md) for current geometry counts, its fixed-camera comparison and additional finite checks. The CPU benchmark below is historical, not a measurement of the subsequent scene.
 
 This is an initial structural/readability pass. Some driver-height views still look sparse and muted; stronger visible planting groups, color accents and landmarks remain the next art-direction target.
 

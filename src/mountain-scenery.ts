@@ -60,8 +60,8 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
   const stone=new MountainBatch('Stratified granite and retaining masonry','#89958f',.98,'stone');
   const lightStone=new MountainBatch('Weathered limestone strata','#bdbaa2',.98,'stone');
   const darkStone=new MountainBatch('Slate ledges and viaduct soffits','#596b72',.98,'stone');
-  const turf=new MountainBatch('Alpine terrace meadow','#78906b',1,'grass');
-  const valley=new MountainBatch('Forest valley floor','#526e55',1,'grass');
+  const turf=new MountainBatch('Alpine terrace meadow','#88a86c',1,'grass');
+  const valley=new MountainBatch('Forest valley floor','#63855c',1,'grass');
   const distant=new MountainBatch('Distant blue mountain ridges','#879ba3',1,'none');
   const cliff=new MountainBatch('Connected muted granite slopes','#7f8f85',1,'none');
   const paleCliff=new MountainBatch('Local pale exposed mineral beds','#a5af99',1,'none');
@@ -75,7 +75,9 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
   const pine=new MountainBatch('Spruce shaded boughs','#2c5249',1);
   const pineTips=new MountainBatch('Spruce fresh alpine tips','#50755a',1);
   const glass=new MountainBatch('Chalet amber windows','#d2b87b',.38,'none',.1);
-  const batches:LandMeshBatch[]=[asphalt,roughAsphalt,underpassStone,shoulder,stone,lightStone,darkStone,turf,valley,distant,snow,rail,white,yellow,red,wood,bark,pine,pineTips,glass,cliff,paleCliff];
+  const gold=new MountainBatch('Golden rowan crown accents','#edbd48',1);
+  const coral=new MountainBatch('Autumn copper shrub and landmark accents','#c87c46',1);
+  const batches:LandMeshBatch[]=[asphalt,roughAsphalt,underpassStone,shoulder,stone,lightStone,darkStone,turf,valley,distant,snow,rail,white,yellow,red,wood,bark,pine,pineTips,glass,cliff,paleCliff,gold,coral];
   const props:LandPropPlacement[]=[],structures:LandSceneGeometry['structures']=[],roadSamples:LandSceneGeometry['roadSamples']=[];
   const components:MountainComponent[]=[],cameraObstacles:MountainSceneGeometry['cameraObstacles']=[],foundations:MountainSceneGeometry['foundations']=[],contacts:MountainSceneGeometry['contacts']=[],groundedDetails:MountainSceneGeometry['groundedDetails']=[],assemblies:MountainSceneGeometry['assemblies']=[];
   let assembly:string|undefined;
@@ -326,8 +328,8 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
     {clusters:9,rocks:6,offset:19,height:14,intent:'Sheltered lower return, dressed bridge supports and a bright exit'},
   ];
   const sectionRhythms:MountainSceneGeometry['sectionRhythms']=[];
-  const closedCone=(kind:string,b:LandMeshBatch,p:pc.Vec3,radius:number,height:number,seed:number)=>record(kind,b,()=>{
-    const sides=9,peak=p.clone().add(vec(0,height,0)),rim=Array.from({length:sides},(_,j)=>{const a=j/sides*Math.PI*2+seed;return vec(p.x+Math.cos(a)*radius,p.y,p.z+Math.sin(a)*radius);});for(let j=0;j<sides;j++)b.tri(rim[j],peak,rim[(j+1)%sides]);for(let j=1;j<sides-1;j++)b.tri(rim[0],rim[j],rim[j+1]);
+  const closedCone=(kind:string,b:LandMeshBatch,p:pc.Vec3,radius:number,height:number,seed:number,sides=6)=>record(kind,b,()=>{
+    const peak=p.clone().add(vec(0,height,0)),rim=Array.from({length:sides},(_,j)=>{const a=j/sides*Math.PI*2+seed;return vec(p.x+Math.cos(a)*radius,p.y,p.z+Math.sin(a)*radius);});for(let j=0;j<sides;j++)b.tri(rim[j],peak,rim[(j+1)%sides]);for(let j=1;j<sides-1;j++)b.tri(rim[0],rim[j],rim[j+1]);
   },'vegetation');
   for(const [sectionIndex,section]of spans.entries()){
     const config=configs[sectionIndex],rhythm={name:section.name,from:section.from,to:section.to,trees:0,rocks:0,intent:config.intent};sectionRhythms.push(rhythm);
@@ -338,10 +340,22 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
         if(!track.clearAt(p.x,p.z,radius+1.3)||Math.hypot(p.x-lookoutSite.x,p.z-lookoutSite.z)<18.5+radius)continue;
         // The arrival's building sightline and the underpass exit remain empty.
         if(sectionIndex===0&&d/track.length>.021&&d/track.length<.074&&side===1)continue;
+        // Redistribute the nine already-budgeted valley spruce into three
+        // overlapping bank groups around the destination. Acceptance is based
+        // on the original candidates above, so this adds no tree count. The
+        // open roadward apron and the lodge's facade sightline remain clear.
+        if(sectionIndex===0){
+          const site=cluster===0?{fraction:.030,offset:35}:cluster===4?{fraction:.038,offset:49}:{fraction:.052,offset:58},near=site.fraction*track.length+(member-1)*5.0,target=point(near,track.halfWidthAt(near)+site.offset+(member===1?3:-2));
+          if(track.clearAt(target.x,target.z,radius*1.45+2)&&Math.hypot(target.x-lookoutSite.x,target.z-lookoutSite.z)>21+radius*1.45)p.copy(target);
+        }
         const footprint=rect(p,.7,.7),ext=terrainExtents(footprint);p.y=ext.low-.35;assembly='spruce-'+sectionIndex+'-'+cluster+'-'+member;const first=components.length;
         const trunk=box('spruce-ground-rooted-trunk',bark,p.clone().add(vec(0,height*.34,0)),vec(.46,height*.68,.46),noise(seed)*Math.PI,'vegetation');
         groundedDetails.push({kind:'spruce-ground-rooted-trunk',component:trunk,footprint:footprint.map(tuple),bottom:p.y,terrainLow:ext.low,terrainHigh:ext.high});
-        for(let j=0;j<4;j++){const base=p.clone().add(vec(0,height*(.17+j*.17),0)),crown=closedCone('spruce-attached-bough-tier',j%2?pineTips:pine,base,radius*(1-j*.21),height*.43,seed*.13);contact('spruce-bough-to-trunk',crown,trunk,base);}
+        // Keep these two inherited viaduct-side crowns exactly at their first-pass
+        // tessellation: simplifying them slightly worsened the conservative raw
+        // orbit envelope, even though actual adjusted camera histories pass.
+        const originalOrbitCrown=sectionIndex===3&&((cluster===0&&member===2)||(cluster===1&&member===1));
+        for(let j=0;j<(originalOrbitCrown?4:3);j++){const base=p.clone().add(vec(0,height*(.17+j*(originalOrbitCrown?.17:.235)),0)),crown=closedCone('spruce-attached-bough-tier',j%2?pineTips:pine,base,radius*(1-j*(originalOrbitCrown?.21:.29))*(sectionIndex===0?1.45:1),height*(originalOrbitCrown?.43:.48),seed*.13,originalOrbitCrown?9:6);contact('spruce-bough-to-trunk',crown,trunk,base);}
         for(let root=0;root<3;root++){
           const angle=root/3*Math.PI*2+seed,tip=vec(p.x+Math.cos(angle)*.78,0,p.z+Math.sin(angle)*.78),left=vec(p.x-Math.sin(angle)*.22,0,p.z+Math.cos(angle)*.22),right=vec(p.x+Math.sin(angle)*.22,0,p.z-Math.cos(angle)*.22),footprint=[tip,left,right],ext=terrainExtents(footprint),bottom=ext.low-.18;
           const v=[...footprint.map(q=>vec(q.x,bottom,q.z)),p.clone().add(vec(0,.85,0))],center=v.reduce((a,b)=>a.add(b),vec(0,0,0)).mulScalar(.25);
@@ -349,20 +363,106 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
           contact('root-flare-to-trunk',flare,trunk,p.clone().add(vec(0,.58,0)));groundedDetails.push({kind:'spruce-ground-root-flare',component:flare,footprint:footprint.map(tuple),bottom,terrainLow:ext.low,terrainHigh:ext.high});
         }
         assemblies.push({id:assembly,components:Array.from({length:components.length-first},(_,i)=>first+i),closed:false});assembly=undefined;
-        props.push({kind:'spruce',x:p.x,y:p.y,z:p.z,radius});rhythm.trees++;
+        props.push({kind:'spruce',x:p.x,y:p.y,z:p.z,radius:radius*(sectionIndex===0?1.45:1)});rhythm.trees++;
       }
     }
     for(let rockIndex=0;rockIndex<config.rocks;rockIndex++){
       const group=Math.floor(rockIndex/3),member=rockIndex%3,seed=sectionIndex*171+rockIndex*13,d=section.from+(section.to-section.from)*(.13+.73*(group+.45)/Math.max(1,Math.ceil(config.rocks/3)))+(member-1)*8,side=(group+sectionIndex)%3===0?-1:1,radius=3.0+noise(seed+33)*4.5,p=point(d,side*(track.halfWidthAt(d)+radius+8+group%2*9+member*3));
       if(!track.clearAt(p.x,p.z,radius+1.0)||Math.hypot(p.x-lookoutSite.x,p.z-lookoutSite.z)<18.5+radius)continue;
-      const footprint=Array.from({length:10},(_,i)=>vec(p.x+Math.cos(i/10*Math.PI*2)*radius,p.y,p.z+Math.sin(i/10*Math.PI*2)*radius)),ext=terrainExtents(footprint),bottom=ext.low-.65,top=ext.high+2.6+noise(seed+9)*4.7;
+      // Preserve the exact old footprint as well as the rings for this one
+      // inherited underpass talus: footprint extrema determine its whole shape.
+      const rockSides=sectionIndex===7&&rockIndex===2?10:8;
+      const footprint=Array.from({length:rockSides},(_,i)=>vec(p.x+Math.cos(i/rockSides*Math.PI*2)*radius,p.y,p.z+Math.sin(i/rockSides*Math.PI*2)*radius)),ext=terrainExtents(footprint),bottom=ext.low-.65,top=ext.high+2.6+noise(seed+9)*4.7;
       const b=sectionIndex===6||rockIndex%4===0?paleCliff:cliff,component=record('rooted-low-layered-talus',b,()=>{
-        const rings=Array.from({length:5},(_,ring)=>Array.from({length:10},(_,j)=>{const angle=j/10*Math.PI*2,rr=radius*[.96,.94,.75,.51,.16][ring]*(.87+.12*noise(seed+j*7)),rise=[0,.20,.50,.78,1][ring];return vec(p.x+Math.cos(angle)*rr,bottom+(top-bottom)*rise,p.z+Math.sin(angle)*rr); }));
-        for(let ring=0;ring<4;ring++)for(let j=0;j<10;j++)b.quad(rings[ring][j],rings[ring][(j+1)%10],rings[ring+1][j],rings[ring+1][(j+1)%10]);
-        for(let j=1;j<9;j++){b.tri(rings[0][0],rings[0][j],rings[0][j+1]);b.tri(rings[4][0],rings[4][j+1],rings[4][j]);}
+        const rings=Array.from({length:5},(_,ring)=>Array.from({length:rockSides},(_,j)=>{const angle=j/rockSides*Math.PI*2,rr=radius*[.96,.94,.75,.51,.16][ring]*(.87+.12*noise(seed+j*7)),rise=[0,.20,.50,.78,1][ring];return vec(p.x+Math.cos(angle)*rr,bottom+(top-bottom)*rise,p.z+Math.sin(angle)*rr); }));
+        for(let ring=0;ring<4;ring++)for(let j=0;j<rockSides;j++)b.quad(rings[ring][j],rings[ring][(j+1)%rockSides],rings[ring+1][j],rings[ring+1][(j+1)%rockSides]);
+        for(let j=1;j<rockSides-1;j++){b.tri(rings[0][0],rings[0][j],rings[0][j+1]);b.tri(rings[4][0],rings[4][j+1],rings[4][j]);}
       },'terrain');
       groundedDetails.push({kind:'rooted-low-layered-talus',component,footprint:footprint.map(tuple),bottom,terrainLow:ext.low,terrainHigh:ext.high});props.push({kind:'roadside-rock',x:p.x,y:bottom,z:p.z,radius});rhythm.rocks++;
     }
+  }
+  // Deliberate roadside planting pockets replace geometry spent on four-tier
+  // nine-sided spruce crowns. The six-sided three-tier silhouettes keep the
+  // original spruce height envelope, with valley groups deliberately reframed, funding large visible color
+  // masses rather than distant micro-detail. No route or camera source changes.
+  const crownSolid=(kind:string,b:LandMeshBatch,p:pc.Vec3,radius:number,height:number,seed:number,sides=8)=>record(kind,b,()=>{
+    const at=(j:number,y:number,r:number)=>{const a=j/sides*Math.PI*2+seed,rr=radius*r*(.86+.14*noise(seed+j*19+y*11));return vec(p.x+Math.cos(a)*rr+Math.sin(seed+y*7)*radius*.09,p.y+y*height,p.z+Math.sin(a)*rr+Math.cos(seed+y*9)*radius*.09);};
+    const rings=[[-.28,.66],[.12,1],[.53,.63]].map(([y,r])=>Array.from({length:sides},(_,j)=>at(j,y,r))),bottom=p.clone().add(vec(0,-.48*height,0)),top=p.clone().add(vec(Math.sin(seed)*radius*.18,.76*height,Math.cos(seed)*radius*.16));
+    const tri=(a:pc.Vec3,c:pc.Vec3,d:pc.Vec3)=>{const normal=new pc.Vec3().cross(c.clone().sub(a),d.clone().sub(a)),out=a.clone().add(c).add(d).mulScalar(1/3).sub(p);if(normal.dot(out)>0)b.tri(a,c,d);else b.tri(a,d,c);};
+    for(let j=0;j<sides;j++){const k=(j+1)%sides;tri(bottom,rings[0][k],rings[0][j]);tri(top,rings[2][j],rings[2][k]);for(let ring=0;ring<2;ring++){tri(rings[ring][j],rings[ring][k],rings[ring+1][j]);tri(rings[ring][k],rings[ring+1][k],rings[ring+1][j]);}}
+  },'vegetation');
+  // Each pocket has a broad back layer and an uneven low roadward edge. Gaps
+  // are authored between pockets; the inside apex and exposed viaduct stay open.
+  const plantingPockets=[
+    {fraction:.040,side:-1,offset:18,count:3,height:16,rose:7},
+    {fraction:.035,side:1,offset:17,count:0,height:0,rose:8},
+    {fraction:.060,side:1,offset:22,count:3,height:18,rose:7},
+    {fraction:.083,side:-1,offset:19,count:3,height:14,rose:5},
+    {fraction:.153,side:1,offset:23,count:3,height:16,rose:5},
+    {fraction:.255,side:-1,offset:27,count:3,height:12,rose:4},
+    {fraction:.545,side:-1,offset:19,count:3,height:20,rose:7},
+    {fraction:.575,side:1,offset:22,count:3,height:18,rose:7},
+    {fraction:.610,side:-1,offset:21,count:3,height:15,rose:4},
+    {fraction:.662,side:1,offset:23,count:3,height:17,rose:4},
+    {fraction:.705,side:-1,offset:21,count:3,height:17,rose:7},
+    {fraction:.737,side:1,offset:23,count:3,height:15,rose:5},
+    {fraction:.805,side:-1,offset:26,count:3,height:13,rose:4},
+  ];
+  for(const [group,pocket]of plantingPockets.entries()){
+    for(let member=0;member<pocket.count;member++){
+      const seed=201+group*71+member*13,d=pocket.fraction*track.length+[-6,1,6][member],radius=4.3+noise(seed)*1.1,p=point(d,pocket.side*(track.halfWidthAt(d)+pocket.offset+[3,0,5][member])),height=pocket.height*[1.04,.71,.90][member]*(.90+noise(seed+1)*.20);
+      if(!track.clearAt(p.x,p.z,radius+2)||Math.hypot(p.x-lookoutSite.x,p.z-lookoutSite.z)<24+radius)continue;
+      const footprint=rect(p,.9,.9),ext=terrainExtents(footprint);p.y=ext.low-.35;assembly='rowan-pocket-'+group+'-'+member;const first=components.length;
+      const trunk=box('rowan-grounded-branching-trunk',bark,p.clone().add(vec(0,height*.31,0)),vec(.68,height*.62,.68),noise(seed)*Math.PI,'vegetation');
+      groundedDetails.push({kind:'rowan-grounded-branching-trunk',component:trunk,footprint:footprint.map(tuple),bottom:p.y,terrainLow:ext.low,terrainHigh:ext.high});
+      const at=local(p,track.sample(d).angle),foliage=member===1?pineTips:gold;
+      const lobes=[{x:0,y:.73,z:0,r:.78,h:.44},{x:-radius*.52,y:.59,z:radius*.14,r:.67,h:.36},{x:radius*.49,y:.57,z:-radius*.12,r:.66,h:.38}];
+      let mainCrown=-1;
+      for(const [lobe,spec]of lobes.entries()){
+        const center=at(spec.x,height*spec.y,spec.z),crown=crownSolid('rowan-overlapping-irregular-crown-lobe',foliage,center,radius*spec.r,height*spec.h,seed+lobe*2.7,6);
+        if(lobe===0){mainCrown=crown;contact('rowan-high-crown-trunk-bearing',crown,trunk,at(0,height*.58,0));}
+        // This eastern-bank outer lobe already has a genuine crown overlap.
+        // Omit its redundant fork: the finite external-face audit found no
+        // visible witness for that extra geometry. Do not exempt the test.
+        else if(group===4&&member===0&&lobe===2)contact('rowan-overlapping-lobe-bearing',crown,mainCrown,center);
+        else{const branch=beam('rowan-visible-fork-branch',bark,at(0,height*.39,0),center,.32,.32,'vegetation');contact('rowan-branch-trunk-joint',branch,trunk,at(0,height*.39,0));contact('rowan-crown-branch-bearing',crown,branch,center);}
+      }
+      assemblies.push({id:assembly,components:Array.from({length:components.length-first},(_,i)=>first+i),closed:false});assembly=undefined;props.push({kind:'golden-rowan',x:p.x,y:p.y,z:p.z,radius});
+    }
+    // One broad exposed stone anchors selected planting islands. These are
+    // meter-scale base masses, using existing granite rather than more colors.
+    if(group<8&&pocket.count>0){
+      const d=pocket.fraction*track.length-2,p=point(d,pocket.side*(track.halfWidthAt(d)+18)),radius=2.8,footprint=Array.from({length:6},(_,i)=>vec(p.x+Math.cos(i/6*Math.PI*2)*radius,p.y,p.z+Math.sin(i/6*Math.PI*2)*radius));
+      if(track.clearAt(p.x,p.z,radius+2)&&Math.hypot(p.x-lookoutSite.x,p.z-lookoutSite.z)>19+radius){
+        const ext=terrainExtents(footprint),bottom=ext.low-.22,component=record('planting-island-grounded-granite',paleCliff,()=>{
+          const rim=footprint.map(p=>vec(p.x,bottom,p.z)),peak=vec(p.x+.35,ext.high+2.2,p.z-.3);for(let i=0;i<6;i++)paleCliff.tri(rim[i],peak,rim[(i+1)%6]);for(let i=1;i<5;i++)paleCliff.tri(rim[0],rim[i],rim[i+1]);
+        },'terrain');groundedDetails.push({kind:'planting-island-grounded-granite',component,footprint:footprint.map(tuple),bottom,terrainLow:ext.low,terrainHigh:ext.high});
+      }
+    }
+    for(let member=0;member<pocket.rose;member++){
+      const seed=507+group*37+member*17,d=pocket.fraction*track.length+[-7,-3,2,6,-4,1,5,9][member],radius=2.8+noise(seed)*1.2,p=point(d,pocket.side*(track.halfWidthAt(d)+(pocket.count===0?12:15)+(pocket.count===0?[0,4,8,5,12,14,17,18]:[0,2,0,3,6,6,7,1])[member])),footprint=Array.from({length:8},(_,j)=>vec(p.x+Math.cos(j/8*Math.PI*2)*radius,p.y,p.z+Math.sin(j/8*Math.PI*2)*radius));
+      if(!track.clearAt(p.x,p.z,radius+2)||Math.hypot(p.x-lookoutSite.x,p.z-lookoutSite.z)<19+radius)continue;
+      const ext=terrainExtents(footprint),bottom=ext.low-.22,top=ext.high+1.8+noise(seed+2)*1.15,center=vec(p.x,bottom+(top-bottom)*.48/1.24,p.z),component=crownSolid('autumn-copper-rooted-shrub',member%5===0?coral:member%5===3?gold:pineTips,center,radius,(top-bottom)/1.24,0,group===0&&member>=4?6:8);
+      groundedDetails.push({kind:'autumn-copper-rooted-shrub',component,footprint:footprint.map(tuple),bottom,terrainLow:ext.low,terrainHigh:ext.high});props.push({kind:'autumn-copper-shrub',x:p.x,y:bottom,z:p.z,radius});
+    }
+  }
+  // A small open timber watch platform belongs to the same trailhead as the
+  // chalet. Its gold hipped roof is a local arrival accent, below the skyline;
+  // a real deck, rails and four founded posts explain the silhouette.
+  {
+    const p=local(lookoutSite,lookoutYaw)(22,0,-8);assembly='cloudridge-watch-platform';const first=components.length;
+    const foot=foundation('watch-platform-whole-footprint-foundation',p,6.2,6.2,lookoutYaw,terrainHeight(p.x,p.z)+.6),at=local(vec(p.x,foot.top,p.z),lookoutYaw);
+    const posts=[];for(const x of [-2,2])for(const z of [-2,2]){const post=box('watch-platform-grounded-cedar-post',wood,at(x,5.2,z),vec(.58,10.4,.58),lookoutYaw);contact('watch-platform-post-plinth-seat',post,foot.component,at(x,0,z));posts.push(post);}
+    const deck=box('watch-platform-open-viewing-deck',wood,at(0,7.15,0),vec(5.4,.4,5.4),lookoutYaw,'support');for(const post of posts)contact('watch-platform-deck-post-seat',deck,post,at(0,7.15,0));
+    for(const x of [-2,2]){const brace=beam('watch-platform-founded-diagonal-brace',bark,at(x,.6,-2),at(-x,6.94,-2+(x>0?.2:-.2)),.26,.26);for(const post of posts.filter((_,i)=>i%2===0))contact('watch-platform-brace-post-joint',brace,post,at(x,.6,-2));}
+    for(const side of [-1,1])for(const y of [8.0,8.65]){
+      const a=box('watch-platform-attached-side-rail',wood,at(side*2,y,0),vec(.2,.2,4.5),lookoutYaw,'rail'),b=box('watch-platform-attached-front-rail',wood,at(0,y,side*2),vec(4.5,.22,.22),lookoutYaw,'rail');for(const [i,post]of posts.entries()){if((i<2?-1:1)===side)contact('watch-platform-side-rail-post-joint',a,post,at(side*2,y,0));if((i%2===0?-1:1)===side)contact('watch-platform-front-rail-post-joint',b,post,at(0,y,side*2));}
+    }
+    const roof=record('watch-platform-golden-hipped-roof',gold,()=>{
+      const bottom=[at(-3.0,10.3,-3.0),at(3.0,10.3,-3.0),at(3.0,10.3,3.0),at(-3.0,10.3,3.0)],top=at(0,13.0,0);for(let i=0;i<4;i++)gold.tri(bottom[i],top,bottom[(i+1)%4]);gold.quad(bottom[3],bottom[2],bottom[0],bottom[1]);
+    });for(const post of posts)contact('watch-platform-roof-post-bearing',roof,post,at(0,10.35,0));
+    const cap=box('watch-platform-copper-roof-finial',coral,at(0,13.1,0),vec(.45,.6,.45),lookoutYaw);contact('watch-platform-finial-roof-bearing',cap,roof,at(0,12.9,0));
+    assemblies.push({id:assembly,components:Array.from({length:components.length-first},(_,i)=>first+i),closed:false});assembly=undefined;props.push({kind:'cloudridge-watch-platform',x:p.x,y:foot.top,z:p.z,radius:4.4});
   }
   // The original valley destination becomes one asymmetric, legible building,
   // rather than repeating chalet props around the loop. Its full stone apron
