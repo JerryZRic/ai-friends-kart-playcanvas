@@ -16,7 +16,7 @@ export interface TownSceneryCourse {
   readonly alternates: Readonly<{alley: TownSceneryEdge; boulevard: TownSceneryEdge}>;
   readonly commonFinish: TownSceneryEdge;
 }
-export interface TownCameraObstacle {kind: string; min: number[]; max: number[]}
+export interface TownCameraObstacle {kind: string; min: number[]; max: number[]; triangles?:readonly (readonly (readonly number[])[])[]}
 export interface TownSceneGeometry extends LandSceneGeometry {
   routeRoadSamples: {edgeId: string; distance: number; left: number[]; right: number[]; rendered: boolean}[];
   roadFaces: {edgeId:string; distance:number; points:number[][]}[];
@@ -136,6 +136,16 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     const p=point(owner,a,-owner.halfWidthAt(a)),q=point(owner,a,owner.halfWidthAt(a)),r=point(owner,b,-owner.halfWidthAt(b)),t=point(owner,b,owner.halfWidthAt(b));
     return [[p,r,q],[q,r,t]];
   }).flat().map(points=>({points,minX:Math.min(...points.map(p=>p.x)),maxX:Math.max(...points.map(p=>p.x)),minZ:Math.min(...points.map(p=>p.z)),maxZ:Math.max(...points.map(p=>p.z)),y:points.reduce((n,p)=>n+p.y,0)/3}));
+  // Camera contact uses complete emitted structural faces, never a solid box
+  // across the town or its open underpass. Capture ranges at emission boundaries.
+  const structuralTriangles:number[][][]=[],structuralBatches=[paving,masonry];
+  const captureStructural=(starts:number[])=>{
+    for(let b=0;b<structuralBatches.length;b++){
+      const batch=structuralBatches[b];
+      for(let i=starts[b];i<batch.indices.length;i+=3)structuralTriangles.push(batch.indices.slice(i,i+3).map(index=>batch.positions.slice(index*3,index*3+3)));
+    }
+  };
+  const roadStructureStarts=structuralBatches.map(batch=>batch.indices.length);
   for(const edge of edges){
     const count=Math.ceil(edge.length/1.65),road=edge===course.alternates.alley?cobble:edge===course.alternates.boulevard?boulevard:common;
     for(let i=0;i<count;i++){
@@ -176,6 +186,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       if(edge!==course.alternates.alley&&!junction(edge,s)&&i%11<5)linen.quad(point(edge,s,-.07,.025),point(edge,s,.07,.025),point(edge,t,-.07,.025),point(edge,t,.07,.025));
     }
   }
+  captureStructural(roadStructureStarts);
   // Start stripe is only on the common edge and uses exact road banking.
   for(let row=0;row<2;row++)for(let col=0;col<16;col++)if((row+col)%2===0){
     const edge=course.commonStart,s=row*.75,t=(row+1)*.75,w=edge.halfWidthAt(s);
@@ -379,6 +390,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     }
     record('fork-wayfinding-board',p,3,5.1);landmarks.push({kind:side>0?'alley-sign':'boulevard-sign',label:side>0?'Lantern Alley: short narrow technical street':'Tram Boulevard: broad longer street',position:tuple(p)});
   }
+  const bridgeStructureStarts=structuralBatches.map(batch=>batch.indices.length);
   // Bridge spans are discovered from actual separated road ribbons, never an
   // invented flat top. All authored structural undersides use <=2.2m depth.
   for(const edge of edges){
@@ -407,6 +419,12 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       masonry.box(arm,vec(9.4,.6,2.2),edge.sample(s).angle);
     }
     landmarks.push({kind:'street-bridge',label:'High masonry street bridge with open lower street',position:tuple(edge.sample((from+to)/2).p)});
+  }
+  captureStructural(bridgeStructureStarts);
+  if(structuralTriangles.length){
+    const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+    for(const triangle of structuralTriangles)for(const p of triangle)for(let k=0;k<3;k++){min[k]=Math.min(min[k],p[k]);max[k]=Math.max(max[k],p[k]);}
+    cameraObstacles.push({kind:'town-exact-roadside-and-bridge-structure',min,max,triangles:structuralTriangles});
   }
   // Signs, tower, tram, trees, lanterns and structural supports above retain
   // their original anchors. Recompose houses, arcades and loose market stalls.
