@@ -4,9 +4,19 @@ import {QUARRY_COURSE} from '../src/maps/quarry';
 import {buildQuarrySceneGeometry} from '../src/quarry-scenery';
 import {chaseCamera} from '../src/race-camera';
 import {safeLandCamera,cameraTerrainHeight} from '../src/land-camera';
+import {MeshOracle,tuple} from './helpers/emitted-scene-oracle';
+import {inspectQuarryBoom,quarryFaceKey,quarryCameraOracleSentinels} from './helpers/quarry-enrichment-camera-oracle';
 
 test('both quarry dry-cut decks and branch roads retain finite unobstructed cameras in every orbit/rear/height mode',t=>{
- const geometry=buildQuarrySceneGeometry(QUARRY_COURSE),boxes=geometry.cameraObstacles;
+ quarryCameraOracleSentinels();
+ const geometry=buildQuarrySceneGeometry(QUARRY_COURSE),boxes=geometry.cameraObstacles,mesh=new MeshOracle(geometry.batches);
+ const emitted=new Map<string,number[]>();
+ for(const q of mesh.triangles){const key=quarryFaceKey(q),ids=emitted.get(key)??[];ids.push(q.id);emitted.set(key,ids);}
+ const payloadFaces=new Set<number>();let payloads=0;
+ for(const box of boxes)if(box.triangles){payloads++;assert.ok(box.triangles.length>0);
+  for(const [a,b,c]of box.triangles){const ids=emitted.get(quarryFaceKey({a,b,c}));assert.ok(ids?.length,'Every mesh blocker is an actual indexed source face');for(const id of ids)payloadFaces.add(id);}
+ }
+ assert.ok(payloads>0&&payloadFaces.size>0,'Geological mesh payloads are exercised, never exempted');
  let clipped=0,poses=0;
  for(const edge of Object.values(QUARRY_COURSE.edges))for(let s=0;s<edge.length;s+=35)for(const lane of [-edge.laneLimitAt(s),0,edge.laneLimitAt(s)])for(const view of [0,1])for(const rearView of [false,true])for(const yaw of [-Math.PI,-Math.PI/2,0,Math.PI/2])for(const pitch of [-.28,0,.78]){
   const frame=edge.sample(s,lane),anchor={x:frame.p.x,y:frame.p.y+1.35,z:frame.p.z};
@@ -14,7 +24,11 @@ test('both quarry dry-cut decks and branch roads retain finite unobstructed came
   const safe=safeLandCamera(anchor,desired,boxes);assert.ok(Object.values(safe).every(Number.isFinite));
   if(Math.hypot(safe.x-desired.x,safe.y-desired.y,safe.z-desired.z)>.01)clipped++;
   const checked=safeLandCamera(anchor,safe,boxes);assert.ok(Math.hypot(safe.x-checked.x,safe.y-checked.y,safe.z-checked.z)<1e-6,'post-smoothing safety pose is unobstructed');
+  // Actual source faces establish clearance. A mesh blocker may have a large
+  // empty region inside its broad bounds; those bounds are never filled boxes.
+  inspectQuarryBoom(mesh,tuple(anchor),tuple(safe),({gap,triangle})=>assert.fail(`${edge.id}:${s}, lane:${lane}, view:${view}, rear:${rearView}, yaw:${yaw}, pitch:${pitch}: source triangle ${triangle.id} in ${triangle.batch} has boom clearance ${gap}`),false,payloadFaces);
   for(const box of boxes){
+   if(box.triangles)continue; // All payload source faces were checked above, including the anchor.
    if(box.heightfield){const ground=cameraTerrainHeight(box.heightfield,safe.x,safe.z);assert.ok(ground===null||safe.y>=ground+.45-1e-8,`lane ${lane} ${edge.id}:${s} camera below source terrain`);continue;}
    const insideAnchor=[anchor.x,anchor.y,anchor.z].every((v,i)=>v>=box.min[i]-.45&&v<=box.max[i]+.45);
    // A rotated thin rail AABB may contain the supported anchor without its
@@ -24,5 +38,5 @@ test('both quarry dry-cut decks and branch roads retain finite unobstructed came
   poses++;
  }
  assert.ok(poses>10000);assert.ok(clipped>0,'test exercises actual structure or soffit obstructions');
- t.diagnostic(`${poses} poses at center and both lane limits; ${clipped} booms retracted; desired and smoothed paths remain source-terrain clear`);
+ t.diagnostic(`${poses} poses at center and both lane limits; ${clipped} booms retracted; ${payloadFaces.size} actual payload source faces checked; finite/idempotent safety and terrain retained`);
 });

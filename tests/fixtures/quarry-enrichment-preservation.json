@@ -1,0 +1,47 @@
+{
+  "schema": "quarry-enrichment-preservation-v1",
+  "baselineSourceCommit": "3a0e97db08bc2c6036d6a8e7000e1c9437551337",
+  "baselineSourceTree": "53751230de3c89645c15bd2c7ff358b4f39623da",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/quarry-scenery.ts": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1"
+  },
+  "scope": "Exact physical roads, terrain, source textures, unique machinery positions, trestle geometry and camera support; local quarry scenic geometry/material data only.",
+  "geometryHashes": {
+    "roadSamples": "df7cf524c587c6df0f0ec8e8db87996ebc141b2056de9a24ee15c70a31de2a8c",
+    "routeRoadSamples": "df7cf524c587c6df0f0ec8e8db87996ebc141b2056de9a24ee15c70a31de2a8c",
+    "roadFaces": "a8318df8af414d445ebb1d585080e2539abf31109b08546c818b5042832b89bf",
+    "roadUndersideFaces": "730c656a20acfa852a3cb815891f10c52e6118f01b46fee1fd7d5edbabfc11f4",
+    "trestleMembers": "adec869590ba56586bd6c45305723e4e9059942efc985b3eceb85b62dd2bafdd",
+    "structures": "4d275f08da9399acc9b0a7d5df3f960eb72839b3d56b368300984d03dd76a8a1",
+    "terrainGrid": "ed45c57a82acd1433fa2a64b2b1d70ecd5e51897408b09ba7be5252e321cc40d"
+  },
+  "batchGeometryHashes": {
+    "Quarry compacted haul road": "40d5679783f4c8c116a578ee30eb0cd36683458fa37a9d8acc752dc87a838777",
+    "Quarry sawn pale shelf road": "c13c8f60339be33d9484d6b13eb2867378d3711918cc53aa63348bf82a9a27fd",
+    "Quarry deck underside and shadow cut": "605ecb97552d0c8d514a693d5adbbe1696fae37b7464a3d422cb6088b0a4c45d",
+    "Quarry continuous dry working floor": "67c862c21e780b67ddae3542db6810226907c0eb04b76ba2096a1978281096eb"
+  },
+  "texturesSha256": "caae44ea23eb7336eaafd065bd0fec9e8ff676d9f23c8fb714a540447a0b3b17",
+  "terrainBlockerSha256": "f9a0dcb4e62acbf3030e158f7ac669c6ffb2d3600f6fda1e3ee9605cc6de9db1",
+  "trestleBlockersSha256": "6c3d923dd3999c90901c8e249008fee0a210fc53eb0376e17d5205baf360f4fa",
+  "primaryLandmarksSha256": "8be7f3709f18c3b6cb5c65be6ae9a7cf9a9eeab0bb81f4fae583d7718ac74590",
+  "preservationSourceHashes": {
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816"
+  }
+}

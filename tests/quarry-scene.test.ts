@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
+import {footprintAxes} from './helpers/quarry-enrichment-geometry';
 import {buildQuarrySceneGeometry,QUARRY_SCENE_THEME} from '../src/quarry-scenery';
 import {QUARRY_COURSE,QUARRY_ROAD_EDGES,QUARRY_TRACK,QUARRY_LANDMARKS} from '../src/maps/quarry';
 import {footprintArea,intersectRoadFootprint,RoadFootprintIndex,roadFootprint,sampleRoadFootprints} from '../src/land-road-mesh';
@@ -142,5 +143,9 @@ test('two outer extraction walls have distinct elongated silhouettes and unequal
   assert.equal(cuts.length,5);assert.equal(cuts.filter(p=>/three-break|four-break/.test(p.label)).length,2);
   const bounds=geometry.cameraObstacles.filter(p=>p.kind==='extraction-bench-cut-face');
   assert.equal(bounds.length,22); // 5 + 3 + 5 + 4 + 5
-  assert.ok(bounds.filter(p=>(p.max[0]-p.min[0])/(p.max[2]-p.min[2])>2.7).length>=7);
+  // Rotation-invariant footprint axes preserve the long-wall intent. The
+  // companion indexed audit proves every payload equals its emitted faces.
+  const axes=bounds.map(p=>footprintAxes(p.triangles!.flat()));
+  assert.ok(axes.filter(p=>p.ratio>2.7).length>=7);
+  assert.ok(axes.some(p=>p.long>400),'connected outer extraction wall');
 });

@@ -33,10 +33,16 @@ after(()=>{report.sourceHashAfter=sha(readFileSync(new URL('../../src/town-scene
 
 audit('Town exact original source route road bridge terrain texture protection and fixed budget',()=>{
  assert.equal(sha(baselineSource),contract.originalScenerySha256);
+ const revisionPath='tests/fixtures/reviewed-scene-revisions.json',reviewed=JSON.parse(readFileSync(new URL(revisionPath,root),'utf8'));
+ assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/quarry-scenery.ts','src/town-scenery.ts']);
+ for(const [path,revision]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){
+  assert.equal(revision.previousSHA256,contract.sourceInventory[path],path+' original source golden remains exact');
+  assert.equal(sha(readFileSync(new URL(path,root))),revision.currentSHA256,path+' separately reviewed scene revision changed');
+ }
  const changedInventory=Object.entries(contract.sourceInventory).filter(([path,hash])=>sha(readFileSync(new URL(path,root)))!==hash).map(([path])=>path);
- assert.deepEqual(changedInventory.sort(),['src/town-scenery.ts',...Object.keys(contract.reviewedTestContractChanges)].sort());
+ assert.deepEqual(changedInventory.sort(),[...Object.keys(reviewed.revisions),...Object.keys(contract.reviewedTestContractChanges)].sort());
  for(const [path,hash] of Object.entries(contract.reviewedTestContractChanges))assert.equal(sha(readFileSync(new URL(path,root))),hash,path+' reviewed test contract changed');
- const revisionPath='tests/fixtures/reviewed-scene-revisions.json',reviewed=JSON.parse(readFileSync(new URL(revisionPath,root),'utf8'));assert.deepEqual(Object.keys(reviewed.revisions),['src/town-scenery.ts']);assert.equal(reviewed.revisions['src/town-scenery.ts'].previousSHA256,contract.originalScenerySha256);assert.equal(reviewed.revisions['src/town-scenery.ts'].currentSHA256,sourceHash);
+ assert.equal(reviewed.revisions['src/town-scenery.ts'].previousSHA256,contract.originalScenerySha256);assert.equal(reviewed.revisions['src/town-scenery.ts'].currentSHA256,sourceHash);
  report.metrics.reviewedAuditChanges={...contract.reviewedTestContractChanges,[revisionPath]:sha(readFileSync(new URL(revisionPath,root)))};
  // Derived deliverables are not production-source exceptions. Both are
  // outside the original424-file inventory and may be pinned only together

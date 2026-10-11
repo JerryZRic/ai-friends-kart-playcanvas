@@ -1,0 +1,374 @@
+{
+  "schema": "quarry-enrichment-camera-plan-v1",
+  "baselineSourceCommit": "3a0e97db08bc2c6036d6a8e7000e1c9437551337",
+  "baselineSourceSha256": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+  "planningCandidateSha256": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+  "dependencies": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97"
+  },
+  "static": {
+    "stepMetres": 35,
+    "endpointOffsetsMetres": [
+      0,
+      3,
+      -3
+    ],
+    "laneFractions": [
+      -1,
+      0,
+      1
+    ],
+    "views": [
+      0,
+      1
+    ],
+    "rearViews": [
+      false,
+      true
+    ],
+    "yaws": [
+      -3.141592653589793,
+      -1.5707963267948966,
+      0,
+      1.5707963267948966
+    ],
+    "pitches": [
+      -0.28,
+      0,
+      0.78
+    ],
+    "maximumStations": 190
+  },
+  "targetStations": [
+    {
+      "edge": "start",
+      "s": 90,
+      "reason": "lower-crossing lane-edge terrain witness"
+    },
+    {
+      "edge": "start",
+      "s": 130.27728635033287,
+      "reason": "exact lower crossing deck"
+    },
+    {
+      "edge": "finish",
+      "s": 550.2825243569553,
+      "reason": "exact upper crossing deck"
+    },
+    {
+      "edge": "boulevard",
+      "s": 210,
+      "reason": "expanded-cut broad bounds false positive"
+    },
+    {
+      "edge": "start",
+      "s": 321.4461564167139,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "start",
+      "s": 355,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "start",
+      "s": 435.2916701476334,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "boulevard",
+      "s": 220.84905826389885,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "boulevard",
+      "s": 260,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "finish",
+      "s": 270.70994259589503,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "finish",
+      "s": 303,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "finish",
+      "s": 868.5277324951633,
+      "reason": "service shelter or primary machinery"
+    },
+    {
+      "edge": "finish",
+      "s": 992.6031228516151,
+      "reason": "service shelter or primary machinery"
+    }
+  ],
+  "loadingPockets": [
+    {
+      "edge": "start",
+      "from": 246,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "start",
+      "from": 373,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "boulevard",
+      "from": 132,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "boulevard",
+      "from": 245,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "finish",
+      "from": 174,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "finish",
+      "from": 786,
+      "count": 4,
+      "spacingMetres": 12
+    },
+    {
+      "edge": "finish",
+      "from": 957,
+      "count": 4,
+      "spacingMetres": 12
+    }
+  ],
+  "motion": {
+    "stepMetres": 40,
+    "windowMetres": 40,
+    "ratesHz": [
+      30,
+      60,
+      144
+    ],
+    "speedMetresPerSecond": 55,
+    "laneFractions": [
+      -1,
+      0,
+      1
+    ],
+    "dampingRate": 8,
+    "maximumWindows": 120
+  },
+  "legacyMismatch": {
+    "edge": "boulevard",
+    "s": 210,
+    "laneFraction": 0,
+    "view": 1,
+    "rearView": false,
+    "yaw": -1.5707963267948966,
+    "pitch": -0.28,
+    "safe": [
+      84.77303395898777,
+      33.65041167039424,
+      282.2829244140254
+    ],
+    "triangleCount": 19,
+    "min": [
+      -196,
+      -4.3,
+      282
+    ],
+    "max": [
+      265,
+      36.723998800981846,
+      357
+    ],
+    "observedSourceSha256": "69e71cb4a66c3485b93fa34fef8cc2e0a831a166d0012c165d8a8c24c5f9e179"
+  },
+  "frozenSourceViews": [
+    {
+      "name": "quarry-forward-lower-crossing",
+      "roadEdge": "start",
+      "roadDistanceMetres": 90,
+      "sourceEye": [
+        -43.20490840988853,
+        8.003324674952783,
+        -170.5858238626269
+      ],
+      "sourceTarget": [
+        -8.512678957974716,
+        7.356697709595614,
+        -166.72431430753176
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        -43.20491027832031,
+        170.58583068847656,
+        8.003324508666992
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    },
+    {
+      "name": "quarry-forward-hopper-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 280,
+      "sourceEye": [
+        134.28797012104306,
+        12.941036373231206,
+        -109.79924086882761
+      ],
+      "sourceTarget": [
+        154.79061512181926,
+        13.487027726329297,
+        -81.73563610275004
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        134.2879638671875,
+        109.79924011230469,
+        12.941036224365234
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    },
+    {
+      "name": "quarry-forward-cut-face-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 395,
+      "sourceEye": [
+        148.80280125219275,
+        18.937960822115812,
+        -6.0229575815905845
+      ],
+      "sourceTarget": [
+        122.82970849966435,
+        20.21893873824777,
+        16.766566289448733
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        148.80279541015625,
+        6.022957801818848,
+        18.93796157836914
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    },
+    {
+      "name": "quarry-forward-fork-approach",
+      "roadEdge": "start",
+      "roadDistanceMetres": 575,
+      "sourceEye": [
+        -14.944216314153913,
+        29.47208478719224,
+        58.019633796625314
+      ],
+      "sourceTarget": [
+        -41.81169480340722,
+        28.255202470035368,
+        80.2135869690076
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        -14.94421672821045,
+        -58.01963424682617,
+        29.472084045410156
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    },
+    {
+      "name": "quarry-forward-derrick-approach",
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 180,
+      "sourceEye": [
+        53.58388246455642,
+        31.280526486311928,
+        264.62426764057784
+      ],
+      "sourceTarget": [
+        88.42656124783258,
+        31.408333602102964,
+        265.50637301817756
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        53.58388137817383,
+        -264.624267578125,
+        31.280527114868164
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    },
+    {
+      "name": "quarry-forward-conveyor-approach",
+      "roadEdge": "finish",
+      "roadDistanceMetres": 225,
+      "sourceEye": [
+        245.83599595864553,
+        33.443516681701794,
+        -117.1761539103326
+      ],
+      "sourceTarget": [
+        230.5558533198403,
+        33.254379612417374,
+        -148.59253485990808
+      ],
+      "resolution": [
+        1440,
+        900
+      ],
+      "cameraPositionBlender": [
+        245.83599853515625,
+        117.17615509033203,
+        33.44351577758789
+      ],
+      "projection": "PERSP",
+      "clipStart": 0.1,
+      "clipEnd": 10000
+    }
+  ],
+  "scope": "Fixed CPU source-indexed-triangle booms, terrain intervals and actual previous post-safety moving cameras; finite coverage, not continuous-angle, pixels, GPU or FPS proof.",
+  "baselineSourceTree": "53751230de3c89645c15bd2c7ff358b4f39623da"
+}

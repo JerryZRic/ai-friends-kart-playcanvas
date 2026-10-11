@@ -1,0 +1,119 @@
+{
+  "schema": "quarry-enrichment-final-camera-summary-v1",
+  "sourceSHA256": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+  "baseline": {
+    "publishedDevCommit": "3a0e97db08bc2c6036d6a8e7000e1c9437551337",
+    "sourceTree": "53751230de3c89645c15bd2c7ff358b4f39623da",
+    "scenerySnapshot": "docs/scene-baselines/quarry-scenery.ts.txt",
+    "scenerySHA256": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c"
+  },
+  "status": "No new camera regressions; original nonintersecting sub-margin witnesses remain",
+  "strictIndependentMarginMetres": 0.3,
+  "runtimeAndFixedReviewGate": {
+    "newRegressions": 0,
+    "actualTriangleIntersections": 0,
+    "belowTerrainCases": 0,
+    "allMarginsAtLeast030Metres": false,
+    "inheritedSubmarginWitnesses": 750,
+    "exactPathFaceMatches": 742,
+    "provedAnchoredCollinearShortenings": 8,
+    "worstRetainedMarginMetres": 0.14460875047832816,
+    "staticRailWitnesses": 746,
+    "movementPostWitnesses": 4,
+    "countingUnit": "indexed-triangle/path witness, not unique camera pose"
+  },
+  "shorteningProof": {
+    "unchangedIndexedFaceAndMultiplicity": true,
+    "sameLabelAndKind": true,
+    "startAndCollinearityToleranceMetres": 1e-09,
+    "fractionTolerance": 1e-12,
+    "maximumObservedEndpointResidualMetres": 0,
+    "observedEndpointFractionRange": [
+      0.8375335426016498,
+      0.8619865875865933
+    ],
+    "noWorseClearanceToleranceMetres": 1e-09,
+    "newIntersectionsCannotInherit": true
+  },
+  "coverage": {
+    "stations": 126,
+    "staticPoses": 18144,
+    "staticBooms": 36288,
+    "movingRuns": 792,
+    "movingFrames": 45936,
+    "ratesHz": [
+      30,
+      60,
+      144
+    ],
+    "actualPreviousPostSafetyCameraRetained": true,
+    "indexedSceneTriangles": 103842,
+    "archivedRuntimeBooms": 128161,
+    "fixedReviewPoses": 6,
+    "accountedOriginalPaths": 128167
+  },
+  "archivedRuntimeReplay": {
+    "gating": false,
+    "purpose": "Diagnostic replay of historical orbit endpoints; ordinary safe runtime retraction is allowed",
+    "booms": 128161,
+    "newRegressions": 0,
+    "changedFaceIntrusions": 0,
+    "inheritedSubmarginWitnesses": 750
+  },
+  "legacyRegression": {
+    "poses": 11088,
+    "exactGeologicalPayloadFaces": 830,
+    "passed": true
+  },
+  "publicTests": {
+    "harness": "tests/quarry-enrichment-camera.test.ts",
+    "legacy": "tests/quarry-gameplay-camera.test.ts",
+    "negativeSentinels": [
+      "interior face hit despite clear endpoints",
+      "thin terrain ridge",
+      "mesh bounds with empty space",
+      "off-axis shortened path",
+      "shifted segment start",
+      "extended path",
+      "worse clearance",
+      "new intersection",
+      "changed face or extra face multiplicity",
+      "different pose label"
+    ]
+  },
+  "inputs": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/quarry-scenery.ts": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+    "docs/scene-baselines/quarry-scenery.ts.txt": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "tests/quarry-gameplay-camera.test.ts": "ca11ca65299c52c3788b198e4c35b6a7152e7c54b1ccac9da919b9b8a9c6ecf5",
+    "tests/quarry-enrichment-camera.test.ts": "50210518d79c1de1ffe803950eb2899381603eca4ed5cd27f61814bcc866f60f",
+    "tests/helpers/quarry-enrichment-camera-frozen.json": "1071a19f60974b5d9f265203d96a0e8d088e2df96e68b73c6c2abfd877263ee8",
+    "tests/helpers/quarry-enrichment-camera-worker.ts": "e50d04d0d75e61a76a62064c499faf6c986464aa743dc1a2af54d0fb5ad4f5d0",
+    "tests/helpers/quarry-enrichment-camera-scene.ts": "e2caf52bfe6be3a0e2ac1c17c35172fb21643db010f25c62bd365448be0fdda6",
+    "tests/helpers/quarry-enrichment-camera-oracle.ts": "931009c0cf4531c27423f40a70788aaccbc98464ef8c32f7e999d767fd09446c",
+    "tests/helpers/emitted-scene-oracle.ts": "925749e015a87cca08f6f1b2facbd8d70ed6313ce054ed53f86264ec6b3f3af9",
+    "tests/helpers/instrumented-source-files.ts": "d7cf9b9497405293ab07c0af98a4da8dcc45e2c98a33ed14e9f098acc6b547e1",
+    "tests/helpers/bounded-test-process.ts": "91dbd8876d5e73f8d43c1065433681ca20bc52e1f811a512fff6dbcc50fb5bd7"
+  },
+  "fullReportSHA256": {
+    "baseline": "1b8323e67b804830b91a5068498a1de7c7e9145cd99d3f20162f853f66514ccb",
+    "candidate": "92a476f2d18f2ce6cb8e093126bb154744889201782f5973fb29db5a89b13c7f"
+  },
+  "verificationLimits": [
+    "Finite CPU indexed-geometry audit; not a proof for every possible angle or trajectory",
+    "No runtime gameplay pixel capture, browser/GPU validation or FPS claim",
+    "Existing rail/post gaps below 0.30 m are explicitly retained and reported; this is not an all-margins-clear certification"
+  ]
+}

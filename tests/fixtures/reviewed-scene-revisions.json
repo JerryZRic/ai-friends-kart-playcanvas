@@ -6,6 +6,11 @@
       "previousSHA256": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
       "currentSHA256": "bbf08dadb171bd3c2d807204931a36b7f57e70a55317abe385d9cbe72b2e376b",
       "scope": "Town architectural grouping, local materials and grounded distant roof silhouettes"
+    },
+    "src/quarry-scenery.ts": {
+      "previousSHA256": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+      "currentSHA256": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+      "scope": "Quarry connected extraction cuts, local materials, grounded open loading sheds and regrouped supported worksets; physical roads, terrain, fixed machinery, trestle and gameplay unchanged"
     }
   }
 }
