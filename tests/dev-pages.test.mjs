@@ -45,6 +45,19 @@ test('stable manifest pins every published path and rejects traversal, collision
   const missing = clone(); missing.files = missing.files.filter(file => file.path !== 'source.zip'); assert.throws(() => validateManifest(missing));
 });
 
+test('thirteen-course stable inventory retains strict aggregate and per-file size bounds', () => {
+  const value = clone();
+  for (const file of value.files) file.bytes = 0;
+  for (let i = 0; i < 3; i++) value.files[i].bytes = 100 * 1024 * 1024;
+  value.files[3].bytes = 50 * 1024 * 1024;
+  assert.equal(validateManifest(value), value, '350 MiB exact aggregate boundary');
+  value.files[3].bytes++;
+  assert.throws(() => validateManifest(value), undefined, 'One byte above aggregate limit');
+  value.files[3].bytes = 0;
+  value.files[0].bytes++;
+  assert.throws(() => validateManifest(value), undefined, '100 MiB per-file limit remains');
+});
+
 test('composition preserves all stable bytes and copies dev only under its own subdirectory', async () => {
   const context = await fixture();
   try {

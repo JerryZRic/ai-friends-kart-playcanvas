@@ -6,16 +6,45 @@
 [![対応環境: Web / Windows](https://img.shields.io/badge/platforms-Web%20%2F%20Windows-blue)](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)
 [![コード: AGPL-3.0-only](https://img.shields.io/badge/code-AGPL--3.0--only-blue)](LICENSE)
 
-**PlayCanvas Engine、TypeScript、Vite** で制作した、夕暮れの海岸を走るアーケードカートレースです。リグ付きキャラクター6人からドライバーを選び、残りの5人と対戦。ドリフトブースト、アイテム、自由に回り込める追従カメラでレースを楽しめます。
+**PlayCanvas Engine、TypeScript、Vite** で制作した、陸上12コースと水上1コースを楽しめるアーケードカートレースです。リグ付きキャラクター6人からドライバーを選び、残りの5人と対戦。ドリフトブースト、アイテム、自由に回り込める追従カメラに対応します。
 
-**[ブラウザーでプレイ](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Windows プレイテスト版をダウンロード](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**
+**[ブラウザー安定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev プレビュー](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows ダウンロード](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > ゲームの UI は簡体字中国語で、ブランド名は英語表記です。上の言語リンクで切り替わるのはドキュメントのみです。コードとオリジナル素材には AGPL-3.0-only が適用され、6体のキャラクターモデルには別途、非商用の制限があります。[ライセンスとモデルの権利](#license-and-model-rights)をご確認ください。
+
+## v0.4.0 統一リリース
+
+この README は **v0.4.0** の共通機能を説明します。13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを収録。追加の陸上11コースには、それぞれのシーン充実化の成果を含みます。ブラウザー安定版と配布パッケージは同じ機能を持ち、`/dev/` は今後の更新用の独立プレビューとして残ります。公開済みファイル、ソースのリビジョン、チェックサム、各版の検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で確認してください。
+
+フリーモードには動く3Dタイトル画面、回転するマッププレビュー、キャラクターの3D表示、車両選択、簡単 / 普通 / 難しいのレース設定と画面設定があります。ストーリーモードは開発中の案内です。[実装ノートと制限](docs/free-mode.md)。
+
+### マップ一覧
+
+陸上コースを **01–12** の順に並べ、水上コース **A01** を最後に表示します。表示番号によって既存のマップ ID、保存した選択、直リンクは変わりません。
+
+- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`
+- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`
+- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`
+- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`
+- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`
+- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`
+- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`
+- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`
+- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`
+- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`
+- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`
+- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`
+- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`
+
+
+## 6スロット食べ物カートガレージ
+
+[安定版ガレージ](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)または [dev ガレージ](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)を開いてください。000 白いご飯を含む **55テーマ / 330パーツ**で、完成車選択、6スロットの自由な組み合わせ、実際の3Dプレビュー、性能比較、構成保存に対応。完成車を見るだけでは変更されず、適用すると6パーツを置き換えます。置き換え前の保存と取り消しも可能です。選んだ構成は陸上12コースで使用し、6人の特性と水上の乗り物は維持します。NPC も同じパーツ計算式の混合構成を使い、同テーマの追加ボーナスはありません。電池消耗、耐久消耗、修理、経済システムは未実装です。[実装と検証の範囲](docs/modular-garage.md)。
 
 ## 特徴
 
 - **選べる6人のドライバー:** WHALE、GEMINI、GPT、CLAUDE、GROK、GLM。リグ付きキャラクターモデルを同梱
-- 夕暮れの海岸サーキットで、5人の AI を相手に走る**3周のレース**。海の景色、衝突、周回数・順位表示、ミニマップに対応
+- 陸上・水上コースで5人の AI と競う**3周レース**。衝突、周回数・順位表示、ミニマップに対応
 - **アーケード操作:** 手動アクセル、ブレーキ、後退、ハンドブレーキドリフト、ドリフトブースト
 - **3種類のアイテム:** ターボブースト、エネルギーシールド、追尾パルス
 - **中身が見えるアイテム箱:** 半透明の箱にオリジナルの 3D アイテムを表示。25% は「？」のランダム箱です。取得すると即座に消え、レース進行時間で8秒後に再出現します。HUD の画像も同じモデルの投影から生成します。[詳細](docs/item-pickups.md)
@@ -28,18 +57,24 @@
 
 **WebGL2** を有効にしたブラウザーで **[GitHub Pages のゲーム](https://jerryzric.github.io/ai-friends-kart-playcanvas/)** を開いてください。キャラクターの読み込みを待ち、ドライバーを選んでレースを開始します。
 
-初回のキャラクターダウンロードは合計で約 **51.6 MB** です。同時にダウンロード・準備するモデルは最大2体です。読み込み画面には実際のバイト単位の進捗、解凍、準備の状況が表示されます。一時的なエラーには上限付きで再試行し、読み込み済みのモデルを保持したまま失敗したファイルだけを再試行できます。モデルがない場合は、代替のオリジナルドライバーを使用していることが明示されます。
+レース用キャラクターの初回ダウンロードは合計約 **51.6 MB** です。選択した立ち姿ポートレートと食べ物カートのパーツは必要に応じて別途取得します。同時にダウンロード・準備するキャラクターモデルは最大2体です。実際のバイト進捗、解凍、準備を表示し、一時エラーには上限付きで再試行します。読み込み済みモデルを保持したまま失敗ファイルだけを再試行できます。欠けたモデルを代替せず、必要な素材がすべて準備できてからレースを始めます。読み込み中はコース上空を巡り、滑らかにスタート地点へ戻ります。
 
 ChatGPT へのログイン、モデルサービスのアカウント、実行時の CDN は不要です。ゲームとキャラクター素材は同じ配布物から提供されます。
 
-## Windows プレイテスト
+## Web / HTML パッケージ
 
-**Windows 10/11 の64ビット版と、WebGL2 対応の GPU が必要です。** 正式版ではなく、プレリリースのプレイテスト版です。
+[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip` を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、ゲームファイルを HTTP(S) で配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースファイルをすべて保持してください。
 
-1. [リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)から [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip) をダウンロードします。
+## Windows パッケージ
+
+**64ビット版 Windows 10/11 と WebGL2 対応 GPU が必要です。** v0.4.0 のパッケージとリリースノートをご利用ください。パッケージ作成や自動チェックの成功は、実機 Windows の GPU、性能、入力デバイス互換性の検証を意味しません。
+
+1. [リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)から `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip` を取得し、付属の SHA-256 チェックサムと照合します。
 2. **ZIP 全体**をフォルダーに展開します。
 3. **AI Friends Kart.exe** を実行します。同じ場所にある DLL、`resources`、`locales` フォルダーはまとめたままにしてください。
 4. **F11** で全画面表示を切り替えます。
+
+メインメニューの **退出（Exit）** は Windows アプリを終了します。レースからメインメニューへ戻る操作では終了しません。ブラウザーの **Exit** は休憩ページを開くため、終了するにはタブを閉じてください。既存のデスクトップ終了処理の修正は維持しますが、新たな Windows 実機 GPU プレイテスト済みとはしていません。
 
 6人のキャラクターをすべて同梱しているため、オフラインでプレイできます。Node.js、インストール、管理者権限は不要です。ゲームを実行するために Windows のセキュリティ保護を無効にしないでください。
 
@@ -92,14 +127,18 @@ npm run preview
 ```sh
 npm ci
 npm run models:fetch
+npm run food:fetch
+npm run food:verify
 npm run build
 ```
+
+ソースアーカイブには別途取得する食べ物カートのデータも含まれません。上記コマンドで復元・検証してください。オリジナルの編集可能な素材ソースとマニフェストは同梱します。
 
 取得スクリプトは独立した `/dev/` プレビューの固定公開パスを使い、[運転モデル](docs/runtime-models.json)と[立ち姿ポートレート](docs/portrait-models.json)の圧縮前後のハッシュを検証します。一致しないローカルファイルは上書きしません。コードのみでもビルドできますが、すべての表示には両方のモデルの復元が必要です。
 
 ### GitHub Pages
 
-[Build and publish PlayCanvas game ワークフロー](.github/workflows/pages.yml)は**手動実行**です。リポジトリの **Settings → Pages** で **GitHub Actions** を選択し、**Publish** にチェックを入れて `main` 上でワークフローを実行してください。選択したコミットをチェック、テスト、ビルドしてから公開します。通常の push ではゲームはデプロイされません。
+[Build and publish PlayCanvas game ワークフロー](.github/workflows/pages.yml)は、公開前に選択したソースをチェック、テスト、ビルドします。安定版はサイトのルート、独立プレビューは `/dev/` です。チェックアウトしたブランチの起動条件と公開オプションに従ってください。dev の公開では安定版ルートを保持し、配布パッケージには対応するリリースタグと同じソースを使用します。
 
 ### プロジェクト構成
 
@@ -112,7 +151,7 @@ npm run build
 
 ## ローカルドライバーの置き換え
 
-ドライバースロットを選んで互換性のある GLB をインポートするか、各ファイル名にスロット名のトークンがちょうど1つ含まれるファイルを複数選択してください。ファイルサイズは**1個あたり32 MiB** が上限で、同時に処理するのは最大2個です。インポートしたデータはページのメモリー内にのみ保持され、アップロードも永続保存もされません。失敗・キャンセル時は前のドライバーを保持します。**Restore default** で同梱キャラクター、または明示された代替ドライバーに戻せます。
+ドライバースロットを選んで互換 GLB を読み込むか、各ファイル名にスロット名が1つ含まれるファイルを複数選択します。上限は**1個32 MiB**、同時処理は最大2個です。内容はページのメモリーにのみ保持し、アップロードも永続保存もしません。失敗・キャンセル時は前のドライバーを保持し、**Restore default** で同梱キャラクターに戻します。簡略化したレース読み込み画面では従来のインポート操作を非表示にし、キャラクター選択はメインメニューで行います。
 
 対応モデルと検証ルールについては、[リグとインポートの仕様](docs/local-import.md)をご確認ください。
 

@@ -6,16 +6,45 @@
 [![平台：Web / Windows](https://img.shields.io/badge/platforms-Web%20%2F%20Windows-blue)](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)
 [![程式碼：AGPL-3.0-only](https://img.shields.io/badge/code-AGPL--3.0--only-blue)](LICENSE)
 
-以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，在夕陽海岸賽道上競速。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具，以及可自由環繞的追蹤鏡頭。
+以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，包含 12 張陸地地圖與 1 張水上地圖。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具與可自由環繞的追蹤鏡頭。
 
-**[在瀏覽器中遊玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [下載 Windows 試玩版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**
+**[瀏覽器穩定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [網頁 / Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > 遊戲介面採簡體中文，品牌名稱使用英文。上方語言連結僅切換說明文件。程式碼與原創資產採 AGPL-3.0-only 授權；六個角色模型另受非商業使用限制。詳見[授權與模型權利](#license-and-model-rights)。
+
+## v0.4.0 統一版本
+
+本文說明 **v0.4.0** 的統一功能：13 張地圖、六名車手，以及包含 55 個主題 / 330 件零件的六槽食物車庫。11 張新增陸地地圖均包含場景豐富化成果。瀏覽器穩定版與下載套件採用相同功能，`/dev/` 保留為後續更新的獨立預覽。已發佈檔案、原始碼提交、校驗值及各版本的實際驗證情況以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。
+
+自由模式包含動態 3D 封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。
+
+### 地圖目錄
+
+陸地賽道依 **01–12** 排列，水上地圖 **A01** 放在最後。顯示編號不改變原有地圖 ID、儲存的選擇或直達連結。
+
+- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`
+- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`
+- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`
+- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`
+- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`
+- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`
+- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`
+- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`
+- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`
+- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`
+- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`
+- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`
+- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`
+
+
+## 六槽食物車庫
+
+開啟[穩定版車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[dev 車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)。**55 個食物主題 / 330 件零件**包含 000 純白飯，支援整車選擇、六槽自由改裝、真實 3D 預覽、參數比較與方案儲存。瀏覽整車只做預覽，套用才替換六件，並支援替換前儲存與復原。所選裝配可用於全部 12 張陸地賽道，六位角色屬性與水上坐騎維持不變。NPC 使用相同零件公式的預設混搭車，沒有同主題加成。電量消耗、耐久損耗、修理及經濟系統尚未啟用。[實作與驗證範圍](docs/modular-garage.md)。
 
 ## 遊戲特色
 
 - **六位可選車手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，隨附已綁定骨架的角色模型
-- 在夕陽海岸賽道上與五位 AI 對手進行**三圈比賽**，包含海景、碰撞、圈數與名次追蹤，以及迷你地圖
+- **三圈比賽：** 在陸地與水上地圖和五位 AI 對手競速，包含碰撞、圈數與名次追蹤，以及迷你地圖
 - **街機風格駕駛：** 手動油門、煞車、倒車、手煞車漂移與漂移加速
 - **三種道具：** 渦輪加速、能量護盾與追蹤脈衝
 - **可視道具箱：** 半透明箱內展示原創 3D 道具，25% 為問號隨機箱；拾取後立即消失，比賽運行八秒後刷新。HUD 顯示由同一模型投影產生的道具圖片。[說明](docs/item-pickups.md)
@@ -28,18 +57,24 @@
 
 以已啟用 **WebGL2** 的瀏覽器開啟 **[GitHub Pages 遊戲](https://jerryzric.github.io/ai-friends-kart-playcanvas/)**。等待角色載入後，選擇車手並開始比賽。
 
-首次下載角色的總容量約為 **51.6 MB**，最多同時下載／準備兩個模型。載入畫面會顯示實際位元組進度、解壓縮與準備狀態；暫時性錯誤會在限定次數內重試，也可重試失敗的檔案，不會失去已載入的模型。缺少模型時，會明確標示改用原創車手作為替代。
+首次比賽角色下載總容量約 **51.6 MB**；選取的站姿肖像和食物車輛零件另依需要下載。最多同時下載／準備兩個角色模型。載入畫面顯示實際位元組進度、解壓縮及準備狀態；暫時性錯誤會有限次重試，也可只重試失敗檔案，保留已載入模型。缺少模型時不使用替身，必要資源全部就緒才開始比賽。比賽載入期間會巡遊賽道上空，再平順返回起點。
 
 不需要登入 ChatGPT、模型服務帳號或執行時 CDN。遊戲與角色資產均由同一套發佈檔案提供。
 
-## Windows 試玩版
+## 網頁 / HTML 下載套件
 
-**需要 64 位元 Windows 10/11，以及支援 WebGL2 的 GPU。** 這是預先發佈的試玩版本，尚非正式版。
+從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。完整解壓縮後，以 HTTP(S) 提供遊戲檔案；不支援以 `file://` 直接開啟 `index.html`。請保留全部資產、授權聲明與對應原始碼檔案。
 
-1. 從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)下載 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)。
+## Windows 下載套件
+
+**需要 64 位元 Windows 10/11，以及支援 WebGL2 的 GPU。** 請使用 v0.4.0 套件並閱讀對應發行說明。封裝成功及自動化檢查不代表已驗證真實 Windows GPU、效能或輸入裝置相容性。
+
+1. 從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下載 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。
 2. 將**整個 ZIP** 解壓縮至一個資料夾。
 3. 執行 **AI Friends Kart.exe**。請保留旁邊的 DLL 檔案及 `resources`、`locales` 資料夾，勿將它們分開。
 4. 按 **F11** 切換全螢幕。
+
+主選單的**退出**按鈕會關閉 Windows 應用程式；從比賽返回主選單仍是遊戲內導覽。瀏覽器中的**退出**會開啟休息頁面，關閉分頁即可離開。保留既有桌面退出修正，不據此宣稱本版本已完成新的原生 Windows GPU 實機試玩。
 
 六個角色均已隨附，可離線遊玩。不需要 Node.js、安裝程序或系統管理員權限。請勿為了執行遊戲而停用 Windows 安全防護。
 
@@ -92,14 +127,18 @@ npm run preview
 ```sh
 npm ci
 npm run models:fetch
+npm run food:fetch
+npm run food:verify
 npm run build
 ```
+
+原始碼套件也不含另行下載的食物車輛資料，請以上述指令還原並驗證。原創可編輯資產原始碼及校驗清單仍包含在套件中。
 
 下載腳本使用獨立 `/dev/` 預覽的固定公開路徑，並驗證[駕駛模型清單](docs/runtime-models.json)及[站姿肖像清單](docs/portrait-models.json)中的壓縮檔與解壓後雜湊值；若本機檔案不符，腳本會拒絕覆寫。程式碼仍可單獨建置；完整畫面需還原兩組模型。
 
 ### GitHub Pages
 
-[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)需要**手動執行**。在儲存庫的 **Settings → Pages** 中選擇 **GitHub Actions**。於 `main` 上執行工作流程，並勾選 **Publish**。工作流程會先檢查、測試及建置所選提交，再進行發佈。一般推送不會部署遊戲。
+[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會在發佈前檢查、測試及建置所選原始碼。穩定版位於網站根目錄，獨立預覽位於 `/dev/`。請依目前分支的工作流程觸發條件與發佈選項操作；dev 部署必須保留穩定版根目錄。發行套件必須使用對應版本標籤的相同原始碼。
 
 ### 專案結構
 
@@ -112,7 +151,7 @@ npm run build
 
 ## 本機車手替換
 
-選擇一個車手欄位並匯入相容的 GLB，也可多選檔案，但每個檔名必須恰好包含一個車手欄位名稱標記。每個檔案上限為 **32 MiB**，最多同時處理兩個。匯入內容僅保留於頁面記憶體中，不會上傳或永久儲存。匯入失敗或取消時會保留原先的車手；**恢復預設**會還原隨附角色或明確標示的替代模型。
+選擇車手欄位並匯入相容 GLB，或多選檔名中各含唯一車手欄位名稱標記的檔案。每個檔案上限 **32 MiB**，最多同時處理兩個。匯入內容僅保留於頁面記憶體，不上傳也不永久儲存。失敗或取消時保留原車手；**恢復預設**會還原隨附角色。簡化後的比賽載入頁隱藏舊匯入控制項，角色選擇在主選單進行。
 
 支援的模型與驗證規則詳見[骨架與匯入規格](docs/local-import.md)。
 

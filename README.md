@@ -6,48 +6,69 @@
 [![Platforms: Web / Windows](https://img.shields.io/badge/platforms-Web%20%2F%20Windows-blue)](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)
 [![Code: AGPL-3.0-only](https://img.shields.io/badge/code-AGPL--3.0--only-blue)](LICENSE)
 
-A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.
+An arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**, with 12 land courses and one water course. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.
 
-**[Play in your browser](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Download the Windows playtest](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**
+**[Play the stable browser version](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Try the dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows downloads](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
-## Dev free-mode playtest
+## v0.4.0 release
 
-[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root retains the earlier free-mode release; new garage and NPC setup changes are isolated to dev. The Windows release is separate.
+This README describes the unified **v0.4.0** release line: 13 maps, six drivers, and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. The stable browser version and downloadable packages share this feature set; `/dev/` remains a separate preview for subsequent updates. See the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) for published assets, source revision, checksums and version-specific verification notes.
 
-## New original land course (dev)
+Free mode includes a cinematic 3D title screen, rotating map previews, selected-character 3D inspection, car selection, easy/normal/hard race setup and settings. Story mode remains a development notice. [Implementation notes and limits](docs/free-mode.md).
 
-**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [dev map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). [Current roadside art pass](docs/mountain-roadside-art-pass.md). This web preview is separate from Windows packaging.
+### Map catalog
 
-**Lantern Terrace Rally / 灯阶旧城环线** adds a hillside market-town circuit with a real steering-selected alley/boulevard fork, grade-separated streets and original architecture. Both player and NPC routes share the existing kart runtime. [Open the dev town catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town).
+The catalog lists land courses **01–12**, followed by water course **A01**. Display numbering does not change saved map IDs or deep links.
 
-**Redstrata Quarry / 赤砾采石环道** adds an original dry industrial canyon with a technical stone shelf, broad haul road and timber trestle. [Open the dev quarry catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry).
+- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`
+- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`
+- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`
+- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`
+- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`
+- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`
+- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`
+- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`
+- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`
+- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`
+- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`
+- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`
+- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`
 
-**CedarLight Observatory / 杉影星台环线** adds connected cedar slopes, a physically banked forest bowl, observatory service/rim choices and a treetop viaduct over the earlier valley. [Open the dev forest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest).
 
-**Clockwind Workshop / 发条工坊回旋道** adds an original oversized clockmaker workshop with a graded three-quarter spiral climb, a genuine elevated crossing and cabinet/workbench route choices. [Open the dev workshop catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop).
+## Original land courses
 
-**Amberwind Harvest / 谷风麦垄回环** connects grain terraces, orchard contours and a windmill ridge, with a real drive-through barnyard choice and a broad field route. [Open the dev harvest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest).
+**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). [Current roadside art pass](docs/mountain-roadside-art-pass.md).
 
-**Sunweave Caravan / 星砂古驿** follows supported dune ridges, a wind-carved sandstone corridor and open caravan courts, with a technical twin-arch route or a broad sailcourt sweep. [Open the dev desert catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert).
+**Lantern Terrace Rally / 灯阶旧城环线** adds a hillside market-town circuit with a real steering-selected alley/boulevard fork, grade-separated streets and original architecture. Both player and NPC routes share the existing kart runtime. [Open the town catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town).
 
-**Frostloop Depot / 霜环雪站** climbs opposing snow bowls and a low saddle before choosing a technical maintenance-yard cut or a broad banked terrace, then returns over stepped stone-supported slopes. [Open the dev snow catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow).
+**Redstrata Quarry / 赤砾采石环道** adds an original dry industrial canyon with a technical stone shelf, broad haul road and timber trestle. [Open the quarry catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry).
 
-**Basalt Crown / 玄岩环冕** climbs an open caldera rim, descends into a hooked stone bowl and offers technical inner and broad outer routes through separate openings beneath a real masonry viaduct. [Open the dev caldera catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera).
+**CedarLight Observatory / 杉影星台环线** adds connected cedar slopes, a physically banked forest bowl, observatory service/rim choices and a treetop viaduct over the earlier valley. [Open the forest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest).
 
-**Verdant Canopy / 蔓穹花园** links planted ascent folds, a petal terrace and a low basin, with a technical path beneath a genuinely open timber arbor or a broader outer garden arc. [Open the dev garden catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden).
+**Clockwind Workshop / 发条工坊回旋道** adds an original oversized clockmaker workshop with a graded three-quarter spiral climb, a genuine elevated crossing and cabinet/workbench route choices. [Open the workshop catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop).
 
-**Copperwing Airfield / 铜翼空港** connects a launch runway, reversing observation ridge and descending uplands, with a narrow open-frame hangar route or a broader perimeter taxiway. Original static aircraft exhibits remain outside the kart racing lanes. [Open the dev airfield catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield).
+**Amberwind Harvest / 谷风麦垄回环** connects grain terraces, orchard contours and a windmill ridge, with a real drive-through barnyard choice and a broad field route. [Open the harvest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest).
 
-## Modular food garage (dev only)
+**Sunweave Caravan / 星砂古驿** follows supported dune ridges, a wind-carved sandstone corridor and open caravan courts, with a technical twin-arch route or a broad sailcourt sweep. [Open the desert catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert).
 
-The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 55 food themes / 330 parts (including approved 000 pure white rice), separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing is preview-only; apply replaces all six parts with optional save-before-replace and undo. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).
+**Frostloop Depot / 霜环雪站** climbs opposing snow bowls and a low saddle before choosing a technical maintenance-yard cut or a broad banked terrace, then returns over stepped stone-supported slopes. [Open the snow catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow).
+
+**Basalt Crown / 玄岩环冕** climbs an open caldera rim, descends into a hooked stone bowl and offers technical inner and broad outer routes through separate openings beneath a real masonry viaduct. [Open the caldera catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera).
+
+**Verdant Canopy / 蔓穹花园** links planted ascent folds, a petal terrace and a low basin, with a technical path beneath a genuinely open timber arbor or a broader outer garden arc. [Open the garden catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden).
+
+**Copperwing Airfield / 铜翼空港** connects a launch runway, reversing observation ridge and descending uplands, with a narrow open-frame hangar route or a broader perimeter taxiway. Original static aircraft exhibits remain outside the kart racing lanes. [Open the airfield catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield).
+
+## Modular food garage
+
+Open the [stable garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html) or [dev garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html). Six independent assembly slots offer **55 food themes / 330 parts**, including 000 pure white rice, separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing only previews; applying replaces all six parts, with optional save-before-replace and undo. Selected mixed builds run on all 12 land courses; the six character attributes and water mounts remain intact. NPCs use authored mixed cars with the same part formulas. There is no same-theme bonus. Battery discharge, wear, repair and economy systems are not active. [Implementation and verification limits](docs/modular-garage.md).
 
 ## Features
 
 - **Six selectable drivers:** WHALE, GEMINI, GPT, CLAUDE, GROK and GLM, with bundled rigged character models
-- **Three-lap races** against five AI opponents on a sunset coastal circuit, with ocean scenery, collisions, lap/rank tracking and a minimap
+- **Three-lap races** against five AI opponents across the land and water catalog, with collisions, lap/rank tracking and a minimap
 - **Arcade driving:** manual throttle, braking, reverse, handbrake drift and drift boost
 - **Three items:** turbo boost, energy shield and tracking pulse
 - **Visible pickups:** translucent boxes show original 3D items; 25% show a mystery question mark. Pickups vanish immediately and respawn after eight racing seconds. The HUD displays a shaded projection of the same 3D model. [Details](docs/item-pickups.md)
@@ -60,18 +81,24 @@ The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanv
 
 Open the **[GitHub Pages game](https://jerryzric.github.io/ai-friends-kart-playcanvas/)** in a browser with **WebGL2** enabled. Wait for the characters to load, choose a driver and start the race.
 
-The first character download is approximately **51.6 MB** in total. At most two models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models remain absent; retry must finish before the race starts. Both maps share an aerial loading flyover and a smooth starting-line return.
+The first racing-character download is approximately **51.6 MB** in total; selected standing portraits and food-car parts download separately as needed. At most two character models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models remain absent; required assets must finish loading before the race starts. Races use an aerial loading flyover and a smooth starting-line return.
 
 No ChatGPT login, model-service account or runtime CDN is required. The game and character assets are served from the same distribution.
 
-## Windows playtest
+## Web / HTML package
 
-**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** This is a prerelease playtest, not a production release.
+Choose `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip` from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify it against the accompanying SHA-256 checksums. Extract the full archive and serve the included game files over HTTP(S); opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together.
 
-1. Download [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007).
+## Windows package
+
+**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** Use the v0.4.0 package and its release notes. Packaging and automated checks do not establish real Windows GPU, performance or input-device compatibility.
+
+1. From the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases), download `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip` and verify it against the accompanying SHA-256 checksums.
 2. Extract the **entire ZIP** into a folder.
 3. Run **AI Friends Kart.exe**. Keep the adjacent DLLs, `resources` and `locales` folders together.
 4. Press **F11** to toggle fullscreen.
+
+The main-menu **Exit** button closes the Windows application. Returning from a race to the main menu stays within the game. In a browser, **Exit** opens the resting page; close the tab to leave. The desktop quit fix is retained; this release does not claim a new native Windows GPU playtest.
 
 All six characters are bundled for offline play. Node.js, installation and administrator privileges are not required. Do not disable Windows security protections to run the game.
 
@@ -124,14 +151,18 @@ A full clone includes six driving-model archives in `public/assets/drivers/` and
 ```sh
 npm ci
 npm run models:fetch
+npm run food:fetch
+npm run food:verify
 npm run build
 ```
+
+The source archive also omits the downloadable food-kart payloads; restore and verify them with the commands above. The original editable asset sources and manifests remain included.
 
 The fetch script uses fixed public paths under this isolated `/dev/` preview and verifies the compressed/decoded hashes in [the runtime manifest](docs/runtime-models.json) and [the portrait manifest](docs/portrait-models.json); it refuses to overwrite mismatched local files. Code builds without these archives; restore both sets for the complete visuals.
 
 ### GitHub Pages
 
-The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) is **manual**. In repository **Settings → Pages**, select **GitHub Actions**. Run the workflow on `main` with **Publish** checked. It checks, tests and builds the selected commit before publishing. A normal push does not deploy the game.
+The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) checks, tests and builds the selected source before publication. The stable site is at the root URL and the independent preview is under `/dev/`. Follow the checked-out branch’s workflow triggers and publication options; a dev deployment must preserve the stable root. Release packages must use the same tagged source as the release they describe.
 
 ### Project layout
 

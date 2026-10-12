@@ -28,7 +28,8 @@ export function validateManifest(manifest) {
     assert.ok(Number.isSafeInteger(record.bytes) && record.bytes >= 0 && record.bytes <= 100 * 1024 * 1024);
   }
   for (const path of requiredFiles) assert.ok(paths.has(path), `Missing stable entry: ${path}`);
-  assert.ok(manifest.files.reduce((sum, file) => sum + file.bytes, 0) <= 300 * 1024 * 1024);
+  // v0.4.0 includes thirteen courses and their corresponding-source archive.
+  assert.ok(manifest.files.reduce((sum, file) => sum + file.bytes, 0) <= 350 * 1024 * 1024);
   return manifest;
 }
 

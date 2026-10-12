@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Historical source inventories and geometry goldens remain immutable. */
 import test from 'node:test';
@@ -18,7 +19,7 @@ test('Workshop protects573 exact original inputs and all nested historical sourc
  for(const [file,original]of Object.entries(receipt.sourceInventory)){const actual=sha(readFileSync(file)),revision=receipt.reviewedChanges[file];if(revision){assert.equal(revision.previousSHA256,original,file+' historical source hash');assert.match(revision.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(revision.scope);assert.equal(actual,gardenReviewedHash(file,revision.currentSHA256),file+' exact reviewed revision');}else assert.equal(actual,gardenReviewedHash(file,original),file+' original input changed without review');if(actual!==original)changed.push(file);}
  assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(directory:string):string[]=>readdirSync(directory,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(directory+'/'+e.name):[directory+'/'+e.name]);const transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
- assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production input, map012 or alternate gameplay implementation');
+ assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production input, map012 or alternate gameplay implementation');
 });
 test('Workshop final scene and preview identities are explicitly reviewed by Mountain Town Quarry and Forest',()=>{
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);

@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Original source records and historical nested goldens never rebase. */
 import test from 'node:test';
@@ -21,7 +22,7 @@ test('Caldera protects all770 original inputs and every original native assertio
  }
 
  for(const [file,hash]of Object.entries(receipt.sourceInventory)){const review=receipt.reviewedChanges[file],actual=sha(readFileSync(file));if(review){assert.equal(review.previousSHA256,hash);assert.ok(review.scope);assert.equal(actual,gardenReviewedHash(file,review.currentSHA256),file+' reviewed exact revision');}else assert.equal(actual,gardenReviewedHash(file,hash),file+' unchanged original input');}
- const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort());
+ const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort());
 });
 test('Caldera frozen40 baseline views and original catalog transforms remain exact',()=>{
  const frozen=JSON.parse(readFileSync('tests/helpers/caldera-enrichment-camera-frozen.json','utf8'));assert.equal(digest(frozen),'6dcc0c42d3f3025381c6f4942669aea83dbd50d6ccd1320d5ea3cdc06aba52b9');assert.deepEqual(JSON.parse(readFileSync('docs/caldera-enrichment-cameras.json','utf8')),frozen);assert.equal(frozen.views.length,40);assert.equal(Object.keys(frozen.catalogViews).length,5);assert.equal(frozen.baseline.sourceHashes['src/caldera-scenery.ts'],CALDERA_ORIGINAL_SOURCE_SHA256);

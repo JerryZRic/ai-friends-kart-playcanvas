@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Every reviewed Snow delta is exact; historical nested goldens never rebase. */
 import test from 'node:test';
@@ -21,7 +22,7 @@ test('Snow protects737 exact original inputs and all original terrain,route,came
  for(const [file,original]of Object.entries(receipt.sourceInventory)){const actual=sha(readFileSync(file)),review=receipt.reviewedChanges[file];if(review){assert.equal(review.previousSHA256,original,file+' original source hash');assert.ok(review.scope);assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.equal(actual,gardenReviewedHash(file,review.currentSHA256),file+' precise reviewed revision');}else assert.equal(actual,gardenReviewedHash(file,original),file+' unreviewed original input');if(actual!==original)changed.push(file);}
  assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(dir+'/'+e.name):[dir+'/'+e.name]),temporary=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
- assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production source or map012');
+ assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production source or map012');
 });
 test('Snow permits only three numeric ceiling changes and the separately certified-original hash projection',()=>{
  assert.deepEqual(receipt.historicalBudget,{trianglesExclusive:110000,verticesExclusive:200000,batches:23,sharedBatchCeiling:24});assert.deepEqual(receipt.approvedBudget,{trianglesExclusive:120000,verticesExclusive:200000,batches:23,addedTrianglesInclusive:12000,addedVerticesInclusive:30000});

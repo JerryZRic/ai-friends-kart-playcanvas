@@ -6,44 +6,69 @@
 [![平台：网页 / Windows](https://img.shields.io/badge/platforms-Web%20%2F%20Windows-blue)](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)
 [![代码：AGPL-3.0-only](https://img.shields.io/badge/code-AGPL--3.0--only-blue)](LICENSE)
 
-使用 **PlayCanvas Engine、TypeScript 和 Vite** 开发的日落海岸街机卡丁车游戏。任选六位骨骼角色车手之一，与其余五位比赛，体验漂移加速、道具对抗和可自由环顾的追逐镜头。
+使用 **PlayCanvas Engine、TypeScript 和 Vite** 开发的街机卡丁车游戏，包含 12 张陆地地图和 1 张水上地图。任选六位骨骼角色车手之一，与其余五位比赛，体验漂移加速、道具对抗和可自由环顾的追逐镜头。
 
-**[浏览器在线试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [下载 Windows 试玩版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**
+**[浏览器稳定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev 预览](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [网页 / Windows 下载](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > 游戏界面为简体中文，搭配英文品牌文字。上方语言导航只切换文档。代码与原创资产采用 AGPL-3.0-only；六个角色模型另有非商业限制，详见[许可与模型权利](#license-and-model-rights)。
 
-## dev 自由模式测试
+## v0.4.0 统一版本
 
-[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。经测试的自由模式版本现已合入主分支，并发布到上方稳定版入口；Windows 版本单独发布。
+本文说明 **v0.4.0** 的统一功能：13 张地图、六名车手，以及包含 55 个主题 / 330 件零件的六槽食物车库。11 张新增陆地地图均包含场景丰富化成果。浏览器稳定版与下载包采用同一套功能，`/dev/` 保留为后续更新的独立预览。已发布文件、源码提交、校验值及各版本的实际验证情况以[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)为准。
 
-## 原创陆地赛道（dev）
+自由模式包含动态 3D 封面、旋转地图预览、角色 3D 查看、车辆选择、简单 / 普通 / 困难比赛设置和画面设置。故事模式仍为开发中提示。[实现说明与限制](docs/free-mode.md)。
 
-**云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在 dev 地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。本次是网页测试更新，不包含新的 Windows 打包。
+### 地图目录
 
-**灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开 dev 旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town)。
+陆地赛道按 **01–12** 排列，水上地图 **A01** 放在最后。显示编号不改变原有地图 ID、存档选择或直达链接。
 
-**赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开 dev 采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry)。
+- **01** [日落海岸](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`
+- **02** [云岭盘山道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`
+- **03** [灯阶旧城环线](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`
+- **04** [赤砾采石环道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`
+- **05** [杉影星台环线](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`
+- **06** [发条工坊回旋道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`
+- **07** [谷风麦垄回环](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`
+- **08** [星砂古驿](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`
+- **09** [霜环雪站](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`
+- **10** [玄岩环冕](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`
+- **11** [蔓穹花园](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`
+- **12** [铜翼空港](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`
+- **A01** [晴空水上乐园](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`
 
-**杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开 dev 杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest)。
 
-**发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开 dev 工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop)。
+## 原创陆地赛道
 
-**谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开 dev 收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest)。
+**云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。
 
-**星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开 dev 沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert)。
+**灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town)。
 
-**霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开 dev 雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow)。
+**赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry)。
 
-**玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开 dev 玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera)。
+**杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest)。
 
-**蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开 dev 蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden)。
+**发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop)。
 
-**铜翼空港 / Copperwing Airfield** 串联起步跑道、观景山脊连续弯与下降丘陵，可选择通透机库中的窄线或外围宽滑行道。原创静态飞机展品布置在赛车道路之外。[打开 dev 铜翼空港地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield)。
+**谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest)。
+
+**星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert)。
+
+**霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow)。
+
+**玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera)。
+
+**蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden)。
+
+**铜翼空港 / Copperwing Airfield** 串联起步跑道、观景山脊连续弯与下降丘陵，可选择通透机库中的窄线或外围宽滑行道。原创静态飞机展品布置在赛车道路之外。[打开铜翼空港地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield)。
+
+## 六槽食物车库
+
+[打开稳定版车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[独立 dev 车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：**55 个食物主题 / 330 件零件**，包含 000 纯白饭；提供“选整车 / 自由改装”双入口、六槽自由混搭、真实 3D 预览、参数比较与方案保存。浏览整车只预览，应用才替换六件，支持替换前收藏与撤销。所选装配用于全部 12 张陆地赛道，保留六角色属性和水上坐骑。NPC 使用相同零件公式的预设混搭车，同主题不额外加成。电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)。
 
 ## 游戏特色
 
 - **六位可选车手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，内置骨骼角色模型
-- **三圈竞速：** 在日落海岸赛道与五位 AI 对手比赛，包含海景、碰撞、圈数/名次统计和小地图
+- **三圈竞速：** 在陆地与水上地图中与五位 AI 对手比赛，包含碰撞、圈数 / 名次统计和小地图
 - **街机驾驶：** 手动油门、刹车、倒车、手刹漂移与漂移加速
 - **三种道具：** 涡轮加速、能量护盾与追踪脉冲
 - **可视道具箱：** 半透明箱内展示原创 3D 道具，25% 为问号随机箱；拾取后立即消失，比赛运行八秒后刷新。HUD 显示由同一模型投影生成的道具图片。[说明](docs/item-pickups.md)
@@ -56,18 +81,24 @@
 
 使用启用 **WebGL2** 的浏览器打开 **[GitHub Pages 游戏](https://jerryzric.github.io/ai-friends-kart-playcanvas/)**。等待角色加载，选择车手后开始比赛。
 
-首次角色下载合计约 **51.6 MB**，最多同时下载/准备两个模型。加载界面显示真实字节进度、解压和准备阶段；临时错误会有限次重试，也可只重试失败文件，保留已成功加载的模型。缺失模型不会显示替身；请重试，全部真实模型就绪后才开始比赛。两张地图共用高空赛道巡游加载画面，并平滑返回起点。
+首次比赛角色下载合计约 **51.6 MB**；所选站姿肖像和食物车辆零件另按需下载。最多同时下载 / 准备两个角色模型。加载界面显示真实字节进度、解压和准备阶段；临时错误会有限次重试，也可只重试失败文件，保留已成功加载的模型。缺失模型不会显示替身，所需资源全部就绪后才开始比赛。比赛使用高空赛道巡游加载画面，并平滑返回起点。
 
 无需 ChatGPT 登录、模型服务账号或运行时 CDN。游戏与角色资源均由同一分发包提供。
 
-## Windows 试玩版
+## 网页 / HTML 下载包
 
-需要 **Windows 10/11 64 位及支持 WebGL2 的 GPU**。这是预发布试玩版本，并非正式生产版本。
+从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)选择 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，并与随附的 SHA-256 校验值核对。完整解压后，通过 HTTP(S) 提供其中的游戏文件；不支持以 `file://` 直接打开 `index.html`。请一并保留全部资源、许可声明和对应源码文件。
 
-1. 从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)下载 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)。
+## Windows 下载包
+
+需要 **Windows 10/11 64 位及支持 WebGL2 的 GPU**。请使用 v0.4.0 包并阅读对应发布说明。打包成功及自动检查不代表已验证真实 Windows GPU、性能或输入设备兼容性。
+
+1. 从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下载 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，并与随附的 SHA-256 校验值核对。
 2. 将 **整个 ZIP 完整解压**到一个文件夹。
 3. 运行 **AI Friends Kart.exe**，保持旁边的 DLL、`resources` 和 `locales` 文件夹完整。
 4. 按 **F11** 切换全屏。
+
+主菜单的**退出**按钮会关闭 Windows 应用；从比赛返回主菜单仍是游戏内导航。浏览器中的**退出**会打开休息页面，关闭标签页即可离开。保留已有桌面退出修复，不据此声称本版本已通过新的原生 Windows GPU 实机试玩。
 
 已内置六个角色，可离线试玩。无需 Node.js、安装或管理员权限。请勿为了运行游戏而关闭 Windows 安全防护。
 
@@ -120,14 +151,18 @@ npm run preview
 ```sh
 npm ci
 npm run models:fetch
+npm run food:fetch
+npm run food:verify
 npm run build
 ```
+
+源码包也不包含另行下载的食物车辆载荷，请用上述命令恢复并验证。原创可编辑资产源码及校验清单仍包含在源码包中。
 
 下载脚本使用独立 `/dev/` 预览的固定公开路径，按[驾驶模型清单](docs/runtime-models.json)及[站姿肖像清单](docs/portrait-models.json)校验压缩及解压后的哈希，并拒绝覆盖不匹配的本地文件。没有角色档案时，代码仍可构建；完整画面需要还原两组模型。
 
 ### GitHub Pages
 
-[Build and publish PlayCanvas game 工作流](.github/workflows/pages.yml)需 **手动运行**。在仓库 **Settings → Pages** 中选择 **GitHub Actions**，然后在 `main` 分支运行工作流并勾选 **Publish**。发布前会对所选提交执行检查、测试和构建；普通推送不会部署游戏。
+[Build and publish PlayCanvas game 工作流](.github/workflows/pages.yml)在发布前检查、测试并构建所选源码。稳定版位于站点根目录，独立预览位于 `/dev/`。请按所检出分支的工作流触发条件和发布选项操作；dev 部署必须保留稳定版根目录。发布包必须使用对应版本标签的同一份源码。
 
 ### 目录结构
 
@@ -156,7 +191,3 @@ npm run build
 **六个角色的驾驶与独立站姿肖像模型：** 权利单独处理。项目所有者将其标注为带有非商业限制的 Tripo Free 输出；确切再分发条款尚未独立核实。纳入本仓库不授予新的模型许可、Creative Commons 许可或商业使用权。AGPL 不会重新授权角色。复用或再分发前，请确认适用权利并取得所需许可，详见 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
 
 仓库包含最终角色运行文件，不包含角色 Blender 工程或高模制作源文件。原创卡丁车/道具的可编辑文件仍作为对应源码提供。本演示没有广告、付款或商业模型销售。
-
-## 六槽食物车库（仅 dev 测试）
-
-[打开独立测试车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：55 个食物主题、330 件零件（新增 000 纯白饭），“选整车 / 自由改装”双入口、六槽自由混搭、真实 3D 预览、参数比较与方案保存。浏览整车只预览；应用才替换六件，支持替换前收藏与撤销。所选装配进入海岸比赛，保留六角色属性；同主题不额外加成，水上坐骑不变。本轮先实现组装和新车性能，电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)

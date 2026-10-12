@@ -1,3 +1,4 @@
+import {menuPresentationHash,menuPresentationPathsWithin} from './menu-presentation-reviewed-revisions';
 /** Exact Airfield art layer followed by two explicitly pinned publication-only revisions. */
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -9,7 +10,7 @@ export const AIRFIELD_REVIEWED_PATHS:string[]=["docs/airfield-preview-provenance
 export function assertAirfieldReviewedBytes(text:string){assert.equal(airfieldSha(text),AIRFIELD_REVIEWED_CHANGES_SHA256,'Independently pinned exact reviewed replacements');const record=JSON.parse(text);assert.deepEqual(Object.keys(record.changes).sort(),[...AIRFIELD_REVIEWED_PATHS].sort(),'Every changed path is explicitly enumerated');return record;}
 let cached:any;
 export function airfieldReviewedRevisions(){if(!cached){const raw=readFileSync('tests/fixtures/airfield-enrichment-original-inventory.json','utf8');assert.equal(airfieldSha(raw),'803c61344abe2f97fb9acaaf8c5960f64036938fff7e1248d8263e1db332b6cf');const original=JSON.parse(raw),record=assertAirfieldReviewedBytes(readFileSync('tests/fixtures/airfield-enrichment-reviewed-changes.json','utf8'));assert.equal(record.baselineCommit,original.baselineCommit);for(const [path,row]of Object.entries<any>(record.changes)){assert.equal(row.previousSha256,original.sourceInventory[path],path+' independently fixed incoming baseline');assert.ok(row.scope);assert.match(row.currentSha256,/^[0-9a-f]{64}$/);}cached=record;}return cached;}
-export function airfieldReviewedHash(path:string,incoming:unknown){const row=airfieldReviewedRevisions().changes[path];if(row)assert.equal(incoming,row.previousSha256,path+' wrong incoming historical revision');return auditPublicationHash(path,row?row.currentSha256:incoming);}
-export function airfieldReviewedPathsWithin(inventory:Record<string,unknown>){return [...AIRFIELD_REVIEWED_PATHS.filter(p=>p in inventory),...auditPublicationPathsWithin(inventory)];}
+export function airfieldReviewedHash(path:string,incoming:unknown){const row=airfieldReviewedRevisions().changes[path];if(row)assert.equal(incoming,row.previousSha256,path+' wrong incoming historical revision');return menuPresentationHash(path,auditPublicationHash(path,row?row.currentSha256:incoming));}
+export function airfieldReviewedPathsWithin(inventory:Record<string,unknown>){return [...new Set([...AIRFIELD_REVIEWED_PATHS.filter(p=>p in inventory),...auditPublicationPathsWithin(inventory),...menuPresentationPathsWithin(inventory)])];}
 export function airfieldAfterGardenHash(path:string,incoming:unknown){return airfieldReviewedHash(path,gardenReviewedHash(path,incoming));}
 export function airfieldAfterGardenPathsWithin(inventory:Record<string,unknown>){return [...new Set([...gardenReviewedPathsWithin(inventory),...airfieldReviewedPathsWithin(inventory)])];}

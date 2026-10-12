@@ -1,3 +1,4 @@
+import {assertMenuPresentationDependency} from './menu-presentation-reviewed-revisions';
 /** Bounded little-endian full-output archive. Candidate never writes a baseline. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -22,7 +23,7 @@ export function assertGardenCameraDependency(path: string, incoming: unknown, ac
     assert.equal(incoming, reviewed.previousSha256, path + ' exact frozen Garden incoming dependency');
     assert.equal(actual, reviewed.currentSha256, path + ' exact separately reviewed Airfield dependency');
   } else {
-    assert.equal(actual, incoming, 'Original camera dependency: ' + path);
+    assertMenuPresentationDependency(path, incoming, actual);
   }
 }
 

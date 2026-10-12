@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {SETTINGS_KEY} from '../src/game-settings';
 import {garageRaceEntry} from '../src/kart-garage';
-import {MAP_PROFILES} from '../src/map-profiles';
-const mapIds=Object.keys(MAP_PROFILES),lastMap=mapIds.at(-1)!;
+const mapIds=['coast','mountain','town','quarry','forest','workshop','harvest','desert','snow','caldera','garden','airfield','waterpark'],lastMap='waterpark';
+const mapCodes=['01','02','03','04','05','06','07','08','09','10','11','12','A01'];
 /** DOM event contract tests, intentionally no GPU / visual-rendering claim. */
 test('menu repeated select/back/settings/exit, history and blocked storage work without WebGL',async()=>{
  const g=globalThis as any,names=['document','window','location','history','localStorage'];
@@ -28,8 +28,9 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   click(){if(!this.disabled)this.dispatchEvent(new Event('click'));}
  }
  const headerGarage=new Element('A'),wordmark=new Element('A');
- const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];
- const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.push(url);location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[urls.length-1]=url;location.search=new URL(url,'https://test.invalid/dev/').search;}};
+ const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=['./index.html'];let historyIndex=0;
+ const restoreHistory=()=>{location.search=new URL(urls[historyIndex],'https://test.invalid/dev/').search;windowTarget.dispatchEvent(new Event('popstate'));};
+ const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.splice(historyIndex+1);urls.push(url);historyIndex++;location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[historyIndex]=url;location.search=new URL(url,'https://test.invalid/dev/').search;},back:()=>{if(historyIndex>0){historyIndex--;restoreHistory();}},forward:()=>{if(historyIndex<urls.length-1){historyIndex++;restoreHistory();}}};
  g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)};
  let fallback:(()=>void)|undefined,firstBoot=true,failures=0;
  g.window=Object.assign(windowTarget,{scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.location=location;g.history=history;
@@ -51,10 +52,14 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
    assert.equal(elements.filter(e=>e.tagName==='CANVAS').length,1,'only the selected map creates a live preview');
    const preview=$('#title-backdrop');assert.equal(preview.dataset.backdropState,'unavailable','missing WebGL retains the static route poster');preview.dispatchEvent(new Event('webglcontextlost'));assert.equal(preview.dataset.previewFallback,'true');preview.dispatchEvent(new Event('webglcontextrestored'));assert.equal(preview.dataset.previewFallback,undefined);
    const overviewImages=root.querySelectorAll('.map-overview');assert.equal(overviewImages.length,mapIds.length);assert.deepEqual(overviewImages.map(e=>e.attrs.src),mapIds.map(id=>`./map-previews/${id}-overview.webp`));assert.ok(overviewImages.every(e=>e.attrs.alt.includes('3D 俯视全景')));
+   assert.deepEqual(root.querySelectorAll('[data-map]').map(e=>e.dataset.map),mapIds,'visual and reading order keep water last');
+   assert.deepEqual([...root.innerHTML.matchAll(/class="map-choice-number" aria-hidden="true">([^<]+)</g)].map(m=>m[1]),mapCodes);
+   for(const [i,id] of mapIds.entries())assert.ok($(`[data-map="${id}"]`).attrs['aria-label'].startsWith(mapCodes[i]+' '),'accessible card identity matches its visible code');
+   assert.match(root.innerHTML,/01 \/ 04/,'flow step is not a map code');
    assert.ok(root.innerHTML.indexOf('class="map-library"')<root.innerHTML.indexOf('class="map-detail-panel"'),'route cards precede the scenic preview in reading order');
    assert.equal($('[data-map="coast"]').attrs.tabindex,'0');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'-1');
-   const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map="coast"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'waterpark');assert.equal(urls.length,historyLength,'selection updates the existing history entry');
-   assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.equal($('[data-map="coast"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');
+   const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map="coast"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'mountain');assert.equal(urls.length,historyLength,'selection updates the existing history entry');
+   assert.equal($('[data-map="mountain"]').attrs['aria-pressed'],'true');assert.equal($('[data-map="mountain"]').attrs.tabindex,'0');assert.equal($('[data-map="coast"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'mountain');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/mountain-overview.webp');
    for(let i=2;i<mapIds.length;i++){key('ArrowDown',$(`[data-map="${mapIds[i-1]}"]`));assert.equal(g.document.activeElement.dataset.map,mapIds[i]);assert.equal($('.map-stage-fallback').attrs.src,`./map-previews/${mapIds[i]}-overview.webp`);}
    assert.ok(root.innerHTML.includes(`${String(mapIds.length).padStart(2,'0')} COURSES`));key('ArrowDown',$(`[data-map="${lastMap}"]`));assert.equal(g.document.activeElement.dataset.map,'coast','arrow navigation wraps');
    key('End',$('[data-map="coast"]'));assert.equal(g.document.activeElement.dataset.map,lastMap);key('Home',$(`[data-map="${lastMap}"]`));assert.equal(g.document.activeElement.dataset.map,'coast');
@@ -73,6 +78,17 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
    key('Escape');key('Escape');$('[data-screen="exit"]').click();assert.equal(root.className,'screen-exit');assert.match(root.innerHTML,/关闭此标签页/);$('[data-screen="main"]').click();
   }
   location.search='?screen=maps&map=waterpark';windowTarget.dispatchEvent(new Event('popstate'));assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.equal(g.document.activeElement,root,'history restores screen focus');
+  // Existing water deep links and browser history use stable IDs after presentation reorder.
+  history.replaceState(null,'','./index.html?screen=maps&map=waterpark&driver=glm&difficulty=hard&seed=77');windowTarget.dispatchEvent(new Event('popstate'));
+  const waterSelection=()=>{assert.equal(root.className,'screen-maps');assert.equal(root.querySelectorAll('[data-map]').at(-1)?.dataset.map,'waterpark');assert.equal($('[data-map="waterpark"]').attrs['aria-pressed'],'true');assert.equal($('[data-map="waterpark"]').attrs.tabindex,'0');assert.match($('[data-map="waterpark"]').attrs['aria-label'],/^A01 晴空水上乐园/);assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');};
+  const waterSetup=()=>{const p=new URLSearchParams(location.search);assert.equal(p.get('map'),'waterpark');assert.equal(p.get('driver'),'glm');assert.equal(p.get('difficulty'),'hard');assert.equal(p.get('seed'),'77');};
+  waterSelection();waterSetup();const waterHtml=root.innerHTML,waterHistoryLength=urls.length;
+  $('[data-map="waterpark"]').click();$('[data-map="waterpark"]').click();assert.equal(root.innerHTML,waterHtml);assert.equal(urls.length,waterHistoryLength,'repeated selected-card clicks do not create history entries');
+  $('[data-screen="settings"]').click();assert.equal(root.className,'screen-settings');history.back();waterSelection();waterSetup();assert.equal(g.document.activeElement,root);
+  history.forward();assert.equal(root.className,'screen-settings');waterSetup();history.back();waterSelection();
+  $('#confirm-map').click();assert.equal(root.className,'screen-characters');assert.match(root.innerHTML,/02 \/ 04/,'character flow numbering is unchanged');waterSetup();history.back();waterSelection();waterSetup();history.forward();assert.equal(root.className,'screen-characters');
+  $('#choose-vehicle').click();$('[data-screen="race-settings"]').click();assert.equal(root.className,'screen-race-settings');
+  const waterRace=new URL($('#start-race').attrs.href,'https://test.invalid/dev/');assert.equal(waterRace.pathname,'/dev/waterpark.html');assert.equal(waterRace.searchParams.get('driver'),'glm');assert.equal(waterRace.searchParams.get('difficulty'),'hard');assert.equal(waterRace.searchParams.get('seed'),'77');assert.equal(waterRace.searchParams.has('map'),false,'display code never replaces route identity');
   location.search='?screen=characters&map=coast&driver=glm';windowTarget.dispatchEvent(new Event('popstate'));assert.match($('#choose-vehicle').attrs.href,/driver=glm/);
   $('[data-screen="settings"]').click();deny=true;$('[value="high"]').dispatchEvent(new Event('change'));assert.match($('#settings-status').textContent,/无法保存/);
   $('#reset-settings').click();assert.equal(g.document.activeElement.attrs.id,'reset-settings');assert.match($('#settings-status').textContent,/无法保存/);

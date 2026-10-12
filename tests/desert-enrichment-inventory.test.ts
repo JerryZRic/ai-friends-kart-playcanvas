@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Additive Desert scenery has no permission to rebaseline native safety gates. */
 import test from 'node:test';
@@ -37,7 +38,7 @@ test('Desert immutable source and native safety inventories retain the exact ori
  assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(dir+'/'+e.name):[dir+'/'+e.name]);
  const temporary=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
- assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production source, twelfth map or alternate runtime');
+ assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production source, twelfth map or alternate runtime');
 });
 test('Desert final source and six inherited isolation consumers bind exactly one new reviewed revision',()=>{
  const file='src/desert-scenery.ts',currentSHA256='aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713';

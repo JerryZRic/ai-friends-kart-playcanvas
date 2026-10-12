@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Immutable pre-enrichment inventories and explicit reviewed scene exceptions. */
 import test from 'node:test';
@@ -17,7 +18,7 @@ test('Harvest keeps685 original inputs and every historical route gameplay and g
  for(const [file,original]of Object.entries(receipt.sourceInventory)){const actual=sha(readFileSync(file)),review=receipt.reviewedChanges[file];if(review){assert.equal(review.previousSHA256,original,file+' immutable original hash');assert.ok(review.scope);assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.equal(actual,gardenReviewedHash(file,review.currentSHA256),file+' precise reviewed revision');}else assert.equal(actual,gardenReviewedHash(file,original),file+' unreviewed original input changed');if(actual!==original)changed.push(file);}
  assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(dir+'/'+e.name):[dir+'/'+e.name]),transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
- assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No twelfth scene, new production input or alternate gameplay');
+ assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No twelfth scene, new production input or alternate gameplay');
 });
 test('Harvest exact five color edits and87 farm pieces are distinct from protected original architecture',()=>{
  const colors=[['Harvest connected contour earth','#a18b55','#82895a',1],['Harvest ripe wheat rows','#dbad42','#d6af49',.96],['Harvest pale straw ears and bales','#ebc66b','#e4c77a',.97],['Harvest olive orchard leaves','#748447','#5e7444',.99],['Harvest sunlit orchard leaves','#99a25a','#91a65e',.99]] as const;

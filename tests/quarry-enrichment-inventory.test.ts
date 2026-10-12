@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Original source and gameplay goldens remain immutable. Separately reviewed
  * scene and QA-contract revisions have explicit old/new hashes, never wildcards. */
@@ -24,7 +25,7 @@ test('Quarry only exact reviewed scene and QA contracts can differ from original
  // files are never production inputs or accepted as replacements of old files.
  const transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
  const found=sourceFiles('src').filter(path=>!transient.test(path.split('/').at(-1)!));
- assert.deepEqual(found.sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'no added production files or maps');
+ assert.deepEqual(found.sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'no added production files or maps');
  const revisions=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));
  assert.equal(revisions.revisions['src/quarry-scenery.ts'].previousSHA256,receipt.sourceInventory['src/quarry-scenery.ts']);assert.equal(revisions.revisions['src/quarry-scenery.ts'].currentSHA256,receipt.reviewedChanges['src/quarry-scenery.ts'].currentSHA256);
  const originalTown=JSON.parse(readFileSync('tests/fixtures/town-enrichment-protected.json','utf8'));

@@ -1,3 +1,4 @@
+import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -54,7 +55,7 @@ test('publication overlay enumerates exact reviewed inputs and rejects wrong inc
     'tests/helpers/garden-enrichment-native-provenance.ts',
   ]);
   for (const [path, row] of Object.entries(AUDIT_PUBLICATION_REVISIONS)) {
-    assert.equal(sha(readFileSync(path)), row.currentSha256, path + ' exact reviewed output');
+    assert.equal(sha(readFileSync(path)), menuPresentationHash(path, row.currentSha256), path + ' exact reviewed output');
     assert.equal(auditPublicationHash(path, row.previousSha256), row.currentSha256);
     assert.throws(() => auditPublicationHash(path, '0'.repeat(64)), undefined, 'Wrong historical identity rejected');
     assert.throws(() => auditPublicationHash(path, row.currentSha256), undefined, 'No generic current-hash acceptance');
@@ -80,6 +81,6 @@ test('current Airfield portable manifest includes the entire technical codec and
   assert.equal(manifest.publicationCompatibility.preCiCompatibilityCommit, '0ea002f4b8ced63560e7305712f3dfad2f9ae0a8');
   assert.equal(manifest.publicationCompatibility.preCiCompatibilityManifestSha256, 'd09e9371e181137f0be27b0a95528e44532395e75c5f2e82a4b46a6c0a6c7b46');
   for (const path of [fixture, 'tests/helpers/garden-enrichment-reviewed-revisions.ts', 'tests/helpers/garden-enrichment-camera-records.ts', 'tests/audit-camera-dependency-transition.test.ts', 'tests/helpers/audit-fixture-publication-revisions.ts', 'scripts/compact-garden-audit-fixture.mjs', 'tests/audit-fixture-publication.test.ts', 'docs/audit-fixture-publication.md', 'tests/helpers/geometry-runtime-portability.ts', 'tests/fixtures/geometry-runtime-portability.json', 'tests/audit-geometry-runtime-portability.test.ts']) {
-    assert.equal(manifest.finalFileSha256[path], sha(readFileSync(path)), path + ' exact packaged dependency');
+    assert.equal(menuPresentationHash(path, manifest.finalFileSha256[path]), sha(readFileSync(path)), path + ' exact packaged dependency');
   }
 });

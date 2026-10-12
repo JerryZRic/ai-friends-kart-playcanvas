@@ -4,6 +4,7 @@ import type {MenuBackdropController} from './menu-backdrop';
 import {mountUiLayout,mountUiViewportNotice} from './ui-layout';
 import {CHARACTER_PROFILES,resolveCharacter,characterTuning} from './character-profiles';
 import {MAP_PROFILES,resolveMap,type MapId} from './map-profiles';
+import {MAP_CATALOG,MAP_MENU_ORDER} from './map-presentation';
 import {readGameSettings,saveGameSettings,type Quality} from './game-settings';
 import {parseMenuState,menuQuery,raceEntry,garageEntry,type MenuScreen} from './menu-state';
 import {parseRaceOptions} from './race-options';
@@ -94,11 +95,11 @@ function render(){
    <section class="map-preview-layout" aria-label="赛道选择与预览">
     <aside class="map-library" aria-labelledby="map-library-heading">
      <div class="map-library-heading"><h2 id="map-library-heading">赛道一览</h2><span>${String(Object.keys(MAP_PROFILES).length).padStart(2,'0')} COURSES</span></div>
-     <div class="map-choices" role="group" aria-label="选择地图" aria-describedby="map-keyboard-hint">${Object.values(MAP_PROFILES).map((m,index)=>`
-      <button class="map-choice" data-map="${m.id}" aria-pressed="${m.id===state.map}" tabindex="${m.id===state.map?'0':'-1'}" aria-label="${m.label}，${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}">
+     <div class="map-choices" role="group" aria-label="选择地图" aria-describedby="map-keyboard-hint">${MAP_CATALOG.map(m=>`
+      <button class="map-choice" data-map="${m.id}" aria-pressed="${m.id===state.map}" tabindex="${m.id===state.map?'0':'-1'}" aria-label="${m.displayCode} ${m.label}，${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}">
        <span class="map-choice-visual">
         <img class="map-overview" src="./map-previews/${m.id}-overview.webp" alt="${m.label}的 3D 俯视全景，展示完整赛道路线" width="1280" height="720" decoding="async">
-        <span class="map-choice-number" aria-hidden="true">${String(index+1).padStart(2,'0')}</span>
+        <span class="map-choice-number" aria-hidden="true">${m.displayCode}</span>
         <span class="map-overview-label">3D 俯视图</span>
         <span class="map-selected-indicator" aria-hidden="true">${m.id===state.map?'✓':'↗'}</span>
        </span>
@@ -181,7 +182,7 @@ function bind(){
  root.querySelectorAll<HTMLElement>('[data-map]').forEach(button=>{
   button.addEventListener('click',()=>selectMap(button.dataset.map as MapId));
   button.addEventListener('keydown',event=>{
-   const maps=Object.keys(MAP_PROFILES) as MapId[],index=maps.indexOf(button.dataset.map as MapId);
+   const maps=MAP_MENU_ORDER,index=maps.indexOf(button.dataset.map as MapId);
    let next:number;
    if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%maps.length;
    else if(event.key==='ArrowUp'||event.key==='ArrowLeft')next=(index+maps.length-1)%maps.length;

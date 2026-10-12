@@ -1,3 +1,4 @@
+import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Historical source inventories/goldens are immutable. Reviewed subsequent
  * scene, QA and derived catalog revisions require exact individual hashes. */
@@ -21,7 +22,7 @@ test('Forest exact source isolation preserves539 original inputs and every histo
  assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(directory:string):string[]=>readdirSync(directory,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(directory+'/'+e.name):[directory+'/'+e.name]);
  const transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
- assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'no added production inputs or twelfth land scene');
+ assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'no added production inputs or twelfth land scene');
  const reviewed=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8')).revisions['src/forest-scenery.ts'];assert.equal(reviewed.previousSHA256,receipt.originalScenerySha256);assert.equal(reviewed.currentSHA256,receipt.reviewedChanges['src/forest-scenery.ts'].currentSHA256);
  const preview=JSON.parse(readFileSync('docs/forest-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes['src/forest-scenery.ts'],reviewed.currentSHA256);assert.equal(preview.menuAsset.sha256,receipt.reviewedChanges['public/map-previews/forest-overview.webp'].currentSHA256);
 });

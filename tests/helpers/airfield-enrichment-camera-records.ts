@@ -1,3 +1,4 @@
+import {assertMenuPresentationDependency} from './menu-presentation-reviewed-revisions';
 /** Bounded little-endian full-output archive. Candidate never writes a baseline. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -8,7 +9,7 @@ export const airfieldCameraExpectedPath='tests/fixtures/airfield-enrichment-came
 export function airfieldCameraPlan(){
  const text=readFileSync('tests/helpers/airfield-enrichment-camera-frozen.json','utf8');assert.equal(airfieldSha(text),'3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a','Frozen camera inputs and protected dependency inventory');
  const plan=JSON.parse(text);
- for(const [path,sha]of Object.entries(plan.protected))assert.equal(airfieldSha(readFileSync(path)),sha,'Original camera dependency: '+path);
+ for(const [path,sha]of Object.entries(plan.protected))assertMenuPresentationDependency(path,sha,airfieldSha(readFileSync(path)));
  assert.equal(airfieldSha(readFileSync('docs/airfield-enrichment-cameras.json')),plan.reviewViewsSha256);
  assert.equal(airfieldSha(readFileSync('tests/fixtures/airfield-enrichment-original-geometry.json')),plan.originalGeometryFixtureSha256);
  return plan;

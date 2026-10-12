@@ -1,0 +1,1832 @@
+{
+  "schema": "menu-presentation-transition-v1",
+  "baselineCommit": "c6ac26335aa2fa93cec0b1a96a4ca7bea6ae5840",
+  "publicBaselineCommit": "eb2a0b3aae43c06664b84a7f8d209c44ec71e99a",
+  "changes": {
+    "README.ja.md": {
+      "previousSha256": "30f13997172298f52ff2f0da2d156c63a7129a5e247ad3d6beff62bb98caa100",
+      "currentSha256": "1251ee22a90346d2d46d4e4cf2c21ae280ab07f8656e80733c7c05dba87dabaa",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "**PlayCanvas Engine、TypeScript、Vite** で制作した、夕暮れの海岸を走るアーケードカートレースです。リグ付きキャラクター6人からドライバーを選び、残りの5人と対戦。ドリフトブースト、アイテム、自由に回り込める追従カメラでレースを楽しめます。\n"
+          ],
+          "insertedLines": [
+            "**PlayCanvas Engine、TypeScript、Vite** で制作した、陸上12コースと水上1コースを楽しめるアーケードカートレースです。リグ付きキャラクター6人からドライバーを選び、残りの5人と対戦。ドリフトブースト、アイテム、自由に回り込める追従カメラに対応します。\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[ブラウザーでプレイ](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Windows プレイテスト版をダウンロード](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[ブラウザー安定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev プレビュー](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows ダウンロード](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 13,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "## v0.4.0 統一リリース\n",
+            "\n",
+            "この README は **v0.4.0** の共通機能を説明します。13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを収録。追加の陸上11コースには、それぞれのシーン充実化の成果を含みます。ブラウザー安定版と配布パッケージは同じ機能を持ち、`/dev/` は今後の更新用の独立プレビューとして残ります。公開済みファイル、ソースのリビジョン、チェックサム、各版の検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で確認してください。\n",
+            "\n",
+            "フリーモードには動く3Dタイトル画面、回転するマッププレビュー、キャラクターの3D表示、車両選択、簡単 / 普通 / 難しいのレース設定と画面設定があります。ストーリーモードは開発中の案内です。[実装ノートと制限](docs/free-mode.md)。\n",
+            "\n",
+            "### マップ一覧\n",
+            "\n",
+            "陸上コースを **01–12** の順に並べ、水上コース **A01** を最後に表示します。表示番号によって既存のマップ ID、保存した選択、直リンクは変わりません。\n",
+            "\n",
+            "- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n",
+            "\n",
+            "\n",
+            "## 6スロット食べ物カートガレージ\n",
+            "\n",
+            "[安定版ガレージ](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)または [dev ガレージ](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)を開いてください。000 白いご飯を含む **55テーマ / 330パーツ**で、完成車選択、6スロットの自由な組み合わせ、実際の3Dプレビュー、性能比較、構成保存に対応。完成車を見るだけでは変更されず、適用すると6パーツを置き換えます。置き換え前の保存と取り消しも可能です。選んだ構成は陸上12コースで使用し、6人の特性と水上の乗り物は維持します。NPC も同じパーツ計算式の混合構成を使い、同テーマの追加ボーナスはありません。電池消耗、耐久消耗、修理、経済システムは未実装です。[実装と検証の範囲](docs/modular-garage.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 46,
+          "removedLines": [
+            "- 夕暮れの海岸サーキットで、5人の AI を相手に走る**3周のレース**。海の景色、衝突、周回数・順位表示、ミニマップに対応\n"
+          ],
+          "insertedLines": [
+            "- 陸上・水上コースで5人の AI と競う**3周レース**。衝突、周回数・順位表示、ミニマップに対応\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 59,
+          "removedLines": [
+            "初回のキャラクターダウンロードは合計で約 **51.6 MB** です。同時にダウンロード・準備するモデルは最大2体です。読み込み画面には実際のバイト単位の進捗、解凍、準備の状況が表示されます。一時的なエラーには上限付きで再試行し、読み込み済みのモデルを保持したまま失敗したファイルだけを再試行できます。モデルがない場合は、代替のオリジナルドライバーを使用していることが明示されます。\n"
+          ],
+          "insertedLines": [
+            "レース用キャラクターの初回ダウンロードは合計約 **51.6 MB** です。選択した立ち姿ポートレートと食べ物カートのパーツは必要に応じて別途取得します。同時にダウンロード・準備するキャラクターモデルは最大2体です。実際のバイト進捗、解凍、準備を表示し、一時エラーには上限付きで再試行します。読み込み済みモデルを保持したまま失敗ファイルだけを再試行できます。欠けたモデルを代替せず、必要な素材がすべて準備できてからレースを始めます。読み込み中はコース上空を巡り、滑らかにスタート地点へ戻ります。\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 63,
+          "removedLines": [
+            "## Windows プレイテスト\n"
+          ],
+          "insertedLines": [
+            "## Web / HTML パッケージ\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 65,
+          "removedLines": [
+            "**Windows 10/11 の64ビット版と、WebGL2 対応の GPU が必要です。** 正式版ではなく、プレリリースのプレイテスト版です。\n"
+          ],
+          "insertedLines": [
+            "[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip` を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、ゲームファイルを HTTP(S) で配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースファイルをすべて保持してください。\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 67,
+          "removedLines": [
+            "1. [リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)から [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip) をダウンロードします。\n"
+          ],
+          "insertedLines": [
+            "## Windows パッケージ\n",
+            "\n",
+            "**64ビット版 Windows 10/11 と WebGL2 対応 GPU が必要です。** v0.4.0 のパッケージとリリースノートをご利用ください。パッケージ作成や自動チェックの成功は、実機 Windows の GPU、性能、入力デバイス互換性の検証を意味しません。\n",
+            "\n",
+            "1. [リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)から `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip` を取得し、付属の SHA-256 チェックサムと照合します。\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 75,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "メインメニューの **退出（Exit）** は Windows アプリを終了します。レースからメインメニューへ戻る操作では終了しません。ブラウザーの **Exit** は休憩ページを開くため、終了するにはタブを閉じてください。既存のデスクトップ終了処理の修正は維持しますが、新たな Windows 実機 GPU プレイテスト済みとはしていません。\n"
+          ]
+        },
+        {
+          "beforeStart": 94,
+          "afterStart": 129,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 133,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "ソースアーカイブには別途取得する食べ物カートのデータも含まれません。上記コマンドで復元・検証してください。オリジナルの編集可能な素材ソースとマニフェストは同梱します。\n"
+          ]
+        },
+        {
+          "beforeStart": 101,
+          "afterStart": 140,
+          "removedLines": [
+            "[Build and publish PlayCanvas game ワークフロー](.github/workflows/pages.yml)は**手動実行**です。リポジトリの **Settings → Pages** で **GitHub Actions** を選択し、**Publish** にチェックを入れて `main` 上でワークフローを実行してください。選択したコミットをチェック、テスト、ビルドしてから公開します。通常の push ではゲームはデプロイされません。\n"
+          ],
+          "insertedLines": [
+            "[Build and publish PlayCanvas game ワークフロー](.github/workflows/pages.yml)は、公開前に選択したソースをチェック、テスト、ビルドします。安定版はサイトのルート、独立プレビューは `/dev/` です。チェックアウトしたブランチの起動条件と公開オプションに従ってください。dev の公開では安定版ルートを保持し、配布パッケージには対応するリリースタグと同じソースを使用します。\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 153,
+          "removedLines": [
+            "ドライバースロットを選んで互換性のある GLB をインポートするか、各ファイル名にスロット名のトークンがちょうど1つ含まれるファイルを複数選択してください。ファイルサイズは**1個あたり32 MiB** が上限で、同時に処理するのは最大2個です。インポートしたデータはページのメモリー内にのみ保持され、アップロードも永続保存もされません。失敗・キャンセル時は前のドライバーを保持します。**Restore default** で同梱キャラクター、または明示された代替ドライバーに戻せます。\n"
+          ],
+          "insertedLines": [
+            "ドライバースロットを選んで互換 GLB を読み込むか、各ファイル名にスロット名が1つ含まれるファイルを複数選択します。上限は**1個32 MiB**、同時処理は最大2個です。内容はページのメモリーにのみ保持し、アップロードも永続保存もしません。失敗・キャンセル時は前のドライバーを保持し、**Restore default** で同梱キャラクターに戻します。簡略化したレース読み込み画面では従来のインポート操作を非表示にし、キャラクター選択はメインメニューで行います。\n"
+          ]
+        }
+      ]
+    },
+    "README.ko.md": {
+      "previousSha256": "cfc09b91b99cd89a50aa663a2916ef44b2d23f3215cf413ec9c727db3a488840",
+      "currentSha256": "acab4a68858eb72f5d4115ce30bb36b497bd8bb2c35ce7e8981660efa5437408",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "**PlayCanvas Engine, TypeScript, Vite**로 만든 석양의 해안 아케이드 카트 레이싱 게임입니다. 리깅된 캐릭터 드라이버 6명 중 한 명을 골라 나머지 5명과 경주하세요. 드리프트 부스트, 아이템, 자유롭게 회전하는 추적 카메라를 지원합니다.\n"
+          ],
+          "insertedLines": [
+            "**PlayCanvas Engine, TypeScript, Vite**로 만든 아케이드 카트 레이싱 게임으로, 육상 코스 12개와 수상 코스 1개를 제공합니다. 리깅된 캐릭터 드라이버 6명 중 한 명을 골라 나머지 5명과 경주하세요. 드리프트 부스트, 아이템, 자유롭게 회전하는 추적 카메라를 지원합니다.\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[브라우저에서 플레이](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Windows 플레이테스트 다운로드](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[브라우저 안정 버전](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [독립 dev 미리 보기](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [웹 / Windows 다운로드](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 13,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "## v0.4.0 통합 릴리스\n",
+            "\n",
+            "이 README는 **v0.4.0**의 공통 기능을 설명합니다. 맵 13개, 드라이버 6명, 55개 테마 / 330개 부품을 갖춘 6슬롯 음식 카트 차고가 포함됩니다. 추가 육상 코스 11개에는 각 장면의 보강 작업이 반영되어 있습니다. 브라우저 안정 버전과 배포 패키지는 같은 기능을 제공하며, `/dev/`는 이후 업데이트를 위한 독립 미리 보기로 유지됩니다. 공개된 파일, 소스 리비전, 체크섬과 버전별 검증 결과는 [릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)에서 확인하세요.\n",
+            "\n",
+            "자유 모드에는 움직이는 3D 타이틀 화면, 회전하는 맵 미리 보기, 캐릭터 3D 보기, 차량 선택, 쉬움 / 보통 / 어려움 경주 설정과 화면 설정이 있습니다. 스토리 모드는 개발 중 안내만 표시합니다. [구현 설명 및 제한](docs/free-mode.md).\n",
+            "\n",
+            "### 맵 목록\n",
+            "\n",
+            "육상 코스를 **01–12** 순서로 표시하고 수상 코스 **A01**을 마지막에 둡니다. 표시 번호가 바뀌어도 기존 맵 ID, 저장된 선택과 바로가기 링크는 유지됩니다.\n",
+            "\n",
+            "- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n",
+            "\n",
+            "\n",
+            "## 6슬롯 음식 카트 차고\n",
+            "\n",
+            "[안정 버전 차고](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html) 또는 [dev 차고](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)를 여세요. 000 흰쌀밥을 포함한 **55개 테마 / 330개 부품**으로 완성 차량 선택, 6슬롯 자유 조립, 실제 3D 미리 보기, 성능 비교와 구성 저장을 지원합니다. 완성 차량을 둘러볼 때는 미리 보기만 표시하며, 적용해야 6개 부품이 교체됩니다. 교체 전 저장과 실행 취소도 가능합니다. 선택한 구성은 육상 코스 12개 모두에서 사용하고, 캐릭터 6명의 특성과 수상 탈것은 유지합니다. NPC도 같은 부품 계산식을 사용하는 혼합 구성을 사용하며, 동일 테마 추가 보너스는 없습니다. 배터리 소모, 내구도 손실, 수리와 경제 시스템은 아직 활성화되지 않았습니다. [구현 및 검증 범위](docs/modular-garage.md).\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 46,
+          "removedLines": [
+            "- 석양의 해안 서킷에서 AI 상대 5명과 펼치는 **3바퀴 경주**. 바다 풍경, 충돌, 랩·순위 추적, 미니맵 지원\n"
+          ],
+          "insertedLines": [
+            "- 육상·수상 코스에서 AI 상대 5명과 펼치는 **3바퀴 경주**. 충돌, 랩·순위 추적, 미니맵 지원\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 59,
+          "removedLines": [
+            "첫 캐릭터 다운로드 용량은 총 약 **51.6 MB**입니다. 모델은 최대 2개까지 동시에 다운로드·준비됩니다. 로딩 화면에 실제 바이트 기준 진행률과 압축 해제·준비 단계가 표시됩니다. 일시적인 오류는 정해진 한도 내에서 재시도하며, 이미 불러온 모델을 유지한 채 실패한 파일만 다시 시도할 수 있습니다. 모델이 없으면 자체 제작 기본 드라이버로 대체되었다고 명확히 표시됩니다.\n"
+          ],
+          "insertedLines": [
+            "첫 경주용 캐릭터 다운로드 용량은 총 약 **51.6 MB**입니다. 선택한 서 있는 포트레이트와 음식 카트 부품은 필요할 때 별도로 다운로드합니다. 캐릭터 모델은 최대 2개까지 동시에 다운로드·준비합니다. 실제 바이트 진행률과 압축 해제·준비 단계를 표시하며 일시적인 오류는 제한된 횟수로 재시도합니다. 이미 불러온 모델을 유지한 채 실패한 파일만 재시도할 수 있습니다. 누락된 모델은 대체하지 않으며 필요한 에셋이 모두 준비되어야 경주를 시작합니다. 로딩 중에는 코스 상공을 둘러본 뒤 부드럽게 출발선으로 돌아옵니다.\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 63,
+          "removedLines": [
+            "## Windows 플레이테스트\n"
+          ],
+          "insertedLines": [
+            "## 웹 / HTML 패키지\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 65,
+          "removedLines": [
+            "**64비트 Windows 10/11과 WebGL2 지원 GPU가 필요합니다.** 정식 출시 버전이 아닌 사전 공개 플레이테스트입니다.\n"
+          ],
+          "insertedLines": [
+            "[릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)에서 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`을 선택하고 함께 제공되는 SHA-256 체크섬과 대조하세요. 전체 압축을 푼 뒤 게임 파일을 HTTP(S)로 제공하세요. `file://`로 `index.html`을 직접 여는 방법은 지원하지 않습니다. 모든 에셋, 라이선스 고지와 대응 소스 파일을 함께 유지하세요.\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 67,
+          "removedLines": [
+            "1. [릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)에서 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)을 다운로드하세요.\n"
+          ],
+          "insertedLines": [
+            "## Windows 패키지\n",
+            "\n",
+            "**64비트 Windows 10/11과 WebGL2 지원 GPU가 필요합니다.** v0.4.0 패키지와 해당 릴리스 설명을 확인하세요. 패키징이나 자동 점검의 성공이 실제 Windows GPU, 성능 또는 입력 장치 호환성 검증을 의미하지는 않습니다.\n",
+            "\n",
+            "1. [릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)에서 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`을 다운로드하고 함께 제공되는 SHA-256 체크섬과 대조하세요.\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 75,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "메인 메뉴의 **退出(Exit)** 버튼은 Windows 앱을 종료합니다. 경주에서 메인 메뉴로 돌아갈 때는 게임 안에서 이동합니다. 브라우저의 **Exit**는 휴식 페이지를 열며, 나가려면 탭을 닫으세요. 기존 데스크톱 종료 수정은 유지하지만, 이번 버전의 새로운 네이티브 Windows GPU 실기기 플레이테스트를 보장하지는 않습니다.\n"
+          ]
+        },
+        {
+          "beforeStart": 94,
+          "afterStart": 129,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 133,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "소스 압축 파일에는 별도로 다운로드하는 음식 카트 데이터도 포함되지 않습니다. 위 명령으로 복원하고 검증하세요. 자체 제작 에셋의 편집 가능한 소스와 매니페스트는 포함됩니다.\n"
+          ]
+        },
+        {
+          "beforeStart": 101,
+          "afterStart": 140,
+          "removedLines": [
+            "[Build and publish PlayCanvas game 워크플로](.github/workflows/pages.yml)는 **수동 실행** 방식입니다. 저장소의 **Settings → Pages**에서 **GitHub Actions**를 선택하세요. **Publish**에 체크한 상태로 `main`에서 워크플로를 실행하면 선택한 커밋을 점검·테스트·빌드한 뒤 게시합니다. 일반적인 push만으로는 게임이 배포되지 않습니다.\n"
+          ],
+          "insertedLines": [
+            "[Build and publish PlayCanvas game 워크플로](.github/workflows/pages.yml)는 게시 전에 선택한 소스를 점검, 테스트하고 빌드합니다. 안정 버전은 사이트 루트에, 독립 미리 보기는 `/dev/`에 있습니다. 체크아웃한 브랜치의 실행 조건과 게시 옵션을 따르세요. dev 배포는 안정 버전 루트를 보존해야 하며, 배포 패키지는 해당 릴리스 태그와 같은 소스를 사용해야 합니다.\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 153,
+          "removedLines": [
+            "드라이버 슬롯을 선택한 뒤 호환되는 GLB를 가져오거나, 파일명마다 슬롯 이름 토큰이 정확히 하나씩 들어 있는 파일들을 다중 선택하세요. 파일 크기는 **개당 32 MiB**로 제한되며 최대 2개까지 동시에 처리됩니다. 가져온 데이터는 페이지 메모리에만 유지되며 업로드되거나 영구 저장되지 않습니다. 실패하거나 취소하면 이전 드라이버가 유지됩니다. **Restore default**를 선택하면 포함된 캐릭터 또는 대체 사용을 명시한 기본 드라이버로 돌아갑니다.\n"
+          ],
+          "insertedLines": [
+            "드라이버 슬롯을 선택해 호환 GLB를 가져오거나 파일 이름마다 슬롯 이름 토큰이 하나씩 포함된 파일을 여러 개 선택하세요. 파일당 최대 **32 MiB**, 동시 처리 최대 2개입니다. 데이터는 페이지 메모리에만 유지되며 업로드하거나 영구 저장하지 않습니다. 실패하거나 취소하면 기존 드라이버를 유지하고, **Restore default**로 기본 캐릭터를 복원합니다. 간소화된 경주 로딩 화면에서는 이전 가져오기 컨트롤을 숨기며, 캐릭터는 메인 메뉴에서 선택합니다.\n"
+          ]
+        }
+      ]
+    },
+    "README.md": {
+      "previousSha256": "38429bf8e92781dffb5908afa2fe8f42caeca317fdb658f318731ddaf8b154eb",
+      "currentSha256": "456146335cdccb23b7f6f38dcec2563e29efe9a9640b206c5b975334e1c966e1",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "A sunset-coast arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.\n"
+          ],
+          "insertedLines": [
+            "An arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**, with 12 land courses and one water course. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[Play in your browser](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Download the Windows playtest](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[Play the stable browser version](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Try the dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows downloads](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 14,
+          "afterStart": 14,
+          "removedLines": [
+            "## Dev free-mode playtest\n"
+          ],
+          "insertedLines": [
+            "## v0.4.0 release\n"
+          ]
+        },
+        {
+          "beforeStart": 16,
+          "afterStart": 16,
+          "removedLines": [
+            "[Open the isolated dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) for the cinematic 3D title screen, rotating map previews and selected-character 3D inspection, shared handling profiles, settings, and complete coast/waterpark races. [Details and validation limits](docs/free-mode.md). The stable root retains the earlier free-mode release; new garage and NPC setup changes are isolated to dev. The Windows release is separate.\n"
+          ],
+          "insertedLines": [
+            "This README describes the unified **v0.4.0** release line: 13 maps, six drivers, and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. The stable browser version and downloadable packages share this feature set; `/dev/` remains a separate preview for subsequent updates. See the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) for published assets, source revision, checksums and version-specific verification notes.\n"
+          ]
+        },
+        {
+          "beforeStart": 18,
+          "afterStart": 18,
+          "removedLines": [
+            "## New original land course (dev)\n"
+          ],
+          "insertedLines": [
+            "Free mode includes a cinematic 3D title screen, rotating map previews, selected-character 3D inspection, car selection, easy/normal/hard race setup and settings. Story mode remains a development notice. [Implementation notes and limits](docs/free-mode.md).\n"
+          ]
+        },
+        {
+          "beforeStart": 20,
+          "afterStart": 20,
+          "removedLines": [
+            "**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [dev map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). [Current roadside art pass](docs/mountain-roadside-art-pass.md). This web preview is separate from Windows packaging.\n"
+          ],
+          "insertedLines": [
+            "### Map catalog\n"
+          ]
+        },
+        {
+          "beforeStart": 22,
+          "afterStart": 22,
+          "removedLines": [
+            "**Lantern Terrace Rally / 灯阶旧城环线** adds a hillside market-town circuit with a real steering-selected alley/boulevard fork, grade-separated streets and original architecture. Both player and NPC routes share the existing kart runtime. [Open the dev town catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town).\n"
+          ],
+          "insertedLines": [
+            "The catalog lists land courses **01–12**, followed by water course **A01**. Display numbering does not change saved map IDs or deep links.\n"
+          ]
+        },
+        {
+          "beforeStart": 24,
+          "afterStart": 24,
+          "removedLines": [
+            "**Redstrata Quarry / 赤砾采石环道** adds an original dry industrial canyon with a technical stone shelf, broad haul road and timber trestle. [Open the dev quarry catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry).\n"
+          ],
+          "insertedLines": [
+            "- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n"
+          ]
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 38,
+          "removedLines": [
+            "**CedarLight Observatory / 杉影星台环线** adds connected cedar slopes, a physically banked forest bowl, observatory service/rim choices and a treetop viaduct over the earlier valley. [Open the dev forest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest).\n"
+          ],
+          "insertedLines": []
+        },
+        {
+          "beforeStart": 28,
+          "afterStart": 39,
+          "removedLines": [
+            "**Clockwind Workshop / 发条工坊回旋道** adds an original oversized clockmaker workshop with a graded three-quarter spiral climb, a genuine elevated crossing and cabinet/workbench route choices. [Open the dev workshop catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop).\n"
+          ],
+          "insertedLines": [
+            "## Original land courses\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 41,
+          "removedLines": [
+            "**Amberwind Harvest / 谷风麦垄回环** connects grain terraces, orchard contours and a windmill ridge, with a real drive-through barnyard choice and a broad field route. [Open the dev harvest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest).\n"
+          ],
+          "insertedLines": [
+            "**Cloudridge Pass / 云岭盘山道** adds a mountain kart circuit with 39 m of elevation change, banked hairpins, a real grade-separated viaduct, original detailed scenery and the shared garage/race interface. Choose it in the [map catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain). [Geometry, source and validation limits](docs/land-map-catalog.md). [Mountain scene enrichment and same-camera comparison method](docs/mountain-scene-enrichment.md). [Current roadside art pass](docs/mountain-roadside-art-pass.md).\n"
+          ]
+        },
+        {
+          "beforeStart": 32,
+          "afterStart": 43,
+          "removedLines": [
+            "**Sunweave Caravan / 星砂古驿** follows supported dune ridges, a wind-carved sandstone corridor and open caravan courts, with a technical twin-arch route or a broad sailcourt sweep. [Open the dev desert catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert).\n"
+          ],
+          "insertedLines": [
+            "**Lantern Terrace Rally / 灯阶旧城环线** adds a hillside market-town circuit with a real steering-selected alley/boulevard fork, grade-separated streets and original architecture. Both player and NPC routes share the existing kart runtime. [Open the town catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town).\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 45,
+          "removedLines": [
+            "**Frostloop Depot / 霜环雪站** climbs opposing snow bowls and a low saddle before choosing a technical maintenance-yard cut or a broad banked terrace, then returns over stepped stone-supported slopes. [Open the dev snow catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow).\n"
+          ],
+          "insertedLines": [
+            "**Redstrata Quarry / 赤砾采石环道** adds an original dry industrial canyon with a technical stone shelf, broad haul road and timber trestle. [Open the quarry catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry).\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 47,
+          "removedLines": [
+            "**Basalt Crown / 玄岩环冕** climbs an open caldera rim, descends into a hooked stone bowl and offers technical inner and broad outer routes through separate openings beneath a real masonry viaduct. [Open the dev caldera catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera).\n"
+          ],
+          "insertedLines": [
+            "**CedarLight Observatory / 杉影星台环线** adds connected cedar slopes, a physically banked forest bowl, observatory service/rim choices and a treetop viaduct over the earlier valley. [Open the forest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest).\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 49,
+          "removedLines": [
+            "**Verdant Canopy / 蔓穹花园** links planted ascent folds, a petal terrace and a low basin, with a technical path beneath a genuinely open timber arbor or a broader outer garden arc. [Open the dev garden catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden).\n"
+          ],
+          "insertedLines": [
+            "**Clockwind Workshop / 发条工坊回旋道** adds an original oversized clockmaker workshop with a graded three-quarter spiral climb, a genuine elevated crossing and cabinet/workbench route choices. [Open the workshop catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop).\n"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 51,
+          "removedLines": [
+            "**Copperwing Airfield / 铜翼空港** connects a launch runway, reversing observation ridge and descending uplands, with a narrow open-frame hangar route or a broader perimeter taxiway. Original static aircraft exhibits remain outside the kart racing lanes. [Open the dev airfield catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield).\n"
+          ],
+          "insertedLines": [
+            "**Amberwind Harvest / 谷风麦垄回环** connects grain terraces, orchard contours and a windmill ridge, with a real drive-through barnyard choice and a broad field route. [Open the harvest catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest).\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 53,
+          "removedLines": [
+            "## Modular food garage (dev only)\n"
+          ],
+          "insertedLines": [
+            "**Sunweave Caravan / 星砂古驿** follows supported dune ridges, a wind-carved sandstone corridor and open caravan courts, with a technical twin-arch route or a broad sailcourt sweep. [Open the desert catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert).\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 55,
+          "removedLines": [
+            "The isolated [dev workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html) has six independent assembly slots, 55 food themes / 330 parts (including approved 000 pure white rice), separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing is preview-only; apply replaces all six parts with optional save-before-replace and undo. Your selected mixed build drives the coast race; the six character attributes and water mounts remain intact. Free mode now includes car selection and easy/normal/hard race setup; NPCs use authored mixed cars with the same part formulas. No same-theme bonus. Battery wear/repair/economy are not active in this preview. [Implementation and verification limits](docs/modular-garage.md).\n"
+          ],
+          "insertedLines": [
+            "**Frostloop Depot / 霜环雪站** climbs opposing snow bowls and a low saddle before choosing a technical maintenance-yard cut or a broad banked terrace, then returns over stepped stone-supported slopes. [Open the snow catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow).\n",
+            "\n",
+            "**Basalt Crown / 玄岩环冕** climbs an open caldera rim, descends into a hooked stone bowl and offers technical inner and broad outer routes through separate openings beneath a real masonry viaduct. [Open the caldera catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera).\n",
+            "\n",
+            "**Verdant Canopy / 蔓穹花园** links planted ascent folds, a petal terrace and a low basin, with a technical path beneath a genuinely open timber arbor or a broader outer garden arc. [Open the garden catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden).\n",
+            "\n",
+            "**Copperwing Airfield / 铜翼空港** connects a launch runway, reversing observation ridge and descending uplands, with a narrow open-frame hangar route or a broader perimeter taxiway. Original static aircraft exhibits remain outside the kart racing lanes. [Open the airfield catalog](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield).\n",
+            "\n",
+            "## Modular food garage\n",
+            "\n",
+            "Open the [stable garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html) or [dev garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html). Six independent assembly slots offer **55 food themes / 330 parts**, including 000 pure white rice, separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing only previews; applying replaces all six parts, with optional save-before-replace and undo. Selected mixed builds run on all 12 land courses; the six character attributes and water mounts remain intact. NPCs use authored mixed cars with the same part formulas. There is no same-theme bonus. Battery discharge, wear, repair and economy systems are not active. [Implementation and verification limits](docs/modular-garage.md).\n"
+          ]
+        },
+        {
+          "beforeStart": 49,
+          "afterStart": 70,
+          "removedLines": [
+            "- **Three-lap races** against five AI opponents on a sunset coastal circuit, with ocean scenery, collisions, lap/rank tracking and a minimap\n"
+          ],
+          "insertedLines": [
+            "- **Three-lap races** against five AI opponents across the land and water catalog, with collisions, lap/rank tracking and a minimap\n"
+          ]
+        },
+        {
+          "beforeStart": 62,
+          "afterStart": 83,
+          "removedLines": [
+            "The first character download is approximately **51.6 MB** in total. At most two models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models remain absent; retry must finish before the race starts. Both maps share an aerial loading flyover and a smooth starting-line return.\n"
+          ],
+          "insertedLines": [
+            "The first racing-character download is approximately **51.6 MB** in total; selected standing portraits and food-car parts download separately as needed. At most two character models download/prepare concurrently. The loading screen shows real byte progress, decompression and preparation; temporary errors get bounded retries, and you can retry failed files without losing models that already loaded. Missing models remain absent; required assets must finish loading before the race starts. Races use an aerial loading flyover and a smooth starting-line return.\n"
+          ]
+        },
+        {
+          "beforeStart": 66,
+          "afterStart": 87,
+          "removedLines": [
+            "## Windows playtest\n"
+          ],
+          "insertedLines": [
+            "## Web / HTML package\n"
+          ]
+        },
+        {
+          "beforeStart": 68,
+          "afterStart": 89,
+          "removedLines": [
+            "**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** This is a prerelease playtest, not a production release.\n"
+          ],
+          "insertedLines": [
+            "Choose `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip` from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify it against the accompanying SHA-256 checksums. Extract the full archive and serve the included game files over HTTP(S); opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together.\n"
+          ]
+        },
+        {
+          "beforeStart": 70,
+          "afterStart": 91,
+          "removedLines": [
+            "1. Download [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007).\n"
+          ],
+          "insertedLines": [
+            "## Windows package\n",
+            "\n",
+            "**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** Use the v0.4.0 package and its release notes. Packaging and automated checks do not establish real Windows GPU, performance or input-device compatibility.\n",
+            "\n",
+            "1. From the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases), download `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip` and verify it against the accompanying SHA-256 checksums.\n"
+          ]
+        },
+        {
+          "beforeStart": 74,
+          "afterStart": 99,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "The main-menu **Exit** button closes the Windows application. Returning from a race to the main menu stays within the game. In a browser, **Exit** opens the resting page; close the tab to leave. The desktop quit fix is retained; this release does not claim a new native Windows GPU playtest.\n"
+          ]
+        },
+        {
+          "beforeStart": 126,
+          "afterStart": 153,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 128,
+          "afterStart": 157,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "The source archive also omits the downloadable food-kart payloads; restore and verify them with the commands above. The original editable asset sources and manifests remain included.\n"
+          ]
+        },
+        {
+          "beforeStart": 133,
+          "afterStart": 164,
+          "removedLines": [
+            "The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) is **manual**. In repository **Settings → Pages**, select **GitHub Actions**. Run the workflow on `main` with **Publish** checked. It checks, tests and builds the selected commit before publishing. A normal push does not deploy the game.\n"
+          ],
+          "insertedLines": [
+            "The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) checks, tests and builds the selected source before publication. The stable site is at the root URL and the independent preview is under `/dev/`. Follow the checked-out branch’s workflow triggers and publication options; a dev deployment must preserve the stable root. Release packages must use the same tagged source as the release they describe.\n"
+          ]
+        }
+      ]
+    },
+    "README.yue.md": {
+      "previousSha256": "e35509a881fcdd8d95057d543f4201dd034f56d7c63b578e2abed195c0a201ec",
+      "currentSha256": "45663271b611df4decd17324b961205d52d1bc75113111bb46e8938f8aee4abe",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "用 **PlayCanvas Engine、TypeScript 同 Vite** 整嘅街機風格高卡車遊戲，喺日落海岸賽道上鬥快。六位綁好骨架嘅角色車手任你揀一位，同另外五位對手較量，仲有飄移加速、道具同可以自由環繞嘅追車鏡頭。\n"
+          ],
+          "insertedLines": [
+            "用 **PlayCanvas Engine、TypeScript 同 Vite** 整嘅街機風格高卡車遊戲，有 12 張陸地地圖同 1 張水上地圖。六位綁好骨架嘅角色車手任你揀一位，同另外五位對手較量，仲有飄移加速、道具同可以自由環繞嘅追車鏡頭。\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[用瀏覽器玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [下載 Windows 試玩版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[瀏覽器穩定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [網頁 / Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 13,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "## v0.4.0 統一版本\n",
+            "\n",
+            "呢份文件介紹 **v0.4.0** 嘅統一功能：13 張地圖、六位車手，同埋有 55 個主題 / 330 件零件嘅六槽食物車庫。11 張新增陸地地圖全部包含場景豐富化成果。瀏覽器穩定版同下載包用同一套功能，`/dev/` 就保留做之後更新嘅獨立預覽。已發佈檔案、原始碼提交、校驗值同各版本實際驗證情況，以[發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。\n",
+            "\n",
+            "自由模式有動態 3D 封面、旋轉地圖預覽、角色 3D 檢視、揀車、簡單 / 普通 / 困難比賽設定同畫面設定。故事模式仍然只顯示開發中提示。[實作說明同限制](docs/free-mode.md)。\n",
+            "\n",
+            "### 地圖目錄\n",
+            "\n",
+            "陸地賽道依 **01–12** 排列，水上地圖 **A01** 放喺最後。顯示編號唔會改動原有地圖 ID、儲存嘅選擇或者直達連結。\n",
+            "\n",
+            "- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n",
+            "\n",
+            "\n",
+            "## 六槽食物車庫\n",
+            "\n",
+            "開[穩定版車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或者[dev 車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)。**55 個食物主題 / 330 件零件**包括 000 純白飯，可以揀整車或者六槽自由改裝，有真正 3D 預覽、參數比較同方案儲存。睇整車只係預覽，套用先會換晒六件，亦可以先儲存同復原。揀好嘅裝配用得喺全部 12 張陸地賽道，六位角色屬性同水上坐騎保持不變。NPC 用相同零件公式嘅預設混搭車，冇同主題加成。電量消耗、耐久損耗、修理同經濟系統仲未啟用。[實作同驗證範圍](docs/modular-garage.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 46,
+          "removedLines": [
+            "- 喺日落海岸賽道同五位 AI 對手鬥**三個圈**，有海景、碰撞、圈數同排名記錄，仲有迷你地圖\n"
+          ],
+          "insertedLines": [
+            "- **三圈競速：** 喺陸地同水上地圖同五位 AI 對手鬥快，有碰撞、圈數同排名記錄，仲有迷你地圖\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 59,
+          "removedLines": [
+            "第一次下載角色合共大約 **51.6 MB**，最多同時下載／準備兩個模型。載入畫面會顯示實際下載咗幾多位元組，同埋解壓縮、準備嘅進度；遇到暫時性錯誤會喺限定次數內重試。你亦可以再試下載失敗嘅檔案，唔會丟失已經載入好嘅模型。缺少模型嗰陣，會清楚標明改用原創車手做後備。\n"
+          ],
+          "insertedLines": [
+            "第一次下載比賽角色合共大約 **51.6 MB**；揀中嘅站姿肖像同食物車零件會按需要另外下載。最多同時下載／準備兩個角色模型。載入畫面會顯示真實位元組進度、解壓縮同準備狀態；暫時性錯誤會有限次重試，亦可以只重試失敗檔案，保留已載入嘅模型。缺少模型唔會用替身，必要資源全部就緒先開始比賽。載入期間會巡遊賽道上空，再平順返到起點。\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 63,
+          "removedLines": [
+            "## Windows 試玩版\n"
+          ],
+          "insertedLines": [
+            "## 網頁 / HTML 下載包\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 65,
+          "removedLines": [
+            "**需要 64 位元 Windows 10/11，同埋支援 WebGL2 嘅 GPU。** 呢個係預先發佈嘅試玩版，仲未係正式版。\n"
+          ],
+          "insertedLines": [
+            "喺[發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)揀 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，再核對隨附嘅 SHA-256 校驗值。完整解壓縮後，用 HTTP(S) 提供遊戲檔案；唔支援用 `file://` 直接開 `index.html`。全部資產、授權聲明同對應原始碼檔案要一齊保留。\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 67,
+          "removedLines": [
+            "1. 喺[發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)下載 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)。\n"
+          ],
+          "insertedLines": [
+            "## Windows 下載包\n",
+            "\n",
+            "**需要 64 位元 Windows 10/11，同埋支援 WebGL2 嘅 GPU。** 請用 v0.4.0 包，並閱讀對應發佈說明。封裝成功同自動化檢查唔代表已驗證真正 Windows GPU、效能或者輸入裝置相容性。\n",
+            "\n",
+            "1. 喺[發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下載 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，再核對隨附嘅 SHA-256 校驗值。\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 75,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "主選單嘅**退出**掣會關閉 Windows 應用程式；由比賽返主選單仍然係遊戲內導覽。瀏覽器入面嘅**退出**會開休息頁面，關閉分頁就可以離開。已有嘅桌面退出修正會保留，但唔代表呢個版本已做過新一輪原生 Windows GPU 實機試玩。\n"
+          ]
+        },
+        {
+          "beforeStart": 94,
+          "afterStart": 129,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 133,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "原始碼包亦冇包另外下載嘅食物車資料，請用上面嘅指令還原同驗證。原創可編輯資產原始碼同校驗清單仍然有包埋。\n"
+          ]
+        },
+        {
+          "beforeStart": 101,
+          "afterStart": 140,
+          "removedLines": [
+            "[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)要**手動執行**。喺儲存庫嘅 **Settings → Pages** 揀 **GitHub Actions**。喺 `main` 執行工作流程，並剔選 **Publish**。佢會先檢查、測試同建置揀咗嘅提交，再發佈遊戲。一般推送唔會部署遊戲。\n"
+          ],
+          "insertedLines": [
+            "[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會先檢查、測試同建置揀好嘅原始碼，再發佈。穩定版喺網站根目錄，獨立預覽喺 `/dev/`。請跟目前分支嘅工作流程觸發條件同發佈選項操作；dev 部署一定要保留穩定版根目錄。發佈包要用對應版本標籤嘅同一份原始碼。\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 153,
+          "removedLines": [
+            "揀一個車手欄位，再匯入相容嘅 GLB；亦可以一次揀多個檔案，但每個檔名都要啱啱包含一個車手欄位名稱標記。每個檔案上限係 **32 MiB**，最多同時處理兩個。匯入嘅內容只會留喺頁面記憶體，唔會上傳，亦唔會永久儲存。失敗或者取消都會保留原本嘅車手；**恢復預設**就會還原隨附角色，或者清楚標明嘅後備模型。\n"
+          ],
+          "insertedLines": [
+            "揀一個車手欄位，再匯入相容 GLB；亦可以多選檔案，但每個檔名要包含唯一嘅車手欄位名稱標記。每個檔案上限 **32 MiB**，最多同時處理兩個。內容只留喺頁面記憶體，唔上傳亦唔永久儲存。失敗或者取消會保留原車手；**恢復預設**會還原隨附角色。簡化後嘅比賽載入頁隱藏咗舊匯入控制項，喺主選單揀角色就得。\n"
+          ]
+        }
+      ]
+    },
+    "README.zh-CN.md": {
+      "previousSha256": "127ca696972da668100de1d16c679ac140950c7d0cd5231a48794b1e43761e18",
+      "currentSha256": "003f8b878052beaaecc53d20c873104f17d5949bd5584036ac75b71d09ccb88a",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "使用 **PlayCanvas Engine、TypeScript 和 Vite** 开发的日落海岸街机卡丁车游戏。任选六位骨骼角色车手之一，与其余五位比赛，体验漂移加速、道具对抗和可自由环顾的追逐镜头。\n"
+          ],
+          "insertedLines": [
+            "使用 **PlayCanvas Engine、TypeScript 和 Vite** 开发的街机卡丁车游戏，包含 12 张陆地地图和 1 张水上地图。任选六位骨骼角色车手之一，与其余五位比赛，体验漂移加速、道具对抗和可自由环顾的追逐镜头。\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[浏览器在线试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [下载 Windows 试玩版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[浏览器稳定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev 预览](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [网页 / Windows 下载](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 14,
+          "afterStart": 14,
+          "removedLines": [
+            "## dev 自由模式测试\n"
+          ],
+          "insertedLines": [
+            "## v0.4.0 统一版本\n"
+          ]
+        },
+        {
+          "beforeStart": 16,
+          "afterStart": 16,
+          "removedLines": [
+            "[打开独立 dev 试玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/)：动态 3D 赛道封面、旋转地图预览、可旋转的角色 3D 形象、差异化驾驶属性、画面设置，以及海岸和水上乐园完整圈赛。[功能与验证范围](docs/free-mode.md)。经测试的自由模式版本现已合入主分支，并发布到上方稳定版入口；Windows 版本单独发布。\n"
+          ],
+          "insertedLines": [
+            "本文说明 **v0.4.0** 的统一功能：13 张地图、六名车手，以及包含 55 个主题 / 330 件零件的六槽食物车库。11 张新增陆地地图均包含场景丰富化成果。浏览器稳定版与下载包采用同一套功能，`/dev/` 保留为后续更新的独立预览。已发布文件、源码提交、校验值及各版本的实际验证情况以[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)为准。\n"
+          ]
+        },
+        {
+          "beforeStart": 18,
+          "afterStart": 18,
+          "removedLines": [
+            "## 原创陆地赛道（dev）\n"
+          ],
+          "insertedLines": [
+            "自由模式包含动态 3D 封面、旋转地图预览、角色 3D 查看、车辆选择、简单 / 普通 / 困难比赛设置和画面设置。故事模式仍为开发中提示。[实现说明与限制](docs/free-mode.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 20,
+          "afterStart": 20,
+          "removedLines": [
+            "**云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在 dev 地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。本次是网页测试更新，不包含新的 Windows 打包。\n"
+          ],
+          "insertedLines": [
+            "### 地图目录\n"
+          ]
+        },
+        {
+          "beforeStart": 22,
+          "afterStart": 22,
+          "removedLines": [
+            "**灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开 dev 旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=town)。\n"
+          ],
+          "insertedLines": [
+            "陆地赛道按 **01–12** 排列，水上地图 **A01** 放在最后。显示编号不改变原有地图 ID、存档选择或直达链接。\n"
+          ]
+        },
+        {
+          "beforeStart": 24,
+          "afterStart": 24,
+          "removedLines": [
+            "**赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开 dev 采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=quarry)。\n"
+          ],
+          "insertedLines": [
+            "- **01** [日落海岸](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [云岭盘山道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [灯阶旧城环线](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [赤砾采石环道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [杉影星台环线](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [发条工坊回旋道](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [谷风麦垄回环](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [星砂古驿](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [霜环雪站](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [玄岩环冕](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [蔓穹花园](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [铜翼空港](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [晴空水上乐园](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n"
+          ]
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 38,
+          "removedLines": [
+            "**杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开 dev 杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=forest)。\n"
+          ],
+          "insertedLines": []
+        },
+        {
+          "beforeStart": 28,
+          "afterStart": 39,
+          "removedLines": [
+            "**发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开 dev 工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=workshop)。\n"
+          ],
+          "insertedLines": [
+            "## 原创陆地赛道\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 41,
+          "removedLines": [
+            "**谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开 dev 收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=harvest)。\n"
+          ],
+          "insertedLines": [
+            "**云岭盘山道**：39 米高低差、带倾角的山路弯道、真正上下分层的高架交叉，以及原创山石、松林、护栏和观景木屋。沿用改装车库、六名车手、比赛设置与统一操作。[在地图列表中选择](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain)。[几何、源码与验证范围](docs/land-map-catalog.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 32,
+          "afterStart": 43,
+          "removedLines": [
+            "**星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开 dev 沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=desert)。\n"
+          ],
+          "insertedLines": [
+            "**灯阶旧城环线 / Lantern Terrace Rally** 新增山城集市赛道：用方向键选择灯巷或电车大道，经过真实高低分层街桥与原创建筑。玩家与 NPC 共用现有卡丁车竞速系统。[打开旧城地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town)。\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 45,
+          "removedLines": [
+            "**霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开 dev 雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=snow)。\n"
+          ],
+          "insertedLines": [
+            "**赤砾采石环道 / Redstrata Quarry** 新增干燥砂岩采石场，包含石脊窄道、重载环坡与木栈桥双层交叉。[打开采石场地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry)。\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 47,
+          "removedLines": [
+            "**玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开 dev 玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=caldera)。\n"
+          ],
+          "insertedLines": [
+            "**杉影星台环线 / CedarLight Observatory** 新增连贯杉林山坡、真实倾斜林碗、镜台便道与观星环路分岔，以及跨越先前山谷的高架林冠桥。[打开杉林地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest)。\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 49,
+          "removedLines": [
+            "**蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开 dev 蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=garden)。\n"
+          ],
+          "insertedLines": [
+            "**发条工坊回旋道 / Clockwind Workshop** 新增原创巨型钟表工坊：沿四分之三圈木制螺旋坡爬升，跨过先前道路，在工具柜弯道与木台外沿之间选择路线。[打开工坊地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop)。\n"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 51,
+          "removedLines": [
+            "**铜翼空港 / Copperwing Airfield** 串联起步跑道、观景山脊连续弯与下降丘陵，可选择通透机库中的窄线或外围宽滑行道。原创静态飞机展品布置在赛车道路之外。[打开 dev 铜翼空港地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/index.html?screen=maps&map=airfield)。\n"
+          ],
+          "insertedLines": [
+            "**谷风麦垄回环 / Amberwind Harvest** 连接麦垄梯田、起伏果园与风车山脊，可以选择真正穿过谷仓的便道或宽阔田埂外环。[打开收获田野地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest)。\n",
+            "\n",
+            "**星砂古驿 / Sunweave Caravan** 连接真实起伏的沙脊、风蚀砂岩弯廊与开放古驿庭院，可以选择双石拱折径或宽阔风帆庭环。[打开沙丘古驿地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert)。\n",
+            "\n",
+            "**霜环雪站 / Frostloop Depot** 穿行两座相向雪岭弯谷和低鞍部，在维修场折径与宽阔倾斜雪台之间选线，沿层叠石坡返回。[打开雪岭车站地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow)。\n",
+            "\n",
+            "**玄岩环冕 / Basalt Crown** 沿开阔火山岩环缘爬升，下探钩形石谷，在内侧技术弯与外侧宽路之间选线，两条下层道路分别穿过真实石桥拱洞。[打开玄岩环冕地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera)。\n",
+            "\n",
+            "**蔓穹花园 / Verdant Canopy** 沿层叠花园连续弯爬上花瓣高台，在通透木架曲径与外园宽弧之间选线，穿过起伏南坡返回低地。[打开蔓穹花园地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden)。\n",
+            "\n",
+            "**铜翼空港 / Copperwing Airfield** 串联起步跑道、观景山脊连续弯与下降丘陵，可选择通透机库中的窄线或外围宽滑行道。原创静态飞机展品布置在赛车道路之外。[打开铜翼空港地图](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield)。\n",
+            "\n",
+            "## 六槽食物车库\n",
+            "\n",
+            "[打开稳定版车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[独立 dev 车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：**55 个食物主题 / 330 件零件**，包含 000 纯白饭；提供“选整车 / 自由改装”双入口、六槽自由混搭、真实 3D 预览、参数比较与方案保存。浏览整车只预览，应用才替换六件，支持替换前收藏与撤销。所选装配用于全部 12 张陆地赛道，保留六角色属性和水上坐骑。NPC 使用相同零件公式的预设混搭车，同主题不额外加成。电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 45,
+          "afterStart": 70,
+          "removedLines": [
+            "- **三圈竞速：** 在日落海岸赛道与五位 AI 对手比赛，包含海景、碰撞、圈数/名次统计和小地图\n"
+          ],
+          "insertedLines": [
+            "- **三圈竞速：** 在陆地与水上地图中与五位 AI 对手比赛，包含碰撞、圈数 / 名次统计和小地图\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 83,
+          "removedLines": [
+            "首次角色下载合计约 **51.6 MB**，最多同时下载/准备两个模型。加载界面显示真实字节进度、解压和准备阶段；临时错误会有限次重试，也可只重试失败文件，保留已成功加载的模型。缺失模型不会显示替身；请重试，全部真实模型就绪后才开始比赛。两张地图共用高空赛道巡游加载画面，并平滑返回起点。\n"
+          ],
+          "insertedLines": [
+            "首次比赛角色下载合计约 **51.6 MB**；所选站姿肖像和食物车辆零件另按需下载。最多同时下载 / 准备两个角色模型。加载界面显示真实字节进度、解压和准备阶段；临时错误会有限次重试，也可只重试失败文件，保留已成功加载的模型。缺失模型不会显示替身，所需资源全部就绪后才开始比赛。比赛使用高空赛道巡游加载画面，并平滑返回起点。\n"
+          ]
+        },
+        {
+          "beforeStart": 62,
+          "afterStart": 87,
+          "removedLines": [
+            "## Windows 试玩版\n"
+          ],
+          "insertedLines": [
+            "## 网页 / HTML 下载包\n"
+          ]
+        },
+        {
+          "beforeStart": 64,
+          "afterStart": 89,
+          "removedLines": [
+            "需要 **Windows 10/11 64 位及支持 WebGL2 的 GPU**。这是预发布试玩版本，并非正式生产版本。\n"
+          ],
+          "insertedLines": [
+            "从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)选择 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，并与随附的 SHA-256 校验值核对。完整解压后，通过 HTTP(S) 提供其中的游戏文件；不支持以 `file://` 直接打开 `index.html`。请一并保留全部资源、许可声明和对应源码文件。\n"
+          ]
+        },
+        {
+          "beforeStart": 66,
+          "afterStart": 91,
+          "removedLines": [
+            "1. 从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)下载 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)。\n"
+          ],
+          "insertedLines": [
+            "## Windows 下载包\n",
+            "\n",
+            "需要 **Windows 10/11 64 位及支持 WebGL2 的 GPU**。请使用 v0.4.0 包并阅读对应发布说明。打包成功及自动检查不代表已验证真实 Windows GPU、性能或输入设备兼容性。\n",
+            "\n",
+            "1. 从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下载 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，并与随附的 SHA-256 校验值核对。\n"
+          ]
+        },
+        {
+          "beforeStart": 70,
+          "afterStart": 99,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "主菜单的**退出**按钮会关闭 Windows 应用；从比赛返回主菜单仍是游戏内导航。浏览器中的**退出**会打开休息页面，关闭标签页即可离开。保留已有桌面退出修复，不据此声称本版本已通过新的原生 Windows GPU 实机试玩。\n"
+          ]
+        },
+        {
+          "beforeStart": 122,
+          "afterStart": 153,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 124,
+          "afterStart": 157,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "源码包也不包含另行下载的食物车辆载荷，请用上述命令恢复并验证。原创可编辑资产源码及校验清单仍包含在源码包中。\n"
+          ]
+        },
+        {
+          "beforeStart": 129,
+          "afterStart": 164,
+          "removedLines": [
+            "[Build and publish PlayCanvas game 工作流](.github/workflows/pages.yml)需 **手动运行**。在仓库 **Settings → Pages** 中选择 **GitHub Actions**，然后在 `main` 分支运行工作流并勾选 **Publish**。发布前会对所选提交执行检查、测试和构建；普通推送不会部署游戏。\n"
+          ],
+          "insertedLines": [
+            "[Build and publish PlayCanvas game 工作流](.github/workflows/pages.yml)在发布前检查、测试并构建所选源码。稳定版位于站点根目录，独立预览位于 `/dev/`。请按所检出分支的工作流触发条件和发布选项操作；dev 部署必须保留稳定版根目录。发布包必须使用对应版本标签的同一份源码。\n"
+          ]
+        },
+        {
+          "beforeStart": 158,
+          "afterStart": 193,
+          "removedLines": [
+            "\n",
+            "## 六槽食物车库（仅 dev 测试）\n",
+            "\n",
+            "[打开独立测试车库](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)：55 个食物主题、330 件零件（新增 000 纯白饭），“选整车 / 自由改装”双入口、六槽自由混搭、真实 3D 预览、参数比较与方案保存。浏览整车只预览；应用才替换六件，支持替换前收藏与撤销。所选装配进入海岸比赛，保留六角色属性；同主题不额外加成，水上坐骑不变。本轮先实现组装和新车性能，电量消耗、耐久损耗、修理及经济系统尚未启用。[实现与验证边界](docs/modular-garage.md)\n"
+          ],
+          "insertedLines": []
+        }
+      ]
+    },
+    "README.zh-TW.md": {
+      "previousSha256": "b05da11526be27ab98a232dbb7072af6bce5725905eab93fcb006f2e23f179dc",
+      "currentSha256": "b1f8c1f95c90b27adfa4f6187350789dc4a21b825b514d7251e16b391100d888",
+      "scope": "Documentation-only unified v0.4.0 feature, download, stable/dev and numbered land/water catalog release update",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，在夕陽海岸賽道上競速。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具，以及可自由環繞的追蹤鏡頭。\n"
+          ],
+          "insertedLines": [
+            "以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，包含 12 張陸地地圖與 1 張水上地圖。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具與可自由環繞的追蹤鏡頭。\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "removedLines": [
+            "**[在瀏覽器中遊玩](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [下載 Windows 試玩版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)**\n"
+          ],
+          "insertedLines": [
+            "**[瀏覽器穩定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [網頁 / Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 13,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "## v0.4.0 統一版本\n",
+            "\n",
+            "本文說明 **v0.4.0** 的統一功能：13 張地圖、六名車手，以及包含 55 個主題 / 330 件零件的六槽食物車庫。11 張新增陸地地圖均包含場景豐富化成果。瀏覽器穩定版與下載套件採用相同功能，`/dev/` 保留為後續更新的獨立預覽。已發佈檔案、原始碼提交、校驗值及各版本的實際驗證情況以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。\n",
+            "\n",
+            "自由模式包含動態 3D 封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。\n",
+            "\n",
+            "### 地圖目錄\n",
+            "\n",
+            "陸地賽道依 **01–12** 排列，水上地圖 **A01** 放在最後。顯示編號不改變原有地圖 ID、儲存的選擇或直達連結。\n",
+            "\n",
+            "- **01** [Sunset Coast](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=coast) · `coast`\n",
+            "- **02** [Cloudridge Pass](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=mountain) · `mountain`\n",
+            "- **03** [Lantern Terrace Rally](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=town) · `town`\n",
+            "- **04** [Redstrata Quarry](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=quarry) · `quarry`\n",
+            "- **05** [CedarLight Observatory](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=forest) · `forest`\n",
+            "- **06** [Clockwind Workshop](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=workshop) · `workshop`\n",
+            "- **07** [Amberwind Harvest](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=harvest) · `harvest`\n",
+            "- **08** [Sunweave Caravan](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=desert) · `desert`\n",
+            "- **09** [Frostloop Depot](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=snow) · `snow`\n",
+            "- **10** [Basalt Crown](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=caldera) · `caldera`\n",
+            "- **11** [Verdant Canopy](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=garden) · `garden`\n",
+            "- **12** [Copperwing Airfield](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=airfield) · `airfield`\n",
+            "- **A01** [Sky Waterpark](https://jerryzric.github.io/ai-friends-kart-playcanvas/index.html?screen=maps&map=waterpark) · `waterpark`\n",
+            "\n",
+            "\n",
+            "## 六槽食物車庫\n",
+            "\n",
+            "開啟[穩定版車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[dev 車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)。**55 個食物主題 / 330 件零件**包含 000 純白飯，支援整車選擇、六槽自由改裝、真實 3D 預覽、參數比較與方案儲存。瀏覽整車只做預覽，套用才替換六件，並支援替換前儲存與復原。所選裝配可用於全部 12 張陸地賽道，六位角色屬性與水上坐騎維持不變。NPC 使用相同零件公式的預設混搭車，沒有同主題加成。電量消耗、耐久損耗、修理及經濟系統尚未啟用。[實作與驗證範圍](docs/modular-garage.md)。\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 46,
+          "removedLines": [
+            "- 在夕陽海岸賽道上與五位 AI 對手進行**三圈比賽**，包含海景、碰撞、圈數與名次追蹤，以及迷你地圖\n"
+          ],
+          "insertedLines": [
+            "- **三圈比賽：** 在陸地與水上地圖和五位 AI 對手競速，包含碰撞、圈數與名次追蹤，以及迷你地圖\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 59,
+          "removedLines": [
+            "首次下載角色的總容量約為 **51.6 MB**，最多同時下載／準備兩個模型。載入畫面會顯示實際位元組進度、解壓縮與準備狀態；暫時性錯誤會在限定次數內重試，也可重試失敗的檔案，不會失去已載入的模型。缺少模型時，會明確標示改用原創車手作為替代。\n"
+          ],
+          "insertedLines": [
+            "首次比賽角色下載總容量約 **51.6 MB**；選取的站姿肖像和食物車輛零件另依需要下載。最多同時下載／準備兩個角色模型。載入畫面顯示實際位元組進度、解壓縮及準備狀態；暫時性錯誤會有限次重試，也可只重試失敗檔案，保留已載入模型。缺少模型時不使用替身，必要資源全部就緒才開始比賽。比賽載入期間會巡遊賽道上空，再平順返回起點。\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 63,
+          "removedLines": [
+            "## Windows 試玩版\n"
+          ],
+          "insertedLines": [
+            "## 網頁 / HTML 下載套件\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 65,
+          "removedLines": [
+            "**需要 64 位元 Windows 10/11，以及支援 WebGL2 的 GPU。** 這是預先發佈的試玩版本，尚非正式版。\n"
+          ],
+          "insertedLines": [
+            "從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。完整解壓縮後，以 HTTP(S) 提供遊戲檔案；不支援以 `file://` 直接開啟 `index.html`。請保留全部資產、授權聲明與對應原始碼檔案。\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 67,
+          "removedLines": [
+            "1. 從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v0.1.0-windows-playtest.20261007)下載 [AI-Friends-Kart-Windows-x64-20261007.zip](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v0.1.0-windows-playtest.20261007/AI-Friends-Kart-Windows-x64-20261007.zip)。\n"
+          ],
+          "insertedLines": [
+            "## Windows 下載套件\n",
+            "\n",
+            "**需要 64 位元 Windows 10/11，以及支援 WebGL2 的 GPU。** 請使用 v0.4.0 套件並閱讀對應發行說明。封裝成功及自動化檢查不代表已驗證真實 Windows GPU、效能或輸入裝置相容性。\n",
+            "\n",
+            "1. 從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下載 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 75,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "主選單的**退出**按鈕會關閉 Windows 應用程式；從比賽返回主選單仍是遊戲內導覽。瀏覽器中的**退出**會開啟休息頁面，關閉分頁即可離開。保留既有桌面退出修正，不據此宣稱本版本已完成新的原生 Windows GPU 實機試玩。\n"
+          ]
+        },
+        {
+          "beforeStart": 94,
+          "afterStart": 129,
+          "removedLines": [],
+          "insertedLines": [
+            "npm run food:fetch\n",
+            "npm run food:verify\n"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 133,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "原始碼套件也不含另行下載的食物車輛資料，請以上述指令還原並驗證。原創可編輯資產原始碼及校驗清單仍包含在套件中。\n"
+          ]
+        },
+        {
+          "beforeStart": 101,
+          "afterStart": 140,
+          "removedLines": [
+            "[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)需要**手動執行**。在儲存庫的 **Settings → Pages** 中選擇 **GitHub Actions**。於 `main` 上執行工作流程，並勾選 **Publish**。工作流程會先檢查、測試及建置所選提交，再進行發佈。一般推送不會部署遊戲。\n"
+          ],
+          "insertedLines": [
+            "[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會在發佈前檢查、測試及建置所選原始碼。穩定版位於網站根目錄，獨立預覽位於 `/dev/`。請依目前分支的工作流程觸發條件與發佈選項操作；dev 部署必須保留穩定版根目錄。發行套件必須使用對應版本標籤的相同原始碼。\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 153,
+          "removedLines": [
+            "選擇一個車手欄位並匯入相容的 GLB，也可多選檔案，但每個檔名必須恰好包含一個車手欄位名稱標記。每個檔案上限為 **32 MiB**，最多同時處理兩個。匯入內容僅保留於頁面記憶體中，不會上傳或永久儲存。匯入失敗或取消時會保留原先的車手；**恢復預設**會還原隨附角色或明確標示的替代模型。\n"
+          ],
+          "insertedLines": [
+            "選擇車手欄位並匯入相容 GLB，或多選檔名中各含唯一車手欄位名稱標記的檔案。每個檔案上限 **32 MiB**，最多同時處理兩個。匯入內容僅保留於頁面記憶體，不上傳也不永久儲存。失敗或取消時保留原車手；**恢復預設**會還原隨附角色。簡化後的比賽載入頁隱藏舊匯入控制項，角色選擇在主選單進行。\n"
+          ]
+        }
+      ]
+    },
+    "scripts/compose-dev-pages.mjs": {
+      "previousSha256": "e3a45277bf8603e4b67df2c3c9d9e2c2d09435bd51b9caab0e5db8808385aead",
+      "currentSha256": "be7b4f8041dcc5686abb81cdf5d5d5c209e70e516ff79f25abe4ed91bc3b382e",
+      "scope": "Explicit 350 MiB composed development artifact bound and exact-boundary coverage; individual file bound unchanged",
+      "hunks": [
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "removedLines": [
+            "  assert.ok(manifest.files.reduce((sum, file) => sum + file.bytes, 0) <= 300 * 1024 * 1024);\n"
+          ],
+          "insertedLines": [
+            "  // v0.4.0 includes thirteen courses and their corresponding-source archive.\n",
+            "  assert.ok(manifest.files.reduce((sum, file) => sum + file.bytes, 0) <= 350 * 1024 * 1024);\n"
+          ]
+        }
+      ]
+    },
+    "src/menu.ts": {
+      "previousSha256": "75f94747db242584a02153710bb29a060b5480d715b5d030a45b35984e2e2bb6",
+      "currentSha256": "bea1da072bbe01cdc2ac64ecfff53bb42dfa1eae2c1d75fa7c5fe47f63fa2818",
+      "scope": "Presentation-only map order, visible/accessibility codes, and matching keyboard order; stable IDs, profiles, scenery, routes and geometry unchanged",
+      "hunks": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "removedLines": [],
+          "insertedLines": [
+            "import {MAP_CATALOG,MAP_MENU_ORDER} from './map-presentation';\n"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 97,
+          "removedLines": [
+            "     <div class=\"map-choices\" role=\"group\" aria-label=\"选择地图\" aria-describedby=\"map-keyboard-hint\">${Object.values(MAP_PROFILES).map((m,index)=>`\n",
+            "      <button class=\"map-choice\" data-map=\"${m.id}\" aria-pressed=\"${m.id===state.map}\" tabindex=\"${m.id===state.map?'0':'-1'}\" aria-label=\"${m.label}，${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}\">\n"
+          ],
+          "insertedLines": [
+            "     <div class=\"map-choices\" role=\"group\" aria-label=\"选择地图\" aria-describedby=\"map-keyboard-hint\">${MAP_CATALOG.map(m=>`\n",
+            "      <button class=\"map-choice\" data-map=\"${m.id}\" aria-pressed=\"${m.id===state.map}\" tabindex=\"${m.id===state.map?'0':'-1'}\" aria-label=\"${m.displayCode} ${m.label}，${m.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}\">\n"
+          ]
+        },
+        {
+          "beforeStart": 100,
+          "afterStart": 101,
+          "removedLines": [
+            "        <span class=\"map-choice-number\" aria-hidden=\"true\">${String(index+1).padStart(2,'0')}</span>\n"
+          ],
+          "insertedLines": [
+            "        <span class=\"map-choice-number\" aria-hidden=\"true\">${m.displayCode}</span>\n"
+          ]
+        },
+        {
+          "beforeStart": 183,
+          "afterStart": 184,
+          "removedLines": [
+            "   const maps=Object.keys(MAP_PROFILES) as MapId[],index=maps.indexOf(button.dataset.map as MapId);\n"
+          ],
+          "insertedLines": [
+            "   const maps=MAP_MENU_ORDER,index=maps.indexOf(button.dataset.map as MapId);\n"
+          ]
+        }
+      ]
+    },
+    "tests/airfield-enrichment-inventory.test.ts": {
+      "previousSha256": "d1bd558d1cca7446c7451b22d6bda6fe8ef181d5dc5e171b20c2774a8674fe94",
+      "currentSha256": "29d9fe6ee83c0e0ee4f8b54e579290601da0e711fddc7de54d9ab26601478efa",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths,menuPresentationHash,restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 22,
+          "afterStart": 23,
+          "removedLines": [
+            " const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\\.[a-z][a-z0-9-]+-\\d+-[0-9a-f-]+\\.ts$/.test(p.split('/').at(-1)!)).sort(),Object.keys(original.sourceInventory).filter(p=>p.startsWith('src/')).sort());\n"
+          ],
+          "insertedLines": [
+            " const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\\.[a-z][a-z0-9-]+-\\d+-[0-9a-f-]+\\.ts$/.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(original.sourceInventory).sort());\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 36,
+          "removedLines": [
+            " for(const p of required)assert.ok(Object.hasOwn(m.finalFileSha256,p),p+' complete portable dependency');for(const [p,h]of Object.entries(m.finalFileSha256))assert.equal(sha(readFileSync(p)),h,p+' final exact source identity');\n"
+          ],
+          "insertedLines": [
+            " for(const p of required)assert.ok(Object.hasOwn(m.finalFileSha256,p),p+' complete portable dependency');for(const [p,h]of Object.entries(m.finalFileSha256))assert.equal(sha(readFileSync(p)),menuPresentationHash(p,h),p+' final exact source identity');\n"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 41,
+          "removedLines": [
+            " for(const row of ledger.files){const text=readFileSync(row.path,'utf8');assert.equal(sha(text),row.afterSha256);assert.equal(row.beforeSha256,original.sourceInventory[row.path]);const lines=text.match(/[^\\n]*\\n|[^\\n]+$/g)??[];let offset=0;const ranges=row.hunks.map((h:any)=>{const at=h.startLine+offset;offset+=h.insertedLines.length-h.removedLines.length;return{...h,at};});for(const h of ranges.reverse()){assert.deepEqual(lines.slice(h.at,h.at+h.insertedLines.length),h.insertedLines);lines.splice(h.at,h.insertedLines.length,...h.removedLines);}assert.equal(sha(lines.join('')),row.beforeSha256,row.path+' exact inverse approved transformation');}\n"
+          ],
+          "insertedLines": [
+            " for(const row of ledger.files){const text=restoreMenuPresentationBytes(row.path,readFileSync(row.path,'utf8'));assert.equal(sha(text),row.afterSha256);assert.equal(row.beforeSha256,original.sourceInventory[row.path]);const lines=text.match(/[^\\n]*\\n|[^\\n]+$/g)??[];let offset=0;const ranges=row.hunks.map((h:any)=>{const at=h.startLine+offset;offset+=h.insertedLines.length-h.removedLines.length;return{...h,at};});for(const h of ranges.reverse()){assert.deepEqual(lines.slice(h.at,h.at+h.insertedLines.length),h.insertedLines);lines.splice(h.at,h.insertedLines.length,...h.removedLines);}assert.equal(sha(lines.join('')),row.beforeSha256,row.path+' exact inverse approved transformation');}\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-camera-dependency-transition.test.ts": {
+      "previousSha256": "cbaec105cffc1db96d8d8b4123fa0a4c904e7f28103df37888cdf011645aa9b7",
+      "currentSha256": "fedf0243d205fc7e24cc3ea102a5470580256bd95a661110f6fcf188541851ba",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 22,
+          "removedLines": [
+            "  const current = read('tests/helpers/garden-enrichment-camera-records.ts');\n"
+          ],
+          "insertedLines": [
+            "  const current = restoreMenuPresentationBytes('tests/helpers/garden-enrichment-camera-records.ts', read('tests/helpers/garden-enrichment-camera-records.ts'));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-fixture-publication.test.ts": {
+      "previousSha256": "66233a7a1cbf2ef556aa940dc8896235ef0007ea36b7818d4c8e1d6752fdc796",
+      "currentSha256": "eb6ca483ec95dbc5b08fc00dbb35c56a302e8a68adcdbb9b5f5531b543e8db48",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 56,
+          "afterStart": 57,
+          "removedLines": [
+            "    assert.equal(sha(readFileSync(path)), row.currentSha256, path + ' exact reviewed output');\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(sha(readFileSync(path)), menuPresentationHash(path, row.currentSha256), path + ' exact reviewed output');\n"
+          ]
+        },
+        {
+          "beforeStart": 82,
+          "afterStart": 83,
+          "removedLines": [
+            "    assert.equal(manifest.finalFileSha256[path], sha(readFileSync(path)), path + ' exact packaged dependency');\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(menuPresentationHash(path, manifest.finalFileSha256[path]), sha(readFileSync(path)), path + ' exact packaged dependency');\n"
+          ]
+        }
+      ]
+    },
+    "tests/caldera-enrichment-inventory.test.ts": {
+      "previousSha256": "dbe2f6d10ea4d289926c5230a6945fcfe5f3312c868ab11921ab79f9a9c97684",
+      "currentSha256": "b014865aca030e8356d3d38d55650a83729754b2dd77dc54dd4afba91942f62c",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 23,
+          "afterStart": 24,
+          "removedLines": [
+            " const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\\.[a-z][a-z0-9-]+-\\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.ts$/.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort());\n"
+          ],
+          "insertedLines": [
+            " const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\\.[a-z][a-z0-9-]+-\\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.ts$/.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort());\n"
+          ]
+        }
+      ]
+    },
+    "tests/desert-enrichment-inventory.test.ts": {
+      "previousSha256": "a8e2facb3f7da30cbbba781724e374ef7657e552dc1aa6825408366c84ddb10c",
+      "currentSha256": "dc97608adc0074d15b97aa6b4595f98f6ea5faf83358712931b8d0eb0465279e",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 39,
+          "afterStart": 40,
+          "removedLines": [
+            " assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production source, twelfth map or alternate runtime');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production source, twelfth map or alternate runtime');\n"
+          ]
+        }
+      ]
+    },
+    "tests/dev-pages.test.mjs": {
+      "previousSha256": "bbff6d55ae33b83eadb005513d070191488b134f1cb68455c5095c3a269c3915",
+      "currentSha256": "cd1d03fbcf5fcd5735c15eef34bba0fde29a4bab037508a5dc4b987a7cc02d11",
+      "scope": "Explicit 350 MiB composed development artifact bound and exact-boundary coverage; individual file bound unchanged",
+      "hunks": [
+        {
+          "beforeStart": 45,
+          "afterStart": 45,
+          "removedLines": [],
+          "insertedLines": [
+            "});\n",
+            "\n",
+            "test('thirteen-course stable inventory retains strict aggregate and per-file size bounds', () => {\n",
+            "  const value = clone();\n",
+            "  for (const file of value.files) file.bytes = 0;\n",
+            "  for (let i = 0; i < 3; i++) value.files[i].bytes = 100 * 1024 * 1024;\n",
+            "  value.files[3].bytes = 50 * 1024 * 1024;\n",
+            "  assert.equal(validateManifest(value), value, '350 MiB exact aggregate boundary');\n",
+            "  value.files[3].bytes++;\n",
+            "  assert.throws(() => validateManifest(value), undefined, 'One byte above aggregate limit');\n",
+            "  value.files[3].bytes = 0;\n",
+            "  value.files[0].bytes++;\n",
+            "  assert.throws(() => validateManifest(value), undefined, '100 MiB per-file limit remains');\n"
+          ]
+        }
+      ]
+    },
+    "tests/forest-enrichment-inventory.test.ts": {
+      "previousSha256": "f0dd0a9dc7bbeb51135283bcb2381d9f23b013e971a9e076e960fd5e35801d4e",
+      "currentSha256": "62e4eb84eaa1e515c1e20ff43aac813eb2b99a6395d060c011fcab884ddca772",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 23,
+          "afterStart": 24,
+          "removedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'no added production inputs or twelfth land scene');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'no added production inputs or twelfth land scene');\n"
+          ]
+        }
+      ]
+    },
+    "tests/free-mode-menu-dom.test.ts": {
+      "previousSha256": "a8aa31a7bc8e2a5631f14d7ecfa2be4e087dc2dd5b94c0da6e960a9d5c47599c",
+      "currentSha256": "acefcef4f2d190bcb341f8ee2d3e62b62de96007daed90f0fab3fdfe190ad3ae",
+      "scope": "Menu-only DOM assertions and additional stable-ID history/deep-link regression coverage",
+      "hunks": [
+        {
+          "beforeStart": 5,
+          "afterStart": 5,
+          "removedLines": [
+            "import {MAP_PROFILES} from '../src/map-profiles';\n",
+            "const mapIds=Object.keys(MAP_PROFILES),lastMap=mapIds.at(-1)!;\n"
+          ],
+          "insertedLines": [
+            "const mapIds=['coast','mountain','town','quarry','forest','workshop','harvest','desert','snow','caldera','garden','airfield','waterpark'],lastMap='waterpark';\n",
+            "const mapCodes=['01','02','03','04','05','06','07','08','09','10','11','12','A01'];\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "removedLines": [
+            " const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=[];\n",
+            " const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.push(url);location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[urls.length-1]=url;location.search=new URL(url,'https://test.invalid/dev/').search;}};\n"
+          ],
+          "insertedLines": [
+            " const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=['./index.html'];let historyIndex=0;\n",
+            " const restoreHistory=()=>{location.search=new URL(urls[historyIndex],'https://test.invalid/dev/').search;windowTarget.dispatchEvent(new Event('popstate'));};\n",
+            " const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.splice(historyIndex+1);urls.push(url);historyIndex++;location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[historyIndex]=url;location.search=new URL(url,'https://test.invalid/dev/').search;},back:()=>{if(historyIndex>0){historyIndex--;restoreHistory();}},forward:()=>{if(historyIndex<urls.length-1){historyIndex++;restoreHistory();}}};\n"
+          ]
+        },
+        {
+          "beforeStart": 53,
+          "afterStart": 54,
+          "removedLines": [],
+          "insertedLines": [
+            "   assert.deepEqual(root.querySelectorAll('[data-map]').map(e=>e.dataset.map),mapIds,'visual and reading order keep water last');\n",
+            "   assert.deepEqual([...root.innerHTML.matchAll(/class=\"map-choice-number\" aria-hidden=\"true\">([^<]+)</g)].map(m=>m[1]),mapCodes);\n",
+            "   for(const [i,id] of mapIds.entries())assert.ok($(`[data-map=\"${id}\"]`).attrs['aria-label'].startsWith(mapCodes[i]+' '),'accessible card identity matches its visible code');\n",
+            "   assert.match(root.innerHTML,/01 \\/ 04/,'flow step is not a map code');\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 60,
+          "removedLines": [
+            "   const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map=\"coast\"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'waterpark');assert.equal(urls.length,historyLength,'selection updates the existing history entry');\n",
+            "   assert.equal($('[data-map=\"waterpark\"]').attrs['aria-pressed'],'true');assert.equal($('[data-map=\"waterpark\"]').attrs.tabindex,'0');assert.equal($('[data-map=\"coast\"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');\n"
+          ],
+          "insertedLines": [
+            "   const historyLength=urls.length;assert.equal(key('ArrowDown',$('[data-map=\"coast\"]')).defaultPrevented,true);assert.equal(g.document.activeElement.dataset.map,'mountain');assert.equal(urls.length,historyLength,'selection updates the existing history entry');\n",
+            "   assert.equal($('[data-map=\"mountain\"]').attrs['aria-pressed'],'true');assert.equal($('[data-map=\"mountain\"]').attrs.tabindex,'0');assert.equal($('[data-map=\"coast\"]').attrs.tabindex,'-1');assert.equal($('.map-detail-panel').dataset['preview-map'],'mountain');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/mountain-overview.webp');\n"
+          ]
+        },
+        {
+          "beforeStart": 75,
+          "afterStart": 80,
+          "removedLines": [],
+          "insertedLines": [
+            "  // Existing water deep links and browser history use stable IDs after presentation reorder.\n",
+            "  history.replaceState(null,'','./index.html?screen=maps&map=waterpark&driver=glm&difficulty=hard&seed=77');windowTarget.dispatchEvent(new Event('popstate'));\n",
+            "  const waterSelection=()=>{assert.equal(root.className,'screen-maps');assert.equal(root.querySelectorAll('[data-map]').at(-1)?.dataset.map,'waterpark');assert.equal($('[data-map=\"waterpark\"]').attrs['aria-pressed'],'true');assert.equal($('[data-map=\"waterpark\"]').attrs.tabindex,'0');assert.match($('[data-map=\"waterpark\"]').attrs['aria-label'],/^A01 晴空水上乐园/);assert.equal($('.map-detail-panel').dataset['preview-map'],'waterpark');assert.equal($('.map-stage-fallback').attrs.src,'./map-previews/waterpark-overview.webp');};\n",
+            "  const waterSetup=()=>{const p=new URLSearchParams(location.search);assert.equal(p.get('map'),'waterpark');assert.equal(p.get('driver'),'glm');assert.equal(p.get('difficulty'),'hard');assert.equal(p.get('seed'),'77');};\n",
+            "  waterSelection();waterSetup();const waterHtml=root.innerHTML,waterHistoryLength=urls.length;\n",
+            "  $('[data-map=\"waterpark\"]').click();$('[data-map=\"waterpark\"]').click();assert.equal(root.innerHTML,waterHtml);assert.equal(urls.length,waterHistoryLength,'repeated selected-card clicks do not create history entries');\n",
+            "  $('[data-screen=\"settings\"]').click();assert.equal(root.className,'screen-settings');history.back();waterSelection();waterSetup();assert.equal(g.document.activeElement,root);\n",
+            "  history.forward();assert.equal(root.className,'screen-settings');waterSetup();history.back();waterSelection();\n",
+            "  $('#confirm-map').click();assert.equal(root.className,'screen-characters');assert.match(root.innerHTML,/02 \\/ 04/,'character flow numbering is unchanged');waterSetup();history.back();waterSelection();waterSetup();history.forward();assert.equal(root.className,'screen-characters');\n",
+            "  $('#choose-vehicle').click();$('[data-screen=\"race-settings\"]').click();assert.equal(root.className,'screen-race-settings');\n",
+            "  const waterRace=new URL($('#start-race').attrs.href,'https://test.invalid/dev/');assert.equal(waterRace.pathname,'/dev/waterpark.html');assert.equal(waterRace.searchParams.get('driver'),'glm');assert.equal(waterRace.searchParams.get('difficulty'),'hard');assert.equal(waterRace.searchParams.get('seed'),'77');assert.equal(waterRace.searchParams.has('map'),false,'display code never replaces route identity');\n"
+          ]
+        }
+      ]
+    },
+    "tests/harvest-enrichment-inventory.test.ts": {
+      "previousSha256": "3d597d803824d3404f162ad4e06ce7b4ecb1f867d196ae34de42645e978e2a25",
+      "currentSha256": "18ec5e32b1b7c50690bada4fd79e84d18c7b3cb1435ac946e562b8b064d51d5d",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 19,
+          "afterStart": 20,
+          "removedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No twelfth scene, new production input or alternate gameplay');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No twelfth scene, new production input or alternate gameplay');\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/airfield-enrichment-camera-records.ts": {
+      "previousSha256": "e1d1ca255921b359a82836aaf7aea7ffb2d10f97608c78b1f43f430054dd9639",
+      "currentSha256": "5c755d3b78530dc7a11c158785504a12ca08c25a82b873cb650a39ae30c95c95",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {assertMenuPresentationDependency} from './menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 11,
+          "removedLines": [
+            " for(const [path,sha]of Object.entries(plan.protected))assert.equal(airfieldSha(readFileSync(path)),sha,'Original camera dependency: '+path);\n"
+          ],
+          "insertedLines": [
+            " for(const [path,sha]of Object.entries(plan.protected))assertMenuPresentationDependency(path,sha,airfieldSha(readFileSync(path)));\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/airfield-enrichment-reviewed-revisions.ts": {
+      "previousSha256": "08c895773b9fc00883613a53f58fd3f321619de33e9346ace27e191f89ca7516",
+      "currentSha256": "f635cacab8c03bf0ef1f44b7d4f10082a28dbf138689d3ec99701e9594939422",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationHash,menuPresentationPathsWithin} from './menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 11,
+          "afterStart": 12,
+          "removedLines": [
+            "export function airfieldReviewedHash(path:string,incoming:unknown){const row=airfieldReviewedRevisions().changes[path];if(row)assert.equal(incoming,row.previousSha256,path+' wrong incoming historical revision');return auditPublicationHash(path,row?row.currentSha256:incoming);}\n",
+            "export function airfieldReviewedPathsWithin(inventory:Record<string,unknown>){return [...AIRFIELD_REVIEWED_PATHS.filter(p=>p in inventory),...auditPublicationPathsWithin(inventory)];}\n"
+          ],
+          "insertedLines": [
+            "export function airfieldReviewedHash(path:string,incoming:unknown){const row=airfieldReviewedRevisions().changes[path];if(row)assert.equal(incoming,row.previousSha256,path+' wrong incoming historical revision');return menuPresentationHash(path,auditPublicationHash(path,row?row.currentSha256:incoming));}\n",
+            "export function airfieldReviewedPathsWithin(inventory:Record<string,unknown>){return [...new Set([...AIRFIELD_REVIEWED_PATHS.filter(p=>p in inventory),...auditPublicationPathsWithin(inventory),...menuPresentationPathsWithin(inventory)])];}\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/airfield-enrichment-source-stability.ts": {
+      "previousSha256": "92b8f09251ffe1ae2f56b8683c6a7933204d137110433d6ab70a3dadc390e88a",
+      "currentSha256": "21767fa2659041360235db4e46249e2ec36607487f292c34a51f8d208548c89f",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationAuditDependencies} from './menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 5,
+          "afterStart": 6,
+          "removedLines": [
+            " const files=new Set<string>(Object.keys(receipt.sourceInventory));\n"
+          ],
+          "insertedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies()]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/garden-enrichment-camera-records.ts": {
+      "previousSha256": "04a10653a53243cefe397118cae2243a2ecd2a7693f66f6a82902a873d5f45ed",
+      "currentSha256": "0d93deba6413de8c3a1639eee81222a9ba4a7dac99c0438ce2c812b0855a4c35",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {assertMenuPresentationDependency} from './menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 24,
+          "afterStart": 25,
+          "removedLines": [
+            "    assert.equal(actual, incoming, 'Original camera dependency: ' + path);\n"
+          ],
+          "insertedLines": [
+            "    assertMenuPresentationDependency(path, incoming, actual);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/garden-enrichment-source-stability.ts": {
+      "previousSha256": "c0aca866eca760487c37a1765acb8b9e7286900601693190116ea5dae7cc97db",
+      "currentSha256": "98282c792cba877ccfbb9bd4c849bc74786a969bd2583c0a4a09930602cacf4a",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationAuditDependencies} from './menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 5,
+          "afterStart": 6,
+          "removedLines": [
+            " const files=new Set<string>(Object.keys(receipt.sourceInventory));\n"
+          ],
+          "insertedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies()]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/quarry-enrichment-inventory.test.ts": {
+      "previousSha256": "d5274b11f9e1139802943d06d746c2dc17d002317971bcd288443b3edd7aa63c",
+      "currentSha256": "04775c3c5837862ba5b0612db0d17160e4eeb9e96a583705aa4ba190cdc19732",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 27,
+          "removedLines": [
+            " assert.deepEqual(found.sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'no added production files or maps');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(found.sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'no added production files or maps');\n"
+          ]
+        }
+      ]
+    },
+    "tests/snow-enrichment-inventory.test.ts": {
+      "previousSha256": "611fd3e5193e5c1cb2a38b6fa72a152a23a16b8e2491fcd6dba37315e9366f2d",
+      "currentSha256": "e3705f3a73acd37d71deed3fcef6eb39ada5f53a487e0d4b367d88e1001df0e9",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 23,
+          "afterStart": 24,
+          "removedLines": [
+            " assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production source or map012');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production source or map012');\n"
+          ]
+        }
+      ]
+    },
+    "tests/workshop-enrichment-inventory.test.ts": {
+      "previousSha256": "bbb30c46e51c17eb331db4239c75b5fa3f536b0a08453a6ec0d5ce77fb439f72",
+      "currentSha256": "85ff30ab1c1444570167aa9ad31bf1375b6667f237aa91099f3f47c627cbae21",
+      "scope": "Exact final presentation transition integration; retain historical assertions, frozen inputs and byte-reconstruction proofs",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 20,
+          "afterStart": 21,
+          "removedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production input, map012 or alternate gameplay implementation');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),menuPresentationSourcePaths(receipt.sourceInventory).sort(),'No new production input, map012 or alternate gameplay implementation');\n"
+          ]
+        }
+      ]
+    }
+  },
+  "additions": {
+    "src/map-presentation.ts": {
+      "sha256": "a137e260326de148141ca599c19c6d11c41598e1a6243a94cc86a7d8be8ffc4a",
+      "scope": "Pure frozen menu order, display codes and resolved profile catalog; no scene/runtime configuration changes"
+    }
+  }
+}

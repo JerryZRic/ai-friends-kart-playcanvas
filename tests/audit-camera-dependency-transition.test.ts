@@ -1,3 +1,4 @@
+import {restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -19,7 +20,7 @@ test('Garden camera dependencies retain the exact historical plan and all output
 });
 
 test('Garden camera records preserve every original archive and matrix assertion byte', () => {
-  const current = read('tests/helpers/garden-enrichment-camera-records.ts');
+  const current = restoreMenuPresentationBytes('tests/helpers/garden-enrichment-camera-records.ts', read('tests/helpers/garden-enrichment-camera-records.ts'));
   const start = current.indexOf('export const GARDEN_CAMERA_AIRFIELD_TRANSITION = ');
   const end = current.indexOf('export const gardenCameraExpectedPath=');
   assert.ok(start > 0 && end > start);
