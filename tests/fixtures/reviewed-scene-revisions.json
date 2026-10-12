@@ -41,6 +41,11 @@
       "previousSHA256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
       "currentSHA256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
       "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
+    },
+    "src/garden-scenery.ts": {
+      "previousSHA256": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+      "currentSHA256": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
+      "scope": "Garden010 additive rooted planting terraces and two grounded open nursery wings. Exact original indexed geometry, materials, terrain, route, gameplay and camera outputs remain unchanged. Garden-only total below 120000 triangles, at most 10000 added and exactly 21 batches."
     }
   }
 }

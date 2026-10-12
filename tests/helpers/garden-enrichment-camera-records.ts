@@ -1,0 +1,45 @@
+/** Bounded little-endian full-output archive. Candidate never writes a baseline. */
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {closeSync,existsSync,openSync,readFileSync,readSync,writeSync} from 'node:fs';
+import {join} from 'node:path';
+import {gardenSha} from './garden-enrichment-contract';
+export const gardenCameraExpectedPath='tests/fixtures/garden-enrichment-camera-outputs.json';
+export function gardenCameraPlan(){
+ const text=readFileSync('tests/helpers/garden-enrichment-camera-frozen.json','utf8');assert.equal(gardenSha(text),'06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598','Frozen camera inputs and protected dependency inventory');
+ const plan=JSON.parse(text);
+ for(const [path,sha]of Object.entries(plan.protected))assert.equal(gardenSha(readFileSync(path)),sha,'Original camera dependency: '+path);
+ assert.equal(gardenSha(readFileSync('docs/garden-enrichment-cameras.json')),plan.reviewViewsSha256);
+ assert.equal(gardenSha(readFileSync('tests/fixtures/garden-enrichment-original-geometry.json')),plan.originalGeometryFixtureSha256);
+ return plan;
+}
+export class GardenCameraRecords{
+ private size=48;private buffer=Buffer.alloc(4096*48);private prior=Buffer.alloc(4096*48);private used=0;private fd:number;
+ private outputs=createHash('sha256');private labels=createHash('sha256');private phaseOutputs=createHash('sha256');private phaseLabels=createHash('sha256');private phaseStart=0;private phaseName='';
+ private phases:Record<string,unknown>={};private pendingLabels:string[]=[];
+ rows=0;changedRows=0;changes:any[]=[];
+ constructor(private baseline:boolean,run:string,suite:string){this.fd=openSync(join(run,'baseline-'+suite+'-outputs.bin'),baseline?'wx':'r');}
+ begin(name:string){if(this.phaseName)this.endPhase();this.phaseName=name;this.phaseStart=this.rows;this.phaseOutputs=createHash('sha256');this.phaseLabels=createHash('sha256');}
+ record(label:string,row:readonly number[]){
+  assert.equal(row.length,6);assert.ok(row.every(Number.isFinite),label+' finite exact output');
+  for(let i=0;i<6;i++)this.buffer.writeDoubleLE(row[i],this.used+i*8);
+  const bytes=this.buffer.subarray(this.used,this.used+this.size);this.phaseOutputs.update(bytes);this.phaseLabels.update(label+'\n');this.labels.update(label+'\n');this.pendingLabels.push(label);this.used+=this.size;this.rows++;
+  if(this.used===this.buffer.length)this.flush();
+ }
+ private flush(){
+  if(!this.used)return;const bytes=this.buffer.subarray(0,this.used);this.outputs.update(bytes);
+  if(this.baseline){let written=0;while(written<this.used)written+=writeSync(this.fd,bytes,written,this.used-written);}
+  else{let read=0;while(read<this.used){const n=readSync(this.fd,this.prior,read,this.used-read,null);assert.ok(n>0,'Candidate produced more rows than immutable baseline');read+=n;}
+   if(!bytes.equals(this.prior.subarray(0,this.used)))for(let offset=0;offset<this.used;offset+=this.size){const after=bytes.subarray(offset,offset+this.size),before=this.prior.subarray(offset,offset+this.size);if(after.equals(before))continue;this.changedRows++;if(this.changes.length<24)this.changes.push({row:this.rows-this.used/this.size+offset/this.size,label:this.pendingLabels[offset/this.size],before:Array.from({length:6},(_,i)=>before.readDoubleLE(i*8)),after:Array.from({length:6},(_,i)=>after.readDoubleLE(i*8))});}
+  }this.used=0;this.pendingLabels=[];
+ }
+ private endPhase(){this.phases[this.phaseName]={rows:this.rows-this.phaseStart,outputSha256:this.phaseOutputs.digest('hex'),labelSha256:this.phaseLabels.digest('hex')};}
+ finish(){if(this.phaseName)this.endPhase();this.flush();if(!this.baseline)assert.equal(readSync(this.fd,this.prior,0,1,null),0,'Candidate omitted baseline rows');closeSync(this.fd);return{encoding:'6 binary64 little-endian values per row, exact bytes including signed zero',rows:this.rows,outputSha256:this.outputs.digest('hex'),labelSha256:this.labels.digest('hex'),phases:this.phases,changedRows:this.changedRows,changes:this.changes};}
+}
+export function assertGardenCameraExpected(stage:string,suite:string,records:any){
+ if(!existsSync(gardenCameraExpectedPath)){assert.equal(stage,'baseline','Freeze immutable-original full-output digests before any candidate execution');return;}
+ const expected=JSON.parse(readFileSync(gardenCameraExpectedPath,'utf8'));
+ assert.equal(expected.baselineSourceSha256,'684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40');
+ assert.deepEqual({rows:records.rows,outputSha256:records.outputSha256,labelSha256:records.labelSha256,phases:records.phases},expected[suite],'Every original full-output digest and row/input label count is frozen');
+ assert.equal(records.changedRows,0,JSON.stringify(records.changes));
+}

@@ -1,3 +1,4 @@
+import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
 /** Historical source inventories/goldens are immutable. Reviewed subsequent
  * scene, QA and derived catalog revisions require exact individual hashes. */
 import test from 'node:test';
@@ -15,9 +16,9 @@ test('Forest exact source isolation preserves539 original inputs and every histo
  assert.equal(receipt.originalScenerySha256,'f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802');assert.equal(sha(readFileSync('docs/scene-baselines/forest-scenery.ts.txt')),receipt.originalScenerySha256);assert.deepEqual(receipt.baselineCounts,{batches:21,vertices:140018,triangles:107780,trees:99});
  assert.deepEqual(Object.keys(receipt.reviewedChanges).sort(),[...reviewedPaths].sort());const changed:string[]=[];
  for(const [file,original]of Object.entries(receipt.sourceInventory)){
-  const actual=sha(readFileSync(file)),review=receipt.reviewedChanges[file];if(review){assert.equal(review.previousSHA256,original,file+' historical hash');assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(review.scope);assert.equal(actual,review.currentSHA256,file+' exact reviewed revision');}else assert.equal(actual,original,file+' unreviewed original input');if(actual!==original)changed.push(file);
+  const actual=sha(readFileSync(file)),review=receipt.reviewedChanges[file];if(review){assert.equal(review.previousSHA256,original,file+' historical hash');assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(review.scope);assert.equal(actual,gardenReviewedHash(file,review.currentSHA256),file+' exact reviewed revision');}else assert.equal(actual,gardenReviewedHash(file,original),file+' unreviewed original input');if(actual!==original)changed.push(file);
  }
- assert.deepEqual(changed.sort(),[...reviewedPaths].sort());
+ assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(directory:string):string[]=>readdirSync(directory,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(directory+'/'+e.name):[directory+'/'+e.name]);
  const transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
  assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'no added production inputs or twelfth land scene');
@@ -27,10 +28,10 @@ test('Forest exact source isolation preserves539 original inputs and every histo
 
 test('Forest reviewed revision fits the exact historical Mountain and Town isolation contracts',()=>{
  const reviewed=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));
- assert.equal(reviewed.schemaVersion,1);assert.equal(reviewed.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
+ assert.equal(reviewed.schemaVersion,1);assert.equal(reviewed.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
  const town=JSON.parse(readFileSync('tests/fixtures/town-enrichment-protected.json','utf8')),mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));
  for(const [file,review]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){assert.equal(review.previousSHA256,town.sourceInventory[file],file+' original Town isolation golden');assert.equal(review.previousSHA256,mountain.isolatedSceneSources[file],file+' original Mountain isolation golden');assert.equal(sha(readFileSync(file)),review.currentSHA256,file+' exact reviewed scene revision');}
- const townChanges=Object.entries(town.sourceInventory).filter(([file,original])=>sha(readFileSync(file))!==original).map(([file])=>file);assert.deepEqual(townChanges.sort(),[...Object.keys(reviewed.revisions),...Object.keys(town.reviewedTestContractChanges)].sort());
- for(const [file,digest]of Object.entries(town.reviewedTestContractChanges))assert.equal(sha(readFileSync(file)),digest,file+' exact Town QA contract revision');
+ const townChanges=Object.entries(town.sourceInventory).filter(([file,original])=>sha(readFileSync(file))!==original).map(([file])=>file);assert.deepEqual(townChanges.sort(),[...new Set([...Object.keys(reviewed.revisions),...Object.keys(town.reviewedTestContractChanges),...gardenReviewedPathsWithin(town.sourceInventory)])].sort());
+ for(const [file,digest]of Object.entries(town.reviewedTestContractChanges))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,digest),file+' exact Town QA contract revision');
  for(const [file,digest]of Object.entries(mountain.isolatedSceneSources))assert.equal(sha(readFileSync(file)),reviewed.revisions[file]?.currentSHA256??digest,file+' unrelated Mountain input is exact');
 });

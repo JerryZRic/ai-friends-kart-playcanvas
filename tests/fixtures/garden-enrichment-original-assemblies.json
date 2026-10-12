@@ -1,0 +1,1064 @@
+[
+  {
+    "id": "foldleaf-0-0",
+    "components": [
+      115,
+      116,
+      117
+    ],
+    "closed": true
+  },
+  {
+    "id": "foldleaf-1-1",
+    "components": [
+      120,
+      121,
+      122
+    ],
+    "closed": true
+  },
+  {
+    "id": "foldleaf-2-2",
+    "components": [
+      125,
+      126,
+      127
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-0-3",
+    "components": [
+      143,
+      144,
+      145
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-1-4",
+    "components": [
+      148,
+      149,
+      150
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-2-5",
+    "components": [
+      153,
+      154,
+      155
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-3-6",
+    "components": [
+      158,
+      159,
+      160
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-4-7",
+    "components": [
+      163,
+      164,
+      165
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-5-8",
+    "components": [
+      168,
+      169,
+      170
+    ],
+    "closed": true
+  },
+  {
+    "id": "petal-court-petal-6-9",
+    "components": [
+      173,
+      174,
+      175
+    ],
+    "closed": true
+  },
+  {
+    "id": "seed-section-thick-original-almond-10",
+    "components": [
+      222,
+      223,
+      224
+    ],
+    "closed": true
+  },
+  {
+    "id": "seed-section-attached-heartwood-11",
+    "components": [
+      225,
+      226,
+      227
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-0--1-12",
+    "components": [
+      252,
+      253,
+      254
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-0-1-13",
+    "components": [
+      255,
+      256,
+      257
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-1--1-14",
+    "components": [
+      258,
+      259,
+      260
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-1-1-15",
+    "components": [
+      261,
+      262,
+      263
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-2--1-16",
+    "components": [
+      264,
+      265,
+      266
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-2-1-17",
+    "components": [
+      267,
+      268,
+      269
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-3--1-18",
+    "components": [
+      270,
+      271,
+      272
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-3-1-19",
+    "components": [
+      273,
+      274,
+      275
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-4--1-20",
+    "components": [
+      276,
+      277,
+      278
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-4-1-21",
+    "components": [
+      279,
+      280,
+      281
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-5--1-22",
+    "components": [
+      282,
+      283,
+      284
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-5-1-23",
+    "components": [
+      285,
+      286,
+      287
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-6--1-24",
+    "components": [
+      288,
+      289,
+      290
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-6-1-25",
+    "components": [
+      291,
+      292,
+      293
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-7--1-26",
+    "components": [
+      294,
+      295,
+      296
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-7-1-27",
+    "components": [
+      297,
+      298,
+      299
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-8--1-28",
+    "components": [
+      300,
+      301,
+      302
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-0-joined-leaflet-8-1-29",
+    "components": [
+      303,
+      304,
+      305
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-0--1-30",
+    "components": [
+      307,
+      308,
+      309
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-0-1-31",
+    "components": [
+      310,
+      311,
+      312
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-1--1-32",
+    "components": [
+      313,
+      314,
+      315
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-1-1-33",
+    "components": [
+      316,
+      317,
+      318
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-2--1-34",
+    "components": [
+      319,
+      320,
+      321
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-2-1-35",
+    "components": [
+      322,
+      323,
+      324
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-3--1-36",
+    "components": [
+      325,
+      326,
+      327
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-3-1-37",
+    "components": [
+      328,
+      329,
+      330
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-4--1-38",
+    "components": [
+      331,
+      332,
+      333
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-4-1-39",
+    "components": [
+      334,
+      335,
+      336
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-5--1-40",
+    "components": [
+      337,
+      338,
+      339
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-5-1-41",
+    "components": [
+      340,
+      341,
+      342
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-6--1-42",
+    "components": [
+      343,
+      344,
+      345
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-6-1-43",
+    "components": [
+      346,
+      347,
+      348
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-7--1-44",
+    "components": [
+      349,
+      350,
+      351
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-7-1-45",
+    "components": [
+      352,
+      353,
+      354
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-8--1-46",
+    "components": [
+      355,
+      356,
+      357
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-1-joined-leaflet-8-1-47",
+    "components": [
+      358,
+      359,
+      360
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-0--1-48",
+    "components": [
+      362,
+      363,
+      364
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-0-1-49",
+    "components": [
+      365,
+      366,
+      367
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-1--1-50",
+    "components": [
+      368,
+      369,
+      370
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-1-1-51",
+    "components": [
+      371,
+      372,
+      373
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-2--1-52",
+    "components": [
+      374,
+      375,
+      376
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-2-1-53",
+    "components": [
+      377,
+      378,
+      379
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-3--1-54",
+    "components": [
+      380,
+      381,
+      382
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-3-1-55",
+    "components": [
+      383,
+      384,
+      385
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-4--1-56",
+    "components": [
+      386,
+      387,
+      388
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-4-1-57",
+    "components": [
+      389,
+      390,
+      391
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-5--1-58",
+    "components": [
+      392,
+      393,
+      394
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-5-1-59",
+    "components": [
+      395,
+      396,
+      397
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-6--1-60",
+    "components": [
+      398,
+      399,
+      400
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-6-1-61",
+    "components": [
+      401,
+      402,
+      403
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-7--1-62",
+    "components": [
+      404,
+      405,
+      406
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-7-1-63",
+    "components": [
+      407,
+      408,
+      409
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-8--1-64",
+    "components": [
+      410,
+      411,
+      412
+    ],
+    "closed": true
+  },
+  {
+    "id": "frond-2-joined-leaflet-8-1-65",
+    "components": [
+      413,
+      414,
+      415
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-0-66",
+    "components": [
+      436,
+      437,
+      438
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-1-67",
+    "components": [
+      440,
+      441,
+      442
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-2-68",
+    "components": [
+      444,
+      445,
+      446
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-3-69",
+    "components": [
+      448,
+      449,
+      450
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-4-70",
+    "components": [
+      452,
+      453,
+      454
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-5-71",
+    "components": [
+      456,
+      457,
+      458
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-0-petal-6-72",
+    "components": [
+      460,
+      461,
+      462
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-1-petal-0-73",
+    "components": [
+      464,
+      465,
+      466
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-1-petal-1-74",
+    "components": [
+      468,
+      469,
+      470
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-1-petal-2-75",
+    "components": [
+      472,
+      473,
+      474
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-1-petal-3-76",
+    "components": [
+      476,
+      477,
+      478
+    ],
+    "closed": true
+  },
+  {
+    "id": "crown-whorl-1-petal-4-77",
+    "components": [
+      480,
+      481,
+      482
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-78",
+    "components": [
+      1675,
+      1676,
+      1677
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-79",
+    "components": [
+      1678,
+      1679,
+      1680
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-80",
+    "components": [
+      1681,
+      1682,
+      1683
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-81",
+    "components": [
+      1684,
+      1685,
+      1686
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-82",
+    "components": [
+      1689,
+      1690,
+      1691
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-83",
+    "components": [
+      1692,
+      1693,
+      1694
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-84",
+    "components": [
+      1695,
+      1696,
+      1697
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-85",
+    "components": [
+      1698,
+      1699,
+      1700
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-86",
+    "components": [
+      1703,
+      1704,
+      1705
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-87",
+    "components": [
+      1706,
+      1707,
+      1708
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-88",
+    "components": [
+      1709,
+      1710,
+      1711
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-89",
+    "components": [
+      1712,
+      1713,
+      1714
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-90",
+    "components": [
+      1717,
+      1718,
+      1719
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-91",
+    "components": [
+      1720,
+      1721,
+      1722
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-92",
+    "components": [
+      1723,
+      1724,
+      1725
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-93",
+    "components": [
+      1726,
+      1727,
+      1728
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-94",
+    "components": [
+      1731,
+      1732,
+      1733
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-95",
+    "components": [
+      1734,
+      1735,
+      1736
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-96",
+    "components": [
+      1737,
+      1738,
+      1739
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-97",
+    "components": [
+      1740,
+      1741,
+      1742
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-98",
+    "components": [
+      1745,
+      1746,
+      1747
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-99",
+    "components": [
+      1748,
+      1749,
+      1750
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-100",
+    "components": [
+      1751,
+      1752,
+      1753
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-101",
+    "components": [
+      1754,
+      1755,
+      1756
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-102",
+    "components": [
+      1759,
+      1760,
+      1761
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-103",
+    "components": [
+      1762,
+      1763,
+      1764
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-104",
+    "components": [
+      1765,
+      1766,
+      1767
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-105",
+    "components": [
+      1768,
+      1769,
+      1770
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-106",
+    "components": [
+      1773,
+      1774,
+      1775
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-107",
+    "components": [
+      1776,
+      1777,
+      1778
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-108",
+    "components": [
+      1779,
+      1780,
+      1781
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-109",
+    "components": [
+      1782,
+      1783,
+      1784
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-110",
+    "components": [
+      1787,
+      1788,
+      1789
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-111",
+    "components": [
+      1790,
+      1791,
+      1792
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-112",
+    "components": [
+      1793,
+      1794,
+      1795
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-113",
+    "components": [
+      1796,
+      1797,
+      1798
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-114",
+    "components": [
+      1801,
+      1802,
+      1803
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-115",
+    "components": [
+      1804,
+      1805,
+      1806
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-116",
+    "components": [
+      1807,
+      1808,
+      1809
+    ],
+    "closed": true
+  },
+  {
+    "id": "garden-low-attached-leaf-117",
+    "components": [
+      1810,
+      1811,
+      1812
+    ],
+    "closed": true
+  }
+]

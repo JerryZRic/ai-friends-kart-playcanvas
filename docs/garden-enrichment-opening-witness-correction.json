@@ -1,0 +1,11 @@
+{
+  "schema": "garden-enrichment-opening-witness-correction-v1",
+  "reason": "Complete actual triangle clipping found that the original declared aperture extended 0.05m into a full-footprint column foundation. The witness was corrected to the literal clear opening; no construction, game, camera or original safety assertion changed.",
+  "wings": [
+    {"wing": 0, "originalWitnessWidth": 11.4, "columnCenterAbsX": 6.5, "foundationWidth": 1.7, "actualFootingInnerFaceAbsX": 5.65, "finalWitnessWidth": 11.1, "finalHalfWidth": 5.55, "minimumPlanarFootingInset": 0.1},
+    {"wing": 1, "originalWitnessWidth": 13.4, "columnCenterAbsX": 7.5, "foundationWidth": 1.7, "actualFootingInnerFaceAbsX": 6.65, "finalWitnessWidth": 13.1, "finalHalfWidth": 6.55, "minimumPlanarFootingInset": 0.1}
+  ],
+  "depthMetres": 8,
+  "verticalRule": "Bottom is 0.2m above maximum actual terrain under the complete corrected opening footprint; top stays below the lowest supporting beam.",
+  "retainedProof": "Every actual rendered face is clipped against the complete eight-corner aperture prism; containment and through-opening camera checks remain. Original native camera and route samples are unchanged."
+}

@@ -1,0 +1,419 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime garden mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. The original connected planted terraces follow the physical road, the timber arbor has literal open gaps between opaque joined members, and botanical landmarks have dimensional joined leaves and petals with grounded bearing assemblies.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm garden daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/garden-scenery.ts": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "geometryTexturesRoutesThemeSha256": "1a06e71a012a869063de3076df982dfac2d23c6443a3e6da1747cc15d9ae131a",
+  "generatorHashes": {
+    "scripts/export-garden-preview.ts": "c7915b01b6c962255340d6c54130f438090fd207949db036a5dd35225747faf4",
+    "scripts/render-garden-preview.py": "f3b357b04c72abe9d68687339193e47ec05674e25011f16c208656fb042b0a83"
+  },
+  "batches": 21,
+  "vertices": 117223,
+  "triangles": 108557,
+  "routeLengthsMetres": {
+    "start": 1393.9187422626346,
+    "alley": 390.46049633045226,
+    "boulevard": 441.21933090504297,
+    "finish": 923.9572174706034
+  },
+  "normalShading": {
+    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
+    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
+    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
+    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Arbor Weave (alley), Petal Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "arborWeaveLapLength": 2708.33645606369,
+    "petalSweepLapLength": 2759.095290638281
+  },
+  "originalModels": {
+    "glb": {
+      "file": "garden-original-scene.glb",
+      "sha256": "73ec5e11a03df54d0d0a1e0e24515911fcddce0309463f59beb99ce713490b77",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "garden-original-scene.blend",
+      "sha256": "ddef89351023376fe3b5f104d5bfc85dc9481c5d6edf35847bb77b6a0b5ad4de",
+      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "garden-overview": {
+      "file": "garden-overview.png",
+      "sha256": "cbdae8138c22693cac9ee7204a42819bad786c997e97c1639ea4e8eb021e906a",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        385.4844970703125,
+        1339.6361083984375,
+        885.7286376953125
+      ],
+      "cameraQuaternionBlender": [
+        0.14035584032535553,
+        0.07375182211399078,
+        0.45927152037620544,
+        0.8740312457084656
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Verdant Canopy circuit: connected planted terraces, upper three-lobe fold rhythm, low western basin return, both physical Arbor Weave and Petal Sweep roads, open timber lattice and grounded botanical assemblies. Exact emitted source geometry; approximate offline CPU lighting, materials and shadows.",
+      "routeScreenBounds": [
+        0.3085367977619171,
+        0.2323208451271057,
+        0.7462666034698486,
+        0.751300036907196
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.3701660633087158,
+          0.2531135380268097,
+          0.44584545493125916,
+          0.45614197850227356
+        ],
+        "boulevard": [
+          0.336088627576828,
+          0.2531135380268097,
+          0.44584545493125916,
+          0.45614197850227356
+        ]
+      },
+      "orthographicScaleMetres": 1727.80029296875,
+      "fittedSubjectScreenBounds": [
+        0.11825063079595566,
+        0.06999990344047546,
+        0.88174968957901,
+        0.929999828338623
+      ]
+    },
+    "garden-topdown": {
+      "file": "garden-topdown.png",
+      "sha256": "0e2687d5fc3de7a2035e92dcb4172b412404f4300e1535b96af324804d351a61",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -9.999995231628418,
+        140.0,
+        1519.0738525390625
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead original source geometry with both complete physical alternatives: Arbor Weave and Petal Sweep. Actual banked widths, owned split/merge unions, upper garden folds and connected terrace contours remain unchanged. No terrain or arbor roof member is hidden to expose roads.",
+      "routeScreenBounds": [
+        0.3078695237636566,
+        0.17834387719631195,
+        0.7056590914726257,
+        0.8389146327972412
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.36837661266326904,
+          0.23033905029296875,
+          0.39385852217674255,
+          0.4927119016647339
+        ],
+        "boulevard": [
+          0.3078695237636566,
+          0.23033905029296875,
+          0.3794724643230438,
+          0.4927119016647339
+        ]
+      },
+      "orthographicScaleMetres": 1829.4576416015625,
+      "fittedSubjectScreenBounds": [
+        0.22669491171836853,
+        0.07000003010034561,
+        0.7733051180839539,
+        0.9299999475479126
+      ]
+    },
+    "garden-driver-reveal": {
+      "file": "garden-driver-reveal.png",
+      "sha256": "49de636ee5bc132311d9ecc57990bbe6147fff1f54398f5c12fee1ccb4924e70",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -337.3247375488281,
+        -19.537397384643555,
+        16.85334014892578
+      ],
+      "cameraQuaternionBlender": [
+        0.11369725316762924,
+        0.11703938245773315,
+        -0.7076607346534729,
+        -0.6874525547027588
+      ],
+      "projection": "PERSP",
+      "description": "Frozen source-design driver eye on the real start road at 181.2094364941425 m, exactly 1.6 m above physical support. Actual rising road and connected planted terraces frame the approaching western fold. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -31105.130859375,
+        -13.951211929321289,
+        4534.95751953125,
+        99.64971160888672
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -1594.65283203125,
+          -1.5269125699996948,
+          643.0567626953125,
+          5.547945022583008
+        ],
+        "boulevard": [
+          -3489.16357421875,
+          -2.8023080825805664,
+          1083.5606689453125,
+          11.469820022583008
+        ]
+      },
+      "lensMillimetres": 30.0,
+      "roadEdge": "start",
+      "roadDistanceMetres": 181.2094364941425,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "west-planted-ascent",
+        "edge": "start",
+        "s": 181.2094364941425,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -337.3247257814255,
+          15.253339388065235,
+          19.537397850254706
+        ],
+        "physicalTangent": [
+          0.2604669643619471,
+          0.02578269569743362,
+          0.9651384424416249
+        ],
+        "driverEye": [
+          -337.3247257814255,
+          16.853339388065237,
+          19.537397850254706
+        ],
+        "driverLook": [
+          -327.0347447703201,
+          17.779391351883408,
+          49.794837621735226
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -340.06053837054117,
+              "y": 19.853339388065237,
+              "z": 9.400074264749687
+            },
+            "look": {
+              "x": -333.38121213945703,
+              "y": 16.253339388065235,
+              "z": 34.14975617170338
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -341.23302948016214,
+              "y": 23.153339388065238,
+              "z": 5.055507013818964
+            },
+            "look": {
+              "x": -334.48420050424903,
+              "y": 16.253339388065235,
+              "z": 30.062725499562873
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -327.0347447703201,
+        17.779391351883408,
+        49.794837621735226
+      ]
+    },
+    "garden-arbor-passage": {
+      "file": "garden-arbor-passage.png",
+      "sha256": "8a90b74af4a54337d96a473038e6f6c5b3346d62b9353ea49fe05d5bbfc5c82c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        192.48292541503906,
+        242.82571411132812,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6211032867431641,
+        0.7515881061553955,
+        -0.17123593389987946,
+        -0.1415073275566101
+      ],
+      "projection": "PERSP",
+      "description": "Actual Arbor Weave road support at 99.7072233487035 m, eye exactly 1.6 m above it, looking toward genuine opaque timber portals, joined truss webs and open purlin/lattice gaps. Physical paving, complete timber members and their grounded plinths remain present. The source-derived architectural camera looks upward; this is not the shared gameplay camera.",
+      "routeScreenBounds": [
+        -3207.90478515625,
+        -32.4778938293457,
+        317.1505126953125,
+        11.743062019348145
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -4.30214262008667,
+          -0.939821720123291,
+          6.724644184112549,
+          3.160706043243408
+        ],
+        "boulevard": [
+          -134.82601928710938,
+          -0.5812671184539795,
+          30.59514045715332,
+          5.920158863067627
+        ]
+      },
+      "lensMillimetres": 14.595168113708496,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 99.7072233487035,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "arbor-portal-approach",
+        "edge": "alley",
+        "s": 99.7072233487035,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          192.48292667351043,
+          17.999999999999996,
+          -242.82571761878626
+        ],
+        "physicalTangent": [
+          0.3280526667937386,
+          0,
+          -0.9446594348279788
+        ],
+        "driverEye": [
+          192.48292667351043,
+          19.599999999999998,
+          -242.82571761878626
+        ],
+        "driverLook": [
+          208.2327216814079,
+          19.6,
+          -270.5721111967237
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": 189.0383736721762,
+              "y": 22.599999999999994,
+              "z": -232.90679355309248
+            },
+            "look": {
+              "x": 197.44804811687513,
+              "y": 18.999999999999996,
+              "z": -257.1232658215881
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": 187.56213667160435,
+              "y": 25.9,
+              "z": -228.65582609636658
+            },
+            "look": {
+              "x": 196.05931926260473,
+              "y": 18.999999999999996,
+              "z": -253.12428654967374
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        224.99695013795548,
+        34,
+        -310.4770551964865
+      ],
+      "opaqueTimberAndLiteralOpenGaps": true,
+      "firstPortalScreenBounds": [
+        0.20239484310150146,
+        0.2832548916339874,
+        0.9549999833106995,
+        0.850346028804779
+      ]
+    },
+    "garden-crown-bloom": {
+      "file": "garden-crown-bloom.png",
+      "sha256": "841098b7e76a34deca69c074459de5b5a0a2a76a2f96646fd48d94f861ff314b",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -165.32000732421875,
+        590.7175903320312,
+        44.46037673950195
+      ],
+      "cameraQuaternionBlender": [
+        0.267340749502182,
+        0.21075649559497833,
+        -0.5821198225021362,
+        -0.7384085059165955
+      ],
+      "projection": "PERSP",
+      "description": "Original Crown Bloom Terrace: thick dimensional coral and ivory petals in two joined whorls, shared receptacle and calyx, continuous supported stem and soil-seated buttressed base. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -0.7425106167793274,
+        -3.798431634902954,
+        19.660327911376953,
+        0.8786817193031311
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -0.3954271972179413,
+          0.7657570838928223,
+          0.487173467874527,
+          0.8435477018356323
+        ],
+        "boulevard": [
+          -0.3954271972179413,
+          0.7657570838928223,
+          0.487173467874527,
+          0.8435477018356323
+        ]
+      },
+      "lensMillimetres": 40.0
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/garden-overview.webp",
+    "sha256": "8a47cf9ef27fce65c81e345059e2dc2b22c169b2c9a2c2575e8cae9cd69fdc27",
+    "resolution": [
+      1280,
+      720
+    ]
+  }
+}

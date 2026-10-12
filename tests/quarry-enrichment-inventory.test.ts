@@ -1,3 +1,4 @@
+import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
 /** Original source and gameplay goldens remain immutable. Separately reviewed
  * scene and QA-contract revisions have explicit old/new hashes, never wildcards. */
 import test from 'node:test';
@@ -13,11 +14,11 @@ test('Quarry only exact reviewed scene and QA contracts can differ from original
  const changed:string[]=[];
  for(const [path,old]of Object.entries(receipt.sourceInventory)){
   const actual=hash(readFileSync(path)),review=receipt.reviewedChanges[path];
-  if(review){assert.equal(review.previousSHA256,old,path+' historical source hash must remain intact');assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(review.scope);assert.equal(actual,review.currentSHA256,path+' exact reviewed version changed');}
-  else assert.equal(actual,old,path+' unreviewed original input changed');
+  if(review){assert.equal(review.previousSHA256,old,path+' historical source hash must remain intact');assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(review.scope);assert.equal(actual,gardenReviewedHash(path,review.currentSHA256),path+' exact reviewed version changed');}
+  else assert.equal(actual,gardenReviewedHash(path,old),path+' unreviewed original input changed');
   if(actual!==old)changed.push(path);
  }
- assert.deepEqual(changed.sort(),reviewedPaths.sort());
+ assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const sourceFiles=(directory:string):string[]=>readdirSync(directory,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?sourceFiles(directory+'/'+entry.name):[directory+'/'+entry.name]);
  // Concurrent CI may contain another UUID-owned instrumentation module. Such
  // files are never production inputs or accepted as replacements of old files.

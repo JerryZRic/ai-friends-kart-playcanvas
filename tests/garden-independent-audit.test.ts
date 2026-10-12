@@ -1,3 +1,4 @@
+import {gardenOriginalAssemblyIds} from './helpers/garden-enrichment-original-assemblies';
 // Independent emitted-geometry audit. These tests use rendered positions/indices,
 // never planned volumes, camera height answers, scene-provided road faces or
 // claimed component bounds as proof. Source provenance identifies parts only.
@@ -267,10 +268,10 @@ const kind=(q:Triangle)=>componentOf.get(q.id)?.kind??'';
 const shoulderTriangles=mesh.triangles.filter(q=>kind(q)==='source-exact-layer-owned-shoulders');
 const shoulderIds=new Set(shoulderTriangles.map(q=>q.id));
 
-audit('garden emitted geometry has finite indexed data and stays below24 batches110k triangles200k vertices','structural',t=>{
+audit('garden emitted geometry has finite indexed data and stays below24 batches120k triangles200k vertices','structural',t=>{
  let vertices=0,triangles=0;assert.equal(geometry.trackId,'garden');
  for(const b of geometry.batches){vertices+=b.positions.length/3;triangles+=b.indices.length/3;assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));}
- assert.ok(geometry.batches.length<=24);assert.ok(vertices<200000);assert.ok(triangles<110000);assert.equal(componentOf.size,triangles);
+ assert.ok(geometry.batches.length<=24);assert.ok(vertices<200000);assert.ok(triangles<120000);assert.equal(componentOf.size,triangles);
  for(const c of geometry.components){assert.ok((componentTriangles.get(c)?.length??0)>0);const b=actualBounds.get(c)!;for(let k=0;k<3;k++){assert.ok(Math.abs(b.min[k]-c.min[k])<1e-7);assert.ok(Math.abs(b.max[k]-c.max[k])<1e-7);}}
  reportMetric('mesh',{batches:geometry.batches.length,triangles,vertices,components:geometry.components.length,terrainTriangles:terrain.length});t.diagnostic(JSON.stringify(report.metrics.mesh));
 });
@@ -665,7 +666,7 @@ function joinedParts(c:Component){return assemblyOf.get(c)?.components??[c];}
 function joinedAttachment(a:Component,b:Component){return joinedParts(a).some(c=>joinedParts(b).some(d=>c!==d&&actualAttachment(c,d)));}
 
 audit('garden every modeled leaf petal and seed section is a single closed thick outward shell with coherent material edges','structural',t=>{
- let triangles=0,minThickness=Infinity,maxThickness=0;const details:unknown[]=[];assert.equal(assembled.filter(a=>a.components[0].landmark).length,78,'3foldleaf+7court+2seed+54leaflets+12crown authored hero shells');assert.equal(assembled.filter(a=>!a.components[0].landmark).length,40,'ten sparse four-leaf accents');
+ let triangles=0,minThickness=Infinity,maxThickness=0;const details:unknown[]=[],originalIds=gardenOriginalAssemblyIds(geometry),originalAssembled=assembled.filter(a=>originalIds.has(a.id));assert.equal(originalAssembled.filter(a=>a.components[0].landmark).length,78,'3foldleaf+7court+2seed+54leaflets+12crown authored hero shells');assert.equal(originalAssembled.filter(a=>!a.components[0].landmark).length,40,'ten sparse four-leaf accents');
  for(const a of assembled){const edges=new Map<string,{count:number;direction:number}>(),vertices=new Map<string,number>(),parent:number[]=[];let volume=0;
   const root=(i:number):number=>{while(parent[i]!==i){parent[i]=parent[parent[i]];i=parent[i];}return i;},vertex=(p:V)=>{const key=shapeKey(p);let id=vertices.get(key);if(id===undefined){id=parent.length;vertices.set(key,id);parent.push(id);}return id;};
   for(const q of a.triangles){assert.ok(area3D([q.a,q.b,q.c])>1e-10,`${a.id} degenerate triangle${q.id}`);const p=[q.a,q.b,q.c].map(shapeKey),ids=[q.a,q.b,q.c].map(vertex);for(let k=0;k<3;k++){const x=p[k],y=p[(k+1)%3],key=[x,y].sort().join('|'),v=edges.get(key)??{count:0,direction:0};v.count++;v.direction+=x<y?1:-1;edges.set(key,v);parent[root(ids[k])]=root(ids[(k+1)%3]);}const x=sub(q.a,a.min),y=sub(q.b,a.min),z=sub(q.c,a.min);volume+=dot(x,[y[1]*z[2]-y[2]*z[1],y[2]*z[0]-y[0]*z[2],y[0]*z[1]-y[1]*z[0]])/6;}

@@ -9,7 +9,7 @@ test('garden menu poster derives from current original runtime geometry with bot
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
  for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);
- assert.ok(p.batches<=24&&p.triangles<110000&&p.vertices<200000);
+ assert.ok(p.batches<=24&&p.triangles<120000&&p.vertices<200000);
  assert.deepEqual(Object.keys(p.views).sort(),['garden-overview','garden-topdown','garden-driver-reveal','garden-arbor-passage','garden-crown-bloom'].sort());
  assert.match(p.normalShading.shader,/Backfacing/);
  assert.equal(p.views['garden-topdown'].projection,'ORTHO');

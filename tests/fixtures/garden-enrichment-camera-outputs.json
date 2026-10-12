@@ -1,0 +1,84 @@
+{
+  "schema": "garden-enrichment-camera-original-outputs-v1",
+  "baselineCommit": "36a4e224e915f2481513c805a9ed4f6445199d6d",
+  "baselineSourceSha256": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+  "planSha256": "06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598",
+  "retained": {
+    "rows": 496104,
+    "outputSha256": "f8ea46b9fc1a6a57e362233e44962e8a63acdb4854b2cec2a5d98f32b6f8f00b",
+    "labelSha256": "45d5adbf116aa505595176afb42b2765a264d7562beea46246ec902a309e9d7c",
+    "phases": {
+      "retained-whole-course-safe-and-interpolated": {
+        "rows": 328248,
+        "outputSha256": "ce53ee06c40251cb99700efc555d06db287c1bbea576301729c5277dc79139c6",
+        "labelSha256": "1cb527da4303fc8363f6948cc86bac00b469a30dbb0783748bd8f74edcd607ac"
+      },
+      "retained-split-merge-lap-transitions": {
+        "rows": 29160,
+        "outputSha256": "4fdc7e7e389b299335cd58d020e21360139620a96dcd007d27b9885d7dbb984e",
+        "labelSha256": "d9c9cf3f11e68955cc93aa66fcbfb7b6bb9c106ed60b5b0a96e3e90c7a182585"
+      },
+      "retained-live-full-route-histories": {
+        "rows": 69807,
+        "outputSha256": "c2010ff6d43b54126ff113ea7dafdba03928cae7c842f6cc3f744b4095776d29",
+        "labelSha256": "fd914f024dffc143b8c92459d39629ba69acf79cd7e6d619669e89a66d970fbd"
+      },
+      "retained-gameplay-grid-safe-and-idempotence": {
+        "rows": 13248,
+        "outputSha256": "d17b30d5257243536690afa12750c386b42bd25c92ae488dff5a8bd45438f62a",
+        "labelSha256": "78af85afca53b383b7b21bf2eb90f23e91de19d93c125df1930352430f3eaa1a"
+      },
+      "retained-fixed-pickup-bob-rays": {
+        "rows": 960,
+        "outputSha256": "7053eb40ffda50e4c514a95a87d749bc193665972a3a21de46344dc1b81fe836",
+        "labelSha256": "058bfe10549090dd384cb1375e6bf2bd324effce87e7856108f0416e7df0e45f"
+      },
+      "retained-full-legal-lane-pickup-approaches": {
+        "rows": 1440,
+        "outputSha256": "b65982053db43ed2403003a82d7f4f2e1d29a4f299dc2e063ede28fa24f4da6f",
+        "labelSha256": "3625fdb36197edceb4a0e75a182fd3df34f9d1b4c076a5dd48e354e4ec541143"
+      },
+      "retained-sampled-cpu-query-outputs": {
+        "rows": 510,
+        "outputSha256": "6b8805eb18c1333f6afc35d908074e6a61e661a0714b560069bb376e8727a0d6",
+        "labelSha256": "27b5737495fb348735bcb47ba167b8d3e156726f2dec5ba67b537a966b0d9ed6"
+      },
+      "retained-nine-original-fraction-review-poses": {
+        "rows": 27,
+        "outputSha256": "ed8d843d45c067f80e840501fcb360286f9ee2da8cd22e6aba360a1d8609ab3f",
+        "labelSha256": "8f64d3f4ce2c5725cf75446a6a907e22248d6fb8623cfa5f89e96a281a545701"
+      },
+      "retained-full-arbor-aperture": {
+        "rows": 52704,
+        "outputSha256": "6f5963beff14b392659f994075f45587ce33525937447b30e340d8d503894f2b",
+        "labelSha256": "f1c1372a84f819fce99ee60bd9da513dd2058655245ef399e03540a5c99691c4"
+      }
+    }
+  },
+  "local": {
+    "rows": 324040,
+    "outputSha256": "e5ab97ed388241d93f938c286e7369f421d27f75490314a12bfa619031f6269f",
+    "labelSha256": "366c12aa9edcff3083437ad4ab8684e733ffac5b4aaa324feed83dbc3bc6bf96",
+    "phases": {
+      "frozen-60-source-views-and-40-normal-chases": {
+        "rows": 100,
+        "outputSha256": "44a793796d3a44bcc9b4cf81bb9612a5c401e7690e1dc72b1b0e822f12eb6461",
+        "labelSha256": "af61ca9ee30ae0d4bdf975a26a340cf4224e3b3671a84cec99a2ddee7fc50cd7"
+      },
+      "dense-local-2m-safe-and-interpolated": {
+        "rows": 297984,
+        "outputSha256": "02cdaf108556e512378e6a2ea44fe316dcf3f35a89beb6c52aeeb667018d2709",
+        "labelSha256": "5b24a6725fcb79aa99797c591f2f83359b0fc3dfc069ad7fdc38b3780fdeabcf"
+      },
+      "local-live-30-60-144hz-forward-reverse": {
+        "rows": 25956,
+        "outputSha256": "52d4ada0dd73bb438f4a79c3d6a70a1d65c1bcbe82dc646043d12c40fca7c41a",
+        "labelSha256": "7b81075730201c550e4ef38579ab467ab0b1033e6768e72dcb8801c4f801e9e9"
+      }
+    }
+  },
+  "retainedRetractions": 215,
+  "retainedRetractionOutputSha256": "d95e24de5d078db2584f3c7393d388b60e2c613cfbf92ed607ec4ea4a1271101",
+  "localBaselineFailuresSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "localBaselineWitnesses": 0
+}

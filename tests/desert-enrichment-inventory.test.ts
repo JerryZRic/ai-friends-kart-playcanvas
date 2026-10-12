@@ -1,3 +1,4 @@
+import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
 /** Additive Desert scenery has no permission to rebaseline native safety gates. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,18 +23,18 @@ test('Desert immutable source and native safety inventories retain the exact ori
  assert.equal(sha(JSON.stringify(receipt.historicalContracts)),'fb060d1224388209101d4c6b577ca351bc0e43c882b909cdd46a29e8b25d7d7c');assert.equal(sha(JSON.stringify(receipt.historicalSceneRevisions)),'871ce2dc1733d0545e5c5f089e0319b73132170dcce498597dcbda9159330ae5');
  for(const [file,original]of Object.entries(receipt.historicalContracts)){const current=JSON.parse(readFileSync(file,'utf8'));for(const [key,value]of Object.entries(original))assert.deepEqual(current[key],value,file+' nested original contract remains immutable');}
  const reviewed=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));for(const [file,revision]of Object.entries(receipt.historicalSceneRevisions.revisions))assert.deepEqual(reviewed.revisions[file],revision,'Earlier accepted scene revisions cannot be rebased');
- for(const [file,hash]of Object.entries(receipt.protectedFiles))assert.equal(sha(readFileSync(file)),hash,file+' protected route/physics/camera/other scene changed');
+ for(const [file,hash]of Object.entries(receipt.protectedFiles))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,hash),file+' protected route/physics/camera/other scene changed');
  assert.equal(receipt.originalScenerySha256,'ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c');
  assert.equal(sha(readFileSync('docs/scene-baselines/desert-scenery.ts.txt')),receipt.originalScenerySha256);
  assert.deepEqual(receipt.baselineCounts,{batches:22,triangles:107224,vertices:133911});
  assert.deepEqual(Object.keys(receipt.reviewedChanges).sort(),[...reviewedPaths].sort());const changed:string[]=[];
  for(const [file,original]of Object.entries(receipt.sourceInventory)){
   const actual=sha(readFileSync(file)),review=receipt.reviewedChanges[file];
-  if(review){assert.equal(review.previousSHA256,original,file+' immutable original hash');assert.ok(review.scope);assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.equal(actual,review.currentSHA256,file+' precise reviewed revision');}
-  else assert.equal(actual,original,file+' unreviewed original input changed');
+  if(review){assert.equal(review.previousSHA256,original,file+' immutable original hash');assert.ok(review.scope);assert.match(review.currentSHA256,/^[a-f0-9]{64}$/);assert.equal(actual,gardenReviewedHash(file,review.currentSHA256),file+' precise reviewed revision');}
+  else assert.equal(actual,gardenReviewedHash(file,original),file+' unreviewed original input changed');
   if(actual!==original)changed.push(file);
  }
- assert.deepEqual(changed.sort(),[...reviewedPaths].sort());
+ assert.deepEqual(changed.sort(),[...new Set([...reviewedPaths,...gardenReviewedPathsWithin(receipt.sourceInventory)])].sort());
  const files=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(dir+'/'+e.name):[dir+'/'+e.name]);
  const temporary=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
  assert.deepEqual(files('src').filter(p=>!temporary.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production source, twelfth map or alternate runtime');
@@ -43,7 +44,7 @@ test('Desert final source and six inherited isolation consumers bind exactly one
  assert.equal(sha(readFileSync(file)),currentSHA256);assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));
  assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,receipt.historicalSceneRevisions.baseCommit);
- assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/snow-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());
+ assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/garden-scenery.ts','src/snow-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());
  assert.equal(all.revisions[file].previousSHA256,receipt.originalScenerySha256);assert.equal(all.revisions[file].currentSHA256,currentSHA256);assert.ok(all.revisions[file].scope);
  const mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));assert.equal(mountain.isolatedSceneSources[file],receipt.originalScenerySha256);
  for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected','workshop-enrichment-protected','harvest-enrichment-protected']){
