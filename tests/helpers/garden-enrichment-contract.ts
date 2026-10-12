@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import * as pc from 'playcanvas';
+import {certifiedGeometryBaseline} from './geometry-runtime-portability';
 import type {GardenSceneGeometry} from '../../src/garden-scenery';
 export const GARDEN_ORIGINAL_SOURCE_SHA256='684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40';
 export const gardenSha=(value:string|Buffer)=>createHash('sha256').update(value).digest('hex');
@@ -20,6 +21,7 @@ export function gardenFrozenBaseline(){
  if(!frozen){const text=readFileSync('tests/fixtures/garden-enrichment-original-geometry.json','utf8');assert.equal(gardenSha(text),'d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0','Frozen original geometry fixture is immutable');const record=JSON.parse(text);assert.equal(record.sourceSha256,GARDEN_ORIGINAL_SOURCE_SHA256);frozen=record.protection;}
  return frozen!;
 }
+export const gardenRuntimeBaseline=()=>certifiedGeometryBaseline('garden',gardenFrozenBaseline());
 /** Certifies exact complete original records, including order/ranges, before projection. */
 export function assertGardenOriginalComponents(components:GardenSceneGeometry['components'],old:GardenBaselineContract){
  assert.equal(old.components.length,1813);assert.equal(old.prefixes.components.count,1813);
@@ -28,7 +30,7 @@ export function assertGardenOriginalComponents(components:GardenSceneGeometry['c
  assert.deepEqual(original,old.components,'Every original component, order, kind, role, landmark and full indexed range must remain exact');
  assert.equal(gardenDigest(original),old.prefixes.components.digest,'Immutable complete original component manifest');return original;
 }
-export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenFrozenBaseline()){
+export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenRuntimeBaseline()){
  assert.deepEqual(old.budget,{batches:21,triangles:108557,vertices:117223});assert.equal(g.batches.length,21);
  const original=assertGardenOriginalComponents(g.components,old);
  for(const [i,b]of g.batches.entries()){

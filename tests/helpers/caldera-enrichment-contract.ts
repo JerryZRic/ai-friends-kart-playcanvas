@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import * as pc from 'playcanvas';
+import {certifiedGeometryBaseline} from './geometry-runtime-portability';
 import type {CalderaSceneGeometry} from '../../src/caldera-scenery';
 export const CALDERA_ORIGINAL_SOURCE_SHA256='ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2';
 export const calderaSha=(value:string|Buffer)=>createHash('sha256').update(value).digest('hex');
@@ -20,6 +21,7 @@ export function calderaFrozenBaseline(){
  if(!frozen){const text=readFileSync('tests/fixtures/caldera-enrichment-original-geometry.json','utf8');assert.equal(calderaSha(text),'9de28b035c62c3236eddc3f9200dbf777ac40feb798379faec87526f8a43bb70','Frozen original geometry fixture is immutable');const record=JSON.parse(text);assert.equal(record.sourceSha256,CALDERA_ORIGINAL_SOURCE_SHA256);frozen=record.protection;}
  return frozen!;
 }
+export const calderaRuntimeBaseline=()=>certifiedGeometryBaseline('caldera',calderaFrozenBaseline());
 /** Certifies exact complete original records, including order/ranges, before projection. */
 export function assertCalderaOriginalComponents(components:CalderaSceneGeometry['components'],old:CalderaBaselineContract){
  assert.equal(old.components.length,2715);assert.equal(old.prefixes.components.count,2715);
@@ -28,7 +30,7 @@ export function assertCalderaOriginalComponents(components:CalderaSceneGeometry[
  assert.deepEqual(original,old.components,'Every original component, order, kind, role, landmark and full indexed range must remain exact');
  assert.equal(calderaDigest(original),old.prefixes.components.digest,'Immutable complete original component manifest');return original;
 }
-export function assertCalderaOriginalProjection(g:CalderaSceneGeometry,old:CalderaBaselineContract=calderaFrozenBaseline()){
+export function assertCalderaOriginalProjection(g:CalderaSceneGeometry,old:CalderaBaselineContract=calderaRuntimeBaseline()){
  assert.deepEqual(old.budget,{batches:21,triangles:95132,vertices:126320});assert.equal(g.batches.length,21);
  const original=assertCalderaOriginalComponents(g.components,old);
  for(const [i,b]of g.batches.entries()){

@@ -1,6 +1,7 @@
 /** One serial 448MiB worker; immutable original build is compared before new solids. */
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
+import {assertCertifiedOriginalGeometry,geometryOriginalBufferDigests} from './geometry-runtime-portability';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {landTexturePixels} from '../../src/land-scenery';
@@ -14,15 +15,17 @@ const sourceHashesBefore=calderaAuditHashes();
 const [stage,run,ledger]=process.argv.slice(2),baseline=stage==='baseline',started=Date.now();assert.ok(['baseline','candidate'].includes(stage));
 const path=baseline?'docs/scene-baselines/caldera-scenery.ts.txt':'src/caldera-scenery.ts',sourceSha256=sha(readFileSync(path)),{geometry:g,theme}=await calderaSceneData(baseline,ledger),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
 const textureHash=digest(Object.fromEntries((['stone','asphalt','wood','grass'] as const).map(k=>[k,[...landTexturePixels(k)]])));
+let runtimeCertification:any=null;
 const sourceNormalAudit:any[]=[],actualBounds={min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};
 for(const b of g.batches){assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.positions.every(Number.isFinite)&&b.uvs.every(Number.isFinite));assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));const normals=pc.calculateNormals(b.positions,b.indices);assert.ok(normals.every(Number.isFinite));sourceNormalAudit.push({batch:b.name,vertices:normals.length/3,sha256:digest(normals),zeroLength:normals.filter((_,i)=>i%3===0&&Math.hypot(normals[i],normals[i+1],normals[i+2])<1e-8).length});for(const index of b.indices)for(let k=0;k<3;k++){actualBounds.min[k]=Math.min(actualBounds.min[k],b.positions[index*3+k]);actualBounds.max[k]=Math.max(actualBounds.max[k],b.positions[index*3+k]);}}
 assert.deepEqual(g.bounds,actualBounds,'Bounds include every actual indexed vertex');
 assert.deepEqual(g.budget,{batches:g.batches.length,triangles:g.batches.reduce((n,b)=>n+b.indices.length/3,0),vertices:g.batches.reduce((n,b)=>n+b.positions.length/3,0)},'Independent actual indexed budget');
 let assembly:any=null,coflush:any=null,addedComponents=0,newTriangles=0,closedShells=0,selfIntersectionPairs=0;const selfIntersectionFailures:any[]=[];
 if(baseline){
- assert.equal(sourceSha256,CALDERA_ORIGINAL_SOURCE_SHA256);assert.deepEqual(g.budget,{batches:21,triangles:95132,vertices:126320});const protection=calderaBaselineContract(g,theme);assert.deepEqual(protection,calderaFrozenBaseline(),'Fresh unchanged baseline build exactly reproduces independently frozen original export');
- writeFileSync(join(run,'baseline-contract.json'),JSON.stringify({sourceSha256,protection,textureHash})+'\n');
+ assert.equal(sourceSha256,CALDERA_ORIGINAL_SOURCE_SHA256);assert.deepEqual(g.budget,{batches:21,triangles:95132,vertices:126320});const protection=calderaBaselineContract(g,theme);runtimeCertification=assertCertifiedOriginalGeometry('caldera',g,protection,calderaFrozenBaseline());
+ writeFileSync(join(run,'baseline-contract.json'),JSON.stringify({sourceSha256,protection,textureHash,runtimeCertification})+'\n');
 }else{
+ assert.deepEqual(geometryOriginalBufferDigests(g,old.protection),old.runtimeCertification.originalBuffers,'Every original Float64 position, UV, index and computed normal is byte-identical to this runtime’s independently built original');runtimeCertification=old.runtimeCertification;
  const added=assertCalderaPreservation(g,theme,old.protection);assert.equal(textureHash,old.textureHash);addedComponents=added.length;
  // Mutation sentinels exercise actual original arrays, then restore exactly.
  for(const field of ['positions','uvs','indices'] as const){const array=g.batches[0][field],original=array[0];array[0]=original+1;try{assert.throws(()=>assertCalderaOriginalProjection(g,old.protection),undefined,'Changed original '+field+' must fail before projection');}finally{array[0]=original;}}
@@ -41,7 +44,7 @@ if(baseline){
 }
 assert.equal(sha(readFileSync(path)),sourceSha256,'Source stable for full audit');
 const sourceHashesAfter=calderaAuditHashes();assert.deepEqual(sourceHashesAfter,sourceHashesBefore,'All original inputs and QA dependencies remained stable');
-const report={sourceHashesBefore,sourceHashesAfter,stable:true,schema:'caldera-enrichment-geometry-v1',stage,sourceSha256,budget:g.budget,protectedComponents:2715,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['CPU actual indexed-source geometry only; no native pixels,GPU or FPS certification']};
+const report={sourceHashesBefore,sourceHashesAfter,stable:true,schema:'caldera-enrichment-geometry-v1',stage,sourceSha256,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:2715,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['CPU actual indexed-source geometry only; no native pixels,GPU or FPS certification']};
 writeFileSync(join(run,stage+'-report.json'),JSON.stringify(report)+'\n');
 if(process.env.CALDERA_ENRICHMENT_AUDIT_DIR){const output=resolve(process.env.CALDERA_ENRICHMENT_AUDIT_DIR);mkdirSync(output,{recursive:true});writeFileSync(join(output,stage+'-geometry-report.json'),JSON.stringify(report,null,2)+'\n');if(baseline)writeFileSync(join(output,'baseline-indexed-contract.json'),readFileSync(join(run,'baseline-contract.json')));}
 console.log(JSON.stringify({...report,sourceHashesBefore:undefined,sourceHashesAfter:undefined,sourceNormalAudit:sourceNormalAudit.map(({batch,vertices,zeroLength})=>({batch,vertices,zeroLength})),assembly:assembly?{assemblies:assembly.assemblies,pieces:assembly.pieces,cameraFaces:assembly.cameraFaces,seatedFaces:assembly.seatedFaces,groundWitnesses:assembly.groundWitnesses.length,contacts:assembly.contacts.length,openings:assembly.openings.length,exposedSurfaces:assembly.visibility.length,intentionalJoins:assembly.intentionalJoins.length,buriedJoints:assembly.buriedJoints.length,intrusions:assembly.intrusions.length,terrainIntrusions:assembly.terrainIntrusions.length,minimumNonRootTerrainGap:assembly.minimumNonRootTerrainGap}:null,coflush:coflush?{facePairs:coflush.facePairs,exposed:coflush.exposed.length,buried:coflush.buried.length,oppositeContactPatches:coflush.oppositeContactPatches}:null}));

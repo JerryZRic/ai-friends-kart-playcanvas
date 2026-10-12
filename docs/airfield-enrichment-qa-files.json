@@ -47,7 +47,11 @@
     "tests/audit-fixture-publication.test.ts",
     "tests/helpers/audit-fixture-publication-revisions.ts",
     "scripts/compact-garden-audit-fixture.mjs",
-    "docs/audit-fixture-publication.md"
+    "docs/audit-fixture-publication.md",
+    "tests/audit-camera-dependency-transition.test.ts",
+    "tests/helpers/geometry-runtime-portability.ts",
+    "tests/fixtures/geometry-runtime-portability.json",
+    "tests/audit-geometry-runtime-portability.test.ts"
   ],
   "retainedTestFiles": [
     "tests/airfield-gameplay-balance.test.ts",
@@ -1118,7 +1122,7 @@
     "docs/airfield-enrichment-preview-provenance.json": "066589fc50e0e5652c65cf02f47bd24c59b9dd61cf91649db6e501c7ea269ae3",
     "docs/airfield-enrichment-qa-changes.md": "f3fb60afbfc00eff6229990adcd6293a9876394cc55721cb4c0fecce75fa1b6b",
     "docs/airfield-preview-provenance.json": "bfecf37649380a08708c83369b04b94451ac643657aa6c881b2bcf776b08c7b4",
-    "docs/audit-fixture-publication.md": "8ad1cc61f9345e9313fe246884de22d3203ffed123989f59f2fcdd63b6659e88",
+    "docs/audit-fixture-publication.md": "26eeb6f08ef4dea49d63b83ff30587fe73e7196bd7e131660111a11cb17c01f1",
     "docs/caldera-enrichment-ART-DIRECTION.md": "5ad873b54edf032e6c6945567d7dc9444d1b4386cffb543c0fe970567d7a67b1",
     "docs/caldera-enrichment-QA.md": "0fd7ae4d6f175da4fd7091c28e92d240f4f715766af1654fc788f27e83fcc2a4",
     "docs/caldera-enrichment-cameras.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
@@ -1549,7 +1553,9 @@
     "tests/airfield-scene.test.ts": "63488923684386aff0dd1b99c660174d5bbbe23d22aa4a48617b5ddb59bf8f74",
     "tests/alpine-props.test.ts": "7f6f6fa99e872972a452800d37ac3d118dc0e527d9591b4db9e3b1caa1632216",
     "tests/asset-download.test.mjs": "3117fb5e9d4c19ba2ed5505288f43febad6392254c6410dd7ed9dc944365e36a",
-    "tests/audit-fixture-publication.test.ts": "0d6680fa8510a2b9aabce7b8fd4b2b15ca00b9e4bb15f0ddd047fb1dd14cb194",
+    "tests/audit-camera-dependency-transition.test.ts": "cbaec105cffc1db96d8d8b4123fa0a4c904e7f28103df37888cdf011645aa9b7",
+    "tests/audit-fixture-publication.test.ts": "66233a7a1cbf2ef556aa940dc8896235ef0007ea36b7818d4c8e1d6752fdc796",
+    "tests/audit-geometry-runtime-portability.test.ts": "750cd262cbdd8f9a185c8d086088727fa74ef1e47f07361e37d3086c12c20846",
     "tests/bundled-drivers.test.mjs": "adbdbe6ae215999715d55bf0c0af8cca59193b27f6997f7b7ea097ceee4adff7",
     "tests/caldera-enrichment-camera.test.ts": "e776fb5851adf1e7efeea8677a90b26bfe4618b4af32cdb6a69de7690944a800",
     "tests/caldera-enrichment-geometry.test.ts": "ccf84a13fb818f4dc0a64724332c1ce992f350e2a93a8f7549aa32ea4c437f1b",
@@ -1617,6 +1623,7 @@
     "tests/fixtures/garden-enrichment-original-geometry.json": "d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0",
     "tests/fixtures/garden-enrichment-original-inventory.json": "ee38acf0339c017150d2ed99a70ebaf2bf4ea5555dd8beb3ea7a47647a1c26d4",
     "tests/fixtures/garden-enrichment-reviewed-changes.json": "0bf147bda5bf2d63dbce87a5b5ad09e1dc24406c2d9fb39bc0c5573565a11813",
+    "tests/fixtures/geometry-runtime-portability.json": "46902badf0d40a040fe311f83e71397df5b7e1211d919b7e4bd3a3a7f1905a87",
     "tests/fixtures/harvest-enrichment-protected.json": "cebc9293f79ee7f9b611018e6e3f2367bd4f0b917f2b9e67f70540c39a2061c0",
     "tests/fixtures/mountain-first-pass-cylinder.json": "1428ccadd971c46ff540052ab10cff4d3317cfca32faa994db993abcbd5016cf",
     "tests/fixtures/mountain-first-pass-unaffected.json": "59f4393016e781825ec611b5c746c92208f3acf70c8c73d873ddd555f127e7e1",
@@ -1706,7 +1713,7 @@
     "tests/helpers/airfield-enrichment-scene.ts": "8a2f97c316bf1555f279f2cecc46b08c34b003d58de51d27f9e612bd70a421e8",
     "tests/helpers/airfield-enrichment-solids.ts": "c906972ef1669e37148dbf9e6137e279c279226eac6079932f97b6fc90fc5fb7",
     "tests/helpers/airfield-enrichment-source-stability.ts": "92b8f09251ffe1ae2f56b8683c6a7933204d137110433d6ab70a3dadc390e88a",
-    "tests/helpers/audit-fixture-publication-revisions.ts": "13fb82f7e74e3074c43641f5d873a34a7e554bfac478d329302ad6ba9c3a3025",
+    "tests/helpers/audit-fixture-publication-revisions.ts": "6e5b179a1cfbaba75fa99dca5618f8b660b584b96f97cc1efef052ade7f44577",
     "tests/helpers/authorized-portraits.json": "e05bf4cade8de3e1ae13b6db1e20c1c22a4ba38cf28b3e0b559cdb06cb7d6bf4",
     "tests/helpers/authorized-runtime.json": "090df0e4fdad642acd48ad43b0ee3ae75ec1227ea1a8ba614fd380955491de36",
     "tests/helpers/bounded-test-process.ts": "91dbd8876d5e73f8d43c1065433681ca20bc52e1f811a512fff6dbcc50fb5bd7",
@@ -1714,12 +1721,12 @@
     "tests/helpers/caldera-enrichment-camera-checks.ts": "4c9f63c5d2588bc11e3dae26092701434e538a76b5d7ff20ddf45efefae91698",
     "tests/helpers/caldera-enrichment-camera-frozen.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
     "tests/helpers/caldera-enrichment-camera-worker.ts": "eb5c4673b2f022229da94e2883216720a143ae977fd832d1d72d7d05f1d893a0",
-    "tests/helpers/caldera-enrichment-contract.ts": "4f4a54a739c793373111f524f52a791f94515b3bb5f3330eebe75094c5bd2029",
-    "tests/helpers/caldera-enrichment-geometry-worker.ts": "8e76faf4d4f97e68cc5e3b3756032d67bc07f8fc36a507f47e04db3502cb7303",
+    "tests/helpers/caldera-enrichment-contract.ts": "bbd99b06c51ffc02a8ca85103bbbb43aca589dda55b28c987fd25b6ff6abfdb9",
+    "tests/helpers/caldera-enrichment-geometry-worker.ts": "c9576d317eda013779d9c8d0bac2d1bb1b698c05ca97d40ddd8e231d69cd9210",
     "tests/helpers/caldera-enrichment-pose-worker.ts": "5af947de40550763cb3401e6131f0a63787ee18acccf557f1ee19cdc54b878be",
     "tests/helpers/caldera-enrichment-scene.ts": "d7387a0361ff9f1d4c99fbbb29b638662fc57edb01a6d6d593cc919cbf08d51b",
     "tests/helpers/caldera-enrichment-solids.ts": "6a77961611ad9b4021c635a9222d73b0ddd14d10b60812c87df1a0e3937de17e",
-    "tests/helpers/caldera-enrichment-source-stability.ts": "a1022f89e5c300717061a875fc0f78b0d20e27c1ee08969c829f8c0e432fb603",
+    "tests/helpers/caldera-enrichment-source-stability.ts": "630b4591f79600cac795ffad14939fe6dc6b78d70f0e64e18cf7f5132e3caf73",
     "tests/helpers/desert-enrichment-assemblies.ts": "339a123d1b8eb2f4d72ee5fbda51f1f005993ee7e48cafcbd8f65455845f028e",
     "tests/helpers/desert-enrichment-camera-checks.ts": "3a04a418810ba6887750afe14c48891b7cee18e9afca2f395d8157202b18c0d7",
     "tests/helpers/desert-enrichment-camera-frozen.json": "37cf96efe90686822099b3d377c815cee49580e6cf368f94ea913236bd7cb480",
@@ -1754,18 +1761,19 @@
     "tests/helpers/garden-enrichment-camera-checks.ts": "05abcd3144407c53e44dfb79c4d20bbc17d379d90305d3ceb74384f512836ea7",
     "tests/helpers/garden-enrichment-camera-freeze.ts": "a79a3d254d96849f7d0f905ed00e373883cdf07bf79a66acac23c82e8e5fa4c3",
     "tests/helpers/garden-enrichment-camera-frozen.json": "06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598",
-    "tests/helpers/garden-enrichment-camera-records.ts": "54ddb157a3dd55e090239d2a58ef6e1231b7ad4a7cef0db0967d4953e443125a",
+    "tests/helpers/garden-enrichment-camera-records.ts": "04a10653a53243cefe397118cae2243a2ecd2a7693f66f6a82902a873d5f45ed",
     "tests/helpers/garden-enrichment-camera-worker.ts": "94522c21b29723501babbc242c24129b39cffdf482e20da24ddb8fd85bdb9926",
-    "tests/helpers/garden-enrichment-contract.ts": "214c289dea2dfaba70b6435b63a076e404b7ad79528a8b729a2f65a82827c114",
-    "tests/helpers/garden-enrichment-geometry-worker.ts": "cf233323d51afd90243f431b97b6dd63af8607449caf63e8fc6c7f4aa15b029c",
-    "tests/helpers/garden-enrichment-native-provenance.ts": "0f04e846fb4825487dfee28c1d7491e397fc9aba618dbded2fbf56c093f318f5",
+    "tests/helpers/garden-enrichment-contract.ts": "c42d0131e8a9635d7af9e317c0801f227b76f36c78e1a8b55dc02022ffe50f9c",
+    "tests/helpers/garden-enrichment-geometry-worker.ts": "aa743a54b2431149e9df250ce0e19a2f016bb81b0545c6ee92cdbd74ee86178b",
+    "tests/helpers/garden-enrichment-native-provenance.ts": "c25cf5e165edeef6aa60bf4cdc4f6c00bc5373a75be3425364e32c7c1d69a298",
     "tests/helpers/garden-enrichment-original-assemblies.ts": "0416d135854133424f18cb95a16dae422ab1aa4107a9b0598a3225d7fa1a6531",
     "tests/helpers/garden-enrichment-piece-oracle.ts": "3cddae5f8461233530b6fcfc0369434dd7f33a35e453be4bd21927dcabc13e33",
     "tests/helpers/garden-enrichment-pose-worker.ts": "583b70ab8f340783726793a3f22cb95edf17299989c9467a7fa390e370ca234b",
     "tests/helpers/garden-enrichment-reviewed-revisions.ts": "f639192feed136fab5fd1d8267e92f385196e6987e5e488b5b444fae27d7b80a",
     "tests/helpers/garden-enrichment-scene.ts": "b89d49153f62ee45a36e81a6209ca359f85b44fec9a844ba97a75315de641469",
     "tests/helpers/garden-enrichment-solids.ts": "34a873e5b9b5a21047ac21eaed1525d36c51370359a79c6cc3b63b28efd00a7d",
-    "tests/helpers/garden-enrichment-source-stability.ts": "57f4b3bc29b0d6b0152d442ab6a189ed90d6b3828901bff1f2e3141bf946fefa",
+    "tests/helpers/garden-enrichment-source-stability.ts": "c0aca866eca760487c37a1765acb8b9e7286900601693190116ea5dae7cc97db",
+    "tests/helpers/geometry-runtime-portability.ts": "513104c3266ac15d0ff4a32908e438b031f6e8124b64b654dfef72dcaaf39370",
     "tests/helpers/harvest-enrichment-assemblies.ts": "fb4fd28e153165585aa1bb95a173e9883dd41bd56aa91011c88435824920ad1f",
     "tests/helpers/harvest-enrichment-camera-checks.ts": "e8cc6b930474c5f7cc68fdec6cf89788081475a28c395f7916710fae6efc9d20",
     "tests/helpers/harvest-enrichment-camera-oracle.ts": "a1ada25f3e87001ed88f8e836556e58d253585fee7c3cde538478ba63ee4fbfe",
@@ -1968,7 +1976,7 @@
     "schema": "audit-fixture-publication-v1",
     "baselineCommit": "caff951ba864212e77e3ac2f2ff3f6fa3d79d83a",
     "sealedAirfieldManifestSha256": "0b0d4d0f7bb4ed5a086a62b7e455b32771c3d60a8b5251fc4669ce8cf7ee3917",
-    "scope": "Lossless Garden audit JSON compaction; no art or gameplay changes",
+    "scope": "Lossless Garden audit JSON compaction and exact test-only CI compatibility transitions; no art or gameplay changes",
     "reviewedInputRevisions": {
       "tests/fixtures/garden-enrichment-reviewed-changes.json": {
         "previousSha256": "9849bf067b63fa83f22ad75dac63ff4a560c601c210d241676ad06cbd6307afa",
@@ -1979,7 +1987,49 @@
         "previousSha256": "f993f2b2d84b30c95c2cf02b9b23e59eb677365bedf127cb1466875fad3f4035",
         "currentSha256": "f639192feed136fab5fd1d8267e92f385196e6987e5e488b5b444fae27d7b80a",
         "scope": "Validate exact compact transport bytes and reconstruct the independently pinned historical JSON bytes"
+      },
+      "tests/helpers/garden-enrichment-camera-records.ts": {
+        "previousSha256": "54ddb157a3dd55e090239d2a58ef6e1231b7ad4a7cef0db0967d4953e443125a",
+        "currentSha256": "04a10653a53243cefe397118cae2243a2ecd2a7693f66f6a82902a873d5f45ed",
+        "scope": "One exact reviewed Airfield dependency transition; preserve historical Garden camera plan and all archive/output assertions"
+      },
+      "tests/helpers/caldera-enrichment-contract.ts": {
+        "previousSha256": "4f4a54a739c793373111f524f52a791f94515b3bb5f3330eebe75094c5bd2029",
+        "currentSha256": "bbd99b06c51ffc02a8ca85103bbbb43aca589dda55b28c987fd25b6ff6abfdb9",
+        "scope": "Select independently certified unchanged-original geometry fingerprints without changing historical fixtures or tolerances"
+      },
+      "tests/helpers/caldera-enrichment-geometry-worker.ts": {
+        "previousSha256": "8e76faf4d4f97e68cc5e3b3756032d67bc07f8fc36a507f47e04db3502cb7303",
+        "currentSha256": "c9576d317eda013779d9c8d0bac2d1bb1b698c05ca97d40ddd8e231d69cd9210",
+        "scope": "Certify unchanged-original runtime profile and retain complete candidate/original Float64 prefix equality including signed zero"
+      },
+      "tests/helpers/caldera-enrichment-source-stability.ts": {
+        "previousSha256": "a1022f89e5c300717061a875fc0f78b0d20e27c1ee08969c829f8c0e432fb603",
+        "currentSha256": "630b4591f79600cac795ffad14939fe6dc6b78d70f0e64e18cf7f5132e3caf73",
+        "scope": "Extend before/after source stability to the exact runtime certificate and helper"
+      },
+      "tests/helpers/garden-enrichment-contract.ts": {
+        "previousSha256": "214c289dea2dfaba70b6435b63a076e404b7ad79528a8b729a2f65a82827c114",
+        "currentSha256": "c42d0131e8a9635d7af9e317c0801f227b76f36c78e1a8b55dc02022ffe50f9c",
+        "scope": "Select independently certified unchanged-original geometry fingerprints without changing historical fixtures or tolerances"
+      },
+      "tests/helpers/garden-enrichment-geometry-worker.ts": {
+        "previousSha256": "cf233323d51afd90243f431b97b6dd63af8607449caf63e8fc6c7f4aa15b029c",
+        "currentSha256": "aa743a54b2431149e9df250ce0e19a2f016bb81b0545c6ee92cdbd74ee86178b",
+        "scope": "Certify unchanged-original runtime profile and retain complete candidate/original Float64 prefix equality including signed zero"
+      },
+      "tests/helpers/garden-enrichment-source-stability.ts": {
+        "previousSha256": "57f4b3bc29b0d6b0152d442ab6a189ed90d6b3828901bff1f2e3141bf946fefa",
+        "currentSha256": "c0aca866eca760487c37a1765acb8b9e7286900601693190116ea5dae7cc97db",
+        "scope": "Extend before/after source stability to the exact runtime certificate and helper"
+      },
+      "tests/helpers/garden-enrichment-native-provenance.ts": {
+        "previousSha256": "0f04e846fb4825487dfee28c1d7491e397fc9aba618dbded2fbf56c093f318f5",
+        "currentSha256": "c25cf5e165edeef6aa60bf4cdc4f6c00bc5373a75be3425364e32c7c1d69a298",
+        "scope": "Use independently certified Math.pow profile for original geometry hashes; retain all native ownership assertions"
       }
-    }
+    },
+    "preCiCompatibilityCommit": "0ea002f4b8ced63560e7305712f3dfad2f9ae0a8",
+    "preCiCompatibilityManifestSha256": "d09e9371e181137f0be27b0a95528e44532395e75c5f2e82a4b46a6c0a6c7b46"
   }
 }

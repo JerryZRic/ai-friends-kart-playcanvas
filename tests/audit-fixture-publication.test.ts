@@ -40,9 +40,19 @@ test('transport validation rejects changed values, extra whitespace and original
   assert.throws(() => assertGardenReviewCompactBytes(restoreIndentedJsonLexemes(compact)));
 });
 
-test('publication overlay enumerates exactly two reviewed inputs and rejects wrong incoming or current identities', () => {
+test('publication overlay enumerates exact reviewed inputs and rejects wrong incoming or current identities', () => {
   assert.equal(AUDIT_PUBLICATION_BASELINE_COMMIT, 'caff951ba864212e77e3ac2f2ff3f6fa3d79d83a');
-  assert.deepEqual([...AUDIT_PUBLICATION_PATHS], [fixture, 'tests/helpers/garden-enrichment-reviewed-revisions.ts']);
+  assert.deepEqual([...AUDIT_PUBLICATION_PATHS], [fixture,
+    'tests/helpers/garden-enrichment-reviewed-revisions.ts',
+    'tests/helpers/garden-enrichment-camera-records.ts',
+    'tests/helpers/caldera-enrichment-contract.ts',
+    'tests/helpers/caldera-enrichment-geometry-worker.ts',
+    'tests/helpers/caldera-enrichment-source-stability.ts',
+    'tests/helpers/garden-enrichment-contract.ts',
+    'tests/helpers/garden-enrichment-geometry-worker.ts',
+    'tests/helpers/garden-enrichment-source-stability.ts',
+    'tests/helpers/garden-enrichment-native-provenance.ts',
+  ]);
   for (const [path, row] of Object.entries(AUDIT_PUBLICATION_REVISIONS)) {
     assert.equal(sha(readFileSync(path)), row.currentSha256, path + ' exact reviewed output');
     assert.equal(auditPublicationHash(path, row.previousSha256), row.currentSha256);
@@ -67,7 +77,9 @@ test('current Airfield portable manifest includes the entire technical codec and
   const manifest = JSON.parse(readFileSync('docs/airfield-enrichment-qa-files.json', 'utf8'));
   assert.equal(manifest.publicationCompatibility.baselineCommit, AUDIT_PUBLICATION_BASELINE_COMMIT);
   assert.deepEqual(manifest.publicationCompatibility.reviewedInputRevisions, AUDIT_PUBLICATION_REVISIONS);
-  for (const path of [fixture, 'tests/helpers/garden-enrichment-reviewed-revisions.ts', 'tests/helpers/audit-fixture-publication-revisions.ts', 'scripts/compact-garden-audit-fixture.mjs', 'tests/audit-fixture-publication.test.ts', 'docs/audit-fixture-publication.md']) {
+  assert.equal(manifest.publicationCompatibility.preCiCompatibilityCommit, '0ea002f4b8ced63560e7305712f3dfad2f9ae0a8');
+  assert.equal(manifest.publicationCompatibility.preCiCompatibilityManifestSha256, 'd09e9371e181137f0be27b0a95528e44532395e75c5f2e82a4b46a6c0a6c7b46');
+  for (const path of [fixture, 'tests/helpers/garden-enrichment-reviewed-revisions.ts', 'tests/helpers/garden-enrichment-camera-records.ts', 'tests/audit-camera-dependency-transition.test.ts', 'tests/helpers/audit-fixture-publication-revisions.ts', 'scripts/compact-garden-audit-fixture.mjs', 'tests/audit-fixture-publication.test.ts', 'docs/audit-fixture-publication.md', 'tests/helpers/geometry-runtime-portability.ts', 'tests/fixtures/geometry-runtime-portability.json', 'tests/audit-geometry-runtime-portability.test.ts']) {
     assert.equal(manifest.finalFileSha256[path], sha(readFileSync(path)), path + ' exact packaged dependency');
   }
 });

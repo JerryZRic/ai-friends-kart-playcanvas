@@ -4,11 +4,33 @@ import {createHash} from 'node:crypto';
 import {closeSync,existsSync,openSync,readFileSync,readSync,writeSync} from 'node:fs';
 import {join} from 'node:path';
 import {gardenSha} from './garden-enrichment-contract';
+export const GARDEN_CAMERA_AIRFIELD_TRANSITION = Object.freeze({
+  path: 'src/airfield-scenery.ts',
+  previousSha256: 'a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2',
+  currentSha256: '96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db',
+  reviewPath: 'tests/fixtures/airfield-enrichment-reviewed-changes.json',
+  reviewSha256: 'b036ddf5cd27fdd7dcb18a38715ea45c7ef426101ebcac77009c0e2f7dd44324',
+});
+
+// The retained Airfield geometry suite certifies all original indexed prefixes,
+// roads and camera obstacles; its camera suites retain complete output matrices.
+// See docs/airfield-enrichment-qa-changes.md. This transition permits only that
+// exact reviewed Airfield source, never another art/review/publication revision.
+export function assertGardenCameraDependency(path: string, incoming: unknown, actual: string) {
+  const reviewed = GARDEN_CAMERA_AIRFIELD_TRANSITION;
+  if (path === reviewed.path) {
+    assert.equal(incoming, reviewed.previousSha256, path + ' exact frozen Garden incoming dependency');
+    assert.equal(actual, reviewed.currentSha256, path + ' exact separately reviewed Airfield dependency');
+  } else {
+    assert.equal(actual, incoming, 'Original camera dependency: ' + path);
+  }
+}
+
 export const gardenCameraExpectedPath='tests/fixtures/garden-enrichment-camera-outputs.json';
 export function gardenCameraPlan(){
  const text=readFileSync('tests/helpers/garden-enrichment-camera-frozen.json','utf8');assert.equal(gardenSha(text),'06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598','Frozen camera inputs and protected dependency inventory');
  const plan=JSON.parse(text);
- for(const [path,sha]of Object.entries(plan.protected))assert.equal(gardenSha(readFileSync(path)),sha,'Original camera dependency: '+path);
+ for(const [path,sha]of Object.entries(plan.protected))assertGardenCameraDependency(path,sha,gardenSha(readFileSync(path)));
  assert.equal(gardenSha(readFileSync('docs/garden-enrichment-cameras.json')),plan.reviewViewsSha256);
  assert.equal(gardenSha(readFileSync('tests/fixtures/garden-enrichment-original-geometry.json')),plan.originalGeometryFixtureSha256);
  return plan;

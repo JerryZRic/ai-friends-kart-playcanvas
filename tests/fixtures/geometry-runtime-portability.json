@@ -1,0 +1,2792 @@
+{
+  "schema": "geometry-runtime-portability-v1",
+  "scope": "Only independently reproduced unchanged-original Math.pow drift. No epsilon, quantization, regenerated original fixture, runtime source change or candidate-derived acceptance.",
+  "dependencies": {
+    "docs/scene-baselines/caldera-scenery.ts.txt": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+    "docs/scene-baselines/garden-original/src/garden-scenery.ts.txt": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "node_modules/playcanvas/build/playcanvas/src/core/math/vec3.js": "8aec72fbca15c21361c8c03c95b0f8825f743ac2ffc2f486a6542ce4169c165c",
+    "node_modules/playcanvas/build/playcanvas/src/scene/geometry/geometry-utils.js": "9785ce30bd5fd9a1db776a7757e419b72dbbcd8117b37ccd48614cd1bc0dd4a9",
+    "node_modules/playcanvas/package.json": "71128c4394f07f2de8a95dc9a7279205213fb51a08dca0b9b2a67fe416cdfa39",
+    "package-lock.json": "2e1e60d95318ff59e3079ae4bb7b138884474c1789e96c6b35bef4882898fb6b",
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab"
+  },
+  "powInputs": [
+    [
+      0.33333333333333326,
+      1.4
+    ],
+    [
+      0.891207360061435,
+      16
+    ]
+  ],
+  "profiles": {
+    "node24": {
+      "node": "v24.19.0",
+      "v8": "13.6.233.17-node.51",
+      "platform": "linux",
+      "arch": "x64",
+      "powBits": [
+        "1f205843807ecb3f",
+        "0f9cc40b5145c43f"
+      ]
+    },
+    "node22": {
+      "node": "v22.23.3",
+      "v8": "12.4.254.21-node.57",
+      "platform": "linux",
+      "arch": "x64",
+      "powBits": [
+        "1e205843807ecb3f",
+        "109cc40b5145c43f"
+      ]
+    }
+  },
+  "maps": {
+    "garden": {
+      "originalSourceSha256": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+      "originalFixtureSha256": "d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0",
+      "replacements": [
+        {
+          "batchIndex": 14,
+          "batch": "Garden muted coral petal solids",
+          "field": "positions",
+          "original": "fbcd574c10cef7816588f277d064e7898c2a27389c7e182136466e2ab1df40ee",
+          "node22": "d6f5cd38f74f0b7965ab7afedb54b728f0a5042b93c062c6465a259172fac037"
+        },
+        {
+          "batchIndex": 14,
+          "batch": "Garden muted coral petal solids",
+          "field": "normals",
+          "original": "9481903fb26df5d9b2051cfeecbf10a5b990cc0174b134bf36e5e25dc98abf1b",
+          "node22": "f1535b863ae762c77fb83fdee4afdc793ae74f3fa1a333778a718dcc788ae31e"
+        }
+      ],
+      "cameraPayload": {
+        "original": "aa0c912f5afc22936696352f4a6c613dd6c421abb38d73a8cfad2c4d1febb1c7",
+        "node22": "11708ecd5747edb2a02056b7c9f49a2df177aaaa57320071b924d50b4e436f36",
+        "differences": [
+          {
+            "path": [
+              4,
+              "triangles",
+              4691,
+              2,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              4692,
+              1,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              4693,
+              1,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              4702,
+              2,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              4703,
+              0,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              4704,
+              0,
+              1
+            ],
+            "node24": 28.400788599818934,
+            "node22": 28.400788599818938,
+            "bits24": "fbd4e8149a663c40",
+            "bits22": "fcd4e8149a663c40"
+          }
+        ]
+      },
+      "differences": [
+        {
+          "map": "garden",
+          "batch": "Garden muted coral petal solids",
+          "field": "positions",
+          "count": 1,
+          "maxAbs": 3.552713678800501e-15,
+          "signedZeroOnly": false,
+          "allDiffs": [
+            {
+              "index": 1822,
+              "node24": 28.400788599818934,
+              "node22": 28.400788599818938,
+              "abs": 3.552713678800501e-15,
+              "bits24": "fbd4e8149a663c40",
+              "bits22": "fcd4e8149a663c40"
+            }
+          ],
+          "batchIndex": 14
+        },
+        {
+          "map": "garden",
+          "batch": "Garden muted coral petal solids",
+          "field": "normals",
+          "count": 20,
+          "maxAbs": 1.1796119636642288e-15,
+          "signedZeroOnly": false,
+          "allDiffs": [
+            {
+              "index": 1800,
+              "node24": 0.06771673837752219,
+              "node22": 0.06771673837752337,
+              "abs": 1.1796119636642288e-15,
+              "bits24": "a526b958e255b13f",
+              "bits22": "fa26b958e255b13f"
+            },
+            {
+              "index": 1801,
+              "node24": 0.9263395459367293,
+              "node22": 0.9263395459367286,
+              "abs": 6.661338147750939e-16,
+              "bits24": "9145d9d492a4ed3f",
+              "bits22": "8b45d9d492a4ed3f"
+            },
+            {
+              "index": 1802,
+              "node24": 0.37055295030163293,
+              "node22": 0.37055295030163393,
+              "abs": 9.992007221626409e-16,
+              "bits24": "40d6beb823b7d73f",
+              "bits22": "52d6beb823b7d73f"
+            },
+            {
+              "index": 1803,
+              "node24": 0.02607091264670959,
+              "node22": 0.026070912646709667,
+              "abs": 7.632783294297951e-17,
+              "bits24": "8428c75455b29a3f",
+              "bits22": "9a28c75455b29a3f"
+            },
+            {
+              "index": 1804,
+              "node24": 0.9227791717433925,
+              "node22": 0.9227791717433921,
+              "abs": 4.440892098500626e-16,
+              "bits24": "bb2b822f6887ed3f",
+              "bits22": "b72b822f6887ed3f"
+            },
+            {
+              "index": 1805,
+              "node24": 0.3844462351361323,
+              "node22": 0.38444623513613324,
+              "abs": 9.43689570931383e-16,
+              "bits24": "8eb8be61c49ad83f",
+              "bits22": "9fb8be61c49ad83f"
+            },
+            {
+              "index": 1818,
+              "node24": 0.17954445565250088,
+              "node22": 0.17954445565250193,
+              "abs": 1.0547118733938987e-15,
+              "bits24": "8c519a0e50fbc63f",
+              "bits22": "b2519a0e50fbc63f"
+            },
+            {
+              "index": 1819,
+              "node24": 0.922349036890359,
+              "node22": 0.9223490368903586,
+              "abs": 3.3306690738754696e-16,
+              "bits24": "391e9e20e283ed3f",
+              "bits22": "361e9e20e283ed3f"
+            },
+            {
+              "index": 1820,
+              "node24": 0.34210530921322224,
+              "node22": 0.34210530921322235,
+              "abs": 1.1102230246251565e-16,
+              "bits24": "e0f5b6aa0de5d53f",
+              "bits22": "e2f5b6aa0de5d53f"
+            },
+            {
+              "index": 1821,
+              "node24": 0.07440689428454234,
+              "node22": 0.07440689428454238,
+              "abs": 4.163336342344337e-17,
+              "bits24": "cc8d8c89540cb33f",
+              "bits22": "cf8d8c89540cb33f"
+            },
+            {
+              "index": 1823,
+              "node24": 0.3921130961460019,
+              "node22": 0.39211309614600187,
+              "abs": 5.551115123125783e-17,
+              "bits24": "c7f111876118d93f",
+              "bits22": "c6f111876118d93f"
+            },
+            {
+              "index": 1824,
+              "node24": 0.0320851870477535,
+              "node22": 0.032085187047752387,
+              "abs": 1.1102230246251565e-15,
+              "bits24": "eabe1c3a786da03f",
+              "bits22": "4abe1c3a786da03f"
+            },
+            {
+              "index": 1825,
+              "node24": 0.9129858922566677,
+              "node22": 0.9129858922566678,
+              "abs": 1.1102230246251565e-16,
+              "bits24": "e1749e302e37ed3f",
+              "bits22": "e2749e302e37ed3f"
+            },
+            {
+              "index": 1826,
+              "node24": 0.4067275517006528,
+              "node22": 0.4067275517006525,
+              "abs": 2.7755575615628914e-16,
+              "bits24": "d8ee3bffd207da3f",
+              "bits22": "d3ee3bffd207da3f"
+            },
+            {
+              "index": 1839,
+              "node24": 0.1775723230838952,
+              "node22": 0.17757232308389517,
+              "abs": 2.7755575615628914e-17,
+              "bits24": "3ef8289cb0bac63f",
+              "bits22": "3df8289cb0bac63f"
+            },
+            {
+              "index": 1840,
+              "node24": 0.9216098976970049,
+              "node22": 0.9216098976970052,
+              "abs": 3.3306690738754696e-16,
+              "bits24": "d0e9480ad47ded3f",
+              "bits22": "d3e9480ad47ded3f"
+            },
+            {
+              "index": 1841,
+              "node24": 0.3451134111295949,
+              "node22": 0.34511341112959404,
+              "abs": 8.881784197001252e-16,
+              "bits24": "729b8d8f5616d63f",
+              "bits22": "629b8d8f5616d63f"
+            },
+            {
+              "index": 1842,
+              "node24": 0.07427761470207406,
+              "node22": 0.07427761470207288,
+              "abs": 1.1796119636642288e-15,
+              "bits24": "6065f895db03b33f",
+              "bits22": "0b65f895db03b33f"
+            },
+            {
+              "index": 1843,
+              "node24": 0.914343148202234,
+              "node22": 0.9143431482022345,
+              "abs": 5.551115123125783e-16,
+              "bits24": "7635db8f4c42ed3f",
+              "bits22": "7b35db8f4c42ed3f"
+            },
+            {
+              "index": 1844,
+              "node24": 0.3980696462803937,
+              "node22": 0.3980696462803927,
+              "abs": 9.992007221626409e-16,
+              "bits24": "397e131cf979d93f",
+              "bits22": "277e131cf979d93f"
+            }
+          ],
+          "batchIndex": 14
+        }
+      ],
+      "rawBuffers": {
+        "node24": [
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "positions",
+            "length": 25299,
+            "sha256": "0162765406567fdb748e1cba70de1445cbb2dd6ff0adc73a7e27b9701374af99"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "uvs",
+            "length": 16866,
+            "sha256": "49c979f1a79b4b2023e8816dca8028edca9f7d0d0faf2f237aba192fa7b6daa3"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "indices",
+            "length": 43710,
+            "sha256": "ee32e0b370793fdac0d45d63aad595372c35fb7b8430924970c9b45163253851"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "normals",
+            "length": 25299,
+            "sha256": "23a217ebad929f246d25055f76b5bb006e8b268beaa09cf5bff62a87dbcc7708"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "positions",
+            "length": 45459,
+            "sha256": "82d557453c4f34e53a965975bdfe659cf4338c53c7634ece2a950b54ac3cfbbc"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "uvs",
+            "length": 30306,
+            "sha256": "9d003f8da44b24d19be582e4c95c174af5d5acf190f4ea00bda59855e917514c"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "indices",
+            "length": 82464,
+            "sha256": "e9efc239295ece1c2064c903a7c7ab9741a11753836bfc0a4deddc231849a31d"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "normals",
+            "length": 45459,
+            "sha256": "46c755bb888adb0e8729ed603ffd15e753274899d3b515c3c88e55572b26d1ca"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "positions",
+            "length": 2568,
+            "sha256": "b256264645fddb0b075f7c3e28773f80611c5fde582c10d01c22c8270cee954d"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "uvs",
+            "length": 1712,
+            "sha256": "6cd7832ccb61d5f755ecbaaa3102f605aad23db4ba38de5000d2f4aa319ce6b6"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "indices",
+            "length": 5064,
+            "sha256": "ca3c891c165b041b31c40fa09db0fab55cd3c0ef42d395cc9055410db5eb441a"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "normals",
+            "length": 2568,
+            "sha256": "f7a48fc47e20391df41fd7fec564cbe0cac8cc92bedde50dd124658abc7ad2d5"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "positions",
+            "length": 35865,
+            "sha256": "089b27ef9340f2b34c5c4494f4c27a6d751a8b797bf129663fa60f8cb4df2e77"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "uvs",
+            "length": 23910,
+            "sha256": "81bfa732eb2292eb0d01714b5daa8581999b19a6ffddfe580a6fb71ffed10488"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "indices",
+            "length": 11955,
+            "sha256": "c13e190c9ce43a5be8afee5ef6ca3d005e28ff0e33aebf596e66e37d5222fc7b"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "normals",
+            "length": 35865,
+            "sha256": "16507f3b62187ddadd93649e8f69a82de5d4b42ac2b62a08699bbc5c4259488a"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "positions",
+            "length": 104526,
+            "sha256": "01140d332dcff028dceaf39a9c489188a5f37a51e046d1c5627b2f290a746039"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "uvs",
+            "length": 69684,
+            "sha256": "72eb5bc812fdb13936825e80daed21fed91ccb226b1653c9137d6b53318cca9e"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "indices",
+            "length": 34842,
+            "sha256": "93d3690d21a7f82d44b934461a3abc3d764bf72a3b5f25467ee672f02d1628c1"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "normals",
+            "length": 104526,
+            "sha256": "5fd83f1a8035899972831e26189e4e43ef656e8675b315a0ff9012b588437003"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "positions",
+            "length": 3048,
+            "sha256": "60c0cb3b85e14f04b8f755555d22ce219c6168f1157807c2a4cc9047cb5d9cfb"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "uvs",
+            "length": 2032,
+            "sha256": "0077fa29d4f40757755c330009bb1f38416b288d518a4e8b7efd25515add07f5"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "indices",
+            "length": 5772,
+            "sha256": "2d8bed66ce6235e085792ab8d4ec1c0efebc381f70c8354bcf9e8b3fb9e26089"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "normals",
+            "length": 3048,
+            "sha256": "cc184df88b71848b752c4b07e8da99d198c2e6a20e446e2a863400abc6a74330"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "positions",
+            "length": 15240,
+            "sha256": "5b9d370b128deab8983f2b7e20ada6f27d0478db548408fbe9570785891d1e60"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "uvs",
+            "length": 10160,
+            "sha256": "2cc2f064b7c599fc5e4d5c62f2716048c7903e25d4e34e49d4a1f90744583e1c"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "indices",
+            "length": 13752,
+            "sha256": "ba19dafdb885a30c4adb4152f57f1b986f52a8f8a7cb85029bde741894f3e5a1"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "normals",
+            "length": 15240,
+            "sha256": "9bd3c8ccd138ca5b312e39f25be835c0fb70dee1b58e914d2c45a541fdc4ed5f"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "positions",
+            "length": 3696,
+            "sha256": "d5dd9e5cb260da17e0f3e044f447d16bff430de7bf0f6964f9d5c12f784deb79"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "uvs",
+            "length": 2464,
+            "sha256": "6456f0ebcb2bd03f83f6afb4b390fc4e8aa1e61d7a17f858a0c4a9b30da68225"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "indices",
+            "length": 5748,
+            "sha256": "dea57241b07175283772704cb158c5035f0f851737ae19df05e9293e450dddb7"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "normals",
+            "length": 3696,
+            "sha256": "beb1f3f4e5819ef21b46630e47f07f05853058aaa15e79b25c299443d5ad959c"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "positions",
+            "length": 4992,
+            "sha256": "1f82fe95cbb0462750ee617fef6150e20b6b3817c20fb773e81c937ef909b4da"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "uvs",
+            "length": 3328,
+            "sha256": "1c1201398be6d3c650965a35601eb152ad332a5abe1e2fd9ba62e66447965c5a"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "indices",
+            "length": 7488,
+            "sha256": "5f6be16625b6311db871413765bb65385fa6f9f0c269ea1aa21372301c5655d3"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "normals",
+            "length": 4992,
+            "sha256": "3621b02fc3fe2a24766125c9c431d7ee3d6347dfe3bdf0498f988d5060e3c501"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "positions",
+            "length": 288,
+            "sha256": "34cb801b65eff3181d2b9cf9c9371f06d0f75e399627733e9b7eb7594bea15c3"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "uvs",
+            "length": 192,
+            "sha256": "bfb34a2dfce419bd1f1a17ee1f4736f109a22b7d35d80352f830447c54b28565"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "indices",
+            "length": 432,
+            "sha256": "177fd1c86e617837f4f21d63a1e578e1f73a8c7af7bff8e029867e0ca4815e5f"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "normals",
+            "length": 288,
+            "sha256": "ee24e22dbe30b914496d96c27c8f82209423db29fb9e9e664590e9f7a3642d4e"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "positions",
+            "length": 5316,
+            "sha256": "46167c84b6695f5f68cbf663fc93c5edcff3628b58a114ba0d2bd537bcb1c815"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "uvs",
+            "length": 3544,
+            "sha256": "e6d99279f6062a8065d79e7815486df536b6c1eac9b27296cbf3c5a9d9eba0a3"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "indices",
+            "length": 7200,
+            "sha256": "ad357c24a17877e750bad05bb4c758d919893ecb07fd995a394226a7abaa7a4e"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "normals",
+            "length": 5316,
+            "sha256": "0d6cf6d26a5c9819ce17a325ac51ac003802e376e2f10a5dfdf2dbc6fbdabc3a"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "positions",
+            "length": 3069,
+            "sha256": "081a0d29a1e4ced7d89dd70bc4c6897302e33fd77b80905012c8f6d25bf9e622"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "uvs",
+            "length": 2046,
+            "sha256": "759ba3fb01c947d13613c3aba127d4f99ab4110f97513d730890d0886856d056"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "indices",
+            "length": 3888,
+            "sha256": "3f494397b7dacca3ead698d9ac58dd1d6199484262a39f4f0f16d9ff65ec3369"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "normals",
+            "length": 3069,
+            "sha256": "9d99eec9014c55b342a0dcbf7f00320dcf7147d8a255eac67c10c687c5de00c1"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "positions",
+            "length": 7947,
+            "sha256": "d61bc541100f24be32f0c0b7d3646e56cdddd6c8dccdf8990eea9c0dd627b1cb"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "uvs",
+            "length": 5298,
+            "sha256": "ac57ef411d870d48e06f80ca4e0cb0e666ad8aa3111d9434aecc376da613c2a8"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "indices",
+            "length": 10224,
+            "sha256": "bda4402e54565a2fe2401c386575f8af11be3ae68d7cae89b0bfffddd13602af"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "normals",
+            "length": 7947,
+            "sha256": "ef64fff3a97a8a56aadb46d3b566ecb6ed7e1fe9735fa64999622ac25d48a8cc"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "positions",
+            "length": 21606,
+            "sha256": "c7e976da1ad89e2927df8a512202895c10f6c23cc241e6f2d87e06bcf15216fb"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "uvs",
+            "length": 14404,
+            "sha256": "cf905fa2c6efb9a136c1d30d3a212ada3fa898d528a38d51d9682fc82d16bf1d"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "indices",
+            "length": 20592,
+            "sha256": "f4779d61df9d7ce4cfc01f354d87b3bcf5149725135cea670464369c152ce237"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "normals",
+            "length": 21606,
+            "sha256": "a79cebca3c1932330f20a1afc93ff0755b2fcf71c29fbdc36ffe4e5b1592b38d"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "positions",
+            "length": 9972,
+            "sha256": "44415701667ea95c4c41f86e28aeb1c730fa241e375c8d8fbddc1013c7794814"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "uvs",
+            "length": 6648,
+            "sha256": "2c0fdde34045d0f28ba4256da1c4fc2011ee971be0ed52f49eb3f2c6e7c00a1a"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "indices",
+            "length": 9504,
+            "sha256": "7812ec179ff6ac1e9d95088be5777fc9bc5325cedfadb330b85c0a2c78b66066"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "normals",
+            "length": 9972,
+            "sha256": "f73d4da27b6e91a574ac6475f5896a86bde5a970f9f6ad9b2132e4e48177dff0"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "positions",
+            "length": 4752,
+            "sha256": "3984b369d8008de76ee82a6d3920273ef79b70a3019cb1cf17842e33e53fb9bd"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "uvs",
+            "length": 3168,
+            "sha256": "170b73db2536b4312bab9cd9afac09de01d797b811008d0c4f2e9128b18716b5"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "indices",
+            "length": 9240,
+            "sha256": "4ca891768206fe8a62bb63775636a079ba0f29a1d2b032f7b1d44f59238a61e6"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "normals",
+            "length": 4752,
+            "sha256": "5f845fb828ed9eb0bac62e22bf30f1b4a6712b836fa00e14202a14b8449c8cd6"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "positions",
+            "length": 43608,
+            "sha256": "9617b2a7df4efd096a890577b1d679e88d9665837c828a325ef14428190fdfa3"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "uvs",
+            "length": 29072,
+            "sha256": "fa4d96eeb153eda2db4cc8693d2642d519513ef468182a90553bd3a9b0696893"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "indices",
+            "length": 35892,
+            "sha256": "667e733190ac29135343b87cf053a99f8b6bf492dc1e5b04e29959886ca61a1d"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "normals",
+            "length": 43608,
+            "sha256": "25d70aba3682978b5c3721bb83bb813560db21645f7e460d68f32d022c1723d7"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "positions",
+            "length": 2088,
+            "sha256": "211f99dfc0d6e8c053cedbbdb4b826455966c6d32d99722db3055a0b52ae149a"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "uvs",
+            "length": 1392,
+            "sha256": "7741051877f3220e94f3955af0af5d82629d088f0df18da8becdccb490ab7be1"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "indices",
+            "length": 1044,
+            "sha256": "01a675a0a579e76f046f874ea3ed0adbb96003b1f605fed3c42099cc9e1d40c7"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "normals",
+            "length": 2088,
+            "sha256": "a896c35739e84803182ccfe431d6d881a59acdebe30ac97d9e73f34c505f88dc"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "positions",
+            "length": 1944,
+            "sha256": "4cbd037b5b193d71efa8e91f213d37303c92578e17fcb52020f9f60d212abed5"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "uvs",
+            "length": 1296,
+            "sha256": "46bae912ffd200a41638832c192fe73366c990e6b0a406f2bfe94b93f41ea7fb"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "indices",
+            "length": 1068,
+            "sha256": "d1f67e3344db510da8092158e3f2b3697c0aa97429428d107bb7fdb51776a141"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "normals",
+            "length": 1944,
+            "sha256": "13aaeeec7a61a71941ca64f0e85cc8b601c9e9aa84b4429493dbc63939c14410"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "positions",
+            "length": 6738,
+            "sha256": "b597206cfb8f737ddeb809b9af826d3f1790a9b9d39794b0ac2576fc774b1d67"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "uvs",
+            "length": 4492,
+            "sha256": "4fefd879713e51641bd876de237ee855cf943f6cd3660c65e7a151cca9b61894"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "indices",
+            "length": 10704,
+            "sha256": "521863280aec4fe49680ab49a265c5c1fb3b5a7b810e8737f0ba4ebf880687a5"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "normals",
+            "length": 6738,
+            "sha256": "1d8547b2588a3a0b7d1904c10a6ca37fdb59c5aa3c667ebd7e2d81a13edcedc6"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "positions",
+            "length": 3648,
+            "sha256": "914cad3bda03a358b3efc108896f9f6caf45c89dbf4019baa92aae1d1ac8d6b8"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "uvs",
+            "length": 2432,
+            "sha256": "214e34fe95a0c54bd0f63cb3a78a3cd3dbe89f47df6d643cd7fd4841a5820917"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "indices",
+            "length": 5088,
+            "sha256": "3d3fa591f88b2c986ac9bbc83fc57046e7d7d912a7892e22592824da42b2a599"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "normals",
+            "length": 3648,
+            "sha256": "3986824cc1b9d5e4a171825cb5dc65dc101d9ee1cfbaf0f8f5ef2a28bf074756"
+          }
+        ],
+        "node22": [
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "positions",
+            "length": 25299,
+            "sha256": "0162765406567fdb748e1cba70de1445cbb2dd6ff0adc73a7e27b9701374af99"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "uvs",
+            "length": 16866,
+            "sha256": "49c979f1a79b4b2023e8816dca8028edca9f7d0d0faf2f237aba192fa7b6daa3"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "indices",
+            "length": 43710,
+            "sha256": "ee32e0b370793fdac0d45d63aad595372c35fb7b8430924970c9b45163253851"
+          },
+          {
+            "batch": "Garden connected sunlit meadow",
+            "field": "normals",
+            "length": 25299,
+            "sha256": "23a217ebad929f246d25055f76b5bb006e8b268beaa09cf5bff62a87dbcc7708"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "positions",
+            "length": 45459,
+            "sha256": "82d557453c4f34e53a965975bdfe659cf4338c53c7634ece2a950b54ac3cfbbc"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "uvs",
+            "length": 30306,
+            "sha256": "9d003f8da44b24d19be582e4c95c174af5d5acf190f4ea00bda59855e917514c"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "indices",
+            "length": 82464,
+            "sha256": "e9efc239295ece1c2064c903a7c7ab9741a11753836bfc0a4deddc231849a31d"
+          },
+          {
+            "batch": "Garden connected deep fern terraces",
+            "field": "normals",
+            "length": 45459,
+            "sha256": "46c755bb888adb0e8729ed603ffd15e753274899d3b515c3c88e55572b26d1ca"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "positions",
+            "length": 2568,
+            "sha256": "b256264645fddb0b075f7c3e28773f80611c5fde582c10d01c22c8270cee954d"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "uvs",
+            "length": 1712,
+            "sha256": "6cd7832ccb61d5f755ecbaaa3102f605aad23db4ba38de5000d2f4aa319ce6b6"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "indices",
+            "length": 5064,
+            "sha256": "ca3c891c165b041b31c40fa09db0fab55cd3c0ef42d395cc9055410db5eb441a"
+          },
+          {
+            "batch": "Garden planted rich soil",
+            "field": "normals",
+            "length": 2568,
+            "sha256": "f7a48fc47e20391df41fd7fec564cbe0cac8cc92bedde50dd124658abc7ad2d5"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "positions",
+            "length": 35865,
+            "sha256": "089b27ef9340f2b34c5c4494f4c27a6d751a8b797bf129663fa60f8cb4df2e77"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "uvs",
+            "length": 23910,
+            "sha256": "81bfa732eb2292eb0d01714b5daa8581999b19a6ffddfe580a6fb71ffed10488"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "indices",
+            "length": 11955,
+            "sha256": "c13e190c9ce43a5be8afee5ef6ca3d005e28ff0e33aebf596e66e37d5222fc7b"
+          },
+          {
+            "batch": "Garden warm dressed garden paving",
+            "field": "normals",
+            "length": 35865,
+            "sha256": "16507f3b62187ddadd93649e8f69a82de5d4b42ac2b62a08699bbc5c4259488a"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "positions",
+            "length": 104526,
+            "sha256": "01140d332dcff028dceaf39a9c489188a5f37a51e046d1c5627b2f290a746039"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "uvs",
+            "length": 69684,
+            "sha256": "72eb5bc812fdb13936825e80daed21fed91ccb226b1653c9137d6b53318cca9e"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "indices",
+            "length": 34842,
+            "sha256": "93d3690d21a7f82d44b934461a3abc3d764bf72a3b5f25467ee672f02d1628c1"
+          },
+          {
+            "batch": "Garden graded gravel shoulder stitches",
+            "field": "normals",
+            "length": 104526,
+            "sha256": "5fd83f1a8035899972831e26189e4e43ef656e8675b315a0ff9012b588437003"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "positions",
+            "length": 3048,
+            "sha256": "60c0cb3b85e14f04b8f755555d22ce219c6168f1157807c2a4cc9047cb5d9cfb"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "uvs",
+            "length": 2032,
+            "sha256": "0077fa29d4f40757755c330009bb1f38416b288d518a4e8b7efd25515add07f5"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "indices",
+            "length": 5772,
+            "sha256": "2d8bed66ce6235e085792ab8d4ec1c0efebc381f70c8354bcf9e8b3fb9e26089"
+          },
+          {
+            "batch": "Garden whole footprint limestone foundations",
+            "field": "normals",
+            "length": 3048,
+            "sha256": "cc184df88b71848b752c4b07e8da99d198c2e6a20e446e2a863400abc6a74330"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "positions",
+            "length": 15240,
+            "sha256": "5b9d370b128deab8983f2b7e20ada6f27d0478db548408fbe9570785891d1e60"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "uvs",
+            "length": 10160,
+            "sha256": "2cc2f064b7c599fc5e4d5c62f2716048c7903e25d4e34e49d4a1f90744583e1c"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "indices",
+            "length": 13752,
+            "sha256": "ba19dafdb885a30c4adb4152f57f1b986f52a8f8a7cb85029bde741894f3e5a1"
+          },
+          {
+            "batch": "Garden pale limestone planter rims",
+            "field": "normals",
+            "length": 15240,
+            "sha256": "9bd3c8ccd138ca5b312e39f25be835c0fb70dee1b58e914d2c45a541fdc4ed5f"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "positions",
+            "length": 3696,
+            "sha256": "d5dd9e5cb260da17e0f3e044f447d16bff430de7bf0f6964f9d5c12f784deb79"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "uvs",
+            "length": 2464,
+            "sha256": "6456f0ebcb2bd03f83f6afb4b390fc4e8aa1e61d7a17f858a0c4a9b30da68225"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "indices",
+            "length": 5748,
+            "sha256": "dea57241b07175283772704cb158c5035f0f851737ae19df05e9293e450dddb7"
+          },
+          {
+            "batch": "Garden opaque honey laminated timber",
+            "field": "normals",
+            "length": 3696,
+            "sha256": "beb1f3f4e5819ef21b46630e47f07f05853058aaa15e79b25c299443d5ad959c"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "positions",
+            "length": 4992,
+            "sha256": "1f82fe95cbb0462750ee617fef6150e20b6b3817c20fb773e81c937ef909b4da"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "uvs",
+            "length": 3328,
+            "sha256": "1c1201398be6d3c650965a35601eb152ad332a5abe1e2fd9ba62e66447965c5a"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "indices",
+            "length": 7488,
+            "sha256": "5f6be16625b6311db871413765bb65385fa6f9f0c269ea1aa21372301c5655d3"
+          },
+          {
+            "batch": "Garden opaque umber truss webs",
+            "field": "normals",
+            "length": 4992,
+            "sha256": "3621b02fc3fe2a24766125c9c431d7ee3d6347dfe3bdf0498f988d5060e3c501"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "positions",
+            "length": 288,
+            "sha256": "34cb801b65eff3181d2b9cf9c9371f06d0f75e399627733e9b7eb7594bea15c3"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "uvs",
+            "length": 192,
+            "sha256": "bfb34a2dfce419bd1f1a17ee1f4736f109a22b7d35d80352f830447c54b28565"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "indices",
+            "length": 432,
+            "sha256": "177fd1c86e617837f4f21d63a1e578e1f73a8c7af7bff8e029867e0ca4815e5f"
+          },
+          {
+            "batch": "Garden quiet bronze bearing hardware",
+            "field": "normals",
+            "length": 288,
+            "sha256": "ee24e22dbe30b914496d96c27c8f82209423db29fb9e9e664590e9f7a3642d4e"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "positions",
+            "length": 5316,
+            "sha256": "46167c84b6695f5f68cbf663fc93c5edcff3628b58a114ba0d2bd537bcb1c815"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "uvs",
+            "length": 3544,
+            "sha256": "e6d99279f6062a8065d79e7815486df536b6c1eac9b27296cbf3c5a9d9eba0a3"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "indices",
+            "length": 7200,
+            "sha256": "ad357c24a17877e750bad05bb4c758d919893ecb07fd995a394226a7abaa7a4e"
+          },
+          {
+            "batch": "Garden emerald modeled leaf surfaces",
+            "field": "normals",
+            "length": 5316,
+            "sha256": "0d6cf6d26a5c9819ce17a325ac51ac003802e376e2f10a5dfdf2dbc6fbdabc3a"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "positions",
+            "length": 3069,
+            "sha256": "081a0d29a1e4ced7d89dd70bc4c6897302e33fd77b80905012c8f6d25bf9e622"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "uvs",
+            "length": 2046,
+            "sha256": "759ba3fb01c947d13613c3aba127d4f99ab4110f97513d730890d0886856d056"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "indices",
+            "length": 3888,
+            "sha256": "3f494397b7dacca3ead698d9ac58dd1d6199484262a39f4f0f16d9ff65ec3369"
+          },
+          {
+            "batch": "Garden lime new modeled leaf surfaces",
+            "field": "normals",
+            "length": 3069,
+            "sha256": "9d99eec9014c55b342a0dcbf7f00320dcf7147d8a255eac67c10c687c5de00c1"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "positions",
+            "length": 7947,
+            "sha256": "d61bc541100f24be32f0c0b7d3646e56cdddd6c8dccdf8990eea9c0dd627b1cb"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "uvs",
+            "length": 5298,
+            "sha256": "ac57ef411d870d48e06f80ca4e0cb0e666ad8aa3111d9434aecc376da613c2a8"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "indices",
+            "length": 10224,
+            "sha256": "bda4402e54565a2fe2401c386575f8af11be3ae68d7cae89b0bfffddd13602af"
+          },
+          {
+            "batch": "Garden teal modeled leaf underside",
+            "field": "normals",
+            "length": 7947,
+            "sha256": "ef64fff3a97a8a56aadb46d3b566ecb6ed7e1fe9735fa64999622ac25d48a8cc"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "positions",
+            "length": 21606,
+            "sha256": "c7e976da1ad89e2927df8a512202895c10f6c23cc241e6f2d87e06bcf15216fb"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "uvs",
+            "length": 14404,
+            "sha256": "cf905fa2c6efb9a136c1d30d3a212ada3fa898d528a38d51d9682fc82d16bf1d"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "indices",
+            "length": 20592,
+            "sha256": "f4779d61df9d7ce4cfc01f354d87b3bcf5149725135cea670464369c152ce237"
+          },
+          {
+            "batch": "Garden warm ivory petal solids",
+            "field": "normals",
+            "length": 21606,
+            "sha256": "a79cebca3c1932330f20a1afc93ff0755b2fcf71c29fbdc36ffe4e5b1592b38d"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "positions",
+            "length": 9972,
+            "sha256": "f33ff5f89710c2d300a229a3acdd49ff1bad0367d93ab65fb2e83b42b945f584"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "uvs",
+            "length": 6648,
+            "sha256": "2c0fdde34045d0f28ba4256da1c4fc2011ee971be0ed52f49eb3f2c6e7c00a1a"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "indices",
+            "length": 9504,
+            "sha256": "7812ec179ff6ac1e9d95088be5777fc9bc5325cedfadb330b85c0a2c78b66066"
+          },
+          {
+            "batch": "Garden muted coral petal solids",
+            "field": "normals",
+            "length": 9972,
+            "sha256": "8d78c549df6ceae42b21df61c7355d9bb3c4d3d54da32a0e0ed99557efb4b160"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "positions",
+            "length": 4752,
+            "sha256": "3984b369d8008de76ee82a6d3920273ef79b70a3019cb1cf17842e33e53fb9bd"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "uvs",
+            "length": 3168,
+            "sha256": "170b73db2536b4312bab9cd9afac09de01d797b811008d0c4f2e9128b18716b5"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "indices",
+            "length": 9240,
+            "sha256": "4ca891768206fe8a62bb63775636a079ba0f29a1d2b032f7b1d44f59238a61e6"
+          },
+          {
+            "batch": "Garden amber petal and seed heart",
+            "field": "normals",
+            "length": 4752,
+            "sha256": "5f845fb828ed9eb0bac62e22bf30f1b4a6712b836fa00e14202a14b8449c8cd6"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "positions",
+            "length": 43608,
+            "sha256": "9617b2a7df4efd096a890577b1d679e88d9665837c828a325ef14428190fdfa3"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "uvs",
+            "length": 29072,
+            "sha256": "fa4d96eeb153eda2db4cc8693d2642d519513ef468182a90553bd3a9b0696893"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "indices",
+            "length": 35892,
+            "sha256": "667e733190ac29135343b87cf053a99f8b6bf492dc1e5b04e29959886ca61a1d"
+          },
+          {
+            "batch": "Garden continuous green stems and midribs",
+            "field": "normals",
+            "length": 43608,
+            "sha256": "25d70aba3682978b5c3721bb83bb813560db21645f7e460d68f32d022c1723d7"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "positions",
+            "length": 2088,
+            "sha256": "211f99dfc0d6e8c053cedbbdb4b826455966c6d32d99722db3055a0b52ae149a"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "uvs",
+            "length": 1392,
+            "sha256": "7741051877f3220e94f3955af0af5d82629d088f0df18da8becdccb490ab7be1"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "indices",
+            "length": 1044,
+            "sha256": "01a675a0a579e76f046f874ea3ed0adbb96003b1f605fed3c42099cc9e1d40c7"
+          },
+          {
+            "batch": "Garden specimen board and bench oak",
+            "field": "normals",
+            "length": 2088,
+            "sha256": "a896c35739e84803182ccfe431d6d881a59acdebe30ac97d9e73f34c505f88dc"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "positions",
+            "length": 1944,
+            "sha256": "4cbd037b5b193d71efa8e91f213d37303c92578e17fcb52020f9f60d212abed5"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "uvs",
+            "length": 1296,
+            "sha256": "46bae912ffd200a41638832c192fe73366c990e6b0a406f2bfe94b93f41ea7fb"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "indices",
+            "length": 1068,
+            "sha256": "d1f67e3344db510da8092158e3f2b3697c0aa97429428d107bb7fdb51776a141"
+          },
+          {
+            "batch": "Garden ivory inset route glyphs",
+            "field": "normals",
+            "length": 1944,
+            "sha256": "13aaeeec7a61a71941ca64f0e85cc8b601c9e9aa84b4429493dbc63939c14410"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "positions",
+            "length": 6738,
+            "sha256": "b597206cfb8f737ddeb809b9af826d3f1790a9b9d39794b0ac2576fc774b1d67"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "uvs",
+            "length": 4492,
+            "sha256": "4fefd879713e51641bd876de237ee855cf943f6cd3660c65e7a151cca9b61894"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "indices",
+            "length": 10704,
+            "sha256": "521863280aec4fe49680ab49a265c5c1fb3b5a7b810e8737f0ba4ebf880687a5"
+          },
+          {
+            "batch": "Garden seed section chestnut shell",
+            "field": "normals",
+            "length": 6738,
+            "sha256": "1d8547b2588a3a0b7d1904c10a6ca37fdb59c5aa3c667ebd7e2d81a13edcedc6"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "positions",
+            "length": 3648,
+            "sha256": "914cad3bda03a358b3efc108896f9f6caf45c89dbf4019baa92aae1d1ac8d6b8"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "uvs",
+            "length": 2432,
+            "sha256": "214e34fe95a0c54bd0f63cb3a78a3cd3dbe89f47df6d643cd7fd4841a5820917"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "indices",
+            "length": 5088,
+            "sha256": "3d3fa591f88b2c986ac9bbc83fc57046e7d7d912a7892e22592824da42b2a599"
+          },
+          {
+            "batch": "Garden seed section warm heartwood",
+            "field": "normals",
+            "length": 3648,
+            "sha256": "3986824cc1b9d5e4a171825cb5dc65dc101d9ee1cfbaf0f8f5ef2a28bf074756"
+          }
+        ]
+      },
+      "evidence": {
+        "unchangedOriginalNode24MatchesEveryFrozenContractField": true,
+        "sameRuntimeOriginalCandidateFloat64Identical": {
+          "node24": 1263455,
+          "node22": 1263455
+        },
+        "crossRuntimeFloat32Differences": {
+          "positions": 0,
+          "uvs": 0,
+          "normals": 0
+        },
+        "crossRuntimeIndicesDifferences": 0,
+        "node22WithOnlyNode24PowResultsMatchesEveryNode24OriginalFloat64Buffer": true
+      }
+    },
+    "caldera": {
+      "originalSourceSha256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "originalFixtureSha256": "9de28b035c62c3236eddc3f9200dbf777ac40feb798379faec87526f8a43bb70",
+      "replacements": [
+        {
+          "batchIndex": 17,
+          "batch": "Caldera wind eroded window ribs",
+          "field": "positions",
+          "original": "7f03e677eb74279140d407abfc1672e13fbf3d49db943831457198e311d0bdb0",
+          "node22": "af4fae43beb77c5bb6877718a6b5f4c835d54326d0eb26078054251e34553e1c"
+        },
+        {
+          "batchIndex": 17,
+          "batch": "Caldera wind eroded window ribs",
+          "field": "uvs",
+          "original": "ef86a839c6c4dbf1e23d29acb0676450eff8231906910fc643643d485ed27701",
+          "node22": "a9365139c207887d715a709c676b8da685dbbb0c91dc9690c0dd107da791d6df"
+        },
+        {
+          "batchIndex": 17,
+          "batch": "Caldera wind eroded window ribs",
+          "field": "normals",
+          "original": "092905e2bb8f7b969a6257534121b86c10cabb20b008c3115ff25b60a2ae9a72",
+          "node22": "49f102deffb5a046f2b138ab6715f44f21b171cb4edc3fca8f74543599e7c56c"
+        }
+      ],
+      "cameraPayload": {
+        "original": "33646690e95dafeae3deadaa4c16b64aa98bdf7e504e7222b748b77126bc9f41",
+        "node22": "bdd616d9a195ccdf914b3012f1d342551f1b5d51ace558feb827887034c4e900",
+        "differences": [
+          {
+            "path": [
+              4,
+              "triangles",
+              3519,
+              2,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              3520,
+              1,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              3521,
+              1,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              3598,
+              2,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              3599,
+              0,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          },
+          {
+            "path": [
+              4,
+              "triangles",
+              3600,
+              0,
+              2
+            ],
+            "node24": -49.75110692794676,
+            "node22": -49.75110692794675,
+            "bits24": "49aa954524e048c0",
+            "bits22": "48aa954524e048c0"
+          }
+        ]
+      },
+      "differences": [
+        {
+          "map": "caldera",
+          "batch": "Caldera wind eroded window ribs",
+          "field": "positions",
+          "count": 2,
+          "maxAbs": 7.105427357601002e-15,
+          "signedZeroOnly": false,
+          "allDiffs": [
+            {
+              "index": 3272,
+              "node24": -49.75110692794676,
+              "node22": -49.75110692794675,
+              "abs": 7.105427357601002e-15,
+              "bits24": "49aa954524e048c0",
+              "bits22": "48aa954524e048c0"
+            },
+            {
+              "index": 3392,
+              "node24": -49.75110692794676,
+              "node22": -49.75110692794675,
+              "abs": 7.105427357601002e-15,
+              "bits24": "49aa954524e048c0",
+              "bits22": "48aa954524e048c0"
+            }
+          ],
+          "batchIndex": 17
+        },
+        {
+          "map": "caldera",
+          "batch": "Caldera wind eroded window ribs",
+          "field": "uvs",
+          "count": 2,
+          "maxAbs": 1.7763568394002505e-15,
+          "signedZeroOnly": false,
+          "allDiffs": [
+            {
+              "index": 2181,
+              "node24": -7.462666039192014,
+              "node22": -7.462666039192012,
+              "abs": 1.7763568394002505e-15,
+              "bits24": "be324d20c5d91dc0",
+              "bits22": "bc324d20c5d91dc0"
+            },
+            {
+              "index": 2261,
+              "node24": -7.462666039192014,
+              "node22": -7.462666039192012,
+              "abs": 1.7763568394002505e-15,
+              "bits24": "be324d20c5d91dc0",
+              "bits22": "bc324d20c5d91dc0"
+            }
+          ],
+          "batchIndex": 17
+        },
+        {
+          "map": "caldera",
+          "batch": "Caldera wind eroded window ribs",
+          "field": "normals",
+          "count": 26,
+          "maxAbs": 5.440092820663267e-15,
+          "signedZeroOnly": false,
+          "allDiffs": [
+            {
+              "index": 3150,
+              "node24": 0.9207452040406656,
+              "node22": 0.9207452040406675,
+              "abs": 1.887379141862766e-15,
+              "bits24": "52b669a5be76ed3f",
+              "bits22": "63b669a5be76ed3f"
+            },
+            {
+              "index": 3151,
+              "node24": 0.24706310678318166,
+              "node22": 0.2470631067831789,
+              "abs": 2.7755575615628914e-15,
+              "bits24": "3049d78dc39fcf3f",
+              "bits22": "cc48d78dc39fcf3f"
+            },
+            {
+              "index": 3152,
+              "node24": 0.3019736586239853,
+              "node22": 0.30197365862398196,
+              "abs": 3.3306690738754696e-15,
+              "bits24": "76c802538953d33f",
+              "bits22": "3ac802538953d33f"
+            },
+            {
+              "index": 3154,
+              "node24": 0.16108614874439453,
+              "node22": 0.1610861487443946,
+              "abs": 8.326672684688674e-17,
+              "bits24": "dc0e598e789ec43f",
+              "bits22": "df0e598e789ec43f"
+            },
+            {
+              "index": 3155,
+              "node24": 0.0925127978842743,
+              "node22": 0.09251279788427413,
+              "abs": 1.6653345369377348e-16,
+              "bits24": "bcd95f31ebaeb73f",
+              "bits22": "b0d95f31ebaeb73f"
+            },
+            {
+              "index": 3267,
+              "node24": 0.9213268720332163,
+              "node22": 0.9213268720332182,
+              "abs": 1.887379141862766e-15,
+              "bits24": "63e0097e827bed3f",
+              "bits22": "74e0097e827bed3f"
+            },
+            {
+              "index": 3268,
+              "node24": 0.24291044897508393,
+              "node22": 0.24291044897508104,
+              "abs": 2.886579864025407e-15,
+              "bits24": "5f321a89b017cf3f",
+              "bits22": "f7311a89b017cf3f"
+            },
+            {
+              "index": 3269,
+              "node24": 0.3035643402117784,
+              "node22": 0.3035643402117752,
+              "abs": 3.219646771412954e-15,
+              "bits24": "ff3f5c20996dd33f",
+              "bits22": "c53f5c20996dd33f"
+            },
+            {
+              "index": 3270,
+              "node24": 0.968713874140337,
+              "node22": 0.9687138741403382,
+              "abs": 1.1102230246251565e-15,
+              "bits24": "97a7133db4ffee3f",
+              "bits22": "a1a7133db4ffee3f"
+            },
+            {
+              "index": 3271,
+              "node24": 0.2027266237239595,
+              "node22": 0.20272662372395656,
+              "abs": 2.942091015256665e-15,
+              "bits24": "b621762df2f2c93f",
+              "bits22": "4c21762df2f2c93f"
+            },
+            {
+              "index": 3272,
+              "node24": 0.14316195752190444,
+              "node22": 0.14316195752190106,
+              "abs": 3.3861802251067274e-15,
+              "bits24": "fd40cb8a2153c23f",
+              "bits22": "8340cb8a2153c23f"
+            },
+            {
+              "index": 3274,
+              "node24": 0.1899264547388193,
+              "node22": 0.18992645473881922,
+              "abs": 8.326672684688674e-17,
+              "bits24": "50cddf93824fc83f",
+              "bits22": "4dcddf93824fc83f"
+            },
+            {
+              "index": 3275,
+              "node24": 0.23765170532643554,
+              "node22": 0.23765170532643534,
+              "abs": 1.942890293094024e-16,
+              "bits24": "109b1bff5e6bce3f",
+              "bits22": "099b1bff5e6bce3f"
+            },
+            {
+              "index": 3387,
+              "node24": 0.9695298141013641,
+              "node22": 0.9695298141013649,
+              "abs": 7.771561172376096e-16,
+              "bits24": "83fe81636306ef3f",
+              "bits22": "8afe81636306ef3f"
+            },
+            {
+              "index": 3388,
+              "node24": 0.18264837576634813,
+              "node22": 0.18264837576634718,
+              "abs": 9.43689570931383e-16,
+              "bits24": "febf4aa00561c73f",
+              "bits22": "dcbf4aa00561c73f"
+            },
+            {
+              "index": 3389,
+              "node24": 0.1632529031854859,
+              "node22": 0.16325290318548166,
+              "abs": 4.246603069191224e-15,
+              "bits24": "d050149c78e5c43f",
+              "bits22": "3750149c78e5c43f"
+            },
+            {
+              "index": 3390,
+              "node24": 0.8722060354548997,
+              "node22": 0.8722060354549019,
+              "abs": 2.220446049250313e-15,
+              "bits24": "30e2b4a11ce9eb3f",
+              "bits22": "44e2b4a11ce9eb3f"
+            },
+            {
+              "index": 3391,
+              "node24": 0.257201827942732,
+              "node22": 0.25720182794273294,
+              "abs": 9.43689570931383e-16,
+              "bits24": "a911dfa7fe75d03f",
+              "bits22": "ba11dfa7fe75d03f"
+            },
+            {
+              "index": 3392,
+              "node24": 0.41605750974951017,
+              "node22": 0.41605750974950473,
+              "abs": 5.440092820663267e-15,
+              "bits24": "3a4768adafa0da3f",
+              "bits22": "d84668adafa0da3f"
+            },
+            {
+              "index": 3394,
+              "node24": 0.14998176141487057,
+              "node22": 0.14998176141487027,
+              "abs": 3.0531133177191805e-16,
+              "bits24": "eefc22349a32c33f",
+              "bits22": "e3fc22349a32c33f"
+            },
+            {
+              "index": 3395,
+              "node24": 0.07186474760550851,
+              "node22": 0.07186474760550834,
+              "abs": 1.6653345369377348e-16,
+              "bits24": "ae71b364ba65b23f",
+              "bits22": "a271b364ba65b23f"
+            },
+            {
+              "index": 3507,
+              "node24": 0.8682785752554698,
+              "node22": 0.8682785752554718,
+              "abs": 1.9984014443252818e-15,
+              "bits24": "5e459126f0c8eb3f",
+              "bits22": "70459126f0c8eb3f"
+            },
+            {
+              "index": 3508,
+              "node24": 0.2591264201782502,
+              "node22": 0.2591264201782516,
+              "abs": 1.3877787807814457e-15,
+              "bits24": "297d0cfb8695d03f",
+              "bits22": "427d0cfb8695d03f"
+            },
+            {
+              "index": 3509,
+              "node24": 0.42301987437700445,
+              "node22": 0.42301987437699917,
+              "abs": 5.2735593669694936e-15,
+              "bits24": "fd7680f3c112db3f",
+              "bits22": "9e7680f3c112db3f"
+            },
+            {
+              "index": 3511,
+              "node24": 0.19981590267638544,
+              "node22": 0.19981590267638727,
+              "abs": 1.8318679906315083e-15,
+              "bits24": "269f9b479193c93f",
+              "bits22": "689f9b479193c93f"
+            },
+            {
+              "index": 3512,
+              "node24": 0.18632427388126577,
+              "node22": 0.1863242738812646,
+              "abs": 1.1657341758564144e-15,
+              "bits24": "96af624b79d9c73f",
+              "bits22": "6caf624b79d9c73f"
+            }
+          ],
+          "batchIndex": 17
+        }
+      ],
+      "rawBuffers": {
+        "node24": [
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "positions",
+            "length": 55242,
+            "sha256": "67de26f66b1f9de13ea2156948f4aa05d1aac5c2461359829068f6aeb1c124ef"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "uvs",
+            "length": 36828,
+            "sha256": "8dc20b28dc6012f8e1ed2b6a0fe980f970cc008797ca49763c75d52900cf8c9d"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "indices",
+            "length": 75885,
+            "sha256": "83d408e85996c3d38d18f2544c95112fdf150e56748ea35e41c716686f729ba4"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "normals",
+            "length": 55242,
+            "sha256": "cffa6d4b3f3fb7445ff8133b8a0679e5f6f4a23ad3ef0c31da3d55152a86979b"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "positions",
+            "length": 41958,
+            "sha256": "1594ab403461c4fe47cdbdb3ffe941ea350ec91831337e41436a431bba5e405d"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "uvs",
+            "length": 27972,
+            "sha256": "269661a3e7c7ce3ffbfc06d3c13d59851769588abf7bbaf9044a642830df47e5"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "indices",
+            "length": 76665,
+            "sha256": "2f540291f63312bafcd40c5cc0a8a6a0a447adb91f315ab85c15213915dac43d"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "normals",
+            "length": 41958,
+            "sha256": "5d8bccddfcde921ebd29bbd7f36c5a8c602d16f67cfc69c07bcc841f078566e2"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "positions",
+            "length": 47403,
+            "sha256": "36282bbfc473c6e86851e3eebaf7f0c11a267892c9baa67cf89286394e32568a"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "uvs",
+            "length": 31602,
+            "sha256": "ede2477de441e592a80f248f66a97b194b6288f103e4fdfd8ff612eedd9ede21"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "indices",
+            "length": 15801,
+            "sha256": "486757eb787aeef192c31fc0fdf10e6359259e8a1fd1ea9e95fb63333c17252b"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "normals",
+            "length": 47403,
+            "sha256": "99bbf12230baa9512511fa9a39cf34f3a4f5889c687a3f4bd1d7a4cc6df83325"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "positions",
+            "length": 135999,
+            "sha256": "44178c3289e656a68dedbbac22ddc3f387dd8d1d1ed0f7dd684df0d61657e51d"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "uvs",
+            "length": 90666,
+            "sha256": "b73754b15dbf5be67e9d79e6dc32b80a6e4f575f2edf063668b8b8c437507880"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "indices",
+            "length": 45333,
+            "sha256": "91a01e406b88398bdbf11d815911d9fd3a21961415549322598512db093decde"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "normals",
+            "length": 135999,
+            "sha256": "e21b32a911ed5cfb3eaf87f0328df77af71c3f8cfa64d321ca5c63db06432d3a"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "positions",
+            "length": 9198,
+            "sha256": "df054a35d09187656a00ef2f11023249c88eda816e68020f4283d5a884e9ad9a"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "uvs",
+            "length": 6132,
+            "sha256": "6b87961bc374947fd08698877d7d23a51d3c29d615f3bbdb22c09309bea327b3"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "indices",
+            "length": 4470,
+            "sha256": "959c49825045f573f8d5ac8a0a593b8fa6b289e7991e00096d08b54c6ffc8af0"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "normals",
+            "length": 9198,
+            "sha256": "63b2b6cc1c0c91456807b3c665021bc674c1d741ec61374c719ea8e2151611f2"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "positions",
+            "length": 1896,
+            "sha256": "92209ffa9f6689d138574f9204b95d4b64ab1f8fa3cba0b04d4a8390ca7efd8f"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "uvs",
+            "length": 1264,
+            "sha256": "739f79973d0cc92a6e5ee35100f99cbda72230cc6e091e20408e1d8ae3c8ed79"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "indices",
+            "length": 3780,
+            "sha256": "98a55499de521607d22c84720f963ae432d12aadb3f94c3735bcbba6d1ed1c9c"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "normals",
+            "length": 1896,
+            "sha256": "6a5dd09fbe24c21a99bec9528fa9f30396141893d754ffd8e800640a2b27b6e6"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "positions",
+            "length": 11232,
+            "sha256": "d06edd8a5699cc10f20d2d18fbdde9a1c7f1ea90357a5f31f5bc02f613308aa8"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "uvs",
+            "length": 7488,
+            "sha256": "047d6364221e35da284af5a8ed62842541f2f543b2280e765ac3bf6dc9e5d815"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "indices",
+            "length": 5616,
+            "sha256": "ccba5a2feb27f566e33a763e278e9641ae862f242e1c5487743ead1c89d7296b"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "normals",
+            "length": 11232,
+            "sha256": "9f2c5d717013dd9be9c7dbcbd88cd05ed660c919959fc6dc22ca0324736a7a12"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "positions",
+            "length": 28428,
+            "sha256": "0cdbf798f4d564cda7d3a7cb11256422b0b4eaf7c2385ed4d643188ff84a96c5"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "uvs",
+            "length": 18952,
+            "sha256": "d687e4f08aff9ac6f86c57cf01a5a3d49b48ede70fdc259d14a5057568bf2596"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "indices",
+            "length": 14214,
+            "sha256": "a8c406c73b92b2ce54b8e77cfdcad9e6eaf66c8316e4ae95fedc7d20cf9b7c3c"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "normals",
+            "length": 28428,
+            "sha256": "eaa3d7f2a2fa944fd2c74eba127024ad971a8f3b9d3ca011c3f668b2b358986e"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "positions",
+            "length": 5232,
+            "sha256": "bd4e8a2644c10f621861d456b618a82cd1870226454ec2e0fee50c5fcc6c22b4"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "uvs",
+            "length": 3488,
+            "sha256": "6bed361b1423b617cbc9bde543a26903cb731d3c3dd1cc0366b2a7162365ba66"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "indices",
+            "length": 5232,
+            "sha256": "9e18e90db363c2ab242317af1daad241c694243d88a7f9967537173defe0205a"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "normals",
+            "length": 5232,
+            "sha256": "838e77d7a8e78d9b3c11ae8c1e476a1577812c8c50a814d4938666eef4331447"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "positions",
+            "length": 2544,
+            "sha256": "3ebd3617da1f18984b1a6b382d3b592eea5451a1192ebc72791d271aa1289238"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "uvs",
+            "length": 1696,
+            "sha256": "56c9d37f38b10f98307cfac4ee2b5d2a4fcf3c4336f4f8f06b7a8eaad92d3ba2"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "indices",
+            "length": 1368,
+            "sha256": "c5c6665c68316650d25210591584357897819452d1d6ecbb5d104127112f8f0a"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "normals",
+            "length": 2544,
+            "sha256": "e1f4db2c06211fa3c85de4dc94e5d731a4e21b4c6ce359fc9990b1c4fd1b8849"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "positions",
+            "length": 216,
+            "sha256": "230f56af224795516c4ea0b09d7d1590811b0531816cff18a92cd54283d7eba4"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "uvs",
+            "length": 144,
+            "sha256": "009380fde2484a8e38939cb7567aac5778153c71ecc666ccfcff5a27ea03fabf"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "indices",
+            "length": 108,
+            "sha256": "3ed207da50686d38374137bf78320e396f7a4a730dd27f2eda920fd07158db01"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "normals",
+            "length": 216,
+            "sha256": "a3989c45acd02484513805e03adf6787ca430fbd2dec858c5e4fefe34dafd6c9"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "positions",
+            "length": 5790,
+            "sha256": "564b2df0d9657a3168e8ea1ac472979efb699937e588f00d367d8ec26be26be8"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "uvs",
+            "length": 3860,
+            "sha256": "a5efdbbaaca5c06df49353abed771a6a288566f8756979e3acdb02d11f56da8d"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "indices",
+            "length": 5760,
+            "sha256": "2d10acbc711adc645885d5a2de6693b0a154f491051026bc03143d403b3980af"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "normals",
+            "length": 5790,
+            "sha256": "e21438344c9edcd2b404195003ced3dca9a0ed3968adae5a525fc12113c4ffa2"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "positions",
+            "length": 864,
+            "sha256": "16b6e283a64eddc82a31dee7377ff203c7907327aa2a1f203945951cb5a68a8e"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "uvs",
+            "length": 576,
+            "sha256": "c14d46ae27fb82546ad0431d46ae51c82d4e343fa6771ccd2d28db8707f926f7"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "indices",
+            "length": 432,
+            "sha256": "ef5da1fa2ba0000de0007543aeb1faef07f3619e663d61d055539f5ff09b7f4f"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "normals",
+            "length": 864,
+            "sha256": "d845265a10908300f87a2bba04989c272fdce25dbef5a2da651d3104fe883f11"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "positions",
+            "length": 936,
+            "sha256": "de7177d481893759ff712277728742fcebd4212d1288e932129daae667718af9"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "uvs",
+            "length": 624,
+            "sha256": "36f2ad3c73c02910b844c319df0a7c67555eb22693fa613dc8de8f75da92702e"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "indices",
+            "length": 468,
+            "sha256": "13d13789255e71de64846e058c7c96c847918911e24d4caa579e88a450ca4f4f"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "normals",
+            "length": 936,
+            "sha256": "6a4fb6630a777a55324485f9b23b6c8639350e968ee9e59efbe4c450a7862601"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "positions",
+            "length": 432,
+            "sha256": "44cf731bfb3faeef0630d10601e16c5eb9f66c7ba32740c2f50eca759967137c"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "uvs",
+            "length": 288,
+            "sha256": "84b27e5545071673bae84f270dc56e4f696e24d51d27a00bc91f9e632feb4cd8"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "indices",
+            "length": 216,
+            "sha256": "1c37c48ae7fb18ebdfb0f4e61019040ba2fb1b9d23daf77ad3e4058949a1cc85"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "normals",
+            "length": 432,
+            "sha256": "9eea00fc6d272e08b34c8ea6b02c4322517e8d97fe8366352d9872afcc91848f"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "positions",
+            "length": 1944,
+            "sha256": "dc30cdbcef9bb92b5d19477ca495888430429a474fa00720ae5d642b90d068a0"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "uvs",
+            "length": 1296,
+            "sha256": "995d5e93b932c341af6c7e8dabc84b0d2d34082e2176343d5409699597fb88ab"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "indices",
+            "length": 972,
+            "sha256": "efc28011e9b013edcabeb917daa2e538fd04578c877519387163e12867de9acf"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "normals",
+            "length": 1944,
+            "sha256": "587daaf7a9f1c421b91bf05bd55bb0e2509aa1f22e8310abe92652b62c560ea9"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "positions",
+            "length": 6024,
+            "sha256": "179a99c5b6bd20557ab9b1c1f3423d0a6a6c503231f2f2759cb7734875ab7994"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "uvs",
+            "length": 4016,
+            "sha256": "a4dc901797d9727d4445d7d542c48bf57fb538c2869ac9da4375a2bada5f9bce"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "indices",
+            "length": 5772,
+            "sha256": "930ed3b233f1f1eadaa9041122063b706c35daba9b3fb6d6e4f848be55081587"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "normals",
+            "length": 6024,
+            "sha256": "9dc362869998c8c4ececca7382395b4e9879f12f6801cd6e44fcf07ba32748fc"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "positions",
+            "length": 10014,
+            "sha256": "c6e7fe4498e20a944838f6364ab2019c3f5018dadebd70fbf041564733961272"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "uvs",
+            "length": 6676,
+            "sha256": "749e59828aa2678d1d42e2bce9c85544e152a0a9c71a72f1d6754c35b7e08bda"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "indices",
+            "length": 10932,
+            "sha256": "f787e0673172e07ca3fedd1e66d4ae1ef3382d9647a8f6b6bff4e54a4661a96b"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "normals",
+            "length": 10014,
+            "sha256": "ef4bed7c7963ec7716e308b6d1f7e71f2f8a31c51be14b560e6fde3acf5019f0"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "positions",
+            "length": 840,
+            "sha256": "95cc1a135da77cf38e2d2f351137cc12315912ad6350c610ad771f2924e654f9"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "uvs",
+            "length": 560,
+            "sha256": "cc8135b47fcbb67d0013556db2a332bd3f2988eefd41798446b784decf79f896"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "indices",
+            "length": 420,
+            "sha256": "f544b7fded7d7c248bf3c19576a248bf8615c41737ab05c8ae31e85c9b9a5c2f"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "normals",
+            "length": 840,
+            "sha256": "a054392095ed8e3bad907253bc26aa11adb678b9b8dee717268ae85e150064fd"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "positions",
+            "length": 4320,
+            "sha256": "b04f8554bde84b4546387206b39be52d390ac20e0b41d043556e6614b035c1d1"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "uvs",
+            "length": 2880,
+            "sha256": "e0eacc112fad216a56ca5c03cfc48c8caddefd2bd6543cce8ae923af43618fd7"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "indices",
+            "length": 2160,
+            "sha256": "0c62920db7b6767e63a80a6cf1351afbcb51e8e3afbac2e20387302ce80965d7"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "normals",
+            "length": 4320,
+            "sha256": "43012b7c96717bbea892a76c99c70c949895a7c44bca5090de31ec4cfc04b591"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "positions",
+            "length": 8448,
+            "sha256": "05d46b80e873e07832aaa4a3954f0d5a9e4cf015ea2016121971f93795c8fceb"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "uvs",
+            "length": 5632,
+            "sha256": "9ba27e233581d819f7a6226b2bc591099cbfdaee4631f6ea913f22ef53624f17"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "indices",
+            "length": 9792,
+            "sha256": "025eb8f9a156cdc96d65ee8eebe4d29f449293b9308c90385688b81560c2bc45"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "normals",
+            "length": 8448,
+            "sha256": "3acdaaef51360036affe5b3d6850c43b8b5da54b4882bfffc1d8cd23d6e612ac"
+          }
+        ],
+        "node22": [
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "positions",
+            "length": 55242,
+            "sha256": "67de26f66b1f9de13ea2156948f4aa05d1aac5c2461359829068f6aeb1c124ef"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "uvs",
+            "length": 36828,
+            "sha256": "8dc20b28dc6012f8e1ed2b6a0fe980f970cc008797ca49763c75d52900cf8c9d"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "indices",
+            "length": 75885,
+            "sha256": "83d408e85996c3d38d18f2544c95112fdf150e56748ea35e41c716686f729ba4"
+          },
+          {
+            "batch": "Caldera connected dark basalt rim",
+            "field": "normals",
+            "length": 55242,
+            "sha256": "cffa6d4b3f3fb7445ff8133b8a0679e5f6f4a23ad3ef0c31da3d55152a86979b"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "positions",
+            "length": 41958,
+            "sha256": "1594ab403461c4fe47cdbdb3ffe941ea350ec91831337e41436a431bba5e405d"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "uvs",
+            "length": 27972,
+            "sha256": "269661a3e7c7ce3ffbfc06d3c13d59851769588abf7bbaf9044a642830df47e5"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "indices",
+            "length": 76665,
+            "sha256": "2f540291f63312bafcd40c5cc0a8a6a0a447adb91f315ab85c15213915dac43d"
+          },
+          {
+            "batch": "Caldera connected cooled ash terraces",
+            "field": "normals",
+            "length": 41958,
+            "sha256": "5d8bccddfcde921ebd29bbd7f36c5a8c602d16f67cfc69c07bcc841f078566e2"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "positions",
+            "length": 47403,
+            "sha256": "36282bbfc473c6e86851e3eebaf7f0c11a267892c9baa67cf89286394e32568a"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "uvs",
+            "length": 31602,
+            "sha256": "ede2477de441e592a80f248f66a97b194b6288f103e4fdfd8ff612eedd9ede21"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "indices",
+            "length": 15801,
+            "sha256": "486757eb787aeef192c31fc0fdf10e6359259e8a1fd1ea9e95fb63333c17252b"
+          },
+          {
+            "batch": "Caldera exact dressed basalt road",
+            "field": "normals",
+            "length": 47403,
+            "sha256": "99bbf12230baa9512511fa9a39cf34f3a4f5889c687a3f4bd1d7a4cc6df83325"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "positions",
+            "length": 135999,
+            "sha256": "44178c3289e656a68dedbbac22ddc3f387dd8d1d1ed0f7dd684df0d61657e51d"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "uvs",
+            "length": 90666,
+            "sha256": "b73754b15dbf5be67e9d79e6dc32b80a6e4f575f2edf063668b8b8c437507880"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "indices",
+            "length": 45333,
+            "sha256": "91a01e406b88398bdbf11d815911d9fd3a21961415549322598512db093decde"
+          },
+          {
+            "batch": "Caldera exact ground shoulder stitches",
+            "field": "normals",
+            "length": 135999,
+            "sha256": "e21b32a911ed5cfb3eaf87f0328df77af71c3f8cfa64d321ca5c63db06432d3a"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "positions",
+            "length": 9198,
+            "sha256": "df054a35d09187656a00ef2f11023249c88eda816e68020f4283d5a884e9ad9a"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "uvs",
+            "length": 6132,
+            "sha256": "6b87961bc374947fd08698877d7d23a51d3c29d615f3bbdb22c09309bea327b3"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "indices",
+            "length": 4470,
+            "sha256": "959c49825045f573f8d5ac8a0a593b8fa6b289e7991e00096d08b54c6ffc8af0"
+          },
+          {
+            "batch": "Caldera full footprint foundations",
+            "field": "normals",
+            "length": 9198,
+            "sha256": "63b2b6cc1c0c91456807b3c665021bc674c1d741ec61374c719ea8e2151611f2"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "positions",
+            "length": 1896,
+            "sha256": "92209ffa9f6689d138574f9204b95d4b64ab1f8fa3cba0b04d4a8390ca7efd8f"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "uvs",
+            "length": 1264,
+            "sha256": "739f79973d0cc92a6e5ee35100f99cbda72230cc6e091e20408e1d8ae3c8ed79"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "indices",
+            "length": 3780,
+            "sha256": "98a55499de521607d22c84720f963ae432d12aadb3f94c3735bcbba6d1ed1c9c"
+          },
+          {
+            "batch": "Caldera viaduct dark masonry",
+            "field": "normals",
+            "length": 1896,
+            "sha256": "6a5dd09fbe24c21a99bec9528fa9f30396141893d754ffd8e800640a2b27b6e6"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "positions",
+            "length": 11232,
+            "sha256": "d06edd8a5699cc10f20d2d18fbdde9a1c7f1ea90357a5f31f5bc02f613308aa8"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "uvs",
+            "length": 7488,
+            "sha256": "047d6364221e35da284af5a8ed62842541f2f543b2280e765ac3bf6dc9e5d815"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "indices",
+            "length": 5616,
+            "sha256": "ccba5a2feb27f566e33a763e278e9641ae862f242e1c5487743ead1c89d7296b"
+          },
+          {
+            "batch": "Caldera light arch voussoirs",
+            "field": "normals",
+            "length": 11232,
+            "sha256": "9f2c5d717013dd9be9c7dbcbd88cd05ed660c919959fc6dc22ca0324736a7a12"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "positions",
+            "length": 28428,
+            "sha256": "0cdbf798f4d564cda7d3a7cb11256422b0b4eaf7c2385ed4d643188ff84a96c5"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "uvs",
+            "length": 18952,
+            "sha256": "d687e4f08aff9ac6f86c57cf01a5a3d49b48ede70fdc259d14a5057568bf2596"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "indices",
+            "length": 14214,
+            "sha256": "a8c406c73b92b2ce54b8e77cfdcad9e6eaf66c8316e4ae95fedc7d20cf9b7c3c"
+          },
+          {
+            "batch": "Caldera exposed pale coping and rails",
+            "field": "normals",
+            "length": 28428,
+            "sha256": "eaa3d7f2a2fa944fd2c74eba127024ad971a8f3b9d3ca011c3f668b2b358986e"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "positions",
+            "length": 5232,
+            "sha256": "bd4e8a2644c10f621861d456b618a82cd1870226454ec2e0fee50c5fcc6c22b4"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "uvs",
+            "length": 3488,
+            "sha256": "6bed361b1423b617cbc9bde543a26903cb731d3c3dd1cc0366b2a7162365ba66"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "indices",
+            "length": 5232,
+            "sha256": "9e18e90db363c2ab242317af1daad241c694243d88a7f9967537173defe0205a"
+          },
+          {
+            "batch": "Caldera recessed joint faces",
+            "field": "normals",
+            "length": 5232,
+            "sha256": "838e77d7a8e78d9b3c11ae8c1e476a1577812c8c50a814d4938666eef4331447"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "positions",
+            "length": 2544,
+            "sha256": "3ebd3617da1f18984b1a6b382d3b592eea5451a1192ebc72791d271aa1289238"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "uvs",
+            "length": 1696,
+            "sha256": "56c9d37f38b10f98307cfac4ee2b5d2a4fcf3c4336f4f8f06b7a8eaad92d3ba2"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "indices",
+            "length": 1368,
+            "sha256": "c5c6665c68316650d25210591584357897819452d1d6ecbb5d104127112f8f0a"
+          },
+          {
+            "batch": "Caldera warm archive wall stone",
+            "field": "normals",
+            "length": 2544,
+            "sha256": "e1f4db2c06211fa3c85de4dc94e5d731a4e21b4c6ce359fc9990b1c4fd1b8849"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "positions",
+            "length": 216,
+            "sha256": "230f56af224795516c4ea0b09d7d1590811b0531816cff18a92cd54283d7eba4"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "uvs",
+            "length": 144,
+            "sha256": "009380fde2484a8e38939cb7567aac5778153c71ecc666ccfcff5a27ea03fabf"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "indices",
+            "length": 108,
+            "sha256": "3ed207da50686d38374137bf78320e396f7a4a730dd27f2eda920fd07158db01"
+          },
+          {
+            "batch": "Caldera thick bearing slab roofs",
+            "field": "normals",
+            "length": 216,
+            "sha256": "a3989c45acd02484513805e03adf6787ca430fbd2dec858c5e4fefe34dafd6c9"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "positions",
+            "length": 5790,
+            "sha256": "564b2df0d9657a3168e8ea1ac472979efb699937e588f00d367d8ec26be26be8"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "uvs",
+            "length": 3860,
+            "sha256": "a5efdbbaaca5c06df49353abed771a6a288566f8756979e3acdb02d11f56da8d"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "indices",
+            "length": 5760,
+            "sha256": "2d10acbc711adc645885d5a2de6693b0a154f491051026bc03143d403b3980af"
+          },
+          {
+            "batch": "Caldera original specimen strata",
+            "field": "normals",
+            "length": 5790,
+            "sha256": "e21438344c9edcd2b404195003ced3dca9a0ed3968adae5a525fc12113c4ffa2"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "positions",
+            "length": 864,
+            "sha256": "16b6e283a64eddc82a31dee7377ff203c7907327aa2a1f203945951cb5a68a8e"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "uvs",
+            "length": 576,
+            "sha256": "c14d46ae27fb82546ad0431d46ae51c82d4e343fa6771ccd2d28db8707f926f7"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "indices",
+            "length": 432,
+            "sha256": "ef5da1fa2ba0000de0007543aeb1faef07f3619e663d61d055539f5ff09b7f4f"
+          },
+          {
+            "batch": "Caldera aged bronze hardware",
+            "field": "normals",
+            "length": 864,
+            "sha256": "d845265a10908300f87a2bba04989c272fdce25dbef5a2da651d3104fe883f11"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "positions",
+            "length": 936,
+            "sha256": "de7177d481893759ff712277728742fcebd4212d1288e932129daae667718af9"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "uvs",
+            "length": 624,
+            "sha256": "36f2ad3c73c02910b844c319df0a7c67555eb22693fa613dc8de8f75da92702e"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "indices",
+            "length": 468,
+            "sha256": "13d13789255e71de64846e058c7c96c847918911e24d4caa579e88a450ca4f4f"
+          },
+          {
+            "batch": "Caldera dark specimen cradle timber",
+            "field": "normals",
+            "length": 936,
+            "sha256": "6a4fb6630a777a55324485f9b23b6c8639350e968ee9e59efbe4c450a7862601"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "positions",
+            "length": 432,
+            "sha256": "44cf731bfb3faeef0630d10601e16c5eb9f66c7ba32740c2f50eca759967137c"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "uvs",
+            "length": 288,
+            "sha256": "84b27e5545071673bae84f270dc56e4f696e24d51d27a00bc91f9e632feb4cd8"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "indices",
+            "length": 216,
+            "sha256": "1c37c48ae7fb18ebdfb0f4e61019040ba2fb1b9d23daf77ad3e4058949a1cc85"
+          },
+          {
+            "batch": "Caldera deep window reveals",
+            "field": "normals",
+            "length": 432,
+            "sha256": "9eea00fc6d272e08b34c8ea6b02c4322517e8d97fe8366352d9872afcc91848f"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "positions",
+            "length": 1944,
+            "sha256": "dc30cdbcef9bb92b5d19477ca495888430429a474fa00720ae5d642b90d068a0"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "uvs",
+            "length": 1296,
+            "sha256": "995d5e93b932c341af6c7e8dabc84b0d2d34082e2176343d5409699597fb88ab"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "indices",
+            "length": 972,
+            "sha256": "efc28011e9b013edcabeb917daa2e538fd04578c877519387163e12867de9acf"
+          },
+          {
+            "batch": "Caldera archive inset trim",
+            "field": "normals",
+            "length": 1944,
+            "sha256": "587daaf7a9f1c421b91bf05bd55bb0e2509aa1f22e8310abe92652b62c560ea9"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "positions",
+            "length": 6024,
+            "sha256": "179a99c5b6bd20557ab9b1c1f3423d0a6a6c503231f2f2759cb7734875ab7994"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "uvs",
+            "length": 4016,
+            "sha256": "a4dc901797d9727d4445d7d542c48bf57fb538c2869ac9da4375a2bada5f9bce"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "indices",
+            "length": 5772,
+            "sha256": "930ed3b233f1f1eadaa9041122063b706c35daba9b3fb6d6e4f848be55081587"
+          },
+          {
+            "batch": "Caldera connected ochre interbeds",
+            "field": "normals",
+            "length": 6024,
+            "sha256": "9dc362869998c8c4ececca7382395b4e9879f12f6801cd6e44fcf07ba32748fc"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "positions",
+            "length": 10014,
+            "sha256": "a2f05f132654ccc8b30e455c7a7ff9fdec89788c77093089ab837477973a2273"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "uvs",
+            "length": 6676,
+            "sha256": "5c6bcd93341a10e21acd07070c9d60a8cff4db4720db17c6aac0d905f07b7290"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "indices",
+            "length": 10932,
+            "sha256": "f787e0673172e07ca3fedd1e66d4ae1ef3382d9647a8f6b6bff4e54a4661a96b"
+          },
+          {
+            "batch": "Caldera wind eroded window ribs",
+            "field": "normals",
+            "length": 10014,
+            "sha256": "43b932a8a5dd19522ae7321eada585defa30b24dbf2f4c4393b4924aae06d7d2"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "positions",
+            "length": 840,
+            "sha256": "95cc1a135da77cf38e2d2f351137cc12315912ad6350c610ad771f2924e654f9"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "uvs",
+            "length": 560,
+            "sha256": "cc8135b47fcbb67d0013556db2a332bd3f2988eefd41798446b784decf79f896"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "indices",
+            "length": 420,
+            "sha256": "f544b7fded7d7c248bf3c19576a248bf8615c41737ab05c8ae31e85c9b9a5c2f"
+          },
+          {
+            "batch": "Caldera branch signs and inlays",
+            "field": "normals",
+            "length": 840,
+            "sha256": "a054392095ed8e3bad907253bc26aa11adb678b9b8dee717268ae85e150064fd"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "positions",
+            "length": 4320,
+            "sha256": "b04f8554bde84b4546387206b39be52d390ac20e0b41d043556e6614b035c1d1"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "uvs",
+            "length": 2880,
+            "sha256": "e0eacc112fad216a56ca5c03cfc48c8caddefd2bd6543cce8ae923af43618fd7"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "indices",
+            "length": 2160,
+            "sha256": "0c62920db7b6767e63a80a6cf1351afbcb51e8e3afbac2e20387302ce80965d7"
+          },
+          {
+            "batch": "Caldera sparse dry rooted groundcover",
+            "field": "normals",
+            "length": 4320,
+            "sha256": "43012b7c96717bbea892a76c99c70c949895a7c44bca5090de31ec4cfc04b591"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "positions",
+            "length": 8448,
+            "sha256": "05d46b80e873e07832aaa4a3954f0d5a9e4cf015ea2016121971f93795c8fceb"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "uvs",
+            "length": 5632,
+            "sha256": "9ba27e233581d819f7a6226b2bc591099cbfdaee4631f6ea913f22ef53624f17"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "indices",
+            "length": 9792,
+            "sha256": "025eb8f9a156cdc96d65ee8eebe4d29f449293b9308c90385688b81560c2bc45"
+          },
+          {
+            "batch": "Caldera masonry joint packing",
+            "field": "normals",
+            "length": 8448,
+            "sha256": "3acdaaef51360036affe5b3d6850c43b8b5da54b4882bfffc1d8cd23d6e612ac"
+          }
+        ]
+      },
+      "evidence": {
+        "unchangedOriginalNode24MatchesEveryFrozenContractField": true,
+        "sameRuntimeOriginalCandidateFloat64Identical": {
+          "node24": 1295956,
+          "node22": 1295956
+        },
+        "crossRuntimeFloat32Differences": {
+          "positions": 0,
+          "uvs": 0,
+          "normals": 0
+        },
+        "crossRuntimeIndicesDifferences": 0,
+        "node22WithOnlyNode24PowResultsMatchesEveryNode24OriginalFloat64Buffer": true
+      }
+    }
+  }
+}

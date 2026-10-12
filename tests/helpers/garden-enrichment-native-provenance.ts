@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {assertGardenOpaquePayload} from './garden-enrichment-assemblies';
 import {readFileSync} from 'node:fs';
 import type {GardenSceneGeometry,GardenComponent} from '../../src/garden-scenery';
-import {assertGardenOriginalProjection,gardenFrozenBaseline} from './garden-enrichment-contract';
+import {assertGardenOriginalProjection,gardenRuntimeBaseline} from './garden-enrichment-contract';
 export function gardenNativeBlockerComponents(g:GardenSceneGeometry){
- const old=gardenFrozenBaseline(),original=assertGardenOriginalProjection(g,old),added=g.components.slice(original.length),result=new Map<any,GardenComponent[]>(),owned=new Set<GardenComponent>();
+ const old=gardenRuntimeBaseline(),original=assertGardenOriginalProjection(g,old),added=g.components.slice(original.length),result=new Map<any,GardenComponent[]>(),owned=new Set<GardenComponent>();
  const recipes=JSON.parse(readFileSync('tests/fixtures/garden-enrichment-assembly-recipes.json','utf8'));
  for(const solid of g.cameraObstacles.filter(o=>o.triangles?.length)){
   let components:GardenComponent[];
