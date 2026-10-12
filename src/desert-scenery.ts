@@ -19,6 +19,7 @@ export interface DesertSceneGeometry extends LandSceneGeometry {
  arches:{edgeId:string;centerS:number;depth:number;undersideY:number;center:number[];portalWidth:number;driveableWidth:number;headroom:number;springY:number;innerRise:number;from:number;to:number;triangles:number[][][]}[];
  sightlines:{name:string;eye:number[];target:number[];radius:number;targetId:string}[];
  landforms:{kind:string;footprint:number[][];bottom:number;top:number}[];
+ enrichmentAssemblies:{id:string;pieces:(Component&{id:string;supportOwner:string[];supportIndexStart?:number;supportIndexEnd?:number})[];groundContacts:{pieceId:string;footprint:number[][];bottom:number;terrainLow:number;terrainHigh:number;bottomIndexStart:number;bottomIndexEnd:number;terrainPenetrationMetres:number}[]}[];
  terrainGrid:CameraHeightfield;budget:{batches:number;triangles:number;vertices:number};
 }
 export const DESERT_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'sunweave original desert textures',ambient:'#e3cda7',sky:'#e6dbc3',fogStart:850,fogEnd:1950,cameraName:'Sunweave Caravan chase camera',sunName:'Sunweave late afternoon sun',sunColor:'#ffe9bb',sunIntensity:1.65,sunEuler:[48,-35,0] as const});
@@ -345,8 +346,132 @@ export function buildDesertSceneGeometry(course:SceneryForkCourse):DesertSceneGe
  meshBlock('desert-exact-road-support-and-coping',components.filter(c=>c.role==='road'||c.role==='visual-coping'||c.kind==='road-source-owned-underside').flatMap(facesFor));
  const covered=new Set(['sun-dial-beacon','wind-carved-spire','caravan-sailcourt','terracotta-kiln-court','saltstone-waystation','open-sunweave-arch-0','open-sunweave-arch-1']);
  meshBlock('desert-exact-grounded-landforms-and-details',components.filter(c=>!covered.has(c.landmark??'')&&c.role!=='road'&&c.role!=='visual-coping'&&c.role!=='rail'&&c.kind!=='dune-body-connected-terrain'&&!c.kind.startsWith('road-source-')&&!c.kind.startsWith('exact-source-')&&!c.kind.startsWith('desert-fork-')).flatMap(facesFor));
+ // Desert enrichment is appended only after every original range and blocker.
+ // Each new solid has distinct ownership, actual support faces, and an exact
+ // triangle camera payload. Original terrain and architecture stay immutable.
+ const enrichmentAssemblies:DesertSceneGeometry['enrichmentAssemblies']=[];
+ type EnrichmentPiece=DesertSceneGeometry['enrichmentAssemblies'][number]['pieces'][number];
+ const originalTriangleCount=components.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0);
+ const beginAssembly=(id:string)=>{const a:DesertSceneGeometry['enrichmentAssemblies'][number]={id,pieces:[],groundContacts:[]};enrichmentAssemblies.push(a);return a;};
+ let assembly=beginAssembly('desert-enrichment-eastern-crown-bench');
+ const own=(c:Component,supportOwner:string[]=[])=>{const p:EnrichmentPiece={...c,id:assembly.id+':'+assembly.pieces.length,supportOwner};assembly.pieces.push(p);return p;};
+ const ownLast=(supports:string[])=>own(components[components.length-1],supports);
+ const finishAssembly=()=>meshBlock(assembly.id+'-exact-triangles',assembly.pieces.flatMap(facesFor));
+ // Independently close the new multi-face solids by shared geometric edges.
+ // Winding is reconciled across terrain-clipped caps and all four cloth sides;
+ // an open/nonmanifold seam is rejected rather than hidden by two-sided shading.
+ const closedPart=(kind:string,b:Batch,start:number,role:Role,ii:number)=>{
+  const key=(i:number)=>b.positions.slice(i*3,i*3+3).map(v=>v.toFixed(7)).join(','),edges=new Map<string,{face:number;sign:number}[]>(),count=(b.indices.length-ii)/3,adj:Array<{face:number;flip:boolean}[]>=Array.from({length:count},()=>[]);
+  for(let f=0;f<count;f++)for(let j=0;j<3;j++){const a=key(b.indices[ii+f*3+j]),c=key(b.indices[ii+f*3+(j+1)%3]);if(a===c)throw Error('Degenerate enrichment edge: '+kind);const k=[a,c].sort().join('|'),list=edges.get(k)??[];list.push({face:f,sign:a<c?1:-1});edges.set(k,list);}
+  for(const es of edges.values()){if(es.length!==2)throw Error('Open enrichment seam: '+kind);const [a,c]=es;adj[a.face].push({face:c.face,flip:a.sign===c.sign});adj[c.face].push({face:a.face,flip:a.sign===c.sign});}
+  const flips:Array<boolean|undefined>=Array(count);for(let seed=0;seed<count;seed++){if(flips[seed]!==undefined)continue;flips[seed]=false;const queue=[seed];for(let n=0;n<queue.length;n++)for(const e of adj[queue[n]]){const expected=flips[queue[n]]!==e.flip;if(flips[e.face]===undefined){flips[e.face]=expected;queue.push(e.face);}else if(flips[e.face]!==expected)throw Error('Non-orientable enrichment solid');}}
+  for(let f=0;f<count;f++)if(flips[f])[b.indices[ii+f*3+1],b.indices[ii+f*3+2]]=[b.indices[ii+f*3+2],b.indices[ii+f*3+1]];
+  return bound(kind,b,start,role,true,ii)!;
+ };
+
+ // Clip the actual triangulated terrain; preserve its diagonals under every
+ // foot. Boundary edges are split at the same terrain crossings as the base.
+ const clippedBase=(footprint:pc.Vec3[])=>{
+  const pieces=terrainPieces(footprint),key=(p:pc.Vec3)=>p.x.toFixed(7)+','+p.z.toFixed(7),edges=new Map<string,{a:pc.Vec3;b:pc.Vec3;count:number}>();
+  for(const poly of pieces)for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(a.distance(b)<1e-8)continue;const k=[key(a),key(b)].sort().join('|'),old=edges.get(k);if(old)old.count++;else edges.set(k,{a,b,count:1});}
+  const border=[...edges.values()].filter(e=>e.count===1),loop:pc.Vec3[]=[border[0].a];let current=border[0].b;border.splice(0,1);
+  while(border.length){loop.push(current);const i=border.findIndex(e=>key(e.a)===key(current)||key(e.b)===key(current));if(i<0)throw Error('Enrichment terrain boundary is not continuous');const e=border.splice(i,1)[0];current=key(e.a)===key(current)?e.b:e.a;}
+  if(key(current)!==key(loop[0]))throw Error('Enrichment terrain boundary is not closed');
+  return{pieces,loop};
+ };
+ const foundationSlab=(kind:string,x:number,z:number,w:number,d:number,yaw=0)=>{
+  const footprint=rect(vec(x,0,z),w,d,yaw),ext=terrainExtrema(footprint),base=clippedBase(footprint),top=ext.high+.24,start=foundationStone.positions.length/3,ii=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));foundationStone.tri(t[0],t[1],t[2]);}
+  const bottomEnd=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>vec(p.x,top,p.z));foundationStone.tri(t[2],t[1],t[0]);}
+  for(let i=0;i<base.loop.length;i++){const p=base.loop[i],q=base.loop[(i+1)%base.loop.length];foundationStone.quad(p.clone().add(vec(0,-.04,0)),q.clone().add(vec(0,-.04,0)),vec(p.x,top,p.z),vec(q.x,top,q.z));}
+  const part=own(bound(kind,foundationStone,start,'support',true,ii)!);
+  assembly.groundContacts.push({pieceId:part.id,footprint:footprint.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});
+  return{part,top,at:local(vec(x,top,z),yaw)};
+ };
+ const bench=(cx:number,cz:number,w:number,d:number,yaw:number,height:number,seed:number)=>{
+  const at=local(vec(cx,0,cz),yaw),outline=Array.from({length:32},(_,i)=>{const a=i*Math.PI/16,r=1+.045*Math.sin(a*3+seed)+.025*Math.cos(a*5-seed);return at(Math.cos(a)*w/2*r,0,Math.sin(a)*d/2*r);}),ext=terrainExtrema(outline),base=clippedBase(outline),center=vec(cx,0,cz);
+  const rings=[{scale:1,h:0},{scale:.91,h:1.0},{scale:.78,h:height*.29},{scale:.79,h:height*.33},{scale:.68,h:height*.37},{scale:.61,h:height*.64},{scale:.63,h:height*.68},{scale:.52,h:height*.72},{scale:.39,h:height*.96},{scale:.35,h:height}];
+  const ring=(r:typeof rings[number],p:pc.Vec3)=>{if(r.h===0)return p.clone().add(vec(0,-.04,0));const a=Math.atan2((p.z-cz)/d,(p.x-cx)/w),sweep=.84+.14*Math.cos(a+seed)+.06*Math.sin(2*a);return vec(cx+(p.x-cx)*r.scale+Math.sin(r.h*.10)*1.4,ext.high+r.h*sweep,cz+(p.z-cz)*r.scale);};
+  const capCenter=(r:typeof rings[number])=>vec(cx+Math.sin(r.h*.10)*1.4,ext.high+r.h*.84,cz);
+  let previous:string|undefined;
+  for(let k=0;k<rings.length-1;k++){
+   const b=(k===2||k===5||k===8)?strata:sandstone,start=b.positions.length/3,ii=b.indices.length,lo=base.loop.map(p=>ring(rings[k],p)),hi=base.loop.map(p=>ring(rings[k+1],p));
+   if(k===0){for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));b.tri(t[0],t[1],t[2]);}}
+   else for(let j=0;j<lo.length;j++)b.tri(capCenter(rings[k]),lo[(j+1)%lo.length],lo[j]);
+   const bottomEnd=b.indices.length;
+   for(let j=0;j<lo.length;j++){const n=(j+1)%lo.length;b.quad(lo[j],lo[n],hi[j],hi[n]);b.tri(capCenter(rings[k+1]),hi[j],hi[n]);}
+   const part=own(closedPart('desert-enrichment-joined-bench-course-'+k,b,start,'terrain',ii),previous?[previous]:[]);part.supportIndexStart=ii;part.supportIndexEnd=bottomEnd;
+   if(k===0)assembly.groundContacts.push({pieceId:part.id,footprint:base.loop.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});
+   previous=part.id;
+  }
+ };
+ bench(405,-140,34,68,0,23,.4);finishAssembly();
+ assembly=beginAssembly('desert-enrichment-inner-descent-bench');bench(210,50,60,26,-.08,21,1.3);finishAssembly();
+ // Three unequal open caravan work bays form the outer sweep of the district.
+ // Frozen forward cameras rejected the interior pocket: the new crescent is
+ // across the road from the unchanged original court, with no crossing member.
+ // A true closed cloth sheet sags between four load-bearing edge beams; every
+ // underside remains open. No proxy box or new collision volume fills a bay.
+ const bay=(id:string,cx:number,cz:number,w:number,d:number,h:number,yaw:number,index:number)=>{
+  assembly=beginAssembly(id);const slab=foundationSlab('desert-enrichment-court-conforming-platform',cx,cz,w+3.6,d+3.6,yaw),at=slab.at,posts:EnrichmentPiece[]=[],shoes:EnrichmentPiece[]=[];
+  const put=(kind:string,b:Batch,x:number,y:number,z:number,ww:number,hh:number,dd:number,supports:string[])=>own(box(kind,b,at(x,y,z),vec(ww,hh,dd),yaw),supports);
+  for(const side of [-1,1])for(const end of [-1,1]){
+   const x=side*w/2,z=end*d/2,shoe=put('desert-enrichment-court-stone-post-shoe',paleStone,x,.30,z,1.3,.60,1.3,[slab.part.id]);shoes.push(shoe);
+   const post=put('desert-enrichment-court-load-bearing-post',timber,x,(h+.6)/2,z,.54,h-.6,.54,[shoe.id]);posts.push(post);
+  }
+  const beams:EnrichmentPiece[]=[];
+  for(const end of [-1,1])beams.push(put('desert-enrichment-court-transverse-eave',timber,0,h+.24,end*d/2,w+.54,.48,.54,[posts[end<0?0:1].id,posts[end<0?2:3].id]));
+  for(const side of [-1,1])beams.push(put('desert-enrichment-court-longitudinal-eave',boards,side*w/2,h+.24,0,.54,.48,d-.54,[beams[0].id,beams[1].id]));
+  // Braces terminate at actual post/beam surfaces and never cross the opening.
+  for(const side of [-1,1])for(const end of [-1,1]){
+   const pi=(side<0?0:2)+(end<0?0:1),x=side*w/2,z=end*d/2;
+   beam('desert-enrichment-court-seated-knee-brace',boards,at(x,h-2.7,z),at(x-side*2.7,h,z),.25,.30);ownLast([posts[pi].id,beams[end<0?0:1].id]);
+   beam('desert-enrichment-court-seated-knee-brace',boards,at(x,h-2.7,z),at(x,h,z-end*2.7),.25,.30);ownLast([posts[pi].id,beams[side<0?2:3].id]);
+  }
+  const b=index%2?canvas:paleCanvas,start=b.positions.length/3,ii=b.indices.length,nu=14,nv=10,cloth=(u:number,v:number,dy=0)=>at((u-.5)*w,h+.48-1.45*Math.sin(u*Math.PI)*Math.sin(v*Math.PI)+dy,(v-.5)*d);
+  for(let layer=0;layer<2;layer++){const o=b.positions.length/3;for(let j=0;j<=nv;j++)for(let i=0;i<=nu;i++)b.vertex(cloth(i/nu,j/nv,layer*.07),[i/nu*3,j/nv*2]);for(let j=0;j<nv;j++)for(let i=0;i<nu;i++){const a=o+j*(nu+1)+i,c=a+1,d=a+nu+1,e=d+1;b.indices.push(...(layer?[a,d,c,c,d,e]:[a,c,d,c,e,d]));}}
+  for(let side=0;side<4;side++){const n=side<2?nu:nv;for(let i=0;i<n;i++){const p=(t:number,dy:number)=>side===0?cloth(t,0,dy):side===1?cloth(t,1,dy):side===2?cloth(0,t,dy):cloth(1,t,dy);b.quad(p(i/n,0),p((i+1)/n,0),p(i/n,.07),p((i+1)/n,.07));}}
+  const roof=own(closedPart('desert-enrichment-court-sagging-closed-cloth',b,start,'structure',ii),beams.map(p=>p.id));
+  // Sewn seams are seated above the real sheet; restrained actual geometry.
+  for(const u of [.25,.5,.75]){const inset=.45/d,path=Array.from({length:11},(_,i)=>cloth(u,inset+(1-2*inset)*i/10,.071));tube('desert-enrichment-court-seated-roof-seam',index%2?paleCanvas:canvas,path,path.map(()=>.036),5,true,true,'detail');ownLast([roof.id]);}
+  // A low rear masonry working edge frames each open bay without hiding posts.
+  const rear=put('desert-enrichment-court-low-rear-workbench',archStone,0,.65,d/2-1.65,w-3.6,1.3,1.5,[slab.part.id]);
+  put('desert-enrichment-court-seated-stone-worktop',paleStone,0,1.40,d/2-1.65,w-3.4,.20,1.7,[rear.id]);
+  // A low stepped court edge gives the district a grounded foreground rhythm;
+  // the broad central entry and all post-to-post openings stay unfilled.
+  for(const side of [-1,1]){const width=w/2-5.2,x=side*(4+width/2),edge=put('desert-enrichment-court-low-entry-edge',archStone,x,.45,-d/2+1.0,width,.90,1.10,[slab.part.id]);put('desert-enrichment-court-entry-edge-cap',paleStone,x,.98,-d/2+1.0,width+.12,.16,1.20,[edge.id]);}
+  // A narrow attached fabric valance makes cream and ochre roofs distinct
+  // with existing cloth material values; no original batch color is changed.
+  put('desert-enrichment-court-attached-contrasting-valance',index%2?paleCanvas:canvas,0,h+.20,-d/2-.31,w-.8,.65,.08,[beams[0].id]);
+  // One coherent, moderate-scale goods group occupies only the nearest bay.
+  // Its table, stacked covered crates and open pottery form carry a readable
+  // work-court silhouette; the other two broad bays remain mostly open.
+  if(id==='desert-enrichment-crescent-near-bay'){
+   const legs:EnrichmentPiece[]=[];for(const x of [-7.1,7.1])for(const z of [-3.15,1.15])legs.push(put('desert-enrichment-loading-table-leg',timber,x,.75,z,.60,1.50,.60,[slab.part.id]));
+   const bearers:EnrichmentPiece[]=[];for(const [i,z] of [-3.15,1.15].entries())bearers.push(put('desert-enrichment-loading-table-bearer',timber,0,1.65,z,17.2,.30,.60,[legs[i].id,legs[i+2].id]));
+   const slats:EnrichmentPiece[]=[],xs:number[]=[];for(let i=0;i<16;i++){const x=(i-7.5)*1.07;xs.push(x);slats.push(put('desert-enrichment-loading-table-deck-slat',boards,x,1.93,-1,1.03,.26,5.5,bearers.map(p=>p.id)));}
+   const deckSupports=(x:number,halfWidth:number)=>slats.filter((_,i)=>Math.abs(xs[i]-x)<halfWidth+.515-1e-5).map(p=>p.id);
+   for(const [x,w,h] of [[-4.8,4.2,2.3],[0,4,3.0]]){
+    const crate=put('desert-enrichment-loading-stacked-crate',boards,x,2.06+h/2,-.8,w,h,3.8,deckSupports(x,w/2));
+    // Real exposed corner bindings read as large construction, not pixel noise.
+    for(const side of [-1,1])put('desert-enrichment-loading-crate-bound-front-stave',timber,x+side*(w/2-.35),2.06+h/2,-2.75,.24,h,.10,[crate.id]);
+    const part=loft('desert-enrichment-loading-stacked-covered-textile',x===0?canvas:paleCanvas,local(at(x,2.06+h,-.8),yaw),[{y:0,rx:w/2-.2,rz:1.65},{y:.22,rx:w/2-.15,rz:1.72},{y:2.10,rx:w/2-.22,rz:1.68},{y:2.62,rx:w/2-.48,rz:1.38}],14,x,'detail');own(part!,[crate.id]);
+   }
+   const potAt=local(at(4.8,2.06,-.8),yaw),height=4.6,r=1.75,profile=[[0,r*.53],[.16,r*.67],[height*.17,r*.86],[height*.42,r],[height*.68,r*.81],[height*.83,r*.41],[height*.94,r*.39],[height,r*.48],[height+.12,r*.46],[height+.12,r*.32],[height-.16,r*.29],[height*.83,r*.29],[height*.70,r*.40],[height*.34,r*.80],[.24,r*.50]];
+   const vessel=own(turned('desert-enrichment-loading-open-amphora',clay,potAt,profile,18,'detail'),deckSupports(4.8,r*.53));
+   for(const side of [-1,1]){const path=Array.from({length:9},(_,i)=>{const u=i/8;return potAt(side*r*(.43+.55*u+Math.sin(u*Math.PI)*.65),height*(.85-.41*u),0);});tube('desert-enrichment-loading-amphora-attached-handle',clay,path,path.map(()=>r*.13),7,true,true,'detail');ownLast([vessel.id]);}
+  }
+  finishAssembly();
+ };
+ bay('desert-enrichment-crescent-near-bay',-193,79,24,18,11.2,-.2,0);
+ bay('desert-enrichment-crescent-high-bay',-237,79,26,20,14.0,.05,1);
+ bay('desert-enrichment-crescent-west-bay',-291,124,28,18,10.8,-.55,0);
+ const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
+ if(originalTriangleCount!==107224||enrichmentTriangles>16000)throw Error('Desert bounded enrichment contract changed');
+
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
- if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Desert emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
- return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:298.72575808588084,to:338.72575808588084,overheadClearance:20}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,arches,sightlines,landforms,terrainGrid,budget};
+ if(budget.batches>24||budget.triangles>=125000||budget.vertices>=200000)throw new Error('Desert emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
+ return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:298.72575808588084,to:338.72575808588084,overheadClearance:20}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,arches,sightlines,landforms,terrainGrid,budget,enrichmentAssemblies};
 }
