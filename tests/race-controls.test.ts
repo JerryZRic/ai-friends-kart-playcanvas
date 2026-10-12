@@ -6,6 +6,8 @@ import {driveInput} from '../src/vehicle-controls.js';
 class BrowserTarget extends EventTarget {
   dataset: Record<string, string> = {};
   captured = new Set<number>();
+  screen = {orientation: new EventTarget()};
+  visualViewport = new EventTarget();
   hidden = false;
   pointerLockElement: BrowserTarget | null = null;
   requestPointerLock?: () => void | Promise<void>;
@@ -258,4 +260,19 @@ test('touch utility actions fire once on click and do not activate behind paused
   }
   assert.equal(f.calls.pause, 1); assert.equal(f.calls.item, 1); assert.equal(f.calls.camera, 1);
   f.controls.dispose(); fire(f.actions[0], 'click'); assert.equal(f.calls.camera, 1);
+});
+
+test('browser resize and orientation changes release held sources without pausing or locking orientation', () => {
+  const f = fixture();
+  for (const [target, event] of [[f.win, 'resize'], [f.win, 'orientationchange'], [f.win.screen.orientation, 'change'], [f.win.visualViewport, 'resize']] as const) {
+    f.key('keydown', 'KeyW'); f.pointer(f.brake, 'pointerdown', 2);
+    f.pointer(f.canvas, 'pointerdown', 3, {clientX: 10, clientY: 20});
+    fire(target, event);
+    assert.equal(f.controls.keys.KeyW, false); assert.equal(f.controls.keys.Space, false);
+    assert.equal(f.brake.captured.size, 0); assert.equal(f.canvas.captured.size, 0);
+    assert.equal(f.calls.pause, 0); assert.equal(f.state(), 'active');
+    f.pointer(f.canvas, 'pointermove', 3, {clientX: 100, clientY: 100});
+    assert.equal(f.controls.orbit.get().targetYaw, 0);
+  }
+  f.controls.dispose();
 });

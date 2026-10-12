@@ -64,7 +64,7 @@
     },
     "src/race-controls.ts": {
       "previousSha256": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
-      "currentSha256": "aa84c6e0a0498df39cb970c2e8df462a7039c2d877ab3923b2958ded711f3037",
+      "currentSha256": "6930d2294f6ef8417418ced20e6893d52d6d4b7a1bbb957743e74352ab81ea51",
       "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
       "hunks": [
         {
@@ -121,12 +121,18 @@
           "afterStart": 98,
           "removedLines": [],
           "insertedLines": [
-            "  on(doc, CONTROL_MODE_EVENT, () => { clear(); mouseLook?.release(); });\n"
+            "  const resetFrame = () => { clear(); mouseLook?.release(); };\n",
+            "  on(doc, CONTROL_MODE_EVENT, resetFrame);\n",
+            "  // Rotation/viewport changes invalidate finger coordinates, never race state.\n",
+            "  on(win, 'resize', resetFrame);\n",
+            "  on(win, 'orientationchange', resetFrame);\n",
+            "  if (win.screen?.orientation) on(win.screen.orientation, 'change', resetFrame);\n",
+            "  if (win.visualViewport) on(win.visualViewport, 'resize', resetFrame);\n"
           ]
         },
         {
           "beforeStart": 95,
-          "afterStart": 103,
+          "afterStart": 109,
           "removedLines": [],
           "insertedLines": [
             "  // A free finger can orbit while other fingers independently steer/accelerate.\n",
@@ -160,7 +166,7 @@
         },
         {
           "beforeStart": 114,
-          "afterStart": 149,
+          "afterStart": 155,
           "removedLines": [
             "    on(canvas, type, () => { rearMouse = false; sync('RearView'); });\n"
           ],
@@ -170,7 +176,7 @@
         },
         {
           "beforeStart": 116,
-          "afterStart": 151,
+          "afterStart": 157,
           "removedLines": [
             "  for (const button of options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]')) {\n"
           ],
@@ -180,7 +186,7 @@
         },
         {
           "beforeStart": 136,
-          "afterStart": 171,
+          "afterStart": 177,
           "removedLines": [],
           "insertedLines": [
             "  for (const type of ['pointerup', 'pointercancel']) on(doc, type, (event: PointerEvent) => {\n",
@@ -194,7 +200,7 @@
     },
     "src/race-hud.ts": {
       "previousSha256": "196064bac67f4031a8704a0dfea49091d3252d071f70a18dfbcbc74d73cc9eef",
-      "currentSha256": "783a3f84272bedbcb4972c0e30c716125d27536b5fd8efbda95b36c1ae282cee",
+      "currentSha256": "c358f027c99a1a07e81c8b433ea78bc65465657a76b6754b72e87ed653d3d943",
       "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
       "hunks": [
         {
@@ -212,7 +218,7 @@
             "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"\u771f\u5b9e 3D \u5361\u4e01\u8f66\u8d5b\u9053\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"\u5f53\u524d\u9009\u624b\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"\u5207\u6362\u89c6\u89d2 / Z\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u25c9</button><button class=\"icon\" id=\"sound\" title=\"\u97f3\u6548\u5f00\u5173\" aria-label=\"\u97f3\u6548\u5f00\u5173\">\u266a</button><button class=\"icon game-ui\" id=\"pause\" title=\"\u6682\u505c / Esc / P\" aria-label=\"\u6682\u505c\">\u2161</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"\u8d5b\u9053\u8fdb\u5ea6\u56fe\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">\u6309\u4f4f W \u6cb9\u95e8\u8d77\u6b65</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E \u4f7f\u7528</span><strong id=\"itemName\">\u25c7 \u7b49\u5f85\u9053\u5177</strong><span id=\"itemHelp\">\u649e\u7bb1\u62fe\u53d6 \u00b7 \u95ee\u53f7\u4e3a\u968f\u673a\u9053\u5177</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">\u5355\u51fb\u8d5b\u9053\uff0c\u79fb\u52a8\u9f20\u6807\u73af\u987e \u00b7 Q \u56de\u6b63 \u00b7 Esc \u6682\u505c</div><div class=\"touch\"><div class=\"group\"><button data-key=\"ArrowLeft\" aria-label=\"\u5de6\u8f6c\">\u25c0</button><button data-key=\"ArrowRight\" aria-label=\"\u53f3\u8f6c\">\u25b6</button></div><div class=\"group\"><button class=\"drift\" data-key=\"ShiftLeft\" aria-label=\"\u624b\u5239\u6f02\u79fb\">\u6f02\u79fb</button><button data-key=\"Space\" aria-label=\"\u5239\u8f66\">\u5239\u8f66</button><button data-key=\"KeyS\" aria-label=\"\u5239\u8f66\u4e0e\u5012\u8f66\">\u5012\u8f66</button><button class=\"throttle\" data-key=\"KeyW\" aria-label=\"\u6cb9\u95e8\">\u6cb9\u95e8</button></div></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"\u6bd4\u8d5b\u6682\u505c\"><div class=\"pause-actions\"><h2>\u6bd4\u8d5b\u5df2\u6682\u505c</h2><button id=\"resumeRace\">\u7ee7\u7eed\u6bd4\u8d5b</button><button id=\"restartRace\">\u91cd\u65b0\u5f00\u59cb</button><button id=\"pauseChangeMap\">\u66f4\u6362\u5730\u56fe</button><button id=\"pauseMenu\">\u8fd4\u56de\u4e3b\u83dc\u5355</button></div></section>`;\n"
           ],
           "insertedLines": [
-            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"\u771f\u5b9e 3D \u5361\u4e01\u8f66\u8d5b\u9053\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"\u5f53\u524d\u9009\u624b\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"\u5207\u6362\u89c6\u89d2 / Z\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u25c9</button><button class=\"icon\" id=\"sound\" title=\"\u97f3\u6548\u5f00\u5173\" aria-label=\"\u97f3\u6548\u5f00\u5173\">\u266a</button><button class=\"icon game-ui\" id=\"pause\" title=\"\u6682\u505c / Esc / P\" aria-label=\"\u6682\u505c\">\u2161</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"\u8d5b\u9053\u8fdb\u5ea6\u56fe\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">\u6309\u4f4f W \u6cb9\u95e8\u8d77\u6b65</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E \u4f7f\u7528</span><strong id=\"itemName\">\u25c7 \u7b49\u5f85\u9053\u5177</strong><span id=\"itemHelp\">\u649e\u7bb1\u62fe\u53d6 \u00b7 \u95ee\u53f7\u4e3a\u968f\u673a\u9053\u5177</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">\u5355\u51fb\u8d5b\u9053\uff0c\u79fb\u52a8\u9f20\u6807\u73af\u987e \u00b7 Q \u56de\u6b63 \u00b7 Esc \u6682\u505c</div><div id=\"mobileControlModePanel\" class=\"mobile-control-mode\"><label for=\"mobileControlMode\">\u64cd\u63a7</label><select id=\"mobileControlMode\" aria-label=\"\u9009\u62e9\u64cd\u63a7\u65b9\u5f0f\"><option value=\"auto\">\u81ea\u52a8\u8bc6\u522b</option><option value=\"touch\">\u89e6\u5c4f\u6309\u952e</option><option value=\"desktop\">\u952e\u76d8\u9f20\u6807</option></select></div><div id=\"mobileTouchControls\" class=\"touch mobile-controls\" role=\"group\" aria-label=\"\u89e6\u5c4f\u9a7e\u9a76\u63a7\u5236\"><div class=\"mobile-steering\" role=\"group\" aria-label=\"\u65b9\u5411\"><button type=\"button\" data-key=\"ArrowLeft\" aria-label=\"\u6309\u4f4f\u5de6\u8f6c\"><span aria-hidden=\"true\">\u276e</span></button><button type=\"button\" data-key=\"ArrowRight\" aria-label=\"\u6309\u4f4f\u53f3\u8f6c\"><span aria-hidden=\"true\">\u276f</span></button></div><div class=\"mobile-pedals\" role=\"group\" aria-label=\"\u6cb9\u95e8\u548c\u5012\u8f66\"><button type=\"button\" class=\"throttle\" data-key=\"KeyW\" aria-label=\"\u6309\u4f4f\u6cb9\u95e8\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2303</span><span>\u6cb9\u95e8</span></button><button type=\"button\" class=\"reverse\" data-key=\"KeyS\" aria-label=\"\u6309\u4f4f\u5239\u8f66\u4e0e\u5012\u8f66\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2304</span><span>\u5012\u8f66</span></button></div><button type=\"button\" class=\"mobile-drift drift\" data-key=\"ShiftLeft\" aria-label=\"\u6309\u4f4f\u624b\u5239\u6f02\u79fb\">\u6f02\u79fb</button><button type=\"button\" class=\"mobile-brake\" data-key=\"Space\" aria-label=\"\u6309\u4f4f\u5239\u8f66\">\u5239\u8f66</button><button type=\"button\" class=\"mobile-item\" data-mobile-action=\"item\" aria-label=\"\u4f7f\u7528\u5f53\u524d\u9053\u5177\"><span aria-hidden=\"true\">\u25c7</span><span>\u9053\u5177</span></button><div class=\"mobile-utilities\" role=\"group\" aria-label=\"\u89c6\u89d2\u4e0e\u6682\u505c\"><button type=\"button\" data-mobile-action=\"camera\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u89c6\u89d2</button><button type=\"button\" data-mobile-action=\"recenter\" aria-label=\"\u89c6\u89d2\u56de\u6b63\">\u56de\u6b63</button><button type=\"button\" data-key=\"RearView\" aria-label=\"\u6309\u4f4f\u5411\u540e\u770b\">\u56de\u770b</button><button type=\"button\" data-mobile-action=\"pause\" aria-label=\"\u6682\u505c\u6bd4\u8d5b\">\u2161</button></div><p class=\"mobile-rotate-hint\" role=\"status\">\u6a2a\u5c4f\u9a7e\u9a76\uff0c\u64cd\u63a7\u66f4\u8212\u9002</p></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"\u6bd4\u8d5b\u6682\u505c\"><div class=\"pause-actions\"><h2>\u6bd4\u8d5b\u5df2\u6682\u505c</h2><button id=\"resumeRace\">\u7ee7\u7eed\u6bd4\u8d5b</button><button id=\"restartRace\">\u91cd\u65b0\u5f00\u59cb</button><button id=\"pauseChangeMap\">\u66f4\u6362\u5730\u56fe</button><button id=\"pauseMenu\">\u8fd4\u56de\u4e3b\u83dc\u5355</button></div></section>`;\n"
+            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"\u771f\u5b9e 3D \u5361\u4e01\u8f66\u8d5b\u9053\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"\u5f53\u524d\u9009\u624b\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"\u5207\u6362\u89c6\u89d2 / Z\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u25c9</button><button class=\"icon\" id=\"sound\" title=\"\u97f3\u6548\u5f00\u5173\" aria-label=\"\u97f3\u6548\u5f00\u5173\">\u266a</button><button class=\"icon game-ui\" id=\"pause\" title=\"\u6682\u505c / Esc / P\" aria-label=\"\u6682\u505c\">\u2161</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"\u8d5b\u9053\u8fdb\u5ea6\u56fe\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">\u6309\u4f4f W \u6cb9\u95e8\u8d77\u6b65</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E \u4f7f\u7528</span><strong id=\"itemName\">\u25c7 \u7b49\u5f85\u9053\u5177</strong><span id=\"itemHelp\">\u649e\u7bb1\u62fe\u53d6 \u00b7 \u95ee\u53f7\u4e3a\u968f\u673a\u9053\u5177</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">\u5355\u51fb\u8d5b\u9053\uff0c\u79fb\u52a8\u9f20\u6807\u73af\u987e \u00b7 Q \u56de\u6b63 \u00b7 Esc \u6682\u505c</div><div id=\"mobileControlModePanel\" class=\"mobile-control-mode\"><label for=\"mobileControlMode\">\u64cd\u63a7</label><select id=\"mobileControlMode\" aria-label=\"\u9009\u62e9\u64cd\u63a7\u65b9\u5f0f\"><option value=\"auto\">\u81ea\u52a8\u8bc6\u522b</option><option value=\"touch\">\u89e6\u5c4f\u6309\u952e</option><option value=\"desktop\">\u952e\u76d8\u9f20\u6807</option></select></div><div id=\"mobileTouchControls\" class=\"touch mobile-controls\" role=\"group\" aria-label=\"\u89e6\u5c4f\u9a7e\u9a76\u63a7\u5236\"><div class=\"mobile-steering\" role=\"group\" aria-label=\"\u65b9\u5411\"><button type=\"button\" data-key=\"ArrowLeft\" aria-label=\"\u6309\u4f4f\u5de6\u8f6c\"><span aria-hidden=\"true\">\u276e</span></button><button type=\"button\" data-key=\"ArrowRight\" aria-label=\"\u6309\u4f4f\u53f3\u8f6c\"><span aria-hidden=\"true\">\u276f</span></button></div><div class=\"mobile-pedals\" role=\"group\" aria-label=\"\u6cb9\u95e8\u548c\u5012\u8f66\"><button type=\"button\" class=\"throttle\" data-key=\"KeyW\" aria-label=\"\u6309\u4f4f\u6cb9\u95e8\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2303</span><span>\u6cb9\u95e8</span></button><button type=\"button\" class=\"reverse\" data-key=\"KeyS\" aria-label=\"\u6309\u4f4f\u5239\u8f66\u4e0e\u5012\u8f66\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2304</span><span>\u5012\u8f66</span></button></div><button type=\"button\" class=\"mobile-drift drift\" data-key=\"ShiftLeft\" aria-label=\"\u6309\u4f4f\u624b\u5239\u6f02\u79fb\">\u6f02\u79fb</button><button type=\"button\" class=\"mobile-brake\" data-key=\"Space\" aria-label=\"\u6309\u4f4f\u5239\u8f66\">\u5239\u8f66</button><button type=\"button\" class=\"mobile-item\" data-mobile-action=\"item\" aria-label=\"\u4f7f\u7528\u5f53\u524d\u9053\u5177\"><span aria-hidden=\"true\">\u25c7</span><span>\u9053\u5177</span></button><div class=\"mobile-utilities\" role=\"group\" aria-label=\"\u89c6\u89d2\u4e0e\u6682\u505c\"><button type=\"button\" data-mobile-action=\"camera\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u89c6\u89d2</button><button type=\"button\" data-mobile-action=\"recenter\" aria-label=\"\u89c6\u89d2\u56de\u6b63\">\u56de\u6b63</button><button type=\"button\" data-key=\"RearView\" aria-label=\"\u6309\u4f4f\u5411\u540e\u770b\">\u56de\u770b</button><button type=\"button\" data-mobile-action=\"pause\" aria-label=\"\u6682\u505c\u6bd4\u8d5b\">\u2161</button></div><p class=\"mobile-rotate-hint\" role=\"status\">\u5efa\u8bae\u6a2a\u5c4f\u9a7e\u9a76 \u00b7 \u5982\u672a\u65cb\u8f6c\uff0c\u8bf7\u5173\u95ed\u7cfb\u7edf\u65cb\u8f6c\u9501\u5b9a</p></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"\u6bd4\u8d5b\u6682\u505c\"><div class=\"pause-actions\"><h2>\u6bd4\u8d5b\u5df2\u6682\u505c</h2><button id=\"resumeRace\">\u7ee7\u7eed\u6bd4\u8d5b</button><button id=\"restartRace\">\u91cd\u65b0\u5f00\u59cb</button><button id=\"pauseChangeMap\">\u66f4\u6362\u5730\u56fe</button><button id=\"pauseMenu\">\u8fd4\u56de\u4e3b\u83dc\u5355</button></div></section>`;\n"
           ]
         },
         {
@@ -791,12 +797,21 @@
     },
     "tests/race-controls.test.ts": {
       "previousSha256": "38b8b4d37c1f478646b77cb041975bed94de7e76033abb5177a3dffda1da003a",
-      "currentSha256": "6608c6a5326d7d1d82eee6cde9b34eeae7f0e2b4056b353fcb1bfe3a41c9380e",
+      "currentSha256": "bfca40d8ce63bf91f81b2d1ae97feec762ae37a10b3855f84ba8fa808f16a068",
       "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
       "hunks": [
         {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [],
+          "insertedLines": [
+            "  screen = {orientation: new EventTarget()};\n",
+            "  visualViewport = new EventTarget();\n"
+          ]
+        },
+        {
           "beforeStart": 30,
-          "afterStart": 30,
+          "afterStart": 32,
           "removedLines": [],
           "insertedLines": [
             "  const actions = ['camera', 'recenter', 'item', 'pause'].map(action => { const button = new BrowserTarget('BUTTON'); button.dataset.mobileAction = action; return button; });\n",
@@ -805,7 +820,7 @@
         },
         {
           "beforeStart": 45,
-          "afterStart": 47,
+          "afterStart": 49,
           "removedLines": [
             "  return {doc, win, canvas, throttle, brake, rear, calls, controls, key, pointer, left, state: () => state, setState: (next: RaceControlState) => { state = next; }};\n"
           ],
@@ -815,7 +830,7 @@
         },
         {
           "beforeStart": 137,
-          "afterStart": 139,
+          "afterStart": 141,
           "removedLines": [
             "    fire(f.canvas, 'mousedown', {button: 2}); f.pointer(f.canvas, event, 10); assert.equal(f.controls.keys.RearView, false);\n"
           ],
@@ -825,7 +840,7 @@
         },
         {
           "beforeStart": 186,
-          "afterStart": 188,
+          "afterStart": 190,
           "removedLines": [],
           "insertedLines": [
             "\n",
@@ -900,6 +915,21 @@
             "  }\n",
             "  assert.equal(f.calls.pause, 1); assert.equal(f.calls.item, 1); assert.equal(f.calls.camera, 1);\n",
             "  f.controls.dispose(); fire(f.actions[0], 'click'); assert.equal(f.calls.camera, 1);\n",
+            "});\n",
+            "\n",
+            "test('browser resize and orientation changes release held sources without pausing or locking orientation', () => {\n",
+            "  const f = fixture();\n",
+            "  for (const [target, event] of [[f.win, 'resize'], [f.win, 'orientationchange'], [f.win.screen.orientation, 'change'], [f.win.visualViewport, 'resize']] as const) {\n",
+            "    f.key('keydown', 'KeyW'); f.pointer(f.brake, 'pointerdown', 2);\n",
+            "    f.pointer(f.canvas, 'pointerdown', 3, {clientX: 10, clientY: 20});\n",
+            "    fire(target, event);\n",
+            "    assert.equal(f.controls.keys.KeyW, false); assert.equal(f.controls.keys.Space, false);\n",
+            "    assert.equal(f.brake.captured.size, 0); assert.equal(f.canvas.captured.size, 0);\n",
+            "    assert.equal(f.calls.pause, 0); assert.equal(f.state(), 'active');\n",
+            "    f.pointer(f.canvas, 'pointermove', 3, {clientX: 100, clientY: 100});\n",
+            "    assert.equal(f.controls.orbit.get().targetYaw, 0);\n",
+            "  }\n",
+            "  f.controls.dispose();\n",
             "});\n"
           ]
         }

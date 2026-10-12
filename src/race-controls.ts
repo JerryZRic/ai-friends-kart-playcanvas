@@ -96,7 +96,13 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
     // A key released over a newly focused control must still clear its source.
     keyboard.delete(code); sync(code);
   });
-  on(doc, CONTROL_MODE_EVENT, () => { clear(); mouseLook?.release(); });
+  const resetFrame = () => { clear(); mouseLook?.release(); };
+  on(doc, CONTROL_MODE_EVENT, resetFrame);
+  // Rotation/viewport changes invalidate finger coordinates, never race state.
+  on(win, 'resize', resetFrame);
+  on(win, 'orientationchange', resetFrame);
+  if (win.screen?.orientation) on(win.screen.orientation, 'change', resetFrame);
+  if (win.visualViewport) on(win.visualViewport, 'resize', resetFrame);
   on(win, 'blur', release);
   on(doc, 'visibilitychange', () => { if (doc.hidden) release(); });
   on(win, 'pagehide', release);

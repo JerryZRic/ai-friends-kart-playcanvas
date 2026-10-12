@@ -6,7 +6,7 @@ import {readFileSync} from 'node:fs';
 export const MOBILE_CONTROLS_BASELINE_COMMIT = '26a7ea81bd927bf8399384e2a168721ba645c783';
 export const MOBILE_CONTROLS_BASELINE_TREE = '4bdee3f165474f1022029b4911a0272a36a68bcd';
 export const MOBILE_CONTROLS_REVIEW_PATH = 'tests/helpers/mobile-controls-transition.json';
-export const MOBILE_CONTROLS_REVIEW_SHA256 = 'cb9b589857ecf2bdcf31a7914bbdb37ddfc873b95e3db72e334749a9ae341b35';
+export const MOBILE_CONTROLS_REVIEW_SHA256 = 'c102771cf3f33552d57697ad22394da6c1d3a05735be5446b93e620e5cf5aa34';
 export const MOBILE_CONTROLS_PRODUCTION_PATHS = Object.freeze([
   'coast.html', 'src/race-control-guide.ts', 'src/race-controls.ts', 'src/race-hud.ts',
   'src/race-loading-ui.ts', 'src/race-shell.ts', 'src/race-ui.css', 'waterpark.html',
