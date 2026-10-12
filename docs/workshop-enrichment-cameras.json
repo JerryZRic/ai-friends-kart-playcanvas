@@ -1,0 +1,1769 @@
+{
+  "schema": "workshop-frozen-camera-manifest-v1",
+  "notice": "Frozen before/after source geometry. Static offline CPU rendering, approximate light/material response. No driver, vehicle, HUD, gameplay, GPU or performance claim. Normal shared-chase, forward driver-height and authored landmark-directed road-eye views are explicitly distinct.",
+  "baselineSourceCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "baselineSourceTree": "546c70332556d4e812105504df1c1e2bef52b401",
+  "baselineManifestSha256": "b4bed46eda594357850dfdc99992f09c8f9cc2b346ef6e17060bfacde90f9204",
+  "render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "threads": 2,
+    "denoise": false,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0.35,
+    "filmTransparent": false,
+    "imageFormat": "PNG",
+    "colorMode": "RGBA",
+    "pixelAspect": [
+      1,
+      1
+    ],
+    "resolutionPercentage": 100,
+    "blenderVersion": "4.3.2",
+    "adaptiveSampling": false,
+    "look": "None",
+    "gamma": 1,
+    "displayDevice": "sRGB",
+    "maxBounces": 12,
+    "diffuseBounces": 4,
+    "glossyBounces": 4,
+    "transmissionBounces": 12,
+    "transparentMaxBounces": 8,
+    "filterWidth": 1.5,
+    "lightSamplingThreshold": 0.009999999776482582,
+    "sampleClampDirect": 0,
+    "sampleClampIndirect": 10,
+    "filmExposure": 1,
+    "colorDepth": "8",
+    "compression": 15
+  },
+  "lighting": {
+    "worldColorHex": "#ded5bd",
+    "worldStrength": 0.7,
+    "sunEulerRadians": [
+      -0.6108652381980153,
+      0,
+      -0.2792526803190927
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09,
+    "sunColorLinear": [
+      1,
+      0.945,
+      0.83
+    ]
+  },
+  "views": [
+    {
+      "name": "workshop-chase-launch-room-depth",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -250.5,
+        12.6,
+        -160
+      ],
+      "sourceTarget": [
+        -224.86486486486487,
+        9,
+        -160
+      ],
+      "cameraPositionBlender": [
+        -250.5,
+        160,
+        12.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        -0.46393218636512756,
+        -0.5336355566978455
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 120,
+      "sourceRoad": [
+        -240,
+        8,
+        -160
+      ],
+      "sourceAnchor": [
+        -240,
+        9.35,
+        -160
+      ],
+      "sourceDesiredEye": [
+        -250.5,
+        12.6,
+        -160
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-vise-apron",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -150.50386888857108,
+        12.6,
+        -160.8099283674842
+      ],
+      "sourceTarget": [
+        -124.8689224363653,
+        9,
+        -160.7115729447489
+      ],
+      "cameraPositionBlender": [
+        -150.50387573242188,
+        160.80992126464844,
+        12.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.5326108932495117,
+        -0.4630413353443146,
+        0.46482133865356445,
+        0.5346583127975464
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 220,
+      "sourceRoad": [
+        -140.00394617198495,
+        8,
+        -160.76964256702803
+      ],
+      "sourceAnchor": [
+        -140.00394617198495,
+        9.35,
+        -160.76964256702803
+      ],
+      "sourceDesiredEye": [
+        -150.50386888857108,
+        12.6,
+        -160.8099283674842
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-lower-crossing-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        102.5831261831162,
+        13.542072425668271,
+        -112.69752285582156
+      ],
+      "sourceTarget": [
+        115.75144288128023,
+        9.942072425668272,
+        -90.70307835877881
+      ],
+      "cameraPositionBlender": [
+        102.5831298828125,
+        112.69752502441406,
+        13.542072296142578
+      ],
+      "cameraQuaternionBlender": [
+        -0.20110313594341278,
+        -0.17483508586883545,
+        0.6323755979537964,
+        0.7273866534233093
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 483.0803465091211,
+      "sourceRoad": [
+        107.97679095616493,
+        8.942072425668272,
+        -103.68872824633172
+      ],
+      "sourceAnchor": [
+        107.97679095616493,
+        10.292072425668271,
+        -103.68872824633172
+      ],
+      "sourceDesiredEye": [
+        102.5831261831162,
+        13.542072425668271,
+        -112.69752285582156
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-clock-entry-side-view",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        86.16677843613053,
+        15.20909248627998,
+        -7.3047413038986715
+      ],
+      "sourceTarget": [
+        77.75082088496706,
+        11.60909248627998,
+        16.909548111519953
+      ],
+      "cameraPositionBlender": [
+        86.16677856445312,
+        7.304741382598877,
+        15.209092140197754
+      ],
+      "cameraQuaternionBlender": [
+        0.12563204765319824,
+        0.10922201722860336,
+        0.6469441652297974,
+        0.744144082069397
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 596.0671069703933,
+      "sourceRoad": [
+        82.71965191148423,
+        10.60909248627998,
+        2.613288678062462
+      ],
+      "sourceAnchor": [
+        82.71965191148423,
+        11.95909248627998,
+        2.613288678062462
+      ],
+      "sourceDesiredEye": [
+        86.16677843613053,
+        15.20909248627998,
+        -7.3047413038986715
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-spool-north-architecture",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        24.477965377238,
+        21.910437836393577,
+        129.73385097262843
+      ],
+      "sourceTarget": [
+        2.336284154757635,
+        18.310437836393575,
+        142.65306557873743
+      ],
+      "cameraPositionBlender": [
+        24.47796630859375,
+        -129.73385620117188,
+        21.910438537597656
+      ],
+      "cameraQuaternionBlender": [
+        0.37583816051483154,
+        0.32674625515937805,
+        0.5689491033554077,
+        0.6544306874275208
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 750,
+      "sourceRoad": [
+        15.408863474303239,
+        17.310437836393575,
+        135.0254849994849
+      ],
+      "sourceAnchor": [
+        15.408863474303239,
+        18.660437836393577,
+        135.0254849994849
+      ],
+      "sourceDesiredEye": [
+        24.477965377238,
+        21.910437836393577,
+        129.73385097262843
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-spool-west-architecture",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -133.94730983839622,
+        30.269741360216877,
+        98.20853378756335
+      ],
+      "sourceTarget": [
+        -145.2509643981721,
+        26.669741360216875,
+        75.2001103954685
+      ],
+      "cameraPositionBlender": [
+        -133.9473114013672,
+        -98.20853424072266,
+        30.26974105834961
+      ],
+      "cameraQuaternionBlender": [
+        0.7350885272026062,
+        0.6390714049339294,
+        0.14850562810897827,
+        0.17081782221794128
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 930.4462157586628,
+      "sourceRoad": [
+        -138.57722000863652,
+        25.669741360216875,
+        88.78441940925144
+      ],
+      "sourceAnchor": [
+        -138.57722000863652,
+        27.019741360216877,
+        88.78441940925144
+      ],
+      "sourceDesiredEye": [
+        -133.94730983839622,
+        30.269741360216877,
+        98.20853378756335
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-upper-crossing-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        65.31068432624164,
+        40.6,
+        -69.99999999999999
+      ],
+      "sourceTarget": [
+        90.94581946137677,
+        37,
+        -69.99999999999999
+      ],
+      "cameraPositionBlender": [
+        65.31068420410156,
+        70,
+        40.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        -0.46393218636512756,
+        -0.5336355566978455
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1269.6328964491433,
+      "sourceRoad": [
+        75.81068432624164,
+        36,
+        -69.99999999999999
+      ],
+      "sourceAnchor": [
+        75.81068432624164,
+        37.35,
+        -69.99999999999999
+      ],
+      "sourceDesiredEye": [
+        65.31068432624164,
+        40.6,
+        -69.99999999999999
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-fork-signs",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        104.50000000000576,
+        40.6,
+        -70
+      ],
+      "sourceTarget": [
+        130.1351351351409,
+        37,
+        -70
+      ],
+      "cameraPositionBlender": [
+        104.5,
+        70,
+        40.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        -0.46393218636512756,
+        -0.5336355566978455
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1308.8222121229105,
+      "sourceRoad": [
+        115.00000000000576,
+        36,
+        -70
+      ],
+      "sourceAnchor": [
+        115.00000000000576,
+        37.35,
+        -70
+      ],
+      "sourceDesiredEye": [
+        104.50000000000576,
+        40.6,
+        -70
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-decision-input-zone",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        169.50000000000279,
+        40.6,
+        -70
+      ],
+      "sourceTarget": [
+        195.13513513513792,
+        37,
+        -70
+      ],
+      "cameraPositionBlender": [
+        169.5,
+        70,
+        40.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        -0.46393218636512756,
+        -0.5336355566978455
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1373.8222121229105,
+      "sourceRoad": [
+        180.00000000000279,
+        36,
+        -70
+      ],
+      "sourceAnchor": [
+        180.00000000000279,
+        37.35,
+        -70
+      ],
+      "sourceDesiredEye": [
+        169.50000000000279,
+        40.6,
+        -70
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-cabinet-run",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        329.92071583920097,
+        40.6,
+        -104.4571517712319
+      ],
+      "sourceTarget": [
+        342.47372089387034,
+        37,
+        -126.80848769314238
+      ],
+      "cameraPositionBlender": [
+        329.92071533203125,
+        104.4571533203125,
+        40.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.730106770992279,
+        0.6347403526306152,
+        -0.1660446971654892,
+        -0.19099204242229462
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 90,
+      "sourceRoad": [
+        335.06235259591057,
+        36,
+        -113.61212700123951
+      ],
+      "sourceAnchor": [
+        335.06235259591057,
+        37.35,
+        -113.61212700123951
+      ],
+      "sourceDesiredEye": [
+        329.92071583920097,
+        40.6,
+        -104.4571517712319
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-rim-drafting-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        334.0974785578456,
+        40.6,
+        -95.09670720732687
+      ],
+      "sourceTarget": [
+        352.8301434325878,
+        37,
+        -112.59663349537843
+      ],
+      "cameraPositionBlender": [
+        334.09747314453125,
+        95.09671020507812,
+        40.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.6922168731689453,
+        0.6017996072769165,
+        -0.2613491415977478,
+        -0.30061545968055725
+      ],
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 90,
+      "sourceRoad": [
+        341.7702674917806,
+        36,
+        -102.26457369431478
+      ],
+      "sourceAnchor": [
+        341.7702674917806,
+        37.35,
+        -102.26457369431478
+      ],
+      "sourceDesiredEye": [
+        334.0974785578456,
+        40.6,
+        -95.09670720732687
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-lamp-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        50.60390930212368,
+        36.039335778900174,
+        -310
+      ],
+      "sourceTarget": [
+        24.968774166988545,
+        32.43933577890017,
+        -310
+      ],
+      "cameraPositionBlender": [
+        50.60390853881836,
+        310,
+        36.039337158203125
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        0.46393218636512756,
+        0.5336355566978455
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 180,
+      "sourceRoad": [
+        40.10390930212368,
+        31.439335778900173,
+        -310
+      ],
+      "sourceAnchor": [
+        40.10390930212368,
+        32.789335778900174,
+        -310
+      ],
+      "sourceDesiredEye": [
+        50.60390930212368,
+        36.039335778900174,
+        -310
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-chase-drawer-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        -268.46629677152634,
+        15.182387851635122,
+        -303.6856555199626
+      ],
+      "sourceTarget": [
+        -293.76752519535427,
+        11.582387851635122,
+        -299.5615806368011
+      ],
+      "cameraPositionBlender": [
+        -268.46630859375,
+        303.6856689453125,
+        15.182388305664062
+      ],
+      "cameraQuaternionBlender": [
+        0.488830029964447,
+        0.42497915029525757,
+        0.49985888600349426,
+        0.5749600529670715
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 500,
+      "sourceRoad": [
+        -278.82953055397985,
+        10.582387851635122,
+        -301.99645879660125
+      ],
+      "sourceAnchor": [
+        -278.82953055397985,
+        11.932387851635122,
+        -301.99645879660125
+      ],
+      "sourceDesiredEye": [
+        -268.46629677152634,
+        15.182387851635122,
+        -303.6856555199626
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "workshop-road-eye-launch-room-depth",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -240,
+        9.6,
+        -160
+      ],
+      "sourceTarget": [
+        -200.00144583127448,
+        9.6,
+        -160.30773938187895
+      ],
+      "cameraPositionBlender": [
+        -240,
+        160,
+        9.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.501919686794281,
+        0.501919686794281,
+        -0.49807289242744446,
+        -0.49807289242744446
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 120,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-vise-apron",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -140.00394617198495,
+        9.6,
+        -160.76964256702803
+      ],
+      "sourceTarget": [
+        -100.01326312037013,
+        9.6,
+        -160.00050040014742
+      ],
+      "cameraPositionBlender": [
+        -140.0039520263672,
+        160.76963806152344,
+        9.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.4951692819595337,
+        -0.4951692819595337,
+        0.5047844648361206,
+        0.5047844648361206
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 220,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-lower-crossing-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        107.97679095616493,
+        10.542072425668271,
+        -103.68872824633172
+      ],
+      "sourceTarget": [
+        109.21841816200647,
+        10.985863259204011,
+        -65.26101675867938
+      ],
+      "cameraPositionBlender": [
+        107.97679138183594,
+        103.68872833251953,
+        10.542072296142578
+      ],
+      "cameraQuaternionBlender": [
+        -0.011353006586432457,
+        -0.01148480735719204,
+        0.7110829949378967,
+        0.7029225826263428
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 483.0803465091211,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-clock-entry-side-view",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        82.71965191148423,
+        12.20909248627998,
+        2.613288678062462
+      ],
+      "sourceTarget": [
+        69.86237541047801,
+        13.618709318164315,
+        40.46009884545741
+      ],
+      "cameraPositionBlender": [
+        82.71965026855469,
+        -2.613288640975952,
+        12.209092140197754
+      ],
+      "cameraQuaternionBlender": [
+        0.1132178083062172,
+        0.11728090792894363,
+        0.7098360061645508,
+        0.6852443218231201
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 596.0671069703933,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-spool-north-architecture",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        15.408863474303239,
+        18.910437836393577,
+        135.0254849994849
+      ],
+      "sourceTarget": [
+        -21.992849009606097,
+        20.752083412245035,
+        148.46774163253667
+      ],
+      "cameraPositionBlender": [
+        15.408863067626953,
+        -135.02548217773438,
+        18.910438537597656
+      ],
+      "cameraQuaternionBlender": [
+        0.3972235321998596,
+        0.41605621576309204,
+        0.5916428565979004,
+        0.5648623108863831
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 750,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-spool-west-architecture",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -138.57722000863652,
+        27.269741360216877,
+        88.78441940925144
+      ],
+      "sourceTarget": [
+        -149.46902455262574,
+        29.098445029074536,
+        50.55681212538072
+      ],
+      "cameraPositionBlender": [
+        -138.5772247314453,
+        -88.78441619873047,
+        27.26974105834961
+      ],
+      "cameraQuaternionBlender": [
+        0.6840265393257141,
+        0.7162195444107056,
+        0.10004187375307083,
+        0.09554513543844223
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 930.4462157586628,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-upper-crossing-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        75.81068432624164,
+        37.6,
+        -69.99999999999999
+      ],
+      "sourceTarget": [
+        115.81068432623866,
+        37.6,
+        -70
+      ],
+      "cameraPositionBlender": [
+        75.81068420410156,
+        70,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5,
+        0.5,
+        -0.5,
+        -0.5
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1269.6328964491433,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-fork-signs",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        115.00000000000576,
+        37.6,
+        -70
+      ],
+      "sourceTarget": [
+        155.00000000000384,
+        37.6,
+        -70
+      ],
+      "cameraPositionBlender": [
+        115,
+        70,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5,
+        0.5,
+        -0.5,
+        -0.5
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1308.8222121229105,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-decision-input-zone",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        180.00000000000279,
+        37.6,
+        -70
+      ],
+      "sourceTarget": [
+        220.00000000000122,
+        37.6,
+        -70
+      ],
+      "cameraPositionBlender": [
+        180,
+        70,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.5,
+        0.5,
+        -0.5,
+        -0.5
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1373.8222121229105,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-cabinet-run",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        335.06235259591057,
+        37.6,
+        -113.61212700123951
+      ],
+      "sourceTarget": [
+        332.3957016419075,
+        37.6,
+        -151.7880192295846
+      ],
+      "cameraPositionBlender": [
+        335.0623474121094,
+        113.61212921142578,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.7066769599914551,
+        0.7066769599914551,
+        0.024651259183883667,
+        0.024651259183883667
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 90,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-rim-drafting-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        341.7702674917806,
+        37.6,
+        -102.26457369431478
+      ],
+      "sourceTarget": [
+        366.03683393307625,
+        37.6,
+        -133.8300592637667
+      ],
+      "cameraPositionBlender": [
+        341.770263671875,
+        102.26457214355469,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.6694775819778442,
+        0.6694775819778442,
+        -0.22759564220905304,
+        -0.22759564220905304
+      ],
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 90,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-lamp-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": true,
+      "sourceEye": [
+        40.10390930212368,
+        33.039335778900174,
+        -310
+      ],
+      "sourceTarget": [
+        0.18465576199853473,
+        30.499251935915026,
+        -310
+      ],
+      "cameraPositionBlender": [
+        40.10390853881836,
+        310,
+        33.039337158203125
+      ],
+      "cameraQuaternionBlender": [
+        0.5156311988830566,
+        0.48386409878730774,
+        0.48386409878730774,
+        0.5156311988830566
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 180,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-road-eye-drawer-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -278.82953055397985,
+        12.182387851635122,
+        -301.99645879660125
+      ],
+      "sourceTarget": [
+        -317.92231913765437,
+        10.571343263247215,
+        -293.7499262303545
+      ],
+      "cameraPositionBlender": [
+        -278.82952880859375,
+        301.9964599609375,
+        12.182388305664062
+      ],
+      "cameraQuaternionBlender": [
+        0.45430418848991394,
+        0.43635430932044983,
+        0.5380052328109741,
+        0.560136616230011
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 500,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "workshop-landmark-clockwork-entrance-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        82.71965191148423,
+        12.20909248627998,
+        2.613288678062462
+      ],
+      "sourceTarget": [
+        -40,
+        62,
+        40
+      ],
+      "cameraPositionBlender": [
+        82.71965026855469,
+        -2.613288640975952,
+        12.209092140197754
+      ],
+      "cameraQuaternionBlender": [
+        0.33622756600379944,
+        0.49115920066833496,
+        0.6630787253379822,
+        0.45391663908958435
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "clockwork entrance reveal"
+    },
+    {
+      "name": "workshop-landmark-spool-summit-dial-view",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        -138.57722000863652,
+        27.269741360216877,
+        88.78441940925144
+      ],
+      "sourceTarget": [
+        -40,
+        62,
+        40
+      ],
+      "cameraPositionBlender": [
+        -138.5772247314453,
+        -88.78441619873047,
+        27.26974105834961
+      ],
+      "cameraQuaternionBlender": [
+        0.502214789390564,
+        0.6852383613586426,
+        -0.4254443943500519,
+        -0.3118104636669159
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "spool summit dial view"
+    },
+    {
+      "name": "workshop-landmark-cabinet-branch-preview",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        172.77066727262832,
+        37.6,
+        -70
+      ],
+      "sourceTarget": [
+        280,
+        66,
+        -190
+      ],
+      "cameraPositionBlender": [
+        172.77066040039062,
+        70,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.6004770398139954,
+        0.7157252430915833,
+        -0.27318915724754333,
+        -0.22919942438602448
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "cabinet branch preview"
+    },
+    {
+      "name": "workshop-landmark-outside-rim-tool-silhouette",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 24,
+      "renderByDefault": false,
+      "sourceEye": [
+        376.60133793460045,
+        37.6,
+        -218.06653499921165
+      ],
+      "sourceTarget": [
+        423.05358192538665,
+        78,
+        -223.39097080856916
+      ],
+      "cameraPositionBlender": [
+        376.6013488769531,
+        218.0665283203125,
+        37.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.31049293279647827,
+        0.678625226020813,
+        -0.6052834391593933,
+        -0.27693670988082886
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "outside rim tool silhouette"
+    }
+  ],
+  "catalogViews": [
+    {
+      "name": "workshop-overview",
+      "file": "workshop-overview.png",
+      "sha256": "1d3e356cb2425cb5a4654c11e37f383bd15a5cec8b3aeeeeaf7f016392b1c592",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        1024.626708984375,
+        862.8450927734375,
+        923.3128051757812
+      ],
+      "cameraQuaternionBlender": [
+        0.39774948358535767,
+        0.20443879067897797,
+        0.4088777005672455,
+        0.795499324798584
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Clockwind Workshop circuit with both physical fork roads, banked helical spool climb, open height-separated crossing, connected wooden benches and modeled clockmaker landmarks. Exact emitted static source geometry, approximate offline lighting.",
+      "routeScreenBounds": [
+        0.3469863831996918,
+        0.23201555013656616,
+        0.7747695446014404,
+        0.7209956645965576
+      ],
+      "orthographicScaleMetres": 1365.6639404296875,
+      "fittedSubjectScreenBounds": [
+        0.11667019128799438,
+        0.06999979168176651,
+        0.883330225944519,
+        0.9299997091293335
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "workshop-topdown",
+      "file": "workshop-topdown.png",
+      "sha256": "6e0230cc5414c7428a22a4716f4fde57a751f066d0ff21c9dc4c61dacb02f854",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -2.500014066696167,
+        92.49998474121094,
+        1525.1630859375
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry, including both independently sampled physical roads: the technical Cabinet Chicane and broad Workbench Rim. Real split/merge geometry and the upper/lower road crossing retain their actual elevations.",
+      "routeScreenBounds": [
+        0.15065394341945648,
+        0.22931884229183197,
+        0.8822097778320312,
+        0.7993835806846619
+      ],
+      "orthographicScaleMetres": 1122.0931396484375,
+      "fittedSubjectScreenBounds": [
+        0.06999999284744263,
+        0.15243515372276306,
+        0.9300000071525574,
+        0.8475648164749146
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "workshop-helix-crossing",
+      "file": "workshop-helix-crossing.png",
+      "sha256": "67ffbaaa0932b092a8b384c6df2e2c0e19e3cbd1a020015833b49bc67fa681c3",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1195.5455322265625,
+        526.4590454101562,
+        733.6119995117188
+      ],
+      "cameraQuaternionBlender": [
+        0.46917861700057983,
+        0.28084924817085266,
+        0.4300229847431183,
+        0.7183838486671448
+      ],
+      "projection": "ORTHO",
+      "description": "Source-accurate three-quarter spool climb around the original clock heart, continuous graded support and open overhead crossing. Road camber, elevations, underside and separated lower road are unmodified.",
+      "routeScreenBounds": [
+        0.10162865370512009,
+        -0.4349953830242157,
+        1.6493114233016968,
+        1.0746437311172485
+      ],
+      "orthographicScaleMetres": 355,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "workshop-clockheart-detail",
+      "file": "workshop-clockheart-detail.png",
+      "sha256": "58ce8a8dcbe18048a6d96fb7fa1d954ac4e2723ef05e8524e45da63ed0c5ebd7",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        305.5274353027344,
+        1169.345947265625,
+        847.5325317382812
+      ],
+      "cameraQuaternionBlender": [
+        0.1219639703631401,
+        0.06605168431997299,
+        0.4716126620769501,
+        0.870829164981842
+      ],
+      "projection": "ORTHO",
+      "description": "Original modeled clock heart: source dial faces, hands, bezel, static toothed gears, frame, spindle bosses and grounded pedestal. The gear teeth and silhouette are actual mesh geometry.",
+      "routeScreenBounds": [
+        -1.6220532655715942,
+        -1.6919405460357666,
+        3.1623220443725586,
+        1.0894259214401245
+      ],
+      "orthographicScaleMetres": 167.14991760253906,
+      "fittedSubjectScreenBounds": [
+        0.2559310495853424,
+        0.06999769806861877,
+        0.7440687417984009,
+        0.9299976825714111
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "workshop-cabinet-detail",
+      "file": "workshop-cabinet-detail.png",
+      "sha256": "88e4cba552b0dfcd64dc431161bca9db16dad01d06c44861ffb7a79e6a9f486b",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        1070.400390625,
+        1310.931396484375,
+        660.832275390625
+      ],
+      "cameraQuaternionBlender": [
+        0.2531540095806122,
+        0.16517868638038635,
+        0.5208866000175476,
+        0.7983145713806152
+      ],
+      "projection": "ORTHO",
+      "description": "Original workshop cabinet assembly with actual recessed drawer fronts, pulls, tool silhouettes and grounded wooden construction. Only the emitted source meshes are shown.",
+      "routeScreenBounds": [
+        -0.5743974447250366,
+        -0.5174914598464966,
+        6.1921067237854,
+        3.051938056945801
+      ],
+      "orthographicScaleMetres": 105.29839324951172,
+      "fittedSubjectScreenBounds": [
+        0.2868601083755493,
+        0.070002481341362,
+        0.7131375670433044,
+        0.9300024509429932
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "workshop-vise-detail",
+      "file": "workshop-vise-detail.png",
+      "sha256": "d3873806ae377b42763ad7c57ec8c4f50ddac8901ad747fb81e8539cf7a9fc91",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        807.697998046875,
+        1219.799072265625,
+        715.7066650390625
+      ],
+      "cameraQuaternionBlender": [
+        0.29600799083709717,
+        0.1787799894809723,
+        0.48509666323661804,
+        0.8031800389289856
+      ],
+      "projection": "ORTHO",
+      "description": "Original vise assembly: source fixed and moving jaws, static threaded rod, cross-handle and bolted mounting plinth. This is a static modeled landmark, not an animated clamping interaction.",
+      "routeScreenBounds": [
+        -5.1032328605651855,
+        -2.599771022796631,
+        4.879810333251953,
+        3.9395596981048584
+      ],
+      "orthographicScaleMetres": 68,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/workshop-preview-provenance.json pose; no refit"
+    }
+  ],
+  "baselineGeometryContract": {
+    "geometryJsonSha256": "a1606d33511ae11988d28ce9108feca126ea8ec3b3dbf833e3b7f1dc681338f9",
+    "glbSha256": "27ceea77704948d3d019d771d2b4efd2a9054565fc7159955945cf9c42ddb8b2",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/workshop-scenery.ts": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+    },
+    "scenerySnapshot": "docs/scene-baselines/workshop-scenery.ts.txt",
+    "additionalProtectedSourceHashes": {
+      "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+      "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+      "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+      "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+      "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+      "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/race-controls.ts": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
+      "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+      "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+      "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+      "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b",
+      "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806"
+    }
+  },
+  "reviewSelection": "18 representative pairs: eight first-gate chase/forward-eye views, four additional district chase views and six original catalog poses. All 36 fixed cameras remain available; unrendered optional transforms are not pixel evidence."
+}

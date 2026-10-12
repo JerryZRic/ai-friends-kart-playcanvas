@@ -1,0 +1,488 @@
+{
+  "schema": "workshop-enrichment-portable-preview-audit-v1",
+  "status": "passed",
+  "baselinePublicCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "candidateSourceSha256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+  "geometryCameraAndMaterialAudit": "workshop-enrichment-audit.json",
+  "renderReproduction": "workshop-room-enrichment.md#reproduction",
+  "frozenCameraManifest": "workshop-enrichment-cameras.json",
+  "finalCandidateProvenance": {
+    "file": "workshop-preview-provenance.json",
+    "sha256": "edb9a5a9c928923e00d79d4e4be7f45a7c7bc14e82b80a10d356a8a5deecaa5d"
+  },
+  "finalPoster": {
+    "file": "public/map-previews/workshop-overview.webp",
+    "sha256": "8685e61e211c5311222cc309b7eb206b6e0f3eb727614e3ff05646b4134f62f4"
+  },
+  "reopenedBaselineModelVerification": {
+    "status": "passed",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/workshop-scenery.ts": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+    },
+    "reopenedBlendSha256": "8783fcfdfb3b0ab763b4300698e22573dd285729ffb40594d3602639e053d4de",
+    "glbSha256": "27ceea77704948d3d019d771d2b4efd2a9054565fc7159955945cf9c42ddb8b2",
+    "geometrySha256": "a1606d33511ae11988d28ce9108feca126ea8ec3b3dbf833e3b7f1dc681338f9",
+    "verifierSha256": "a6784fd520c6a43416a961eb402db9dfd0c1a13f1f3a86e4ae7ab063ba5ff8e4",
+    "batches": 21,
+    "vertices": 146357,
+    "triangles": 97508,
+    "exactFloat32PositionsNormalsUvsAndIndices": true,
+    "explicitSourceNormalShaderLinksVerified": true,
+    "objectTransformsIdentity": true,
+    "normalTransform": "Source (x,y,z) to Blender (x,-z,y) is an orthogonal determinant +1 rotation; OBJECT to WORLD NORMAL transform, normalized and double-sided sign matches runtime convention",
+    "nativeCustomCornerEncodingBypassed": true,
+    "packedSourceTexturePixelsExact": true,
+    "packedBlendTextureKinds": [
+      "stone",
+      "wood"
+    ],
+    "unusedExportedTextureKinds": [
+      "asphalt",
+      "grass"
+    ],
+    "unusedTextureNote": "Blender omits unused image data on save; every used source texture is packed, and all four exported source PNG sets remain exact in the GLB and texture directory",
+    "externalLinkedLibraries": 0,
+    "imagePaths": {
+      "Original runtime stone": "",
+      "Original runtime wood": ""
+    },
+    "reviewCameras": 30,
+    "catalogCameras": 6,
+    "glbExactAccessors": 84,
+    "glbMaterialRecords": 21,
+    "reopenedMaterialColorsTextureLinksLightingAndCameraSensorsVerified": true,
+    "glbEmbeddedTexturePixelSets": 4,
+    "notice": "Exact geometry/normal-data/shader-path verification; offline material/light response remains approximate, not runtime GPU or performance evidence"
+  },
+  "reopenedCandidateModelVerification": {
+    "status": "passed",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/workshop-scenery.ts": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+    },
+    "reopenedBlendSha256": "64aa0cbfdd49306a9abf5c84fe7a8c9bdda1364901a7659190047f8527af1535",
+    "glbSha256": "2aac03fb8313ebc3b48e417743ee7f27dbd83e737f88435a6a424c2bd5b02c96",
+    "geometrySha256": "d6b34ab06b8066dfb3312490269778a66a159f974538ae9f2f639786e92f3da6",
+    "verifierSha256": "a6784fd520c6a43416a961eb402db9dfd0c1a13f1f3a86e4ae7ab063ba5ff8e4",
+    "batches": 21,
+    "vertices": 150485,
+    "triangles": 99572,
+    "exactFloat32PositionsNormalsUvsAndIndices": true,
+    "explicitSourceNormalShaderLinksVerified": true,
+    "objectTransformsIdentity": true,
+    "normalTransform": "Source (x,y,z) to Blender (x,-z,y) is an orthogonal determinant +1 rotation; OBJECT to WORLD NORMAL transform, normalized and double-sided sign matches runtime convention",
+    "nativeCustomCornerEncodingBypassed": true,
+    "packedSourceTexturePixelsExact": true,
+    "packedBlendTextureKinds": [
+      "stone",
+      "wood"
+    ],
+    "unusedExportedTextureKinds": [
+      "asphalt",
+      "grass"
+    ],
+    "unusedTextureNote": "Blender omits unused image data on save; every used source texture is packed, and all four exported source PNG sets remain exact in the GLB and texture directory",
+    "externalLinkedLibraries": 0,
+    "imagePaths": {
+      "Original runtime stone": "",
+      "Original runtime wood": ""
+    },
+    "reviewCameras": 30,
+    "catalogCameras": 6,
+    "glbExactAccessors": 84,
+    "glbMaterialRecords": 21,
+    "reopenedMaterialColorsTextureLinksLightingAndCameraSensorsVerified": true,
+    "glbEmbeddedTexturePixelSets": 4,
+    "notice": "Exact geometry/normal-data/shader-path verification; offline material/light response remains approximate, not runtime GPU or performance evidence"
+  },
+  "matchedPreviewVerification": {
+    "schema": "workshop-final-matched-preview-verification-v1",
+    "composerSha256": "52baea2257fe32cb14f92c0361fcb2225e5242a590ca88a3ee722d46ba418a42",
+    "sheetFont": [
+      "DejaVu Sans",
+      "Book"
+    ],
+    "approvedPixelComparisonPerformed": false,
+    "baselineCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+    "baselineSourceSha256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+    "candidateSourceSha256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+    "baselineRenderRecordSha256": "c9352528c3513fc63f1a0488656d107b584ba4f7f35e1865edc077dd02641ce7",
+    "candidateRenderRecordSha256": "edb9a5a9c928923e00d79d4e4be7f45a7c7bc14e82b80a10d356a8a5deecaa5d",
+    "frozenCameraManifestSha256": "0905233276abc0aa36f5ddbf52ba9eb02483ec6f3ec551b5a64dbad1e030d4f8",
+    "pairs": [
+      {
+        "name": "workshop-chase-launch-room-depth",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "8baf162f552b66ec283d24206b20c720f70c2b8b656068a46514df6a4131710e",
+        "candidateSha256": "3ca3dbc64710b72762041833a9a13ffe6cae67ecdbb5a0f1981e18e29232a21b",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 637582,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 10.676659794560186
+      },
+      {
+        "name": "workshop-chase-lower-crossing-approach",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "6ea1379114e2f149b9a72ec205673b7793fc1c988e5b47185acea874fa471aaf",
+        "candidateSha256": "4a896fe170e6dbf8c779c1eadd8956a5ff01f53142d7797b1e1fd343b3e99856",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 815462,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 16.461138237847223
+      },
+      {
+        "name": "workshop-chase-spool-north-architecture",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "30eae35ca9458e2388a6e65de4671bc84f327f48433553ccdb0f9dc9a524ccec",
+        "candidateSha256": "8b77c57a77ac4f4f452c4fff3189bb39844cf089329da726a002f4e030442766",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 872276,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 23.64109230324074
+      },
+      {
+        "name": "workshop-chase-spool-west-architecture",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "166338e6a2fc39e60a4808bfcea52beb4580a3abc7f065d5ec65a00e0392c238",
+        "candidateSha256": "e8ff3afbd02f17fee8eb3a4f55145246782c259652a55821607fc3be3efdd79b",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 648380,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 13.649388744212963
+      },
+      {
+        "name": "workshop-chase-fork-signs",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "9364d696fa28cf0dc295d12d05349a31aec1239cf45f2cdfeefd6cdb78f7934d",
+        "candidateSha256": "a5b6fbd25bc3470e1c58b30f2923d55859b61c0e2da8676c14e9e5e3079afa23",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 588549,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 10.984266493055555
+      },
+      {
+        "name": "workshop-chase-cabinet-run",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "00a34b9fa4c744b57e039e92182a29c803d9734fcb9d8058b6168acb7a793ee5",
+        "candidateSha256": "5830df5a40634f07165f58888044af7ebf726997148d325108504a764f1ece49",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 548695,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 15.965074146412038
+      },
+      {
+        "name": "workshop-chase-lamp-return",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "b9c86e740cee18104889ceec6085357141c10a91eb85c7fa60033eb275716800",
+        "candidateSha256": "83c8385d3d98e7ba0a76d2e25227672299a3bc04529979b5cef6a9216a33ea41",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 539840,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 12.37375
+      },
+      {
+        "name": "workshop-chase-drawer-return",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "95a7c5d15f56807e6e5464f7c3309d180a244b07194f64fe11d48e889003008a",
+        "candidateSha256": "5d15bf34630579c3c157903205828afa364a11fc2bc3373c6d0f6414eba9eab7",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 820395,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 23.270290436921297
+      },
+      {
+        "name": "workshop-road-eye-lower-crossing-approach",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "9a2133941f514753ba65ad4005fcbf3f14952c041439327b0b787f253e8e1e9c",
+        "candidateSha256": "033d9cb834af80650bd9c658de91fc413572999a38b4c49edd5b5f30eb9f659e",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 768512,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 20.30250542534722
+      },
+      {
+        "name": "workshop-road-eye-spool-north-architecture",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "a10590c078fd13a3cc89b5f4b700022840f4c90002136b13cc17460c863c2fa4",
+        "candidateSha256": "f89198b3c40ad06d65e52b47795122d17adf537c879749efe9a553cc5ab7bf04",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 779444,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 22.357408854166668
+      },
+      {
+        "name": "workshop-road-eye-fork-signs",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "05355918ae7ac84e1ad6d6361534310f2a4585e361ffa9ac8964d22acd7f5f67",
+        "candidateSha256": "b569f6dee8ec677a60b4618c34dbe7a7af15631400092a503f3ccdd3c5979efe",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 520812,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 9.604786241319445
+      },
+      {
+        "name": "workshop-road-eye-lamp-return",
+        "resolution": [
+          1280,
+          720
+        ],
+        "baselineSha256": "3674ebecefcf6a6280e4b4c98fac44cb83a06d6750878ebf378cc36875b888fe",
+        "candidateSha256": "b6ad179d40a57b7c41b55ade97fa8820eec6b7a9505491e18c057688a06fb032",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 540980,
+        "totalPixels": 921600,
+        "meanAbsoluteRgbByteDifference": 12.661908637152777
+      },
+      {
+        "name": "workshop-overview",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "baselineSha256": "2b2d772b33a6b3a80a3882c15449949945914c106a4ccd95907ad2ddd9c95a02",
+        "candidateSha256": "613e2de6bc00a228ee0d504816bca4003917acb0993a9499607327329f30bf21",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 681928,
+        "totalPixels": 2073600,
+        "meanAbsoluteRgbByteDifference": 5.716864872685186
+      },
+      {
+        "name": "workshop-topdown",
+        "resolution": [
+          1920,
+          1440
+        ],
+        "baselineSha256": "ee9f83067b0223dd417c1f326cdfde4a023980aa36ce48369aa984c9809000e5",
+        "candidateSha256": "8c0ab99d0f200895691ee236b147aa5b89c4d50be7868cfefad404cbbbfe0974",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 1314609,
+        "totalPixels": 2764800,
+        "meanAbsoluteRgbByteDifference": 3.878688753858025
+      },
+      {
+        "name": "workshop-helix-crossing",
+        "resolution": [
+          1800,
+          1125
+        ],
+        "baselineSha256": "0bd02e1fb72d513ec364e37bdd99e834bfc7a628e4e3be27b73812aeae3f8ee7",
+        "candidateSha256": "018a40ed7e88d2f0612f34f48657b0bb693853cdd7124d0995de899a1fec112a",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 1803237,
+        "totalPixels": 2025000,
+        "meanAbsoluteRgbByteDifference": 7.883807572016461
+      },
+      {
+        "name": "workshop-clockheart-detail",
+        "resolution": [
+          1800,
+          1125
+        ],
+        "baselineSha256": "6707763096f45a935a8d37cf9248002e87b764bf3f10eb3974a423bbf5fa812a",
+        "candidateSha256": "063401a31c2b7bdc00620564b26b816bc8e303524bea214604e7d76e7ba01b26",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 1854825,
+        "totalPixels": 2025000,
+        "meanAbsoluteRgbByteDifference": 2.9565287242798353
+      },
+      {
+        "name": "workshop-cabinet-detail",
+        "resolution": [
+          1800,
+          1125
+        ],
+        "baselineSha256": "2006618f31925e7b697a9bf6c583fc23fc50c4eeddfd19c366c7c69e94edb81b",
+        "candidateSha256": "162b4971083154ba98df799f4f67d6130318019c7d46a15419e99bca8b472ea0",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 1509348,
+        "totalPixels": 2025000,
+        "meanAbsoluteRgbByteDifference": 12.530302222222222
+      },
+      {
+        "name": "workshop-vise-detail",
+        "resolution": [
+          1800,
+          1125
+        ],
+        "baselineSha256": "659b7230b3d5c59d5da9ee3223117c24f2c2c3316fe25e17acbbe88d0bea37f5",
+        "candidateSha256": "96b2d19e946c49a84d6e9692c3e1f0afd9f6d7d11ba92f98b608b3d629122c87",
+        "matchedCameraAndRenderInputs": true,
+        "changedPixels": 1211838,
+        "totalPixels": 2025000,
+        "meanAbsoluteRgbByteDifference": 2.0309257613168725
+      }
+    ],
+    "acceptedFourViewExactPixelEquality": [],
+    "sheets": [
+      {
+        "file": "workshop-final-four-view-before-after.png",
+        "sha256": "7ab1bd57c0e7d8355caedde948d8cf5c1eaa1ec3c3ee47b85c6972bdaad1368b",
+        "views": [
+          "workshop-chase-lower-crossing-approach",
+          "workshop-chase-spool-north-architecture",
+          "workshop-chase-fork-signs",
+          "workshop-chase-lamp-return"
+        ],
+        "resolution": [
+          1956,
+          2508
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-01.png",
+        "sha256": "2959a84bbe478847a9d1f499da4d1c33cf55a64c7032bbd1a14525b617626aad",
+        "views": [
+          "workshop-chase-launch-room-depth",
+          "workshop-chase-lower-crossing-approach",
+          "workshop-chase-spool-north-architecture"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-02.png",
+        "sha256": "50282bf981cc217f0d806c1263fd9c821ea4ba044e8ee741550d0bdcc6d72ba8",
+        "views": [
+          "workshop-chase-spool-west-architecture",
+          "workshop-chase-fork-signs",
+          "workshop-chase-cabinet-run"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-03.png",
+        "sha256": "519bac743e24fd29d3964044aeed49629c34e6e7dc5e66d0aaa3e4151d9371b7",
+        "views": [
+          "workshop-chase-lamp-return",
+          "workshop-chase-drawer-return",
+          "workshop-road-eye-lower-crossing-approach"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-04.png",
+        "sha256": "a481cefebe76170d174d85629665dc37b67deeaa2e435929b0fb20d76adca277",
+        "views": [
+          "workshop-road-eye-spool-north-architecture",
+          "workshop-road-eye-fork-signs",
+          "workshop-road-eye-lamp-return"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-05.png",
+        "sha256": "f235441142e3d5599284d4c882b18503a5d5a5eebb425f709152f57e01a82603",
+        "views": [
+          "workshop-overview",
+          "workshop-topdown",
+          "workshop-helix-crossing"
+        ],
+        "resolution": [
+          1956,
+          2458
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      },
+      {
+        "file": "workshop-final-all-views-06.png",
+        "sha256": "c81038f5dcc1020f2c61565249c408ec5adea97c95340d896f53529143125c1f",
+        "views": [
+          "workshop-clockheart-detail",
+          "workshop-cabinet-detail",
+          "workshop-vise-detail"
+        ],
+        "resolution": [
+          1956,
+          2098
+        ],
+        "presentation": "Paired source PNGs scaled proportionally, no crop or scene retouching"
+      }
+    ],
+    "notice": "Exact matched source cameras and shader input evidence; PNGs are offline static CPU rendering, not gameplay or runtime GPU evidence. Pixel differences are descriptive, not a perceptual quality metric."
+  },
+  "visualInspection": {
+    "inspectedAllEighteenPairs": true,
+    "inspectedSevenSheets": true,
+    "observations": [
+      "North/west architecture provides a readable opaque workshop backdrop in fixed forward-driving views.",
+      "The smoother road and cabinet-inlay surfaces preserve the fork opening, directional signs and route edges.",
+      "Six original catalog poses retain their exact transforms and show the original landmarks and support structures.",
+      "The fixed overview includes the complete route; the tallest distant window tops extend past its historical upper crop."
+    ],
+    "scope": "Offline static source-geometry art inspection, not gameplay, runtime GPU pixels or measured performance."
+  },
+  "limits": [
+    "The two original texture-selector changes from wood to none are deliberate; all original geometry, normals, UVs and shared texture pixels remain exact.",
+    "No exact pixel-equality claim is made against earlier art-gate candidates; final renders include the narrow audited pane/sill contact repairs.",
+    "All 36 cameras are verified in both editable models, but only the bounded representative 18 poses are rendered.",
+    "Each BLEND packs exactly the used wood/stone source texture images. All four exported texture families are independently exact in the GLB and source PNG directory."
+  ]
+}
