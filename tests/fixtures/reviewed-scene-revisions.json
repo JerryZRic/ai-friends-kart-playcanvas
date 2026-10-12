@@ -36,6 +36,11 @@
       "previousSHA256": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
       "currentSHA256": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
       "scope": "Snow008 additive original snow banks, snow fences, station annexes, supported maintenance yard and reviewed snow-laden evergreen grouping. Exact original indexed positions, indices, UVs, normals, materials, terrain, roads, landmarks, blocker payloads and gameplay retained. Snow-only triangles below120000, at most12000 added, vertices below200000, exactly23 batches. Main/stable and Windows unchanged."
+    },
+    "src/caldera-scenery.ts": {
+      "previousSHA256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "currentSHA256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
     }
   }
 }

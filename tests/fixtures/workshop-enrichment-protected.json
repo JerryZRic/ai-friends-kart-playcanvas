@@ -592,42 +592,42 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
-      "currentSHA256": "ec232e75be89574e0a89080adf99eab121cde7a4ce41c19f7590a6826c0cdbde",
+      "currentSHA256": "4825c6fc95b7743abc9a3dc98ed79b4778b3f55bd51e5070f99c3d0e846cd111",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
-      "currentSHA256": "574a7c77e3906c5b0e2046eb39b883c9684f4285f13fffd2e1cef1fce28dc577",
+      "currentSHA256": "8b0a3a04b70406c52561afe47c2ac78463c4920ea4a707518a11ff906343c173",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
-      "currentSHA256": "fc92aaa6e17b15aa76ebe3957cfbaec4f6c7ca47629819fd17a6dc9f52208095",
+      "currentSHA256": "63ee3b1c28e06f0409110561dddefd82673e6a8c9c2ae3fdee69112136c5babf",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
-      "currentSHA256": "89578c9a525fcb0b4a7ca21c3530898a8e258a4ad37c4ccc2f497ef002710f91",
+      "currentSHA256": "ec3984e4371ae09e0201bcc132f1f610a5a91914ca21064aee5e6e14553006b2",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "7504e03e78feb1afe2af3146233944b66072cfcefc7b2b9ebeede0b6cdccc44a",
-      "currentSHA256": "b8e5bdd60c3ed63779d2f03cf8acaa4bc752eeec93da41e56bec7f496004a331",
+      "currentSHA256": "31dc76fd085cdeb4fb55bfabfc5a7cdfd59c7b9fcd36f7e4e64dbfb169cb9f78",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "5065857829e3beded4b2fa7e0f3c210b79cc37fde106c407bc10f06c16e4b3fa",
-      "currentSHA256": "9d95112242e7a726b34c3129a098405b2a99ad5ef4cfdecde4f9c1c74d801c5e",
+      "currentSHA256": "f28df6ea0c4d273c7fb87f12f8f7aea4c02aa14f60e708a1a745731f146ad828",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/forest-enrichment-inventory.test.ts": {
       "previousSHA256": "a75466882c6a6b0c98ff0a4c8db9d78ed1c4a4a79702344110d9ec872014421a",
-      "currentSHA256": "e82a993debe1b14472a400b5d35ee81a18bdd0ff7d085e6a6e7a60f0d0fa1eeb",
+      "currentSHA256": "f35d6e3322b2aa5b70dc09ecd1de1839fb2dc9c35d14c010d1acd81bb45a1894",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/forest-enrichment-protected.json": {
       "previousSHA256": "afa7cae0ad4fbbc67ea8a8e7349fb2f30abfc68b6a81a70b43a1ee3afb3774b2",
-      "currentSHA256": "827c3006c190d730a72bb0c2aa043e1e150b2002d1fe101f4d2616ae74fff746",
+      "currentSHA256": "a923f43ed41a116358ad8ef43c60e86cdbaff65d5c6c3db74a9f2fffd975d90c",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "docs/workshop-preview-provenance.json": {
@@ -729,6 +729,21 @@
       "previousSHA256": "4a648c5102a989884f99a505f7cab091a80c3b7bbedcb51bae108eb1a11096c0",
       "currentSHA256": "f43feed5a9a1bac7ab106502018235f252101ff49e3a18a36ea0a0d76af3dd97",
       "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "docs/caldera-preview-provenance.json": {
+      "previousSHA256": "e0a3cc26945487aa96929d04a0424bb3bbd3eb31111104ef282d637b11ea44ae",
+      "currentSHA256": "f538ef7f963899bbce44b6c773a69ef3f9b45cf47d0201181064782e118908d7",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
+    },
+    "public/map-previews/caldera-overview.webp": {
+      "previousSHA256": "c88112f081bafa0928986a6ada75177155eb7ad49717375dca3579c68c4b5968",
+      "currentSHA256": "f8c5b704f864d382b0935458e5d7faa8ca962362aa5be981e82588453dd2c68b",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
+    },
+    "src/caldera-scenery.ts": {
+      "previousSHA256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "currentSHA256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
     }
   },
   "historicalContracts": {

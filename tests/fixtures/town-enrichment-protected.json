@@ -446,7 +446,7 @@
   "themeSha256": "377e01bc4da57a94a41a7fb598c57c80e4464d8c2f3d57028a220cf08b899e5f",
   "originalScenerySha256": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
   "reviewedTestContractChanges": {
-    "tests/mountain-enrichment-contract.test.ts": "ec232e75be89574e0a89080adf99eab121cde7a4ce41c19f7590a6826c0cdbde",
+    "tests/mountain-enrichment-contract.test.ts": "4825c6fc95b7743abc9a3dc98ed79b4778b3f55bd51e5070f99c3d0e846cd111",
     "tests/town-gameplay-camera.test.ts": "6444c557009a271986184828a50942f4b58020568b7bba2a9bdf397f9a1ab2f7",
     "tests/quarry-scene.test.ts": "9bc08e35f64475fa5f727da1b4ecaf26c3ae1cd38c1ee31ae55eb59461b8fbfd",
     "tests/quarry-gameplay-camera.test.ts": "ca11ca65299c52c3788b198e4c35b6a7152e7c54b1ccac9da919b9b8a9c6ecf5",

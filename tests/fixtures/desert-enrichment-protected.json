@@ -25552,62 +25552,62 @@
     },
     "tests/fixtures/forest-enrichment-protected.json": {
       "previousSHA256": "f5a56baa80e242e8a495591bfe1ec1bd5d8e64fa8d0fca5e0569056a2c7ae279",
-      "currentSHA256": "827c3006c190d730a72bb0c2aa043e1e150b2002d1fe101f4d2616ae74fff746",
+      "currentSHA256": "a923f43ed41a116358ad8ef43c60e86cdbaff65d5c6c3db74a9f2fffd975d90c",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/fixtures/harvest-enrichment-protected.json": {
       "previousSHA256": "9aad62fc6e91efbf5edbedc04a1d50a08c9150b3e5a834ed25cb20c4ec94c20d",
-      "currentSHA256": "90c6f1d43c5438dad315990554846c0cda776b56eac209f51e92242e9544c439",
+      "currentSHA256": "cebc9293f79ee7f9b611018e6e3f2367bd4f0b917f2b9e67f70540c39a2061c0",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "8b322af6e434dc694eab3720611d04bc9fc489f1e62ab5d665fb2db52a76db78",
-      "currentSHA256": "9d95112242e7a726b34c3129a098405b2a99ad5ef4cfdecde4f9c1c74d801c5e",
+      "currentSHA256": "f28df6ea0c4d273c7fb87f12f8f7aea4c02aa14f60e708a1a745731f146ad828",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
-      "currentSHA256": "fc92aaa6e17b15aa76ebe3957cfbaec4f6c7ca47629819fd17a6dc9f52208095",
+      "currentSHA256": "63ee3b1c28e06f0409110561dddefd82673e6a8c9c2ae3fdee69112136c5babf",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
-      "currentSHA256": "89578c9a525fcb0b4a7ca21c3530898a8e258a4ad37c4ccc2f497ef002710f91",
+      "currentSHA256": "ec3984e4371ae09e0201bcc132f1f610a5a91914ca21064aee5e6e14553006b2",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/fixtures/workshop-enrichment-protected.json": {
       "previousSHA256": "953bd0e3effa87e7d708853eacd23c9ad7800fb69b037ac97b669654ab7dea4a",
-      "currentSHA256": "b8cec1d90a61b65576acb207ae879a1e5458dfce54dbed76fddf603eb223c1f4",
+      "currentSHA256": "55caa71500662aebd91ce7dd38350bf484d9b9373b46abce7e5ebde48bac6977",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/forest-enrichment-inventory.test.ts": {
       "previousSHA256": "c299c119ef8a8e1bee3f194e9bb731c1ad3cbb178f58f5a96191cdc732ad7b22",
-      "currentSHA256": "e82a993debe1b14472a400b5d35ee81a18bdd0ff7d085e6a6e7a60f0d0fa1eeb",
+      "currentSHA256": "f35d6e3322b2aa5b70dc09ecd1de1839fb2dc9c35d14c010d1acd81bb45a1894",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/harvest-enrichment-inventory.test.ts": {
       "previousSHA256": "514d6fc9550eb1e522d48759f414b89a25bd2ff9bad844265cc9677b4654f9a2",
-      "currentSHA256": "32357711f4f9e87250bea156808f0da042e3fd3644aede6b6e37f241ebebb017",
+      "currentSHA256": "6d270d5ba372c9258e61761ed00dbc6175e7389a39268877824657d35d2a1497",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
-      "currentSHA256": "574a7c77e3906c5b0e2046eb39b883c9684f4285f13fffd2e1cef1fce28dc577",
+      "currentSHA256": "8b0a3a04b70406c52561afe47c2ac78463c4920ea4a707518a11ff906343c173",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
-      "currentSHA256": "ec232e75be89574e0a89080adf99eab121cde7a4ce41c19f7590a6826c0cdbde",
+      "currentSHA256": "4825c6fc95b7743abc9a3dc98ed79b4778b3f55bd51e5070f99c3d0e846cd111",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "131153e41d0fd14a0cf5c30a717be4538b89157a451885d792a58ac6a7d21662",
-      "currentSHA256": "b8e5bdd60c3ed63779d2f03cf8acaa4bc752eeec93da41e56bec7f496004a331",
+      "currentSHA256": "31dc76fd085cdeb4fb55bfabfc5a7cdfd59c7b9fcd36f7e4e64dbfb169cb9f78",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/workshop-enrichment-inventory.test.ts": {
       "previousSHA256": "d6dc7d0da50c657903828e0ac29bcf8b3434f115fa16b8cf7e84455517c5345d",
-      "currentSHA256": "42684db58b0c7f242292276ddc65ea4cb74cf9b7c59581282bbad2e5fcb1f248",
+      "currentSHA256": "c7a98c474d673a99f2f65ba92244f130c454704e227911839f99835a6159d403",
       "scope": "Exact final Desert007 source/artifact revision and precise existing scene-isolation consumer acknowledgement; original hashes and assertions retained"
     },
     "tests/snow-independent-audit.test.ts": {
@@ -25639,6 +25639,21 @@
       "previousSHA256": "4a648c5102a989884f99a505f7cab091a80c3b7bbedcb51bae108eb1a11096c0",
       "currentSHA256": "f43feed5a9a1bac7ab106502018235f252101ff49e3a18a36ea0a0d76af3dd97",
       "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "docs/caldera-preview-provenance.json": {
+      "previousSHA256": "e0a3cc26945487aa96929d04a0424bb3bbd3eb31111104ef282d637b11ea44ae",
+      "currentSHA256": "f538ef7f963899bbce44b6c773a69ef3f9b45cf47d0201181064782e118908d7",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
+    },
+    "public/map-previews/caldera-overview.webp": {
+      "previousSHA256": "c88112f081bafa0928986a6ada75177155eb7ad49717375dca3579c68c4b5968",
+      "currentSHA256": "f8c5b704f864d382b0935458e5d7faa8ca962362aa5be981e82588453dd2c68b",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
+    },
+    "src/caldera-scenery.ts": {
+      "previousSHA256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "currentSHA256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
     }
   }
 }

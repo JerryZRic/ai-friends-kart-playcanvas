@@ -1,0 +1,1520 @@
+{
+  "schema": "caldera-enrichment-assembly-recipes-v1",
+  "sourceSha256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+  "assemblies": [
+    {
+      "id": "enrichment-rim-near-buttress",
+      "pieces": [
+        {
+          "id": "enrichment-rim-near-buttress:0",
+          "kind": "enrichment-jointed-basalt-buttress",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-rim-near-buttress:0"
+      ],
+      "flatFeet": [],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-rim-near-buttress:0",
+          "eye": [
+            -298.0502633259479,
+            56.63733415973818,
+            227.19080803804573
+          ],
+          "target": [
+            -296.93891535003695,
+            58.05700423040944,
+            226.30224595980985
+          ],
+          "indexStart": 75957,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 53.37459848271061
+        }
+      ]
+    },
+    {
+      "id": "enrichment-rim-middle-buttress",
+      "pieces": [
+        {
+          "id": "enrichment-rim-middle-buttress:0",
+          "kind": "enrichment-jointed-basalt-buttress",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-rim-middle-buttress:0"
+      ],
+      "flatFeet": [],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-rim-middle-buttress:0",
+          "eye": [
+            -262.10653056186425,
+            59.92432271227348,
+            259.8637834805491
+          ],
+          "target": [
+            -261.77613401385736,
+            61.32412076096875,
+            258.4596810825973
+          ],
+          "indexStart": 77334,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 54.13232292374393
+        }
+      ]
+    },
+    {
+      "id": "enrichment-rim-receding-buttress",
+      "pieces": [
+        {
+          "id": "enrichment-rim-receding-buttress:0",
+          "kind": "enrichment-jointed-basalt-buttress",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-rim-receding-buttress:0"
+      ],
+      "flatFeet": [],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-rim-receding-buttress:0",
+          "eye": [
+            -116.78781954927607,
+            60.256787572923955,
+            299.2169498887052
+          ],
+          "target": [
+            -116.42039423558695,
+            61.598494505010244,
+            297.7661152505565
+          ],
+          "indexStart": 78939,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 56.47605910642092
+        }
+      ]
+    },
+    {
+      "id": "enrichment-north-rim-near-buttress",
+      "pieces": [
+        {
+          "id": "enrichment-north-rim-near-buttress:0",
+          "kind": "enrichment-jointed-basalt-buttress",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-north-rim-near-buttress:0"
+      ],
+      "flatFeet": [],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-north-rim-near-buttress:0",
+          "eye": [
+            114.27288034175386,
+            23.39995408494935,
+            254.51594962692224
+          ],
+          "target": [
+            115.68480226495792,
+            24.779348979760446,
+            254.89522025186548
+          ],
+          "indexStart": 80586,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 54.933014675522166
+        }
+      ]
+    },
+    {
+      "id": "enrichment-north-rim-receding-buttress",
+      "pieces": [
+        {
+          "id": "enrichment-north-rim-receding-buttress:0",
+          "kind": "enrichment-jointed-basalt-buttress",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-north-rim-receding-buttress:0"
+      ],
+      "flatFeet": [],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-north-rim-receding-buttress:0",
+          "eye": [
+            161.49691935760893,
+            37.420829351703595,
+            237.64033399856083
+          ],
+          "target": [
+            160.21584873654524,
+            38.84160209179306,
+            237.0235983300073
+          ],
+          "indexStart": 82095,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 53.33317416776209
+        }
+      ]
+    },
+    {
+      "id": "enrichment-archive-store-wing",
+      "pieces": [
+        {
+          "id": "enrichment-archive-store-wing:0",
+          "kind": "enrichment-archive-terrain-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "enrichment-archive-store-wing:1",
+          "kind": "enrichment-archive-west-wall",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:2",
+          "kind": "enrichment-archive-east-wall",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:3",
+          "kind": "enrichment-archive-rear-wall",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:4",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:5",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:6",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:7",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:8",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-store-wing:4",
+            "enrichment-archive-store-wing:5"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:9",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-store-wing:5",
+            "enrichment-archive-store-wing:6"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:10",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-store-wing:6",
+            "enrichment-archive-store-wing:7"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:11",
+          "kind": "enrichment-archive-thick-seated-roof",
+          "supportOwner": [
+            "enrichment-archive-store-wing:1",
+            "enrichment-archive-store-wing:2",
+            "enrichment-archive-store-wing:3",
+            "enrichment-archive-store-wing:8",
+            "enrichment-archive-store-wing:9",
+            "enrichment-archive-store-wing:10"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:12",
+          "kind": "enrichment-archive-sample-bench",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:13",
+          "kind": "enrichment-archive-sample-slab",
+          "supportOwner": [
+            "enrichment-archive-store-wing:12"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:14",
+          "kind": "enrichment-archive-sample-bench",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:15",
+          "kind": "enrichment-archive-sample-slab",
+          "supportOwner": [
+            "enrichment-archive-store-wing:14"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:16",
+          "kind": "enrichment-archive-apron-display-seat",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:17",
+          "kind": "enrichment-archive-apron-broad-basalt-section",
+          "supportOwner": [
+            "enrichment-archive-store-wing:16"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:18",
+          "kind": "enrichment-archive-apron-ochre-section",
+          "supportOwner": [
+            "enrichment-archive-store-wing:17"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:19",
+          "kind": "enrichment-archive-apron-display-seat",
+          "supportOwner": [
+            "enrichment-archive-store-wing:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:20",
+          "kind": "enrichment-archive-apron-broad-basalt-section",
+          "supportOwner": [
+            "enrichment-archive-store-wing:19"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:21",
+          "kind": "enrichment-archive-apron-ochre-section",
+          "supportOwner": [
+            "enrichment-archive-store-wing:20"
+          ]
+        },
+        {
+          "id": "enrichment-archive-store-wing:22",
+          "kind": "enrichment-archive-broad-entry-step",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-archive-store-wing:0",
+        "enrichment-archive-store-wing:22"
+      ],
+      "flatFeet": [
+        "enrichment-archive-store-wing:1",
+        "enrichment-archive-store-wing:2",
+        "enrichment-archive-store-wing:3",
+        "enrichment-archive-store-wing:4",
+        "enrichment-archive-store-wing:5",
+        "enrichment-archive-store-wing:6",
+        "enrichment-archive-store-wing:7",
+        "enrichment-archive-store-wing:12",
+        "enrichment-archive-store-wing:13",
+        "enrichment-archive-store-wing:14",
+        "enrichment-archive-store-wing:15",
+        "enrichment-archive-store-wing:16",
+        "enrichment-archive-store-wing:17",
+        "enrichment-archive-store-wing:18",
+        "enrichment-archive-store-wing:19",
+        "enrichment-archive-store-wing:20",
+        "enrichment-archive-store-wing:21"
+      ],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [
+        {
+          "pieceId": "enrichment-archive-store-wing:11",
+          "supportOwner": [
+            "enrichment-archive-store-wing:1",
+            "enrichment-archive-store-wing:2",
+            "enrichment-archive-store-wing:3",
+            "enrichment-archive-store-wing:8",
+            "enrichment-archive-store-wing:9",
+            "enrichment-archive-store-wing:10"
+          ]
+        }
+      ],
+      "openings": [
+        {
+          "label": "enrichment-archive-store-wing literal bay 0",
+          "a": [
+            -156.99771063806315,
+            12.701666582917511,
+            -595.4659195352302
+          ],
+          "b": [
+            -158.14579492950168,
+            12.701666582917511,
+            -606.9084674359276
+          ]
+        },
+        {
+          "label": "enrichment-archive-store-wing literal bay 1",
+          "a": [
+            -166.2512493751488,
+            12.701666582917511,
+            -594.5374687604148
+          ],
+          "b": [
+            -167.39933366658732,
+            12.701666582917511,
+            -605.9800166611121
+          ]
+        },
+        {
+          "label": "enrichment-archive-store-wing literal bay 2",
+          "a": [
+            -175.50478811223445,
+            12.701666582917511,
+            -593.6090179855993
+          ],
+          "b": [
+            -176.65287240367297,
+            12.701666582917511,
+            -605.0515658862967
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-archive-store-wing:0",
+          "eye": [
+            -177.4750603136995,
+            5.087286960461068,
+            -599.1303298145041
+          ],
+          "target": [
+            -177.37729136509822,
+            7.0949054802818186,
+            -599.1333483509275
+          ],
+          "indexStart": 4539,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 37.74338563422165
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:1",
+          "eye": [
+            -150.8353425950845,
+            12.701666582917511,
+            -606.1679285933769
+          ],
+          "target": [
+            -152.83530096729336,
+            12.701666582917511,
+            -605.9672634259167
+          ],
+          "indexStart": 1380,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 53.549999999999855
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:2",
+          "eye": [
+            -178.59595880634143,
+            12.701666582917511,
+            -603.3825762689305
+          ],
+          "target": [
+            -180.59591717855028,
+            12.701666582917511,
+            -603.1819111014703
+          ],
+          "indexStart": 1416,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 53.549999999999855
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:3",
+          "eye": [
+            -162.89508167835734,
+            12.701666582917511,
+            -605.8289367563011
+          ],
+          "target": [
+            -163.09574684581747,
+            12.701666582917511,
+            -607.82889512851
+          ],
+          "indexStart": 1440,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 120.60000000000012
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:4",
+          "eye": [
+            -152.0886904225724,
+            12.368333249584177,
+            -594.953443550412
+          ],
+          "target": [
+            -152.28935559003264,
+            12.368333249584177,
+            -596.9534019226209
+          ],
+          "indexStart": 1476,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 4.400000000000059
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:5",
+          "eye": [
+            -161.34222915965805,
+            12.368333249584177,
+            -594.0249927755965
+          ],
+          "target": [
+            -161.5428943271183,
+            12.368333249584177,
+            -596.0249511478054
+          ],
+          "indexStart": 1512,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 4.400000000000059
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:6",
+          "eye": [
+            -170.59576789674372,
+            12.368333249584177,
+            -593.096542000781
+          ],
+          "target": [
+            -170.79643306420397,
+            12.368333249584177,
+            -595.0965003729899
+          ],
+          "indexStart": 1548,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 4.400000000000059
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:7",
+          "eye": [
+            -179.84930663382934,
+            12.368333249584177,
+            -592.1680912259656
+          ],
+          "target": [
+            -180.0499718012896,
+            12.368333249584177,
+            -594.1680495981744
+          ],
+          "indexStart": 1584,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 4.400000000000059
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:8",
+          "eye": [
+            -155.6284987707367,
+            15.701666582917511,
+            -597.3453352175147
+          ],
+          "target": [
+            -155.6284987707367,
+            17.711666582917513,
+            -597.3453352175147
+          ],
+          "indexStart": 138,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 5.114999999999519
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:9",
+          "eye": [
+            -164.88203750782236,
+            15.701666582917511,
+            -596.4168844426994
+          ],
+          "target": [
+            -164.88203750782236,
+            17.711666582917513,
+            -596.4168844426994
+          ],
+          "indexStart": 174,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 5.114999999999519
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:10",
+          "eye": [
+            -174.13557624490804,
+            15.701666582917511,
+            -595.4884336678838
+          ],
+          "target": [
+            -174.13557624490804,
+            17.711666582917513,
+            -595.4884336678838
+          ],
+          "indexStart": 210,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 5.114999999999519
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:11",
+          "eye": [
+            -161.64605619051062,
+            22.001666582917508,
+            -600.0581345977679
+          ],
+          "target": [
+            -161.64605619051062,
+            19.991666582917507,
+            -600.0581345977679
+          ],
+          "indexStart": 240,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 227.92000000000144
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:12",
+          "eye": [
+            -158.92114226783104,
+            10.168333249584178,
+            -599.5442715565806
+          ],
+          "target": [
+            -159.12180743529117,
+            10.168333249584178,
+            -601.5442299287895
+          ],
+          "indexStart": 4986,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 3.4999999999999827
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:13",
+          "eye": [
+            -160.8012239503536,
+            13.701666582917511,
+            -602.9234584377924
+          ],
+          "target": [
+            -160.8012239503536,
+            11.691666582917511,
+            -602.9234584377924
+          ],
+          "indexStart": 5787,
+          "batch": "Caldera original specimen strata",
+          "actualFaceArea": 3.7800000000000047
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:14",
+          "eye": [
+            -172.7716002485012,
+            10.168333249584178,
+            -598.1545903968569
+          ],
+          "target": [
+            -172.97226541596132,
+            10.168333249584178,
+            -600.1545487690657
+          ],
+          "indexStart": 5022,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 3.4999999999999827
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:15",
+          "eye": [
+            -174.65168193102372,
+            13.701666582917511,
+            -601.5337772780687
+          ],
+          "target": [
+            -174.65168193102372,
+            11.691666582917511,
+            -601.5337772780687
+          ],
+          "indexStart": 5823,
+          "batch": "Caldera original specimen strata",
+          "actualFaceArea": 3.7800000000000047
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:16",
+          "eye": [
+            -157.3089569096638,
+            7.701666582917511,
+            -593.8601579704708
+          ],
+          "target": [
+            -157.3089569096638,
+            9.71166658291751,
+            -593.8601579704708
+          ],
+          "indexStart": 5088,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 9.600000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:17",
+          "eye": [
+            -157.15682139415824,
+            11.00166658291751,
+            -590.1735953880899
+          ],
+          "target": [
+            -157.35748656161834,
+            11.00166658291751,
+            -592.1735537602988
+          ],
+          "indexStart": 83541,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 2.81999999999998
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:18",
+          "eye": [
+            -157.5375192675746,
+            14.101666582917511,
+            -592.9662071119583
+          ],
+          "target": [
+            -157.5375192675746,
+            12.091666582917512,
+            -592.9662071119583
+          ],
+          "indexStart": 5796,
+          "batch": "Caldera connected ochre interbeds",
+          "actualFaceArea": 4.099999999999992
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:19",
+          "eye": [
+            -172.60217092998707,
+            7.701666582917511,
+            -592.325718356609
+          ],
+          "target": [
+            -172.60217092998707,
+            9.71166658291751,
+            -592.325718356609
+          ],
+          "indexStart": 5124,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 9.600000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:20",
+          "eye": [
+            -172.4500354144815,
+            11.00166658291751,
+            -588.6391557742281
+          ],
+          "target": [
+            -172.6507005819416,
+            11.00166658291751,
+            -590.639114146437
+          ],
+          "indexStart": 83577,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 2.81999999999998
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:21",
+          "eye": [
+            -172.83073328789783,
+            14.101666582917511,
+            -591.4317674980965
+          ],
+          "target": [
+            -172.83073328789783,
+            12.091666582917512,
+            -591.4317674980965
+          ],
+          "indexStart": 5832,
+          "batch": "Caldera connected ochre interbeds",
+          "actualFaceArea": 4.099999999999992
+        },
+        {
+          "pieceId": "enrichment-archive-store-wing:22",
+          "eye": [
+            -179.22457293280576,
+            6.170374711263588,
+            -586.0778626578492
+          ],
+          "target": [
+            -178.98216795875015,
+            8.16022855439449,
+            -586.2255837177231
+          ],
+          "indexStart": 5145,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 10.634955607286674
+        }
+      ]
+    },
+    {
+      "id": "enrichment-archive-open-portico",
+      "pieces": [
+        {
+          "id": "enrichment-archive-open-portico:0",
+          "kind": "enrichment-archive-terrain-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "enrichment-archive-open-portico:1",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:2",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:3",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:4",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:5",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:1",
+            "enrichment-archive-open-portico:2"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:6",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:2",
+            "enrichment-archive-open-portico:3"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:7",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:3",
+            "enrichment-archive-open-portico:4"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:8",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:9",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:10",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:11",
+          "kind": "enrichment-archive-open-bay-pier",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:12",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:8",
+            "enrichment-archive-open-portico:9"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:13",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:9",
+            "enrichment-archive-open-portico:10"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:14",
+          "kind": "enrichment-archive-open-bay-lintel",
+          "supportOwner": [
+            "enrichment-archive-open-portico:10",
+            "enrichment-archive-open-portico:11"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:15",
+          "kind": "enrichment-archive-thick-seated-roof",
+          "supportOwner": [
+            "enrichment-archive-open-portico:5",
+            "enrichment-archive-open-portico:6",
+            "enrichment-archive-open-portico:7",
+            "enrichment-archive-open-portico:12",
+            "enrichment-archive-open-portico:13",
+            "enrichment-archive-open-portico:14"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:16",
+          "kind": "enrichment-archive-sample-bench",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:17",
+          "kind": "enrichment-archive-sample-slab",
+          "supportOwner": [
+            "enrichment-archive-open-portico:16"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:18",
+          "kind": "enrichment-archive-sample-bench",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:19",
+          "kind": "enrichment-archive-sample-slab",
+          "supportOwner": [
+            "enrichment-archive-open-portico:18"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:20",
+          "kind": "enrichment-archive-apron-display-seat",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:21",
+          "kind": "enrichment-archive-apron-broad-basalt-section",
+          "supportOwner": [
+            "enrichment-archive-open-portico:20"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:22",
+          "kind": "enrichment-archive-apron-ochre-section",
+          "supportOwner": [
+            "enrichment-archive-open-portico:21"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:23",
+          "kind": "enrichment-archive-apron-display-seat",
+          "supportOwner": [
+            "enrichment-archive-open-portico:0"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:24",
+          "kind": "enrichment-archive-apron-broad-basalt-section",
+          "supportOwner": [
+            "enrichment-archive-open-portico:23"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:25",
+          "kind": "enrichment-archive-apron-ochre-section",
+          "supportOwner": [
+            "enrichment-archive-open-portico:24"
+          ]
+        },
+        {
+          "id": "enrichment-archive-open-portico:26",
+          "kind": "enrichment-archive-broad-entry-step",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "enrichment-archive-open-portico:0",
+        "enrichment-archive-open-portico:26"
+      ],
+      "flatFeet": [
+        "enrichment-archive-open-portico:1",
+        "enrichment-archive-open-portico:2",
+        "enrichment-archive-open-portico:3",
+        "enrichment-archive-open-portico:4",
+        "enrichment-archive-open-portico:8",
+        "enrichment-archive-open-portico:9",
+        "enrichment-archive-open-portico:10",
+        "enrichment-archive-open-portico:11",
+        "enrichment-archive-open-portico:16",
+        "enrichment-archive-open-portico:17",
+        "enrichment-archive-open-portico:18",
+        "enrichment-archive-open-portico:19",
+        "enrichment-archive-open-portico:20",
+        "enrichment-archive-open-portico:21",
+        "enrichment-archive-open-portico:22",
+        "enrichment-archive-open-portico:23",
+        "enrichment-archive-open-portico:24",
+        "enrichment-archive-open-portico:25"
+      ],
+      "fullSeats": [],
+      "fullSeatSupports": {},
+      "roofSeats": [
+        {
+          "pieceId": "enrichment-archive-open-portico:15",
+          "supportOwner": [
+            "enrichment-archive-open-portico:5",
+            "enrichment-archive-open-portico:6",
+            "enrichment-archive-open-portico:7",
+            "enrichment-archive-open-portico:12",
+            "enrichment-archive-open-portico:13",
+            "enrichment-archive-open-portico:14"
+          ]
+        }
+      ],
+      "openings": [
+        {
+          "label": "enrichment-archive-open-portico literal bay 0",
+          "a": [
+            -216.9623643230574,
+            14.839508568863934,
+            -630.2362452154243
+          ],
+          "b": [
+            -215.56469649000178,
+            14.839508568863934,
+            -616.3061869015319
+          ]
+        },
+        {
+          "label": "enrichment-archive-open-portico literal bay 1",
+          "a": [
+            -209.6988339165278,
+            14.839508568863934,
+            -630.9650291569462
+          ],
+          "b": [
+            -208.3011660834722,
+            14.839508568863934,
+            -617.0349708430538
+          ]
+        },
+        {
+          "label": "enrichment-archive-open-portico literal bay 2",
+          "a": [
+            -202.43530350999822,
+            14.839508568863934,
+            -631.6938130984681
+          ],
+          "b": [
+            -201.0376356769426,
+            14.839508568863934,
+            -617.7637547845757
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "enrichment-archive-open-portico:0",
+          "eye": [
+            -212.85458669343117,
+            6.0961757626347275,
+            -620.4255971058716
+          ],
+          "target": [
+            -212.54289373319952,
+            8.076302703024794,
+            -620.5740720144707
+          ],
+          "indexStart": 5502,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 38.26740521245252
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:1",
+          "eye": [
+            -220.87638037327008,
+            13.639508568863933,
+            -630.8485546168895
+          ],
+          "target": [
+            -220.67571520580984,
+            13.639508568863933,
+            -628.8485962446806
+          ],
+          "indexStart": 1620,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:2",
+          "eye": [
+            -213.61284996674053,
+            13.639508568863933,
+            -631.5773385584113
+          ],
+          "target": [
+            -213.41218479928028,
+            13.639508568863933,
+            -629.5773801862024
+          ],
+          "indexStart": 1656,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:3",
+          "eye": [
+            -206.34931956021097,
+            13.639508568863933,
+            -632.3061224999332
+          ],
+          "target": [
+            -206.14865439275073,
+            13.639508568863933,
+            -630.3061641277243
+          ],
+          "indexStart": 1692,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:4",
+          "eye": [
+            -199.08578915368136,
+            13.639508568863933,
+            -633.034906441455
+          ],
+          "target": [
+            -198.88512398622112,
+            13.639508568863933,
+            -631.0349480692461
+          ],
+          "indexStart": 1728,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:5",
+          "eye": [
+            -217.99990813529112,
+            15.239508568863933,
+            -628.3901073386887
+          ],
+          "target": [
+            -217.99990813529112,
+            17.249508568863934,
+            -628.3901073386887
+          ],
+          "indexStart": 282,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:6",
+          "eye": [
+            -210.73637772876157,
+            15.239508568863933,
+            -629.1188912802106
+          ],
+          "target": [
+            -210.73637772876157,
+            17.249508568863934,
+            -629.1188912802106
+          ],
+          "indexStart": 318,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:7",
+          "eye": [
+            -203.472847322232,
+            15.239508568863933,
+            -629.8476752217325
+          ],
+          "target": [
+            -203.472847322232,
+            17.249508568863934,
+            -629.8476752217325
+          ],
+          "indexStart": 354,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:8",
+          "eye": [
+            -219.7881961318197,
+            13.639508568863933,
+            -620.003009215359
+          ],
+          "target": [
+            -219.58753096435944,
+            13.639508568863933,
+            -618.0030508431502
+          ],
+          "indexStart": 1764,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:9",
+          "eye": [
+            -212.52466572529008,
+            13.639508568863933,
+            -620.7317931568808
+          ],
+          "target": [
+            -212.32400055782983,
+            13.639508568863933,
+            -618.731834784672
+          ],
+          "indexStart": 1800,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:10",
+          "eye": [
+            -205.26113531876047,
+            13.639508568863933,
+            -621.4605770984027
+          ],
+          "target": [
+            -205.06047015130022,
+            13.639508568863933,
+            -619.4606187261938
+          ],
+          "indexStart": 1836,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:11",
+          "eye": [
+            -197.9976049122309,
+            13.639508568863933,
+            -622.1893610399245
+          ],
+          "target": [
+            -197.79693974477067,
+            13.639508568863933,
+            -620.1894026677156
+          ],
+          "indexStart": 1872,
+          "batch": "Caldera warm archive wall stone",
+          "actualFaceArea": 2.970000000000039
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:12",
+          "eye": [
+            -216.91172389384073,
+            15.239508568863933,
+            -617.5445619371583
+          ],
+          "target": [
+            -216.91172389384073,
+            17.249508568863934,
+            -617.5445619371583
+          ],
+          "indexStart": 390,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:13",
+          "eye": [
+            -209.64819348731112,
+            15.239508568863933,
+            -618.2733458786802
+          ],
+          "target": [
+            -209.64819348731112,
+            17.249508568863934,
+            -618.2733458786802
+          ],
+          "indexStart": 426,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:14",
+          "eye": [
+            -202.3846630807815,
+            15.239508568863933,
+            -619.0021298202021
+          ],
+          "target": [
+            -202.3846630807815,
+            17.249508568863934,
+            -619.0021298202021
+          ],
+          "indexStart": 462,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 4.01499999999962
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:15",
+          "eye": [
+            -213.3423007414369,
+            21.539508568863933,
+            -625.8758647913327
+          ],
+          "target": [
+            -213.3423007414369,
+            19.529508568863932,
+            -625.8758647913327
+          ],
+          "indexStart": 492,
+          "batch": "Caldera thick bearing slab roofs",
+          "actualFaceArea": 171.12000000000123
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:16",
+          "eye": [
+            -215.6460517341686,
+            12.3061752355306,
+            -626.5994885633908
+          ],
+          "target": [
+            -215.44538656670846,
+            12.3061752355306,
+            -624.5995301911819
+          ],
+          "indexStart": 5886,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 3.4999999999999827
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:17",
+          "eye": [
+            -213.76597005164604,
+            15.839508568863934,
+            -623.220301682179
+          ],
+          "target": [
+            -213.76597005164604,
+            13.829508568863934,
+            -623.220301682179
+          ],
+          "indexStart": 5859,
+          "batch": "Caldera original specimen strata",
+          "actualFaceArea": 3.7800000000000047
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:18",
+          "eye": [
+            -204.6612057494992,
+            12.3061752355306,
+            -627.7016494831718
+          ],
+          "target": [
+            -204.46054058203907,
+            12.3061752355306,
+            -625.7016911109629
+          ],
+          "indexStart": 5922,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 3.4999999999999827
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:19",
+          "eye": [
+            -202.78112406697664,
+            15.839508568863934,
+            -624.32246260196
+          ],
+          "target": [
+            -202.78112406697664,
+            13.829508568863934,
+            -624.32246260196
+          ],
+          "indexStart": 5895,
+          "batch": "Caldera original specimen strata",
+          "actualFaceArea": 3.7800000000000047
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:20",
+          "eye": [
+            -217.4418644230693,
+            12.139508568863933,
+            -635.9167539650072
+          ],
+          "target": [
+            -217.24119925560916,
+            12.139508568863933,
+            -633.9167955927983
+          ],
+          "indexStart": 5958,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 2.6999999999999886
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:21",
+          "eye": [
+            -217.18135514976797,
+            13.139508568863933,
+            -635.4906326642389
+          ],
+          "target": [
+            -216.98068998230787,
+            13.139508568863933,
+            -633.49067429203
+          ],
+          "indexStart": 83613,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 2.81999999999998
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:22",
+          "eye": [
+            -216.8006572763516,
+            16.239508568863933,
+            -632.6980209403705
+          ],
+          "target": [
+            -216.8006572763516,
+            14.229508568863935,
+            -632.6980209403705
+          ],
+          "indexStart": 5868,
+          "batch": "Caldera connected ochre interbeds",
+          "actualFaceArea": 4.099999999999992
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:23",
+          "eye": [
+            -205.31276364833013,
+            12.139508568863933,
+            -637.1337233139321
+          ],
+          "target": [
+            -205.11209848087,
+            12.139508568863933,
+            -635.1337649417233
+          ],
+          "indexStart": 5994,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 2.6999999999999886
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:24",
+          "eye": [
+            -205.0522543750288,
+            13.139508568863933,
+            -636.7076020131638
+          ],
+          "target": [
+            -204.8515892075687,
+            13.139508568863933,
+            -634.7076436409549
+          ],
+          "indexStart": 83649,
+          "batch": "Caldera connected dark basalt rim",
+          "actualFaceArea": 2.81999999999998
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:25",
+          "eye": [
+            -204.67155650161249,
+            16.239508568863933,
+            -633.9149902892954
+          ],
+          "target": [
+            -204.67155650161249,
+            14.229508568863935,
+            -633.9149902892954
+          ],
+          "indexStart": 5904,
+          "batch": "Caldera connected ochre interbeds",
+          "actualFaceArea": 4.099999999999992
+        },
+        {
+          "pieceId": "enrichment-archive-open-portico:26",
+          "eye": [
+            -220.7371017929561,
+            6.35376610169442,
+            -636.8927534504733
+          ],
+          "target": [
+            -220.37113592967845,
+            8.329829861586722,
+            -636.9293731686006
+          ],
+          "indexStart": 6075,
+          "batch": "Caldera full footprint foundations",
+          "actualFaceArea": 10.57960447774165
+        }
+      ]
+    }
+  ]
+}

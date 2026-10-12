@@ -1,0 +1,77 @@
+{
+  "schema": "caldera-synthetic-opening-witness-correction-v1",
+  "sourceSha256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+  "scope": "Three synthetic architectural store-bay probes only; not a legal driving pose or fixed native review camera",
+  "reason": "Original ray ended0.4m from the existing rear wall; raw line was clear but the actual camera safety envelope retracted it. Endpoint shortened by1m within the same room so the complete safety margin can remain clear. This is not a removed retained failure or source geometry repair.",
+  "unchangedCoverage": {
+    "frozenReviewTransforms": 40,
+    "originalIndependentAssertions": 30,
+    "desiredSafeBooms": 463272,
+    "interpolatedBooms": 463272,
+    "transitionFrames": 29160,
+    "pickupRays": 1440,
+    "denseArchOrbitFrames": 750
+  },
+  "witnesses": [
+    {
+      "label": "enrichment-archive-store-wing literal bay 0",
+      "unchangedStart": [
+        -156.99771063806315,
+        12.701666582917511,
+        -595.4659195352302
+      ],
+      "originalEnd": [
+        -158.2456283461485,
+        12.701666582917511,
+        -607.9034716012056
+      ],
+      "correctedEnd": [
+        -158.14579492950168,
+        12.701666582917511,
+        -606.9084674359276
+      ],
+      "originalEndGapToRearWallMetres": 0.4,
+      "correctedEndGapToRearWallMetres": 1.4
+    },
+    {
+      "label": "enrichment-archive-store-wing literal bay 1",
+      "unchangedStart": [
+        -166.2512493751488,
+        12.701666582917511,
+        -594.5374687604148
+      ],
+      "originalEnd": [
+        -167.49916708323414,
+        12.701666582917511,
+        -606.9750208263902
+      ],
+      "correctedEnd": [
+        -167.39933366658732,
+        12.701666582917511,
+        -605.9800166611121
+      ],
+      "originalEndGapToRearWallMetres": 0.4,
+      "correctedEndGapToRearWallMetres": 1.4
+    },
+    {
+      "label": "enrichment-archive-store-wing literal bay 2",
+      "unchangedStart": [
+        -175.50478811223445,
+        12.701666582917511,
+        -593.6090179855993
+      ],
+      "originalEnd": [
+        -176.7527058203198,
+        12.701666582917511,
+        -606.0465700515747
+      ],
+      "correctedEnd": [
+        -176.65287240367297,
+        12.701666582917511,
+        -605.0515658862967
+      ],
+      "originalEndGapToRearWallMetres": 0.4,
+      "correctedEndGapToRearWallMetres": 1.4
+    }
+  ]
+}

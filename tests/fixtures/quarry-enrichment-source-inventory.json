@@ -484,22 +484,22 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "6da192647239a8b9317ebe35ca28b7f2e8413d981110d78697a380645b2d8abb",
-      "currentSHA256": "ec232e75be89574e0a89080adf99eab121cde7a4ce41c19f7590a6826c0cdbde",
+      "currentSHA256": "4825c6fc95b7743abc9a3dc98ed79b4778b3f55bd51e5070f99c3d0e846cd111",
       "scope": "Allow only the exact separately reviewed Quarry scene revision alongside exact Town revision"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "4222f593279854a27c59b45e59aba3867c12c3db91ae34dba9fb728e4d797d6d",
-      "currentSHA256": "574a7c77e3906c5b0e2046eb39b883c9684f4285f13fffd2e1cef1fce28dc577",
+      "currentSHA256": "8b0a3a04b70406c52561afe47c2ac78463c4920ea4a707518a11ff906343c173",
       "scope": "Validate both exact scene revisions against immutable historical source hashes and retain every other protection"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "a862c3827f4dd7b57dec2a90e754a63757afa606b0db1d356cb289603421590c",
-      "currentSHA256": "89578c9a525fcb0b4a7ca21c3530898a8e258a4ad37c4ccc2f497ef002710f91",
+      "currentSHA256": "ec3984e4371ae09e0201bcc132f1f610a5a91914ca21064aee5e6e14553006b2",
       "scope": "Exact reviewed QA-contract hashes only; original source/geometry goldens and Town artifact pins unchanged"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "8995ff01ac66d3e27753c65a39c7b519b7745f19f489b9bc4f099ff039411c99",
-      "currentSHA256": "fc92aaa6e17b15aa76ebe3957cfbaec4f6c7ca47629819fd17a6dc9f52208095",
+      "currentSHA256": "63ee3b1c28e06f0409110561dddefd82673e6a8c9c2ae3fdee69112136c5babf",
       "scope": "Add exact original/current Quarry scene revision; original Town revision unchanged"
     },
     "tests/harvest-preview-assets.test.ts": {
@@ -561,6 +561,11 @@
       "previousSHA256": "320817037fdd6c3584466e4130087ce32096cd1a65f6065d056bfa6487c23c08",
       "currentSHA256": "5d5e2d51c6af2e3ce3b3617a518df5ee38a2a3be27d759823e8cb6e64973ebd8",
       "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "src/caldera-scenery.ts": {
+      "previousSHA256": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "currentSHA256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+      "scope": "Basalt009 append-only jointed rim geology and archive store/portico terraces; complete original indexed buffers, materials, terrain, road/gameplay and camera prefixes unchanged. Exactly21 batches; original strict110000-triangle ceiling retained. Caldera reviewed revision only; no remote/main/Windows changes."
     }
   },
   "reviewedArtifactRevisions": {},

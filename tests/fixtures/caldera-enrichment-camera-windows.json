@@ -1,0 +1,1084 @@
+{
+  "schema": "caldera-enrichment-camera-windows-v1",
+  "sourceSha256": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+  "spacingMetres": 3,
+  "windowExpansionMetres": 12,
+  "windows": [
+    {
+      "assembly": "enrichment-rim-near-buttress",
+      "edge": "start",
+      "from": 349,
+      "to": 447,
+      "actualFootprint": [
+        [
+          -311.5434257277834,
+          61.32560915759713,
+          217.9378099501848
+        ],
+        [
+          -307.62529711456864,
+          53.118313933888736,
+          210.11911644229565
+        ],
+        [
+          -299.64812413163213,
+          50.13872084937747,
+          208.44914302924164
+        ],
+        [
+          -285.01614507303816,
+          50.03054816390488,
+          217.22888043014763
+        ],
+        [
+          -281.4126485608778,
+          50.9215664901128,
+          226.797904042139
+        ],
+        [
+          -288.4480779460633,
+          59.0780233253848,
+          235.7965280128397
+        ],
+        [
+          -297.344432404414,
+          65.33192469886063,
+          235.91601588411805
+        ],
+        [
+          -310.06481912268305,
+          67.88372535771462,
+          226.87016812187463
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-rim-middle-buttress",
+      "edge": "start",
+      "from": 402,
+      "to": 459,
+      "actualFootprint": [
+        [
+          -282.0261779923561,
+          62.290375538410046,
+          246.79942551807667
+        ],
+        [
+          -277.9346435000907,
+          54.52518902436206,
+          238.64245638128313
+        ],
+        [
+          -269.6716861308971,
+          50.53059994342377,
+          236.86652408671517
+        ],
+        [
+          -254.5714194294216,
+          50.66950482337521,
+          245.93627301071024
+        ],
+        [
+          -250.8875606829839,
+          56.136044072844896,
+          255.87965195030085
+        ],
+        [
+          -258.2105635357988,
+          66.79198914586186,
+          265.2795258440115
+        ],
+        [
+          -267.41740448695697,
+          69.03449297453858,
+          265.445898017398
+        ],
+        [
+          -280.53822844308286,
+          67.38064332478075,
+          256.09013088090126
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-rim-receding-buttress",
+      "edge": "start",
+      "from": 520,
+      "to": 596,
+      "actualFootprint": [
+        [
+          -145.6942572052717,
+          62.117878011206315,
+          290.49876093773855
+        ],
+        [
+          -144.29402087111407,
+          53.600444880033336,
+          281.4771126288925
+        ],
+        [
+          -134.9648069112589,
+          51.572618450268024,
+          277.7359674978873
+        ],
+        [
+          -112.46831088129868,
+          49.24131235065392,
+          283.03087697529895
+        ],
+        [
+          -103.56035035629927,
+          53.64824249197298,
+          291.9381683304221
+        ],
+        [
+          -108.3664694626091,
+          65.43574073654969,
+          302.96310457223154
+        ],
+        [
+          -119.56310067836758,
+          70.53596919055163,
+          305.3461801938395
+        ],
+        [
+          -139.76305369790717,
+          69.44009926584653,
+          299.292396417688
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-north-rim-near-buttress",
+      "edge": "start",
+      "from": 729,
+      "to": 812,
+      "actualFootprint": [
+        [
+          94.38420569321568,
+          41.75836079896074,
+          256.70561387533485
+        ],
+        [
+          98.40318522282196,
+          41.87430257291387,
+          249.26304015782245
+        ],
+        [
+          115.38914092016729,
+          35.7887815069257,
+          242.83062933078244
+        ],
+        [
+          125.58531446388979,
+          25.0532432958814,
+          245.76140483673532
+        ],
+        [
+          128.15035841358255,
+          15.831773649329817,
+          256.91281055691894
+        ],
+        [
+          122.25336336894756,
+          18.774720514639455,
+          264.150548424758
+        ],
+        [
+          106.33932721805206,
+          36.43897559816055,
+          268.8811988438854
+        ],
+        [
+          98.09167213301423,
+          40.248113691724846,
+          264.6271789099581
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-north-rim-receding-buttress",
+      "edge": "start",
+      "from": 773,
+      "to": 836,
+      "actualFootprint": [
+        [
+          132.97441895770842,
+          27.429000829797147,
+          241.46349915522183
+        ],
+        [
+          136.29555140546776,
+          34.74160258917372,
+          233.35914975107838
+        ],
+        [
+          153.05153170061274,
+          36.63838448091856,
+          225.0257516237409
+        ],
+        [
+          163.84778522536618,
+          37.90146328184748,
+          227.05860917636215
+        ],
+        [
+          167.69556113309525,
+          45.61806608208385,
+          238.3570082029455
+        ],
+        [
+          162.42228981306226,
+          44.42324530620158,
+          246.43390176330132
+        ],
+        [
+          146.58288922680583,
+          30.23955951501172,
+          252.89917740074327
+        ],
+        [
+          137.6451579408215,
+          22.967050905618613,
+          249.3040474365366
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-archive-open-portico",
+      "edge": "alley",
+      "from": 392,
+      "to": 431,
+      "actualFootprint": [
+        [
+          -225.62056556157134,
+          11.839508568863934,
+          -634.3926320253105
+        ],
+        [
+          -224.9250616462338,
+          9.654423379581035,
+          -637.4774779377914
+        ],
+        [
+          -196.06994085317106,
+          9.654423379581035,
+          -640.3726470205494
+        ],
+        [
+          -194.77543643795255,
+          11.839508568863934,
+          -637.4874679413621
+        ],
+        [
+          -192.37943443842866,
+          11.839508568863934,
+          -613.6073679746895
+        ],
+        [
+          -223.22456356204745,
+          11.839508568863934,
+          -610.5125320586379
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    },
+    {
+      "assembly": "enrichment-archive-open-portico",
+      "edge": "boulevard",
+      "from": 376,
+      "to": 492,
+      "actualFootprint": [
+        [
+          -225.62056556157134,
+          11.839508568863934,
+          -634.3926320253105
+        ],
+        [
+          -224.9250616462338,
+          9.654423379581035,
+          -637.4774779377914
+        ],
+        [
+          -196.06994085317106,
+          9.654423379581035,
+          -640.3726470205494
+        ],
+        [
+          -194.77543643795255,
+          11.839508568863934,
+          -637.4874679413621
+        ],
+        [
+          -192.37943443842866,
+          11.839508568863934,
+          -613.6073679746895
+        ],
+        [
+          -223.22456356204745,
+          11.839508568863934,
+          -610.5125320586379
+        ]
+      ],
+      "fullFootprintDistanceMetres": 50
+    }
+  ],
+  "stations": [
+    {
+      "name": "start:351",
+      "edge": "start",
+      "s": 351
+    },
+    {
+      "name": "start:354",
+      "edge": "start",
+      "s": 354
+    },
+    {
+      "name": "start:357",
+      "edge": "start",
+      "s": 357
+    },
+    {
+      "name": "start:360",
+      "edge": "start",
+      "s": 360
+    },
+    {
+      "name": "start:363",
+      "edge": "start",
+      "s": 363
+    },
+    {
+      "name": "start:366",
+      "edge": "start",
+      "s": 366
+    },
+    {
+      "name": "start:369",
+      "edge": "start",
+      "s": 369
+    },
+    {
+      "name": "start:372",
+      "edge": "start",
+      "s": 372
+    },
+    {
+      "name": "start:375",
+      "edge": "start",
+      "s": 375
+    },
+    {
+      "name": "start:378",
+      "edge": "start",
+      "s": 378
+    },
+    {
+      "name": "start:381",
+      "edge": "start",
+      "s": 381
+    },
+    {
+      "name": "start:384",
+      "edge": "start",
+      "s": 384
+    },
+    {
+      "name": "start:387",
+      "edge": "start",
+      "s": 387
+    },
+    {
+      "name": "start:390",
+      "edge": "start",
+      "s": 390
+    },
+    {
+      "name": "start:393",
+      "edge": "start",
+      "s": 393
+    },
+    {
+      "name": "start:396",
+      "edge": "start",
+      "s": 396
+    },
+    {
+      "name": "start:399",
+      "edge": "start",
+      "s": 399
+    },
+    {
+      "name": "start:402",
+      "edge": "start",
+      "s": 402
+    },
+    {
+      "name": "start:405",
+      "edge": "start",
+      "s": 405
+    },
+    {
+      "name": "start:408",
+      "edge": "start",
+      "s": 408
+    },
+    {
+      "name": "start:411",
+      "edge": "start",
+      "s": 411
+    },
+    {
+      "name": "start:414",
+      "edge": "start",
+      "s": 414
+    },
+    {
+      "name": "start:417",
+      "edge": "start",
+      "s": 417
+    },
+    {
+      "name": "start:420",
+      "edge": "start",
+      "s": 420
+    },
+    {
+      "name": "start:423",
+      "edge": "start",
+      "s": 423
+    },
+    {
+      "name": "start:426",
+      "edge": "start",
+      "s": 426
+    },
+    {
+      "name": "start:429",
+      "edge": "start",
+      "s": 429
+    },
+    {
+      "name": "start:432",
+      "edge": "start",
+      "s": 432
+    },
+    {
+      "name": "start:435",
+      "edge": "start",
+      "s": 435
+    },
+    {
+      "name": "start:438",
+      "edge": "start",
+      "s": 438
+    },
+    {
+      "name": "start:441",
+      "edge": "start",
+      "s": 441
+    },
+    {
+      "name": "start:444",
+      "edge": "start",
+      "s": 444
+    },
+    {
+      "name": "start:447",
+      "edge": "start",
+      "s": 447
+    },
+    {
+      "name": "start:450",
+      "edge": "start",
+      "s": 450
+    },
+    {
+      "name": "start:453",
+      "edge": "start",
+      "s": 453
+    },
+    {
+      "name": "start:456",
+      "edge": "start",
+      "s": 456
+    },
+    {
+      "name": "start:459",
+      "edge": "start",
+      "s": 459
+    },
+    {
+      "name": "start:522",
+      "edge": "start",
+      "s": 522
+    },
+    {
+      "name": "start:525",
+      "edge": "start",
+      "s": 525
+    },
+    {
+      "name": "start:528",
+      "edge": "start",
+      "s": 528
+    },
+    {
+      "name": "start:531",
+      "edge": "start",
+      "s": 531
+    },
+    {
+      "name": "start:534",
+      "edge": "start",
+      "s": 534
+    },
+    {
+      "name": "start:537",
+      "edge": "start",
+      "s": 537
+    },
+    {
+      "name": "start:540",
+      "edge": "start",
+      "s": 540
+    },
+    {
+      "name": "start:543",
+      "edge": "start",
+      "s": 543
+    },
+    {
+      "name": "start:546",
+      "edge": "start",
+      "s": 546
+    },
+    {
+      "name": "start:549",
+      "edge": "start",
+      "s": 549
+    },
+    {
+      "name": "start:552",
+      "edge": "start",
+      "s": 552
+    },
+    {
+      "name": "start:555",
+      "edge": "start",
+      "s": 555
+    },
+    {
+      "name": "start:558",
+      "edge": "start",
+      "s": 558
+    },
+    {
+      "name": "start:561",
+      "edge": "start",
+      "s": 561
+    },
+    {
+      "name": "start:564",
+      "edge": "start",
+      "s": 564
+    },
+    {
+      "name": "start:567",
+      "edge": "start",
+      "s": 567
+    },
+    {
+      "name": "start:570",
+      "edge": "start",
+      "s": 570
+    },
+    {
+      "name": "start:573",
+      "edge": "start",
+      "s": 573
+    },
+    {
+      "name": "start:576",
+      "edge": "start",
+      "s": 576
+    },
+    {
+      "name": "start:579",
+      "edge": "start",
+      "s": 579
+    },
+    {
+      "name": "start:582",
+      "edge": "start",
+      "s": 582
+    },
+    {
+      "name": "start:585",
+      "edge": "start",
+      "s": 585
+    },
+    {
+      "name": "start:588",
+      "edge": "start",
+      "s": 588
+    },
+    {
+      "name": "start:591",
+      "edge": "start",
+      "s": 591
+    },
+    {
+      "name": "start:594",
+      "edge": "start",
+      "s": 594
+    },
+    {
+      "name": "start:729",
+      "edge": "start",
+      "s": 729
+    },
+    {
+      "name": "start:732",
+      "edge": "start",
+      "s": 732
+    },
+    {
+      "name": "start:735",
+      "edge": "start",
+      "s": 735
+    },
+    {
+      "name": "start:738",
+      "edge": "start",
+      "s": 738
+    },
+    {
+      "name": "start:741",
+      "edge": "start",
+      "s": 741
+    },
+    {
+      "name": "start:744",
+      "edge": "start",
+      "s": 744
+    },
+    {
+      "name": "start:747",
+      "edge": "start",
+      "s": 747
+    },
+    {
+      "name": "start:750",
+      "edge": "start",
+      "s": 750
+    },
+    {
+      "name": "start:753",
+      "edge": "start",
+      "s": 753
+    },
+    {
+      "name": "start:756",
+      "edge": "start",
+      "s": 756
+    },
+    {
+      "name": "start:759",
+      "edge": "start",
+      "s": 759
+    },
+    {
+      "name": "start:762",
+      "edge": "start",
+      "s": 762
+    },
+    {
+      "name": "start:765",
+      "edge": "start",
+      "s": 765
+    },
+    {
+      "name": "start:768",
+      "edge": "start",
+      "s": 768
+    },
+    {
+      "name": "start:771",
+      "edge": "start",
+      "s": 771
+    },
+    {
+      "name": "start:774",
+      "edge": "start",
+      "s": 774
+    },
+    {
+      "name": "start:777",
+      "edge": "start",
+      "s": 777
+    },
+    {
+      "name": "start:780",
+      "edge": "start",
+      "s": 780
+    },
+    {
+      "name": "start:783",
+      "edge": "start",
+      "s": 783
+    },
+    {
+      "name": "start:786",
+      "edge": "start",
+      "s": 786
+    },
+    {
+      "name": "start:789",
+      "edge": "start",
+      "s": 789
+    },
+    {
+      "name": "start:792",
+      "edge": "start",
+      "s": 792
+    },
+    {
+      "name": "start:795",
+      "edge": "start",
+      "s": 795
+    },
+    {
+      "name": "start:798",
+      "edge": "start",
+      "s": 798
+    },
+    {
+      "name": "start:801",
+      "edge": "start",
+      "s": 801
+    },
+    {
+      "name": "start:804",
+      "edge": "start",
+      "s": 804
+    },
+    {
+      "name": "start:807",
+      "edge": "start",
+      "s": 807
+    },
+    {
+      "name": "start:810",
+      "edge": "start",
+      "s": 810
+    },
+    {
+      "name": "start:813",
+      "edge": "start",
+      "s": 813
+    },
+    {
+      "name": "start:816",
+      "edge": "start",
+      "s": 816
+    },
+    {
+      "name": "start:819",
+      "edge": "start",
+      "s": 819
+    },
+    {
+      "name": "start:822",
+      "edge": "start",
+      "s": 822
+    },
+    {
+      "name": "start:825",
+      "edge": "start",
+      "s": 825
+    },
+    {
+      "name": "start:828",
+      "edge": "start",
+      "s": 828
+    },
+    {
+      "name": "start:831",
+      "edge": "start",
+      "s": 831
+    },
+    {
+      "name": "start:834",
+      "edge": "start",
+      "s": 834
+    },
+    {
+      "name": "alley:393",
+      "edge": "alley",
+      "s": 393
+    },
+    {
+      "name": "alley:396",
+      "edge": "alley",
+      "s": 396
+    },
+    {
+      "name": "alley:399",
+      "edge": "alley",
+      "s": 399
+    },
+    {
+      "name": "alley:402",
+      "edge": "alley",
+      "s": 402
+    },
+    {
+      "name": "alley:405",
+      "edge": "alley",
+      "s": 405
+    },
+    {
+      "name": "alley:408",
+      "edge": "alley",
+      "s": 408
+    },
+    {
+      "name": "alley:411",
+      "edge": "alley",
+      "s": 411
+    },
+    {
+      "name": "alley:414",
+      "edge": "alley",
+      "s": 414
+    },
+    {
+      "name": "alley:417",
+      "edge": "alley",
+      "s": 417
+    },
+    {
+      "name": "alley:420",
+      "edge": "alley",
+      "s": 420
+    },
+    {
+      "name": "alley:423",
+      "edge": "alley",
+      "s": 423
+    },
+    {
+      "name": "alley:426",
+      "edge": "alley",
+      "s": 426
+    },
+    {
+      "name": "alley:429",
+      "edge": "alley",
+      "s": 429
+    },
+    {
+      "name": "boulevard:378",
+      "edge": "boulevard",
+      "s": 378
+    },
+    {
+      "name": "boulevard:381",
+      "edge": "boulevard",
+      "s": 381
+    },
+    {
+      "name": "boulevard:384",
+      "edge": "boulevard",
+      "s": 384
+    },
+    {
+      "name": "boulevard:387",
+      "edge": "boulevard",
+      "s": 387
+    },
+    {
+      "name": "boulevard:390",
+      "edge": "boulevard",
+      "s": 390
+    },
+    {
+      "name": "boulevard:393",
+      "edge": "boulevard",
+      "s": 393
+    },
+    {
+      "name": "boulevard:396",
+      "edge": "boulevard",
+      "s": 396
+    },
+    {
+      "name": "boulevard:399",
+      "edge": "boulevard",
+      "s": 399
+    },
+    {
+      "name": "boulevard:402",
+      "edge": "boulevard",
+      "s": 402
+    },
+    {
+      "name": "boulevard:405",
+      "edge": "boulevard",
+      "s": 405
+    },
+    {
+      "name": "boulevard:408",
+      "edge": "boulevard",
+      "s": 408
+    },
+    {
+      "name": "boulevard:411",
+      "edge": "boulevard",
+      "s": 411
+    },
+    {
+      "name": "boulevard:414",
+      "edge": "boulevard",
+      "s": 414
+    },
+    {
+      "name": "boulevard:417",
+      "edge": "boulevard",
+      "s": 417
+    },
+    {
+      "name": "boulevard:420",
+      "edge": "boulevard",
+      "s": 420
+    },
+    {
+      "name": "boulevard:423",
+      "edge": "boulevard",
+      "s": 423
+    },
+    {
+      "name": "boulevard:426",
+      "edge": "boulevard",
+      "s": 426
+    },
+    {
+      "name": "boulevard:429",
+      "edge": "boulevard",
+      "s": 429
+    },
+    {
+      "name": "boulevard:432",
+      "edge": "boulevard",
+      "s": 432
+    },
+    {
+      "name": "boulevard:435",
+      "edge": "boulevard",
+      "s": 435
+    },
+    {
+      "name": "boulevard:438",
+      "edge": "boulevard",
+      "s": 438
+    },
+    {
+      "name": "boulevard:441",
+      "edge": "boulevard",
+      "s": 441
+    },
+    {
+      "name": "boulevard:444",
+      "edge": "boulevard",
+      "s": 444
+    },
+    {
+      "name": "boulevard:447",
+      "edge": "boulevard",
+      "s": 447
+    },
+    {
+      "name": "boulevard:450",
+      "edge": "boulevard",
+      "s": 450
+    },
+    {
+      "name": "boulevard:453",
+      "edge": "boulevard",
+      "s": 453
+    },
+    {
+      "name": "boulevard:456",
+      "edge": "boulevard",
+      "s": 456
+    },
+    {
+      "name": "boulevard:459",
+      "edge": "boulevard",
+      "s": 459
+    },
+    {
+      "name": "boulevard:462",
+      "edge": "boulevard",
+      "s": 462
+    },
+    {
+      "name": "boulevard:465",
+      "edge": "boulevard",
+      "s": 465
+    },
+    {
+      "name": "boulevard:468",
+      "edge": "boulevard",
+      "s": 468
+    },
+    {
+      "name": "boulevard:471",
+      "edge": "boulevard",
+      "s": 471
+    },
+    {
+      "name": "boulevard:474",
+      "edge": "boulevard",
+      "s": 474
+    },
+    {
+      "name": "boulevard:477",
+      "edge": "boulevard",
+      "s": 477
+    },
+    {
+      "name": "boulevard:480",
+      "edge": "boulevard",
+      "s": 480
+    },
+    {
+      "name": "boulevard:483",
+      "edge": "boulevard",
+      "s": 483
+    },
+    {
+      "name": "boulevard:486",
+      "edge": "boulevard",
+      "s": 486
+    },
+    {
+      "name": "boulevard:489",
+      "edge": "boulevard",
+      "s": 489
+    },
+    {
+      "name": "boulevard:492",
+      "edge": "boulevard",
+      "s": 492
+    }
+  ],
+  "expectedStaticPoses": 29700
+}

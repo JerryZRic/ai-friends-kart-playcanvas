@@ -5,7 +5,7 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 const sha=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 const receipt=JSON.parse(readFileSync('tests/fixtures/desert-enrichment-protected.json','utf8'));
-const reviewedPaths=['src/snow-scenery.ts','tests/snow-scene.test.ts','tests/snow-independent-audit.test.ts','tests/snow-preview-assets.test.ts','docs/snow-preview-provenance.json','public/map-previews/snow-overview.webp',
+const reviewedPaths=['src/caldera-scenery.ts','docs/caldera-preview-provenance.json','public/map-previews/caldera-overview.webp','src/snow-scenery.ts','tests/snow-scene.test.ts','tests/snow-independent-audit.test.ts','tests/snow-preview-assets.test.ts','docs/snow-preview-provenance.json','public/map-previews/snow-overview.webp',
  'src/desert-scenery.ts','tests/desert-scene.test.ts','tests/desert-independent-audit.test.ts','tests/desert-preview-assets.test.ts',
  'docs/desert-preview-provenance.json','public/map-previews/desert-overview.webp',
  'tests/mountain-enrichment-contract.test.ts','tests/helpers/town-enrichment-geometry-worker.ts',
@@ -43,7 +43,7 @@ test('Desert final source and six inherited isolation consumers bind exactly one
  assert.equal(sha(readFileSync(file)),currentSHA256);assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));
  assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,receipt.historicalSceneRevisions.baseCommit);
- assert.deepEqual(Object.keys(all.revisions).sort(),['src/snow-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());
+ assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/snow-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());
  assert.equal(all.revisions[file].previousSHA256,receipt.originalScenerySha256);assert.equal(all.revisions[file].currentSHA256,currentSHA256);assert.ok(all.revisions[file].scope);
  const mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));assert.equal(mountain.isolatedSceneSources[file],receipt.originalScenerySha256);
  for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected','workshop-enrichment-protected','harvest-enrichment-protected']){
