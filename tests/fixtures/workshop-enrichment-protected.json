@@ -592,42 +592,42 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
-      "currentSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
+      "currentSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
-      "currentSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
+      "currentSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
-      "currentSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
+      "currentSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
-      "currentSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
+      "currentSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "7504e03e78feb1afe2af3146233944b66072cfcefc7b2b9ebeede0b6cdccc44a",
-      "currentSHA256": "d1d1a3355f7d791114b9f0487e31af837ec502486b0df0a5ad92a51d949af0e0",
+      "currentSHA256": "131153e41d0fd14a0cf5c30a717be4538b89157a451885d792a58ac6a7d21662",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "5065857829e3beded4b2fa7e0f3c210b79cc37fde106c407bc10f06c16e4b3fa",
-      "currentSHA256": "d254f4cfd834c8b020433038ceba1acf2631c479a4e494fcce29408385218b01",
+      "currentSHA256": "8b322af6e434dc694eab3720611d04bc9fc489f1e62ab5d665fb2db52a76db78",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/forest-enrichment-inventory.test.ts": {
       "previousSHA256": "a75466882c6a6b0c98ff0a4c8db9d78ed1c4a4a79702344110d9ec872014421a",
-      "currentSHA256": "6884beb1117e0911419d1a54a14f45b043201f68829a82064f4a05cb3516e7d3",
+      "currentSHA256": "c299c119ef8a8e1bee3f194e9bb731c1ad3cbb178f58f5a96191cdc732ad7b22",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/forest-enrichment-protected.json": {
       "previousSHA256": "afa7cae0ad4fbbc67ea8a8e7349fb2f30abfc68b6a81a70b43a1ee3afb3774b2",
-      "currentSHA256": "2c1c943c6279fe6bceca1bc4cb582d56dd156bccaa968989006f8fbee6ed9fd4",
+      "currentSHA256": "f5a56baa80e242e8a495591bfe1ec1bd5d8e64fa8d0fca5e0569056a2c7ae279",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "docs/workshop-preview-provenance.json": {
@@ -639,6 +639,36 @@
       "previousSHA256": "8895cd3207b3bcd68b32ab33625566004decd7c1cc41c2160a56cb4d00472d3c",
       "currentSHA256": "8685e61e211c5311222cc309b7eb206b6e0f3eb727614e3ff05646b4134f62f4",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
+    },
+    "public/map-previews/harvest-overview.webp": {
+      "previousSHA256": "e9790843325ae649bddc0bf0c64b66957f4ef1fbf30ad14049d0103b426cfa02",
+      "currentSHA256": "5fc2e3645e12d93cef3bc4ee962ffca80d8905f21d4e45e688ae5b1bc0b713a9",
+      "scope": "Final accepted Harvest overview rendered from exact source-bound geometry"
+    },
+    "tests/harvest-preview-assets.test.ts": {
+      "previousSHA256": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+      "currentSHA256": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d",
+      "scope": "Only110000-to118000 Harvest preview triangle ceiling; every other original assertion retained"
+    },
+    "tests/harvest-independent-audit.test.ts": {
+      "previousSHA256": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+      "currentSHA256": "e8083ac601500d8a381fe2ba49e19fde42f8fd6a9609635099817315eb5607fb",
+      "scope": "Only110000-to118000 Harvest triangle ceiling; all original native camera, grounding and gameplay assertions retained"
+    },
+    "docs/harvest-preview-provenance.json": {
+      "previousSHA256": "00e60ede56a67977213270cad1af0380e4251da99b84790d5ecc464c701b0052",
+      "currentSHA256": "d12f55a3aa78efc60f3a0d8d289b4d339237c360a2554c9344c3dd3045cb351a",
+      "scope": "Final Harvest preview source/model/render provenance bound to the accepted geometry"
+    },
+    "tests/harvest-scene.test.ts": {
+      "previousSHA256": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+      "currentSHA256": "ce528b2cb2205d9b30b429b6df353f7d25d8a9318feca5b1ae80f99b4be2141b",
+      "scope": "Only21-to22 batch literal and110000-to118000 Harvest triangle ceiling; complete original test snapshot retained"
+    },
+    "src/harvest-scenery.ts": {
+      "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+      "scope": "Exact separately reviewed Harvest agricultural enrichment; original route/support/terrain/architecture/gameplay goldens retained"
     }
   },
   "historicalContracts": {

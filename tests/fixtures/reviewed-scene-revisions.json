@@ -21,6 +21,11 @@
       "previousSHA256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
       "currentSHA256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
       "scope": "Workshop additive original room-scale joinery and grounded work-zone furniture; exact original road/support/landmark/floor geometry and shared gameplay preserved; only two explicitly approved road wood-to-none texture selectors differ"
+    },
+    "src/harvest-scenery.ts": {
+      "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+      "scope": "Harvest exact five-color palette edit, original rooted mature orchard crowns and grouped crop widths; four independently grounded farm assemblies, one closed cultivated rise with three fully supported bands, ten rooted fruit trees and three hedgerows; physical roads, original terrain, architecture and gameplay remain exact. Only Harvest budget is raised to less than118000 triangles, less than200000 vertices and exactly22 batches."
     }
   }
 }

@@ -244,7 +244,7 @@ test('harvest emitted geometry has finite indexed data and measures under 24 bat
     assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));
     assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));
   }
-  assert.ok(geometry.batches.length<=24);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<110000,`${triangles} triangles`);
+  assert.ok(geometry.batches.length<=24);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<118000,`${triangles} triangles`);
   for(const c of geometry.components){
     const bounds=actualBounds.get(c)!;assert.ok((componentTriangles.get(c)?.length??0)>0,`${c.kind} provenance has no emitted faces`);
     for(let k=0;k<3;k++){assert.ok(Math.abs(bounds.min[k]-c.min[k])<1e-7);assert.ok(Math.abs(bounds.max[k]-c.max[k])<1e-7);}

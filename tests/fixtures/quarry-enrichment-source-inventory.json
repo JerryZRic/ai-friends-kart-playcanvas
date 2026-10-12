@@ -484,23 +484,43 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "6da192647239a8b9317ebe35ca28b7f2e8413d981110d78697a380645b2d8abb",
-      "currentSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
+      "currentSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
       "scope": "Allow only the exact separately reviewed Quarry scene revision alongside exact Town revision"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "4222f593279854a27c59b45e59aba3867c12c3db91ae34dba9fb728e4d797d6d",
-      "currentSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
+      "currentSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
       "scope": "Validate both exact scene revisions against immutable historical source hashes and retain every other protection"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "a862c3827f4dd7b57dec2a90e754a63757afa606b0db1d356cb289603421590c",
-      "currentSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
+      "currentSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
       "scope": "Exact reviewed QA-contract hashes only; original source/geometry goldens and Town artifact pins unchanged"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "8995ff01ac66d3e27753c65a39c7b519b7745f19f489b9bc4f099ff039411c99",
-      "currentSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
+      "currentSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
       "scope": "Add exact original/current Quarry scene revision; original Town revision unchanged"
+    },
+    "tests/harvest-preview-assets.test.ts": {
+      "previousSHA256": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+      "currentSHA256": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d",
+      "scope": "Only110000-to118000 Harvest preview triangle ceiling; every other original assertion retained"
+    },
+    "tests/harvest-independent-audit.test.ts": {
+      "previousSHA256": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+      "currentSHA256": "e8083ac601500d8a381fe2ba49e19fde42f8fd6a9609635099817315eb5607fb",
+      "scope": "Only110000-to118000 Harvest triangle ceiling; all original native camera, grounding and gameplay assertions retained"
+    },
+    "tests/harvest-scene.test.ts": {
+      "previousSHA256": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+      "currentSHA256": "ce528b2cb2205d9b30b429b6df353f7d25d8a9318feca5b1ae80f99b4be2141b",
+      "scope": "Only21-to22 batch literal and110000-to118000 Harvest triangle ceiling; complete original test snapshot retained"
+    },
+    "src/harvest-scenery.ts": {
+      "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+      "scope": "Exact separately reviewed Harvest agricultural enrichment; original route/support/terrain/architecture/gameplay goldens retained"
     }
   },
   "reviewedArtifactRevisions": {},

@@ -9,7 +9,7 @@ test('harvest menu poster derives from current original runtime geometry with bo
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
  for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);
- assert.ok(p.batches<=24&&p.triangles<110000);
+ assert.ok(p.batches<=24&&p.triangles<118000);
  const image=readFileSync(p.menuAsset.file);
  assert.equal(sha(p.menuAsset.file),p.menuAsset.sha256);
  assert.equal(image.toString('ascii',0,4),'RIFF');assert.equal(image.toString('ascii',8,12),'WEBP');

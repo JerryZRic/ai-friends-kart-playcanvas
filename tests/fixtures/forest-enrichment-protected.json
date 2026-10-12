@@ -579,32 +579,32 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "bb8a0934c0c3f4f0534f9f112e0c548497b109e5515008a8b6fb504192a0ee80",
-      "currentSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
+      "currentSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
       "scope": "Permit only the explicit exact separately reviewed Forest source revision alongside existing Town and Quarry revisions"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "ebf85c6ea173281a98ebee9f8ea8c9b1308b75fd06344c2ca1544f1c6278a120",
-      "currentSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
+      "currentSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
       "scope": "Permit only the explicit exact separately reviewed Forest source revision alongside existing Town and Quarry revisions"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "36a97adbc70a0ab959984b8c5a971faa5538fd1742a7a9a3aec15496dbb73da5",
-      "currentSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
+      "currentSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
       "scope": "Add the exact old/new Forest scene SHA256 pair; preserve original Mountain, Town and Quarry identities"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "1480aa695a69056ac9c105d24524ebf75143b25f765b624227e60a2898608b45",
-      "currentSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
+      "currentSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
       "scope": "Update exact reviewed QA consumer hashes for Forest compatibility; every original source inventory and geometry golden field remains immutable"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "ce56695989addc81d9aed0e2bad04c24448fc76fc3d66d29a4cb4dbd86705222",
-      "currentSHA256": "d1d1a3355f7d791114b9f0487e31af837ec502486b0df0a5ad92a51d949af0e0",
+      "currentSHA256": "131153e41d0fd14a0cf5c30a717be4538b89157a451885d792a58ac6a7d21662",
       "scope": "Add only Forest source and its precise scene-count assertion to the exact reviewed-path list"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "7474b131b395d4d27058f4d43ccb0faeaa2557a465d53684a5f0c90d157d25ef",
-      "currentSHA256": "d254f4cfd834c8b020433038ceba1acf2631c479a4e494fcce29408385218b01",
+      "currentSHA256": "8b322af6e434dc694eab3720611d04bc9fc489f1e62ab5d665fb2db52a76db78",
       "scope": "Record exact reviewed Forest source and QA consumer hashes while preserving the entire original Quarry source inventory and base identity"
     },
     "docs/forest-preview-provenance.json": {
@@ -616,6 +616,36 @@
       "previousSHA256": "bbad3d3b001635ebbe5779bc5a8653b2634b50d010959ee49a01c9b4ef059439",
       "currentSHA256": "0ebf689ea0e6b20a90dec2ba82ac20e15ef953defad470dac6630e1b7a4df5a4",
       "scope": "Derived source-current Forest overview poster from the reviewed final offline CPU render; original catalog route framing contract retained"
+    },
+    "public/map-previews/harvest-overview.webp": {
+      "previousSHA256": "e9790843325ae649bddc0bf0c64b66957f4ef1fbf30ad14049d0103b426cfa02",
+      "currentSHA256": "5fc2e3645e12d93cef3bc4ee962ffca80d8905f21d4e45e688ae5b1bc0b713a9",
+      "scope": "Final accepted Harvest overview rendered from exact source-bound geometry"
+    },
+    "tests/harvest-independent-audit.test.ts": {
+      "previousSHA256": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+      "currentSHA256": "e8083ac601500d8a381fe2ba49e19fde42f8fd6a9609635099817315eb5607fb",
+      "scope": "Only110000-to118000 Harvest triangle ceiling; all original native camera, grounding and gameplay assertions retained"
+    },
+    "docs/harvest-preview-provenance.json": {
+      "previousSHA256": "00e60ede56a67977213270cad1af0380e4251da99b84790d5ecc464c701b0052",
+      "currentSHA256": "d12f55a3aa78efc60f3a0d8d289b4d339237c360a2554c9344c3dd3045cb351a",
+      "scope": "Final Harvest preview source/model/render provenance bound to the accepted geometry"
+    },
+    "tests/harvest-preview-assets.test.ts": {
+      "previousSHA256": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+      "currentSHA256": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d",
+      "scope": "Only110000-to118000 Harvest preview triangle ceiling; every other original assertion retained"
+    },
+    "tests/harvest-scene.test.ts": {
+      "previousSHA256": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+      "currentSHA256": "ce528b2cb2205d9b30b429b6df353f7d25d8a9318feca5b1ae80f99b4be2141b",
+      "scope": "Only21-to22 batch literal and110000-to118000 Harvest triangle ceiling; complete original test snapshot retained"
+    },
+    "src/harvest-scenery.ts": {
+      "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+      "scope": "Exact separately reviewed Harvest agricultural enrichment; original route/support/terrain/architecture/gameplay goldens retained"
     }
   },
   "historicalContracts": {

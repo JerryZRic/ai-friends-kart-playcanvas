@@ -1,0 +1,531 @@
+{
+  "schema": "harvest-enrichment-audit-v1",
+  "status": "passed-local-qa-parent-build-reproduction-and-exact-head-ci-remain-separate",
+  "sourceSha256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+  "originalSourceSha256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+  "baselineCommit": "15db9eb703aeed462a931b9a743c22690656c0a6",
+  "baselinePublicCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "historicalBudget": {
+    "trianglesExclusive": 110000,
+    "verticesExclusive": 200000,
+    "batches": 21,
+    "sharedBatchCeiling": 24
+  },
+  "approvedHarvestBudget": {
+    "trianglesExclusive": 118000,
+    "verticesExclusive": 200000,
+    "batches": 22,
+    "sharedBatchCeiling": 24,
+    "workingTriangleAim": 116500,
+    "workingVertexAim": 198000,
+    "scope": "Harvest-only source-local agricultural massing and separate cultivated-earth mesh; every other original assertion, source terrain and shared budget remain unchanged"
+  },
+  "measuredBudget": {
+    "batches": 22,
+    "triangles": 114583,
+    "vertices": 183295
+  },
+  "protection": {
+    "originalTrackedInputs": 685,
+    "exactIndexedOriginalParts": 5689,
+    "originalRootPositionsAndMeshes": 27,
+    "unchanged": "Original physical roads, support, connected terrain, architecture, landmarks, sail geometry, gameplay inputs and all original camera payloads remain exact. Original first21 materials differ only in five named palette colors; one separate cultivated-earth batch is appended.",
+    "nativeTestChanges": "Only four exact numeric literals in three Harvest budget tests differ; complete original tests are retained as immutable snapshots."
+  },
+  "geometry": {
+    "changedIndexedParts": 491,
+    "inspectedChangedFaces": 30994,
+    "existingCropFaces": 15988,
+    "originalOrchardContacts": 324,
+    "newRigidPieces": 87,
+    "newRigidContacts": 115,
+    "wholeRigidSeats": 37,
+    "newRigidGroundedFootprints": 4,
+    "newLandscapePieces": 77,
+    "newVegetationContacts": 60,
+    "newVegetationGroundedFootprints": 13,
+    "landformWholeTopAndBasalProofs": [
+      {
+        "id": "central-cultivated-rise",
+        "top": {
+          "faces": 420,
+          "intersections": 420,
+          "projectedArea": 18979.89746357259,
+          "minimum": -0.12000000000000188,
+          "maximum": 19.704988955067435
+        },
+        "bottom": {
+          "faces": 58,
+          "intersections": 1330,
+          "projectedArea": 18979.897463572575,
+          "minimum": -3.7930827460793095,
+          "maximum": -0.34999999999999876
+        }
+      },
+      {
+        "id": "central-field-band-0",
+        "top": {
+          "faces": 66,
+          "intersections": 66,
+          "projectedArea": 2982.555315704266,
+          "minimum": 0.6499999999999986,
+          "maximum": 0.6500000000000004
+        },
+        "bottom": {
+          "faces": 66,
+          "intersections": 66,
+          "projectedArea": 2982.555315704266,
+          "minimum": -0.03999999999999915,
+          "maximum": -0.03999999999999915
+        }
+      },
+      {
+        "id": "central-field-band-1",
+        "top": {
+          "faces": 66,
+          "intersections": 66,
+          "projectedArea": 2982.555315704264,
+          "minimum": 0.6499999999999986,
+          "maximum": 0.6500000000000004
+        },
+        "bottom": {
+          "faces": 66,
+          "intersections": 66,
+          "projectedArea": 2982.555315704264,
+          "minimum": -0.03999999999999915,
+          "maximum": -0.03999999999999915
+        }
+      },
+      {
+        "id": "central-field-band-2",
+        "top": {
+          "faces": 22,
+          "intersections": 22,
+          "projectedArea": 994.185105234754,
+          "minimum": 0.3000000000000007,
+          "maximum": 0.3000000000000007
+        },
+        "bottom": {
+          "faces": 22,
+          "intersections": 22,
+          "projectedArea": 994.1851052347539,
+          "minimum": -0.03999999999999915,
+          "maximum": -0.03999999999999915
+        }
+      }
+    ],
+    "fullFootprintRoadSupportClearances": [
+      {
+        "id": "central-cultivated-rise",
+        "minimumRoadSupportDistance": 31.88849456937938,
+        "required": 25
+      },
+      {
+        "id": "approach-orchard-0",
+        "minimumRoadSupportDistance": 28.96136017520516,
+        "required": 23
+      },
+      {
+        "id": "approach-orchard-1",
+        "minimumRoadSupportDistance": 52.23865807661244,
+        "required": 23
+      },
+      {
+        "id": "approach-orchard-2",
+        "minimumRoadSupportDistance": 60.27182717479693,
+        "required": 23
+      },
+      {
+        "id": "approach-orchard-3",
+        "minimumRoadSupportDistance": 70.73844365895992,
+        "required": 23
+      },
+      {
+        "id": "rise-orchard-0",
+        "minimumRoadSupportDistance": 88.0252969392664,
+        "required": 23
+      },
+      {
+        "id": "rise-orchard-1",
+        "minimumRoadSupportDistance": 101.63473293408231,
+        "required": 23
+      },
+      {
+        "id": "rise-orchard-2",
+        "minimumRoadSupportDistance": 102.76644913326317,
+        "required": 23
+      },
+      {
+        "id": "rise-orchard-3",
+        "minimumRoadSupportDistance": 103.97416949882115,
+        "required": 23
+      },
+      {
+        "id": "silo-orchard-0",
+        "minimumRoadSupportDistance": 51.11195685381941,
+        "required": 23
+      },
+      {
+        "id": "silo-orchard-1",
+        "minimumRoadSupportDistance": 70.2636269039818,
+        "required": 23
+      },
+      {
+        "id": "orchard-hedgerow-0",
+        "minimumRoadSupportDistance": 40.2073384631161,
+        "required": 23
+      },
+      {
+        "id": "orchard-hedgerow-1",
+        "minimumRoadSupportDistance": 46.06033133542755,
+        "required": 23
+      },
+      {
+        "id": "orchard-hedgerow-2",
+        "minimumRoadSupportDistance": 43.19805834263789,
+        "required": 23
+      }
+    ],
+    "unrelatedIntersections": 0,
+    "exposedCoflush": 0,
+    "fullyBuriedCoflushPatches": 46,
+    "oppositeFacingInternalContacts": 164,
+    "cameraTrianglesWithExactOwnership": 15006,
+    "triangleDeltaByReviewedScope": {
+      "newRigidAssemblies": 1044,
+      "newLandformBandsAndVegetation": 4242,
+      "nineOriginalMatureTreesCrownTopology": 972,
+      "originalFieldSurfaceRegrouping": -362,
+      "net": 5896
+    },
+    "intentionalFoliageOverlapPolygons": 33,
+    "intentionalFoliageOverlapScope": [
+      {
+        "treeIds": [
+          "rise-orchard-1",
+          "rise-orchard-2"
+        ],
+        "pieceRole": "pruned-fruit-crown"
+      }
+    ]
+  },
+  "targetedCamera": {
+    "fixedTransforms": 39,
+    "routePoses": 2970,
+    "wholeBoomOrPointInspections": 5974,
+    "witnesses": 0,
+    "inheritedExemptionsUsed": 0,
+    "scope": "CPU emitted-geometry calculations in fixed original camera poses; no browser, GPU/FPS or full visibility claim."
+  },
+  "resourceControl": {
+    "maxRSSKiB": 566824,
+    "heapCapMiB": 448,
+    "concurrency": 1
+  },
+  "commands": {
+    "geometry": "TMPDIR=\"$PWD/.verification-temp\" NODE_OPTIONS=--max-old-space-size=448 node --import tsx --test --test-concurrency=1 tests/harvest-enrichment-geometry.test.ts",
+    "sentinels": "NODE_OPTIONS=--max-old-space-size=448 node --import tsx --test tests/harvest-enrichment-oracles.test.ts",
+    "native": "TMPDIR=\"$PWD/.verification-temp\" NODE_OPTIONS=--max-old-space-size=448 node --import tsx --test --test-concurrency=1 tests/harvest-scene.test.ts tests/harvest-independent-audit.test.ts tests/harvest-gameplay-camera.test.ts tests/harvest-gameplay-balance.test.ts tests/harvest-gameplay-npc.test.ts tests/harvest-gameplay-routes.test.ts tests/harvest-gameplay.test.ts tests/harvest-menu.test.ts tests/harvest-route-cursor.test.ts tests/harvest-route-footprints.test.ts tests/harvest-route-geometry.test.ts tests/harvest-route-shared-tail.test.ts",
+    "typecheck": "node --max-old-space-size=448 node_modules/typescript/bin/tsc --noEmit",
+    "inventoryAndPreview": "NODE_OPTIONS=--max-old-space-size=448 node --import tsx --test --test-concurrency=1 tests/harvest-enrichment-inventory.test.ts tests/harvest-preview-assets.test.ts tests/mountain-enrichment-contract.test.ts tests/quarry-enrichment-inventory.test.ts tests/forest-enrichment-inventory.test.ts tests/workshop-enrichment-inventory.test.ts",
+    "targetedTownConsumer": "NODE_OPTIONS=--max-old-space-size=448 node --import tsx --test --test-name-pattern='Town exact original source route road bridge terrain texture protection and fixed budget' tests/helpers/town-enrichment-geometry-worker.ts"
+  },
+  "pending": [
+    "Parent local build and dist/reproduction verification",
+    "Parent exact-head full CI before any authorized publication"
+  ],
+  "retainedNativeTests": {
+    "files": [
+      {
+        "file": "tests/harvest-gameplay-balance.test.ts",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "durationMilliseconds": 8823.618052
+      },
+      {
+        "file": "tests/harvest-gameplay-camera.test.ts",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "durationMilliseconds": 7589.598344
+      },
+      {
+        "file": "tests/harvest-gameplay-npc.test.ts",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "durationMilliseconds": 15486.055736
+      },
+      {
+        "file": "tests/harvest-gameplay-routes.test.ts",
+        "tests": 18,
+        "passed": 18,
+        "failed": 0,
+        "durationMilliseconds": 1016.078877
+      },
+      {
+        "file": "tests/harvest-gameplay.test.ts",
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "durationMilliseconds": 14189.235689
+      },
+      {
+        "file": "tests/harvest-independent-audit.test.ts",
+        "tests": 18,
+        "passed": 18,
+        "failed": 0,
+        "durationMilliseconds": 102984.748923
+      },
+      {
+        "file": "tests/harvest-menu.test.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "durationMilliseconds": 2565.306382
+      },
+      {
+        "file": "tests/harvest-route-cursor.test.ts",
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "durationMilliseconds": 1217.301784
+      },
+      {
+        "file": "tests/harvest-route-footprints.test.ts",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "durationMilliseconds": 951.439994
+      },
+      {
+        "file": "tests/harvest-route-geometry.test.ts",
+        "tests": 10,
+        "passed": 10,
+        "failed": 0,
+        "durationMilliseconds": 1107.894417
+      },
+      {
+        "file": "tests/harvest-route-shared-tail.test.ts",
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "durationMilliseconds": 838.511826
+      },
+      {
+        "file": "tests/harvest-scene.test.ts",
+        "tests": 15,
+        "passed": 15,
+        "failed": 0,
+        "durationMilliseconds": 1781.053512
+      }
+    ],
+    "distinctTests": 93,
+    "failures": 0,
+    "geometrySourceSha256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+    "coverage": {
+      "generalDesiredWholeBoomCapsules": 98604,
+      "generalInterpolatedWholeBoomCapsules": 98604,
+      "barnDesiredWholeBoomCapsules": 66240,
+      "barnSequentialInterpolatedWholeBoomCapsules": 66240,
+      "continuousTransitionFrames": 46656,
+      "independentPickupRays": 432,
+      "runtimeRouteCameraPoses": 13536,
+      "runtimeBarnAperturePoses": 16128,
+      "runtimePickupRays": 648,
+      "pureThreeLapNpcRaces": 72,
+      "independentlyClosedSolids": 2510,
+      "drivingBodyAndBarnContainmentProbes": 11694,
+      "wholeRoadSupportPolygons": 4732,
+      "legalLaneSupportProbes": 16095,
+      "nativeGroundedFootprints": 272,
+      "nativeFoundationAndCapPairs": 18,
+      "individualExposedCraftDetails": 118,
+      "craftFirstHitSurfaceRays": 125
+    },
+    "inheritedFailures": []
+  },
+  "oracleSentinels": {
+    "distinctTests": 7,
+    "passed": 7,
+    "covers": [
+      "Unknown and overlapping primitive ownership",
+      "Exact inherited camera face/pose witness identity",
+      "All-material exposed coflush and whole support",
+      "Interior terrain peaks hidden by matching outer vertices",
+      "Inconsistent closed-shell directed winding with unchanged bounds",
+      "Full crossing and enclosing crop-face exclusion, including vertical triangles",
+      "Independent farm roles/support graph rejects relabeled seats and missing owners"
+    ]
+  },
+  "finalGeometryRerun": {
+    "passed": true,
+    "durationSeconds": 68.177,
+    "sourceSha256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+    "strengthening": "Whole compound landmark footprints, complete crossing/enclosing crop triangles, exact independent assembly roles and support graph, and explicit recorded foliage-union witness polygons."
+  },
+  "typecheck": {
+    "passed": true,
+    "command": "node --max-old-space-size=448 node_modules/typescript/bin/tsc --noEmit"
+  },
+  "guardReview": {
+    "findingsRepaired": [
+      "Full projected crop-face exclusion replaces vertex-only footprint checks",
+      "Independent named farm roles and support graph prevent candidate labels bypassing lower-seat proof"
+    ],
+    "geometryChanged": false,
+    "newSourceDefectsFound": false,
+    "finalGuardGeometryRecheck": "passed"
+  },
+  "distinctTestsPassed": 115,
+  "testCountAccounting": {
+    "retainedHarvestNativeFiles": 93,
+    "finalHarvestPreview": 1,
+    "newHarvestGeometry": 1,
+    "newHarvestOracleSentinels": 7,
+    "newHarvestImmutableInventoryAndBudgetIdentity": 4,
+    "ForestInventoryConsumers": 2,
+    "QuarryInventoryConsumer": 1,
+    "WorkshopInventoryConsumers": 2,
+    "MountainProtectionAndIsolationConsumers": 3,
+    "TownTargetedPreservationConsumer": 1
+  },
+  "reviewedTrackedChanges": {
+    "src/harvest-scenery.ts": {
+      "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+      "scope": "Exact separately reviewed Harvest agricultural enrichment; original route/support/terrain/architecture/gameplay goldens retained"
+    },
+    "tests/harvest-scene.test.ts": {
+      "previousSHA256": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+      "currentSHA256": "ce528b2cb2205d9b30b429b6df353f7d25d8a9318feca5b1ae80f99b4be2141b",
+      "scope": "Only21-to22 batch literal and110000-to118000 Harvest triangle ceiling; complete original test snapshot retained"
+    },
+    "tests/harvest-independent-audit.test.ts": {
+      "previousSHA256": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+      "currentSHA256": "e8083ac601500d8a381fe2ba49e19fde42f8fd6a9609635099817315eb5607fb",
+      "scope": "Only110000-to118000 Harvest triangle ceiling; all original native camera, grounding and gameplay assertions retained"
+    },
+    "tests/harvest-preview-assets.test.ts": {
+      "previousSHA256": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+      "currentSHA256": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d",
+      "scope": "Only110000-to118000 Harvest preview triangle ceiling; every other original assertion retained"
+    },
+    "tests/mountain-enrichment-contract.test.ts": {
+      "previousSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
+      "currentSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/helpers/town-enrichment-geometry-worker.ts": {
+      "previousSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
+      "currentSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/fixtures/reviewed-scene-revisions.json": {
+      "previousSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
+      "currentSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/fixtures/town-enrichment-protected.json": {
+      "previousSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
+      "currentSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/quarry-enrichment-inventory.test.ts": {
+      "previousSHA256": "d1d1a3355f7d791114b9f0487e31af837ec502486b0df0a5ad92a51d949af0e0",
+      "currentSHA256": "131153e41d0fd14a0cf5c30a717be4538b89157a451885d792a58ac6a7d21662",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/fixtures/quarry-enrichment-source-inventory.json": {
+      "previousSHA256": "d254f4cfd834c8b020433038ceba1acf2631c479a4e494fcce29408385218b01",
+      "currentSHA256": "8b322af6e434dc694eab3720611d04bc9fc489f1e62ab5d665fb2db52a76db78",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/forest-enrichment-inventory.test.ts": {
+      "previousSHA256": "6884beb1117e0911419d1a54a14f45b043201f68829a82064f4a05cb3516e7d3",
+      "currentSHA256": "c299c119ef8a8e1bee3f194e9bb731c1ad3cbb178f58f5a96191cdc732ad7b22",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/fixtures/forest-enrichment-protected.json": {
+      "previousSHA256": "2c1c943c6279fe6bceca1bc4cb582d56dd156bccaa968989006f8fbee6ed9fd4",
+      "currentSHA256": "f5a56baa80e242e8a495591bfe1ec1bd5d8e64fa8d0fca5e0569056a2c7ae279",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/workshop-enrichment-inventory.test.ts": {
+      "previousSHA256": "1e551576d02302060c6a97a8025d9caaae212e82b9b45fa475538c9252fb35a2",
+      "currentSHA256": "d6dc7d0da50c657903828e0ac29bcf8b3434f115fa16b8cf7e84455517c5345d",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "tests/fixtures/workshop-enrichment-protected.json": {
+      "previousSHA256": "d67549b60efe1d8972ae8fc5d2a3494e3df722acca5230a385131402d33a5106",
+      "currentSHA256": "953bd0e3effa87e7d708853eacd23c9ad7800fb69b037ac97b669654ab7dea4a",
+      "scope": "Exact Harvest-aware reviewed-scene inventory consumer; all original nested source, route and geometry goldens preserved"
+    },
+    "docs/harvest-preview-provenance.json": {
+      "previousSHA256": "00e60ede56a67977213270cad1af0380e4251da99b84790d5ecc464c701b0052",
+      "currentSHA256": "d12f55a3aa78efc60f3a0d8d289b4d339237c360a2554c9344c3dd3045cb351a",
+      "scope": "Final Harvest preview source/model/render provenance bound to the accepted geometry"
+    },
+    "public/map-previews/harvest-overview.webp": {
+      "previousSHA256": "e9790843325ae649bddc0bf0c64b66957f4ef1fbf30ad14049d0103b426cfa02",
+      "currentSHA256": "5fc2e3645e12d93cef3bc4ee962ffca80d8905f21d4e45e688ae5b1bc0b713a9",
+      "scope": "Final accepted Harvest overview rendered from exact source-bound geometry"
+    }
+  },
+  "immutableInventoryProof": {
+    "sourceInventorySha256": "28f005c13c3a47cd98bd847bb6fdcdf4c8e81b4ab163814a75838c0bf1b9dece",
+    "historicalContractsSha256": "82780311d95b8c3c72f9c6b4e905de83130b05b794114c2e6352e4c20674d7fd",
+    "historicalSceneRevisionsSha256": "998c6b5e87b45d244a36536ef35928f11cceffc1109c66ec3183c9e136cff70a",
+    "reviewedTrackedPaths": 16,
+    "unreviewedOriginalInputsChanged": 0
+  },
+  "finalPreview": {
+    "provenanceFile": "docs/harvest-preview-provenance.json",
+    "provenanceSha256": "d12f55a3aa78efc60f3a0d8d289b4d339237c360a2554c9344c3dd3045cb351a",
+    "menuAsset": {
+      "file": "public/map-previews/harvest-overview.webp",
+      "sha256": "5fc2e3645e12d93cef3bc4ee962ffca80d8905f21d4e45e688ae5b1bc0b713a9",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sourceView": "harvest-overview"
+    },
+    "geometryJsonSha256": "48c09f2728991d11f0d372aa1707c40b32a4c65a9cc1e351584368a9a16bf05c",
+    "modelIdentities": {
+      "glb": {
+        "file": "harvest-original-scene.glb",
+        "sha256": "c8c0b884f6f324aaf41c3d765e61a0dab2d0fdb76f4555aca615ef07f497e135",
+        "note": "Exact original runtime geometry at float32 precision, original UVs/normals/material values and embedded original procedural textures; approximate glTF PBR response"
+      },
+      "blend": {
+        "file": "harvest-original-scene.blend",
+        "sha256": "b6fa45984bc4a7cdd1b9e702b9829581256664e42007e04b46a11fb716238a6b",
+        "note": "Editable exact float32 source meshes/UVs/normal POINT attributes, explicit source-normal shader, packed original textures, frozen daylight, fifteen shared-chase and fifteen forward road-eye cameras, four landmark-directed road-eye cameras and five original catalog cameras"
+      }
+    },
+    "sourceIdentity": "current-candidate",
+    "cameraManifestSha256": "cdea7cfe125ea3766c06daded37802b75b8fffe60ea8cbddbced3ee304768828",
+    "limits": "Static offline source-derived previews and CPU geometry checks; no browser, GPU/FPS or human-driving certification."
+  },
+  "auditInputHashes": {
+    "tests/harvest-enrichment-geometry.test.ts": "b2fa8ab61a3da001c307a9ac8f2c6ee82375021d62a6b1facb4f9baf6a903360",
+    "tests/harvest-enrichment-inventory.test.ts": "514d6fc9550eb1e522d48759f414b89a25bd2ff9bad844265cc9677b4654f9a2",
+    "tests/harvest-enrichment-oracles.test.ts": "3530dda00334f48ea67b3ca969636874c4e4b6396dae00a52d72de8e62a100a5",
+    "tests/fixtures/harvest-enrichment-protected.json": "9aad62fc6e91efbf5edbedc04a1d50a08c9150b3e5a834ed25cb20c4ec94c20d",
+    "tests/helpers/harvest-enrichment-assemblies.ts": "fb4fd28e153165585aa1bb95a173e9883dd41bd56aa91011c88435824920ad1f",
+    "tests/helpers/harvest-enrichment-camera-checks.ts": "e8cc6b930474c5f7cc68fdec6cf89788081475a28c395f7916710fae6efc9d20",
+    "tests/helpers/harvest-enrichment-camera-oracle.ts": "a1ada25f3e87001ed88f8e836556e58d253585fee7c3cde538478ba63ee4fbfe",
+    "tests/helpers/harvest-enrichment-contract.ts": "fb53a940983ea13edb17ffb1d922fcf9eb076f7d0f1bdc8879e4a1a6475f9778",
+    "tests/helpers/harvest-enrichment-geometry-worker.ts": "b1f336f3f87ca400c1679d0b2e2212f270b15614c6dd0990aa92ab0f5b08fcce",
+    "tests/helpers/harvest-enrichment-landscape.ts": "1d9568f0efd1b445193a9fe5fc7174cc1ca494b56c76bcff07bd2a9c67b354cb",
+    "tests/helpers/harvest-enrichment-scene.ts": "7a616c015d5283bff5efb22394bc6333aa2d52660f4f3670fb5fae6c535bca75",
+    "tests/helpers/harvest-enrichment-surface-support.ts": "d2d9f7b0ac4de7b4a066503f80f3f2ed25e07ebbf047e06e89dd6590d29135fb",
+    "scripts/compare-harvest-enrichment-previews.py": "a64fe4f777826272f7f5bfa6a7e729d8d2409e11431047345cc83f97592ab400",
+    "scripts/export-harvest-enrichment-baseline.ts": "9221425c9e6d8d087b37bcc8bbbd646e821d4d0c40a3f7b17fc8ed69a680305d",
+    "scripts/freeze-harvest-enrichment-cameras.ts": "1ed8c0f4e530d0b6a26cc5b6d3a392769c4ae56d4d2c9ba23cda8130e6e17176",
+    "scripts/render-harvest-enrichment-preview.py": "cd0cdad2d546cfb6f8394b178fb3e044275cc2b9807fcd10664707f159061b82",
+    "scripts/verify-harvest-enrichment-model.py": "de67e0648e9b294bdff14cabbf8267abad67f7c747e5ef9eabbb90c0136a71c9"
+  }
+}
