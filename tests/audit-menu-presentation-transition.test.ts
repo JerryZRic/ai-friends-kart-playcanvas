@@ -1,3 +1,4 @@
+import {stablePagesRepinPathsWithin} from './helpers/stable-pages-repin-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -89,7 +90,7 @@ test('the complete Town historical inventory uses the same strict final transiti
     const expected = scene ? airfieldReviewedHash(path, scene.currentSHA256) : airfieldAfterGardenHash(path, town.reviewedTestContractChanges[path] ?? original);
     assert.equal(sha(readFileSync(path)), expected, path + ' complete Town input');
   }
-  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)));
+  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory)])]);
   const currentSources = menuPresentationSourcePaths(town.sourceInventory);
   assert.equal(currentSources.filter(path => path === 'src/map-presentation.ts').length, 1);
   assert.equal(sha(readFileSync('src/map-presentation.ts')), review.additions['src/map-presentation.ts'].sha256);

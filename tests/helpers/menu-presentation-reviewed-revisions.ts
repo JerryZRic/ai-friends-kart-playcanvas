@@ -1,3 +1,4 @@
+import {stablePagesRepinHash, stablePagesRepinPathsWithin, stablePagesRepinAuditDependencies} from './stable-pages-repin-reviewed-revisions';
 /** Exact presentation/publication overlay. Historical source and geometry goldens stay untouched. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -32,16 +33,16 @@ export function menuPresentationReview() {
 }
 export function menuPresentationHash(path: string, incoming: unknown) {
   const review = menuPresentationReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return stablePagesRepinHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-presentation incoming identity');
-  return row.currentSha256;
+  return stablePagesRepinHash(path, row.currentSha256);
 }
 export function assertMenuPresentationDependency(path: string, incoming: unknown, actual: string) {
   assert.equal(actual, menuPresentationHash(path, incoming), path + ' exact original or reviewed presentation identity');
 }
 export function menuPresentationPathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory)])];
 }
 export function menuPresentationSourcePaths(inventory: Record<string, unknown>) {
   const additions = menuPresentationReview().additions;
@@ -66,5 +67,5 @@ export function restoreMenuPresentationBytes(path: string, current: string) {
   return original;
 }
 export function menuPresentationAuditDependencies() {
-  return [MENU_PRESENTATION_REVIEW_PATH, 'tests/helpers/menu-presentation-reviewed-revisions.ts', 'tests/audit-menu-presentation-transition.test.ts', 'tests/map-presentation.test.ts', ...Object.keys(menuPresentationReview().additions)];
+  return [MENU_PRESENTATION_REVIEW_PATH, 'tests/helpers/menu-presentation-reviewed-revisions.ts', 'tests/audit-menu-presentation-transition.test.ts', 'tests/map-presentation.test.ts', ...Object.keys(menuPresentationReview().additions), ...stablePagesRepinAuditDependencies()];
 }

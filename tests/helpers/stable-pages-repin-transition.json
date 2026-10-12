@@ -1,0 +1,1155 @@
+{
+  "schema": "stable-pages-repin-transition-v1",
+  "baselineCommit": "58a3452177acd1e1a2d84e019f014c778f834d89",
+  "publicBaselineCommit": "6844110cb77bb5b71041786f1802217766a8f759",
+  "baselineTree": "eac91a077f6a27e21f9d3a48039c302a16b4ed2a",
+  "previousAirfieldManifestSha256": "359b12e5e10204938f2180a9ebd17ced8a1015fe9413724262e28ba96355217a",
+  "previousPublication": {
+    "schemaVersion": 1,
+    "repository": "JerryZRic/ai-friends-kart-playcanvas",
+    "stableCommit": "5f62027a3670056e5d7d366e9c149aa47c04953f",
+    "workflowRunId": 38055560640,
+    "artifactId": 11671375479,
+    "artifactSha256": "1648f9dae206808b2e1074da0c33f636654e7b19bfc9c823887fc40b1db2a38e",
+    "baseUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/"
+  },
+  "currentPublication": {
+    "schemaVersion": 1,
+    "repository": "JerryZRic/ai-friends-kart-playcanvas",
+    "stableCommit": "6844110cb77bb5b71041786f1802217766a8f759",
+    "workflowRunId": 38236353768,
+    "artifactId": 11742248971,
+    "artifactSha256": "067e402c9999bcb80d0b9c30d92d9ce217982e06baab03596893a5c32d6c3f18",
+    "baseUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/"
+  },
+  "currentStableFileCount": 216,
+  "changes": {
+    "docs/stable-pages-manifest.json": {
+      "previousSha256": "fcdbfe313018b83a1e1d85ba7af800438dbe43440557c4d5a5cc27c22ec00802",
+      "currentSha256": "5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add",
+      "scope": "Repin dev preservation to the exact successful approved main Pages artifact; no live HTTP input",
+      "hunks": [
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "removedLines": [
+            "  \"stableCommit\": \"5f62027a3670056e5d7d366e9c149aa47c04953f\",\n",
+            "  \"workflowRunId\": 38055560640,\n",
+            "  \"artifactId\": 11671375479,\n",
+            "  \"artifactSha256\": \"1648f9dae206808b2e1074da0c33f636654e7b19bfc9c823887fc40b1db2a38e\",\n"
+          ],
+          "insertedLines": [
+            "  \"stableCommit\": \"6844110cb77bb5b71041786f1802217766a8f759\",\n",
+            "  \"workflowRunId\": 38236353768,\n",
+            "  \"artifactId\": 11742248971,\n",
+            "  \"artifactSha256\": \"067e402c9999bcb80d0b9c30d92d9ce217982e06baab03596893a5c32d6c3f18\",\n"
+          ]
+        },
+        {
+          "beforeStart": 9,
+          "afterStart": 9,
+          "removedLines": [],
+          "insertedLines": [
+            "    {\n",
+            "      \"path\": \"ALPINE-PROP-NOTICE.txt\",\n",
+            "      \"bytes\": 4312,\n",
+            "      \"sha256\": \"e5d210a2edaf2e8e6f55439453ceec1356c8bc29f7701ffb3dbbbf80ce160b47\"\n",
+            "    },\n"
+          ]
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 31,
+          "removedLines": [
+            "      \"bytes\": 2663,\n",
+            "      \"sha256\": \"1a8fa56647b7fe412cee280bee6e82b5d3b12986f063c5bd95e69b4382d1f6b7\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 3371,\n",
+            "      \"sha256\": \"ba428189057a93eee40f26dba396420acf7d2dd74cb324bbe57afd962455027e\"\n"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 45,
+          "removedLines": [
+            "      \"path\": \"assets/application-DqDnV9N3.js\",\n",
+            "      \"bytes\": 1995926,\n",
+            "      \"sha256\": \"b78ced52a3b1242c31f8343acb7af54a47089d9929d69de9d4acb97c2492f647\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/airfield-CJZCpwxi.js\",\n",
+            "      \"bytes\": 514,\n",
+            "      \"sha256\": \"8725f47b33cda974ef76d8d03b1d4a262e6015c86cf5f10bb2ef8ce9e53783b3\"\n"
+          ]
+        },
+        {
+          "beforeStart": 45,
+          "afterStart": 50,
+          "removedLines": [
+            "      \"path\": \"assets/application-DqDnV9N3.js.map\",\n",
+            "      \"bytes\": 5192991,\n",
+            "      \"sha256\": \"34bde4e5ee4d5c646738a44f58bac01b4d2b22a2bd93cf3aa9288970783ef029\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/airfield-CUU4H4uL.js\",\n",
+            "      \"bytes\": 9286,\n",
+            "      \"sha256\": \"d2ba46744cfda9c24fe960e14e2ba58954102bd90302a04bde923e83675fa436\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/airfield-CUU4H4uL.js.map\",\n",
+            "      \"bytes\": 27250,\n",
+            "      \"sha256\": \"0577c1f41b6052a67be5de5cb613561458faa657a7314a0dcf300486872f6545\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/airfield-scenery-C9n7Aj3-.js\",\n",
+            "      \"bytes\": 43192,\n",
+            "      \"sha256\": \"2a9920c0b8118f738e48b8725ec888e2aa284fac99d3df554189576bbfc7f9d1\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/airfield-scenery-C9n7Aj3-.js.map\",\n",
+            "      \"bytes\": 142406,\n",
+            "      \"sha256\": \"d9f1a4402ace7897998b9b3d828352dc49f2da090d71f8aac669ab24cea155ca\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/application-BN_yM7o9.js\",\n",
+            "      \"bytes\": 1762020,\n",
+            "      \"sha256\": \"69979a5caaf4d817cf41c23e733529d3f51e52157372dff33f9b7f4f6df1bb51\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/application-BN_yM7o9.js.map\",\n",
+            "      \"bytes\": 4347577,\n",
+            "      \"sha256\": \"1f33d2f76a310a4bb8bc17fc3268a0b64c49a6381c13720ae3cbd564bcb9ac7f\"\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 85,
+          "removedLines": [
+            "      \"path\": \"assets/assets-DURPsAQi.js\",\n",
+            "      \"bytes\": 26409,\n",
+            "      \"sha256\": \"ba3ef098a7e2e28d9f910d680f9bb06c461ff373a80d0f19cd7e02957e1cee4b\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/assets-Bmb4ZaRu.js\",\n",
+            "      \"bytes\": 26525,\n",
+            "      \"sha256\": \"0d97718727a312d331563ac10e2fa0adcc5425e188ea223e2ba8771c5f2782dc\"\n"
+          ]
+        },
+        {
+          "beforeStart": 60,
+          "afterStart": 90,
+          "removedLines": [
+            "      \"path\": \"assets/assets-DURPsAQi.js.map\",\n",
+            "      \"bytes\": 173386,\n",
+            "      \"sha256\": \"dcd3ba7c7198e818aed17647f63905f268647f08e3f59ba7a1e196ee9607af15\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/assets-Bmb4ZaRu.js.map\",\n",
+            "      \"bytes\": 173655,\n",
+            "      \"sha256\": \"ca6bbf8a1048f8ab25eff289c90e449323d892af8420bb1efe916646556a7959\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/caldera-DrRWl4ZB.js\",\n",
+            "      \"bytes\": 541,\n",
+            "      \"sha256\": \"9a13bd6a1455cf6d7516935f6058ecaf597c155736c10a40636b2276e1d9a412\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/caldera-DvAfuvC4.js\",\n",
+            "      \"bytes\": 7248,\n",
+            "      \"sha256\": \"d53eab459ddead9a07925f98d99fa918bc4634d399a52724842970f999f31047\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/caldera-DvAfuvC4.js.map\",\n",
+            "      \"bytes\": 20529,\n",
+            "      \"sha256\": \"6fe2ac5254b49643b4bf8a63500f294205653ed20765a00fe89be08c50d1b4e0\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/caldera-scenery-DuscczYj.js\",\n",
+            "      \"bytes\": 37377,\n",
+            "      \"sha256\": \"95f36d8d01944b686d7c30feb9b931517d4bb959ea2d1adab27a5355016b316d\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/caldera-scenery-DuscczYj.js.map\",\n",
+            "      \"bytes\": 127321,\n",
+            "      \"sha256\": \"074db1560dd8e76a433d5c66b946e4e5147b57e3fa977129b6d846b9a290d113\"\n"
+          ]
+        },
+        {
+          "beforeStart": 75,
+          "afterStart": 130,
+          "removedLines": [
+            "      \"path\": \"assets/character-preview-BNaZbSqj.js\",\n",
+            "      \"bytes\": 14460,\n",
+            "      \"sha256\": \"ce53492de5a924874ba8e57043bbf9e900e430d8e9c09c949f79e3dabef912a3\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/character-preview-BD7pDKz7.js\",\n",
+            "      \"bytes\": 14525,\n",
+            "      \"sha256\": \"12a982d68a78f181fe3f8294dc74c6db37f00db139812dcf6069d3dea62ad399\"\n"
+          ]
+        },
+        {
+          "beforeStart": 80,
+          "afterStart": 135,
+          "removedLines": [
+            "      \"path\": \"assets/character-preview-BNaZbSqj.js.map\",\n",
+            "      \"bytes\": 49084,\n",
+            "      \"sha256\": \"09c40996ea85630e7a7dbc8ddec9e14f79782a90fe391002aa812cbc021d2cb9\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/character-preview-BD7pDKz7.js.map\",\n",
+            "      \"bytes\": 49081,\n",
+            "      \"sha256\": \"6c9f03664a78e55e86f43598c1e0ed109021cb24ae75369a05fbabc35f375e37\"\n"
+          ]
+        },
+        {
+          "beforeStart": 85,
+          "afterStart": 140,
+          "removedLines": [
+            "      \"path\": \"assets/closed-circuit-XcaY-CVc.js\",\n",
+            "      \"bytes\": 2375,\n",
+            "      \"sha256\": \"768f16a541374717b72139f1935e523d21bc85173ac95a71942e8ca17358bd3e\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/closed-circuit-uOacxOhd.js\",\n",
+            "      \"bytes\": 2368,\n",
+            "      \"sha256\": \"98cdf0cfdd930df266a009583b9eb3d19abfd70199621f24496f5ebb6620382e\"\n"
+          ]
+        },
+        {
+          "beforeStart": 90,
+          "afterStart": 145,
+          "removedLines": [
+            "      \"path\": \"assets/closed-circuit-XcaY-CVc.js.map\",\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/closed-circuit-uOacxOhd.js.map\",\n"
+          ]
+        },
+        {
+          "beforeStart": 92,
+          "afterStart": 147,
+          "removedLines": [
+            "      \"sha256\": \"418fbeb8868450d8069282cd1ff3115947b92c6915452fb12b65b5813f1dab27\"\n"
+          ],
+          "insertedLines": [
+            "      \"sha256\": \"7260febf927bd4fce5143b12f8e294111bc1686ed38e83d37107d788e473d491\"\n"
+          ]
+        },
+        {
+          "beforeStart": 95,
+          "afterStart": 150,
+          "removedLines": [
+            "      \"path\": \"assets/coast-Djzno2KC.js\",\n",
+            "      \"bytes\": 38522,\n",
+            "      \"sha256\": \"b999a071a5c703613fc0ea8b36f69b63e550eaee94ee80d507423edcf7b9d6c8\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/coast-BaeZQB4A.js\",\n",
+            "      \"bytes\": 62897,\n",
+            "      \"sha256\": \"90ecf7b3de2f5160a24f55b6d6c22b2b52146565a37054335f694829d48cc3d6\"\n"
+          ]
+        },
+        {
+          "beforeStart": 100,
+          "afterStart": 155,
+          "removedLines": [
+            "      \"path\": \"assets/coast-Djzno2KC.js.map\",\n",
+            "      \"bytes\": 132163,\n",
+            "      \"sha256\": \"2a39bfb641bb04eca73c9d1f26785e1d9f5827b7f3dcd043e5fa054dd7eacf73\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/coast-BaeZQB4A.js.map\",\n",
+            "      \"bytes\": 212531,\n",
+            "      \"sha256\": \"f702b991c70d75a27af0533737e1cb6725133a04235849f144eee6d30683cfab\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/desert-D0YIt7HZ.js\",\n",
+            "      \"bytes\": 7330,\n",
+            "      \"sha256\": \"8b0736b2a8714e8682c0d4f475839d66ce732ed6ef361b08b4b79b1db050c21b\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/desert-D0YIt7HZ.js.map\",\n",
+            "      \"bytes\": 20243,\n",
+            "      \"sha256\": \"935b1ca1bf7c939335ccc48cced8a4cbb2a3c7a5a070fc130336e61862c292b4\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/desert-scenery-BWccV7Rx.js\",\n",
+            "      \"bytes\": 43305,\n",
+            "      \"sha256\": \"1cb8af245e48dfc8b81b2f795f86a3d202eed1a82968137e85f766d60f16c101\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/desert-scenery-BWccV7Rx.js.map\",\n",
+            "      \"bytes\": 141679,\n",
+            "      \"sha256\": \"b98ca4ae8ce9ceceaf3a29b6602defeac99bbdfa49d12688b5adf579af97eaab\"\n"
+          ]
+        },
+        {
+          "beforeStart": 135,
+          "afterStart": 210,
+          "removedLines": [],
+          "insertedLines": [
+            "      \"path\": \"assets/entity-Cb3RLIdr.js\",\n",
+            "      \"bytes\": 232967,\n",
+            "      \"sha256\": \"c18e519c111cd3db53940bbeea095b04d6dd5f00417b4a8bb0fbb5f522d70a4d\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/entity-Cb3RLIdr.js.map\",\n",
+            "      \"bytes\": 838730,\n",
+            "      \"sha256\": \"95f90c646a68829a6290a5a022d0abed64d6e6644fb1104e8e119155d45f96af\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/forest-BCMZZ8NL.js\",\n",
+            "      \"bytes\": 6329,\n",
+            "      \"sha256\": \"83a5c1ead697816c2e12283cf8201c005178b4fb7363885162646a3b448ad045\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/forest-BCMZZ8NL.js.map\",\n",
+            "      \"bytes\": 19589,\n",
+            "      \"sha256\": \"79a254f5ba071659982faa8e318e1fc8180c6f991c0ddce77eabad3b77d740cd\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/forest-scenery-ypDkYAQl.js\",\n",
+            "      \"bytes\": 32064,\n",
+            "      \"sha256\": \"450a77af5a9c2415f31d005c428b9dcea573a49643182becbab3e9c7b9eb69d9\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/forest-scenery-ypDkYAQl.js.map\",\n",
+            "      \"bytes\": 107746,\n",
+            "      \"sha256\": \"95ec2918eab828a18bc47926e2d9d1cc6af48165485b0039bc44f291940743ec\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/game-settings-MTL8mGqW.js\",\n",
+            "      \"bytes\": 6715,\n",
+            "      \"sha256\": \"69fe50f045df79ac8893ca5b3f4f1d09818d08b18f84359213cc97318482e71e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/game-settings-MTL8mGqW.js.map\",\n",
+            "      \"bytes\": 12690,\n",
+            "      \"sha256\": \"f26de7db95ab272b9a595cc177c9570f8f2a4c7de83a932727f5ae96536df84d\"\n",
+            "    },\n",
+            "    {\n"
+          ]
+        },
+        {
+          "beforeStart": 140,
+          "afterStart": 255,
+          "removedLines": [
+            "      \"path\": \"assets/garage-I1aCN4Xi.js\",\n",
+            "      \"bytes\": 52263,\n",
+            "      \"sha256\": \"fa16ff12ae08eb9839cb0dd8207ecc9d9aea84960f4b18cf6b95a7bcf78325e5\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/garage-Cv_nuhO8.js\",\n",
+            "      \"bytes\": 52492,\n",
+            "      \"sha256\": \"6c1cec00332ba66e68b74dd92e25f3623e33a8c7c319c5765ad55bd02e21e554\"\n"
+          ]
+        },
+        {
+          "beforeStart": 145,
+          "afterStart": 260,
+          "removedLines": [
+            "      \"path\": \"assets/garage-I1aCN4Xi.js.map\",\n",
+            "      \"bytes\": 135301,\n",
+            "      \"sha256\": \"fa1a471e523b20512338f3194f7bab9fab0d511e57169a58d6f7cdd9a6082fdb\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/garage-Cv_nuhO8.js.map\",\n",
+            "      \"bytes\": 135995,\n",
+            "      \"sha256\": \"dca56f97ad45b4276f78fca4d77d95e997f480b036f5d31cac81866dd70ad160\"\n"
+          ]
+        },
+        {
+          "beforeStart": 150,
+          "afterStart": 265,
+          "removedLines": [
+            "      \"path\": \"assets/kart-presets-DHQiV2C-.js\",\n",
+            "      \"bytes\": 16191,\n",
+            "      \"sha256\": \"f2a750d6093fe5ec72cad955055768ae0704e675169ab15bcf2717182c495b80\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/garden-DgGz3DK4.js\",\n",
+            "      \"bytes\": 8259,\n",
+            "      \"sha256\": \"c772651c6dbfcc1c4ad92dfe0a57d6559282b252bd1ac86dc38ecf665d7d2272\"\n"
+          ]
+        },
+        {
+          "beforeStart": 155,
+          "afterStart": 270,
+          "removedLines": [
+            "      \"path\": \"assets/kart-presets-DHQiV2C-.js.map\",\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/garden-DgGz3DK4.js.map\",\n",
+            "      \"bytes\": 24100,\n",
+            "      \"sha256\": \"8f3aecbeded4cf646afb8daa694287ac366d346ec78a1f08ecb35447aa843a02\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/garden-_juRR7Fe.js\",\n",
+            "      \"bytes\": 480,\n",
+            "      \"sha256\": \"8cad80f1bf5dbf93abc90d9a22a717c1060b2e914bd5c7c37a1fed5c9b40bd6e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/garden-scenery-2j0lvcsh.js\",\n",
+            "      \"bytes\": 39009,\n",
+            "      \"sha256\": \"4e36b94dc5296b20e0719f4e8fedbf04a3d17a60bf616ec7749c20532d6a90a6\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/garden-scenery-2j0lvcsh.js.map\",\n",
+            "      \"bytes\": 127862,\n",
+            "      \"sha256\": \"e552d2d83dbf97f02b58fc0c3b43ad99db66df698831028c3400c04151e6d829\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/harvest-BNcbcj6_.js\",\n",
+            "      \"bytes\": 6726,\n",
+            "      \"sha256\": \"b083827cfed9b9a27cc61d5758d93811a7ec8020aeca1ab02f5a4488bb4d4d6d\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/harvest-BNcbcj6_.js.map\",\n",
+            "      \"bytes\": 19528,\n",
+            "      \"sha256\": \"11c5b906f9f9adb80b7e5409bf8527e8a46056c2f9f4eb159b84a2d257bd49b8\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/harvest-scenery-8_xGaG23.js\",\n",
+            "      \"bytes\": 46407,\n",
+            "      \"sha256\": \"48a809e481764959d913e57825895908c6d509aa485cb6e822872a6abaa77b98\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/harvest-scenery-8_xGaG23.js.map\",\n",
+            "      \"bytes\": 151203,\n",
+            "      \"sha256\": \"71e0f11e5abd4080d3880aca97e7503558f3705a5498537a4054787bf250a083\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/kart-presets-D4qHEJgh.js\",\n",
+            "      \"bytes\": 16261,\n",
+            "      \"sha256\": \"044ac7f781e50fc6f63af50a7193049bc140e6e330e9c6decc2046a9d92424f4\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/kart-presets-D4qHEJgh.js.map\",\n"
+          ]
+        },
+        {
+          "beforeStart": 157,
+          "afterStart": 317,
+          "removedLines": [
+            "      \"sha256\": \"a3bb586f7731b2c48700f6ac56613bc72f330e8d357def0e8e4203629599e054\"\n"
+          ],
+          "insertedLines": [
+            "      \"sha256\": \"68526d26e513d478df3c42278b41e673ed7d4f1e4e67860a32c693a7b72ac62f\"\n"
+          ]
+        },
+        {
+          "beforeStart": 170,
+          "afterStart": 330,
+          "removedLines": [
+            "      \"path\": \"assets/main-B6loe11Z.js\",\n",
+            "      \"bytes\": 21252,\n",
+            "      \"sha256\": \"70021ea98f1bf2fb63bf0ee2be078764c63915b99b37e4cf280fb74188e22aad\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-camera-6KNNzmzB.js\",\n",
+            "      \"bytes\": 4418,\n",
+            "      \"sha256\": \"193c638c7f31d31c86881b9b05a3ce44b430425df4a8e686cb052690eb073669\"\n"
+          ]
+        },
+        {
+          "beforeStart": 175,
+          "afterStart": 335,
+          "removedLines": [
+            "      \"path\": \"assets/main-B6loe11Z.js.map\",\n",
+            "      \"bytes\": 39740,\n",
+            "      \"sha256\": \"ee43bb9030d13b9f2ec66a56d7bc98d799cf5ecace8eaa33f7041682e67b5d16\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-camera-6KNNzmzB.js.map\",\n",
+            "      \"bytes\": 20007,\n",
+            "      \"sha256\": \"b03a5aaabfa65781f4e4268c1570d1d526090bc3e5f9e9c88a71d2d8791c1e0e\"\n"
+          ]
+        },
+        {
+          "beforeStart": 180,
+          "afterStart": 340,
+          "removedLines": [
+            "      \"path\": \"assets/main-C3TBqLb8.css\",\n",
+            "      \"bytes\": 26244,\n",
+            "      \"sha256\": \"ab82af4000d8b289d4c1b89342d2cfb76363b330c697c67d7cd53296fb749e01\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-mesh-builder-DCWMX0NV.js\",\n",
+            "      \"bytes\": 1862,\n",
+            "      \"sha256\": \"82ce64e006232b980ed626eee07bff3cde728c5a9c3e496b613b34cbbdcd9c25\"\n"
+          ]
+        },
+        {
+          "beforeStart": 185,
+          "afterStart": 345,
+          "removedLines": [
+            "      \"path\": \"assets/menu-backdrop-DCY-MbuD.js\",\n",
+            "      \"bytes\": 8538,\n",
+            "      \"sha256\": \"0d0fe9bd482329479f3175d6890b9fb70d8a0483cb00f17135d91ed2904cc5eb\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-mesh-builder-DCWMX0NV.js.map\",\n",
+            "      \"bytes\": 7344,\n",
+            "      \"sha256\": \"94ee42c6785c97b9a358c50e1f96fa2ef6773e7bdfb2699f596c54ae611357b4\"\n"
+          ]
+        },
+        {
+          "beforeStart": 190,
+          "afterStart": 350,
+          "removedLines": [
+            "      \"path\": \"assets/menu-backdrop-DCY-MbuD.js.map\",\n",
+            "      \"bytes\": 36608,\n",
+            "      \"sha256\": \"152a12f0cebc2d83b3b2132e372773901916f95f56db6777f8162e85d5b848f6\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-road-mesh-D8V2KCQv.js\",\n",
+            "      \"bytes\": 2536,\n",
+            "      \"sha256\": \"2dd07ff07d1103a4c6f39dacbd1a4be1a318623476f81eb18f229e45b30e18a0\"\n"
+          ]
+        },
+        {
+          "beforeStart": 195,
+          "afterStart": 355,
+          "removedLines": [
+            "      \"path\": \"assets/menu-state-XB7w1i_9.js\",\n",
+            "      \"bytes\": 2082,\n",
+            "      \"sha256\": \"ed7dd8a489534ed9ffb190a098642d7ec280c0d1f72dca05a40d4230b725d1f4\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-road-mesh-D8V2KCQv.js.map\",\n",
+            "      \"bytes\": 10416,\n",
+            "      \"sha256\": \"f69d4205fe9aef55402f1c3b88cc5a408e9592e571fb1357e9dfb5e78a48dc29\"\n"
+          ]
+        },
+        {
+          "beforeStart": 200,
+          "afterStart": 360,
+          "removedLines": [
+            "      \"path\": \"assets/menu-state-XB7w1i_9.js.map\",\n",
+            "      \"bytes\": 5954,\n",
+            "      \"sha256\": \"b5a0832fa67ec3e78dab88e394ea251edaf342a87757fb425b3d5e84ec792a4a\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/land-scene-jO_k32Ta.js\",\n",
+            "      \"bytes\": 14246,\n",
+            "      \"sha256\": \"2f7775b00ff80185818b28a2330e9dda3bfb50c19a21ce4e360d5d48a0fcae4c\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/land-scene-jO_k32Ta.js.map\",\n",
+            "      \"bytes\": 53754,\n",
+            "      \"sha256\": \"280980b63e867924501ad88617986e20be98ecb8deb6e3aac233f7f188af5c3e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/land-track-CczABFSB.js\",\n",
+            "      \"bytes\": 2561,\n",
+            "      \"sha256\": \"01f93db230d2356d83a872b630400206178fd13bad8ac13e9acc3cf4308c01a8\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/land-track-CczABFSB.js.map\",\n",
+            "      \"bytes\": 12548,\n",
+            "      \"sha256\": \"cc8bee2e43edc6fa9ae9705098aabd981b1644f96bc48415c6eaac3c37c7887b\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/main-C86917cj.js\",\n",
+            "      \"bytes\": 22049,\n",
+            "      \"sha256\": \"ee868b6aca20d98862048e25329f12f423a9a97e661018847ca76b8710ac02da\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/main-C86917cj.js.map\",\n",
+            "      \"bytes\": 41807,\n",
+            "      \"sha256\": \"2ba6aee6013a099234e183d496b41c2c45b2d66af85f230f76bc5a1f0fe78603\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/main-Cg2GkH-M.css\",\n",
+            "      \"bytes\": 26341,\n",
+            "      \"sha256\": \"755ff25f68f2ccdc4572e768587aa23fa878cb7f200ab9adb74847e9486d8a46\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/menu-backdrop-CMWIsRX3.js\",\n",
+            "      \"bytes\": 17311,\n",
+            "      \"sha256\": \"6413d8eba897236fc656ed1d3946b45cb36dfeace4781f78a5365df4147a339a\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/menu-backdrop-CMWIsRX3.js.map\",\n",
+            "      \"bytes\": 53810,\n",
+            "      \"sha256\": \"c4bd04665e77ca69002fa9163d2a42d932aba046bcf07252ef721176edff8635\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/menu-state-DlR_sXeD.js\",\n",
+            "      \"bytes\": 1481,\n",
+            "      \"sha256\": \"8b5793a3138016e0204c0f95754d6669f3037eaffe0178fe2380e1203a5bc8d5\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/menu-state-DlR_sXeD.js.map\",\n",
+            "      \"bytes\": 4983,\n",
+            "      \"sha256\": \"53f6cf50d7a9743c25a26efd1e9b983fcfc266cff1365f91fde3d5ad3e89efb3\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/modulepreload-polyfill-P2Xu9kJm.js\",\n",
+            "      \"bytes\": 670,\n",
+            "      \"sha256\": \"418c206484b89b68ef5f067277831e583fc9193a62aadf4de269acaaeb12a85f\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/mountain-CiXrEvLi.js\",\n",
+            "      \"bytes\": 1463,\n",
+            "      \"sha256\": \"cb8d5adaea18ac79669a60081570c4581c92b05765be1bdc5efe7d6f8c856056\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/mountain-CiXrEvLi.js.map\",\n",
+            "      \"bytes\": 4154,\n",
+            "      \"sha256\": \"9192ba1d9b553c9c498f599ed7b43d0de719724c663df3f0fd20a9b12bf330b9\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/mountain-scenery-DcJrZsgo.js\",\n",
+            "      \"bytes\": 1254479,\n",
+            "      \"sha256\": \"945b49bb47f5f3b006da527839e118d49869a940558e8e72c9ead288f72223f8\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/mountain-scenery-DcJrZsgo.js.map\",\n",
+            "      \"bytes\": 1411538,\n",
+            "      \"sha256\": \"c4304c98396556e09781e7f658ed4ef19284bc175e4e2567f24e14ceb91be457\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/open-road-43QaFOZP.js\",\n",
+            "      \"bytes\": 1975,\n",
+            "      \"sha256\": \"3d40028329023ba5f3f8c6d4eb39dbe348b2119862c83b264ee740526539ac4e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/open-road-43QaFOZP.js.map\",\n",
+            "      \"bytes\": 6605,\n",
+            "      \"sha256\": \"1c3300cae5c6fbf86bc6c64589a3c297cd4e9f7f35aaa3c97a086cf1f9014380\"\n"
+          ]
+        },
+        {
+          "beforeStart": 210,
+          "afterStart": 455,
+          "removedLines": [
+            "      \"path\": \"assets/pickup-visual-Da5Ano8x.js\",\n",
+            "      \"bytes\": 16440,\n",
+            "      \"sha256\": \"61ef72c1d55a0ccf062e8c5e4b0d4892775db77613d66c1c25c44b8d4975fdc5\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/pickup-visual-DdUOQjsQ.js\",\n",
+            "      \"bytes\": 16710,\n",
+            "      \"sha256\": \"48551df81961c48de7d6fd05353580fe023b8df1d252736beb3e8934ac729c36\"\n"
+          ]
+        },
+        {
+          "beforeStart": 215,
+          "afterStart": 460,
+          "removedLines": [
+            "      \"path\": \"assets/pickup-visual-Da5Ano8x.js.map\",\n",
+            "      \"bytes\": 65638,\n",
+            "      \"sha256\": \"34bc5b4c51b098033b0a65ed123b2831c85c5d3bb4c500e8c82f20c851789113\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/pickup-visual-DdUOQjsQ.js.map\",\n",
+            "      \"bytes\": 67433,\n",
+            "      \"sha256\": \"4271dffb6bd3077893a463f2a045d65c4adf264ada9febc797bd432b240c3283\"\n"
+          ]
+        },
+        {
+          "beforeStart": 250,
+          "afterStart": 495,
+          "removedLines": [
+            "      \"path\": \"assets/preload-helper--jljq3-A.js\",\n",
+            "      \"bytes\": 2072,\n",
+            "      \"sha256\": \"8ea86ca3c8b2e72de54ad629dfc50c34b4ec273d54f0f6908537dbcd211eb54c\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/preload-helper-BaNbYf_w.js\",\n",
+            "      \"bytes\": 1398,\n",
+            "      \"sha256\": \"49e31bba082196935782ac14bbedbc2a8e7c4229f918bc086ab5dd08ca015034\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/quarry-B1bpzmkn.js\",\n",
+            "      \"bytes\": 4849,\n",
+            "      \"sha256\": \"49f96b3e53054e1d8ce546000fdd44f705bd9f97020ec12012af73fe55ee6f31\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/quarry-B1bpzmkn.js.map\",\n",
+            "      \"bytes\": 15404,\n",
+            "      \"sha256\": \"7cbfd7ffe9a77e62a0d321e470f6b3e70188c46f0558f4073a9ffc5961abbe7c\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/quarry-scenery-BOD7rucg.js\",\n",
+            "      \"bytes\": 26713,\n",
+            "      \"sha256\": \"ebfd630bba4732c28b8b569358d7ef7032411b7de13f6d6bd4f5b3003c519f90\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/quarry-scenery-BOD7rucg.js.map\",\n",
+            "      \"bytes\": 92627,\n",
+            "      \"sha256\": \"c6e7b1f509fee51bd02b05206bf61b688e2322b97d03b01a5ce27e3af6e8cdca\"\n"
+          ]
+        },
+        {
+          "beforeStart": 260,
+          "afterStart": 525,
+          "removedLines": [
+            "      \"path\": \"assets/race-options-u8ln7pcX.js\",\n",
+            "      \"bytes\": 141075,\n",
+            "      \"sha256\": \"500248dde34e7490a57cba77a11d5f78018f6f8ead0c8430f587789da0fa200f\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/race-options-Bo_rAm9n.js\",\n",
+            "      \"bytes\": 138850,\n",
+            "      \"sha256\": \"59e09236adf3554c87e239b7c9d83e43fe2de8e73521aec585c4106ad8f3b9d3\"\n"
+          ]
+        },
+        {
+          "beforeStart": 265,
+          "afterStart": 530,
+          "removedLines": [
+            "      \"path\": \"assets/race-options-u8ln7pcX.js.map\",\n",
+            "      \"bytes\": 269619,\n",
+            "      \"sha256\": \"518f5505cc6a86c4b7cece563af73a5700ada75fda2a7444130b4473c4bdc1b0\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/race-options-Bo_rAm9n.js.map\",\n",
+            "      \"bytes\": 263438,\n",
+            "      \"sha256\": \"c4adff923d36e4fbd85401e2fc9f75692224ffd9c92a8a340879987409ff53db\"\n"
+          ]
+        },
+        {
+          "beforeStart": 275,
+          "afterStart": 540,
+          "removedLines": [
+            "      \"path\": \"assets/scene-CRJh4pWX.js\",\n",
+            "      \"bytes\": 12980,\n",
+            "      \"sha256\": \"47178ac40d006132a05b8123b61b0fc21917187f1ff9ef11cbd03f997c77b4f0\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/scene-CPfrLq1P.js\",\n",
+            "      \"bytes\": 13047,\n",
+            "      \"sha256\": \"d79e7af14442fefdd3cd8b73819ea74217ba2279bd61b80e7d17b9cf12278e4f\"\n"
+          ]
+        },
+        {
+          "beforeStart": 280,
+          "afterStart": 545,
+          "removedLines": [
+            "      \"path\": \"assets/scene-CRJh4pWX.js.map\",\n",
+            "      \"bytes\": 46440,\n",
+            "      \"sha256\": \"eed9cfeeda7e20caf5a30d2003e0eef257bc85e4266d59e7cf9f35c36d25a914\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/scene-CPfrLq1P.js.map\",\n",
+            "      \"bytes\": 46468,\n",
+            "      \"sha256\": \"eec5ddbf325a4c9b2aee4e446f5d7761c4f8ced671819d673ae255070133f71f\"\n"
+          ]
+        },
+        {
+          "beforeStart": 285,
+          "afterStart": 550,
+          "removedLines": [
+            "      \"path\": \"assets/study-Dgo8C8Uu.js\",\n",
+            "      \"bytes\": 1489,\n",
+            "      \"sha256\": \"2375452e104b8ee5666ec7c6e683b36967aa30895ac96a2111264fa3027afb81\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/snow-scenery-BegiNmVY.js\",\n",
+            "      \"bytes\": 51188,\n",
+            "      \"sha256\": \"d8343e4b54be820bb9bcf9fa98b63f8c9be3aa63fce2f4dfe177a867859c4420\"\n"
+          ]
+        },
+        {
+          "beforeStart": 290,
+          "afterStart": 555,
+          "removedLines": [
+            "      \"path\": \"assets/study-Dgo8C8Uu.js.map\",\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/snow-scenery-BegiNmVY.js.map\",\n",
+            "      \"bytes\": 168957,\n",
+            "      \"sha256\": \"9a1f2b72309bf4d4fd8c85e24b0b18db7d85e9dda005a1c65b3fe6ebb1e457a5\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/snow-wQBqRkef.js\",\n",
+            "      \"bytes\": 6216,\n",
+            "      \"sha256\": \"8bd2e7132ad9174ec0ab8d5a527a0874b1698ca0f8aa734ea8534a88584c705c\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/snow-wQBqRkef.js.map\",\n",
+            "      \"bytes\": 17497,\n",
+            "      \"sha256\": \"57f366c875e78742f06633cd17492f42340bbbafa07c395daef7415e373ee82f\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/study-_Du9jPub.js\",\n",
+            "      \"bytes\": 1502,\n",
+            "      \"sha256\": \"85ba2332278deb1b9a1f24bd53e6110ea0915e166e98a5ae3b99f2c292d3e1d3\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/study-_Du9jPub.js.map\",\n"
+          ]
+        },
+        {
+          "beforeStart": 292,
+          "afterStart": 577,
+          "removedLines": [
+            "      \"sha256\": \"2e339808239a48d1cee5b577815b750da81540fc473f6ab9ea63794d3be0a39d\"\n"
+          ],
+          "insertedLines": [
+            "      \"sha256\": \"2f380f047db0fc2b00b24689aa689b560633034ab3be877b655ebc56e9301e24\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/town-eB8Y5utT.js\",\n",
+            "      \"bytes\": 3391,\n",
+            "      \"sha256\": \"0ad42b7f79ee6d43d6d430d860ce87ef92f1ceed562655ef82e0cc14316280f1\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/town-eB8Y5utT.js.map\",\n",
+            "      \"bytes\": 10786,\n",
+            "      \"sha256\": \"1efb7a9331947c9d654e7b66e16361d5144db75b6fd46cdbc2f02bcfc8a89255\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/town-scenery-CuX3RRjK.js\",\n",
+            "      \"bytes\": 21887,\n",
+            "      \"sha256\": \"5b93f244a2ac92db4fc14e681b5e5ce339b118aff4e5bf05f8c21a3f1011101e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/town-scenery-CuX3RRjK.js.map\",\n",
+            "      \"bytes\": 83198,\n",
+            "      \"sha256\": \"e192a3a0aa3112c4d4eac7884d4a5aeeb094310ea7ab567bb5bab452b2d1971c\"\n"
+          ]
+        },
+        {
+          "beforeStart": 300,
+          "afterStart": 605,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-Cc3L9j-i.js\",\n",
+            "      \"bytes\": 35609,\n",
+            "      \"sha256\": \"a9333876e52529be9f5af7dd5023a336d7a277917c283c41a0ae0ae513b9c5ba\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/vec3-CoAT8PVZ.js\",\n",
+            "      \"bytes\": 3166,\n",
+            "      \"sha256\": \"2ee3f775c0822fa80b457f2524f085c49fa656494748af24b00ef58eed7f47c9\"\n"
+          ]
+        },
+        {
+          "beforeStart": 305,
+          "afterStart": 610,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-Cc3L9j-i.js.map\",\n",
+            "      \"bytes\": 121537,\n",
+            "      \"sha256\": \"426d86e0496e85d39ca7be143303383f665cbe5b485881b424cd1c75cc78014e\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/vec3-CoAT8PVZ.js.map\",\n",
+            "      \"bytes\": 11294,\n",
+            "      \"sha256\": \"c0bcdad408304cc6ea3115da36e0798aa12d68f1f5b930777f5e98e75f3965a2\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/waterpark-DDmbepeD.js\",\n",
+            "      \"bytes\": 35729,\n",
+            "      \"sha256\": \"47b662d981a81fc5ca9b70f04f70b6a8809ba72375678c72d40bb42a2d08ea9d\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/waterpark-DDmbepeD.js.map\",\n",
+            "      \"bytes\": 121538,\n",
+            "      \"sha256\": \"20ac22a2a123fd357cff0009b7fa388c0f55f119ea68cde4234f720109af6045\"\n"
+          ]
+        },
+        {
+          "beforeStart": 315,
+          "afterStart": 630,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-performance-ui-D7bpxQob.js\",\n",
+            "      \"bytes\": 40529,\n",
+            "      \"sha256\": \"28b3a4cdb3d087762bf35e1d7c5ed30c288298ad61d1c14b55a7154e02dd14b2\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/waterpark-performance-ui-DxDLnyPa.js\",\n",
+            "      \"bytes\": 40968,\n",
+            "      \"sha256\": \"2ac76c30a85a16180a7f9dc733b86e01227db3e5d13d6f477cd1d0cdbaa9d122\"\n"
+          ]
+        },
+        {
+          "beforeStart": 320,
+          "afterStart": 635,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-performance-ui-D7bpxQob.js.map\",\n",
+            "      \"bytes\": 125040,\n",
+            "      \"sha256\": \"8f27e1d4acb2c02551d4762e1ebc6065764edf58490e877b692108b5e2e3f8ce\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/waterpark-performance-ui-DxDLnyPa.js.map\",\n",
+            "      \"bytes\": 127878,\n",
+            "      \"sha256\": \"7def532974ac4a9a1e0edbc0f54d16b3a4d39168fa19d588161bf33dff69b43a\"\n"
+          ]
+        },
+        {
+          "beforeStart": 325,
+          "afterStart": 640,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-scene-CkbVzSeR.js\",\n",
+            "      \"bytes\": 44344,\n",
+            "      \"sha256\": \"f5e57ae7cf84bb9dbd531d90e8259a58d347cbb06824639dd84a0d7cdf783ac6\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/waterpark-scene-QikkbrZX.js\",\n",
+            "      \"bytes\": 44419,\n",
+            "      \"sha256\": \"08eb037509ebbbc649e06ee835f66e27d401dd74366e01cef8cb6f872e1fca60\"\n"
+          ]
+        },
+        {
+          "beforeStart": 330,
+          "afterStart": 645,
+          "removedLines": [
+            "      \"path\": \"assets/waterpark-scene-CkbVzSeR.js.map\",\n",
+            "      \"bytes\": 146768,\n",
+            "      \"sha256\": \"82f03ec549b10bdc5501f68583895949d140fde9b7444b8c9fb03d76ad70d925\"\n"
+          ],
+          "insertedLines": [
+            "      \"path\": \"assets/waterpark-scene-QikkbrZX.js.map\",\n",
+            "      \"bytes\": 146769,\n",
+            "      \"sha256\": \"3c395a123671eaade1e459965cda57c8ae8f7191639b9f518c6b029aff614c0f\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/workshop-C-dsg5Ce.js\",\n",
+            "      \"bytes\": 6448,\n",
+            "      \"sha256\": \"4d09189db2fbaa1eab0aa2f5d96153dc0e315994fe6aefebcc5235e8e6c5c9ef\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/workshop-C-dsg5Ce.js.map\",\n",
+            "      \"bytes\": 19263,\n",
+            "      \"sha256\": \"c78ac55940c7e74c3990be9248e2e6f684eb0c43abeddab29d433d4441699602\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/workshop-scenery-l3JEEX84.js\",\n",
+            "      \"bytes\": 26051,\n",
+            "      \"sha256\": \"2fa5f3ddf3584cfe6570e68675b78228bed6aa2444bcacf8f06ae2f6ae3631c7\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"assets/workshop-scenery-l3JEEX84.js.map\",\n",
+            "      \"bytes\": 84425,\n",
+            "      \"sha256\": \"a239e891f7c0164521f9141a66eee91ccd70eaf2b1043107bca9416b05b6f70d\"\n"
+          ]
+        },
+        {
+          "beforeStart": 366,
+          "afterStart": 701,
+          "removedLines": [
+            "      \"bytes\": 5882,\n",
+            "      \"sha256\": \"55952f4ac121d0ffccc481061b8de2a9bae9a13398819fde340476589c5879e7\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 6368,\n",
+            "      \"sha256\": \"04fd9cdbe7e12bbcd6c160aaa9c3b08339ed0c409b249b3179e5213dc486291b\"\n"
+          ]
+        },
+        {
+          "beforeStart": 376,
+          "afterStart": 711,
+          "removedLines": [
+            "      \"bytes\": 3566,\n",
+            "      \"sha256\": \"4b6afae5f1fb0a96a0650789388d28370ecbb09054ed8d36e22e52b91a114b6d\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 3891,\n",
+            "      \"sha256\": \"266fd564c64b9d89938184aeb04c59e4a07644909c991ae0ac72568b2b2cb46b\"\n"
+          ]
+        },
+        {
+          "beforeStart": 381,
+          "afterStart": 716,
+          "removedLines": [
+            "      \"bytes\": 7512,\n",
+            "      \"sha256\": \"2dbc61c8872f40ecc9cb4693d814e07aa1474d6f9527870df6733f32bdf649b0\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 7687,\n",
+            "      \"sha256\": \"880fb6a3b6f3703d5551ebf19bc4eee56d7dd805beb0c112b709e89b476be3f3\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/airfield.webp\",\n",
+            "      \"bytes\": 46452,\n",
+            "      \"sha256\": \"f546d21e2624dfdc53a6e111b5385833e85ff6abadd9d8f15c4826fdedb60729\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/caldera-overview.webp\",\n",
+            "      \"bytes\": 32226,\n",
+            "      \"sha256\": \"f8c5b704f864d382b0935458e5d7faa8ca962362aa5be981e82588453dd2c68b\"\n"
+          ]
+        },
+        {
+          "beforeStart": 390,
+          "afterStart": 735,
+          "removedLines": [],
+          "insertedLines": [
+            "      \"path\": \"map-previews/desert-overview.webp\",\n",
+            "      \"bytes\": 28246,\n",
+            "      \"sha256\": \"7090ee77080edabec9683585c7f314d894b2bbb3d6dfda73bb0b5af5a008b675\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/forest-overview.webp\",\n",
+            "      \"bytes\": 52374,\n",
+            "      \"sha256\": \"0ebf689ea0e6b20a90dec2ba82ac20e15ef953defad470dac6630e1b7a4df5a4\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/garden-overview.webp\",\n",
+            "      \"bytes\": 32956,\n",
+            "      \"sha256\": \"380c8be1d2f66112fac62c42bb39d2104d0b7f2494acd773a97103b271f30f79\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/harvest-overview.webp\",\n",
+            "      \"bytes\": 54720,\n",
+            "      \"sha256\": \"5fc2e3645e12d93cef3bc4ee962ffca80d8905f21d4e45e688ae5b1bc0b713a9\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/mountain-overview.webp\",\n",
+            "      \"bytes\": 181400,\n",
+            "      \"sha256\": \"94dd13670f4a191ef483ecb1dd4cc58ef15eb298e20ff167ba9ff56db0227258\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/quarry-overview.webp\",\n",
+            "      \"bytes\": 82804,\n",
+            "      \"sha256\": \"861730ba15511d34ba24f12f62e589c6a6526745e3ce7d64851618321d7c6d3e\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/snow-overview.webp\",\n",
+            "      \"bytes\": 35128,\n",
+            "      \"sha256\": \"d5eeee9af0ff16d467e6b099590bb7cb2061295fd97b6d292c1e6810c405c7af\"\n",
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/town-overview.webp\",\n",
+            "      \"bytes\": 60846,\n",
+            "      \"sha256\": \"4d6471b5c80a9944d3ed249b512e0043b2942326094caf629b6ff3f0684038b0\"\n",
+            "    },\n",
+            "    {\n"
+          ]
+        },
+        {
+          "beforeStart": 393,
+          "afterStart": 778,
+          "removedLines": [],
+          "insertedLines": [
+            "    },\n",
+            "    {\n",
+            "      \"path\": \"map-previews/workshop-overview.webp\",\n",
+            "      \"bytes\": 103994,\n",
+            "      \"sha256\": \"8685e61e211c5311222cc309b7eb206b6e0f3eb727614e3ff05646b4134f62f4\"\n"
+          ]
+        },
+        {
+          "beforeStart": 686,
+          "afterStart": 1076,
+          "removedLines": [
+            "      \"bytes\": 14106384,\n",
+            "      \"sha256\": \"05b76496851a2b8230da78da400f35d8c8a43f4b43a7a74baa766beb857c7641\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 29339231,\n",
+            "      \"sha256\": \"63a7166aff8da917915c34830e4b7db165a25b6312b5c3da2246b4ad0c2c2d78\"\n"
+          ]
+        },
+        {
+          "beforeStart": 691,
+          "afterStart": 1081,
+          "removedLines": [
+            "      \"bytes\": 2443,\n",
+            "      \"sha256\": \"9da83638ae4b96172f5a3f63e368a79818c193f5d3478c7b2517c0ab3ed94265\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 2685,\n",
+            "      \"sha256\": \"d909e77f5d7f66a0377fe9937cf176404dc89824fde0629c88bfe28c237e175c\"\n"
+          ]
+        },
+        {
+          "beforeStart": 696,
+          "afterStart": 1086,
+          "removedLines": [
+            "      \"bytes\": 4041,\n",
+            "      \"sha256\": \"3e2be8629a28c5c88f12e7a8eb3e47968ca8f30f0c1d81c725531dba27c1d461\"\n"
+          ],
+          "insertedLines": [
+            "      \"bytes\": 4366,\n",
+            "      \"sha256\": \"0e73afc81bb121ea70a2e6639a1cfbccc8812d91121e4f76eb44b47bafb9d71a\"\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/menu-presentation-reviewed-revisions.ts": {
+      "previousSha256": "8d90743567f9f8a7bf88cda4245df6347a4f0d4529f053dc9833295650437c1a",
+      "currentSha256": "3b08d4e255b6c3bd7037753c927e8ea61d111b69c4fe6533b12745822f21885e",
+      "scope": "Chain the exact publication-only repin after the unchanged menu review and extend audit dependency closure",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {stablePagesRepinHash, stablePagesRepinPathsWithin, stablePagesRepinAuditDependencies} from './stable-pages-repin-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 35,
+          "removedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return incoming;\n"
+          ],
+          "insertedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return stablePagesRepinHash(path, incoming);\n"
+          ]
+        },
+        {
+          "beforeStart": 37,
+          "afterStart": 38,
+          "removedLines": [
+            "  return row.currentSha256;\n"
+          ],
+          "insertedLines": [
+            "  return stablePagesRepinHash(path, row.currentSha256);\n"
+          ]
+        },
+        {
+          "beforeStart": 43,
+          "afterStart": 44,
+          "removedLines": [
+            "  return Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path));\n"
+          ],
+          "insertedLines": [
+            "  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory)])];\n"
+          ]
+        },
+        {
+          "beforeStart": 68,
+          "afterStart": 69,
+          "removedLines": [
+            "  return [MENU_PRESENTATION_REVIEW_PATH, 'tests/helpers/menu-presentation-reviewed-revisions.ts', 'tests/audit-menu-presentation-transition.test.ts', 'tests/map-presentation.test.ts', ...Object.keys(menuPresentationReview().additions)];\n"
+          ],
+          "insertedLines": [
+            "  return [MENU_PRESENTATION_REVIEW_PATH, 'tests/helpers/menu-presentation-reviewed-revisions.ts', 'tests/audit-menu-presentation-transition.test.ts', 'tests/map-presentation.test.ts', ...Object.keys(menuPresentationReview().additions), ...stablePagesRepinAuditDependencies()];\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-menu-presentation-transition.test.ts": {
+      "previousSha256": "34383bda22d59b832cede2d154daaa150dad668a13b2aced8f9ec5c3c630636b",
+      "currentSha256": "28260791618b7a3b1959f6cc81bb03b3496947f5a4f129e3470d12321d6381d3",
+      "scope": "Retain the complete Town inventory assertion and enumerate exactly its old menu paths plus reviewed repin paths",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {stablePagesRepinPathsWithin} from './helpers/stable-pages-repin-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 91,
+          "afterStart": 92,
+          "removedLines": [
+            "  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)));\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory)])]);\n"
+          ]
+        }
+      ]
+    }
+  }
+}
