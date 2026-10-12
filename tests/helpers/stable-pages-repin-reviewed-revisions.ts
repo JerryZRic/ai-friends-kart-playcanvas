@@ -1,3 +1,4 @@
+import {restoreMobileControlsBytes} from './mobile-controls-reviewed-revisions';
 /** Exact dev-preservation repin after the immutable menu/publication review. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -66,6 +67,7 @@ export function stablePagesRepinPathsWithin(inventory: Record<string, unknown>) 
   return STABLE_PAGES_REPIN_PATHS.filter(path => Object.hasOwn(inventory, path));
 }
 export function restoreStablePagesRepinBytes(path: string, current: string) {
+  current = restoreMobileControlsBytes(path, current);
   const review = stablePagesRepinReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];

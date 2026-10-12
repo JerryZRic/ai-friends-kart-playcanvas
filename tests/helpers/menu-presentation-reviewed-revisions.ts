@@ -1,3 +1,4 @@
+import {mobileControlsHash, mobileControlsPathsWithin, mobileControlsSourcePaths, restoreMobileControlsBytes} from './mobile-controls-reviewed-revisions';
 import {stablePagesRepinHash, stablePagesRepinPathsWithin, stablePagesRepinAuditDependencies} from './stable-pages-repin-reviewed-revisions';
 /** Exact presentation/publication overlay. Historical source and geometry goldens stay untouched. */
 import assert from 'node:assert/strict';
@@ -33,16 +34,16 @@ export function menuPresentationReview() {
 }
 export function menuPresentationHash(path: string, incoming: unknown) {
   const review = menuPresentationReview();
-  if (!Object.hasOwn(review.changes, path)) return stablePagesRepinHash(path, incoming);
+  if (!Object.hasOwn(review.changes, path)) return mobileControlsHash(path, stablePagesRepinHash(path, incoming));
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-presentation incoming identity');
-  return stablePagesRepinHash(path, row.currentSha256);
+  return mobileControlsHash(path, stablePagesRepinHash(path, row.currentSha256));
 }
 export function assertMenuPresentationDependency(path: string, incoming: unknown, actual: string) {
   assert.equal(actual, menuPresentationHash(path, incoming), path + ' exact original or reviewed presentation identity');
 }
 export function menuPresentationPathsWithin(inventory: Record<string, unknown>) {
-  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory)])];
+  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory), ...mobileControlsPathsWithin(inventory)])];
 }
 export function menuPresentationSourcePaths(inventory: Record<string, unknown>) {
   const additions = menuPresentationReview().additions;
@@ -50,9 +51,10 @@ export function menuPresentationSourcePaths(inventory: Record<string, unknown>) 
     assert.ok(!Object.hasOwn(inventory, path), path + ' must be an explicit addition');
     assert.equal(menuPresentationSha(readFileSync(path)), row.sha256, path + ' exact presentation-only source');
   }
-  return [...Object.keys(inventory).filter(path => path.startsWith('src/')), ...Object.keys(additions)];
+  return mobileControlsSourcePaths([...Object.keys(inventory).filter(path => path.startsWith('src/')), ...Object.keys(additions)]);
 }
 export function restoreMenuPresentationBytes(path: string, current: string) {
+  current = restoreMobileControlsBytes(path, current);
   const review = menuPresentationReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];

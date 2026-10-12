@@ -1,4 +1,5 @@
 import {createOrbit, bindMouseLook} from './mouse-look.js';
+import {CONTROL_MODE_EVENT} from './mobile-controls';
 import {keyCode} from './vehicle-controls.js';
 
 export type RaceControlState = 'active' | 'paused' | 'menu' | 'finished' | 'loading';
@@ -42,7 +43,9 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   const orbit = options.orbit ?? createOrbit();
   const keyboard = new Set<string>(), pointers = new Map<number, {code: string; target: HTMLElement}>();
   const removeListeners: Array<() => void> = [];
+  const buttons = [...(options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]'))];
   let rearMouse = false, disposed = false;
+  let touchLook: {id: number; x: number; y: number} | null = null;
   const active = () => !disposed && options.state() === 'active';
   function on(target: EventTarget, type: string, listener: (event: any) => void) {
     target.addEventListener(type, listener);
@@ -50,11 +53,15 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   }
   function sync(code: string) {
     keys[code] = keyboard.has(code) || [...pointers.values()].some(pointer => pointer.code === code) || (code === 'RearView' && rearMouse);
+    for (const button of buttons) if (button.dataset.key === code) button.setAttribute?.('aria-pressed', String(keys[code]));
   }
   function clear() {
     keyboard.clear(); rearMouse = false;
+    const lookId = touchLook?.id; touchLook = null;
+    if (lookId !== undefined) { try { if (canvas.hasPointerCapture?.(lookId)) canvas.releasePointerCapture?.(lookId); } catch {} }
     const captured = [...pointers.entries()]; pointers.clear();
     for (const code in keys) keys[code] = false;
+    for (const button of buttons) button.setAttribute?.('aria-pressed', 'false');
     for (const [id, {target}] of captured) {
       try { if (target.hasPointerCapture?.(id)) target.releasePointerCapture?.(id); } catch { /* The browser may already have released it. */ }
     }
@@ -89,10 +96,38 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
     // A key released over a newly focused control must still clear its source.
     keyboard.delete(code); sync(code);
   });
+  on(doc, CONTROL_MODE_EVENT, () => { clear(); mouseLook?.release(); });
   on(win, 'blur', release);
   on(doc, 'visibilitychange', () => { if (doc.hidden) release(); });
   on(win, 'pagehide', release);
   on(canvas, 'contextmenu', (event: Event) => event.preventDefault());
+  // A free finger can orbit while other fingers independently steer/accelerate.
+  on(canvas, 'pointerdown', (event: PointerEvent) => {
+    if (event.pointerType !== 'touch' || !active() || touchLook) return;
+    event.preventDefault();
+    touchLook = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    try { canvas.setPointerCapture?.(event.pointerId); } catch {}
+  });
+  on(canvas, 'pointermove', (event: PointerEvent) => {
+    if (!touchLook || event.pointerId !== touchLook.id || !active()) return;
+    event.preventDefault();
+    if (!keys.RearView) orbit.move(event.clientX - touchLook.x, event.clientY - touchLook.y);
+    touchLook.x = event.clientX; touchLook.y = event.clientY;
+  });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(canvas, type, (event: PointerEvent) => {
+    if (touchLook?.id === event.pointerId) touchLook = null;
+  });
+  for (const button of doc.querySelectorAll<HTMLButtonElement>('[data-mobile-action]')) {
+    on(button, 'click', () => {
+      const action = button.dataset.mobileAction;
+      if (!active()) return;
+      if (action === 'recenter') { orbit.recenter(); options.recenter(); }
+      if (action === 'camera') options.switchCamera();
+      if (action === 'item') options.useItem();
+      if (action === 'pause') { clear(); mouseLook.release(); options.pause(); }
+    });
+  }
+
   on(canvas, 'pointerdown', (event: PointerEvent) => {
     if (event.pointerType === 'touch' || event.button !== 2 || !active()) return;
     event.preventDefault(); rearMouse = true; sync('RearView');
@@ -112,9 +147,9 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
     }
   });
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-    on(canvas, type, () => { rearMouse = false; sync('RearView'); });
+    on(canvas, type, (event: PointerEvent) => { if (event.pointerType !== 'touch') { rearMouse = false; sync('RearView'); } });
   }
-  for (const button of options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]')) {
+  for (const button of buttons) {
     const code = button.dataset.key;
     if (!code) continue;
     on(button, 'pointerdown', (event: PointerEvent) => {
@@ -134,6 +169,11 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
       });
     }
   }
+  for (const type of ['pointerup', 'pointercancel']) on(doc, type, (event: PointerEvent) => {
+    const pointer = pointers.get(event.pointerId);
+    if (pointer) { pointers.delete(event.pointerId); sync(pointer.code); }
+    if (touchLook?.id === event.pointerId) touchLook = null;
+  });
   mouseLook = bindMouseLook(canvas, doc, {
     orbit, isActive: active,
     activate: () => { if (!disposed && options.state() === 'paused') options.pause(); },

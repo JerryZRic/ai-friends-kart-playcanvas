@@ -146,7 +146,60 @@ test('both race entries mount logical UI before WebGL and never responsive-resiz
   assert.match(css, /\.pause-panel\{[^}]*position:absolute[^}]*pointer-events:auto/);
   assert.match(css, /#perf-body\{[^}]*width:310px;max-height:740px/);
   assert.match(css, /#map\{[^}]*width:162px;height:auto;aspect-ratio:260\/230/);
-  assert.match(css, /@media\(pointer:coarse\)\{\.touch\{display:flex\}/);
+  assert.match(css, /@import ['"]\.\/mobile-controls\.css['"]/);
+  assert.doesNotMatch(css, /\.touch\s*(?:button)?\s*\{/, 'legacy touch rules cannot override physical controls');
+  const mobileCss = read('src/mobile-controls.css');
+  assert.match(mobileCss, /body\[data-input-mode='touch'\]:not\(\.menu\):not\(\.race-paused\) \.mobile-controls\{display:block\}/);
+  assert.match(mobileCss, /\.mobile-controls \{[^}]*position:fixed;inset:0/s);
+  assert.match(mobileCss, /min-width:48px;min-height:48px/);
+  assert.match(mobileCss, /#mobileControlMode \{[^}]*min-height:44px/s);
+  assert.match(mobileCss, /body\[data-input-mode='touch'\] \.pause-actions button\{min-height:48px/);
+  assert.match(mobileCss, /transform:scale\(calc\(1 \/ var\(--ui-scale, 1\)\)\)/);
+  assert.match(mobileCss, /\.touch-control-guide\{display:none\}/);
+  assert.match(mobileCss, /body\[data-input-mode='touch'\] \.desktop-control-guide\{display:none\}/);
+  const hud = read('src/race-hud.ts');
+  for (const key of ['ArrowLeft','ArrowRight','KeyW','KeyS','Space','ShiftLeft','RearView']) assert.ok(hud.includes('data-key="' + key + '"'));
+  for (const action of ['camera','recenter','item','pause']) assert.ok(hud.includes('data-mobile-action="' + action + '"'));
+  assert.ok(hud.indexOf('mountRaceUiLayout(doc, canvas)') < hud.indexOf('mountMobileControls(doc, canvas)'));
   assert.match(read('src/race-hud.ts'), /mountRaceUiLayout\(doc, canvas\)/);
   assert.doesNotMatch(read('src/race-shell.ts'), /disposeRaceUiLayout/, 'renderer failure disposal must retain the scaled recovery view');
+});
+
+test('physical touch layout arithmetic keeps driving targets separate at representative phone sizes', () => {
+  // This is a source/layout contract, not a substitute for browser screenshots.
+  // Tie the independent rectangle calculation to every CSS spacing constant.
+  const css = readFileSync(new URL('../src/mobile-controls.css', import.meta.url), 'utf8');
+  for (const source of [
+    '--mobile-edge:20px;--mobile-bottom:30px;--mobile-primary:68px',
+    '--mobile-edge:12px;--mobile-bottom:22px;--mobile-primary:60px',
+    '--mobile-bottom:12px;--mobile-edge:14px;--mobile-primary:60px',
+    'var(--mobile-bottom) + 112px', 'var(--mobile-bottom) + 206px',
+    'var(--mobile-bottom) + 290px', 'var(--mobile-bottom) + 360px',
+  ]) assert.ok(css.includes(source), source);
+  type Box = {name: string; x: number; y: number; w: number; h: number};
+  for (const [width,height,insetX,insetBottom] of [[320,568,0,0],[375,667,0,0],[390,844,0,34],[640,360,0,0],[844,390,44,21],[1024,768,0,0]]) {
+    const portrait = height > width, short = !portrait && height <= 380;
+    const edge = portrait ? 12 : short ? 14 : 20;
+    const bottom = (portrait ? 22 : short ? 12 : 30) + insetBottom;
+    const primary = portrait || short ? 60 : 68;
+    const boxes: Box[] = [];
+    const add = (name:string,x:number,b:number,w:number,h=w) => boxes.push({name,x,y:height-b-h,w,h});
+    add('left',edge+insetX,bottom+14,primary);
+    add('right',edge+insetX+primary+(portrait?10:14),bottom+14,primary);
+    const right = edge+insetX;
+    add('reverse',width-right-primary,bottom,primary);
+    add('throttle',width-right-primary,bottom+primary+14,primary);
+    add('drift',width-right-primary-20-78,bottom+(portrait?112:0),78);
+    add('brake',width-right-primary-(portrait?20:112)-60,bottom+(portrait?290:8),60);
+    add('item',width-right-primary-29-60,bottom+(portrait?206:94),60);
+    for(let i=0;i<4;i++)add('utility'+i,width-right-4*48-3*10+i*58,bottom+(portrait?360:short?160:178),48);
+    for(const box of boxes){
+      assert.ok(box.w>=48&&box.h>=48,`${width}: ${box.name} physical target`);
+      assert.ok(box.x>=0&&box.y>=0&&box.x+box.w<=width&&box.y+box.h<=height,`${width}: ${box.name} remains within viewport`);
+    }
+    for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){
+      const a=boxes[i],b=boxes[j];
+      assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,`${width}×${height}: ${a.name} overlaps ${b.name}`);
+    }
+  }
 });

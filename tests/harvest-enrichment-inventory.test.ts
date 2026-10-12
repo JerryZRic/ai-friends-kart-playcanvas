@@ -1,3 +1,4 @@
+import {mobileControlsHash} from './helpers/mobile-controls-reviewed-revisions';
 import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Immutable pre-enrichment inventories and explicit reviewed scene exceptions. */
@@ -34,7 +35,7 @@ test('Harvest final source preview and prior scene isolation consumers agree on 
  for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected','workshop-enrichment-protected']){const old=JSON.parse(readFileSync('tests/fixtures/'+name+'.json','utf8'));assert.equal(old.sourceInventory[file],review.previousSHA256);if(old.reviewedChanges)assert.equal(old.reviewedChanges[file].currentSHA256,review.currentSHA256);}
  const preview=JSON.parse(readFileSync('docs/harvest-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],review.currentSHA256);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));
  const camera=JSON.parse(readFileSync('docs/harvest-enrichment-cameras.json','utf8'));assert.equal(camera.baselineSourceTree,receipt.baselineSourceTree);assert.equal(camera.baselineGeometryContract.sourceHashes[file],receipt.originalScenerySha256);assert.equal(camera.baselineManifestSha256,receipt.sourceInventory['docs/harvest-preview-provenance.json']);assert.equal(camera.views.length,34);assert.equal(camera.catalogViews.length,5);
- for(const [path,hash]of Object.entries(camera.baselineGeometryContract.additionalProtectedSourceHashes))assert.equal(sha(readFileSync(path)),hash,path+' frozen camera/gameplay dependency');
+ for(const [path,hash]of Object.entries(camera.baselineGeometryContract.additionalProtectedSourceHashes))assert.equal(sha(readFileSync(path)),mobileControlsHash(path,hash),path+' frozen camera/gameplay dependency');
 });
 
 

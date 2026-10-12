@@ -1,3 +1,4 @@
+import {CONTROL_MODE_EVENT, touchHint} from './mobile-controls';
 import { resolveMap, type MapId } from './map-profiles';
 import { RACE_CONTROL_GUIDE_MARKUP } from './race-control-guide';
 
@@ -40,10 +41,17 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
   get('loadingDriftHelp').textContent = profile.id === 'waterpark' ? '水上滑移' : '手刹漂移';
   const water = profile.id === 'waterpark';
   get('loadingTipTitle').textContent = water ? '水上滑移加速' : '漂移加速';
-  get('loadingTipStart').textContent = '按住 W 提速，再按左 Shift + A / D 持续转向蓄力';
-  get('loadingTipRelease').textContent = water
-    ? '滑移超过 0.6 秒后，松开 Shift 加速；蓄力越满，加速越久'
-    : '蓄力条变黄后，松开 Shift 加速；蓄力越满，加速越久';
+  function updateTips() {
+    const mobile = doc.body?.dataset?.inputMode === 'touch';
+    const start = '按住 W 提速，再按左 Shift + A / D 持续转向蓄力';
+    const release = water
+      ? '滑移超过 0.6 秒后，松开 Shift 加速；蓄力越满，加速越久'
+      : '蓄力条变黄后，松开 Shift 加速；蓄力越满，加速越久';
+    get('loadingTipStart').textContent = mobile ? touchHint(start) : start;
+    get('loadingTipRelease').textContent = mobile ? touchHint(release) : release;
+  }
+  updateTips();
+  doc.addEventListener?.(CONTROL_MODE_EVENT, updateTips);
   const progress = get<HTMLProgressElement>('raceLoadingProgress');
   const percent = get('raceLoadingPercent'), status = get('raceLoadingStatus'), group = get('raceLoadingProgressGroup');
   const retryButton = get<HTMLButtonElement>('raceLoadingRetry'), continueButton = get<HTMLButtonElement>('raceLoadingContinue');
@@ -66,6 +74,6 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
       continueButton.textContent = snapshot.continueLabel || '继续比赛';
       exitLink.hidden = !(snapshot.canExit ?? (snapshot.busy === false && !snapshot.canContinue));
     },
-    dispose() { disposed = true; retryButton.disabled = true; continueButton.disabled = true; },
+    dispose() { disposed = true; doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips); retryButton.disabled = true; continueButton.disabled = true; },
   };
 }

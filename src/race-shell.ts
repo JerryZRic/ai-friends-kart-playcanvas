@@ -1,3 +1,4 @@
+import {touchHint} from './mobile-controls';
 import {characterDisplayName,characterEmblem} from './character-identity.js';
 import { itemImage, type ItemKind } from './item-models';
 import { resolveCharacter } from './character-profiles';
@@ -231,7 +232,7 @@ export interface RaceShellOptions extends RaceSoundOptions {
 export function createRaceShell(document: Document, canvas: HTMLCanvasElement, options: RaceShellOptions) {
   const ids = ['rank', 'lap', 'timer', 'speed', 'charge', 'chargeLabel', 'item', 'itemImage', 'itemName', 'itemHelp', 'toast', 'count', 'pause', 'pausePanel', 'resumeRace', 'overlay', 'menu', 'title', 'subtitle', 'desc', 'results', 'start', 'startText', 'sound', 'raceChangeMap', 'raceChangeCharacter', 'raceMainMenu', 'change-driver', 'change-map', 'raceDriverIdentity'] as const;
   const elements = Object.fromEntries(ids.map(id => [id, document.getElementById(id)])) as Record<typeof ids[number], HTMLElement | null>;
-  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = value; };
+  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = (id === 'chargeLabel' || id === 'itemHelp') && document.body?.dataset?.inputMode === 'touch' ? touchHint(value) : value; };
   const hidden = (id: typeof ids[number], value: boolean) => {
     const element = elements[id];
     if (element) element.classList[value ? 'add' : 'remove']('hidden');
@@ -315,10 +316,17 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       text('itemName', held ? ITEMS[held].name : '◇ 等待道具');
       text('itemHelp', held ? snapshot.itemHelp ?? '点击这里或按 E 使用' : '撞箱拾取 · 问号为随机道具');
       if (elements.item) (elements.item as HTMLButtonElement).disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
+      const mobileItem = document.querySelector?.<HTMLButtonElement>('[data-mobile-action="item"]');
+      if (mobileItem) {
+        mobileItem.disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
+        mobileItem.setAttribute('aria-label', held ? ITEMS[held].action : '等待道具');
+        mobileItem.dataset.held = held || 'empty';
+        mobileItem.textContent = held ? ITEMS[held].name : '◇ 道具';
+      }
     },
     start(countdown = 3) {
       if (disposed) return;
-      phase = 'running'; resetPause(); clearToast();
+      phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.remove('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = false;
       hidden('overlay', true); hidden('menu', true); hidden('results', true);
@@ -327,20 +335,20 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     setPaused(paused: boolean, countdown = 0) {
       if (disposed || (paused ? phase !== 'running' : phase !== 'paused')) return;
       if (paused) {
-        phase = 'paused'; text('count', '已暂停');
+        phase = 'paused'; document.body.classList.add('race-paused'); text('count', '已暂停');
         elements.count?.classList.remove('waiting'); elements.count?.classList.add('paused');
         hidden('pausePanel', false); text('pause', '▶');
         if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
         elements.pause?.setAttribute('aria-label', '继续比赛'); elements.pause?.setAttribute('aria-expanded', 'true');
         focus(elements.resumeRace);
       } else {
-        phase = 'running'; resetPause(); renderCountdown(countdown); focus(canvas);
+        phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); renderCountdown(countdown); focus(canvas);
       }
     },
     renderCountdown,
     showMenu() {
       if (disposed) return;
-      phase = 'menu'; resetPause(); clearToast();
+      phase = 'menu'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
       if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
@@ -348,7 +356,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     finish(snapshot: RaceFinishSnapshot) {
       if (disposed) return;
-      phase = 'finished'; resetPause(); clearToast();
+      phase = 'finished'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.add('finished');
       hidden('overlay', false); hidden('menu', false); hidden('results', false); text('count', '');
       text('title', '比赛结果');

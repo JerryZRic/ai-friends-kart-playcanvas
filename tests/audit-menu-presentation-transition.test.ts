@@ -1,3 +1,4 @@
+import {mobileControlsHash, mobileControlsPathsWithin, restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';
 import {stablePagesRepinPathsWithin} from './helpers/stable-pages-repin-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -31,7 +32,7 @@ test('presentation transition names exact prior local/public identities and only
 
 test('every reviewed current file reconstructs every exact historical byte and a complete forward round trip', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), original = restoreMenuPresentationBytes(path, current);
+    const raw = read(path), current = restoreMobileControlsBytes(path, raw), original = restoreMenuPresentationBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path);
     assert.equal(sha(original), row.previousSha256, path);
     const lines = original.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -40,15 +41,15 @@ test('every reviewed current file reconstructs every exact historical byte and a
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' exact reversible byte transition');
-    assert.throws(() => restoreMenuPresentationBytes(path, current + ' '), undefined, path + ' unreviewed current byte rejected');
+    assert.throws(() => restoreMenuPresentationBytes(path, raw + ' '), undefined, path + ' unreviewed current byte rejected');
     assert.throws(() => restoreMenuPresentationBytes(path, original), undefined, path + ' no historical-format fallback');
   }
 });
 
 test('only each exact incoming/current pair is accepted and unchanged unlisted inputs remain strict', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(menuPresentationHash(path, row.previousSha256), row.currentSha256);
-    assertMenuPresentationDependency(path, row.previousSha256, row.currentSha256);
+    assert.equal(menuPresentationHash(path, row.previousSha256), mobileControlsHash(path, row.currentSha256));
+    assertMenuPresentationDependency(path, row.previousSha256, mobileControlsHash(path, row.currentSha256) as string);
     for (const incoming of [undefined, '0'.repeat(64), row.currentSha256]) {
       assert.throws(() => menuPresentationHash(path, incoming), undefined, path);
       assert.throws(() => assertMenuPresentationDependency(path, incoming, row.currentSha256), undefined, path);
@@ -90,7 +91,7 @@ test('the complete Town historical inventory uses the same strict final transiti
     const expected = scene ? airfieldReviewedHash(path, scene.currentSHA256) : airfieldAfterGardenHash(path, town.reviewedTestContractChanges[path] ?? original);
     assert.equal(sha(readFileSync(path)), expected, path + ' complete Town input');
   }
-  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory)])]);
+  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory), ...mobileControlsPathsWithin(town.sourceInventory)])]);
   const currentSources = menuPresentationSourcePaths(town.sourceInventory);
   assert.equal(currentSources.filter(path => path === 'src/map-presentation.ts').length, 1);
   assert.equal(sha(readFileSync('src/map-presentation.ts')), review.additions['src/map-presentation.ts'].sha256);
@@ -125,6 +126,6 @@ test('both camera source-stability closures include the new pure module and full
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of menuPresentationAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
     assert.equal(hashes['src/menu.ts'], review.changes['src/menu.ts'].currentSha256);
-    assert.equal(hashes['tests/free-mode-menu-dom.test.ts'], review.changes['tests/free-mode-menu-dom.test.ts'].currentSha256);
+    assert.equal(hashes['tests/free-mode-menu-dom.test.ts'], mobileControlsHash('tests/free-mode-menu-dom.test.ts', review.changes['tests/free-mode-menu-dom.test.ts'].currentSha256));
   }
 });

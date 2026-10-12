@@ -26,7 +26,7 @@ function mouseIcon(part: 'move' | 'left' | 'right') {
   return `<svg class="loading-mouse loading-mouse-${part}" viewBox="0 0 40 48" aria-hidden="true"><rect x="10" y="5" width="20" height="34" rx="10"/><path class="mouse-left" d="M20 5A10 10 0 0 0 10 15v5h10Z"/><path class="mouse-right" d="M20 5a10 10 0 0 1 10 10v5H20Z"/><path class="mouse-divider" d="M20 6v14M11 20h18"/><path class="mouse-motion" d="m6 14-4 4 4 4m28-8 4 4-4 4"/></svg>`;
 }
 
-export const RACE_CONTROL_GUIDE_MARKUP = `<section class="loading-controls" aria-labelledby="loadingControlsTitle">
+export const RACE_CONTROL_GUIDE_MARKUP = `<section class="loading-controls desktop-control-guide" aria-labelledby="loadingControlsTitle">
   <header class="loading-controls-heading"><h2 id="loadingControlsTitle">键鼠操作</h2><span>比赛开始后使用</span></header>
   <div class="loading-control-columns">
     <section class="loading-control-group" aria-labelledby="loadingDrivingTitle"><h3 id="loadingDrivingTitle">驾驶与道具</h3><dl>${rows('driving')}</dl></section>
@@ -39,4 +39,21 @@ export const RACE_CONTROL_GUIDE_MARKUP = `<section class="loading-controls" aria
     </section>
   </div>
   <section class="loading-control-secondary" aria-label="暂停与菜单操作"><dl class="loading-pause-guide">${rows('pause')}</dl><dl class="loading-ready-guide">${rows('ready')}</dl><p>下载中不能用 Enter 跳过；聚焦按钮后，Enter / Space 可确认</p></section>
+</section><section class="loading-controls touch-control-guide" aria-label="手机触控操作">
+  <header class="loading-controls-heading"><h2>触屏驾驶</h2><span>建议横屏 · 可切换键鼠模式</span></header>
+  <div class="loading-control-columns">
+    <section class="loading-control-group"><h3>双手驾驶</h3><dl>
+      <div class="loading-control-row"><dt>◀ / ▶</dt><dd>左手左右转向</dd></div>
+      <div class="loading-control-row"><dt>↑ 油门</dt><dd>右手按住加速</dd></div>
+      <div class="loading-control-row"><dt>↓ 倒车</dt><dd>先刹车，再倒车</dd></div>
+      <div class="loading-control-row"><dt>刹车 / 漂移</dt><dd>独立刹车 · 漂移时配合转向</dd></div>
+    </dl></section>
+    <section class="loading-control-group"><h3>道具与视角</h3><dl>
+      <div class="loading-control-row"><dt>道具</dt><dd>拾取后点击使用</dd></div>
+      <div class="loading-control-row"><dt>滑动画面</dt><dd>空白赛道区域拖动环顾</dd></div>
+      <div class="loading-control-row"><dt>回看 / 回正</dt><dd>按住回看 · 点击回正</dd></div>
+      <div class="loading-control-row"><dt>视角 / 暂停</dt><dd>切换追逐视角 · 暂停比赛</dd></div>
+    </dl></section>
+  </div>
+  <section class="loading-control-secondary"><p>可同时按住油门、转向和漂移；松开漂移释放蓄力加速。加载完成后点击开始</p></section>
 </section>`;

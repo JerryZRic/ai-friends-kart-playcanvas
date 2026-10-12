@@ -28,6 +28,8 @@ function fixture({lock = 'missing', signal}: {lock?: 'missing' | 'pending' | 're
   const doc = new BrowserTarget(), win = new BrowserTarget(), canvas = new BrowserTarget('CANVAS');
   const throttle = new BrowserTarget('BUTTON'), brake = new BrowserTarget('BUTTON'), rear = new BrowserTarget('BUTTON');
   throttle.dataset.key = 'KeyW'; brake.dataset.key = 'Space'; rear.dataset.key = 'RearView';
+  const actions = ['camera', 'recenter', 'item', 'pause'].map(action => { const button = new BrowserTarget('BUTTON'); button.dataset.mobileAction = action; return button; });
+  doc.querySelectorAll = () => actions as any;
   let state: RaceControlState = 'active';
   const calls = {pause: 0, item: 0, camera: 0, recenter: 0, start: 0, clear: 0, lock: 0, status: [] as string[]};
   if (lock !== 'missing') canvas.requestPointerLock = () => { calls.lock++; if (lock === 'reject') return Promise.reject(new Error('Denied')); };
@@ -43,7 +45,7 @@ function fixture({lock = 'missing', signal}: {lock?: 'missing' | 'pending' | 're
   const key = (type: 'keydown' | 'keyup', code: string, other: Record<string, unknown> = {}) => fire(win, type, {code, target: canvas, repeat: false, ...other});
   const pointer = (target: BrowserTarget, type: string, id = 1, other: Record<string, unknown> = {}) => fire(target, type, {pointerId: id, pointerType: 'touch', button: 0, ...other});
   const left = () => pointer(canvas, 'pointerdown', 10, {pointerType: 'mouse', clientX: 100, clientY: 100});
-  return {doc, win, canvas, throttle, brake, rear, calls, controls, key, pointer, left, state: () => state, setState: (next: RaceControlState) => { state = next; }};
+  return {doc, win, canvas, throttle, brake, rear, actions, calls, controls, key, pointer, left, state: () => state, setState: (next: RaceControlState) => { state = next; }};
 }
 
 test('real event bindings unify physical keyboard codes, arrows, brake and both Shift keys', () => {
@@ -135,7 +137,7 @@ test('right mouse view supports chorded mouse release, pointer recovery and inde
   assert.equal(f.controls.keys.RearView, true);
   f.pointer(f.rear, 'lostpointercapture', 4); assert.equal(f.controls.keys.RearView, false);
   for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-    fire(f.canvas, 'mousedown', {button: 2}); f.pointer(f.canvas, event, 10); assert.equal(f.controls.keys.RearView, false);
+    fire(f.canvas, 'mousedown', {button: 2}); f.pointer(f.canvas, event, 10, {pointerType: 'mouse'}); assert.equal(f.controls.keys.RearView, false);
   }
   f.controls.dispose();
 });
@@ -183,4 +185,77 @@ test('dispose and external abort detach all gameplay listeners and clear held ke
     assert.equal(f.controls.keys.KeyW, false); assert.deepEqual(f.calls, counts); assert.deepEqual(f.controls.orbit.get(), angles);
     f.controls.dispose(); assert.deepEqual(f.calls, counts);
   }
+});
+
+test('touch camera finger coexists with pedals and cancels independently without pausing or mouse lock', () => {
+  const f = fixture({lock: 'pending'});
+  f.pointer(f.throttle, 'pointerdown', 1);
+  f.pointer(f.brake, 'pointerdown', 2);
+  f.pointer(f.canvas, 'pointerdown', 3, {clientX: 100, clientY: 100});
+  f.pointer(f.canvas, 'pointermove', 3, {clientX: 160, clientY: 120});
+  assert.equal(f.calls.lock, 0); assert.equal(f.calls.pause, 0);
+  assert.ok(f.controls.orbit.get().targetYaw > 0);
+  assert.ok(f.controls.keys.KeyW && f.controls.keys.Space);
+  f.pointer(f.canvas, 'pointercancel', 3);
+  const yaw = f.controls.orbit.get().targetYaw;
+  f.pointer(f.canvas, 'pointermove', 3, {clientX: 250, clientY: 100});
+  assert.equal(f.controls.orbit.get().targetYaw, yaw);
+  assert.ok(f.controls.keys.KeyW && f.controls.keys.Space);
+  f.controls.clear(); assert.equal(f.controls.keys.KeyW, false);
+  assert.equal(f.canvas.captured.size, 1, 'cancel dispatch alone mocks browser-owned release');
+  f.controls.dispose();
+});
+
+test('switching control mode clears all sources and releases pointer lock without spurious pause', () => {
+  const f = fixture();
+  f.key('keydown', 'KeyW'); f.pointer(f.brake, 'pointerdown', 2);
+  f.pointer(f.canvas, 'pointerdown', 3, {clientX: 10, clientY: 10});
+  fire(f.doc, 'racecontrolmodechange');
+  assert.equal(f.calls.pause, 0); assert.equal(f.state(), 'active');
+  assert.equal(f.controls.keys.KeyW, false); assert.equal(f.controls.keys.Space, false);
+  assert.equal(f.canvas.captured.size, 0); assert.equal(f.brake.captured.size, 0);
+  f.pointer(f.canvas, 'pointermove', 3, {clientX: 100, clientY: 100});
+  assert.equal(f.controls.orbit.get().targetYaw, 0);
+  f.controls.dispose();
+});
+
+test('document release fallback clears a held control when pointer capture was unavailable', () => {
+  const f = fixture();
+  f.throttle.setPointerCapture = () => { throw new Error('Unavailable'); };
+  f.pointer(f.throttle, 'pointerdown', 10);
+  assert.equal(f.controls.keys.KeyW, true);
+  f.pointer(f.doc, 'pointerup', 10);
+  assert.equal(f.controls.keys.KeyW, false);
+  f.controls.dispose();
+});
+
+test('releasing a touch look finger cannot cancel a held mouse rear-view source', () => {
+  const f = fixture();
+  f.pointer(f.canvas, 'pointerdown', 1, {pointerType: 'mouse', button: 2});
+  assert.equal(f.controls.keys.RearView, true);
+  f.pointer(f.canvas, 'pointerdown', 2, {clientX: 10, clientY: 10});
+  f.pointer(f.canvas, 'pointerup', 2);
+  assert.equal(f.controls.keys.RearView, true);
+  fire(f.doc, 'mouseup', {button: 2});
+  assert.equal(f.controls.keys.RearView, false);
+  f.controls.dispose();
+});
+
+test('touch utility actions fire once on click and do not activate behind paused/loading menus', () => {
+  const f = fixture();
+  f.controls.orbit.move(100, 100);
+  for (const button of f.actions.slice(0, 3)) {
+    f.pointer(button, 'pointerdown', 10);
+    f.pointer(button, 'pointerup', 10);
+    fire(button, 'click');
+  }
+  assert.equal(f.calls.camera, 1); assert.equal(f.calls.recenter, 1); assert.equal(f.calls.item, 1);
+  assert.equal(f.controls.orbit.get().targetYaw, 0);
+  f.pointer(f.throttle, 'pointerdown', 1); fire(f.actions[3], 'click');
+  assert.equal(f.calls.pause, 1); assert.equal(f.controls.keys.KeyW, false);
+  for (const state of ['paused', 'menu', 'finished', 'loading'] as RaceControlState[]) {
+    f.setState(state); for (const button of f.actions) fire(button, 'click');
+  }
+  assert.equal(f.calls.pause, 1); assert.equal(f.calls.item, 1); assert.equal(f.calls.camera, 1);
+  f.controls.dispose(); fire(f.actions[0], 'click'); assert.equal(f.calls.camera, 1);
 });

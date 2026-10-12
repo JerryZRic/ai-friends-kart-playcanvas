@@ -1,0 +1,1000 @@
+{
+  "schema": "mobile-controls-transition-v1",
+  "baselineCommit": "26a7ea81bd927bf8399384e2a168721ba645c783",
+  "baselineTree": "4bdee3f165474f1022029b4911a0272a36a68bcd",
+  "publicBaselineCommit": "5774f6ade2a51007031c7157fc012bd3def132b1",
+  "changes": {
+    "coast.html": {
+      "previousSha256": "4fbfcca0c016d771a13091184fd64b66856a062f9a02e0d776faee77763ceb62",
+      "currentSha256": "7d3413efd51376c90b33db6d514a0277a10ab4461429968db515bc1ba0aacb70",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [
+            "<!doctype html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"><meta name=\"theme-color\" content=\"#172936\"><meta name=\"description\" content=\"\u9713\u8679\u5361\u4e01\u8f66 3D\uff1a\u539f\u521b Blender \u8d5b\u8f66\uff0c\u65e5\u843d\u6d77\u5c9b\u8d5b\u9053\uff0c\u6f02\u79fb\u4e0e\u9053\u5177\u7ade\u901f\u3002\"><title>AI Friends Kart \u00b7 PlayCanvas \u00b7 \u975e\u5546\u4e1a\u8bd5\u73a9</title><link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23172936'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E\"><link rel=\"stylesheet\" href=\"/src/race-ui.css\"><link rel=\"stylesheet\" href=\"/src/character-emblems.css\"></head><body class=\"menu \">\n"
+          ],
+          "insertedLines": [
+            "<!doctype html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\"><meta name=\"theme-color\" content=\"#172936\"><meta name=\"description\" content=\"\u9713\u8679\u5361\u4e01\u8f66 3D\uff1a\u539f\u521b Blender \u8d5b\u8f66\uff0c\u65e5\u843d\u6d77\u5c9b\u8d5b\u9053\uff0c\u6f02\u79fb\u4e0e\u9053\u5177\u7ade\u901f\u3002\"><title>AI Friends Kart \u00b7 PlayCanvas \u00b7 \u975e\u5546\u4e1a\u8bd5\u73a9</title><link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23172936'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E\"><link rel=\"stylesheet\" href=\"/src/race-ui.css\"><link rel=\"stylesheet\" href=\"/src/character-emblems.css\"></head><body class=\"menu \">\n"
+          ]
+        }
+      ]
+    },
+    "src/race-control-guide.ts": {
+      "previousSha256": "d0ac860036681d3d0d87bb0ccdfdcdae766af921ba1e9e641649f2e96b39851e",
+      "currentSha256": "787d67aa9ddc208563d082b4729da428450270484530ed66fa4d87e3ed2cb1e0",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 28,
+          "afterStart": 28,
+          "removedLines": [
+            "export const RACE_CONTROL_GUIDE_MARKUP = `<section class=\"loading-controls\" aria-labelledby=\"loadingControlsTitle\">\n"
+          ],
+          "insertedLines": [
+            "export const RACE_CONTROL_GUIDE_MARKUP = `<section class=\"loading-controls desktop-control-guide\" aria-labelledby=\"loadingControlsTitle\">\n"
+          ]
+        },
+        {
+          "beforeStart": 41,
+          "afterStart": 41,
+          "removedLines": [],
+          "insertedLines": [
+            "</section><section class=\"loading-controls touch-control-guide\" aria-label=\"\u624b\u673a\u89e6\u63a7\u64cd\u4f5c\">\n",
+            "  <header class=\"loading-controls-heading\"><h2>\u89e6\u5c4f\u9a7e\u9a76</h2><span>\u5efa\u8bae\u6a2a\u5c4f \u00b7 \u53ef\u5207\u6362\u952e\u9f20\u6a21\u5f0f</span></header>\n",
+            "  <div class=\"loading-control-columns\">\n",
+            "    <section class=\"loading-control-group\"><h3>\u53cc\u624b\u9a7e\u9a76</h3><dl>\n",
+            "      <div class=\"loading-control-row\"><dt>\u25c0 / \u25b6</dt><dd>\u5de6\u624b\u5de6\u53f3\u8f6c\u5411</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u2191 \u6cb9\u95e8</dt><dd>\u53f3\u624b\u6309\u4f4f\u52a0\u901f</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u2193 \u5012\u8f66</dt><dd>\u5148\u5239\u8f66\uff0c\u518d\u5012\u8f66</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u5239\u8f66 / \u6f02\u79fb</dt><dd>\u72ec\u7acb\u5239\u8f66 \u00b7 \u6f02\u79fb\u65f6\u914d\u5408\u8f6c\u5411</dd></div>\n",
+            "    </dl></section>\n",
+            "    <section class=\"loading-control-group\"><h3>\u9053\u5177\u4e0e\u89c6\u89d2</h3><dl>\n",
+            "      <div class=\"loading-control-row\"><dt>\u9053\u5177</dt><dd>\u62fe\u53d6\u540e\u70b9\u51fb\u4f7f\u7528</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u6ed1\u52a8\u753b\u9762</dt><dd>\u7a7a\u767d\u8d5b\u9053\u533a\u57df\u62d6\u52a8\u73af\u987e</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u56de\u770b / \u56de\u6b63</dt><dd>\u6309\u4f4f\u56de\u770b \u00b7 \u70b9\u51fb\u56de\u6b63</dd></div>\n",
+            "      <div class=\"loading-control-row\"><dt>\u89c6\u89d2 / \u6682\u505c</dt><dd>\u5207\u6362\u8ffd\u9010\u89c6\u89d2 \u00b7 \u6682\u505c\u6bd4\u8d5b</dd></div>\n",
+            "    </dl></section>\n",
+            "  </div>\n",
+            "  <section class=\"loading-control-secondary\"><p>\u53ef\u540c\u65f6\u6309\u4f4f\u6cb9\u95e8\u3001\u8f6c\u5411\u548c\u6f02\u79fb\uff1b\u677e\u5f00\u6f02\u79fb\u91ca\u653e\u84c4\u529b\u52a0\u901f\u3002\u52a0\u8f7d\u5b8c\u6210\u540e\u70b9\u51fb\u5f00\u59cb</p></section>\n"
+          ]
+        }
+      ]
+    },
+    "src/race-controls.ts": {
+      "previousSha256": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
+      "currentSha256": "aa84c6e0a0498df39cb970c2e8df462a7039c2d877ab3923b2958ded711f3037",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 1,
+          "afterStart": 1,
+          "removedLines": [],
+          "insertedLines": [
+            "import {CONTROL_MODE_EVENT} from './mobile-controls';\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 45,
+          "removedLines": [],
+          "insertedLines": [
+            "  const buttons = [...(options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]'))];\n"
+          ]
+        },
+        {
+          "beforeStart": 45,
+          "afterStart": 47,
+          "removedLines": [],
+          "insertedLines": [
+            "  let touchLook: {id: number; x: number; y: number} | null = null;\n"
+          ]
+        },
+        {
+          "beforeStart": 52,
+          "afterStart": 55,
+          "removedLines": [],
+          "insertedLines": [
+            "    for (const button of buttons) if (button.dataset.key === code) button.setAttribute?.('aria-pressed', String(keys[code]));\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 59,
+          "removedLines": [],
+          "insertedLines": [
+            "    const lookId = touchLook?.id; touchLook = null;\n",
+            "    if (lookId !== undefined) { try { if (canvas.hasPointerCapture?.(lookId)) canvas.releasePointerCapture?.(lookId); } catch {} }\n"
+          ]
+        },
+        {
+          "beforeStart": 57,
+          "afterStart": 63,
+          "removedLines": [],
+          "insertedLines": [
+            "    for (const button of buttons) button.setAttribute?.('aria-pressed', 'false');\n"
+          ]
+        },
+        {
+          "beforeStart": 91,
+          "afterStart": 98,
+          "removedLines": [],
+          "insertedLines": [
+            "  on(doc, CONTROL_MODE_EVENT, () => { clear(); mouseLook?.release(); });\n"
+          ]
+        },
+        {
+          "beforeStart": 95,
+          "afterStart": 103,
+          "removedLines": [],
+          "insertedLines": [
+            "  // A free finger can orbit while other fingers independently steer/accelerate.\n",
+            "  on(canvas, 'pointerdown', (event: PointerEvent) => {\n",
+            "    if (event.pointerType !== 'touch' || !active() || touchLook) return;\n",
+            "    event.preventDefault();\n",
+            "    touchLook = {id: event.pointerId, x: event.clientX, y: event.clientY};\n",
+            "    try { canvas.setPointerCapture?.(event.pointerId); } catch {}\n",
+            "  });\n",
+            "  on(canvas, 'pointermove', (event: PointerEvent) => {\n",
+            "    if (!touchLook || event.pointerId !== touchLook.id || !active()) return;\n",
+            "    event.preventDefault();\n",
+            "    if (!keys.RearView) orbit.move(event.clientX - touchLook.x, event.clientY - touchLook.y);\n",
+            "    touchLook.x = event.clientX; touchLook.y = event.clientY;\n",
+            "  });\n",
+            "  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(canvas, type, (event: PointerEvent) => {\n",
+            "    if (touchLook?.id === event.pointerId) touchLook = null;\n",
+            "  });\n",
+            "  for (const button of doc.querySelectorAll<HTMLButtonElement>('[data-mobile-action]')) {\n",
+            "    on(button, 'click', () => {\n",
+            "      const action = button.dataset.mobileAction;\n",
+            "      if (!active()) return;\n",
+            "      if (action === 'recenter') { orbit.recenter(); options.recenter(); }\n",
+            "      if (action === 'camera') options.switchCamera();\n",
+            "      if (action === 'item') options.useItem();\n",
+            "      if (action === 'pause') { clear(); mouseLook.release(); options.pause(); }\n",
+            "    });\n",
+            "  }\n",
+            "\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 149,
+          "removedLines": [
+            "    on(canvas, type, () => { rearMouse = false; sync('RearView'); });\n"
+          ],
+          "insertedLines": [
+            "    on(canvas, type, (event: PointerEvent) => { if (event.pointerType !== 'touch') { rearMouse = false; sync('RearView'); } });\n"
+          ]
+        },
+        {
+          "beforeStart": 116,
+          "afterStart": 151,
+          "removedLines": [
+            "  for (const button of options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]')) {\n"
+          ],
+          "insertedLines": [
+            "  for (const button of buttons) {\n"
+          ]
+        },
+        {
+          "beforeStart": 136,
+          "afterStart": 171,
+          "removedLines": [],
+          "insertedLines": [
+            "  for (const type of ['pointerup', 'pointercancel']) on(doc, type, (event: PointerEvent) => {\n",
+            "    const pointer = pointers.get(event.pointerId);\n",
+            "    if (pointer) { pointers.delete(event.pointerId); sync(pointer.code); }\n",
+            "    if (touchLook?.id === event.pointerId) touchLook = null;\n",
+            "  });\n"
+          ]
+        }
+      ]
+    },
+    "src/race-hud.ts": {
+      "previousSha256": "196064bac67f4031a8704a0dfea49091d3252d071f70a18dfbcbc74d73cc9eef",
+      "currentSha256": "783a3f84272bedbcb4972c0e30c716125d27536b5fd8efbda95b36c1ae282cee",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 1,
+          "afterStart": 1,
+          "removedLines": [],
+          "insertedLines": [
+            "import { mountMobileControls } from './mobile-controls';\n"
+          ]
+        },
+        {
+          "beforeStart": 4,
+          "afterStart": 5,
+          "removedLines": [
+            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"\u771f\u5b9e 3D \u5361\u4e01\u8f66\u8d5b\u9053\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"\u5f53\u524d\u9009\u624b\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"\u5207\u6362\u89c6\u89d2 / Z\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u25c9</button><button class=\"icon\" id=\"sound\" title=\"\u97f3\u6548\u5f00\u5173\" aria-label=\"\u97f3\u6548\u5f00\u5173\">\u266a</button><button class=\"icon game-ui\" id=\"pause\" title=\"\u6682\u505c / Esc / P\" aria-label=\"\u6682\u505c\">\u2161</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"\u8d5b\u9053\u8fdb\u5ea6\u56fe\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">\u6309\u4f4f W \u6cb9\u95e8\u8d77\u6b65</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E \u4f7f\u7528</span><strong id=\"itemName\">\u25c7 \u7b49\u5f85\u9053\u5177</strong><span id=\"itemHelp\">\u649e\u7bb1\u62fe\u53d6 \u00b7 \u95ee\u53f7\u4e3a\u968f\u673a\u9053\u5177</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">\u5355\u51fb\u8d5b\u9053\uff0c\u79fb\u52a8\u9f20\u6807\u73af\u987e \u00b7 Q \u56de\u6b63 \u00b7 Esc \u6682\u505c</div><div class=\"touch\"><div class=\"group\"><button data-key=\"ArrowLeft\" aria-label=\"\u5de6\u8f6c\">\u25c0</button><button data-key=\"ArrowRight\" aria-label=\"\u53f3\u8f6c\">\u25b6</button></div><div class=\"group\"><button class=\"drift\" data-key=\"ShiftLeft\" aria-label=\"\u624b\u5239\u6f02\u79fb\">\u6f02\u79fb</button><button data-key=\"Space\" aria-label=\"\u5239\u8f66\">\u5239\u8f66</button><button data-key=\"KeyS\" aria-label=\"\u5239\u8f66\u4e0e\u5012\u8f66\">\u5012\u8f66</button><button class=\"throttle\" data-key=\"KeyW\" aria-label=\"\u6cb9\u95e8\">\u6cb9\u95e8</button></div></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"\u6bd4\u8d5b\u6682\u505c\"><div class=\"pause-actions\"><h2>\u6bd4\u8d5b\u5df2\u6682\u505c</h2><button id=\"resumeRace\">\u7ee7\u7eed\u6bd4\u8d5b</button><button id=\"restartRace\">\u91cd\u65b0\u5f00\u59cb</button><button id=\"pauseChangeMap\">\u66f4\u6362\u5730\u56fe</button><button id=\"pauseMenu\">\u8fd4\u56de\u4e3b\u83dc\u5355</button></div></section>`;\n"
+          ],
+          "insertedLines": [
+            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"\u771f\u5b9e 3D \u5361\u4e01\u8f66\u8d5b\u9053\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"\u5f53\u524d\u9009\u624b\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"\u5207\u6362\u89c6\u89d2 / Z\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u25c9</button><button class=\"icon\" id=\"sound\" title=\"\u97f3\u6548\u5f00\u5173\" aria-label=\"\u97f3\u6548\u5f00\u5173\">\u266a</button><button class=\"icon game-ui\" id=\"pause\" title=\"\u6682\u505c / Esc / P\" aria-label=\"\u6682\u505c\">\u2161</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"\u8d5b\u9053\u8fdb\u5ea6\u56fe\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">\u6309\u4f4f W \u6cb9\u95e8\u8d77\u6b65</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E \u4f7f\u7528</span><strong id=\"itemName\">\u25c7 \u7b49\u5f85\u9053\u5177</strong><span id=\"itemHelp\">\u649e\u7bb1\u62fe\u53d6 \u00b7 \u95ee\u53f7\u4e3a\u968f\u673a\u9053\u5177</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">\u5355\u51fb\u8d5b\u9053\uff0c\u79fb\u52a8\u9f20\u6807\u73af\u987e \u00b7 Q \u56de\u6b63 \u00b7 Esc \u6682\u505c</div><div id=\"mobileControlModePanel\" class=\"mobile-control-mode\"><label for=\"mobileControlMode\">\u64cd\u63a7</label><select id=\"mobileControlMode\" aria-label=\"\u9009\u62e9\u64cd\u63a7\u65b9\u5f0f\"><option value=\"auto\">\u81ea\u52a8\u8bc6\u522b</option><option value=\"touch\">\u89e6\u5c4f\u6309\u952e</option><option value=\"desktop\">\u952e\u76d8\u9f20\u6807</option></select></div><div id=\"mobileTouchControls\" class=\"touch mobile-controls\" role=\"group\" aria-label=\"\u89e6\u5c4f\u9a7e\u9a76\u63a7\u5236\"><div class=\"mobile-steering\" role=\"group\" aria-label=\"\u65b9\u5411\"><button type=\"button\" data-key=\"ArrowLeft\" aria-label=\"\u6309\u4f4f\u5de6\u8f6c\"><span aria-hidden=\"true\">\u276e</span></button><button type=\"button\" data-key=\"ArrowRight\" aria-label=\"\u6309\u4f4f\u53f3\u8f6c\"><span aria-hidden=\"true\">\u276f</span></button></div><div class=\"mobile-pedals\" role=\"group\" aria-label=\"\u6cb9\u95e8\u548c\u5012\u8f66\"><button type=\"button\" class=\"throttle\" data-key=\"KeyW\" aria-label=\"\u6309\u4f4f\u6cb9\u95e8\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2303</span><span>\u6cb9\u95e8</span></button><button type=\"button\" class=\"reverse\" data-key=\"KeyS\" aria-label=\"\u6309\u4f4f\u5239\u8f66\u4e0e\u5012\u8f66\"><span class=\"mobile-arrow\" aria-hidden=\"true\">\u2304</span><span>\u5012\u8f66</span></button></div><button type=\"button\" class=\"mobile-drift drift\" data-key=\"ShiftLeft\" aria-label=\"\u6309\u4f4f\u624b\u5239\u6f02\u79fb\">\u6f02\u79fb</button><button type=\"button\" class=\"mobile-brake\" data-key=\"Space\" aria-label=\"\u6309\u4f4f\u5239\u8f66\">\u5239\u8f66</button><button type=\"button\" class=\"mobile-item\" data-mobile-action=\"item\" aria-label=\"\u4f7f\u7528\u5f53\u524d\u9053\u5177\"><span aria-hidden=\"true\">\u25c7</span><span>\u9053\u5177</span></button><div class=\"mobile-utilities\" role=\"group\" aria-label=\"\u89c6\u89d2\u4e0e\u6682\u505c\"><button type=\"button\" data-mobile-action=\"camera\" aria-label=\"\u5207\u6362\u89c6\u89d2\">\u89c6\u89d2</button><button type=\"button\" data-mobile-action=\"recenter\" aria-label=\"\u89c6\u89d2\u56de\u6b63\">\u56de\u6b63</button><button type=\"button\" data-key=\"RearView\" aria-label=\"\u6309\u4f4f\u5411\u540e\u770b\">\u56de\u770b</button><button type=\"button\" data-mobile-action=\"pause\" aria-label=\"\u6682\u505c\u6bd4\u8d5b\">\u2161</button></div><p class=\"mobile-rotate-hint\" role=\"status\">\u6a2a\u5c4f\u9a7e\u9a76\uff0c\u64cd\u63a7\u66f4\u8212\u9002</p></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"\u6bd4\u8d5b\u6682\u505c\"><div class=\"pause-actions\"><h2>\u6bd4\u8d5b\u5df2\u6682\u505c</h2><button id=\"resumeRace\">\u7ee7\u7eed\u6bd4\u8d5b</button><button id=\"restartRace\">\u91cd\u65b0\u5f00\u59cb</button><button id=\"pauseChangeMap\">\u66f4\u6362\u5730\u56fe</button><button id=\"pauseMenu\">\u8fd4\u56de\u4e3b\u83dc\u5355</button></div></section>`;\n"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 22,
+          "removedLines": [],
+          "insertedLines": [
+            "  mountMobileControls(doc, canvas);\n"
+          ]
+        }
+      ]
+    },
+    "src/race-loading-ui.ts": {
+      "previousSha256": "cfbe96cebd69b1d7727be6c2ede0772f42dbc51c2fd315657b5e713caf32dd33",
+      "currentSha256": "e7b6041833baccdba2b55ed73e2b236604138db819002a4cab4e46e1ebeb9f63",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {CONTROL_MODE_EVENT, touchHint} from './mobile-controls';\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 43,
+          "removedLines": [
+            "  get('loadingTipStart').textContent = '\u6309\u4f4f W \u63d0\u901f\uff0c\u518d\u6309\u5de6 Shift + A / D \u6301\u7eed\u8f6c\u5411\u84c4\u529b';\n",
+            "  get('loadingTipRelease').textContent = water\n",
+            "    ? '\u6ed1\u79fb\u8d85\u8fc7 0.6 \u79d2\u540e\uff0c\u677e\u5f00 Shift \u52a0\u901f\uff1b\u84c4\u529b\u8d8a\u6ee1\uff0c\u52a0\u901f\u8d8a\u4e45'\n",
+            "    : '\u84c4\u529b\u6761\u53d8\u9ec4\u540e\uff0c\u677e\u5f00 Shift \u52a0\u901f\uff1b\u84c4\u529b\u8d8a\u6ee1\uff0c\u52a0\u901f\u8d8a\u4e45';\n"
+          ],
+          "insertedLines": [
+            "  function updateTips() {\n",
+            "    const mobile = doc.body?.dataset?.inputMode === 'touch';\n",
+            "    const start = '\u6309\u4f4f W \u63d0\u901f\uff0c\u518d\u6309\u5de6 Shift + A / D \u6301\u7eed\u8f6c\u5411\u84c4\u529b';\n",
+            "    const release = water\n",
+            "      ? '\u6ed1\u79fb\u8d85\u8fc7 0.6 \u79d2\u540e\uff0c\u677e\u5f00 Shift \u52a0\u901f\uff1b\u84c4\u529b\u8d8a\u6ee1\uff0c\u52a0\u901f\u8d8a\u4e45'\n",
+            "      : '\u84c4\u529b\u6761\u53d8\u9ec4\u540e\uff0c\u677e\u5f00 Shift \u52a0\u901f\uff1b\u84c4\u529b\u8d8a\u6ee1\uff0c\u52a0\u901f\u8d8a\u4e45';\n",
+            "    get('loadingTipStart').textContent = mobile ? touchHint(start) : start;\n",
+            "    get('loadingTipRelease').textContent = mobile ? touchHint(release) : release;\n",
+            "  }\n",
+            "  updateTips();\n",
+            "  doc.addEventListener?.(CONTROL_MODE_EVENT, updateTips);\n"
+          ]
+        },
+        {
+          "beforeStart": 68,
+          "afterStart": 76,
+          "removedLines": [
+            "    dispose() { disposed = true; retryButton.disabled = true; continueButton.disabled = true; },\n"
+          ],
+          "insertedLines": [
+            "    dispose() { disposed = true; doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips); retryButton.disabled = true; continueButton.disabled = true; },\n"
+          ]
+        }
+      ]
+    },
+    "src/race-shell.ts": {
+      "previousSha256": "96003edbdbeefd13a2a63dc7f849818b5f3394427f7e40c07a398513092708bf",
+      "currentSha256": "e6dd2e0039eef9ee54122211b27f80849bfefb44ad13648c6b8b51199b63d878",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {touchHint} from './mobile-controls';\n"
+          ]
+        },
+        {
+          "beforeStart": 233,
+          "afterStart": 234,
+          "removedLines": [
+            "  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = value; };\n"
+          ],
+          "insertedLines": [
+            "  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = (id === 'chargeLabel' || id === 'itemHelp') && document.body?.dataset?.inputMode === 'touch' ? touchHint(value) : value; };\n"
+          ]
+        },
+        {
+          "beforeStart": 317,
+          "afterStart": 318,
+          "removedLines": [],
+          "insertedLines": [
+            "      const mobileItem = document.querySelector?.<HTMLButtonElement>('[data-mobile-action=\"item\"]');\n",
+            "      if (mobileItem) {\n",
+            "        mobileItem.disabled = !held || phase !== 'running' || snapshot.canUseItem === false;\n",
+            "        mobileItem.setAttribute('aria-label', held ? ITEMS[held].action : '\u7b49\u5f85\u9053\u5177');\n",
+            "        mobileItem.dataset.held = held || 'empty';\n",
+            "        mobileItem.textContent = held ? ITEMS[held].name : '\u25c7 \u9053\u5177';\n",
+            "      }\n"
+          ]
+        },
+        {
+          "beforeStart": 320,
+          "afterStart": 328,
+          "removedLines": [
+            "      phase = 'running'; resetPause(); clearToast();\n"
+          ],
+          "insertedLines": [
+            "      phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();\n"
+          ]
+        },
+        {
+          "beforeStart": 329,
+          "afterStart": 337,
+          "removedLines": [
+            "        phase = 'paused'; text('count', '\u5df2\u6682\u505c');\n"
+          ],
+          "insertedLines": [
+            "        phase = 'paused'; document.body.classList.add('race-paused'); text('count', '\u5df2\u6682\u505c');\n"
+          ]
+        },
+        {
+          "beforeStart": 336,
+          "afterStart": 344,
+          "removedLines": [
+            "        phase = 'running'; resetPause(); renderCountdown(countdown); focus(canvas);\n"
+          ],
+          "insertedLines": [
+            "        phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); renderCountdown(countdown); focus(canvas);\n"
+          ]
+        },
+        {
+          "beforeStart": 342,
+          "afterStart": 350,
+          "removedLines": [
+            "      phase = 'menu'; resetPause(); clearToast();\n"
+          ],
+          "insertedLines": [
+            "      phase = 'menu'; document.body.classList.remove('race-paused'); resetPause(); clearToast();\n"
+          ]
+        },
+        {
+          "beforeStart": 350,
+          "afterStart": 358,
+          "removedLines": [
+            "      phase = 'finished'; resetPause(); clearToast();\n"
+          ],
+          "insertedLines": [
+            "      phase = 'finished'; document.body.classList.remove('race-paused'); resetPause(); clearToast();\n"
+          ]
+        }
+      ]
+    },
+    "src/race-ui.css": {
+      "previousSha256": "c4db53cd85a4f12594e8db0286c7072fa5a1205d6f37df88cc90b6b10f70d126",
+      "currentSha256": "fa3098ea36d91df2fa810287f00c4c09533c8887f3d86f587e7dd42778190ef8",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 1,
+          "afterStart": 1,
+          "removedLines": [],
+          "insertedLines": [
+            "@import './mobile-controls.css';\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 11,
+          "removedLines": [
+            ":root{--lime:#d5ff60;--ink:#172936;--muted:#cbd5d6}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#183d4e;color:white;font-family:Inter,\"Helvetica Neue\",Arial,\"Microsoft Yahei\",sans-serif}button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}button:focus-visible{outline:3px solid var(--lime);outline-offset:5px}#game{position:fixed;inset:0;width:100%;height:100%;touch-action:none}#vignette{position:fixed;inset:0;pointer-events:none;background:linear-gradient(#132a3533,transparent 28%,transparent 75%,#091c3044)}.top{position:absolute;top:27px;left:32px;right:32px;display:flex;justify-content:space-between;gap:20px;pointer-events:none;align-items:start}.brand{font-weight:950;font-size:22px;font-style:italic;letter-spacing:-1px}.brand i{color:var(--lime);font-style:normal}.sub{margin-top:6px;font-size:10px;font-weight:650;letter-spacing:4px;color:#edfaf0b3}.hud{display:flex;gap:30px;background:#102b37b0;backdrop-filter:blur(16px);padding:12px 24px;border-radius:4px;border:1px solid #ffffff22}.label{font-size:9px;letter-spacing:2px;color:#c3d2d6;font-weight:700}.value{font-size:29px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}.value small{font-size:12px;color:#b0c7cf}.tools{display:flex;gap:7px;pointer-events:auto}.icon{width:42px;height:42px;background:#17323bb8;border:1px solid #ffffff33;border-radius:4px;font-size:17px;backdrop-filter:blur(12px)}.bottom{position:absolute;bottom:28px;left:32px;right:32px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}.speed{font-size:65px;font-weight:900;font-style:italic;line-height:.95;letter-spacing:-4px;font-variant-numeric:tabular-nums}.speed small{font-size:11px;font-style:normal;letter-spacing:1px;color:#d6e9e9;font-weight:700}.meter{width:176px;height:4px;background:#ffffff35;margin-top:14px}.fill{height:100%;width:0;background:var(--lime);box-shadow:0 0 12px var(--lime)}.hint{font-size:11px;color:#e3eced;margin-top:9px}.item{pointer-events:auto;min-width:176px;padding:12px 17px;border:1px solid #ffffff44;background:#102b37c9;border-radius:5px;text-align:left;backdrop-filter:blur(12px)}.item strong{display:block;font-size:19px;line-height:1.8}.item span{font-size:10px;color:#c6d9df;letter-spacing:1px}.center{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:110px;font-weight:950;font-style:italic;text-shadow:0 6px 30px #102b3777;pointer-events:none;white-space:nowrap}.center.paused{font-size:40px;letter-spacing:6px}.toast{position:absolute;left:50%;top:24%;transform:translateX(-50%);font-weight:750;font-size:14px;color:#fff;background:#102b37ba;border:1px solid #ffffff22;border-radius:4px;padding:11px 22px;opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;white-space:nowrap}.overlay{position:absolute;inset:0;background:linear-gradient(90deg,#102635ee 0%,#142b3999 38%,#12293410 65%,transparent);display:flex;align-items:center;padding:100.8px;pointer-events:none}.panel{max-width:590px;pointer-events:auto;padding-top:30px}.eyebrow{font-size:11px;letter-spacing:4px;font-weight:700;color:var(--lime);display:flex;align-items:center;gap:12px}.eyebrow:before{content:'';height:1px;width:28px;background:var(--lime)}.panel h1{font-size:106px;line-height:.87;letter-spacing:-5px;margin:27px 0 18px;font-weight:950;font-style:italic}.panel h1 em{font-style:inherit;color:var(--lime)}.chinese{font-size:19px;font-weight:800;letter-spacing:8px;margin-top:22px}.panel p{font-size:14px;line-height:1.85;color:#cedbdc;max-width:340px;margin:20px 0}.start{background:var(--lime);color:#173134;border:0;border-radius:4px;padding:16px 28px;font-size:16px;font-weight:850;min-width:210px;display:flex;justify-content:space-between;gap:30px;align-items:center;margin-top:28px;box-shadow:0 6px 25px #16232633}.start:disabled{opacity:.65;cursor:wait}.start:hover{background:#e5ff96;transform:translateY(-1px)}.controls{margin-top:24px;font-size:11px;color:#c9d9df;line-height:2.3;letter-spacing:.2px}.controls b{font-weight:600;font-size:10px;padding:3px 5px;background:#ffffff12;border:1px solid #ffffff25;border-radius:3px;color:white;margin-right:3px}.tag{position:absolute;bottom:28px;left:100.8px;color:#b6cbd0;font-size:9px;letter-spacing:3px;display:flex;gap:24px}.scene-label{position:absolute;right:40px;bottom:38px;text-align:right;font-size:10px;letter-spacing:3px;color:#f5ffffb5}.scene-label strong{display:block;font-size:22px;font-style:italic;color:#fff;letter-spacing:1px;margin-top:6px}.hidden{display:none!important}.touch{display:none;position:absolute;bottom:116px;left:20px;right:20px;justify-content:space-between;pointer-events:none}.touch .group{display:flex;gap:9px}.touch button{pointer-events:auto;touch-action:none;width:61px;height:61px;background:#18333ab8;border:1px solid #ffffff66;border-radius:50%;font-size:21px;user-select:none;-webkit-user-select:none}.touch button.drift{font-size:13px;color:var(--lime);border-color:var(--lime)}.touch button.throttle{background:#d5ff60d9;color:#173134;font-size:13px;font-weight:800}.touch button:active{background:#ffffff66}#map{position:absolute;right:31px;top:128px;width:162px;height:auto;aspect-ratio:260/230;pointer-events:none;filter:drop-shadow(0 2px 5px #14283688)}.results{font-size:18px;line-height:1.9;color:#e6efff}.loading{font-size:10px;color:#c7d6d9;letter-spacing:1px;margin-top:12px;min-height:16px}.look-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-size:11px;color:#edf4ec;background:#102b37b8;padding:9px 13px;border:1px solid #ffffff22;border-radius:4px;white-space:nowrap;pointer-events:none}.game-ui{transition:opacity .3s}body.menu .game-ui{opacity:0;pointer-events:none}body.menu .game-ui button{pointer-events:none}.error{position:absolute;bottom:8%;left:10%;right:10%;background:#27313be8;border:1px solid #e7bcb2;padding:18px;font-size:14px;line-height:1.7;border-radius:8px}\n",
+            "@media(pointer:coarse){.look-hint{display:none}}\n"
+          ],
+          "insertedLines": [
+            ":root{--lime:#d5ff60;--ink:#172936;--muted:#cbd5d6}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#183d4e;color:white;font-family:Inter,\"Helvetica Neue\",Arial,\"Microsoft Yahei\",sans-serif}button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}button:focus-visible{outline:3px solid var(--lime);outline-offset:5px}#game{position:fixed;inset:0;width:100%;height:100%;touch-action:none}#vignette{position:fixed;inset:0;pointer-events:none;background:linear-gradient(#132a3533,transparent 28%,transparent 75%,#091c3044)}.top{position:absolute;top:27px;left:32px;right:32px;display:flex;justify-content:space-between;gap:20px;pointer-events:none;align-items:start}.brand{font-weight:950;font-size:22px;font-style:italic;letter-spacing:-1px}.brand i{color:var(--lime);font-style:normal}.sub{margin-top:6px;font-size:10px;font-weight:650;letter-spacing:4px;color:#edfaf0b3}.hud{display:flex;gap:30px;background:#102b37b0;backdrop-filter:blur(16px);padding:12px 24px;border-radius:4px;border:1px solid #ffffff22}.label{font-size:9px;letter-spacing:2px;color:#c3d2d6;font-weight:700}.value{font-size:29px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}.value small{font-size:12px;color:#b0c7cf}.tools{display:flex;gap:7px;pointer-events:auto}.icon{width:42px;height:42px;background:#17323bb8;border:1px solid #ffffff33;border-radius:4px;font-size:17px;backdrop-filter:blur(12px)}.bottom{position:absolute;bottom:28px;left:32px;right:32px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}.speed{font-size:65px;font-weight:900;font-style:italic;line-height:.95;letter-spacing:-4px;font-variant-numeric:tabular-nums}.speed small{font-size:11px;font-style:normal;letter-spacing:1px;color:#d6e9e9;font-weight:700}.meter{width:176px;height:4px;background:#ffffff35;margin-top:14px}.fill{height:100%;width:0;background:var(--lime);box-shadow:0 0 12px var(--lime)}.hint{font-size:11px;color:#e3eced;margin-top:9px}.item{pointer-events:auto;min-width:176px;padding:12px 17px;border:1px solid #ffffff44;background:#102b37c9;border-radius:5px;text-align:left;backdrop-filter:blur(12px)}.item strong{display:block;font-size:19px;line-height:1.8}.item span{font-size:10px;color:#c6d9df;letter-spacing:1px}.center{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:110px;font-weight:950;font-style:italic;text-shadow:0 6px 30px #102b3777;pointer-events:none;white-space:nowrap}.center.paused{font-size:40px;letter-spacing:6px}.toast{position:absolute;left:50%;top:24%;transform:translateX(-50%);font-weight:750;font-size:14px;color:#fff;background:#102b37ba;border:1px solid #ffffff22;border-radius:4px;padding:11px 22px;opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;white-space:nowrap}.overlay{position:absolute;inset:0;background:linear-gradient(90deg,#102635ee 0%,#142b3999 38%,#12293410 65%,transparent);display:flex;align-items:center;padding:100.8px;pointer-events:none}.panel{max-width:590px;pointer-events:auto;padding-top:30px}.eyebrow{font-size:11px;letter-spacing:4px;font-weight:700;color:var(--lime);display:flex;align-items:center;gap:12px}.eyebrow:before{content:'';height:1px;width:28px;background:var(--lime)}.panel h1{font-size:106px;line-height:.87;letter-spacing:-5px;margin:27px 0 18px;font-weight:950;font-style:italic}.panel h1 em{font-style:inherit;color:var(--lime)}.chinese{font-size:19px;font-weight:800;letter-spacing:8px;margin-top:22px}.panel p{font-size:14px;line-height:1.85;color:#cedbdc;max-width:340px;margin:20px 0}.start{background:var(--lime);color:#173134;border:0;border-radius:4px;padding:16px 28px;font-size:16px;font-weight:850;min-width:210px;display:flex;justify-content:space-between;gap:30px;align-items:center;margin-top:28px;box-shadow:0 6px 25px #16232633}.start:disabled{opacity:.65;cursor:wait}.start:hover{background:#e5ff96;transform:translateY(-1px)}.controls{margin-top:24px;font-size:11px;color:#c9d9df;line-height:2.3;letter-spacing:.2px}.controls b{font-weight:600;font-size:10px;padding:3px 5px;background:#ffffff12;border:1px solid #ffffff25;border-radius:3px;color:white;margin-right:3px}.tag{position:absolute;bottom:28px;left:100.8px;color:#b6cbd0;font-size:9px;letter-spacing:3px;display:flex;gap:24px}.scene-label{position:absolute;right:40px;bottom:38px;text-align:right;font-size:10px;letter-spacing:3px;color:#f5ffffb5}.scene-label strong{display:block;font-size:22px;font-style:italic;color:#fff;letter-spacing:1px;margin-top:6px}.hidden{display:none!important}#map{position:absolute;right:31px;top:128px;width:162px;height:auto;aspect-ratio:260/230;pointer-events:none;filter:drop-shadow(0 2px 5px #14283688)}.results{font-size:18px;line-height:1.9;color:#e6efff}.loading{font-size:10px;color:#c7d6d9;letter-spacing:1px;margin-top:12px;min-height:16px}.look-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-size:11px;color:#edf4ec;background:#102b37b8;padding:9px 13px;border:1px solid #ffffff22;border-radius:4px;white-space:nowrap;pointer-events:none}.game-ui{transition:opacity .3s}body.menu .game-ui{opacity:0;pointer-events:none}body.menu .game-ui button{pointer-events:none}.error{position:absolute;bottom:8%;left:10%;right:10%;background:#27313be8;border:1px solid #e7bcb2;padding:18px;font-size:14px;line-height:1.7;border-radius:8px}\n",
+            "\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 45,
+          "removedLines": [
+            "/* Input capability changes visibility only, never the logical control sizes. */\n",
+            "@media(pointer:coarse){.touch{display:flex}body.menu .touch{display:none}}\n"
+          ],
+          "insertedLines": [
+            "/* Physical touch controls are isolated in mobile-controls.css. */\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-menu-presentation-transition.test.ts": {
+      "previousSha256": "28260791618b7a3b1959f6cc81bb03b3496947f5a4f129e3470d12321d6381d3",
+      "currentSha256": "8e6230f789da2b350040965f41da94e68ac4676a7c66b96611576e9b10119355",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash, mobileControlsPathsWithin, restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 33,
+          "afterStart": 34,
+          "removedLines": [
+            "    const current = read(path), original = restoreMenuPresentationBytes(path, current);\n"
+          ],
+          "insertedLines": [
+            "    const raw = read(path), current = restoreMobileControlsBytes(path, raw), original = restoreMenuPresentationBytes(path, raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 43,
+          "removedLines": [
+            "    assert.throws(() => restoreMenuPresentationBytes(path, current + ' '), undefined, path + ' unreviewed current byte rejected');\n"
+          ],
+          "insertedLines": [
+            "    assert.throws(() => restoreMenuPresentationBytes(path, raw + ' '), undefined, path + ' unreviewed current byte rejected');\n"
+          ]
+        },
+        {
+          "beforeStart": 49,
+          "afterStart": 50,
+          "removedLines": [
+            "    assert.equal(menuPresentationHash(path, row.previousSha256), row.currentSha256);\n",
+            "    assertMenuPresentationDependency(path, row.previousSha256, row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(menuPresentationHash(path, row.previousSha256), mobileControlsHash(path, row.currentSha256));\n",
+            "    assertMenuPresentationDependency(path, row.previousSha256, mobileControlsHash(path, row.currentSha256) as string);\n"
+          ]
+        },
+        {
+          "beforeStart": 92,
+          "afterStart": 93,
+          "removedLines": [
+            "  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory)])]);\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(menuPresentationPathsWithin(town.sourceInventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(town.sourceInventory, path)), ...stablePagesRepinPathsWithin(town.sourceInventory), ...mobileControlsPathsWithin(town.sourceInventory)])]);\n"
+          ]
+        },
+        {
+          "beforeStart": 127,
+          "afterStart": 128,
+          "removedLines": [
+            "    assert.equal(hashes['tests/free-mode-menu-dom.test.ts'], review.changes['tests/free-mode-menu-dom.test.ts'].currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(hashes['tests/free-mode-menu-dom.test.ts'], mobileControlsHash('tests/free-mode-menu-dom.test.ts', review.changes['tests/free-mode-menu-dom.test.ts'].currentSha256));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-stable-pages-repin-transition.test.ts": {
+      "previousSha256": "1c6b052440102fcff03daceddd53adf5a6daebf921f9442abb1d5ff535088563",
+      "currentSha256": "1b664ee087545aed1a3ce096a994d17a9f8662a517ff915b290e6823d23f678b",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash, restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 49,
+          "removedLines": [
+            "    const current = read(path), original = restoreStablePagesRepinBytes(path, current);\n"
+          ],
+          "insertedLines": [
+            "    const raw = read(path), current = restoreMobileControlsBytes(path, raw), original = restoreStablePagesRepinBytes(path, raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 57,
+          "afterStart": 58,
+          "removedLines": [
+            "    assert.throws(() => restoreStablePagesRepinBytes(path, current + ' '), undefined, path);\n"
+          ],
+          "insertedLines": [
+            "    assert.throws(() => restoreStablePagesRepinBytes(path, raw + ' '), undefined, path);\n"
+          ]
+        },
+        {
+          "beforeStart": 68,
+          "afterStart": 69,
+          "removedLines": [
+            "    assert.equal(menuPresentationHash(path, row.previousSha256), row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(menuPresentationHash(path, row.previousSha256), mobileControlsHash(path, row.currentSha256));\n"
+          ]
+        },
+        {
+          "beforeStart": 145,
+          "afterStart": 146,
+          "removedLines": [
+            "  for (const [path, hash] of Object.entries(section.currentFileSha256)) assert.equal(sha(readFileSync(path)), hash, path + ' exact current closure');\n",
+            "  for (const [path, hash] of Object.entries(manifest.finalFileSha256)) assert.equal(section.currentFileSha256[path], menuPresentationHash(path, hash), path + ' complete historical-to-current provenance');\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, hash] of Object.entries(section.currentFileSha256)) assert.equal(sha(readFileSync(path)), mobileControlsHash(path, hash), path + ' exact current closure');\n",
+            "  for (const [path, hash] of Object.entries(manifest.finalFileSha256)) assert.equal(mobileControlsHash(path, section.currentFileSha256[path]), menuPresentationHash(path, hash), path + ' complete historical-to-current provenance');\n"
+          ]
+        }
+      ]
+    },
+    "tests/harvest-enrichment-inventory.test.ts": {
+      "previousSha256": "18ec5e32b1b7c50690bada4fd79e84d18c7b3cb1435ac946e562b8b064d51d5d",
+      "currentSha256": "338b9b4925d5f1117324e8fb5c728449cff6378687c88b21bf5e0bbd523a7cf4",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash} from './helpers/mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 37,
+          "removedLines": [
+            " for(const [path,hash]of Object.entries(camera.baselineGeometryContract.additionalProtectedSourceHashes))assert.equal(sha(readFileSync(path)),hash,path+' frozen camera/gameplay dependency');\n"
+          ],
+          "insertedLines": [
+            " for(const [path,hash]of Object.entries(camera.baselineGeometryContract.additionalProtectedSourceHashes))assert.equal(sha(readFileSync(path)),mobileControlsHash(path,hash),path+' frozen camera/gameplay dependency');\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/airfield-enrichment-source-stability.ts": {
+      "previousSha256": "21767fa2659041360235db4e46249e2ec36607487f292c34a51f8d208548c89f",
+      "currentSha256": "fe8e2d0b746e2b3e1c1336f720dcf4e9aad96c3a146a66a57b2d16fa1498d756",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsAuditDependencies} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 7,
+          "removedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies()]);\n"
+          ],
+          "insertedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies(),...mobileControlsAuditDependencies()]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/forest-enrichment-camera-worker.ts": {
+      "previousSha256": "fac4930c354bdd123151f4919162dcbd1d2be34df1bf40e7219f9d10f02d660e",
+      "currentSha256": "8168c6bdcc5484ad7eebd6f03a559c13653745f7ca9e78c7827ac2280b4ae079",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash, mobileControlsAuditDependencies} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 15,
+          "afterStart": 16,
+          "removedLines": [
+            "for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),digest,'Frozen camera dependency changed: '+file);\n",
+            "const sourceFiles=[...Object.keys(plan.dependencies),'src/forest-scenery.ts','docs/scene-baselines/forest-scenery.ts.txt','tests/forest-gameplay-camera.test.ts','tests/forest-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/forest-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];\n"
+          ],
+          "insertedLines": [
+            "for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),mobileControlsHash(file,digest),'Frozen camera dependency changed: '+file);\n",
+            "const sourceFiles=[...mobileControlsAuditDependencies(),...Object.keys(plan.dependencies),'src/forest-scenery.ts','docs/scene-baselines/forest-scenery.ts.txt','tests/forest-gameplay-camera.test.ts','tests/forest-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/forest-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/garden-enrichment-source-stability.ts": {
+      "previousSha256": "98282c792cba877ccfbb9bd4c849bc74786a969bd2583c0a4a09930602cacf4a",
+      "currentSha256": "2017266a5a461fd31039508dbc525fe25a678cf068f93efafa9a5d6fbfe93a9a",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsAuditDependencies} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 7,
+          "removedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies()]);\n"
+          ],
+          "insertedLines": [
+            " const files=new Set<string>([...Object.keys(receipt.sourceInventory),...menuPresentationAuditDependencies(),...mobileControlsAuditDependencies()]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/menu-presentation-reviewed-revisions.ts": {
+      "previousSha256": "3b08d4e255b6c3bd7037753c927e8ea61d111b69c4fe6533b12745822f21885e",
+      "currentSha256": "75dd58142ded4ec3bcbcffc5745b0ffda6088817d81f1447f8453146f46c532f",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash, mobileControlsPathsWithin, mobileControlsSourcePaths, restoreMobileControlsBytes} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 36,
+          "removedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return stablePagesRepinHash(path, incoming);\n"
+          ],
+          "insertedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return mobileControlsHash(path, stablePagesRepinHash(path, incoming));\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 39,
+          "removedLines": [
+            "  return stablePagesRepinHash(path, row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "  return mobileControlsHash(path, stablePagesRepinHash(path, row.currentSha256));\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 45,
+          "removedLines": [
+            "  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory)])];\n"
+          ],
+          "insertedLines": [
+            "  return [...new Set([...Object.keys(menuPresentationReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesRepinPathsWithin(inventory), ...mobileControlsPathsWithin(inventory)])];\n"
+          ]
+        },
+        {
+          "beforeStart": 52,
+          "afterStart": 53,
+          "removedLines": [
+            "  return [...Object.keys(inventory).filter(path => path.startsWith('src/')), ...Object.keys(additions)];\n"
+          ],
+          "insertedLines": [
+            "  return mobileControlsSourcePaths([...Object.keys(inventory).filter(path => path.startsWith('src/')), ...Object.keys(additions)]);\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 56,
+          "removedLines": [],
+          "insertedLines": [
+            "  current = restoreMobileControlsBytes(path, current);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/stable-pages-repin-reviewed-revisions.ts": {
+      "previousSha256": "9f686525b796fcce92293850a54567ee129b43cf5990ea2068d1b8977f2bedfd",
+      "currentSha256": "fd40613e6dd1f4a7c3b815f3e23f2798f60ce82f75a49f97f8b4c397a75afdd2",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restoreMobileControlsBytes} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 68,
+          "afterStart": 69,
+          "removedLines": [],
+          "insertedLines": [
+            "  current = restoreMobileControlsBytes(path, current);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/workshop-enrichment-camera-worker.ts": {
+      "previousSha256": "ac08bb5b8b0ea07a8a8ee593b0071de301f6c8c4a3ff47c12a0ab8da9c79a0f0",
+      "currentSha256": "12c2b5fe268b31c98a77a1fd9e4782e5b4a671012b8165add3c42a3c52b153ce",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash, mobileControlsAuditDependencies} from './mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 15,
+          "afterStart": 16,
+          "removedLines": [
+            "for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),digest,'Frozen camera dependency changed: '+file);\n",
+            "const sourceFiles=[...Object.keys(plan.dependencies),'src/workshop-scenery.ts','docs/scene-baselines/workshop-scenery.ts.txt','tests/workshop-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/workshop-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];\n"
+          ],
+          "insertedLines": [
+            "for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),mobileControlsHash(file,digest),'Frozen camera dependency changed: '+file);\n",
+            "const sourceFiles=[...mobileControlsAuditDependencies(),...Object.keys(plan.dependencies),'src/workshop-scenery.ts','docs/scene-baselines/workshop-scenery.ts.txt','tests/workshop-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/workshop-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];\n"
+          ]
+        }
+      ]
+    },
+    "tests/mountain-enrichment-contract.test.ts": {
+      "previousSha256": "d28064d8940ce7177db1bf0ce9f08a5f58da0b1fecd3dabb2f9692a9de70eedf",
+      "currentSha256": "153e4da225e2fbf7cbfa4ff09cf945c4238bc44961a223be2fa52e0f3898a0ff",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {mobileControlsHash} from './helpers/mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 12,
+          "afterStart": 13,
+          "removedLines": [
+            " for(const file of mountainProtectedSources)assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),golden.protectedSources[file],file+' changed during scenery-only enrichment');\n"
+          ],
+          "insertedLines": [
+            " for(const file of mountainProtectedSources)assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),mobileControlsHash(file,golden.protectedSources[file]),file+' changed during scenery-only enrichment');\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-controls.test.ts": {
+      "previousSha256": "38b8b4d37c1f478646b77cb041975bed94de7e76033abb5177a3dffda1da003a",
+      "currentSha256": "6608c6a5326d7d1d82eee6cde9b34eeae7f0e2b4056b353fcb1bfe3a41c9380e",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "removedLines": [],
+          "insertedLines": [
+            "  const actions = ['camera', 'recenter', 'item', 'pause'].map(action => { const button = new BrowserTarget('BUTTON'); button.dataset.mobileAction = action; return button; });\n",
+            "  doc.querySelectorAll = () => actions as any;\n"
+          ]
+        },
+        {
+          "beforeStart": 45,
+          "afterStart": 47,
+          "removedLines": [
+            "  return {doc, win, canvas, throttle, brake, rear, calls, controls, key, pointer, left, state: () => state, setState: (next: RaceControlState) => { state = next; }};\n"
+          ],
+          "insertedLines": [
+            "  return {doc, win, canvas, throttle, brake, rear, actions, calls, controls, key, pointer, left, state: () => state, setState: (next: RaceControlState) => { state = next; }};\n"
+          ]
+        },
+        {
+          "beforeStart": 137,
+          "afterStart": 139,
+          "removedLines": [
+            "    fire(f.canvas, 'mousedown', {button: 2}); f.pointer(f.canvas, event, 10); assert.equal(f.controls.keys.RearView, false);\n"
+          ],
+          "insertedLines": [
+            "    fire(f.canvas, 'mousedown', {button: 2}); f.pointer(f.canvas, event, 10, {pointerType: 'mouse'}); assert.equal(f.controls.keys.RearView, false);\n"
+          ]
+        },
+        {
+          "beforeStart": 186,
+          "afterStart": 188,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "test('touch camera finger coexists with pedals and cancels independently without pausing or mouse lock', () => {\n",
+            "  const f = fixture({lock: 'pending'});\n",
+            "  f.pointer(f.throttle, 'pointerdown', 1);\n",
+            "  f.pointer(f.brake, 'pointerdown', 2);\n",
+            "  f.pointer(f.canvas, 'pointerdown', 3, {clientX: 100, clientY: 100});\n",
+            "  f.pointer(f.canvas, 'pointermove', 3, {clientX: 160, clientY: 120});\n",
+            "  assert.equal(f.calls.lock, 0); assert.equal(f.calls.pause, 0);\n",
+            "  assert.ok(f.controls.orbit.get().targetYaw > 0);\n",
+            "  assert.ok(f.controls.keys.KeyW && f.controls.keys.Space);\n",
+            "  f.pointer(f.canvas, 'pointercancel', 3);\n",
+            "  const yaw = f.controls.orbit.get().targetYaw;\n",
+            "  f.pointer(f.canvas, 'pointermove', 3, {clientX: 250, clientY: 100});\n",
+            "  assert.equal(f.controls.orbit.get().targetYaw, yaw);\n",
+            "  assert.ok(f.controls.keys.KeyW && f.controls.keys.Space);\n",
+            "  f.controls.clear(); assert.equal(f.controls.keys.KeyW, false);\n",
+            "  assert.equal(f.canvas.captured.size, 1, 'cancel dispatch alone mocks browser-owned release');\n",
+            "  f.controls.dispose();\n",
+            "});\n",
+            "\n",
+            "test('switching control mode clears all sources and releases pointer lock without spurious pause', () => {\n",
+            "  const f = fixture();\n",
+            "  f.key('keydown', 'KeyW'); f.pointer(f.brake, 'pointerdown', 2);\n",
+            "  f.pointer(f.canvas, 'pointerdown', 3, {clientX: 10, clientY: 10});\n",
+            "  fire(f.doc, 'racecontrolmodechange');\n",
+            "  assert.equal(f.calls.pause, 0); assert.equal(f.state(), 'active');\n",
+            "  assert.equal(f.controls.keys.KeyW, false); assert.equal(f.controls.keys.Space, false);\n",
+            "  assert.equal(f.canvas.captured.size, 0); assert.equal(f.brake.captured.size, 0);\n",
+            "  f.pointer(f.canvas, 'pointermove', 3, {clientX: 100, clientY: 100});\n",
+            "  assert.equal(f.controls.orbit.get().targetYaw, 0);\n",
+            "  f.controls.dispose();\n",
+            "});\n",
+            "\n",
+            "test('document release fallback clears a held control when pointer capture was unavailable', () => {\n",
+            "  const f = fixture();\n",
+            "  f.throttle.setPointerCapture = () => { throw new Error('Unavailable'); };\n",
+            "  f.pointer(f.throttle, 'pointerdown', 10);\n",
+            "  assert.equal(f.controls.keys.KeyW, true);\n",
+            "  f.pointer(f.doc, 'pointerup', 10);\n",
+            "  assert.equal(f.controls.keys.KeyW, false);\n",
+            "  f.controls.dispose();\n",
+            "});\n",
+            "\n",
+            "test('releasing a touch look finger cannot cancel a held mouse rear-view source', () => {\n",
+            "  const f = fixture();\n",
+            "  f.pointer(f.canvas, 'pointerdown', 1, {pointerType: 'mouse', button: 2});\n",
+            "  assert.equal(f.controls.keys.RearView, true);\n",
+            "  f.pointer(f.canvas, 'pointerdown', 2, {clientX: 10, clientY: 10});\n",
+            "  f.pointer(f.canvas, 'pointerup', 2);\n",
+            "  assert.equal(f.controls.keys.RearView, true);\n",
+            "  fire(f.doc, 'mouseup', {button: 2});\n",
+            "  assert.equal(f.controls.keys.RearView, false);\n",
+            "  f.controls.dispose();\n",
+            "});\n",
+            "\n",
+            "test('touch utility actions fire once on click and do not activate behind paused/loading menus', () => {\n",
+            "  const f = fixture();\n",
+            "  f.controls.orbit.move(100, 100);\n",
+            "  for (const button of f.actions.slice(0, 3)) {\n",
+            "    f.pointer(button, 'pointerdown', 10);\n",
+            "    f.pointer(button, 'pointerup', 10);\n",
+            "    fire(button, 'click');\n",
+            "  }\n",
+            "  assert.equal(f.calls.camera, 1); assert.equal(f.calls.recenter, 1); assert.equal(f.calls.item, 1);\n",
+            "  assert.equal(f.controls.orbit.get().targetYaw, 0);\n",
+            "  f.pointer(f.throttle, 'pointerdown', 1); fire(f.actions[3], 'click');\n",
+            "  assert.equal(f.calls.pause, 1); assert.equal(f.controls.keys.KeyW, false);\n",
+            "  for (const state of ['paused', 'menu', 'finished', 'loading'] as RaceControlState[]) {\n",
+            "    f.setState(state); for (const button of f.actions) fire(button, 'click');\n",
+            "  }\n",
+            "  assert.equal(f.calls.pause, 1); assert.equal(f.calls.item, 1); assert.equal(f.calls.camera, 1);\n",
+            "  f.controls.dispose(); fire(f.actions[0], 'click'); assert.equal(f.calls.camera, 1);\n",
+            "});\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-ui-layout.test.ts": {
+      "previousSha256": "8f88b2777a2271a03c569c4873c02d29d066d40b0ddb326119c21a205046322b",
+      "currentSha256": "78398b0faccc1ecd68c19772efb710c7f6d49e95a0054d549978814b816d13d1",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 148,
+          "afterStart": 148,
+          "removedLines": [
+            "  assert.match(css, /@media\\(pointer:coarse\\)\\{\\.touch\\{display:flex\\}/);\n"
+          ],
+          "insertedLines": [
+            "  assert.match(css, /@import ['\"]\\.\\/mobile-controls\\.css['\"]/);\n",
+            "  assert.doesNotMatch(css, /\\.touch\\s*(?:button)?\\s*\\{/, 'legacy touch rules cannot override physical controls');\n",
+            "  const mobileCss = read('src/mobile-controls.css');\n",
+            "  assert.match(mobileCss, /body\\[data-input-mode='touch'\\]:not\\(\\.menu\\):not\\(\\.race-paused\\) \\.mobile-controls\\{display:block\\}/);\n",
+            "  assert.match(mobileCss, /\\.mobile-controls \\{[^}]*position:fixed;inset:0/s);\n",
+            "  assert.match(mobileCss, /min-width:48px;min-height:48px/);\n",
+            "  assert.match(mobileCss, /#mobileControlMode \\{[^}]*min-height:44px/s);\n",
+            "  assert.match(mobileCss, /body\\[data-input-mode='touch'\\] \\.pause-actions button\\{min-height:48px/);\n",
+            "  assert.match(mobileCss, /transform:scale\\(calc\\(1 \\/ var\\(--ui-scale, 1\\)\\)\\)/);\n",
+            "  assert.match(mobileCss, /\\.touch-control-guide\\{display:none\\}/);\n",
+            "  assert.match(mobileCss, /body\\[data-input-mode='touch'\\] \\.desktop-control-guide\\{display:none\\}/);\n",
+            "  const hud = read('src/race-hud.ts');\n",
+            "  for (const key of ['ArrowLeft','ArrowRight','KeyW','KeyS','Space','ShiftLeft','RearView']) assert.ok(hud.includes('data-key=\"' + key + '\"'));\n",
+            "  for (const action of ['camera','recenter','item','pause']) assert.ok(hud.includes('data-mobile-action=\"' + action + '\"'));\n",
+            "  assert.ok(hud.indexOf('mountRaceUiLayout(doc, canvas)') < hud.indexOf('mountMobileControls(doc, canvas)'));\n"
+          ]
+        },
+        {
+          "beforeStart": 152,
+          "afterStart": 166,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "test('physical touch layout arithmetic keeps driving targets separate at representative phone sizes', () => {\n",
+            "  // This is a source/layout contract, not a substitute for browser screenshots.\n",
+            "  // Tie the independent rectangle calculation to every CSS spacing constant.\n",
+            "  const css = readFileSync(new URL('../src/mobile-controls.css', import.meta.url), 'utf8');\n",
+            "  for (const source of [\n",
+            "    '--mobile-edge:20px;--mobile-bottom:30px;--mobile-primary:68px',\n",
+            "    '--mobile-edge:12px;--mobile-bottom:22px;--mobile-primary:60px',\n",
+            "    '--mobile-bottom:12px;--mobile-edge:14px;--mobile-primary:60px',\n",
+            "    'var(--mobile-bottom) + 112px', 'var(--mobile-bottom) + 206px',\n",
+            "    'var(--mobile-bottom) + 290px', 'var(--mobile-bottom) + 360px',\n",
+            "  ]) assert.ok(css.includes(source), source);\n",
+            "  type Box = {name: string; x: number; y: number; w: number; h: number};\n",
+            "  for (const [width,height,insetX,insetBottom] of [[320,568,0,0],[375,667,0,0],[390,844,0,34],[640,360,0,0],[844,390,44,21],[1024,768,0,0]]) {\n",
+            "    const portrait = height > width, short = !portrait && height <= 380;\n",
+            "    const edge = portrait ? 12 : short ? 14 : 20;\n",
+            "    const bottom = (portrait ? 22 : short ? 12 : 30) + insetBottom;\n",
+            "    const primary = portrait || short ? 60 : 68;\n",
+            "    const boxes: Box[] = [];\n",
+            "    const add = (name:string,x:number,b:number,w:number,h=w) => boxes.push({name,x,y:height-b-h,w,h});\n",
+            "    add('left',edge+insetX,bottom+14,primary);\n",
+            "    add('right',edge+insetX+primary+(portrait?10:14),bottom+14,primary);\n",
+            "    const right = edge+insetX;\n",
+            "    add('reverse',width-right-primary,bottom,primary);\n",
+            "    add('throttle',width-right-primary,bottom+primary+14,primary);\n",
+            "    add('drift',width-right-primary-20-78,bottom+(portrait?112:0),78);\n",
+            "    add('brake',width-right-primary-(portrait?20:112)-60,bottom+(portrait?290:8),60);\n",
+            "    add('item',width-right-primary-29-60,bottom+(portrait?206:94),60);\n",
+            "    for(let i=0;i<4;i++)add('utility'+i,width-right-4*48-3*10+i*58,bottom+(portrait?360:short?160:178),48);\n",
+            "    for(const box of boxes){\n",
+            "      assert.ok(box.w>=48&&box.h>=48,`${width}: ${box.name} physical target`);\n",
+            "      assert.ok(box.x>=0&&box.y>=0&&box.x+box.w<=width&&box.y+box.h<=height,`${width}: ${box.name} remains within viewport`);\n",
+            "    }\n",
+            "    for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){\n",
+            "      const a=boxes[i],b=boxes[j];\n",
+            "      assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,`${width}\u00d7${height}: ${a.name} overlaps ${b.name}`);\n",
+            "    }\n",
+            "  }\n",
+            "});\n"
+          ]
+        }
+      ]
+    },
+    "waterpark.html": {
+      "previousSha256": "e4dde253e80cc3245c045efdcd4394c404ff61f8df63e6303fb1ce07d0163e0c",
+      "currentSha256": "f497f6a7c42ebc7683fa33be322684383f6e92e2d4149cd6151de04246fc38c5",
+      "scope": "Shared mobile control presentation, mode switching and input lifecycle; keyboard and physics contracts retained",
+      "hunks": [
+        {
+          "beforeStart": 4,
+          "afterStart": 4,
+          "removedLines": [
+            "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n"
+          ],
+          "insertedLines": [
+            "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
+          ]
+        }
+      ]
+    }
+  },
+  "additions": {
+    "src/mobile-controls.css": {
+      "sha256": "4c8a4e3b470375d7c41e35c432aea3390542efcab7113e1a808452543a8d65d0",
+      "scope": "Separately pinned mobile UI implementation or independent regression evidence"
+    },
+    "src/mobile-controls.ts": {
+      "sha256": "ca142f84ade674c05f6026985df033a357639d0421144de2baecb6b0b2031b20",
+      "scope": "Separately pinned mobile UI implementation or independent regression evidence"
+    },
+    "tests/audit-mobile-controls-transition.test.ts": {
+      "sha256": "6ec7206df675a6d1c93071f77701a19aaa9bed585997f0e19ccb8acea996ddc5",
+      "scope": "Separately pinned mobile UI implementation or independent regression evidence"
+    },
+    "tests/helpers/mobile-controls-protected-evidence.json": {
+      "sha256": "3a3ed1cd74f20597d622888ad399c16c7fc8b25f0655d2c03193f4ffa015a6e4",
+      "scope": "Separately pinned mobile UI implementation or independent regression evidence"
+    },
+    "tests/mobile-controls.test.ts": {
+      "sha256": "528fb56edd622fbf529b501fdf9248804c002cba638cd30531ce8d970dcc71f5",
+      "scope": "Separately pinned mobile UI implementation or independent regression evidence"
+    }
+  }
+}

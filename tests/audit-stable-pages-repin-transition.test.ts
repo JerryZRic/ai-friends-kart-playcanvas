@@ -1,3 +1,4 @@
+import {mobileControlsHash, restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -46,7 +47,7 @@ test('stable repin identifies the exact successful main artifact and all 216 pub
 test('all three repin changes reconstruct exact historical bytes and exact complete forward round trips', () => {
   assert.deepEqual(Object.keys(review.changes), [...STABLE_PAGES_REPIN_PATHS]);
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), original = restoreStablePagesRepinBytes(path, current);
+    const raw = read(path), current = restoreMobileControlsBytes(path, raw), original = restoreStablePagesRepinBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path);
     assert.equal(sha(original), row.previousSha256, path);
     const lines = original.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -55,7 +56,7 @@ test('all three repin changes reconstruct exact historical bytes and exact compl
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' full exact forward reconstruction');
-    assert.throws(() => restoreStablePagesRepinBytes(path, current + ' '), undefined, path);
+    assert.throws(() => restoreStablePagesRepinBytes(path, raw + ' '), undefined, path);
     assert.throws(() => restoreStablePagesRepinBytes(path, original), undefined, path + ' no old-byte fallback');
   }
   assert.equal(review.changes[stablePath].previousSha256, 'fcdbfe313018b83a1e1d85ba7af800438dbe43440557c4d5a5cc27c22ec00802');
@@ -66,7 +67,7 @@ test('all three repin changes reconstruct exact historical bytes and exact compl
 test('only exact incoming/current pairs pass and aliases or unlisted paths remain unchanged', () => {
   for (const [path, row] of Object.entries(review.changes)) {
     assert.equal(stablePagesRepinHash(path, row.previousSha256), row.currentSha256);
-    assert.equal(menuPresentationHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(menuPresentationHash(path, row.previousSha256), mobileControlsHash(path, row.currentSha256));
     assertStablePagesRepinDependency(path, row.previousSha256, row.currentSha256);
     for (const incoming of [undefined, '0'.repeat(64), row.currentSha256]) {
       assert.throws(() => stablePagesRepinHash(path, incoming), undefined, path);
@@ -143,8 +144,8 @@ test('the current Airfield closure is complete, excludes self-hashes, and restor
   const required = [...new Set([...Object.keys(manifest.finalFileSha256), ...menuPresentationAuditDependencies()])].filter(path => path !== portablePath).sort();
   assert.deepEqual(Object.keys(section.currentFileSha256).sort(), required);
   assert.ok(!Object.hasOwn(section.currentFileSha256, portablePath), 'No self-referential closure digest');
-  for (const [path, hash] of Object.entries(section.currentFileSha256)) assert.equal(sha(readFileSync(path)), hash, path + ' exact current closure');
-  for (const [path, hash] of Object.entries(manifest.finalFileSha256)) assert.equal(section.currentFileSha256[path], menuPresentationHash(path, hash), path + ' complete historical-to-current provenance');
+  for (const [path, hash] of Object.entries(section.currentFileSha256)) assert.equal(sha(readFileSync(path)), mobileControlsHash(path, hash), path + ' exact current closure');
+  for (const [path, hash] of Object.entries(manifest.finalFileSha256)) assert.equal(mobileControlsHash(path, section.currentFileSha256[path]), menuPresentationHash(path, hash), path + ' complete historical-to-current provenance');
   for (const path of stablePagesRepinAuditDependencies().filter(path => path !== portablePath)) assert.ok(Object.hasOwn(section.currentFileSha256, path), path + ' repin proof dependency');
 });
 

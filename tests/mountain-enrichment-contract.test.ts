@@ -1,3 +1,4 @@
+import {mobileControlsHash} from './helpers/mobile-controls-reviewed-revisions';
 import {airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -10,7 +11,7 @@ const golden=JSON.parse(readFileSync(new URL('./fixtures/mountain-source-baselin
 const reviewed=JSON.parse(readFileSync(new URL('./fixtures/reviewed-scene-revisions.json',import.meta.url),'utf8'));
 test('Mountain route driver physics AI items controls and shared camera source stay exactly unchanged',()=>{
  assert.equal(golden.baseCommit,'769911cc562b9330a57f043e9a7f9a2f0a976dac');
- for(const file of mountainProtectedSources)assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),golden.protectedSources[file],file+' changed during scenery-only enrichment');
+ for(const file of mountainProtectedSources)assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),mobileControlsHash(file,golden.protectedSources[file]),file+' changed during scenery-only enrichment');
  assert.equal(mountainPlacementContract(readFileSync('src/land-course.ts','utf8')),golden.protectedPlacementSHA256,'shared grade/camber placement stays exact while loader changes');
  assert.deepEqual(mountainRouteContract(MOUNTAIN_TRACK),golden.route,'every sampled Float64 frame/width/grade/camber/surface remains exact');
 });
