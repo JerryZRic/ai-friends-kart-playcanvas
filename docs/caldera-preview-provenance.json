@@ -1,7 +1,8 @@
 {
   "kind": "offline-native-geometry-render",
   "description": "Exact original static runtime caldera mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. The upper viaduct is a real height-separated road with thick deck, open twin apertures and grounded structural supports.",
-  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm dry-land daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
   "sourceHashes": {
     "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
     "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
@@ -11,52 +12,197 @@
     "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
     "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/caldera-scenery.ts": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+    "src/caldera-scenery.ts": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
     "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
     "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
     "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
   },
-  "geometryTexturesRoutesThemeSha256": "376dc3278bbafe1ff301a4378200f4df6ca475ffe5a4b24d0ff684d23d632bda",
   "generatorHashes": {
     "scripts/export-caldera-preview.ts": "3a2ec41b6446fe21f497d449df1c8ce7a3a435fce5e7df8ee253c16f756025ca",
-    "scripts/render-caldera-preview.py": "e736018dfa54966dca5b514406ced18f28d34406d19630f7b7b7b07bd685a8d3"
+    "scripts/render-caldera-preview.py": "e736018dfa54966dca5b514406ced18f28d34406d19630f7b7b7b07bd685a8d3",
+    "scripts/freeze-caldera-enrichment-cameras.ts": "b43c22b42333818bbd8b5990d0974f56fde52d7c1fb6dd6aa09c7d6b772273bb",
+    "scripts/render-caldera-enrichment-preview.py": "1f94326d1c6413434bed8ae7bbaf7aac6767782ea2b5fb6fe0f3309d4c27d203",
+    "docs/caldera-enrichment-cameras.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+    "docs/caldera-enrichment-final-views.json": "b7dc568d1947d2925c728417afe9ad03a1375a3093a250f7fc0fb3775d1c56fa"
+  },
+  "geometryJsonSha256": "cd25c5705b0f54b92060ba42cfde736abca9d638346a9b61bfc24fdfc981cd40",
+  "geometryTexturesRoutesThemeSha256": "c720d50bf403ecd2e4a15233d783c5c4089b233d901b72eabb84bc0431e889fc",
+  "frozenCameraManifestSha256": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Caldera connected dark basalt rim",
+      "normalFloat32Sha256": "c880baf118ab8b4566ad0e5a7f02946df20355145cb1e40389632b4f63ffb0f2",
+      "positionFloat32Sha256": "f6adbd331b6d2770f3844350b792ad4bc95ae2cde360e5aec5e3932ee7aeb021"
+    },
+    {
+      "batch": "Caldera connected cooled ash terraces",
+      "normalFloat32Sha256": "93d8237da6052fbf2ed6fc04a34feba110c9531ea9d2cf5bd0f356a14fab4a6f",
+      "positionFloat32Sha256": "7143fc0fac41640bf2937cb0b701ed6b8b73857a03b4ad1c2422c723eee602bb"
+    },
+    {
+      "batch": "Caldera exact dressed basalt road",
+      "normalFloat32Sha256": "b87f0c23b08f84c84ce4c8bfd02624b13419626fc492419b0a561d7c511d1e19",
+      "positionFloat32Sha256": "8f61d4811b8e5252731e456c1476d082499bc3901593fac37fc30f308c7c97ae"
+    },
+    {
+      "batch": "Caldera exact ground shoulder stitches",
+      "normalFloat32Sha256": "e5049a5d5b61f553a1687a144209d85d890fa6c0f8e0604c9469bc434ea2aa4f",
+      "positionFloat32Sha256": "236e56b1828d86cdfc75d8c6b678dd8d93b48424dd7b667f34da966194791357"
+    },
+    {
+      "batch": "Caldera full footprint foundations",
+      "normalFloat32Sha256": "d3a429d1a61bf424fbaff1695b85c2a8e3c54f1d4c7877cd3420be04cedc5432",
+      "positionFloat32Sha256": "9f3b7b20f212ee7b425053478561b7ab2b3f45c7997582b0637ac174852fd135"
+    },
+    {
+      "batch": "Caldera viaduct dark masonry",
+      "normalFloat32Sha256": "eb61f26cd9c1267c946b7643d08c09434375fcb2054f406fe2514ddd2bbdfd0f",
+      "positionFloat32Sha256": "a986a0c504f7ff356e9314d8cbc3678319831e211213d456d8d254c44b1c6dde"
+    },
+    {
+      "batch": "Caldera light arch voussoirs",
+      "normalFloat32Sha256": "cdec6d2a91a6571e3e86559707b8a60cb3252383ae2a9c52086ba762bc5e6c1f",
+      "positionFloat32Sha256": "646776390a5b75a0e0c680b9521095e7742fc3c54d09a479e9f2bf1d3fb91910"
+    },
+    {
+      "batch": "Caldera exposed pale coping and rails",
+      "normalFloat32Sha256": "d388cb75b550699f516ce2bcced9a70f8a62035c958ee003343c455106075a08",
+      "positionFloat32Sha256": "093624d16e4c62a1c99c683ba336a20255a86b5b52a6cd16b7a813ae854c7cd3"
+    },
+    {
+      "batch": "Caldera recessed joint faces",
+      "normalFloat32Sha256": "80062185058a42c3a7734c1c25f9b581de48aca9551877b0ed7dc8e6fe3322e0",
+      "positionFloat32Sha256": "578988ed70200ddde5252a8f966d86fef271fe355d913f3b4490706b4d6ac043"
+    },
+    {
+      "batch": "Caldera warm archive wall stone",
+      "normalFloat32Sha256": "d8f9fd88d4e8a850f74c56bb73c0eb2c2c545a3852feaba08d7e35b370baac86",
+      "positionFloat32Sha256": "5a5299a7eb7144e25979c24f194923eb796b43834372275786db574482071603"
+    },
+    {
+      "batch": "Caldera thick bearing slab roofs",
+      "normalFloat32Sha256": "20ed438a1ba7f2df815894462798ef198fa7c71b5315bb2f1de93b01c8a72ecc",
+      "positionFloat32Sha256": "a0e3050dd85b18d3818902bf0aca723d6c08b9489c1c60ec27bdf3cf4baaf893"
+    },
+    {
+      "batch": "Caldera original specimen strata",
+      "normalFloat32Sha256": "2b38e460f4fe9504f9b05a560ef198e735003634d5219d0eec7841fd210a7b0d",
+      "positionFloat32Sha256": "e4d2147a276975c36202c9c15933dc271f7c0aa3cf651b3f8f56d2747aa9bc48"
+    },
+    {
+      "batch": "Caldera aged bronze hardware",
+      "normalFloat32Sha256": "7b3ec4cdfc15e381f481df399c1e4347aaedb5017dbf9ba9a8904d59de3f06ec",
+      "positionFloat32Sha256": "d891b96c38dea28d0a4db9370bf17d2b5347fad73a7f327e179f7fe2ffd0f00c"
+    },
+    {
+      "batch": "Caldera dark specimen cradle timber",
+      "normalFloat32Sha256": "3b0a93bb7bcc7ffc1b1f0aff4376189ecd0b3fc25e28ca82af35e1ff48f6f1c8",
+      "positionFloat32Sha256": "5d21fbdb3c3caf748b03e1009b47ae2057ab085b2dc980df28daf2e61decc1ec"
+    },
+    {
+      "batch": "Caldera deep window reveals",
+      "normalFloat32Sha256": "62c781c224f3bb1dd87c0e96e508578240b7ad3bc6d12b844ce471e2c42d7999",
+      "positionFloat32Sha256": "7fede9556cc0a2f7c545ca93eec9703aa39a77dd6125d9ab41cc56f1bd9b9a9c"
+    },
+    {
+      "batch": "Caldera archive inset trim",
+      "normalFloat32Sha256": "8358104b8180dbfc3d4ec90faea50ed90ff6ce42b5ea21b9dde41bf65a117b15",
+      "positionFloat32Sha256": "6a7473eae25b2fe43f93c702c100d748edf32aedb98a4179c5b2a6613559f517"
+    },
+    {
+      "batch": "Caldera connected ochre interbeds",
+      "normalFloat32Sha256": "1475bb2004403516b67a8a9d5c4b0fcc533da6d79b61a4902a917448f29f9cf6",
+      "positionFloat32Sha256": "4d15b8b71f0e97f5da19b7dc4860b24c98284376794347e66729791982747b9b"
+    },
+    {
+      "batch": "Caldera wind eroded window ribs",
+      "normalFloat32Sha256": "2a41e50188535f333a47451fc37ad985f2fe1c7b9691b17f7cb5ab8223ce09d2",
+      "positionFloat32Sha256": "c04aed0697fbf0545deda943afa280c103fb31ac9a9d7375f0228d949d59b324"
+    },
+    {
+      "batch": "Caldera branch signs and inlays",
+      "normalFloat32Sha256": "770c27e3d78e4dd018bcaa162fd39f478a7c9ed681f17c402d66cc20ae019b36",
+      "positionFloat32Sha256": "cf8703f7fdfa95b187199f677041204f6f2eafd720d6ebe6d54afe57790de812"
+    },
+    {
+      "batch": "Caldera sparse dry rooted groundcover",
+      "normalFloat32Sha256": "b038acbc90391b244f5fd23533f5d26698b3e1f3d9bdceebfdddd4bf51f19784",
+      "positionFloat32Sha256": "f4311854f363318bf00ec9980f6c5e504ff355a6e5abc48c8b0800cb0f30b9fb"
+    },
+    {
+      "batch": "Caldera masonry joint packing",
+      "normalFloat32Sha256": "d959ad68de97d848a382e7f01d98f081cd4d02c8efa1a45ae832243f0897ac49",
+      "positionFloat32Sha256": "d1f476750808fe27f901be48ecebf290165ab117f5a22b2b92525444c9989d18"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.0
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#d8d0ba",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9629999995231628,
+      0.9020000100135803
+    ]
   },
   "batches": 21,
-  "vertices": 126320,
-  "triangles": 95132,
+  "vertices": 135032,
+  "triangles": 98772,
   "routeLengthsMetres": {
     "start": 2053.6082776162234,
     "alley": 447.17967920091735,
     "boulevard": 508.3571694625006,
     "finish": 1176.049829985537
   },
-  "normalShading": {
-    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
-    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
-    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
-    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
-  },
-  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Jointline Cut (alley), Ashen Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
   "lapLengthsMetres": {
     "jointlineCutLapLength": 3676.8377868026773,
     "ashenSweepLapLength": 3738.0152770642608
   },
+  "framingSource": "Forty immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
   "originalModels": {
     "glb": {
       "file": "caldera-original-scene.glb",
-      "sha256": "f8846b32536b892dfbd46bb7f98876e2b1f4e5c2d11637e359dec0a3d24df582",
-      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+      "sha256": "cb3d64e5839ad24fa50b369666d587cf351e0603d9cc278f2eb39af07d308e29",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
     },
     "blend": {
       "file": "caldera-original-scene.blend",
-      "sha256": "4f5b8a01bea7028a3538c3865a61f72f65f1ea3085a8227dffde6e846e8d6a11",
-      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+      "sha256": "5883c4025416c2911992c4def9452673e47b462c07a6ff16b1c5b31bf1514518",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all45 original source-derived cameras"
     }
   },
   "views": {
     "caldera-overview": {
+      "name": "caldera-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "caldera-overview.png",
-      "sha256": "eb09cbf0319823623bceba623ce975c35b62cf2a38fa0bbe3160f4e3907d97d8",
+      "sha256": "164c0cd9efefd66868b045b70c0cc0a67b783e165ee9f9e9f3b0936a75d8b9b0",
       "resolution": [
         1920,
         1080
@@ -75,36 +221,64 @@
       "projection": "ORTHO",
       "description": "Complete original Basalt Crown circuit: asymmetric connected high caldera rim, hooked low bowl, both real lower fork roads, thick twin-arch viaduct and original geology landmarks. Exact emitted source geometry; approximate offline CPU lighting/materials.",
       "routeScreenBounds": [
-        0.3159928321838379,
-        0.2485293745994568,
-        0.678791344165802,
-        0.7469404935836792
+        0.3159928619861603,
+        0.24852940440177917,
+        0.6787912845611572,
+        0.7469404339790344
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          0.6040209531784058,
-          0.2968689799308777,
-          0.6776378154754639,
+          0.604020893573761,
+          0.29686903953552246,
+          0.6776377558708191,
           0.4973258674144745
         ],
         "boulevard": [
-          0.5681895613670349,
-          0.2968689799308777,
-          0.6776378154754639,
+          0.5681895017623901,
+          0.29686903953552246,
+          0.6776377558708191,
           0.4973258674144745
         ]
       },
       "orthographicScaleMetres": 1988.8599853515625,
-      "fittedSubjectScreenBounds": [
-        0.14263364672660828,
-        0.06999995559453964,
-        0.8573666214942932,
-        0.9299998879432678
-      ]
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9497218728065491,
+          -0.17760655283927917,
+          0.2578456699848175,
+          321.9520263671875
+        ],
+        [
+          0.31309500336647034,
+          -0.5387399196624756,
+          0.7821323275566101,
+          1381.1710205078125
+        ],
+        [
+          -8.644869353702234e-08,
+          0.8235383033752441,
+          0.5672606825828552,
+          881.8660888671875
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "caldera-topdown": {
+      "name": "caldera-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "caldera-topdown.png",
-      "sha256": "a81882ff8604cf40201055d0e1ce71d90173f32d86e61a6ba065eb4ee5b44735",
+      "sha256": "7b0a762c71cc88c3041f5343e9b6bd4df511a0b8d0f145c9b4484b02dd7ce5c7",
       "resolution": [
         1920,
         1440
@@ -116,16 +290,16 @@
       ],
       "cameraQuaternionBlender": [
         7.549790126404332e-08,
-        0.0,
-        -0.0,
-        -1.0
+        0,
+        0,
+        -1
       ],
       "projection": "ORTHO",
       "description": "True overhead original source geometry with both complete physical alternatives: Jointline Cut and Ashen Sweep. Actual banked widths, split/merge unions, connected basalt/ash/ochre terrain and upper viaduct remain unchanged. The upper road naturally occludes lower road fragments at the real crossing; no cutaway is used.",
       "routeScreenBounds": [
         0.35450899600982666,
         0.16312921047210693,
-        0.6583106517791748,
+        0.65831059217453,
         0.7965717911720276
       ],
       "physicalBranchScreenBounds": {
@@ -143,16 +317,44 @@
         ]
       },
       "orthographicScaleMetres": 2077.51953125,
-      "fittedSubjectScreenBounds": [
-        0.24609138071537018,
-        0.06999995559453964,
-        0.753908634185791,
-        0.9300000071525574
-      ]
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          -62.499996185302734
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          214.99996948242188
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1529.4310302734375
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "caldera-driver-reveal": {
+      "name": "caldera-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 30,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "caldera-driver-reveal.png",
-      "sha256": "85645f200265d5f48433d05859e71610808a577f9c92534696aab600691f8f1f",
+      "sha256": "c1b80a6ebad52e07c3c4f52ce90f0bb9e1d9b78090673b21cda61b4709f782dc",
       "resolution": [
         1800,
         1125
@@ -171,26 +373,25 @@
       "projection": "PERSP",
       "description": "Frozen source-design driver eye on the real start road at 266.96907609010907 m, exactly 1.6 m above support. The connected cooled basalt rim and dry terraces frame the upcoming bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
       "routeScreenBounds": [
-        -4369.31689453125,
-        -355.56329345703125,
-        743.9645385742188,
-        417.36273193359375
+        -1846.7833251953125,
+        -304.24688720703125,
+        743.9765014648438,
+        258.31109619140625
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          0.9687461853027344,
+          0.9687460660934448,
           0.5405787825584412,
-          1.2314844131469727,
+          1.231484293937683,
           0.6454437971115112
         ],
         "boulevard": [
           1.0199909210205078,
           0.5405787825584412,
-          1.4896959066390991,
+          1.4896957874298096,
           0.6454437971115112
         ]
       },
-      "lensMillimetres": 30.0,
       "roadEdge": "start",
       "roadDistanceMetres": 266.96907609010907,
       "heightAboveSampledRoadMetres": 1.6,
@@ -247,11 +448,45 @@
         -342.5866821316918,
         51.00818927105339,
         113.08427800531572
-      ]
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8948134779930115,
+          -0.011518220417201519,
+          -0.4462917149066925,
+          -356.8447570800781
+        ],
+        [
+          -0.44644033908843994,
+          0.023086385801434517,
+          0.8945155739784241,
+          -84.50637817382812
+        ],
+        [
+          5.113337309126109e-08,
+          0.9996671676635742,
+          -0.025800274685025215,
+          50.183921813964844
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "caldera-twin-arch-passage": {
+      "name": "caldera-twin-arch-passage",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 6.5,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "caldera-twin-arch-passage.png",
-      "sha256": "36edadf17fdfb33e804d9828e60ab6a27884175e54309b56a4e58d45bfb218e0",
+      "sha256": "d731d51eac7755cd9454e742c3c4e994f1edad176c05e1cd054fe4c44170f3c0",
       "resolution": [
         1800,
         1125
@@ -270,26 +505,25 @@
       "projection": "PERSP",
       "description": "Actual lower Jointline Cut road support at 52 m, eye exactly 1.6 m above it, ultra-wide architectural view toward the real stone apertures and grounded central pier. The original thick upper road, genuine underside and support masonry remain fully present. The camera looks upward through a 6.5 mm ultra-wide offline architectural lens; this is not the gameplay camera FOV or a decorative bridge.",
       "routeScreenBounds": [
-        -1267.260009765625,
-        -50.957237243652344,
-        100.29727935791016,
-        763.4533081054688
+        -1267.3597412109375,
+        -12.596845626831055,
+        100.29907989501953,
+        763.512939453125
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          -2.8213298320770264,
-          -0.586769700050354,
-          6.064453601837158,
-          2.3074581623077393
+          -2.821298837661743,
+          -0.5867750644683838,
+          6.064454078674316,
+          2.307457685470581
         ],
         "boulevard": [
-          -26.706911087036133,
-          -0.24071402847766876,
-          12.540547370910645,
-          1.8589428663253784
+          -26.70682716369629,
+          -0.24071423709392548,
+          12.540558815002441,
+          1.8589375019073486
         ]
       },
-      "lensMillimetres": 6.5,
       "roadEdge": "alley",
       "roadDistanceMetres": 52,
       "heightAboveSampledRoadMetres": 1.6,
@@ -347,11 +581,45 @@
         30,
         -346
       ],
-      "upperRoadIsRealPhysicalCrossing": true
+      "upperRoadIsRealPhysicalCrossing": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.9947608113288879,
+          -0.03419904410839081,
+          -0.09634007513523102,
+          -298.1470031738281
+        ],
+        [
+          -0.10223005712032318,
+          -0.3327775001525879,
+          -0.937447726726532,
+          305.6471252441406
+        ],
+        [
+          1.0452197329868795e-08,
+          0.9423850774765015,
+          -0.33453017473220825,
+          15.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "caldera-wind-tooth": {
+      "name": "caldera-wind-tooth",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 28,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "caldera-wind-tooth.png",
-      "sha256": "2efd30922b5202570f1d9e950a00060e83ecda853ea29a0c81db88d5cb85d6cd",
+      "sha256": "9785c5a230e52f6bae4e1239cfae17d0832e633e58ce9efcdb7e9fa3b5cd8028",
       "resolution": [
         1800,
         1125
@@ -370,34 +638,64 @@
       "projection": "PERSP",
       "description": "Original asymmetric Wind-carved Tooth: a genuine daylight erosion window through thick basalt, broad bearing feet, an attached companion shoulder and connected talus. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
       "routeScreenBounds": [
-        -2066.467529296875,
-        -465.1241455078125,
-        2781.955078125,
-        223.30538940429688
+        -2067.39697265625,
+        -73.98920440673828,
+        536.0241088867188,
+        223.40550231933594
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          -336.224853515625,
-          -253.0244598388672,
-          2272.702880859375,
-          36.7349853515625
+          -336.2494812011719,
+          -252.89476013183594,
+          2271.54150390625,
+          36.73761749267578
         ],
         "boulevard": [
-          -278.38189697265625,
-          -465.1241455078125,
-          2781.955078125,
-          51.51333236694336
+          -278.4033203125,
+          -464.7425842285156,
+          2779.67626953125,
+          51.517234802246094
         ]
       },
-      "lensMillimetres": 28.0
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8886207342147827,
+          -0.03278372436761856,
+          -0.4574698507785797,
+          -11.264036178588867
+        ],
+        [
+          -0.45864301919937134,
+          0.06351816654205322,
+          0.8863476514816284,
+          635.8768920898438
+        ],
+        [
+          -1.0823592333508714e-07,
+          0.9974421262741089,
+          -0.0714796781539917,
+          37.87233352661133
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     }
   },
   "menuAsset": {
     "file": "public/map-previews/caldera-overview.webp",
-    "sha256": "c88112f081bafa0928986a6ada75177155eb7ad49717375dca3579c68c4b5968",
+    "sha256": "f8c5b704f864d382b0935458e5d7faa8ca962362aa5be981e82588453dd2c68b",
     "resolution": [
       1280,
       720
-    ]
-  }
+    ],
+    "sourceView": "caldera-overview"
+  },
+  "finalPairedProofSha256": "a0eb1b8ac293e490f21631d14519c0e2cd0b5cf45a09a2104bd881d587ca4896",
+  "reopenedModelProofSha256": "67b086dba357ac285b6d369309fcb9173f37026458f8e9d72e6198fb8095a4e3",
+  "localCatalogUpdaterSha256": "2b3d10edecb14d1def55e66f4076006e01da4014a14496c86deb4e222c2bbf99"
 }

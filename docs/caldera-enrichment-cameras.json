@@ -1,0 +1,2405 @@
+{
+  "schema": "caldera-frozen-enrichment-cameras-v1",
+  "localUnpublishedHead": "70e66387b09c50a1ed8244048089cea2269e426e",
+  "lastPublicDev": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "notice": "Local unpublished preceding map enrichments baseline; original Caldera. Exact static geometry CPU preview, no kart/driver/HUD, runtime/GPU/FPS proof. 8 samples draft quality; all compared settings identical.",
+  "baseline": {
+    "geometrySha256": "d3d8825822cc7407905bc8d61e80fbb5699b04171c92076cc1d846f905f32ff5",
+    "glbSha256": "f8846b32536b892dfbd46bb7f98876e2b1f4e5c2d11637e359dec0a3d24df582",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/caldera-scenery.ts": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+      "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+    }
+  },
+  "views": [
+    {
+      "name": "eye-rim-original",
+      "edge": "start",
+      "s": 266.96907609010907,
+      "kind": "eye",
+      "sourceEye": [
+        -356.8447636179106,
+        50.18392339567208,
+        84.50637908689941
+      ],
+      "sourceTarget": [
+        -342.5866821316918,
+        51.00818927105339,
+        113.08427800531572
+      ],
+      "sourceAnchor": [
+        -356.8447636179106,
+        49.93392339567208,
+        84.50637908689941
+      ],
+      "sourceDesiredEye": [
+        -360.64424182555996,
+        53.18392339567208,
+        74.7179182605183
+      ],
+      "cameraPositionBlender": [
+        -356.8447570800781,
+        -84.50637817382812,
+        50.183921813964844
+      ],
+      "cameraQuaternionBlender": [
+        -0.16005678474903107,
+        -0.1642409712076187,
+        0.6970832347869873,
+        0.6793244481086731
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-rim-original",
+      "edge": "start",
+      "s": 266.96907609010907,
+      "kind": "chase",
+      "sourceEye": [
+        -360.64424182555996,
+        53.18392339567208,
+        74.7179182605183
+      ],
+      "sourceTarget": [
+        -351.3680382735511,
+        49.58392339567208,
+        98.61587216997128
+      ],
+      "sourceAnchor": [
+        -356.8447636179106,
+        49.93392339567208,
+        84.50637908689941
+      ],
+      "sourceDesiredEye": [
+        -360.64424182555996,
+        53.18392339567208,
+        74.7179182605183
+      ],
+      "cameraPositionBlender": [
+        -360.6442565917969,
+        -74.7179183959961,
+        53.183921813964844
+      ],
+      "cameraQuaternionBlender": [
+        -0.13891512155532837,
+        -0.12077005952596664,
+        0.644888162612915,
+        0.7417792081832886
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-rim-approach",
+      "edge": "start",
+      "s": 350,
+      "kind": "eye",
+      "sourceEye": [
+        -309.4233082439059,
+        52.65413950957442,
+        151.63016055894943
+      ],
+      "sourceTarget": [
+        -284.40037675851744,
+        53.68143949483018,
+        171.51909709535647
+      ],
+      "sourceAnchor": [
+        -309.4233082439059,
+        52.40413950957442,
+        151.63016055894943
+      ],
+      "sourceDesiredEye": [
+        -317.21782095550674,
+        55.65413950957442,
+        144.594851639741
+      ],
+      "cameraPositionBlender": [
+        -309.4233093261719,
+        -151.63015747070312,
+        52.65414047241211
+      ],
+      "cameraQuaternionBlender": [
+        -0.3023415207862854,
+        -0.31221458315849304,
+        0.6469801068305969,
+        0.6265208721160889
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "chase-rim-approach",
+      "edge": "start",
+      "s": 350,
+      "kind": "chase",
+      "sourceEye": [
+        -317.21782095550674,
+        55.65413950957442,
+        144.594851639741
+      ],
+      "sourceTarget": [
+        -298.18797460556243,
+        52.05413950957442,
+        161.77114638843906
+      ],
+      "sourceAnchor": [
+        -309.4233082439059,
+        52.40413950957442,
+        151.63016055894943
+      ],
+      "sourceDesiredEye": [
+        -317.21782095550674,
+        55.65413950957442,
+        144.594851639741
+      ],
+      "cameraPositionBlender": [
+        -317.21783447265625,
+        -144.5948486328125,
+        55.65414047241211
+      ],
+      "cameraQuaternionBlender": [
+        -0.30653664469718933,
+        -0.266496866941452,
+        0.5995377898216248,
+        0.6896151900291443
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "eye-rim-gate",
+      "edge": "start",
+      "s": 415,
+      "kind": "eye",
+      "sourceEye": [
+        -256.5260189788929,
+        54.56130510575435,
+        189.1370147710875
+      ],
+      "sourceTarget": [
+        -228.0247896722389,
+        55.22701530670614,
+        203.6458092333079
+      ],
+      "sourceAnchor": [
+        -256.5260189788929,
+        54.31130510575435,
+        189.1370147710875
+      ],
+      "sourceDesiredEye": [
+        -265.6538807687029,
+        57.56130510575435,
+        183.94739637026777
+      ],
+      "cameraPositionBlender": [
+        -256.5260314941406,
+        -189.1370086669922,
+        54.56130599975586
+      ],
+      "cameraQuaternionBlender": [
+        -0.36570823192596436,
+        -0.3733998239040375,
+        0.6090796589851379,
+        0.5965333580970764
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "chase-rim-gate",
+      "edge": "start",
+      "s": 415,
+      "kind": "chase",
+      "sourceEye": [
+        -265.6538807687029,
+        57.56130510575435,
+        183.94739637026777
+      ],
+      "sourceTarget": [
+        -243.36874072331096,
+        53.96130510575435,
+        196.61754579929612
+      ],
+      "sourceAnchor": [
+        -256.5260189788929,
+        54.31130510575435,
+        189.1370147710875
+      ],
+      "sourceDesiredEye": [
+        -265.6538807687029,
+        57.56130510575435,
+        183.94739637026777
+      ],
+      "cameraPositionBlender": [
+        -265.65386962890625,
+        -183.94740295410156,
+        57.56130599975586
+      ],
+      "cameraQuaternionBlender": [
+        -0.3795010447502136,
+        -0.32993069291114807,
+        0.5671083927154541,
+        0.6523134112358093
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "eye-rim-north",
+      "edge": "start",
+      "s": 718.7628971656782,
+      "kind": "eye",
+      "sourceEye": [
+        37.920429539199986,
+        55.074748477827136,
+        225.43382956872037
+      ],
+      "sourceTarget": [
+        68.13666316427921,
+        54.17490009487864,
+        214.98996576544
+      ],
+      "sourceAnchor": [
+        37.920429539199986,
+        54.824748477827136,
+        225.43382956872037
+      ],
+      "sourceDesiredEye": [
+        27.814900029266965,
+        58.074748477827136,
+        228.2848422526404
+      ],
+      "cameraPositionBlender": [
+        37.92042922973633,
+        -225.43382263183594,
+        55.07474899291992
+      ],
+      "cameraQuaternionBlender": [
+        0.5839523077011108,
+        0.5677473545074463,
+        -0.4044691026210785,
+        -0.4160136580467224
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-rim-north",
+      "edge": "start",
+      "s": 718.7628971656782,
+      "kind": "chase",
+      "sourceEye": [
+        27.814900029266965,
+        58.074748477827136,
+        228.2848422526404
+      ],
+      "sourceTarget": [
+        52.486958562526866,
+        54.474748477827134,
+        221.32426173604287
+      ],
+      "sourceAnchor": [
+        37.920429539199986,
+        54.824748477827136,
+        225.43382956872037
+      ],
+      "sourceDesiredEye": [
+        27.814900029266965,
+        58.074748477827136,
+        228.2848422526404
+      ],
+      "cameraPositionBlender": [
+        27.814899444580078,
+        -228.2848358154297,
+        58.07474899291992
+      ],
+      "cameraQuaternionBlender": [
+        0.6017376780509949,
+        0.5231388211250305,
+        -0.39596959948539734,
+        -0.45546191930770874
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-archive-approach",
+      "edge": "boulevard",
+      "s": 200,
+      "kind": "eye",
+      "sourceEye": [
+        -152.2356435231258,
+        15.6,
+        -412.805197642082
+      ],
+      "sourceTarget": [
+        -142.05430748195576,
+        15.6,
+        -442.8223089383315
+      ],
+      "sourceAnchor": [
+        -152.2356435231258,
+        15.35,
+        -412.805197642082
+      ],
+      "sourceDesiredEye": [
+        -157.51160965663928,
+        18.6,
+        -403.7269719697373
+      ],
+      "cameraPositionBlender": [
+        -152.2356414794922,
+        412.8052062988281,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6976761221885681,
+        0.6976761221885681,
+        -0.11510007083415985,
+        -0.11510007083415985
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "chase-archive-approach",
+      "edge": "boulevard",
+      "s": 200,
+      "kind": "chase",
+      "sourceEye": [
+        -157.51160965663928,
+        18.6,
+        -403.7269719697373
+      ],
+      "sourceTarget": [
+        -144.63064729463787,
+        15,
+        -425.8909283409573
+      ],
+      "sourceAnchor": [
+        -152.2356435231258,
+        15.35,
+        -412.805197642082
+      ],
+      "sourceDesiredEye": [
+        -157.51160965663928,
+        18.6,
+        -403.7269719697373
+      ],
+      "cameraPositionBlender": [
+        -157.51161193847656,
+        403.7269592285156,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.728679895401001,
+        0.6334998607635498,
+        -0.17071637511253357,
+        -0.1963656097650528
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "eye-archive-middle",
+      "edge": "boulevard",
+      "s": 273,
+      "kind": "eye",
+      "sourceEye": [
+        -154.64040290560726,
+        15.6,
+        -481.16605842230257
+      ],
+      "sourceTarget": [
+        -174.387101099206,
+        15.6,
+        -506.2545104812806
+      ],
+      "sourceAnchor": [
+        -154.64040290560726,
+        15.35,
+        -481.16605842230257
+      ],
+      "sourceDesiredEye": [
+        -149.05054004050862,
+        18.6,
+        -472.27767087734304
+      ],
+      "cameraPositionBlender": [
+        -154.64039611816406,
+        481.1660461425781,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.668168306350708,
+        0.668168306350708,
+        0.2314111590385437,
+        0.2314111590385437
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "chase-archive-middle",
+      "edge": "boulevard",
+      "s": 273,
+      "kind": "chase",
+      "sourceEye": [
+        -149.05054004050862,
+        18.6,
+        -472.27767087734304
+      ],
+      "sourceTarget": [
+        -162.697862891335,
+        15,
+        -493.97814857719914
+      ],
+      "sourceAnchor": [
+        -154.64040290560726,
+        15.35,
+        -481.16605842230257
+      ],
+      "sourceDesiredEye": [
+        -149.05054004050862,
+        18.6,
+        -472.27767087734304
+      ],
+      "cameraPositionBlender": [
+        -149.050537109375,
+        472.2776794433594,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7251384854316711,
+        0.6304210424423218,
+        0.18175658583641052,
+        0.2090645581483841
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": true
+    },
+    {
+      "name": "eye-archive-departure",
+      "edge": "boulevard",
+      "s": 340,
+      "kind": "eye",
+      "sourceEye": [
+        -200.28066864264972,
+        15.6,
+        -529.7936389538088
+      ],
+      "sourceTarget": [
+        -223.79700078285623,
+        15.600000000000001,
+        -551.4894575309986
+      ],
+      "sourceAnchor": [
+        -200.28066864264972,
+        15.35,
+        -529.7936389538088
+      ],
+      "sourceDesiredEye": [
+        -192.4863985270955,
+        18.6,
+        -522.7580612685168
+      ],
+      "cameraPositionBlender": [
+        -200.28067016601562,
+        529.7936401367188,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6477046012878418,
+        0.6477046012878418,
+        0.2836878001689911,
+        0.2836878001689911
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-archive-departure",
+      "edge": "boulevard",
+      "s": 340,
+      "kind": "chase",
+      "sourceEye": [
+        -192.4863985270955,
+        18.6,
+        -522.7580612685168
+      ],
+      "sourceTarget": [
+        -211.51565259299815,
+        15,
+        -539.9350121938693
+      ],
+      "sourceAnchor": [
+        -200.28066864264972,
+        15.35,
+        -529.7936389538088
+      ],
+      "sourceDesiredEye": [
+        -192.4863985270955,
+        18.6,
+        -522.7580612685168
+      ],
+      "cameraPositionBlender": [
+        -192.4864044189453,
+        522.758056640625,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6896204948425293,
+        0.5995423793792725,
+        0.2664865255355835,
+        0.30652472376823425
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bowl-approach",
+      "edge": "start",
+      "s": 1378,
+      "kind": "eye",
+      "sourceEye": [
+        -20.20644328532412,
+        16.20973871894201,
+        -142.90709418061073
+      ],
+      "sourceTarget": [
+        -48.441026848403396,
+        15.53048960247684,
+        -127.91122818482772
+      ],
+      "sourceAnchor": [
+        -20.20644328532412,
+        15.95973871894201,
+        -142.90709418061073
+      ],
+      "sourceDesiredEye": [
+        -10.62701401960994,
+        19.20973871894201,
+        -147.20645866192407
+      ],
+      "cameraPositionBlender": [
+        -20.206443786621094,
+        142.90708923339844,
+        16.20973777770996
+      ],
+      "cameraQuaternionBlender": [
+        0.36817607283592224,
+        0.36043667793273926,
+        0.5995535850524902,
+        0.6124273538589478
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bowl-approach",
+      "edge": "start",
+      "s": 1378,
+      "kind": "chase",
+      "sourceEye": [
+        -10.62701401960994,
+        19.20973871894201,
+        -147.20645866192407
+      ],
+      "sourceTarget": [
+        -34.014629614281496,
+        15.60973871894201,
+        -136.7098120453843
+      ],
+      "sourceAnchor": [
+        -20.20644328532412,
+        15.95973871894201,
+        -142.90709418061073
+      ],
+      "sourceDesiredEye": [
+        -10.62701401960994,
+        19.20973871894201,
+        -147.20645866192407
+      ],
+      "cameraPositionBlender": [
+        -10.62701416015625,
+        147.20645141601562,
+        19.20973777770996
+      ],
+      "cameraQuaternionBlender": [
+        0.4100796580314636,
+        0.35651513934135437,
+        0.5507841110229492,
+        0.6335365176200867
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bowl-departure",
+      "edge": "start",
+      "s": 1560.7422909883298,
+      "kind": "eye",
+      "sourceEye": [
+        -133.78065372605695,
+        15.6,
+        -10.915113762166573
+      ],
+      "sourceTarget": [
+        -136.86062186004196,
+        15.6,
+        20.896247112250705
+      ],
+      "sourceAnchor": [
+        -133.78065372605695,
+        15.35,
+        -10.915113762166573
+      ],
+      "sourceDesiredEye": [
+        -133.21601734768566,
+        18.6,
+        -21.399921140474472
+      ],
+      "cameraPositionBlender": [
+        -133.78065490722656,
+        10.91511344909668,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.034111347049474716,
+        0.034111347049474716,
+        0.7062835097312927,
+        0.7062835097312927
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bowl-departure",
+      "edge": "start",
+      "s": 1560.7422909883298,
+      "kind": "chase",
+      "sourceEye": [
+        -133.21601734768566,
+        18.6,
+        -21.399921140474472
+      ],
+      "sourceTarget": [
+        -134.59454400118673,
+        15,
+        4.198122098457425
+      ],
+      "sourceAnchor": [
+        -133.78065372605695,
+        15.35,
+        -10.915113762166573
+      ],
+      "sourceDesiredEye": [
+        -133.21601734768566,
+        18.6,
+        -21.399921140474472
+      ],
+      "cameraPositionBlender": [
+        -133.2160186767578,
+        21.399921417236328,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.02029861882328987,
+        0.017647217959165573,
+        0.6558618545532227,
+        0.7544016242027283
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bridge-west-approach",
+      "edge": "alley",
+      "s": 52,
+      "kind": "eye",
+      "sourceEye": [
+        -298.1470080861811,
+        15.6,
+        -305.64713563125486
+      ],
+      "sourceTarget": [
+        -306.6321139105156,
+        15.6,
+        -335.7319950898684
+      ],
+      "sourceAnchor": [
+        -298.1470080861811,
+        15.35,
+        -305.64713563125486
+      ],
+      "sourceDesiredEye": [
+        -292.4997215845266,
+        18.6,
+        -296.7951214441768
+      ],
+      "cameraPositionBlender": [
+        -298.1470031738281,
+        305.6471252441406,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7004378437995911,
+        0.7004378437995911,
+        0.0968855619430542,
+        0.0968855619430542
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bridge-west-approach",
+      "edge": "alley",
+      "s": 52,
+      "kind": "chase",
+      "sourceEye": [
+        -292.4997215845266,
+        18.6,
+        -296.7951214441768
+      ],
+      "sourceTarget": [
+        -306.2872408813587,
+        15,
+        -318.40679572073674
+      ],
+      "sourceAnchor": [
+        -298.1470080861811,
+        15.35,
+        -305.64713563125486
+      ],
+      "sourceDesiredEye": [
+        -292.4997215845266,
+        18.6,
+        -296.7951214441768
+      ],
+      "cameraPositionBlender": [
+        -292.4997253417969,
+        296.7951354980469,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7244579792022705,
+        0.6298294067382812,
+        0.183796226978302,
+        0.21141064167022705
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bridge-west-aperture",
+      "edge": "alley",
+      "s": 96.93603113547367,
+      "kind": "eye",
+      "sourceEye": [
+        -302.87727857986783,
+        15.6,
+        -348.0688832653698
+      ],
+      "sourceTarget": [
+        -286.70826080953674,
+        15.6,
+        -375.65443462422786
+      ],
+      "sourceAnchor": [
+        -302.87727857986783,
+        15.35,
+        -348.0688832653698
+      ],
+      "sourceDesiredEye": [
+        -307.1436844320435,
+        18.6,
+        -338.4747297798078
+      ],
+      "cameraPositionBlender": [
+        -302.8772888183594,
+        348.0688781738281,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6824080348014832,
+        0.6824080348014832,
+        -0.18525467813014984,
+        -0.18525467813014984
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bridge-west-aperture",
+      "edge": "alley",
+      "s": 96.93603113547367,
+      "kind": "chase",
+      "sourceEye": [
+        -307.1436844320435,
+        18.6,
+        -338.4747297798078
+      ],
+      "sourceTarget": [
+        -296.72750437853364,
+        15,
+        -361.8982936950087
+      ],
+      "sourceAnchor": [
+        -302.87727857986783,
+        15.35,
+        -348.0688832653698
+      ],
+      "sourceDesiredEye": [
+        -307.1436844320435,
+        18.6,
+        -338.4747297798078
+      ],
+      "cameraPositionBlender": [
+        -307.1436767578125,
+        338.4747314453125,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7382186055183411,
+        0.6417925953865051,
+        -0.13626588881015778,
+        -0.15673913061618805
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bridge-east-approach",
+      "edge": "boulevard",
+      "s": 64,
+      "kind": "eye",
+      "sourceEye": [
+        -247.31732123648894,
+        15.6,
+        -316.31562934012936
+      ],
+      "sourceTarget": [
+        -224.06526673476495,
+        15.6,
+        -338.27473846018535
+      ],
+      "sourceAnchor": [
+        -247.31732123648894,
+        15.35,
+        -316.31562934012936
+      ],
+      "sourceDesiredEye": [
+        -254.38222999131156,
+        18.6,
+        -308.5479357129302
+      ],
+      "cameraPositionBlender": [
+        -247.31732177734375,
+        316.3156433105469,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.649346649646759,
+        0.649346649646759,
+        -0.27990880608558655,
+        -0.27990880608558655
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bridge-east-approach",
+      "edge": "boulevard",
+      "s": 64,
+      "kind": "chase",
+      "sourceEye": [
+        -254.38222999131156,
+        18.6,
+        -308.5479357129302
+      ],
+      "sourceTarget": [
+        -237.13366897728517,
+        15,
+        -327.5123048387948
+      ],
+      "sourceAnchor": [
+        -247.31732123648894,
+        15.35,
+        -316.31562934012936
+      ],
+      "sourceDesiredEye": [
+        -254.38222999131156,
+        18.6,
+        -308.5479357129302
+      ],
+      "cameraPositionBlender": [
+        -254.38223266601562,
+        308.5479431152344,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7038692235946655,
+        0.6119299530982971,
+        -0.23665983974933624,
+        -0.2722167372703552
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-bridge-east-aperture",
+      "edge": "boulevard",
+      "s": 112.54367134824344,
+      "kind": "eye",
+      "sourceEye": [
+        -211.77511031643618,
+        15.6,
+        -349.34792585168327
+      ],
+      "sourceTarget": [
+        -188.15726917912585,
+        15.6,
+        -370.9312295641784
+      ],
+      "sourceAnchor": [
+        -211.77511031643618,
+        15.35,
+        -349.34792585168327
+      ],
+      "sourceDesiredEye": [
+        -219.41316670563162,
+        18.6,
+        -342.14305981576905
+      ],
+      "cameraPositionBlender": [
+        -211.77511596679688,
+        349.3479309082031,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6470310091972351,
+        0.6470310091972351,
+        -0.28522080183029175,
+        -0.28522080183029175
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-bridge-east-aperture",
+      "edge": "boulevard",
+      "s": 112.54367134824344,
+      "kind": "chase",
+      "sourceEye": [
+        -219.41316670563162,
+        18.6,
+        -342.14305981576905
+      ],
+      "sourceTarget": [
+        -200.7652993049833,
+        15,
+        -359.733318335884
+      ],
+      "sourceAnchor": [
+        -211.77511031643618,
+        15.35,
+        -349.34792585168327
+      ],
+      "sourceDesiredEye": [
+        -219.41316670563162,
+        18.6,
+        -342.14305981576905
+      ],
+      "cameraPositionBlender": [
+        -219.4131622314453,
+        342.14306640625,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6929413080215454,
+        0.6024294495582581,
+        -0.25989410281181335,
+        -0.29894179105758667
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-viaduct-west",
+      "edge": "finish",
+      "s": 772.0030207251166,
+      "kind": "eye",
+      "sourceEye": [
+        -114.99999999897706,
+        48.014370909778286,
+        -354.68927199424576
+      ],
+      "sourceTarget": [
+        -146.82997207641623,
+        48.444155726796716,
+        -351.42436780780355
+      ],
+      "sourceAnchor": [
+        -114.99999999897706,
+        47.764370909778286,
+        -354.68927199424576
+      ],
+      "sourceDesiredEye": [
+        -104.56486955106111,
+        51.014370909778286,
+        -355.85462710535023
+      ],
+      "cameraPositionBlender": [
+        -115,
+        354.68927001953125,
+        48.01436996459961
+      ],
+      "cameraQuaternionBlender": [
+        0.4706117510795593,
+        0.4769755005836487,
+        0.5284030437469482,
+        0.5213531851768494
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-viaduct-west",
+      "edge": "finish",
+      "s": 772.0030207251166,
+      "kind": "chase",
+      "sourceEye": [
+        -104.56486955106111,
+        51.014370909778286,
+        -355.85462710535023
+      ],
+      "sourceTarget": [
+        -130.0416294734505,
+        47.414370909778285,
+        -353.0094808431042
+      ],
+      "sourceAnchor": [
+        -114.99999999897706,
+        47.764370909778286,
+        -354.68927199424576
+      ],
+      "sourceDesiredEye": [
+        -104.56486955106111,
+        51.014370909778286,
+        -355.85462710535023
+      ],
+      "cameraPositionBlender": [
+        -104.56487274169922,
+        355.8546142578125,
+        51.01436996459961
+      ],
+      "cameraQuaternionBlender": [
+        0.5031517744064331,
+        0.437430202960968,
+        0.48899999260902405,
+        0.5624696612358093
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-viaduct-middle",
+      "edge": "finish",
+      "s": 893.797870789008,
+      "kind": "eye",
+      "sourceEye": [
+        -236.4494996952955,
+        48.80342332350856,
+        -350.6037745889491
+      ],
+      "sourceTarget": [
+        -268.43781733331446,
+        48.658716035398385,
+        -350.82587801090574
+      ],
+      "sourceAnchor": [
+        -236.4494996952955,
+        48.55342332350856,
+        -350.6037745889491
+      ],
+      "sourceDesiredEye": [
+        -225.95939775932703,
+        51.80342332350856,
+        -350.14796610615053
+      ],
+      "cameraPositionBlender": [
+        -236.44949340820312,
+        350.603759765625,
+        48.80342483520508
+      ],
+      "cameraQuaternionBlender": [
+        0.5028663277626038,
+        0.5005966424942017,
+        0.49713295698165894,
+        0.49938690662384033
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-viaduct-middle",
+      "edge": "finish",
+      "s": 893.797870789008,
+      "kind": "chase",
+      "sourceEye": [
+        -225.95939775932703,
+        51.80342332350856,
+        -350.14796610615053
+      ],
+      "sourceTarget": [
+        -251.5703673507455,
+        48.20342332350856,
+        -351.2607958254154
+      ],
+      "sourceAnchor": [
+        -236.4494996952955,
+        48.55342332350856,
+        -350.6037745889491
+      ],
+      "sourceDesiredEye": [
+        -225.95939775932703,
+        51.80342332350856,
+        -350.14796610615053
+      ],
+      "cameraPositionBlender": [
+        -225.9593963623047,
+        350.1479797363281,
+        51.80342483520508
+      ],
+      "cameraQuaternionBlender": [
+        0.5450951457023621,
+        0.47389495372772217,
+        0.45375075936317444,
+        0.5219244360923767
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-viaduct-east",
+      "edge": "finish",
+      "s": 1021.2578930080276,
+      "kind": "eye",
+      "sourceEye": [
+        -359.9999999988966,
+        47.600000000011036,
+        -330.00000000093786
+      ],
+      "sourceTarget": [
+        -374.92952486071033,
+        47.53187183189181,
+        -302.32822831367525
+      ],
+      "sourceAnchor": [
+        -359.9999999988966,
+        47.350000000011036,
+        -330.00000000093786
+      ],
+      "sourceDesiredEye": [
+        -351.99963716224033,
+        50.600000000011036,
+        -336.800308411727
+      ],
+      "cameraPositionBlender": [
+        -360,
+        330,
+        47.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.17333388328552246,
+        0.17295873165130615,
+        0.6848371028900146,
+        0.6863226294517517
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-viaduct-east",
+      "edge": "finish",
+      "s": 1021.2578930080276,
+      "kind": "chase",
+      "sourceEye": [
+        -351.99963716224033,
+        50.600000000011036,
+        -336.800308411727
+      ],
+      "sourceTarget": [
+        -371.53205453822096,
+        47.000000000011035,
+        -320.19775364304365
+      ],
+      "sourceAnchor": [
+        -359.9999999988966,
+        47.350000000011036,
+        -330.00000000093786
+      ],
+      "sourceDesiredEye": [
+        -351.99963716224033,
+        50.600000000011036,
+        -336.800308411727
+      ],
+      "cameraPositionBlender": [
+        -351.9996337890625,
+        336.8003234863281,
+        50.599998474121094
+      ],
+      "cameraQuaternionBlender": [
+        0.31676185131073,
+        0.2753864824771881,
+        0.5955069065093994,
+        0.6849786639213562
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-tooth-approach",
+      "edge": "finish",
+      "s": 310,
+      "kind": "eye",
+      "sourceEye": [
+        -3.709406963492718,
+        27.46369819217613,
+        -675.8975550656828
+      ],
+      "sourceTarget": [
+        22.631630658348538,
+        28.983979885593413,
+        -657.8271605332058
+      ],
+      "sourceAnchor": [
+        -3.709406963492718,
+        27.21369819217613,
+        -675.8975550656828
+      ],
+      "sourceDesiredEye": [
+        -12.707430487742563,
+        30.463698192176125,
+        -681.3091696729
+      ],
+      "cameraPositionBlender": [
+        -3.709406852722168,
+        675.8975830078125,
+        27.46369743347168
+      ],
+      "cameraQuaternionBlender": [
+        -0.32158035039901733,
+        -0.3372492492198944,
+        0.6403377652168274,
+        0.6105870604515076
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-tooth-approach",
+      "edge": "finish",
+      "s": 310,
+      "kind": "chase",
+      "sourceEye": [
+        -12.707430487742563,
+        30.463698192176125,
+        -681.3091696729
+      ],
+      "sourceTarget": [
+        9.260717035425976,
+        26.863698192176127,
+        -668.0970295057301
+      ],
+      "sourceAnchor": [
+        -3.709406963492718,
+        27.21369819217613,
+        -675.8975550656828
+      ],
+      "sourceDesiredEye": [
+        -12.707430487742563,
+        30.463698192176125,
+        -681.3091696729
+      ],
+      "cameraPositionBlender": [
+        -12.707430839538574,
+        681.3091430664062,
+        30.46369743347168
+      ],
+      "cameraQuaternionBlender": [
+        -0.37148401141166687,
+        -0.32296085357666016,
+        0.5711063742637634,
+        0.656912088394165
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-tooth-middle",
+      "edge": "finish",
+      "s": 370,
+      "kind": "eye",
+      "sourceEye": [
+        43.43443962585688,
+        30.38351475318208,
+        -639.1704880643721
+      ],
+      "sourceTarget": [
+        63.24956326964947,
+        32.0857917228655,
+        -614.1739560588168
+      ],
+      "sourceAnchor": [
+        43.43443962585688,
+        30.13351475318208,
+        -639.1704880643721
+      ],
+      "sourceDesiredEye": [
+        36.136318796211185,
+        33.38351475318208,
+        -646.7194901411959
+      ],
+      "cameraPositionBlender": [
+        43.43444061279297,
+        639.1704711914062,
+        30.383514404296875
+      ],
+      "cameraQuaternionBlender": [
+        -0.22628766298294067,
+        -0.23868589103221893,
+        0.6853280067443848,
+        0.6497295498847961
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-tooth-middle",
+      "edge": "finish",
+      "s": 370,
+      "kind": "chase",
+      "sourceEye": [
+        36.136318796211185,
+        33.38351475318208,
+        -646.7194901411959
+      ],
+      "sourceTarget": [
+        53.95425343435519,
+        29.78351475318208,
+        -628.2890436293106
+      ],
+      "sourceAnchor": [
+        43.43443962585688,
+        30.13351475318208,
+        -639.1704880643721
+      ],
+      "sourceDesiredEye": [
+        36.136318796211185,
+        33.38351475318208,
+        -646.7194901411959
+      ],
+      "cameraPositionBlender": [
+        36.13631820678711,
+        646.719482421875,
+        33.383514404296875
+      ],
+      "cameraQuaternionBlender": [
+        -0.2829010486602783,
+        -0.24594856798648834,
+        0.6082561016082764,
+        0.6996433734893799
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-return-ridge",
+      "edge": "finish",
+      "s": 505.7014268937809,
+      "kind": "eye",
+      "sourceEye": [
+        72.36677304125624,
+        37.357538491355676,
+        -514.6852234507874
+      ],
+      "sourceTarget": [
+        61.40532366323484,
+        38.806381766317834,
+        -484.67087027113473
+      ],
+      "sourceAnchor": [
+        72.36677304125624,
+        37.107538491355676,
+        -514.6852234507874
+      ],
+      "sourceDesiredEye": [
+        75.40543303454673,
+        40.357538491355676,
+        -524.735922204863
+      ],
+      "cameraPositionBlender": [
+        72.36677551269531,
+        514.6852416992188,
+        37.357540130615234
+      ],
+      "cameraQuaternionBlender": [
+        0.12034603208303452,
+        0.12592646479606628,
+        0.7118921875953674,
+        0.6803446412086487
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-return-ridge",
+      "edge": "finish",
+      "s": 505.7014268937809,
+      "kind": "chase",
+      "sourceEye": [
+        75.40543303454673,
+        40.357538491355676,
+        -524.735922204863
+      ],
+      "sourceTarget": [
+        67.98672260047715,
+        36.757538491355675,
+        -500.197729751219
+      ],
+      "sourceAnchor": [
+        72.36677304125624,
+        37.107538491355676,
+        -514.6852234507874
+      ],
+      "sourceDesiredEye": [
+        75.40543303454673,
+        40.357538491355676,
+        -524.735922204863
+      ],
+      "cameraPositionBlender": [
+        75.40543365478516,
+        524.7359008789062,
+        40.357540130615234
+      ],
+      "cameraQuaternionBlender": [
+        0.11038725823163986,
+        0.09596848487854004,
+        0.649042546749115,
+        0.7465577721595764
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "eye-choice",
+      "edge": "start",
+      "s": 1950.927863735412,
+      "kind": "eye",
+      "sourceEye": [
+        -275,
+        15.6,
+        -157.31958611919276
+      ],
+      "sourceTarget": [
+        -275,
+        15.6,
+        -189.319586119191
+      ],
+      "sourceAnchor": [
+        -275,
+        15.35,
+        -157.31958611919276
+      ],
+      "sourceDesiredEye": [
+        -275,
+        18.6,
+        -146.81958611919276
+      ],
+      "cameraPositionBlender": [
+        -275,
+        157.319580078125,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7071067690849304,
+        0.7071067690849304,
+        0,
+        0
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    },
+    {
+      "name": "chase-choice",
+      "edge": "start",
+      "s": 1950.927863735412,
+      "kind": "chase",
+      "sourceEye": [
+        -275,
+        18.6,
+        -146.81958611919276
+      ],
+      "sourceTarget": [
+        -275,
+        15,
+        -172.4547212543279
+      ],
+      "sourceAnchor": [
+        -275,
+        15.35,
+        -157.31958611919276
+      ],
+      "sourceDesiredEye": [
+        -275,
+        18.6,
+        -146.81958611919276
+      ],
+      "cameraPositionBlender": [
+        -275,
+        146.819580078125,
+        18.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7546746730804443,
+        0.6560992002487183,
+        0,
+        0
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 8,
+      "renderByDefault": false
+    }
+  ],
+  "catalogViews": {
+    "caldera-overview": {
+      "file": "caldera-overview.png",
+      "sha256": "eb09cbf0319823623bceba623ce975c35b62cf2a38fa0bbe3160f4e3907d97d8",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        321.9520263671875,
+        1381.1710205078125,
+        881.8660888671875
+      ],
+      "cameraQuaternionBlender": [
+        0.14035584032535553,
+        0.07375182211399078,
+        0.45927152037620544,
+        0.8740312457084656
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Basalt Crown circuit: asymmetric connected high caldera rim, hooked low bowl, both real lower fork roads, thick twin-arch viaduct and original geology landmarks. Exact emitted source geometry; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        0.3159928321838379,
+        0.2485293745994568,
+        0.678791344165802,
+        0.7469404935836792
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.6040209531784058,
+          0.2968689799308777,
+          0.6776378154754639,
+          0.4973258674144745
+        ],
+        "boulevard": [
+          0.5681895613670349,
+          0.2968689799308777,
+          0.6776378154754639,
+          0.4973258674144745
+        ]
+      },
+      "orthographicScaleMetres": 1988.8599853515625,
+      "fittedSubjectScreenBounds": [
+        0.14263364672660828,
+        0.06999995559453964,
+        0.8573666214942932,
+        0.9299998879432678
+      ]
+    },
+    "caldera-topdown": {
+      "file": "caldera-topdown.png",
+      "sha256": "a81882ff8604cf40201055d0e1ce71d90173f32d86e61a6ba065eb4ee5b44735",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -62.499996185302734,
+        214.99996948242188,
+        1529.4310302734375
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-8,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead original source geometry with both complete physical alternatives: Jointline Cut and Ashen Sweep. Actual banked widths, split/merge unions, connected basalt/ash/ochre terrain and upper viaduct remain unchanged. The upper road naturally occludes lower road fragments at the real crossing; no cutaway is used.",
+      "routeScreenBounds": [
+        0.35450899600982666,
+        0.16312921047210693,
+        0.6583106517791748,
+        0.7965717911720276
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.5977126359939575,
+          0.207985058426857,
+          0.6278518438339233,
+          0.47111937403678894
+        ],
+        "boulevard": [
+          0.5336973667144775,
+          0.207985058426857,
+          0.6068581938743591,
+          0.47111937403678894
+        ]
+      },
+      "orthographicScaleMetres": 2077.51953125,
+      "fittedSubjectScreenBounds": [
+        0.24609138071537018,
+        0.06999995559453964,
+        0.753908634185791,
+        0.9300000071525574
+      ]
+    },
+    "caldera-driver-reveal": {
+      "file": "caldera-driver-reveal.png",
+      "sha256": "85645f200265d5f48433d05859e71610808a577f9c92534696aab600691f8f1f",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -356.8447570800781,
+        -84.50637817382812,
+        50.183921813964844
+      ],
+      "cameraQuaternionBlender": [
+        0.16005684435367584,
+        0.1642409861087799,
+        -0.6970832347869873,
+        -0.6793244481086731
+      ],
+      "projection": "PERSP",
+      "description": "Frozen source-design driver eye on the real start road at 266.96907609010907 m, exactly 1.6 m above support. The connected cooled basalt rim and dry terraces frame the upcoming bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -4369.31689453125,
+        -355.56329345703125,
+        743.9645385742188,
+        417.36273193359375
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9687461853027344,
+          0.5405787825584412,
+          1.2314844131469727,
+          0.6454437971115112
+        ],
+        "boulevard": [
+          1.0199909210205078,
+          0.5405787825584412,
+          1.4896959066390991,
+          0.6454437971115112
+        ]
+      },
+      "lensMillimetres": 30,
+      "roadEdge": "start",
+      "roadDistanceMetres": 266.96907609010907,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "climbing-rim",
+        "edge": "start",
+        "s": 266.96907609010907,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -356.8447636179106,
+          48.58392339567208,
+          84.50637908689941
+        ],
+        "driverEye": [
+          -356.8447636179106,
+          50.18392339567208,
+          84.50637908689941
+        ],
+        "driverLook": [
+          -342.5866821316918,
+          51.00818927105339,
+          113.08427800531572
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -360.64424182555996,
+              "y": 53.18392339567208,
+              "z": 74.7179182605183
+            },
+            "look": {
+              "x": -351.3680382735511,
+              "y": 49.58392339567208,
+              "z": 98.61587216997128
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -362.27258962883826,
+              "y": 56.48392339567208,
+              "z": 70.52286362064069
+            },
+            "look": {
+              "x": -352.899861130128,
+              "y": 49.58392339567208,
+              "z": 94.6694913236828
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -342.5866821316918,
+        51.00818927105339,
+        113.08427800531572
+      ]
+    },
+    "caldera-twin-arch-passage": {
+      "file": "caldera-twin-arch-passage.png",
+      "sha256": "36edadf17fdfb33e804d9828e60ab6a27884175e54309b56a4e58d45bfb218e0",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -298.1470031738281,
+        305.6471252441406,
+        15.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5760757923126221,
+        0.8157923221588135,
+        -0.04180877283215523,
+        -0.029523465782403946
+      ],
+      "projection": "PERSP",
+      "description": "Actual lower Jointline Cut road support at 52 m, eye exactly 1.6 m above it, ultra-wide architectural view toward the real stone apertures and grounded central pier. The original thick upper road, genuine underside and support masonry remain fully present. The camera looks upward through a 6.5 mm ultra-wide offline architectural lens; this is not the gameplay camera FOV or a decorative bridge.",
+      "routeScreenBounds": [
+        -1267.260009765625,
+        -50.957237243652344,
+        100.29727935791016,
+        763.4533081054688
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -2.8213298320770264,
+          -0.586769700050354,
+          6.064453601837158,
+          2.3074581623077393
+        ],
+        "boulevard": [
+          -26.706911087036133,
+          -0.24071402847766876,
+          12.540547370910645,
+          1.8589428663253784
+        ]
+      },
+      "lensMillimetres": 6.5,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 52,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "jointline-arch-approach",
+        "edge": "alley",
+        "s": 52,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -298.1470080861811,
+          14,
+          -305.64713563125486
+        ],
+        "driverEye": [
+          -298.1470080861811,
+          15.6,
+          -305.64713563125486
+        ],
+        "driverLook": [
+          -306.6321139105156,
+          15.6,
+          -335.7319950898684
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -292.4997215845266,
+              "y": 18.6,
+              "z": -296.7951214441768
+            },
+            "look": {
+              "x": -306.2872408813587,
+              "y": 15,
+              "z": -318.40679572073674
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -290.0794559409604,
+              "y": 21.900000000000002,
+              "z": -293.0014010782862
+            },
+            "look": {
+              "x": -304.0104433665167,
+              "y": 15,
+              "z": -314.8379589180385
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -294,
+        30,
+        -346
+      ],
+      "upperRoadIsRealPhysicalCrossing": true
+    },
+    "caldera-wind-tooth": {
+      "file": "caldera-wind-tooth.png",
+      "sha256": "2efd30922b5202570f1d9e950a00060e83ecda853ea29a0c81db88d5cb85d6cd",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -11.264036178588867,
+        635.8768920898438,
+        37.87233352661133
+      ],
+      "cameraQuaternionBlender": [
+        0.16079333424568176,
+        0.17272868752479553,
+        -0.711269736289978,
+        -0.6621221303939819
+      ],
+      "projection": "PERSP",
+      "description": "Original asymmetric Wind-carved Tooth: a genuine daylight erosion window through thick basalt, broad bearing feet, an attached companion shoulder and connected talus. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -2066.467529296875,
+        -465.1241455078125,
+        2781.955078125,
+        223.30538940429688
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -336.224853515625,
+          -253.0244598388672,
+          2272.702880859375,
+          36.7349853515625
+        ],
+        "boulevard": [
+          -278.38189697265625,
+          -465.1241455078125,
+          2781.955078125,
+          51.51333236694336
+        ]
+      },
+      "lensMillimetres": 28
+    }
+  }
+}

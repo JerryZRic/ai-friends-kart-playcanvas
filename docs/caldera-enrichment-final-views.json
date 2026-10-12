@@ -1,0 +1,21 @@
+{
+  "schema": "caldera-enrichment-final-views-v1",
+  "frozenCameraManifestSha256": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+  "samples": 48,
+  "views": [
+    "eye-rim-approach",
+    "chase-rim-approach",
+    "eye-rim-north",
+    "chase-rim-north",
+    "eye-archive-approach",
+    "chase-archive-approach",
+    "eye-archive-middle",
+    "chase-archive-middle",
+    "caldera-overview",
+    "caldera-topdown",
+    "caldera-driver-reveal",
+    "caldera-twin-arch-passage",
+    "caldera-wind-tooth"
+  ],
+  "notice": "Eight source-native driving views and all five unchanged original catalog transforms. CPU static paired images; no GPU or FPS proof."
+}
