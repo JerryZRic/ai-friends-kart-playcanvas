@@ -43,7 +43,11 @@
     "tests/helpers/freeze-airfield-enrichment-test-ledger.py",
     "tests/helpers/run-airfield-final-audit.ts",
     "tests/helpers/run-airfield-retained-audit.ts",
-    "tests/helpers/seal-airfield-enrichment-qa.py"
+    "tests/helpers/seal-airfield-enrichment-qa.py",
+    "tests/audit-fixture-publication.test.ts",
+    "tests/helpers/audit-fixture-publication-revisions.ts",
+    "scripts/compact-garden-audit-fixture.mjs",
+    "docs/audit-fixture-publication.md"
   ],
   "retainedTestFiles": [
     "tests/airfield-gameplay-balance.test.ts",
@@ -1114,6 +1118,7 @@
     "docs/airfield-enrichment-preview-provenance.json": "066589fc50e0e5652c65cf02f47bd24c59b9dd61cf91649db6e501c7ea269ae3",
     "docs/airfield-enrichment-qa-changes.md": "f3fb60afbfc00eff6229990adcd6293a9876394cc55721cb4c0fecce75fa1b6b",
     "docs/airfield-preview-provenance.json": "bfecf37649380a08708c83369b04b94451ac643657aa6c881b2bcf776b08c7b4",
+    "docs/audit-fixture-publication.md": "8ad1cc61f9345e9313fe246884de22d3203ffed123989f59f2fcdd63b6659e88",
     "docs/caldera-enrichment-ART-DIRECTION.md": "5ad873b54edf032e6c6945567d7dc9444d1b4386cffb543c0fe970567d7a67b1",
     "docs/caldera-enrichment-QA.md": "0fd7ae4d6f175da4fd7091c28e92d240f4f715766af1654fc788f27e83fcc2a4",
     "docs/caldera-enrichment-cameras.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
@@ -1298,6 +1303,7 @@
     "scripts/build-mountain-editable-model.py": "f398c4c9fe9bcc63fa24913493937360b7d69142997dbcf72df7af3ce7c4f6a6",
     "scripts/build-waterpark.mjs": "04a0764d662b0c31c2c2f3153ddd207c7503a5df926406e2f0e030d47836c89b",
     "scripts/capture-mountain-audit-contract.ts": "b86445f6296170a3b6d5dcc823eded973a17b327ed3332ef514780bdbf3d8447",
+    "scripts/compact-garden-audit-fixture.mjs": "0ba314a0cc9b45a26fa3925c7941ef313b32d27066d1a0536727667f7ada0076",
     "scripts/compare-harvest-enrichment-previews.py": "a64fe4f777826272f7f5bfa6a7e729d8d2409e11431047345cc83f97592ab400",
     "scripts/compare-mountain-scenes.py": "8dd1fa4d7702b42fa84bb8b4f39fa77be65be90af56b668f21c116dce8b41195",
     "scripts/compose-airfield-enrichment-comparison.py": "d75db3e4317714140ad11aeccc7652988dfe5bcafc5fcb34c9e8215b7262f83d",
@@ -1526,7 +1532,7 @@
     "tests/airfield-enrichment-camera.test.ts": "42752e1afccf445dce622a18189418cd00740058491d84dc3638d2846ef0d0e9",
     "tests/airfield-enrichment-extension.test.ts": "1b6f1b8ac733d990a04f476536cdef2f978405a271d67be86f1e22b46b216979",
     "tests/airfield-enrichment-geometry.test.ts": "3037046b947299f499ff723417c4f809a3e9295524ff8be1deffa553097e18d0",
-    "tests/airfield-enrichment-inventory.test.ts": "92caaa665429fef759105dc897cad0df2f2e50340f63648e405624fe54eb27b7",
+    "tests/airfield-enrichment-inventory.test.ts": "d1bd558d1cca7446c7451b22d6bda6fe8ef181d5dc5e171b20c2774a8674fe94",
     "tests/airfield-enrichment-oracles.test.ts": "1de79dd1d2c0d368f4235867fabc5be72cef40600ce8d4463510b20a87fe1b1b",
     "tests/airfield-gameplay-balance.test.ts": "212f45c8fe59b90757bfc5f7316846efb09982252fefb1f88ea42aa7d10f7d96",
     "tests/airfield-gameplay-camera.test.ts": "629474b52cdbef3e92bee3763620cc092771abad36779d07e44bbb29687ce68a",
@@ -1543,6 +1549,7 @@
     "tests/airfield-scene.test.ts": "63488923684386aff0dd1b99c660174d5bbbe23d22aa4a48617b5ddb59bf8f74",
     "tests/alpine-props.test.ts": "7f6f6fa99e872972a452800d37ac3d118dc0e527d9591b4db9e3b1caa1632216",
     "tests/asset-download.test.mjs": "3117fb5e9d4c19ba2ed5505288f43febad6392254c6410dd7ed9dc944365e36a",
+    "tests/audit-fixture-publication.test.ts": "0d6680fa8510a2b9aabce7b8fd4b2b15ca00b9e4bb15f0ddd047fb1dd14cb194",
     "tests/bundled-drivers.test.mjs": "adbdbe6ae215999715d55bf0c0af8cca59193b27f6997f7b7ea097ceee4adff7",
     "tests/caldera-enrichment-camera.test.ts": "e776fb5851adf1e7efeea8677a90b26bfe4618b4af32cdb6a69de7690944a800",
     "tests/caldera-enrichment-geometry.test.ts": "ccf84a13fb818f4dc0a64724332c1ce992f350e2a93a8f7549aa32ea4c437f1b",
@@ -1609,7 +1616,7 @@
     "tests/fixtures/garden-enrichment-original-assemblies.json": "3f7ea78514e3ef91d3a0037bb39de7a0bfc22622c5a1338c4242a0cf985fa59e",
     "tests/fixtures/garden-enrichment-original-geometry.json": "d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0",
     "tests/fixtures/garden-enrichment-original-inventory.json": "ee38acf0339c017150d2ed99a70ebaf2bf4ea5555dd8beb3ea7a47647a1c26d4",
-    "tests/fixtures/garden-enrichment-reviewed-changes.json": "9849bf067b63fa83f22ad75dac63ff4a560c601c210d241676ad06cbd6307afa",
+    "tests/fixtures/garden-enrichment-reviewed-changes.json": "0bf147bda5bf2d63dbce87a5b5ad09e1dc24406c2d9fb39bc0c5573565a11813",
     "tests/fixtures/harvest-enrichment-protected.json": "cebc9293f79ee7f9b611018e6e3f2367bd4f0b917f2b9e67f70540c39a2061c0",
     "tests/fixtures/mountain-first-pass-cylinder.json": "1428ccadd971c46ff540052ab10cff4d3317cfca32faa994db993abcbd5016cf",
     "tests/fixtures/mountain-first-pass-unaffected.json": "59f4393016e781825ec611b5c746c92208f3acf70c8c73d873ddd555f127e7e1",
@@ -1695,10 +1702,11 @@
     "tests/helpers/airfield-enrichment-original-assemblies.ts": "77a09954631adfb05c17d9422c1638749d26ce97cf67d6419e804aa59bb4de82",
     "tests/helpers/airfield-enrichment-piece-oracle.ts": "969bec31b76c0ba9057800f925a89b323b3c10da806211c0dcee4fcc0b84a62e",
     "tests/helpers/airfield-enrichment-pose-worker.ts": "5c72d65f1233776b6dcfddba14d92105838fc30a9678e87355dcf88b33df4313",
-    "tests/helpers/airfield-enrichment-reviewed-revisions.ts": "5e2b8904f5166059912c5900fcf3296b09094f59c7e028818346641f38b1f750",
+    "tests/helpers/airfield-enrichment-reviewed-revisions.ts": "08c895773b9fc00883613a53f58fd3f321619de33e9346ace27e191f89ca7516",
     "tests/helpers/airfield-enrichment-scene.ts": "8a2f97c316bf1555f279f2cecc46b08c34b003d58de51d27f9e612bd70a421e8",
     "tests/helpers/airfield-enrichment-solids.ts": "c906972ef1669e37148dbf9e6137e279c279226eac6079932f97b6fc90fc5fb7",
     "tests/helpers/airfield-enrichment-source-stability.ts": "92b8f09251ffe1ae2f56b8683c6a7933204d137110433d6ab70a3dadc390e88a",
+    "tests/helpers/audit-fixture-publication-revisions.ts": "13fb82f7e74e3074c43641f5d873a34a7e554bfac478d329302ad6ba9c3a3025",
     "tests/helpers/authorized-portraits.json": "e05bf4cade8de3e1ae13b6db1e20c1c22a4ba38cf28b3e0b559cdb06cb7d6bf4",
     "tests/helpers/authorized-runtime.json": "090df0e4fdad642acd48ad43b0ee3ae75ec1227ea1a8ba614fd380955491de36",
     "tests/helpers/bounded-test-process.ts": "91dbd8876d5e73f8d43c1065433681ca20bc52e1f811a512fff6dbcc50fb5bd7",
@@ -1754,7 +1762,7 @@
     "tests/helpers/garden-enrichment-original-assemblies.ts": "0416d135854133424f18cb95a16dae422ab1aa4107a9b0598a3225d7fa1a6531",
     "tests/helpers/garden-enrichment-piece-oracle.ts": "3cddae5f8461233530b6fcfc0369434dd7f33a35e453be4bd21927dcabc13e33",
     "tests/helpers/garden-enrichment-pose-worker.ts": "583b70ab8f340783726793a3f22cb95edf17299989c9467a7fa390e370ca234b",
-    "tests/helpers/garden-enrichment-reviewed-revisions.ts": "f993f2b2d84b30c95c2cf02b9b23e59eb677365bedf127cb1466875fad3f4035",
+    "tests/helpers/garden-enrichment-reviewed-revisions.ts": "f639192feed136fab5fd1d8267e92f385196e6987e5e488b5b444fae27d7b80a",
     "tests/helpers/garden-enrichment-scene.ts": "b89d49153f62ee45a36e81a6209ca359f85b44fec9a844ba97a75315de641469",
     "tests/helpers/garden-enrichment-solids.ts": "34a873e5b9b5a21047ac21eaed1525d36c51370359a79c6cc3b63b28efd00a7d",
     "tests/helpers/garden-enrichment-source-stability.ts": "57f4b3bc29b0d6b0152d442ab6a189ed90d6b3828901bff1f2e3141bf946fefa",
@@ -1955,5 +1963,23 @@
     "waterpark-study.html": "1a36b679e1e7b1d34c477004835b5a8eeec286c8f210d6d456c61cc69d47e5cd",
     "waterpark.html": "e4dde253e80cc3245c045efdcd4394c404ff61f8df63e6303fb1ce07d0163e0c"
   },
-  "notice": "This manifest excludes its own self-hash. Every historical finalFileSha256 map remains byte-exact; explicit Airfield review overlay binds all current deltas."
+  "notice": "This manifest excludes its own self-hash. Every historical finalFileSha256 map remains byte-exact; explicit Airfield review overlay binds all current deltas.",
+  "publicationCompatibility": {
+    "schema": "audit-fixture-publication-v1",
+    "baselineCommit": "caff951ba864212e77e3ac2f2ff3f6fa3d79d83a",
+    "sealedAirfieldManifestSha256": "0b0d4d0f7bb4ed5a086a62b7e455b32771c3d60a8b5251fc4669ce8cf7ee3917",
+    "scope": "Lossless Garden audit JSON compaction; no art or gameplay changes",
+    "reviewedInputRevisions": {
+      "tests/fixtures/garden-enrichment-reviewed-changes.json": {
+        "previousSha256": "9849bf067b63fa83f22ad75dac63ff4a560c601c210d241676ad06cbd6307afa",
+        "currentSha256": "0bf147bda5bf2d63dbce87a5b5ad09e1dc24406c2d9fb39bc0c5573565a11813",
+        "scope": "Whitespace-only JSON transport compaction with exact historical-byte reconstruction"
+      },
+      "tests/helpers/garden-enrichment-reviewed-revisions.ts": {
+        "previousSha256": "f993f2b2d84b30c95c2cf02b9b23e59eb677365bedf127cb1466875fad3f4035",
+        "currentSha256": "f639192feed136fab5fd1d8267e92f385196e6987e5e488b5b444fae27d7b80a",
+        "scope": "Validate exact compact transport bytes and reconstruct the independently pinned historical JSON bytes"
+      }
+    }
+  }
 }

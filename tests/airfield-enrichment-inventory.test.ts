@@ -3,13 +3,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import {airfieldSha as sha,airfieldFrozenBaseline,AIRFIELD_ORIGINAL_SOURCE_SHA256} from './helpers/airfield-enrichment-contract';
-import {airfieldReviewedHash,assertAirfieldReviewedBytes,AIRFIELD_REVIEWED_PATHS} from './helpers/airfield-enrichment-reviewed-revisions';
+import {airfieldReviewedHash,airfieldReviewedPathsWithin,assertAirfieldReviewedBytes,AIRFIELD_REVIEWED_PATHS} from './helpers/airfield-enrichment-reviewed-revisions';
+import {auditPublicationHash} from './helpers/audit-fixture-publication-revisions';
 const raw=readFileSync('tests/fixtures/airfield-enrichment-original-inventory.json','utf8');assert.equal(sha(raw),'803c61344abe2f97fb9acaaf8c5960f64036938fff7e1248d8263e1db332b6cf');const original=JSON.parse(raw);
 test('Airfield 870 independently frozen inputs and all13 original tests preserve exact historical bytes',()=>{
  assert.equal(original.baselineCommit,'fc5360139c00e0d60148afabd0d24ed85c272ed6');assert.equal(Object.keys(original.sourceInventory).length,870);
  assert.equal(sha(readFileSync('docs/scene-baselines/airfield-original/src/airfield-scenery.ts.txt')),AIRFIELD_ORIGINAL_SOURCE_SHA256);assert.deepEqual(airfieldFrozenBaseline().budget,{batches:20,triangles:94747,vertices:103278});
  const originals=Object.keys(original.sourceInventory).filter(p=>/^tests\/airfield-.*\.test\.ts$/.test(p));assert.equal(originals.length,13);for(const file of [...originals,'src/airfield-scenery.ts','docs/airfield-preview-provenance.json'])assert.equal(sha(readFileSync('docs/scene-baselines/airfield-original/'+file+'.txt')),original.sourceInventory[file]);
- for(const file of Object.keys(original.sourceInventory).filter(p=>p.startsWith('tests/fixtures/')||/enrichment-qa-files\.json$/.test(p)))assert.equal(sha(readFileSync(file)),original.sourceInventory[file],file+' historical fixture or full portable manifest stays byte-exact');
+ for(const file of Object.keys(original.sourceInventory).filter(p=>p.startsWith('tests/fixtures/')||/enrichment-qa-files\.json$/.test(p)))assert.equal(sha(readFileSync(file)),auditPublicationHash(file,original.sourceInventory[file]),file+' exact historical bytes or explicitly pinned lossless transport revision');
 });
 test('Airfield original assertions change only by the approved independently certified native ownership classification',()=>{
  const before=readFileSync('docs/scene-baselines/airfield-original/tests/airfield-gameplay.test.ts.txt','utf8');let expected="import {airfieldNativeBlockerComponents} from './helpers/airfield-enrichment-native-provenance';\n"+before;const start=expected.indexOf(' const componentRanges=new Map<any,any[]>();'),end=expected.indexOf('  let from=0;',start);assert.ok(start>=0&&end>start);expected=expected.slice(0,start)+" const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=airfieldNativeBlockerComponents(geometry);\n for(const solid of solids){\n  const components=certifiedBlockerComponents.get(solid)!;\n"+expected.slice(end);assert.equal(readFileSync('tests/airfield-gameplay.test.ts','utf8'),expected);
@@ -17,7 +18,7 @@ test('Airfield original assertions change only by the approved independently cer
 });
 test('Airfield review binds every current delta to exact immutable incoming bytes',()=>{
  const review=assertAirfieldReviewedBytes(readFileSync('tests/fixtures/airfield-enrichment-reviewed-changes.json','utf8')),changed:string[]=[];
- for(const [file,old]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(file));assert.equal(actual,airfieldReviewedHash(file,old),file+' exact current-or-original bytes');if(actual!==old)changed.push(file);}assert.deepEqual(changed.sort(),[...AIRFIELD_REVIEWED_PATHS].sort());
+ for(const [file,old]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(file));assert.equal(actual,airfieldReviewedHash(file,old),file+' exact current-or-original bytes');if(actual!==old)changed.push(file);}assert.deepEqual(changed.sort(),airfieldReviewedPathsWithin(original.sourceInventory).sort());
  assert.ok(review.certifiedIncomingAssertions.length>0);for(const row of review.certifiedIncomingAssertions){assert.ok(AIRFIELD_REVIEWED_PATHS.includes(row.path));assert.equal(row.incomingExpectedSha256,original.sourceInventory[row.path]);assert.ok(row.consumer);}
  const sourceFiles=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?sourceFiles(dir+'/'+e.name):[dir+'/'+e.name]);assert.deepEqual(sourceFiles('src').filter(p=>!/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f-]+\.ts$/.test(p.split('/').at(-1)!)).sort(),Object.keys(original.sourceInventory).filter(p=>p.startsWith('src/')).sort());
 });
