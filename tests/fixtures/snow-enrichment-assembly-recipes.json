@@ -1,0 +1,4729 @@
+{
+  "schema": "snow-independent-assembly-recipes-v1",
+  "basis": "Independently authored support topology and reviewed candidate-v7 exact indexed opening/exposure witnesses; original geometry goldens are separate and immutable.",
+  "assemblies": [
+    {
+      "id": "snow-enrichment-first-near-shelf",
+      "pieces": [
+        {
+          "id": "snow-enrichment-first-near-shelf:0",
+          "kind": "snow-enrichment-wind-packed-drift",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-first-near-shelf:0"
+      ],
+      "fullSeats": [],
+      "flatFeet": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-first-near-shelf:0",
+          "eye": [
+            23.9524565388442,
+            46.730206162721636,
+            -182.67497941958698
+          ],
+          "target": [
+            33.95238838023318,
+            46.730206162721636,
+            -182.67497941958698
+          ],
+          "actualSourceFace": 14148,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-first-middle-shelf",
+      "pieces": [
+        {
+          "id": "snow-enrichment-first-middle-shelf:0",
+          "kind": "snow-enrichment-wind-packed-drift",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-first-middle-shelf:0"
+      ],
+      "fullSeats": [],
+      "flatFeet": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-first-middle-shelf:0",
+          "eye": [
+            68.24959297635455,
+            41.73332968218196,
+            -196.67575118111083
+          ],
+          "target": [
+            42.45842675410891,
+            47.4867402435422,
+            -216.51541036459042
+          ],
+          "actualSourceFace": 15570,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-first-exit-shelf",
+      "pieces": [
+        {
+          "id": "snow-enrichment-first-exit-shelf:0",
+          "kind": "snow-enrichment-wind-packed-drift",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-first-exit-shelf:0"
+      ],
+      "fullSeats": [],
+      "flatFeet": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-first-exit-shelf:0",
+          "eye": [
+            -46.859288420286596,
+            29.26033299307022,
+            -324.9659527897636
+          ],
+          "target": [
+            -39.06363997828361,
+            32.351059107340674,
+            -345.90412383522374
+          ],
+          "actualSourceFace": 16860,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-second-near-shelf",
+      "pieces": [
+        {
+          "id": "snow-enrichment-second-near-shelf:0",
+          "kind": "snow-enrichment-wind-packed-drift",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-second-near-shelf:0"
+      ],
+      "fullSeats": [],
+      "flatFeet": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-second-near-shelf:0",
+          "eye": [
+            104.56723082911085,
+            39.34065695286371,
+            148.8352392488708
+          ],
+          "target": [
+            60.050463470010314,
+            44.16300932560687,
+            133.79700640873062
+          ],
+          "actualSourceFace": 18276,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-second-high-shelf",
+      "pieces": [
+        {
+          "id": "snow-enrichment-second-high-shelf:0",
+          "kind": "snow-enrichment-wind-packed-drift",
+          "supportOwner": []
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-second-high-shelf:0"
+      ],
+      "fullSeats": [],
+      "flatFeet": [],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-second-high-shelf:0",
+          "eye": [
+            140.85159994125942,
+            42.73502761673814,
+            174.89803983538764
+          ],
+          "target": [
+            98.19749731377476,
+            49.57854014465652,
+            155.34478415289578
+          ],
+          "actualSourceFace": 19806,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-first-bowl-fence",
+      "pieces": [
+        {
+          "id": "snow-enrichment-first-bowl-fence:0",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:1",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:2",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:3",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:2"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:4",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:5",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:4"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:6",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:7",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:8",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:9",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:10",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:1",
+            "snow-enrichment-first-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:11",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:1",
+            "snow-enrichment-first-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:12",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:1",
+            "snow-enrichment-first-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:13",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:3",
+            "snow-enrichment-first-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:14",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:3",
+            "snow-enrichment-first-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:15",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:3",
+            "snow-enrichment-first-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:16",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:5",
+            "snow-enrichment-first-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:17",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:5",
+            "snow-enrichment-first-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:18",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:5",
+            "snow-enrichment-first-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:19",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:7",
+            "snow-enrichment-first-bowl-fence:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:20",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:7",
+            "snow-enrichment-first-bowl-fence:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-fence:21",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-fence:7",
+            "snow-enrichment-first-bowl-fence:9"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-first-bowl-fence:0",
+        "snow-enrichment-first-bowl-fence:2",
+        "snow-enrichment-first-bowl-fence:4",
+        "snow-enrichment-first-bowl-fence:6",
+        "snow-enrichment-first-bowl-fence:8"
+      ],
+      "fullSeats": [],
+      "flatFeet": [
+        "snow-enrichment-first-bowl-fence:1",
+        "snow-enrichment-first-bowl-fence:3",
+        "snow-enrichment-first-bowl-fence:5",
+        "snow-enrichment-first-bowl-fence:7",
+        "snow-enrichment-first-bowl-fence:9"
+      ],
+      "openings": [
+        {
+          "label": "snow-enrichment-first-bowl-fence daylight above top baffle,inside total group bounds",
+          "a": [
+            44,
+            56.56296478591764,
+            -195
+          ],
+          "b": [
+            44,
+            56.56296478591764,
+            -191
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:0",
+          "eye": [
+            44.625,
+            45.66904437880126,
+            -189.375
+          ],
+          "target": [
+            41.20833333333333,
+            49.54523028151511,
+            -193.19838308457707
+          ],
+          "actualSourceFace": 252,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:1",
+          "eye": [
+            40.916666666666664,
+            52.421342495477234,
+            -196.28
+          ],
+          "target": [
+            40.916666666666664,
+            52.421342495477234,
+            -193.27999999999997
+          ],
+          "actualSourceFace": 16164,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:2",
+          "eye": [
+            43.375,
+            49.07482986685248,
+            -189.375
+          ],
+          "target": [
+            47.20833333333333,
+            52.08258673233979,
+            -193.19838308457707
+          ],
+          "actualSourceFace": 312,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:3",
+          "eye": [
+            46.916666666666664,
+            54.237920409691384,
+            -196.28
+          ],
+          "target": [
+            46.916666666666664,
+            54.237920409691384,
+            -193.27999999999997
+          ],
+          "actualSourceFace": 16200,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:4",
+          "eye": [
+            49.375,
+            49.011092136396265,
+            -189.375
+          ],
+          "target": [
+            52.6583333333333,
+            52.05825636675912,
+            -193.19838308457707
+          ],
+          "actualSourceFace": 372,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:5",
+          "eye": [
+            52.916666666666664,
+            54.211293316972586,
+            -196.28
+          ],
+          "target": [
+            52.916666666666664,
+            54.211293316972586,
+            -193.27999999999997
+          ],
+          "actualSourceFace": 16236,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:6",
+          "eye": [
+            55.375,
+            48.65123640865348,
+            -196.625
+          ],
+          "target": [
+            59.20833333333333,
+            51.679913143103875,
+            -193.19838308457707
+          ],
+          "actualSourceFace": 492,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:7",
+          "eye": [
+            58.916666666666664,
+            53.883933278671336,
+            -196.28
+          ],
+          "target": [
+            58.916666666666664,
+            53.883933278671336,
+            -193.27999999999997
+          ],
+          "actualSourceFace": 16272,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:8",
+          "eye": [
+            61.375,
+            46.95662197807267,
+            -196.625
+          ],
+          "target": [
+            65.20833333333333,
+            50.1813348278816,
+            -193.19838308457707
+          ],
+          "actualSourceFace": 552,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:9",
+          "eye": [
+            64.91666666666666,
+            52.70062006279517,
+            -196.28
+          ],
+          "target": [
+            64.91666666666666,
+            52.70062006279517,
+            -193.27999999999997
+          ],
+          "actualSourceFace": 16308,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:10",
+          "eye": [
+            38.138579430281695,
+            52.74943945435215,
+            -193.34
+          ],
+          "target": [
+            43.181420569718306,
+            52.74943945435215,
+            -193.34
+          ],
+          "actualSourceFace": 5688,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:11",
+          "eye": [
+            38.138579430281695,
+            53.84943945435215,
+            -193.34
+          ],
+          "target": [
+            43.181420569718306,
+            53.84943945435215,
+            -193.34
+          ],
+          "actualSourceFace": 5724,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:12",
+          "eye": [
+            38.138579430281695,
+            54.94943945435215,
+            -193.34
+          ],
+          "target": [
+            43.181420569718306,
+            54.94943945435215,
+            -193.34
+          ],
+          "actualSourceFace": 5760,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:13",
+          "eye": [
+            49.07844676821972,
+            53.912026464035776,
+            -196.4
+          ],
+          "target": [
+            49.07844676821972,
+            53.912026464035776,
+            -193.34
+          ],
+          "actualSourceFace": 5796,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:14",
+          "eye": [
+            49.07844676821972,
+            55.01202646403578,
+            -196.4
+          ],
+          "target": [
+            49.07844676821972,
+            55.01202646403578,
+            -193.34
+          ],
+          "actualSourceFace": 5832,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:15",
+          "eye": [
+            49.07844676821972,
+            59.82018521282905,
+            -193.34
+          ],
+          "target": [
+            49.07844676821972,
+            56.11202646403578,
+            -193.34
+          ],
+          "actualSourceFace": 5868,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:16",
+          "eye": [
+            50.220932356902225,
+            53.78166161586149,
+            -193.34
+          ],
+          "target": [
+            55.06093235690222,
+            53.78166161586149,
+            -193.34
+          ],
+          "actualSourceFace": 5904,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:17",
+          "eye": [
+            50.220932356902225,
+            54.88166161586149,
+            -193.34
+          ],
+          "target": [
+            55.06093235690222,
+            54.88166161586149,
+            -193.34
+          ],
+          "actualSourceFace": 5940,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:18",
+          "eye": [
+            50.220932356902225,
+            55.98166161586149,
+            -193.34
+          ],
+          "target": [
+            55.06093235690222,
+            55.98166161586149,
+            -193.34
+          ],
+          "actualSourceFace": 5976,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:19",
+          "eye": [
+            56.172277868010326,
+            53.16366570187562,
+            -193.34
+          ],
+          "target": [
+            61.01227786801032,
+            53.16366570187562,
+            -193.34
+          ],
+          "actualSourceFace": 6012,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:20",
+          "eye": [
+            67.82772213198967,
+            54.263665701875624,
+            -193.34
+          ],
+          "target": [
+            61.01227786801032,
+            54.263665701875624,
+            -193.34
+          ],
+          "actualSourceFace": 6048,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-fence:21",
+          "eye": [
+            67.82772213198967,
+            55.363665701875625,
+            -193.34
+          ],
+          "target": [
+            61.01227786801032,
+            55.363665701875625,
+            -193.34
+          ],
+          "actualSourceFace": 6084,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-second-bowl-fence",
+      "pieces": [
+        {
+          "id": "snow-enrichment-second-bowl-fence:0",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:1",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:2",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:3",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:2"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:4",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:5",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:4"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:6",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:7",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:8",
+          "kind": "snow-enrichment-fence-footing",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:9",
+          "kind": "snow-enrichment-fence-bearing-upright",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:10",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:1",
+            "snow-enrichment-second-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:11",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:1",
+            "snow-enrichment-second-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:12",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:1",
+            "snow-enrichment-second-bowl-fence:3"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:13",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:3",
+            "snow-enrichment-second-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:14",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:3",
+            "snow-enrichment-second-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:15",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:3",
+            "snow-enrichment-second-bowl-fence:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:16",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:5",
+            "snow-enrichment-second-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:17",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:5",
+            "snow-enrichment-second-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:18",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:5",
+            "snow-enrichment-second-bowl-fence:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:19",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:7",
+            "snow-enrichment-second-bowl-fence:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:20",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:7",
+            "snow-enrichment-second-bowl-fence:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-fence:21",
+          "kind": "snow-enrichment-fence-slatted-baffle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-fence:7",
+            "snow-enrichment-second-bowl-fence:9"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-second-bowl-fence:0",
+        "snow-enrichment-second-bowl-fence:2",
+        "snow-enrichment-second-bowl-fence:4",
+        "snow-enrichment-second-bowl-fence:6",
+        "snow-enrichment-second-bowl-fence:8"
+      ],
+      "fullSeats": [],
+      "flatFeet": [
+        "snow-enrichment-second-bowl-fence:1",
+        "snow-enrichment-second-bowl-fence:3",
+        "snow-enrichment-second-bowl-fence:5",
+        "snow-enrichment-second-bowl-fence:7",
+        "snow-enrichment-second-bowl-fence:9"
+      ],
+      "openings": [
+        {
+          "label": "snow-enrichment-second-bowl-fence daylight above top baffle,inside total group bounds",
+          "a": [
+            95.81899869941,
+            53.75223413745394,
+            148.94673044592219
+          ],
+          "b": [
+            98.23974432235417,
+            53.75223413745394,
+            152.13106564011844
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:0",
+          "eye": [
+            98.91495589218763,
+            45.233740727032384,
+            155.92765793503858
+          ],
+          "target": [
+            95.33109330706884,
+            48.490627699006026,
+            152.09163434752978
+          ],
+          "actualSourceFace": 612,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:1",
+          "eye": [
+            91.6706888712661,
+            50.827640793184415,
+            148.67766399233267
+          ],
+          "target": [
+            94.80336950435759,
+            50.827640793184415,
+            151.87939279424467
+          ],
+          "actualSourceFace": 16344,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:2",
+          "eye": [
+            102.8953748849329,
+            44.557946162774094,
+            152.90172590635837
+          ],
+          "target": [
+            98.31459570985882,
+            47.888211346805164,
+            148.9540402926219
+          ],
+          "actualSourceFace": 648,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:3",
+          "eye": [
+            95.65110786401137,
+            50.210160815056796,
+            145.65173196365245
+          ],
+          "target": [
+            98.78378849710288,
+            50.210160815056796,
+            148.85346076556445
+          ],
+          "actualSourceFace": 16380,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:4",
+          "eye": [
+            99.12420612232181,
+            43.08998441652953,
+            149.87579387767818
+          ],
+          "target": [
+            103.29193129255938,
+            46.30468626141984,
+            146.03977029016937
+          ],
+          "actualSourceFace": 708,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:5",
+          "eye": [
+            99.63152685675665,
+            48.742199068812226,
+            142.62579993497226
+          ],
+          "target": [
+            102.76420748984815,
+            48.742199068812226,
+            145.8275287368843
+          ],
+          "actualSourceFace": 16416,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:6",
+          "eye": [
+            103.1046251150671,
+            40.9550951009465,
+            146.849861848998
+          ],
+          "target": [
+            107.30036937407903,
+            44.53192599286475,
+            143.28331454195256
+          ],
+          "actualSourceFace": 744,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:7",
+          "eye": [
+            103.61194584950194,
+            47.04354935231538,
+            139.59986790629208
+          ],
+          "target": [
+            106.74462648259343,
+            47.04354935231538,
+            142.8015967082041
+          ],
+          "actualSourceFace": 16452,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:8",
+          "eye": [
+            107.08504410781237,
+            38.02291063121485,
+            143.82392982031777
+          ],
+          "target": [
+            111.19110851737216,
+            41.411995019431195,
+            139.9067954674042
+          ],
+          "actualSourceFace": 804,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:9",
+          "eye": [
+            107.5923648422472,
+            44.16057361792464,
+            136.57393587761186
+          ],
+          "target": [
+            110.7250454753387,
+            44.16057361792464,
+            139.77566467952386
+          ],
+          "actualSourceFace": 16488,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:10",
+          "eye": [
+            91.9539973886074,
+            50.297906612175,
+            150.75009775729814
+          ],
+          "target": [
+            96.1897414960988,
+            50.297906612175,
+            150.75009775729814
+          ],
+          "actualSourceFace": 6120,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:11",
+          "eye": [
+            91.9539973886074,
+            51.397906612175,
+            150.75009775729814
+          ],
+          "target": [
+            96.1897414960988,
+            51.397906612175,
+            150.75009775729814
+          ],
+          "actualSourceFace": 6156,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:12",
+          "eye": [
+            91.9539973886074,
+            52.497906612175,
+            150.75009775729814
+          ],
+          "target": [
+            96.1897414960988,
+            52.497906612175,
+            150.75009775729814
+          ],
+          "actualSourceFace": 6192,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:13",
+          "eye": [
+            95.89007600686736,
+            49.394860538187494,
+            147.7578734763609
+          ],
+          "target": [
+            100.12582011435876,
+            49.394860538187494,
+            147.7578734763609
+          ],
+          "actualSourceFace": 6228,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:14",
+          "eye": [
+            95.89007600686736,
+            50.494860538187496,
+            147.7578734763609
+          ],
+          "target": [
+            100.12582011435876,
+            50.494860538187496,
+            147.7578734763609
+          ],
+          "actualSourceFace": 6264,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:15",
+          "eye": [
+            95.89007600686736,
+            51.5948605381875,
+            147.7578734763609
+          ],
+          "target": [
+            100.12582011435876,
+            51.5948605381875,
+            147.7578734763609
+          ],
+          "actualSourceFace": 6300,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:16",
+          "eye": [
+            99.8593578730626,
+            47.85073970790326,
+            144.74040794027775
+          ],
+          "target": [
+            104.095101980554,
+            47.85073970790326,
+            144.74040794027775
+          ],
+          "actualSourceFace": 6336,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:17",
+          "eye": [
+            99.8593578730626,
+            48.95073970790327,
+            144.74040794027775
+          ],
+          "target": [
+            104.095101980554,
+            48.95073970790327,
+            144.74040794027775
+          ],
+          "actualSourceFace": 6372,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:18",
+          "eye": [
+            99.8593578730626,
+            50.05073970790326,
+            144.74040794027775
+          ],
+          "target": [
+            104.095101980554,
+            50.05073970790326,
+            144.74040794027775
+          ],
+          "actualSourceFace": 6408,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:19",
+          "eye": [
+            103.79022660269439,
+            45.76655517754739,
+            141.75214423959466
+          ],
+          "target": [
+            108.0259707101858,
+            45.76655517754739,
+            141.75214423959466
+          ],
+          "actualSourceFace": 6444,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:20",
+          "eye": [
+            103.79022660269439,
+            46.86655517754739,
+            141.75214423959466
+          ],
+          "target": [
+            108.0259707101858,
+            46.86655517754739,
+            141.75214423959466
+          ],
+          "actualSourceFace": 6480,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-fence:21",
+          "eye": [
+            103.79022660269439,
+            47.96655517754739,
+            141.75214423959466
+          ],
+          "target": [
+            108.0259707101858,
+            47.96655517754739,
+            141.75214423959466
+          ],
+          "actualSourceFace": 6516,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {}
+    },
+    {
+      "id": "snow-enrichment-first-bowl-windbreak",
+      "pieces": [
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:0",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:1",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:2",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:3",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:2",
+            "snow-enrichment-first-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:4",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:5",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:4",
+            "snow-enrichment-first-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:6",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:7",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:8",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:9",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:10",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:11",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:10",
+            "snow-enrichment-first-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:12",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:13",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:12",
+            "snow-enrichment-first-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:14",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:15",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:14"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:16",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:17",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:16"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:18",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:19",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:18",
+            "snow-enrichment-first-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:20",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:21",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:20",
+            "snow-enrichment-first-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:22",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-first-bowl-windbreak:23",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-first-bowl-windbreak:22"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-first-bowl-windbreak:0",
+        "snow-enrichment-first-bowl-windbreak:8",
+        "snow-enrichment-first-bowl-windbreak:16"
+      ],
+      "fullSeats": [
+        "snow-enrichment-first-bowl-windbreak:3",
+        "snow-enrichment-first-bowl-windbreak:5",
+        "snow-enrichment-first-bowl-windbreak:7",
+        "snow-enrichment-first-bowl-windbreak:11",
+        "snow-enrichment-first-bowl-windbreak:13",
+        "snow-enrichment-first-bowl-windbreak:15",
+        "snow-enrichment-first-bowl-windbreak:19",
+        "snow-enrichment-first-bowl-windbreak:21",
+        "snow-enrichment-first-bowl-windbreak:23"
+      ],
+      "fullSeatSupports": {
+        "snow-enrichment-first-bowl-windbreak:3": [
+          "snow-enrichment-first-bowl-windbreak:2"
+        ],
+        "snow-enrichment-first-bowl-windbreak:5": [
+          "snow-enrichment-first-bowl-windbreak:4"
+        ],
+        "snow-enrichment-first-bowl-windbreak:7": [
+          "snow-enrichment-first-bowl-windbreak:6"
+        ],
+        "snow-enrichment-first-bowl-windbreak:11": [
+          "snow-enrichment-first-bowl-windbreak:10"
+        ],
+        "snow-enrichment-first-bowl-windbreak:13": [
+          "snow-enrichment-first-bowl-windbreak:12"
+        ],
+        "snow-enrichment-first-bowl-windbreak:15": [
+          "snow-enrichment-first-bowl-windbreak:14"
+        ],
+        "snow-enrichment-first-bowl-windbreak:19": [
+          "snow-enrichment-first-bowl-windbreak:18"
+        ],
+        "snow-enrichment-first-bowl-windbreak:21": [
+          "snow-enrichment-first-bowl-windbreak:20"
+        ],
+        "snow-enrichment-first-bowl-windbreak:23": [
+          "snow-enrichment-first-bowl-windbreak:22"
+        ]
+      },
+      "flatFeet": [
+        "snow-enrichment-first-bowl-windbreak:1",
+        "snow-enrichment-first-bowl-windbreak:9",
+        "snow-enrichment-first-bowl-windbreak:17"
+      ],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:0",
+          "eye": [
+            43.8,
+            36.583119255644384,
+            -243.8
+          ],
+          "target": [
+            40.266666666666666,
+            40.508106015444895,
+            -239.73333333333332
+          ],
+          "actualSourceFace": 864,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:1",
+          "eye": [
+            36.54,
+            41.48784304622762,
+            -239.99769999999998
+          ],
+          "target": [
+            40.45658371685741,
+            41.48784304622762,
+            -239.99769999999998
+          ],
+          "actualSourceFace": 16524,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:2",
+          "eye": [
+            49,
+            52.67078606619566,
+            -231.09115348192674
+          ],
+          "target": [
+            44.07938524157181,
+            45.99745273286233,
+            -239.31595971334866
+          ],
+          "actualSourceFace": 13824,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:3",
+          "eye": [
+            32.836,
+            47.246386066195655,
+            -239.52527604106396
+          ],
+          "target": [
+            42.89229335765084,
+            47.246386066195655,
+            -239.52527604106396
+          ],
+          "actualSourceFace": 21342,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:4",
+          "eye": [
+            47.56,
+            57.99078606619566,
+            -232.50927664626434
+          ],
+          "target": [
+            43.14833278359458,
+            51.82411939952899,
+            -239.48012938214498
+          ],
+          "actualSourceFace": 14040,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:5",
+          "eye": [
+            33.7864,
+            52.90078606619566,
+            -239.63362802246954
+          ],
+          "target": [
+            42.277798735385865,
+            52.90078606619566,
+            -239.63362802246954
+          ],
+          "actualSourceFace": 21774,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:6",
+          "eye": [
+            45.94,
+            63.50078606619566,
+            -234.10466520614412
+          ],
+          "target": [
+            42.100898768370186,
+            57.20745273286232,
+            -239.66482025954085
+          ],
+          "actualSourceFace": 14256,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:7",
+          "eye": [
+            34.8556,
+            58.32718606619566,
+            -239.7555240015508
+          ],
+          "target": [
+            41.58649228533776,
+            58.32718606619566,
+            -239.7555240015508
+          ],
+          "actualSourceFace": 22206,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:8",
+          "eye": [
+            58.8,
+            45.96106242960055,
+            -226.2
+          ],
+          "target": [
+            55.25112694063925,
+            50.72966311893448,
+            -229.21856506938985
+          ],
+          "actualSourceFace": 900,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:9",
+          "eye": [
+            51.54,
+            51.613435846543574,
+            -229.9977
+          ],
+          "target": [
+            55.45658371685741,
+            51.613435846543574,
+            -229.9977
+          ],
+          "actualSourceFace": 16668,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:10",
+          "eye": [
+            65,
+            64.69543584654357,
+            -220.10634572891453
+          ],
+          "target": [
+            59.725949448500444,
+            57.055435846543574,
+            -229.20195299890673
+          ],
+          "actualSourceFace": 14472,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:11",
+          "eye": [
+            47.176,
+            58.63303584654358,
+            -229.45003160953232
+          ],
+          "target": [
+            58.319025734223736,
+            58.63303584654358,
+            -229.45003160953232
+          ],
+          "actualSourceFace": 22638,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:12",
+          "eye": [
+            63.32,
+            71.41543584654357,
+            -221.76082275397505
+          ],
+          "target": [
+            58.63972158086034,
+            64.41543584654357,
+            -229.39348427916912
+          ],
+          "actualSourceFace": 14688,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:13",
+          "eye": [
+            48.2848,
+            65.77543584654357,
+            -229.57644225450545
+          ],
+          "target": [
+            57.60211534158127,
+            65.77543584654357,
+            -229.57644225450545
+          ],
+          "actualSourceFace": 23070,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:14",
+          "eye": [
+            61.43,
+            78.37543584654358,
+            -223.62210940716813
+          ],
+          "target": [
+            57.41771522976522,
+            71.21543584654357,
+            -229.6089569694643
+          ],
+          "actualSourceFace": 14904,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:15",
+          "eye": [
+            49.5322,
+            72.62983584654357,
+            -229.71865423010027
+          ],
+          "target": [
+            56.79559114985848,
+            72.62983584654357,
+            -229.71865423010027
+          ],
+          "actualSourceFace": 23502,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:16",
+          "eye": [
+            66.2,
+            45.828054403328714,
+            -221.2
+          ],
+          "target": [
+            70.26666666666667,
+            49.008743846442556,
+            -225.7144278606965
+          ],
+          "actualSourceFace": 960,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:17",
+          "eye": [
+            73.46,
+            49.80086046548386,
+            -224.9977
+          ],
+          "target": [
+            70.45658371685741,
+            49.80086046548386,
+            -224.9977
+          ],
+          "actualSourceFace": 16812,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:18",
+          "eye": [
+            78,
+            59.52286046548386,
+            -217.07596123493897
+          ],
+          "target": [
+            73.43282103464318,
+            53.429527132150525,
+            -224.42996642779053
+          ],
+          "actualSourceFace": 15120,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:19",
+          "eye": [
+            63.495999999999995,
+            54.48126046548386,
+            -224.6005204725956
+          ],
+          "target": [
+            72.46556098107794,
+            54.48126046548386,
+            -224.6005204725956
+          ],
+          "actualSourceFace": 23934,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:20",
+          "eye": [
+            76.8,
+            64.00286046548385,
+            -218.2577305385536
+          ],
+          "target": [
+            72.6569439863288,
+            58.336193798817185,
+            -224.56677448512082
+          ],
+          "actualSourceFace": 15336,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:21",
+          "eye": [
+            64.288,
+            59.24286046548385,
+            -224.6908137904336
+          ],
+          "target": [
+            71.95348212919046,
+            59.24286046548385,
+            -224.6908137904336
+          ],
+          "actualSourceFace": 24366,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:22",
+          "eye": [
+            75.45,
+            68.64286046548386,
+            -219.58722100512009
+          ],
+          "target": [
+            71.78408230697515,
+            62.869527132150516,
+            -224.72068354961738
+          ],
+          "actualSourceFace": 15552,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-first-bowl-windbreak:23",
+          "eye": [
+            65.179,
+            63.81246046548385,
+            -224.79239377300132
+          ],
+          "target": [
+            71.37739342081704,
+            63.81246046548385,
+            -224.79239377300132
+          ],
+          "actualSourceFace": 24798,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ]
+    },
+    {
+      "id": "snow-enrichment-second-bowl-windbreak",
+      "pieces": [
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:0",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:1",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:2",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:3",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:2",
+            "snow-enrichment-second-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:4",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:5",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:4",
+            "snow-enrichment-second-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:6",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:7",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:8",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:9",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:10",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:11",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:10",
+            "snow-enrichment-second-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:12",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:13",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:12",
+            "snow-enrichment-second-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:14",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:15",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:14"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:16",
+          "kind": "snow-enrichment-fir-terrain-root",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:17",
+          "kind": "snow-enrichment-fir-continuous-trunk",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:16"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:18",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:19",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:18",
+            "snow-enrichment-second-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:20",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:21",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:20",
+            "snow-enrichment-second-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:22",
+          "kind": "snow-enrichment-fir-supported-crown",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-second-bowl-windbreak:23",
+          "kind": "snow-enrichment-fir-seated-snow-mantle",
+          "supportOwner": [
+            "snow-enrichment-second-bowl-windbreak:22"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-second-bowl-windbreak:0",
+        "snow-enrichment-second-bowl-windbreak:8",
+        "snow-enrichment-second-bowl-windbreak:16"
+      ],
+      "fullSeats": [
+        "snow-enrichment-second-bowl-windbreak:3",
+        "snow-enrichment-second-bowl-windbreak:5",
+        "snow-enrichment-second-bowl-windbreak:7",
+        "snow-enrichment-second-bowl-windbreak:11",
+        "snow-enrichment-second-bowl-windbreak:13",
+        "snow-enrichment-second-bowl-windbreak:15",
+        "snow-enrichment-second-bowl-windbreak:19",
+        "snow-enrichment-second-bowl-windbreak:21",
+        "snow-enrichment-second-bowl-windbreak:23"
+      ],
+      "fullSeatSupports": {
+        "snow-enrichment-second-bowl-windbreak:3": [
+          "snow-enrichment-second-bowl-windbreak:2"
+        ],
+        "snow-enrichment-second-bowl-windbreak:5": [
+          "snow-enrichment-second-bowl-windbreak:4"
+        ],
+        "snow-enrichment-second-bowl-windbreak:7": [
+          "snow-enrichment-second-bowl-windbreak:6"
+        ],
+        "snow-enrichment-second-bowl-windbreak:11": [
+          "snow-enrichment-second-bowl-windbreak:10"
+        ],
+        "snow-enrichment-second-bowl-windbreak:13": [
+          "snow-enrichment-second-bowl-windbreak:12"
+        ],
+        "snow-enrichment-second-bowl-windbreak:15": [
+          "snow-enrichment-second-bowl-windbreak:14"
+        ],
+        "snow-enrichment-second-bowl-windbreak:19": [
+          "snow-enrichment-second-bowl-windbreak:18"
+        ],
+        "snow-enrichment-second-bowl-windbreak:21": [
+          "snow-enrichment-second-bowl-windbreak:20"
+        ],
+        "snow-enrichment-second-bowl-windbreak:23": [
+          "snow-enrichment-second-bowl-windbreak:22"
+        ]
+      },
+      "flatFeet": [
+        "snow-enrichment-second-bowl-windbreak:1",
+        "snow-enrichment-second-bowl-windbreak:9",
+        "snow-enrichment-second-bowl-windbreak:17"
+      ],
+      "openings": [],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:0",
+          "eye": [
+            140.2,
+            43.619571581799846,
+            171.8
+          ],
+          "target": [
+            143.29009680365294,
+            47.08824362884155,
+            167.30763725233479
+          ],
+          "actualSourceFace": 1044,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:1",
+          "eye": [
+            140.54,
+            48.35059908188551,
+            168.0023
+          ],
+          "target": [
+            144.4565837168574,
+            48.35059908188551,
+            168.0023
+          ],
+          "actualSourceFace": 16956,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:2",
+          "eye": [
+            153,
+            60.172599081885515,
+            176.90884651807326
+          ],
+          "target": [
+            148.0793852415718,
+            53.11259908188551,
+            168.68404028665134
+          ],
+          "actualSourceFace": 15768,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:3",
+          "eye": [
+            136.836,
+            54.492999081885515,
+            168.474723958936
+          ],
+          "target": [
+            146.89229335765083,
+            54.492999081885515,
+            168.474723958936
+          ],
+          "actualSourceFace": 25230,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:4",
+          "eye": [
+            151.56,
+            66.05259908188552,
+            175.49072335373566
+          ],
+          "target": [
+            147.14833278359458,
+            59.55259908188552,
+            168.51987061785502
+          ],
+          "actualSourceFace": 15984,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:5",
+          "eye": [
+            137.7864,
+            60.742599081885515,
+            168.36637197753043
+          ],
+          "target": [
+            146.27779873538586,
+            60.742599081885515,
+            168.36637197753043
+          ],
+          "actualSourceFace": 25662,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:6",
+          "eye": [
+            149.94,
+            72.14259908188552,
+            173.89533479385588
+          ],
+          "target": [
+            146.1008987683702,
+            65.5025990818855,
+            168.33517974045915
+          ],
+          "actualSourceFace": 16200,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:7",
+          "eye": [
+            138.8556,
+            66.74019908188552,
+            168.2444759984492
+          ],
+          "target": [
+            145.58649228533775,
+            66.74019908188552,
+            168.2444759984492
+          ],
+          "actualSourceFace": 26094,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:8",
+          "eye": [
+            150.2,
+            52.69766341306907,
+            191.8
+          ],
+          "target": [
+            153.49648949771688,
+            55.876806177266964,
+            187.5542113991446
+          ],
+          "actualSourceFace": 1128,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:9",
+          "eye": [
+            150.54,
+            56.89368060766321,
+            188.0023
+          ],
+          "target": [
+            154.4565837168574,
+            56.89368060766321,
+            188.0023
+          ],
+          "actualSourceFace": 17100,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:10",
+          "eye": [
+            164,
+            70.81568060766321,
+            197.89365427108547
+          ],
+          "target": [
+            158.72594944850044,
+            62.78901394099654,
+            188.7980470010932
+          ],
+          "actualSourceFace": 16416,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:11",
+          "eye": [
+            146.176,
+            64.49808060766321,
+            188.54996839046765
+          ],
+          "target": [
+            157.31902573422374,
+            64.49808060766321,
+            188.54996839046765
+          ],
+          "actualSourceFace": 26526,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:12",
+          "eye": [
+            162.32,
+            78.09568060766321,
+            196.23917724602495
+          ],
+          "target": [
+            157.63972158086034,
+            70.76234727432987,
+            188.60651572083086
+          ],
+          "actualSourceFace": 16632,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:13",
+          "eye": [
+            147.2848,
+            72.23568060766321,
+            188.4235577454945
+          ],
+          "target": [
+            156.60211534158128,
+            72.23568060766321,
+            188.4235577454945
+          ],
+          "actualSourceFace": 26958,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:14",
+          "eye": [
+            160.43,
+            85.6356806076632,
+            194.37789059283187
+          ],
+          "target": [
+            156.4177152297652,
+            78.12901394099654,
+            188.39104303053568
+          ],
+          "actualSourceFace": 16848,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:15",
+          "eye": [
+            148.5322,
+            79.6612806076632,
+            188.28134576989967
+          ],
+          "target": [
+            155.79559114985847,
+            79.6612806076632,
+            188.28134576989967
+          ],
+          "actualSourceFace": 27390,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:16",
+          "eye": [
+            169.2,
+            46.08264572596122,
+            179.8
+          ],
+          "target": [
+            172.55132054794515,
+            49.40183484880751,
+            175.61971720345633
+          ],
+          "actualSourceFace": 1212,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:17",
+          "eye": [
+            169.54,
+            50.720074461885766,
+            176.0023
+          ],
+          "target": [
+            173.4565837168574,
+            50.720074461885766,
+            176.0023
+          ],
+          "actualSourceFace": 17244,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:18",
+          "eye": [
+            181,
+            60.862074461885776,
+            183.92403876506103
+          ],
+          "target": [
+            176.43282103464315,
+            54.57540779521911,
+            176.57003357220944
+          ],
+          "actualSourceFace": 17064,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:19",
+          "eye": [
+            166.496,
+            55.69287446188577,
+            176.39947952740437
+          ],
+          "target": [
+            175.46556098107794,
+            55.69287446188577,
+            176.39947952740437
+          ],
+          "actualSourceFace": 27822,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:20",
+          "eye": [
+            179.8,
+            65.62207446188577,
+            182.7422694614464
+          ],
+          "target": [
+            175.65694398632883,
+            59.78874112855243,
+            176.43322551487918
+          ],
+          "actualSourceFace": 17280,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:21",
+          "eye": [
+            167.288,
+            60.75207446188577,
+            176.3091862095664
+          ],
+          "target": [
+            174.95348212919043,
+            60.75207446188577,
+            176.3091862095664
+          ],
+          "actualSourceFace": 28254,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:22",
+          "eye": [
+            178.45,
+            70.55207446188578,
+            181.41277899487991
+          ],
+          "target": [
+            174.78408230697517,
+            64.60540779521911,
+            176.27931645038262
+          ],
+          "actualSourceFace": 17496,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-second-bowl-windbreak:23",
+          "eye": [
+            168.179,
+            65.60727446188577,
+            176.20760622699868
+          ],
+          "target": [
+            174.37739342081704,
+            65.60727446188577,
+            176.20760622699868
+          ],
+          "actualSourceFace": 28686,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ]
+    },
+    {
+      "id": "snow-enrichment-station-near-annex",
+      "pieces": [
+        {
+          "id": "snow-enrichment-station-near-annex:0",
+          "kind": "snow-enrichment-station-ground-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:1",
+          "kind": "snow-enrichment-station-west-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:2",
+          "kind": "snow-enrichment-station-east-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:3",
+          "kind": "snow-enrichment-station-rear-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:4",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:5",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:6",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:7",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:8",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:4",
+            "snow-enrichment-station-near-annex:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:9",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:5",
+            "snow-enrichment-station-near-annex:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:10",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:6",
+            "snow-enrichment-station-near-annex:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:11",
+          "kind": "snow-enrichment-station-window-parapet",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:12",
+          "kind": "snow-enrichment-station-recessed-window",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:11",
+            "snow-enrichment-station-near-annex:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:13",
+          "kind": "snow-enrichment-station-window-parapet",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:14",
+          "kind": "snow-enrichment-station-recessed-window",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:13",
+            "snow-enrichment-station-near-annex:10"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:15",
+          "kind": "snow-enrichment-sloping-eave-seat",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:16",
+          "kind": "snow-enrichment-sloping-eave-seat",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:2"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:17",
+          "kind": "snow-enrichment-annex-thick-slate",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:15"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:18",
+          "kind": "snow-enrichment-annex-attached-snow",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:19",
+          "kind": "snow-enrichment-annex-thick-slate",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:16"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:20",
+          "kind": "snow-enrichment-annex-attached-snow",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:19"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:21",
+          "kind": "snow-enrichment-platform-ground-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:22",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:23",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:24",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:25",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:26",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:27",
+          "kind": "snow-enrichment-platform-upright",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:21"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:28",
+          "kind": "snow-enrichment-platform-crossbeam",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:22",
+            "snow-enrichment-station-near-annex:24",
+            "snow-enrichment-station-near-annex:26"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:29",
+          "kind": "snow-enrichment-platform-crossbeam",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:23",
+            "snow-enrichment-station-near-annex:25",
+            "snow-enrichment-station-near-annex:27"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:30",
+          "kind": "snow-enrichment-platform-slate-seat",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:28",
+            "snow-enrichment-station-near-annex:29"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-near-annex:31",
+          "kind": "snow-enrichment-platform-snow-seat",
+          "supportOwner": [
+            "snow-enrichment-station-near-annex:30"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-station-near-annex:0",
+        "snow-enrichment-station-near-annex:21"
+      ],
+      "fullSeats": [
+        "snow-enrichment-station-near-annex:18",
+        "snow-enrichment-station-near-annex:20",
+        "snow-enrichment-station-near-annex:31"
+      ],
+      "flatFeet": [
+        "snow-enrichment-station-near-annex:1",
+        "snow-enrichment-station-near-annex:2",
+        "snow-enrichment-station-near-annex:3",
+        "snow-enrichment-station-near-annex:4",
+        "snow-enrichment-station-near-annex:5",
+        "snow-enrichment-station-near-annex:6",
+        "snow-enrichment-station-near-annex:7",
+        "snow-enrichment-station-near-annex:11",
+        "snow-enrichment-station-near-annex:13",
+        "snow-enrichment-station-near-annex:22",
+        "snow-enrichment-station-near-annex:23",
+        "snow-enrichment-station-near-annex:24",
+        "snow-enrichment-station-near-annex:25",
+        "snow-enrichment-station-near-annex:26",
+        "snow-enrichment-station-near-annex:27"
+      ],
+      "openings": [
+        {
+          "label": "snow-enrichment-station-near-annex center-door actual clear aperture",
+          "a": [
+            436.5,
+            16.648965479200065,
+            -584
+          ],
+          "b": [
+            442,
+            16.648965479200065,
+            -584
+          ]
+        },
+        {
+          "label": "Near-annex actual open six-post platform",
+          "a": [
+            428.1,
+            15.125673431138479,
+            -589
+          ],
+          "b": [
+            436.1,
+            15.125673431138479,
+            -589
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-station-near-annex:0",
+          "eye": [
+            432.8,
+            6.995140332911719,
+            -602.7
+          ],
+          "target": [
+            435.8133333333333,
+            10.380195421213879,
+            -597.312935323383
+          ],
+          "actualSourceFace": 1272,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:1",
+          "eye": [
+            449.5,
+            17.048965479200064,
+            -570.2666666666667
+          ],
+          "target": [
+            438.2999999999999,
+            17.048965479200064,
+            -570.2666666666667
+          ],
+          "actualSourceFace": 3132,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:2",
+          "eye": [
+            449.5,
+            17.048965479200064,
+            -597.4666666666667
+          ],
+          "target": [
+            438.2999999999999,
+            17.048965479200064,
+            -597.4666666666667
+          ],
+          "actualSourceFace": 3168,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:3",
+          "eye": [
+            449.5,
+            17.048965479200064,
+            -579.5999999999999
+          ],
+          "target": [
+            445.7,
+            17.048965479200064,
+            -579.5999999999999
+          ],
+          "actualSourceFace": 3204,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:4",
+          "eye": [
+            441.29999999999995,
+            16.748965479200063,
+            -570.2666666666667
+          ],
+          "target": [
+            437.49999999999994,
+            16.748965479200063,
+            -570.2666666666667
+          ],
+          "actualSourceFace": 12816,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:5",
+          "eye": [
+            441.29999999999995,
+            16.748965479200063,
+            -579.3333333333334
+          ],
+          "target": [
+            437.49999999999994,
+            16.748965479200063,
+            -579.3333333333334
+          ],
+          "actualSourceFace": 12852,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:6",
+          "eye": [
+            441.29999999999995,
+            16.748965479200063,
+            -588.3999999999999
+          ],
+          "target": [
+            437.49999999999994,
+            16.748965479200063,
+            -588.3999999999999
+          ],
+          "actualSourceFace": 12888,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:7",
+          "eye": [
+            441.29999999999995,
+            16.748965479200063,
+            -597.4666666666667
+          ],
+          "target": [
+            437.49999999999994,
+            16.748965479200063,
+            -597.4666666666667
+          ],
+          "actualSourceFace": 12924,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:8",
+          "eye": [
+            441.29999999999995,
+            23.248965479200066,
+            -573.4222222222222
+          ],
+          "target": [
+            437.49999999999994,
+            23.248965479200066,
+            -573.4222222222222
+          ],
+          "actualSourceFace": 17388,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:9",
+          "eye": [
+            441.29999999999995,
+            23.248965479200066,
+            -582.4888888888888
+          ],
+          "target": [
+            437.49999999999994,
+            23.248965479200066,
+            -582.4888888888888
+          ],
+          "actualSourceFace": 17424,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:10",
+          "eye": [
+            441.29999999999995,
+            23.248965479200066,
+            -591.5555555555557
+          ],
+          "target": [
+            437.49999999999994,
+            23.248965479200066,
+            -591.5555555555557
+          ],
+          "actualSourceFace": 17460,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:11",
+          "eye": [
+            441.29999999999995,
+            14.41563214586673,
+            -573.5555555555554
+          ],
+          "target": [
+            437.49999999999994,
+            14.41563214586673,
+            -573.5555555555554
+          ],
+          "actualSourceFace": 3240,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:12",
+          "eye": [
+            435.1,
+            18.282298812533394,
+            -573.5822222222222
+          ],
+          "target": [
+            438.1,
+            18.282298812533394,
+            -573.5822222222222
+          ],
+          "actualSourceFace": 144,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:13",
+          "eye": [
+            441.29999999999995,
+            14.41563214586673,
+            -591.6888888888889
+          ],
+          "target": [
+            437.49999999999994,
+            14.41563214586673,
+            -591.6888888888889
+          ],
+          "actualSourceFace": 3276,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:14",
+          "eye": [
+            435.1,
+            18.282298812533394,
+            -591.7155555555556
+          ],
+          "target": [
+            438.1,
+            18.282298812533394,
+            -591.7155555555556
+          ],
+          "actualSourceFace": 216,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:15",
+          "eye": [
+            434.5,
+            23.84896547920006,
+            -570.2666666666667
+          ],
+          "target": [
+            440.49999999999994,
+            23.84896547920006,
+            -570.2666666666667
+          ],
+          "actualSourceFace": 17496,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:16",
+          "eye": [
+            449.5,
+            23.84896547920006,
+            -597.4666666666667
+          ],
+          "target": [
+            440.49999999999994,
+            23.84896547920006,
+            -597.4666666666667
+          ],
+          "actualSourceFace": 17532,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:17",
+          "eye": [
+            440.1,
+            20.84896547920006,
+            -587
+          ],
+          "target": [
+            440.1,
+            25.015632145866725,
+            -573.8666666666666
+          ],
+          "actualSourceFace": 648,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:18",
+          "eye": [
+            440.1,
+            31.348965479200064,
+            -573.8666666666666
+          ],
+          "target": [
+            440.1,
+            25.395632145866728,
+            -573.8666666666666
+          ],
+          "actualSourceFace": 29118,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:19",
+          "eye": [
+            440.1,
+            20.84896547920006,
+            -581
+          ],
+          "target": [
+            440.1,
+            26.18229881253339,
+            -589.0666666666666
+          ],
+          "actualSourceFace": 684,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:20",
+          "eye": [
+            433.3,
+            26.562298812533395,
+            -589.0666666666666
+          ],
+          "target": [
+            440.1,
+            26.562298812533395,
+            -589.0666666666666
+          ],
+          "actualSourceFace": 29154,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:21",
+          "eye": [
+            425.40000000000003,
+            7.1125521070605,
+            -565.3
+          ],
+          "target": [
+            428.83903561643837,
+            11.18170753264071,
+            -599.1754909662216
+          ],
+          "actualSourceFace": 1596,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:22",
+          "eye": [
+            426,
+            15.300104113825672,
+            -570.9
+          ],
+          "target": [
+            429,
+            15.300104113825672,
+            -570.9
+          ],
+          "actualSourceFace": 12960,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:23",
+          "eye": [
+            431.6,
+            15.300104113825672,
+            -570.9
+          ],
+          "target": [
+            434.6,
+            15.300104113825672,
+            -570.9
+          ],
+          "actualSourceFace": 12996,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:24",
+          "eye": [
+            426,
+            15.300104113825672,
+            -583.9
+          ],
+          "target": [
+            429,
+            15.300104113825672,
+            -583.9
+          ],
+          "actualSourceFace": 13032,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:25",
+          "eye": [
+            431.6,
+            15.300104113825672,
+            -583.9
+          ],
+          "target": [
+            434.6,
+            15.300104113825672,
+            -583.9
+          ],
+          "actualSourceFace": 13068,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:26",
+          "eye": [
+            426,
+            15.300104113825672,
+            -596.9
+          ],
+          "target": [
+            429,
+            15.300104113825672,
+            -596.9
+          ],
+          "actualSourceFace": 13104,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:27",
+          "eye": [
+            431.6,
+            15.300104113825672,
+            -596.9
+          ],
+          "target": [
+            434.6,
+            15.300104113825672,
+            -596.9
+          ],
+          "actualSourceFace": 13140,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:28",
+          "eye": [
+            426,
+            21.84896547920006,
+            -579.4666666666667
+          ],
+          "target": [
+            429,
+            21.84896547920006,
+            -579.4666666666667
+          ],
+          "actualSourceFace": 17568,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:29",
+          "eye": [
+            431.6,
+            21.84896547920006,
+            -579.4666666666667
+          ],
+          "target": [
+            434.6,
+            21.84896547920006,
+            -579.4666666666667
+          ],
+          "actualSourceFace": 17604,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:30",
+          "eye": [
+            425.40000000000003,
+            22.382298812533392,
+            -579.0999999999999
+          ],
+          "target": [
+            428.40000000000003,
+            22.382298812533392,
+            -579.0999999999999
+          ],
+          "actualSourceFace": 720,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-near-annex:31",
+          "eye": [
+            425.40000000000003,
+            22.835632145866725,
+            -579.0999999999999
+          ],
+          "target": [
+            428.40000000000003,
+            22.835632145866725,
+            -579.0999999999999
+          ],
+          "actualSourceFace": 29190,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {
+        "snow-enrichment-station-near-annex:18": [
+          "snow-enrichment-station-near-annex:17"
+        ],
+        "snow-enrichment-station-near-annex:20": [
+          "snow-enrichment-station-near-annex:19"
+        ],
+        "snow-enrichment-station-near-annex:31": [
+          "snow-enrichment-station-near-annex:30"
+        ]
+      }
+    },
+    {
+      "id": "snow-enrichment-station-high-annex",
+      "pieces": [
+        {
+          "id": "snow-enrichment-station-high-annex:0",
+          "kind": "snow-enrichment-station-ground-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:1",
+          "kind": "snow-enrichment-station-west-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:2",
+          "kind": "snow-enrichment-station-east-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:3",
+          "kind": "snow-enrichment-station-rear-masonry",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:4",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:5",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:6",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:7",
+          "kind": "snow-enrichment-station-open-front-pier",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:8",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:4",
+            "snow-enrichment-station-high-annex:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:9",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:5",
+            "snow-enrichment-station-high-annex:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:10",
+          "kind": "snow-enrichment-station-open-front-header",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:6",
+            "snow-enrichment-station-high-annex:7"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:11",
+          "kind": "snow-enrichment-station-window-parapet",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:12",
+          "kind": "snow-enrichment-station-recessed-window",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:11",
+            "snow-enrichment-station-high-annex:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:13",
+          "kind": "snow-enrichment-station-window-parapet",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:14",
+          "kind": "snow-enrichment-station-recessed-window",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:13",
+            "snow-enrichment-station-high-annex:10"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:15",
+          "kind": "snow-enrichment-sloping-eave-seat",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:1"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:16",
+          "kind": "snow-enrichment-sloping-eave-seat",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:2"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:17",
+          "kind": "snow-enrichment-annex-thick-slate",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:15"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:18",
+          "kind": "snow-enrichment-annex-attached-snow",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:17"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:19",
+          "kind": "snow-enrichment-annex-thick-slate",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:16"
+          ]
+        },
+        {
+          "id": "snow-enrichment-station-high-annex:20",
+          "kind": "snow-enrichment-annex-attached-snow",
+          "supportOwner": [
+            "snow-enrichment-station-high-annex:19"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-station-high-annex:0"
+      ],
+      "fullSeats": [
+        "snow-enrichment-station-high-annex:18",
+        "snow-enrichment-station-high-annex:20"
+      ],
+      "flatFeet": [
+        "snow-enrichment-station-high-annex:1",
+        "snow-enrichment-station-high-annex:2",
+        "snow-enrichment-station-high-annex:3",
+        "snow-enrichment-station-high-annex:4",
+        "snow-enrichment-station-high-annex:5",
+        "snow-enrichment-station-high-annex:6",
+        "snow-enrichment-station-high-annex:7",
+        "snow-enrichment-station-high-annex:11",
+        "snow-enrichment-station-high-annex:13"
+      ],
+      "openings": [
+        {
+          "label": "snow-enrichment-station-high-annex center-door actual clear aperture",
+          "a": [
+            478.3082131776732,
+            28.195265718855097,
+            -618.3782953858116
+          ],
+          "b": [
+            484,
+            28.195265718855097,
+            -624
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-station-high-annex:0",
+          "eye": [
+            502.11427424430445,
+            19.51115185804777,
+            -642.1493153483736
+          ],
+          "target": [
+            471.8110243344697,
+            23.412763675571654,
+            -629.3086788656441
+          ],
+          "actualSourceFace": 1800,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:1",
+          "eye": [
+            499.710157314045,
+            28.095265718855096,
+            -612.0066982707156
+          ],
+          "target": [
+            487.1313189033996,
+            28.095265718855096,
+            -612.0066982707156
+          ],
+          "actualSourceFace": 3312,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:2",
+          "eye": [
+            484.81264008644564,
+            28.095265718855096,
+            -627.0899333498814
+          ],
+          "target": [
+            472.2338016758002,
+            28.095265718855096,
+            -627.0899333498814
+          ],
+          "actualSourceFace": 3348,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:3",
+          "eye": [
+            478.243461404213,
+            28.095265718855096,
+            -618.0997928775294
+          ],
+          "target": [
+            490.8003592483333,
+            28.095265718855096,
+            -625.9378116765071
+          ],
+          "actualSourceFace": 3384,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:4",
+          "eye": [
+            483.18735991355436,
+            27.79526571885509,
+            -608.2548015818859
+          ],
+          "target": [
+            486.5621402211669,
+            27.79526571885509,
+            -611.4445278092967
+          ],
+          "actualSourceFace": 13176,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:5",
+          "eye": [
+            478.22152083768793,
+            27.79526571885509,
+            -613.2825466082745
+          ],
+          "target": [
+            481.5963011453005,
+            27.79526571885509,
+            -616.4722728356853
+          ],
+          "actualSourceFace": 13212,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:6",
+          "eye": [
+            473.25568176182145,
+            27.79526571885509,
+            -618.3102916346631
+          ],
+          "target": [
+            476.630462069434,
+            27.79526571885509,
+            -621.500017862074
+          ],
+          "actualSourceFace": 13248,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:7",
+          "eye": [
+            468.289842685955,
+            27.79526571885509,
+            -623.3380366610518
+          ],
+          "target": [
+            471.6646229935676,
+            27.79526571885509,
+            -626.5277628884626
+          ],
+          "actualSourceFace": 13284,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:8",
+          "eye": [
+            478.5026060683973,
+            33.29526571885509,
+            -608.5393909230022
+          ],
+          "target": [
+            484.8131654523082,
+            33.29526571885509,
+            -613.2153059317984
+          ],
+          "actualSourceFace": 17640,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:9",
+          "eye": [
+            473.5367669925309,
+            33.29526571885509,
+            -613.5671359493908
+          ],
+          "target": [
+            479.84732637644186,
+            33.29526571885509,
+            -618.243050958187
+          ],
+          "actualSourceFace": 17676,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:10",
+          "eye": [
+            468.57092791666446,
+            33.29526571885509,
+            -618.5948809757795
+          ],
+          "target": [
+            474.88148730057543,
+            33.29526571885509,
+            -623.2707959845757
+          ],
+          "actualSourceFace": 17712,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:11",
+          "eye": [
+            478.78369129910675,
+            25.961932385521763,
+            -608.8239802641185
+          ],
+          "target": [
+            484.7194703754051,
+            25.961932385521763,
+            -613.3101690455038
+          ],
+          "actualSourceFace": 3420,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:12",
+          "eye": [
+            479.26679235692313,
+            29.32859905218843,
+            -609.3025259784059
+          ],
+          "target": [
+            485.127615371699,
+            29.32859905218843,
+            -613.750769514309
+          ],
+          "actualSourceFace": 180,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:13",
+          "eye": [
+            468.8520131473739,
+            25.961932385521763,
+            -618.8794703168958
+          ],
+          "target": [
+            474.7877922236723,
+            25.961932385521763,
+            -623.3656590982811
+          ],
+          "actualSourceFace": 3456,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:14",
+          "eye": [
+            469.3351142051903,
+            29.32859905218843,
+            -619.3580160311832
+          ],
+          "target": [
+            475.1959372199661,
+            29.32859905218843,
+            -623.8062595670863
+          ],
+          "actualSourceFace": 252,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:15",
+          "eye": [
+            483.1873599135543,
+            33.8952657188551,
+            -611.3588731994565
+          ],
+          "target": [
+            486.8435149397497,
+            33.8952657188551,
+            -611.3588731994565
+          ],
+          "actualSourceFace": 17748,
+          "barycentric": [
+            0.98,
+            0.01,
+            0.01
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:16",
+          "eye": [
+            484.8126400864457,
+            33.8952657188551,
+            -629.8070905800726
+          ],
+          "target": [
+            474.9848319732581,
+            33.8952657188551,
+            -629.8070905800726
+          ],
+          "actualSourceFace": 17784,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:17",
+          "eye": [
+            475.16591850711507,
+            35.061932385521764,
+            -616.2926009874534
+          ],
+          "target": [
+            487.7707058601299,
+            35.061932385521764,
+            -616.2926009874534
+          ],
+          "actualSourceFace": 756,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:18",
+          "eye": [
+            501.4071810295223,
+            35.44193238552176,
+            -616.2926009874534
+          ],
+          "target": [
+            487.7707058601299,
+            35.44193238552176,
+            -616.2926009874534
+          ],
+          "actualSourceFace": 29226,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:19",
+          "eye": [
+            479.19760632349255,
+            36.22859905218843,
+            -615.2377527704568
+          ],
+          "target": [
+            479.19760632349255,
+            36.22859905218843,
+            -624.9725758915017
+          ],
+          "actualSourceFace": 792,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-station-high-annex:20",
+          "eye": [
+            466.5928189704777,
+            36.608599052188424,
+            -624.9725758915017
+          ],
+          "target": [
+            479.19760632349255,
+            36.608599052188424,
+            -624.9725758915017
+          ],
+          "actualSourceFace": 29262,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {
+        "snow-enrichment-station-high-annex:18": [
+          "snow-enrichment-station-high-annex:17"
+        ],
+        "snow-enrichment-station-high-annex:20": [
+          "snow-enrichment-station-high-annex:19"
+        ]
+      }
+    },
+    {
+      "id": "snow-enrichment-open-maintenance-yard",
+      "pieces": [
+        {
+          "id": "snow-enrichment-open-maintenance-yard:0",
+          "kind": "snow-enrichment-yard-ground-seat",
+          "supportOwner": []
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:1",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:2",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:3",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:4",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:5",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:6",
+          "kind": "snow-enrichment-yard-bearing-post",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:7",
+          "kind": "snow-enrichment-yard-bearing-beam",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:1",
+            "snow-enrichment-open-maintenance-yard:3",
+            "snow-enrichment-open-maintenance-yard:5"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:8",
+          "kind": "snow-enrichment-yard-bearing-beam",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:2",
+            "snow-enrichment-open-maintenance-yard:4",
+            "snow-enrichment-open-maintenance-yard:6"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:9",
+          "kind": "snow-enrichment-yard-thick-roof",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:7",
+            "snow-enrichment-open-maintenance-yard:8"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:10",
+          "kind": "snow-enrichment-yard-attached-snow",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:9"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:11",
+          "kind": "snow-enrichment-yard-stock-bearer",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:12",
+          "kind": "snow-enrichment-yard-curved-plow-blade-stock",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:11"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:13",
+          "kind": "snow-enrichment-yard-stock-bearer",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:0"
+          ]
+        },
+        {
+          "id": "snow-enrichment-open-maintenance-yard:14",
+          "kind": "snow-enrichment-yard-curved-plow-blade-stock",
+          "supportOwner": [
+            "snow-enrichment-open-maintenance-yard:13"
+          ]
+        }
+      ],
+      "groundRoots": [
+        "snow-enrichment-open-maintenance-yard:0"
+      ],
+      "fullSeats": [
+        "snow-enrichment-open-maintenance-yard:10"
+      ],
+      "flatFeet": [
+        "snow-enrichment-open-maintenance-yard:1",
+        "snow-enrichment-open-maintenance-yard:2",
+        "snow-enrichment-open-maintenance-yard:3",
+        "snow-enrichment-open-maintenance-yard:4",
+        "snow-enrichment-open-maintenance-yard:5",
+        "snow-enrichment-open-maintenance-yard:6",
+        "snow-enrichment-open-maintenance-yard:11",
+        "snow-enrichment-open-maintenance-yard:12",
+        "snow-enrichment-open-maintenance-yard:13",
+        "snow-enrichment-open-maintenance-yard:14"
+      ],
+      "openings": [
+        {
+          "label": "Open service shelter above separate seated blade stocks",
+          "a": [
+            133.99234016432584,
+            16.20716058733639,
+            -582.1397334721885
+          ],
+          "b": [
+            135.58967483067508,
+            16.20716058733639,
+            -566.2196668277402
+          ]
+        }
+      ],
+      "visibleSurfaces": [
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:0",
+          "eye": [
+            114.72385556197058,
+            7.033413281121396,
+            -561.0948800537578
+          ],
+          "target": [
+            119.52549976553985,
+            10.417137746972966,
+            -579.5711957220025
+          ],
+          "actualSourceFace": 2112,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:1",
+          "eye": [
+            117.07775636310902,
+            14.20716058733639,
+            -582.15521714558
+          ],
+          "target": [
+            120.30992400167389,
+            14.20716058733639,
+            -579.1086282178114
+          ],
+          "actualSourceFace": 13320,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:2",
+          "eye": [
+            118.27575736287096,
+            14.20716058733639,
+            -570.2151671622436
+          ],
+          "target": [
+            121.50792500143582,
+            14.20716058733639,
+            -567.168578234475
+          ],
+          "actualSourceFace": 13356,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:3",
+          "eye": [
+            129.01780634644535,
+            14.20716058733639,
+            -583.3532181453419
+          ],
+          "target": [
+            132.24997398501023,
+            14.20716058733639,
+            -580.3066292175732
+          ],
+          "actualSourceFace": 13392,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:4",
+          "eye": [
+            130.21580734620727,
+            14.20716058733639,
+            -571.4131681620055
+          ],
+          "target": [
+            133.44797498477215,
+            14.20716058733639,
+            -568.3665792342368
+          ],
+          "actualSourceFace": 13428,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:5",
+          "eye": [
+            140.95785632978166,
+            14.20716058733639,
+            -584.5512191451038
+          ],
+          "target": [
+            144.19002396834654,
+            14.20716058733639,
+            -581.5046302173353
+          ],
+          "actualSourceFace": 13464,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:6",
+          "eye": [
+            142.15585732954358,
+            14.20716058733639,
+            -572.6111691617674
+          ],
+          "target": [
+            145.38802496810843,
+            14.20716058733639,
+            -569.5645802339989
+          ],
+          "actualSourceFace": 13500,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:7",
+          "eye": [
+            117.07775636310903,
+            20.473827254003055,
+            -584.5512191451038
+          ],
+          "target": [
+            128.2699573238981,
+            20.473827254003055,
+            -579.907295550986
+          ],
+          "actualSourceFace": 17820,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:8",
+          "eye": [
+            118.27575736287095,
+            20.473827254003055,
+            -572.6111691617674
+          ],
+          "target": [
+            129.46795832366,
+            20.473827254003055,
+            -567.9672455676496
+          ],
+          "actualSourceFace": 17856,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:9",
+          "eye": [
+            115.81869314389544,
+            21.140493920669723,
+            -585.8102823643175
+          ],
+          "target": [
+            127.77373063139768,
+            21.140493920669723,
+            -581.0132808646745
+          ],
+          "actualSourceFace": 828,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:10",
+          "eye": [
+            115.81869314389544,
+            21.64049392066972,
+            -585.8102823643175
+          ],
+          "target": [
+            127.77373063139768,
+            21.64049392066972,
+            -581.0132808646745
+          ],
+          "actualSourceFace": 29298,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:11",
+          "eye": [
+            120.94429659555338,
+            11.507160587336386,
+            -579.9583891410773
+          ],
+          "target": [
+            125.10513478837774,
+            11.507160587336386,
+            -576.7254445022347
+          ],
+          "actualSourceFace": 17892,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:12",
+          "eye": [
+            130.07972521659576,
+            13.107160587336386,
+            -579.7295210334144
+          ],
+          "target": [
+            125.60013631813854,
+            13.107160587336386,
+            -576.1888481160047
+          ],
+          "actualSourceFace": 4260,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:13",
+          "eye": [
+            132.88434657888968,
+            11.507160587336386,
+            -581.1563901408392
+          ],
+          "target": [
+            137.04518477171405,
+            11.507160587336386,
+            -577.9234455019966
+          ],
+          "actualSourceFace": 17928,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        {
+          "pieceId": "snow-enrichment-open-maintenance-yard:14",
+          "eye": [
+            142.01977519993204,
+            13.107160587336386,
+            -580.9275220331764
+          ],
+          "target": [
+            137.54018630147485,
+            13.107160587336386,
+            -577.3868491157666
+          ],
+          "actualSourceFace": 4368,
+          "barycentric": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        }
+      ],
+      "fullSeatSupports": {
+        "snow-enrichment-open-maintenance-yard:10": [
+          "snow-enrichment-open-maintenance-yard:9"
+        ]
+      }
+    }
+  ]
+}

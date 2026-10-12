@@ -1,0 +1,1642 @@
+{
+  "schema": "snow-enrichment-dense-camera-v1",
+  "sourceSha256AtFreeze": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+  "spacingMetres": 3,
+  "windowExpansionMetres": 12,
+  "windows": [
+    {
+      "assembly": "snow-enrichment-first-near-shelf",
+      "edge": "start",
+      "lo": 420,
+      "hi": 969,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 450,
+          "distance": 37.59129426771547
+        },
+        {
+          "edge": "start",
+          "s": 432,
+          "distance": 55.83746810570348
+        },
+        {
+          "edge": "start",
+          "s": 456,
+          "distance": 66.53096985837065
+        },
+        {
+          "edge": "start",
+          "s": 956,
+          "distance": 78.2293811886828
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-first-middle-shelf",
+      "edge": "start",
+      "lo": 447,
+      "hi": 492,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 478,
+          "distance": 44.21890824017078
+        },
+        {
+          "edge": "start",
+          "s": 460,
+          "distance": 46.565210785972624
+        },
+        {
+          "edge": "start",
+          "s": 478,
+          "distance": 70.1292047729223
+        },
+        {
+          "edge": "start",
+          "s": 462,
+          "distance": 72.18413090624672
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-first-exit-shelf",
+      "edge": "start",
+      "lo": 522,
+      "hi": 576,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 546,
+          "distance": 87.41481194163826
+        },
+        {
+          "edge": "start",
+          "s": 536,
+          "distance": 73.50981211675457
+        },
+        {
+          "edge": "start",
+          "s": 564,
+          "distance": 61.827547261282376
+        },
+        {
+          "edge": "start",
+          "s": 556,
+          "distance": 45.94407801930829
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-second-near-shelf",
+      "edge": "start",
+      "lo": 1128,
+      "hi": 1185,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 1142,
+          "distance": 71.91083962487987
+        },
+        {
+          "edge": "start",
+          "s": 1150,
+          "distance": 85.28210657751023
+        },
+        {
+          "edge": "start",
+          "s": 1164,
+          "distance": 45.08764789912848
+        },
+        {
+          "edge": "start",
+          "s": 1172,
+          "distance": 60.29710039353392
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-second-high-shelf",
+      "edge": "start",
+      "lo": 1158,
+      "hi": 1218,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 1172,
+          "distance": 67.5176086916221
+        },
+        {
+          "edge": "start",
+          "s": 1178,
+          "distance": 85.12861976918754
+        },
+        {
+          "edge": "start",
+          "s": 1198,
+          "distance": 49.46741045856242
+        },
+        {
+          "edge": "start",
+          "s": 1204,
+          "distance": 68.47324130095332
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-first-bowl-fence",
+      "edge": "start",
+      "lo": 444,
+      "hi": 474,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 456,
+          "distance": 48.830355673730146
+        },
+        {
+          "edge": "start",
+          "s": 456,
+          "distance": 49.111500719872524
+        },
+        {
+          "edge": "start",
+          "s": 460,
+          "distance": 73.56074822275005
+        },
+        {
+          "edge": "start",
+          "s": 458,
+          "distance": 73.79397825519898
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-second-bowl-fence",
+      "edge": "start",
+      "lo": 1152,
+      "hi": 1194,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 1164,
+          "distance": 58.58740141951634
+        },
+        {
+          "edge": "start",
+          "s": 1170,
+          "distance": 70.207647629688
+        },
+        {
+          "edge": "start",
+          "s": 1176,
+          "distance": 49.29469588564835
+        },
+        {
+          "edge": "start",
+          "s": 1180,
+          "distance": 61.48764644847938
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-first-bowl-windbreak",
+      "edge": "start",
+      "lo": 462,
+      "hi": 582,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 506,
+          "distance": 37.110748942354796
+        },
+        {
+          "edge": "start",
+          "s": 474,
+          "distance": 39.062298304400215
+        },
+        {
+          "edge": "start",
+          "s": 568,
+          "distance": 68.38795709802129
+        },
+        {
+          "edge": "start",
+          "s": 476,
+          "distance": 79.99694043982416
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-second-bowl-windbreak",
+      "edge": "start",
+      "lo": 1188,
+      "hi": 1248,
+      "cornerNearest": [
+        {
+          "edge": "start",
+          "s": 1200,
+          "distance": 59.210958502438835
+        },
+        {
+          "edge": "start",
+          "s": 1208,
+          "distance": 90.17945558490926
+        },
+        {
+          "edge": "start",
+          "s": 1230,
+          "distance": 48.53975071764082
+        },
+        {
+          "edge": "start",
+          "s": 1234,
+          "distance": 80.91539467108993
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-station-near-annex",
+      "edge": "boulevard",
+      "lo": 252,
+      "hi": 297,
+      "cornerNearest": [
+        {
+          "edge": "boulevard",
+          "s": 284,
+          "distance": 37.743310172512544
+        },
+        {
+          "edge": "boulevard",
+          "s": 264,
+          "distance": 33.430417014654495
+        },
+        {
+          "edge": "boulevard",
+          "s": 280,
+          "distance": 56.889464826055274
+        },
+        {
+          "edge": "boulevard",
+          "s": 264,
+          "distance": 53.21936645814778
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-station-high-annex",
+      "edge": "boulevard",
+      "lo": 267,
+      "hi": 312,
+      "cornerNearest": [
+        {
+          "edge": "boulevard",
+          "s": 298,
+          "distance": 89.44275950410758
+        },
+        {
+          "edge": "boulevard",
+          "s": 282,
+          "distance": 79.20587387015682
+        },
+        {
+          "edge": "boulevard",
+          "s": 292,
+          "distance": 117.3930285451319
+        },
+        {
+          "edge": "boulevard",
+          "s": 280,
+          "distance": 108.546541703811
+        }
+      ]
+    },
+    {
+      "assembly": "snow-enrichment-open-maintenance-yard",
+      "edge": "alley",
+      "lo": 237,
+      "hi": 273,
+      "cornerNearest": [
+        {
+          "edge": "alley",
+          "s": 260,
+          "distance": 96.16018759094284
+        },
+        {
+          "edge": "alley",
+          "s": 252,
+          "distance": 96.56450526105256
+        },
+        {
+          "edge": "alley",
+          "s": 260,
+          "distance": 65.64134444531551
+        },
+        {
+          "edge": "alley",
+          "s": 250,
+          "distance": 66.15108811429837
+        }
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "name": "dense-start-420",
+      "edge": "start",
+      "s": 420
+    },
+    {
+      "name": "dense-start-423",
+      "edge": "start",
+      "s": 423
+    },
+    {
+      "name": "dense-start-426",
+      "edge": "start",
+      "s": 426
+    },
+    {
+      "name": "dense-start-429",
+      "edge": "start",
+      "s": 429
+    },
+    {
+      "name": "dense-start-432",
+      "edge": "start",
+      "s": 432
+    },
+    {
+      "name": "dense-start-435",
+      "edge": "start",
+      "s": 435
+    },
+    {
+      "name": "dense-start-438",
+      "edge": "start",
+      "s": 438
+    },
+    {
+      "name": "dense-start-441",
+      "edge": "start",
+      "s": 441
+    },
+    {
+      "name": "dense-start-444",
+      "edge": "start",
+      "s": 444
+    },
+    {
+      "name": "dense-start-447",
+      "edge": "start",
+      "s": 447
+    },
+    {
+      "name": "dense-start-450",
+      "edge": "start",
+      "s": 450
+    },
+    {
+      "name": "dense-start-453",
+      "edge": "start",
+      "s": 453
+    },
+    {
+      "name": "dense-start-456",
+      "edge": "start",
+      "s": 456
+    },
+    {
+      "name": "dense-start-459",
+      "edge": "start",
+      "s": 459
+    },
+    {
+      "name": "dense-start-462",
+      "edge": "start",
+      "s": 462
+    },
+    {
+      "name": "dense-start-465",
+      "edge": "start",
+      "s": 465
+    },
+    {
+      "name": "dense-start-468",
+      "edge": "start",
+      "s": 468
+    },
+    {
+      "name": "dense-start-471",
+      "edge": "start",
+      "s": 471
+    },
+    {
+      "name": "dense-start-474",
+      "edge": "start",
+      "s": 474
+    },
+    {
+      "name": "dense-start-477",
+      "edge": "start",
+      "s": 477
+    },
+    {
+      "name": "dense-start-480",
+      "edge": "start",
+      "s": 480
+    },
+    {
+      "name": "dense-start-483",
+      "edge": "start",
+      "s": 483
+    },
+    {
+      "name": "dense-start-486",
+      "edge": "start",
+      "s": 486
+    },
+    {
+      "name": "dense-start-489",
+      "edge": "start",
+      "s": 489
+    },
+    {
+      "name": "dense-start-492",
+      "edge": "start",
+      "s": 492
+    },
+    {
+      "name": "dense-start-495",
+      "edge": "start",
+      "s": 495
+    },
+    {
+      "name": "dense-start-498",
+      "edge": "start",
+      "s": 498
+    },
+    {
+      "name": "dense-start-501",
+      "edge": "start",
+      "s": 501
+    },
+    {
+      "name": "dense-start-504",
+      "edge": "start",
+      "s": 504
+    },
+    {
+      "name": "dense-start-507",
+      "edge": "start",
+      "s": 507
+    },
+    {
+      "name": "dense-start-510",
+      "edge": "start",
+      "s": 510
+    },
+    {
+      "name": "dense-start-513",
+      "edge": "start",
+      "s": 513
+    },
+    {
+      "name": "dense-start-516",
+      "edge": "start",
+      "s": 516
+    },
+    {
+      "name": "dense-start-519",
+      "edge": "start",
+      "s": 519
+    },
+    {
+      "name": "dense-start-522",
+      "edge": "start",
+      "s": 522
+    },
+    {
+      "name": "dense-start-525",
+      "edge": "start",
+      "s": 525
+    },
+    {
+      "name": "dense-start-528",
+      "edge": "start",
+      "s": 528
+    },
+    {
+      "name": "dense-start-531",
+      "edge": "start",
+      "s": 531
+    },
+    {
+      "name": "dense-start-534",
+      "edge": "start",
+      "s": 534
+    },
+    {
+      "name": "dense-start-537",
+      "edge": "start",
+      "s": 537
+    },
+    {
+      "name": "dense-start-540",
+      "edge": "start",
+      "s": 540
+    },
+    {
+      "name": "dense-start-543",
+      "edge": "start",
+      "s": 543
+    },
+    {
+      "name": "dense-start-546",
+      "edge": "start",
+      "s": 546
+    },
+    {
+      "name": "dense-start-549",
+      "edge": "start",
+      "s": 549
+    },
+    {
+      "name": "dense-start-552",
+      "edge": "start",
+      "s": 552
+    },
+    {
+      "name": "dense-start-555",
+      "edge": "start",
+      "s": 555
+    },
+    {
+      "name": "dense-start-558",
+      "edge": "start",
+      "s": 558
+    },
+    {
+      "name": "dense-start-561",
+      "edge": "start",
+      "s": 561
+    },
+    {
+      "name": "dense-start-564",
+      "edge": "start",
+      "s": 564
+    },
+    {
+      "name": "dense-start-567",
+      "edge": "start",
+      "s": 567
+    },
+    {
+      "name": "dense-start-570",
+      "edge": "start",
+      "s": 570
+    },
+    {
+      "name": "dense-start-573",
+      "edge": "start",
+      "s": 573
+    },
+    {
+      "name": "dense-start-576",
+      "edge": "start",
+      "s": 576
+    },
+    {
+      "name": "dense-start-579",
+      "edge": "start",
+      "s": 579
+    },
+    {
+      "name": "dense-start-582",
+      "edge": "start",
+      "s": 582
+    },
+    {
+      "name": "dense-start-585",
+      "edge": "start",
+      "s": 585
+    },
+    {
+      "name": "dense-start-588",
+      "edge": "start",
+      "s": 588
+    },
+    {
+      "name": "dense-start-591",
+      "edge": "start",
+      "s": 591
+    },
+    {
+      "name": "dense-start-594",
+      "edge": "start",
+      "s": 594
+    },
+    {
+      "name": "dense-start-597",
+      "edge": "start",
+      "s": 597
+    },
+    {
+      "name": "dense-start-600",
+      "edge": "start",
+      "s": 600
+    },
+    {
+      "name": "dense-start-603",
+      "edge": "start",
+      "s": 603
+    },
+    {
+      "name": "dense-start-606",
+      "edge": "start",
+      "s": 606
+    },
+    {
+      "name": "dense-start-609",
+      "edge": "start",
+      "s": 609
+    },
+    {
+      "name": "dense-start-612",
+      "edge": "start",
+      "s": 612
+    },
+    {
+      "name": "dense-start-615",
+      "edge": "start",
+      "s": 615
+    },
+    {
+      "name": "dense-start-618",
+      "edge": "start",
+      "s": 618
+    },
+    {
+      "name": "dense-start-621",
+      "edge": "start",
+      "s": 621
+    },
+    {
+      "name": "dense-start-624",
+      "edge": "start",
+      "s": 624
+    },
+    {
+      "name": "dense-start-627",
+      "edge": "start",
+      "s": 627
+    },
+    {
+      "name": "dense-start-630",
+      "edge": "start",
+      "s": 630
+    },
+    {
+      "name": "dense-start-633",
+      "edge": "start",
+      "s": 633
+    },
+    {
+      "name": "dense-start-636",
+      "edge": "start",
+      "s": 636
+    },
+    {
+      "name": "dense-start-639",
+      "edge": "start",
+      "s": 639
+    },
+    {
+      "name": "dense-start-642",
+      "edge": "start",
+      "s": 642
+    },
+    {
+      "name": "dense-start-645",
+      "edge": "start",
+      "s": 645
+    },
+    {
+      "name": "dense-start-648",
+      "edge": "start",
+      "s": 648
+    },
+    {
+      "name": "dense-start-651",
+      "edge": "start",
+      "s": 651
+    },
+    {
+      "name": "dense-start-654",
+      "edge": "start",
+      "s": 654
+    },
+    {
+      "name": "dense-start-657",
+      "edge": "start",
+      "s": 657
+    },
+    {
+      "name": "dense-start-660",
+      "edge": "start",
+      "s": 660
+    },
+    {
+      "name": "dense-start-663",
+      "edge": "start",
+      "s": 663
+    },
+    {
+      "name": "dense-start-666",
+      "edge": "start",
+      "s": 666
+    },
+    {
+      "name": "dense-start-669",
+      "edge": "start",
+      "s": 669
+    },
+    {
+      "name": "dense-start-672",
+      "edge": "start",
+      "s": 672
+    },
+    {
+      "name": "dense-start-675",
+      "edge": "start",
+      "s": 675
+    },
+    {
+      "name": "dense-start-678",
+      "edge": "start",
+      "s": 678
+    },
+    {
+      "name": "dense-start-681",
+      "edge": "start",
+      "s": 681
+    },
+    {
+      "name": "dense-start-684",
+      "edge": "start",
+      "s": 684
+    },
+    {
+      "name": "dense-start-687",
+      "edge": "start",
+      "s": 687
+    },
+    {
+      "name": "dense-start-690",
+      "edge": "start",
+      "s": 690
+    },
+    {
+      "name": "dense-start-693",
+      "edge": "start",
+      "s": 693
+    },
+    {
+      "name": "dense-start-696",
+      "edge": "start",
+      "s": 696
+    },
+    {
+      "name": "dense-start-699",
+      "edge": "start",
+      "s": 699
+    },
+    {
+      "name": "dense-start-702",
+      "edge": "start",
+      "s": 702
+    },
+    {
+      "name": "dense-start-705",
+      "edge": "start",
+      "s": 705
+    },
+    {
+      "name": "dense-start-708",
+      "edge": "start",
+      "s": 708
+    },
+    {
+      "name": "dense-start-711",
+      "edge": "start",
+      "s": 711
+    },
+    {
+      "name": "dense-start-714",
+      "edge": "start",
+      "s": 714
+    },
+    {
+      "name": "dense-start-717",
+      "edge": "start",
+      "s": 717
+    },
+    {
+      "name": "dense-start-720",
+      "edge": "start",
+      "s": 720
+    },
+    {
+      "name": "dense-start-723",
+      "edge": "start",
+      "s": 723
+    },
+    {
+      "name": "dense-start-726",
+      "edge": "start",
+      "s": 726
+    },
+    {
+      "name": "dense-start-729",
+      "edge": "start",
+      "s": 729
+    },
+    {
+      "name": "dense-start-732",
+      "edge": "start",
+      "s": 732
+    },
+    {
+      "name": "dense-start-735",
+      "edge": "start",
+      "s": 735
+    },
+    {
+      "name": "dense-start-738",
+      "edge": "start",
+      "s": 738
+    },
+    {
+      "name": "dense-start-741",
+      "edge": "start",
+      "s": 741
+    },
+    {
+      "name": "dense-start-744",
+      "edge": "start",
+      "s": 744
+    },
+    {
+      "name": "dense-start-747",
+      "edge": "start",
+      "s": 747
+    },
+    {
+      "name": "dense-start-750",
+      "edge": "start",
+      "s": 750
+    },
+    {
+      "name": "dense-start-753",
+      "edge": "start",
+      "s": 753
+    },
+    {
+      "name": "dense-start-756",
+      "edge": "start",
+      "s": 756
+    },
+    {
+      "name": "dense-start-759",
+      "edge": "start",
+      "s": 759
+    },
+    {
+      "name": "dense-start-762",
+      "edge": "start",
+      "s": 762
+    },
+    {
+      "name": "dense-start-765",
+      "edge": "start",
+      "s": 765
+    },
+    {
+      "name": "dense-start-768",
+      "edge": "start",
+      "s": 768
+    },
+    {
+      "name": "dense-start-771",
+      "edge": "start",
+      "s": 771
+    },
+    {
+      "name": "dense-start-774",
+      "edge": "start",
+      "s": 774
+    },
+    {
+      "name": "dense-start-777",
+      "edge": "start",
+      "s": 777
+    },
+    {
+      "name": "dense-start-780",
+      "edge": "start",
+      "s": 780
+    },
+    {
+      "name": "dense-start-783",
+      "edge": "start",
+      "s": 783
+    },
+    {
+      "name": "dense-start-786",
+      "edge": "start",
+      "s": 786
+    },
+    {
+      "name": "dense-start-789",
+      "edge": "start",
+      "s": 789
+    },
+    {
+      "name": "dense-start-792",
+      "edge": "start",
+      "s": 792
+    },
+    {
+      "name": "dense-start-795",
+      "edge": "start",
+      "s": 795
+    },
+    {
+      "name": "dense-start-798",
+      "edge": "start",
+      "s": 798
+    },
+    {
+      "name": "dense-start-801",
+      "edge": "start",
+      "s": 801
+    },
+    {
+      "name": "dense-start-804",
+      "edge": "start",
+      "s": 804
+    },
+    {
+      "name": "dense-start-807",
+      "edge": "start",
+      "s": 807
+    },
+    {
+      "name": "dense-start-810",
+      "edge": "start",
+      "s": 810
+    },
+    {
+      "name": "dense-start-813",
+      "edge": "start",
+      "s": 813
+    },
+    {
+      "name": "dense-start-816",
+      "edge": "start",
+      "s": 816
+    },
+    {
+      "name": "dense-start-819",
+      "edge": "start",
+      "s": 819
+    },
+    {
+      "name": "dense-start-822",
+      "edge": "start",
+      "s": 822
+    },
+    {
+      "name": "dense-start-825",
+      "edge": "start",
+      "s": 825
+    },
+    {
+      "name": "dense-start-828",
+      "edge": "start",
+      "s": 828
+    },
+    {
+      "name": "dense-start-831",
+      "edge": "start",
+      "s": 831
+    },
+    {
+      "name": "dense-start-834",
+      "edge": "start",
+      "s": 834
+    },
+    {
+      "name": "dense-start-837",
+      "edge": "start",
+      "s": 837
+    },
+    {
+      "name": "dense-start-840",
+      "edge": "start",
+      "s": 840
+    },
+    {
+      "name": "dense-start-843",
+      "edge": "start",
+      "s": 843
+    },
+    {
+      "name": "dense-start-846",
+      "edge": "start",
+      "s": 846
+    },
+    {
+      "name": "dense-start-849",
+      "edge": "start",
+      "s": 849
+    },
+    {
+      "name": "dense-start-852",
+      "edge": "start",
+      "s": 852
+    },
+    {
+      "name": "dense-start-855",
+      "edge": "start",
+      "s": 855
+    },
+    {
+      "name": "dense-start-858",
+      "edge": "start",
+      "s": 858
+    },
+    {
+      "name": "dense-start-861",
+      "edge": "start",
+      "s": 861
+    },
+    {
+      "name": "dense-start-864",
+      "edge": "start",
+      "s": 864
+    },
+    {
+      "name": "dense-start-867",
+      "edge": "start",
+      "s": 867
+    },
+    {
+      "name": "dense-start-870",
+      "edge": "start",
+      "s": 870
+    },
+    {
+      "name": "dense-start-873",
+      "edge": "start",
+      "s": 873
+    },
+    {
+      "name": "dense-start-876",
+      "edge": "start",
+      "s": 876
+    },
+    {
+      "name": "dense-start-879",
+      "edge": "start",
+      "s": 879
+    },
+    {
+      "name": "dense-start-882",
+      "edge": "start",
+      "s": 882
+    },
+    {
+      "name": "dense-start-885",
+      "edge": "start",
+      "s": 885
+    },
+    {
+      "name": "dense-start-888",
+      "edge": "start",
+      "s": 888
+    },
+    {
+      "name": "dense-start-891",
+      "edge": "start",
+      "s": 891
+    },
+    {
+      "name": "dense-start-894",
+      "edge": "start",
+      "s": 894
+    },
+    {
+      "name": "dense-start-897",
+      "edge": "start",
+      "s": 897
+    },
+    {
+      "name": "dense-start-900",
+      "edge": "start",
+      "s": 900
+    },
+    {
+      "name": "dense-start-903",
+      "edge": "start",
+      "s": 903
+    },
+    {
+      "name": "dense-start-906",
+      "edge": "start",
+      "s": 906
+    },
+    {
+      "name": "dense-start-909",
+      "edge": "start",
+      "s": 909
+    },
+    {
+      "name": "dense-start-912",
+      "edge": "start",
+      "s": 912
+    },
+    {
+      "name": "dense-start-915",
+      "edge": "start",
+      "s": 915
+    },
+    {
+      "name": "dense-start-918",
+      "edge": "start",
+      "s": 918
+    },
+    {
+      "name": "dense-start-921",
+      "edge": "start",
+      "s": 921
+    },
+    {
+      "name": "dense-start-924",
+      "edge": "start",
+      "s": 924
+    },
+    {
+      "name": "dense-start-927",
+      "edge": "start",
+      "s": 927
+    },
+    {
+      "name": "dense-start-930",
+      "edge": "start",
+      "s": 930
+    },
+    {
+      "name": "dense-start-933",
+      "edge": "start",
+      "s": 933
+    },
+    {
+      "name": "dense-start-936",
+      "edge": "start",
+      "s": 936
+    },
+    {
+      "name": "dense-start-939",
+      "edge": "start",
+      "s": 939
+    },
+    {
+      "name": "dense-start-942",
+      "edge": "start",
+      "s": 942
+    },
+    {
+      "name": "dense-start-945",
+      "edge": "start",
+      "s": 945
+    },
+    {
+      "name": "dense-start-948",
+      "edge": "start",
+      "s": 948
+    },
+    {
+      "name": "dense-start-951",
+      "edge": "start",
+      "s": 951
+    },
+    {
+      "name": "dense-start-954",
+      "edge": "start",
+      "s": 954
+    },
+    {
+      "name": "dense-start-957",
+      "edge": "start",
+      "s": 957
+    },
+    {
+      "name": "dense-start-960",
+      "edge": "start",
+      "s": 960
+    },
+    {
+      "name": "dense-start-963",
+      "edge": "start",
+      "s": 963
+    },
+    {
+      "name": "dense-start-966",
+      "edge": "start",
+      "s": 966
+    },
+    {
+      "name": "dense-start-969",
+      "edge": "start",
+      "s": 969
+    },
+    {
+      "name": "dense-start-1128",
+      "edge": "start",
+      "s": 1128
+    },
+    {
+      "name": "dense-start-1131",
+      "edge": "start",
+      "s": 1131
+    },
+    {
+      "name": "dense-start-1134",
+      "edge": "start",
+      "s": 1134
+    },
+    {
+      "name": "dense-start-1137",
+      "edge": "start",
+      "s": 1137
+    },
+    {
+      "name": "dense-start-1140",
+      "edge": "start",
+      "s": 1140
+    },
+    {
+      "name": "dense-start-1143",
+      "edge": "start",
+      "s": 1143
+    },
+    {
+      "name": "dense-start-1146",
+      "edge": "start",
+      "s": 1146
+    },
+    {
+      "name": "dense-start-1149",
+      "edge": "start",
+      "s": 1149
+    },
+    {
+      "name": "dense-start-1152",
+      "edge": "start",
+      "s": 1152
+    },
+    {
+      "name": "dense-start-1155",
+      "edge": "start",
+      "s": 1155
+    },
+    {
+      "name": "dense-start-1158",
+      "edge": "start",
+      "s": 1158
+    },
+    {
+      "name": "dense-start-1161",
+      "edge": "start",
+      "s": 1161
+    },
+    {
+      "name": "dense-start-1164",
+      "edge": "start",
+      "s": 1164
+    },
+    {
+      "name": "dense-start-1167",
+      "edge": "start",
+      "s": 1167
+    },
+    {
+      "name": "dense-start-1170",
+      "edge": "start",
+      "s": 1170
+    },
+    {
+      "name": "dense-start-1173",
+      "edge": "start",
+      "s": 1173
+    },
+    {
+      "name": "dense-start-1176",
+      "edge": "start",
+      "s": 1176
+    },
+    {
+      "name": "dense-start-1179",
+      "edge": "start",
+      "s": 1179
+    },
+    {
+      "name": "dense-start-1182",
+      "edge": "start",
+      "s": 1182
+    },
+    {
+      "name": "dense-start-1185",
+      "edge": "start",
+      "s": 1185
+    },
+    {
+      "name": "dense-start-1188",
+      "edge": "start",
+      "s": 1188
+    },
+    {
+      "name": "dense-start-1191",
+      "edge": "start",
+      "s": 1191
+    },
+    {
+      "name": "dense-start-1194",
+      "edge": "start",
+      "s": 1194
+    },
+    {
+      "name": "dense-start-1197",
+      "edge": "start",
+      "s": 1197
+    },
+    {
+      "name": "dense-start-1200",
+      "edge": "start",
+      "s": 1200
+    },
+    {
+      "name": "dense-start-1203",
+      "edge": "start",
+      "s": 1203
+    },
+    {
+      "name": "dense-start-1206",
+      "edge": "start",
+      "s": 1206
+    },
+    {
+      "name": "dense-start-1209",
+      "edge": "start",
+      "s": 1209
+    },
+    {
+      "name": "dense-start-1212",
+      "edge": "start",
+      "s": 1212
+    },
+    {
+      "name": "dense-start-1215",
+      "edge": "start",
+      "s": 1215
+    },
+    {
+      "name": "dense-start-1218",
+      "edge": "start",
+      "s": 1218
+    },
+    {
+      "name": "dense-start-1221",
+      "edge": "start",
+      "s": 1221
+    },
+    {
+      "name": "dense-start-1224",
+      "edge": "start",
+      "s": 1224
+    },
+    {
+      "name": "dense-start-1227",
+      "edge": "start",
+      "s": 1227
+    },
+    {
+      "name": "dense-start-1230",
+      "edge": "start",
+      "s": 1230
+    },
+    {
+      "name": "dense-start-1233",
+      "edge": "start",
+      "s": 1233
+    },
+    {
+      "name": "dense-start-1236",
+      "edge": "start",
+      "s": 1236
+    },
+    {
+      "name": "dense-start-1239",
+      "edge": "start",
+      "s": 1239
+    },
+    {
+      "name": "dense-start-1242",
+      "edge": "start",
+      "s": 1242
+    },
+    {
+      "name": "dense-start-1245",
+      "edge": "start",
+      "s": 1245
+    },
+    {
+      "name": "dense-start-1248",
+      "edge": "start",
+      "s": 1248
+    },
+    {
+      "name": "dense-boulevard-252",
+      "edge": "boulevard",
+      "s": 252
+    },
+    {
+      "name": "dense-boulevard-255",
+      "edge": "boulevard",
+      "s": 255
+    },
+    {
+      "name": "dense-boulevard-258",
+      "edge": "boulevard",
+      "s": 258
+    },
+    {
+      "name": "dense-boulevard-261",
+      "edge": "boulevard",
+      "s": 261
+    },
+    {
+      "name": "dense-boulevard-264",
+      "edge": "boulevard",
+      "s": 264
+    },
+    {
+      "name": "dense-boulevard-267",
+      "edge": "boulevard",
+      "s": 267
+    },
+    {
+      "name": "dense-boulevard-270",
+      "edge": "boulevard",
+      "s": 270
+    },
+    {
+      "name": "dense-boulevard-273",
+      "edge": "boulevard",
+      "s": 273
+    },
+    {
+      "name": "dense-boulevard-276",
+      "edge": "boulevard",
+      "s": 276
+    },
+    {
+      "name": "dense-boulevard-279",
+      "edge": "boulevard",
+      "s": 279
+    },
+    {
+      "name": "dense-boulevard-282",
+      "edge": "boulevard",
+      "s": 282
+    },
+    {
+      "name": "dense-boulevard-285",
+      "edge": "boulevard",
+      "s": 285
+    },
+    {
+      "name": "dense-boulevard-288",
+      "edge": "boulevard",
+      "s": 288
+    },
+    {
+      "name": "dense-boulevard-291",
+      "edge": "boulevard",
+      "s": 291
+    },
+    {
+      "name": "dense-boulevard-294",
+      "edge": "boulevard",
+      "s": 294
+    },
+    {
+      "name": "dense-boulevard-297",
+      "edge": "boulevard",
+      "s": 297
+    },
+    {
+      "name": "dense-boulevard-300",
+      "edge": "boulevard",
+      "s": 300
+    },
+    {
+      "name": "dense-boulevard-303",
+      "edge": "boulevard",
+      "s": 303
+    },
+    {
+      "name": "dense-boulevard-306",
+      "edge": "boulevard",
+      "s": 306
+    },
+    {
+      "name": "dense-boulevard-309",
+      "edge": "boulevard",
+      "s": 309
+    },
+    {
+      "name": "dense-boulevard-312",
+      "edge": "boulevard",
+      "s": 312
+    },
+    {
+      "name": "dense-alley-237",
+      "edge": "alley",
+      "s": 237
+    },
+    {
+      "name": "dense-alley-240",
+      "edge": "alley",
+      "s": 240
+    },
+    {
+      "name": "dense-alley-243",
+      "edge": "alley",
+      "s": 243
+    },
+    {
+      "name": "dense-alley-246",
+      "edge": "alley",
+      "s": 246
+    },
+    {
+      "name": "dense-alley-249",
+      "edge": "alley",
+      "s": 249
+    },
+    {
+      "name": "dense-alley-252",
+      "edge": "alley",
+      "s": 252
+    },
+    {
+      "name": "dense-alley-255",
+      "edge": "alley",
+      "s": 255
+    },
+    {
+      "name": "dense-alley-258",
+      "edge": "alley",
+      "s": 258
+    },
+    {
+      "name": "dense-alley-261",
+      "edge": "alley",
+      "s": 261
+    },
+    {
+      "name": "dense-alley-264",
+      "edge": "alley",
+      "s": 264
+    },
+    {
+      "name": "dense-alley-267",
+      "edge": "alley",
+      "s": 267
+    },
+    {
+      "name": "dense-alley-270",
+      "edge": "alley",
+      "s": 270
+    },
+    {
+      "name": "dense-alley-273",
+      "edge": "alley",
+      "s": 273
+    }
+  ],
+  "expectedStaticPoses": 51282
+}

@@ -34,7 +34,7 @@ after(()=>{report.sourceHashAfter=sha(readFileSync(new URL('../../src/town-scene
 audit('Town exact original source route road bridge terrain texture protection and fixed budget',()=>{
  assert.equal(sha(baselineSource),contract.originalScenerySha256);
  const revisionPath='tests/fixtures/reviewed-scene-revisions.json',reviewed=JSON.parse(readFileSync(new URL(revisionPath,root),'utf8'));
- assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/desert-scenery.ts','src/forest-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
+ assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/desert-scenery.ts','src/forest-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
  for(const [path,revision]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){
   assert.equal(revision.previousSHA256,contract.sourceInventory[path],path+' original source golden remains exact');
   assert.equal(sha(readFileSync(new URL(path,root))),revision.currentSHA256,path+' separately reviewed scene revision changed');

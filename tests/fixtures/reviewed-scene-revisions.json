@@ -31,6 +31,11 @@
       "previousSHA256": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
       "currentSHA256": "aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713",
       "scope": "Desert007 additive original layered sandstone shoulders and three independently grounded open caravan courts. Exact original indexed positions, indices, UVs, normals, materials, terrain, roads, heroes, camera payloads and gameplay preserved. Desert-only triangle ceiling below 125000, added triangles at most 16000, vertices below 200000, exactly 22 batches. No main/stable or Windows changes."
+    },
+    "src/snow-scenery.ts": {
+      "previousSHA256": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+      "currentSHA256": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+      "scope": "Snow008 additive original snow banks, snow fences, station annexes, supported maintenance yard and reviewed snow-laden evergreen grouping. Exact original indexed positions, indices, UVs, normals, materials, terrain, roads, landmarks, blocker payloads and gameplay retained. Snow-only triangles below120000, at most12000 added, vertices below200000, exactly23 batches. Main/stable and Windows unchanged."
     }
   }
 }

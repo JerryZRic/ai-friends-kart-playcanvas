@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import {SNOW_COURSE,SNOW_LANDMARKS} from '../src/maps/snow';
 import {buildSnowSceneGeometry} from '../src/snow-scenery';
 import {snowPickupRows} from '../src/land-course-pickups';
+import {assertSnowOriginalProjection} from './helpers/snow-enrichment-contract';
 import {chaseCamera} from '../src/race-camera';
 import {safeLandCamera,cameraMeshCandidateIds,type CameraPoint} from '../src/land-camera';
 
@@ -266,7 +267,7 @@ for(const edge of Object.values(SNOW_COURSE.edges)){
 // the material-refined scene. This digest fixes all 17,010 physical grid heights.
 const ORIGINAL_SNOW_GRID_SHA256='21b5990a647cc49c9b527c56a7af222f24e9a350328dbf3ac5d3c73df25f9f5c';
 const ORIGINAL_NON_MACRO_TRIANGLES_SHA256='f28d831186a27c39497a69ed70cc59521cd321ab60f70a12debff57cbe5b3be9';
-function nonMacroTriangleHash(){const hash=createHash('sha256');for(const c of geometry.components){if(['connected-snow-bowl-heightfield','connected-slate-exposures-heightfield'].includes(c.kind))continue;hash.update(JSON.stringify({kind:c.kind,role:c.role,landmark:c.landmark??null,triangles:(componentTriangles.get(c)??[]).map(q=>[q.a,q.b,q.c])}));}return hash.digest('hex');}
+function nonMacroTriangleHash(){const hash=createHash('sha256');for(const c of assertSnowOriginalProjection(geometry)){if(['connected-snow-bowl-heightfield','connected-slate-exposures-heightfield'].includes(c.kind))continue;hash.update(JSON.stringify({kind:c.kind,role:c.role,landmark:c.landmark??null,triangles:(componentTriangles.get(c)??[]).map(q=>[q.a,q.b,q.c])}));}return hash.digest('hex');}
 
 let terrainPartitionResult:Record<string,unknown>|null=null;
 function verifyTerrainPartition(){
@@ -305,7 +306,7 @@ audit('snow emitted geometry has finite indexed data and hard material/mesh budg
     assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));
   }
   const counts={batches:geometry.batches.length,vertices,triangles,terrainTriangles:terrain.length,components:geometry.components.length,sourceOwnershipTriangles:componentOf.size};reportMetric('mesh',counts);
-  assert.ok(geometry.batches.length<=24,`${geometry.batches.length} batches >24`);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<110000,`${triangles} triangles`);
+  assert.ok(geometry.batches.length<=24,`${geometry.batches.length} batches >24`);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<120000,`${triangles} triangles`);
   assert.equal(componentOf.size,triangles,'every emitted terrain, road, support, rail, sign and detail triangle has source provenance');
   for(const c of geometry.components){const bounds=actualBounds.get(c)!;assert.ok((componentTriangles.get(c)?.length??0)>0,`${c.kind} has no emitted faces`);for(let k=0;k<3;k++){assert.ok(Math.abs(bounds.min[k]-c.min[k])<1e-7);assert.ok(Math.abs(bounds.max[k]-c.max[k])<1e-7);}}
   t.diagnostic(JSON.stringify(counts));

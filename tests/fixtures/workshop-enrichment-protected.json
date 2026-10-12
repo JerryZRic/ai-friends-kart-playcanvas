@@ -592,42 +592,42 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
-      "currentSHA256": "046579533d6dff97c2b8a0ba78f03f51e54ef0c81069bb15db97d92096cc2663",
+      "currentSHA256": "ec232e75be89574e0a89080adf99eab121cde7a4ce41c19f7590a6826c0cdbde",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
-      "currentSHA256": "0d7c35e642b8f6de9b8e7f8f835717d99873b636b3735e946710f5fad4de2c63",
+      "currentSHA256": "574a7c77e3906c5b0e2046eb39b883c9684f4285f13fffd2e1cef1fce28dc577",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
-      "currentSHA256": "70b379131949416f622ca67c1e4a98344b7025800755814758e1746ca30f1df5",
+      "currentSHA256": "fc92aaa6e17b15aa76ebe3957cfbaec4f6c7ca47629819fd17a6dc9f52208095",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
-      "currentSHA256": "6a3c8bba656c40720a60b0ccea7aaa28447c100bf9c71bddb23e100ceab9ff7c",
+      "currentSHA256": "89578c9a525fcb0b4a7ca21c3530898a8e258a4ad37c4ccc2f497ef002710f91",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "7504e03e78feb1afe2af3146233944b66072cfcefc7b2b9ebeede0b6cdccc44a",
-      "currentSHA256": "12609911dcb1248e526bd0675c841f0b71ee28fc19752c60b805b720a0df0762",
+      "currentSHA256": "b8e5bdd60c3ed63779d2f03cf8acaa4bc752eeec93da41e56bec7f496004a331",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "5065857829e3beded4b2fa7e0f3c210b79cc37fde106c407bc10f06c16e4b3fa",
-      "currentSHA256": "b259974c040dd72cb47936d37ad6d49e2dbc0370218d632b45b1ce10127b53a2",
+      "currentSHA256": "9d95112242e7a726b34c3129a098405b2a99ad5ef4cfdecde4f9c1c74d801c5e",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/forest-enrichment-inventory.test.ts": {
       "previousSHA256": "a75466882c6a6b0c98ff0a4c8db9d78ed1c4a4a79702344110d9ec872014421a",
-      "currentSHA256": "d991d3b3beb2122c3dabe2c7ce8419e81ea75a51b6918ed4ac547c1b51a1d0d3",
+      "currentSHA256": "e82a993debe1b14472a400b5d35ee81a18bdd0ff7d085e6a6e7a60f0d0fa1eeb",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/forest-enrichment-protected.json": {
       "previousSHA256": "afa7cae0ad4fbbc67ea8a8e7349fb2f30abfc68b6a81a70b43a1ee3afb3774b2",
-      "currentSHA256": "e70351823b42b80548ef14c8c594051cf303de20afe553c14f0c4b75be680bd6",
+      "currentSHA256": "827c3006c190d730a72bb0c2aa043e1e150b2002d1fe101f4d2616ae74fff746",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "docs/workshop-preview-provenance.json": {
@@ -699,6 +699,36 @@
       "previousSHA256": "d3636ef280894592a810df5e163f5f698c721599f13b8383126a62ef66fa6024",
       "currentSHA256": "7090ee77080edabec9683585c7f314d894b2bbb3d6dfda73bb0b5af5a008b675",
       "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "tests/snow-independent-audit.test.ts": {
+      "previousSHA256": "9b751caab44cff37f2c8ff53d8452782fceceb27d7a2a0fc573b0bdd24ce74fb",
+      "currentSHA256": "c0eedf06dca52f1779bb1080e5cd3a315cdf18d8db206d0464c31d1951f7d01b",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "tests/snow-scene.test.ts": {
+      "previousSHA256": "9440f7ea8e51bd5276ade3184db89f1746151349784032650dde3ff48caeb415",
+      "currentSHA256": "3f74f4e4452d3758031cb2f75a9c33264dbda0e7d21ea522a7e9ecaf999f0b15",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "src/snow-scenery.ts": {
+      "previousSHA256": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+      "currentSHA256": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "tests/snow-preview-assets.test.ts": {
+      "previousSHA256": "320817037fdd6c3584466e4130087ce32096cd1a65f6065d056bfa6487c23c08",
+      "currentSHA256": "5d5e2d51c6af2e3ce3b3617a518df5ee38a2a3be27d759823e8cb6e64973ebd8",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "public/map-previews/snow-overview.webp": {
+      "previousSHA256": "79f163a3d6271544e645e873c450f60069736424f2711ee759d41c2cc1ac2f75",
+      "currentSHA256": "d5eeee9af0ff16d467e6b099590bb7cb2061295fd97b6d292c1e6810c405c7af",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
+    },
+    "docs/snow-preview-provenance.json": {
+      "previousSHA256": "4a648c5102a989884f99a505f7cab091a80c3b7bbedcb51bae108eb1a11096c0",
+      "currentSHA256": "f43feed5a9a1bac7ab106502018235f252101ff49e3a18a36ea0a0d76af3dd97",
+      "scope": "Exactly reviewed additive Snow008 scene, three numeric cap changes, certified-original non-macro projection, source-derived catalog, or narrowly scoped prior-scene isolation consumer update"
     }
   },
   "historicalContracts": {
