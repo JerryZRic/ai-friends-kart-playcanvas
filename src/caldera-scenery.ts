@@ -8,7 +8,7 @@ import {CALDERA_VIADUCT,CALDERA_LANDMARKS,calderaViaductDepthAt} from './maps/ca
 
 type Face={edgeId:string;distance:number;points:number[][]};
 type Role='terrain'|'road'|'support'|'structure'|'rail'|'detail'|'visual-coping';
-export type CalderaComponent={kind:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;min:number[];max:number[];role:Role;solid:boolean;landmark?:string;assembly?:string};
+export type CalderaComponent={kind:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;min:number[];max:number[];role:Role;solid:boolean;landmark?:string;assembly?:string;enrichmentAssembly?:string};
 export interface CalderaSceneGeometry extends LandSceneGeometry {
  routeRoadSamples:{edgeId:string;distance:number;left:number[];right:number[];rendered:boolean}[];
  roadFaces:Face[];roadUndersideFaces:Face[];shoulderFaces:Face[];
@@ -25,6 +25,7 @@ export interface CalderaSceneGeometry extends LandSceneGeometry {
  terrainExposure:number[];terrainPartitions:{sourceTriangle:number;material:'basalt'|'ash'|'ochre';batch:string;indexStart:number;indexEnd:number}[];
  viaduct:{from:number;to:number;deckHalfWidth:number;groundLayer:string;faces:{kind:string;points:number[][]}[];undersideFaces:number[][][];supports:{kind:string;s:number;footprint:number[][];bottom:number;top:number;terrainLow:number;terrainHigh:number;component:number}[];archSpans:{from:number;to:number}[]};
  assemblies:{id:string;components:number[];closed:boolean}[];
+ enrichmentAssemblies:{id:string;pieces:(CalderaComponent&{id:string;supportOwner:string[];supportIndexStart?:number;supportIndexEnd?:number})[];groundContacts:{pieceId:string;footprint:number[][];bottom:number;terrainLow:number;terrainHigh:number;bottomIndexStart:number;bottomIndexEnd:number;terrainPenetrationMetres:number}[]}[];
  budget:{batches:number;triangles:number;vertices:number};
 }
 export const CALDERA_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'basalt crown original cooled stone and dry ash',ambient:'#b5b0a3',sky:'#d8d0ba',fogStart:1150,fogEnd:2450,cameraName:'Basalt Crown chase camera',sunName:'Basalt Crown warm raking sunlight',sunColor:'#fff0d4',sunIntensity:1.65,sunEuler:[36,-38,0] as const});
@@ -289,8 +290,96 @@ export function buildCalderaSceneGeometry(course:SceneryForkCourse):CalderaScene
  meshBlock('caldera-actual-viaduct-triangles',components.filter(c=>c.kind.startsWith('viaduct-')).flatMap(facesFor));
  for(const p of plots)meshBlock('caldera-actual-'+p.id,components.filter(c=>c.landmark===p.id).flatMap(facesFor));
  meshBlock('caldera-actual-other-assemblies',components.filter(c=>!c.landmark&&!c.kind.startsWith('viaduct-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders').flatMap(facesFor));
+
+ // Append-only original cooled-basalt shoulders and a small archive terrace.
+ // Every foot follows all intersected source terrain triangles; the original
+ // rim, roads, landmarks, complete buffer prefixes and camera payload stay intact.
+ const terrainPieces=(polygon:pc.Vec3[])=>{const x0=clamp(Math.floor((Math.min(...polygon.map(p=>p.x))-minX)/dx),0,nx-1),x1=clamp(Math.floor((Math.max(...polygon.map(p=>p.x))-minX)/dx),0,nx-1),z0=clamp(Math.floor((Math.min(...polygon.map(p=>p.z))-minZ)/dz),0,nz-1),z1=clamp(Math.floor((Math.max(...polygon.map(p=>p.z))-minZ)/dz),0,nz-1),out:pc.Vec3[][]=[];const v=(i:number)=>vec(...terrainVertices.slice(i*3,i*3+3) as [number,number,number]);for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++){const i=z*(nx+1)+x;for(const t of [[i,i+nx+1,i+1],[i+1,i+nx+1,i+nx+2]]){const p=intersectRoadFootprint(t.map(v),polygon);if(p.length>=3&&footprintArea(p)>1e-9)out.push(p);}}return out;};
+ const enrichmentAssemblies:CalderaSceneGeometry['enrichmentAssemblies']=[];
+ type EnrichmentPiece=CalderaSceneGeometry['enrichmentAssemblies'][number]['pieces'][number];
+ const originalTriangleCount=components.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0);
+ const beginAssembly=(id:string)=>{const a:CalderaSceneGeometry['enrichmentAssemblies'][number]={id,pieces:[],groundContacts:[]};enrichmentAssemblies.push(a);return a;};
+ let enrichmentAssembly:CalderaSceneGeometry['enrichmentAssemblies'][number];
+ const own=(c:CalderaComponent,supportOwner:string[]=[])=>{c.enrichmentAssembly=enrichmentAssembly.id;const p:EnrichmentPiece={...c,id:enrichmentAssembly.id+':'+enrichmentAssembly.pieces.length,supportOwner};enrichmentAssembly.pieces.push(p);return p;};
+ const finishAssembly=()=>meshBlock(enrichmentAssembly.id+'-exact-triangles',enrichmentAssembly.pieces.flatMap(facesFor));
+ // Independently close the new multi-face solids by shared geometric edges.
+ // Winding is reconciled across terrain-clipped caps and all shell sides;
+ // an open/nonmanifold seam is rejected rather than hidden by two-sided shading.
+ const closedPart=(kind:string,b:Batch,start:number,role:Role,ii:number)=>{
+  const key=(i:number)=>b.positions.slice(i*3,i*3+3).map(v=>v.toFixed(7)).join(','),edges=new Map<string,{face:number;sign:number}[]>(),count=(b.indices.length-ii)/3,adj:Array<{face:number;flip:boolean}[]>=Array.from({length:count},()=>[]);
+  for(let f=0;f<count;f++)for(let j=0;j<3;j++){const a=key(b.indices[ii+f*3+j]),c=key(b.indices[ii+f*3+(j+1)%3]);if(a===c)throw Error('Degenerate enrichment edge: '+kind);const k=[a,c].sort().join('|'),list=edges.get(k)??[];list.push({face:f,sign:a<c?1:-1});edges.set(k,list);}
+  for(const es of edges.values()){if(es.length!==2)throw Error('Open enrichment seam: '+kind);const [a,c]=es;adj[a.face].push({face:c.face,flip:a.sign===c.sign});adj[c.face].push({face:a.face,flip:a.sign===c.sign});}
+  const flips:Array<boolean|undefined>=Array(count);for(let seed=0;seed<count;seed++){if(flips[seed]!==undefined)continue;flips[seed]=false;const queue=[seed];for(let n=0;n<queue.length;n++)for(const e of adj[queue[n]]){const expected=flips[queue[n]]!==e.flip;if(flips[e.face]===undefined){flips[e.face]=expected;queue.push(e.face);}else if(flips[e.face]!==expected)throw Error('Non-orientable enrichment solid');}}
+  for(let f=0;f<count;f++)if(flips[f])[b.indices[ii+f*3+1],b.indices[ii+f*3+2]]=[b.indices[ii+f*3+2],b.indices[ii+f*3+1]];
+  return bound(kind,b,start,role,true,ii)!;
+ };
+
+ // Clip the actual triangulated terrain; preserve its diagonals under every
+ // foot. Boundary edges are split at the same terrain crossings as the base.
+ const clippedBase=(footprint:pc.Vec3[])=>{
+  const pieces=terrainPieces(footprint),key=(p:pc.Vec3)=>p.x.toFixed(7)+','+p.z.toFixed(7),edges=new Map<string,{a:pc.Vec3;b:pc.Vec3;count:number}>();
+  for(const poly of pieces)for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(a.distance(b)<1e-8)continue;const k=[key(a),key(b)].sort().join('|'),old=edges.get(k);if(old)old.count++;else edges.set(k,{a,b,count:1});}
+  const border=[...edges.values()].filter(e=>e.count===1),loop:pc.Vec3[]=[border[0].a];let current=border[0].b;border.splice(0,1);
+  while(border.length){loop.push(current);const i=border.findIndex(e=>key(e.a)===key(current)||key(e.b)===key(current));if(i<0)throw Error('Enrichment terrain boundary is not continuous');const e=border.splice(i,1)[0];current=key(e.a)===key(current)?e.b:e.a;}
+  if(key(current)!==key(loop[0]))throw Error('Enrichment terrain boundary is not closed');
+  return{pieces,loop};
+ };
+ const foundationSlab=(kind:string,x:number,z:number,w:number,d:number,yaw=0,rise=.24)=>{
+  const footprint=rect(vec(x,0,z),w,d,yaw),ext=terrainExtrema(footprint),base=clippedBase(footprint),top=ext.high+rise,start=foundationStone.positions.length/3,ii=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));foundationStone.tri(t[0],t[1],t[2]);}
+  const bottomEnd=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>vec(p.x,top,p.z));foundationStone.tri(t[2],t[1],t[0]);}
+  for(let i=0;i<base.loop.length;i++){const p=base.loop[i],q=base.loop[(i+1)%base.loop.length];foundationStone.quad(p.clone().add(vec(0,-.04,0)),q.clone().add(vec(0,-.04,0)),vec(p.x,top,p.z),vec(q.x,top,q.z));}
+  const part=own(closedPart(kind,foundationStone,start,'support',ii));
+  enrichmentAssembly.groundContacts.push({pieceId:part.id,footprint:footprint.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});
+  return{part,top,at:local(vec(x,top,z),yaw)};
+ };
+
+ const buttress=(id:string,cx:number,cz:number,w:number,d:number,yaw:number,h:number,seed:number)=>{
+  enrichmentAssembly=beginAssembly(id);const at=local(vec(cx,0,cz),yaw),outline=[[-.50,-.27],[-.30,-.50],[.25,-.47],[.50,-.18],[.44,.31],[.19,.50],[-.31,.42],[-.49,.11]].map(([x,z])=>at(x*w,0,z*d)),ext=terrainExtrema(outline),base=clippedBase(outline),b=basalt,start=b.positions.length/3,ii=b.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));b.tri(t[0],t[1],t[2]);}const bottomEnd=b.indices.length;
+  // Broad incised cooling joints are modeled in the shell, not painted lines.
+  // Each retained terrain boundary edge bridges to a recessed upper profile;
+  // its full clipped bottom remains untouched and consistently closed.
+  const sections=base.loop.map((p,i)=>{const q=base.loop[(i+1)%base.loop.length],length=p.distance(q);return (length>4?[[0,1],[.30,1],[.43,.82],[.56,1]]:[[0,1]]).map(([t,g])=>({p:p.clone().lerp(p,q,t),g}));});
+  const profile=sections.flat(),rings=[{s:.95,h:h*.18},{s:.88,h:h*.79},{s:.70,h}];
+  const ring=(r:typeof rings[number],v:typeof profile[number])=>{const scale=r.s*(r.h<h*.2?1:v.g),x=cx+(v.p.x-cx)*scale,z=cz+(v.p.z-cz)*scale;return vec(x,groundY(x,z)+r.h*(.90+.10*Math.cos(Math.atan2(v.p.z-cz,v.p.x-cx)*3+seed)),z);};
+  for(let i=0;i<base.loop.length;i++){const p=base.loop[i].clone().add(vec(0,-.04,0)),q=base.loop[(i+1)%base.loop.length].clone().add(vec(0,-.04,0)),top=[...sections[i],sections[(i+1)%sections.length][0]].map(v=>ring(rings[0],v));const face=[p,q,...top.reverse()];for(let j=1;j<face.length-1;j++)b.tri(face[0],face[j],face[j+1]);}
+  for(let k=0;k<rings.length-1;k++)for(let j=0;j<profile.length;j++){const n=(j+1)%profile.length;b.quad(ring(rings[k],profile[j]),ring(rings[k],profile[n]),ring(rings[k+1],profile[j]),ring(rings[k+1],profile[n]));}
+  const top=rings.at(-1)!,center=vec(cx,groundY(cx,cz)+h*.93,cz);for(let j=0;j<profile.length;j++)b.tri(center,ring(top,profile[j]),ring(top,profile[(j+1)%profile.length]));
+  const part=own(closedPart('enrichment-jointed-basalt-buttress',b,start,'structure',ii));enrichmentAssembly.groundContacts.push({pieceId:part.id,footprint:outline.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});finishAssembly();
+ };
+ buttress('enrichment-rim-near-buttress',-297,223,31,23,-.5,14,.3);
+ buttress('enrichment-rim-middle-buttress',-267,252,32,24,-.5,18,1.1);
+ buttress('enrichment-rim-receding-buttress',-125,292,42,24,-.2,15,1.9);
+ buttress('enrichment-north-rim-near-buttress',112,256,33,23,.4,13,.7);
+ buttress('enrichment-north-rim-receding-buttress',151,239,34,24,.5,17,1.7);
+ const archiveWing=(id:string,cx:number,cz:number,w:number,d:number,h:number,yaw:number,open:boolean)=>{
+  enrichmentAssembly=beginAssembly(id);const slab=foundationSlab('enrichment-archive-terrain-seat',cx,cz,w+8,d+12,yaw,1.1),at=slab.at;
+  const put=(kind:string,b:Batch,x:number,y:number,z:number,ww:number,hh:number,dd:number,supports:string[])=>own(box('enrichment-archive-'+kind,b,at(x,y,z),vec(ww,hh,dd),yaw),supports);
+  const supports:EnrichmentPiece[]=[];
+  if(!open){
+   supports.push(put('west-wall',walls,-w/2+.55,h/2,.55,1.1,h,d-1.1,[slab.part.id]),put('east-wall',walls,w/2-.55,h/2,.55,1.1,h,d-1.1,[slab.part.id]),put('rear-wall',walls,0,h/2,d/2-.55,w-2.2,h,1.1,[slab.part.id]));
+  }
+  const rows=open?[-d/2+.55,d/2-.55]:[-d/2+.55];
+  for(const z of rows){const posts:EnrichmentPiece[]=[],bay=(w-1.1)/3;for(let i=0;i<4;i++)posts.push(put('open-bay-pier',walls,-w/2+.55+i*bay,(h-1.0)/2,z,1.1,h-1.0,1.1,[slab.part.id]));
+   // Each lintel owns its complete joint; no doubled corner shell faces.
+   for(let i=0;i<3;i++)supports.push(put('open-bay-lintel',roof,-w/2+.55+(i+.5)*bay,h-.5,z,bay,1.0,1.1,[posts[i].id,posts[i+1].id]));
+  }
+  put('thick-seated-roof',roof,0,h+.65,0,w+1.8,1.3,d+1.8,supports.map(p=>p.id));
+  // Two broad sample benches establish working scale beneath literal openings.
+  for(const x of [-w*.24,w*.24]){const bench=put('sample-bench',foundationStone,x,.7,0,5,1.4,2.5,[slab.part.id]);put('sample-slab',specimen,x,1.7,0,4.2,.6,1.8,[bench.id]);}
+  for(const [i,x] of [-w*.27,w*.26].entries()){const bench=put('apron-display-seat',foundationStone,x,.45,-d/2-3.1,6,.9,3.2,[slab.part.id]);const sample=put('apron-broad-basalt-section',basalt,x,1.50,-d/2-3.1,4.7,1.2,2.3,[bench.id]);put('apron-ochre-section',ochre,x,2.25,-d/2-3.1,4.1,.3,2.0,[sample.id]);}
+  const front=at(0,0,-d/2-7.5);foundationSlab('enrichment-archive-broad-entry-step',front.x,front.z,w+6,3,yaw,.46);
+  finishAssembly();
+ };
+ archiveWing('enrichment-archive-store-wing',-167,-602,29,13,9.0,Math.PI+.1,false);
+ archiveWing('enrichment-archive-open-portico',-209,-624,23,12,6.4,.1,true);
+ const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
+ if(enrichmentTriangles>12000)throw Error('Caldera append-only enrichment triangle allowance exceeded');
+
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
  if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Caldera emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
- return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'viaduct',from:bridgeFrom,to:bridgeTo,overheadClearance:24}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts:[],structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,viaduct,assemblies,budget};
+ return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'viaduct',from:bridgeFrom,to:bridgeTo,overheadClearance:24}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts:[],structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,viaduct,assemblies,budget,enrichmentAssemblies};
 }
