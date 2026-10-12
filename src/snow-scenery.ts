@@ -6,7 +6,7 @@ import type {LandSceneTheme} from './land-scene';
 import {cameraTerrainHeight,type CameraBlocker,type CameraHeightfield} from './land-camera';
 
 type Role='terrain'|'road'|'support'|'visual-coping'|'rail'|'structure'|'detail';
-export type SnowComponent={kind:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;min:number[];max:number[];role:Role;solid:boolean;landmark?:string};
+export type SnowComponent={kind:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;min:number[];max:number[];role:Role;solid:boolean;landmark?:string;enrichmentAssembly?:string};
 type Component=SnowComponent;
 type Face={edgeId:string;distance:number;points:number[][]};
 export interface SnowSceneGeometry extends LandSceneGeometry {
@@ -23,6 +23,7 @@ export interface SnowSceneGeometry extends LandSceneGeometry {
  landforms:{kind:string;footprint:number[][];bottom:number;top:number}[];
  terrainGrid:CameraHeightfield;terrainVertices:number[];terrainTriangles:number[][][];
  terrainExposure:number[];terrainPartitions:{sourceTriangle:number;material:'snow'|'slate';indexStart:number;indexEnd:number}[];
+ enrichmentAssemblies:{id:string;pieces:(Component&{id:string;supportOwner:string[];supportIndexStart?:number;supportIndexEnd?:number})[];groundContacts:{pieceId:string;footprint:number[][];bottom:number;terrainLow:number;terrainHigh:number;bottomIndexStart:number;bottomIndexEnd:number;terrainPenetrationMetres:number}[]}[];
  budget:{batches:number;triangles:number;vertices:number};
 }
 export const SNOW_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'frostloop original snow slate and depot textures',ambient:'#bccfda',sky:'#c3d9e4',fogStart:980,fogEnd:2200,cameraName:'Frostloop Depot chase camera',sunName:'Frostloop low winter sun',sunColor:'#fff0d5',sunIntensity:1.55,sunEuler:[39,-32,0] as const});
@@ -402,8 +403,141 @@ export function buildSnowSceneGeometry(course:SceneryForkCourse):SnowSceneGeomet
  // openings. The macro heightfield is the exact same two diagonals per cell.
  for(const p of plots)meshBlock('snow-exact-'+p.kind,components.filter(c=>c.landmark===p.kind).flatMap(facesFor));
  meshBlock('snow-exact-all-other-assemblies',components.filter(c=>!c.landmark&&c.kind!=='connected-snow-bowl-heightfield'&&c.kind!=='connected-slate-exposures-heightfield'&&c.kind!=='exact-source-shoulder-stitches'&&c.role!=='rail').flatMap(facesFor));
+ // Snow enrichment is appended only after every original range and blocker.
+ // Each new solid has distinct ownership, actual support faces, and an exact
+ // triangle camera payload. Original terrain and architecture stay immutable.
+ const enrichmentAssemblies:SnowSceneGeometry['enrichmentAssemblies']=[];
+ type EnrichmentPiece=SnowSceneGeometry['enrichmentAssemblies'][number]['pieces'][number];
+ const originalTriangleCount=components.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0);
+ const beginAssembly=(id:string)=>{const a:SnowSceneGeometry['enrichmentAssemblies'][number]={id,pieces:[],groundContacts:[]};enrichmentAssemblies.push(a);return a;};
+ let assembly:SnowSceneGeometry['enrichmentAssemblies'][number];
+ const own=(c:Component,supportOwner:string[]=[])=>{c.enrichmentAssembly=assembly.id;const p:EnrichmentPiece={...c,id:assembly.id+':'+assembly.pieces.length,supportOwner};assembly.pieces.push(p);return p;};
+ const ownLast=(supports:string[])=>own(components[components.length-1],supports);
+ const finishAssembly=()=>meshBlock(assembly.id+'-exact-triangles',assembly.pieces.flatMap(facesFor));
+ // Independently close the new multi-face solids by shared geometric edges.
+ // Winding is reconciled across terrain-clipped caps and all shell sides;
+ // an open/nonmanifold seam is rejected rather than hidden by two-sided shading.
+ const closedPart=(kind:string,b:Batch,start:number,role:Role,ii:number)=>{
+  const key=(i:number)=>b.positions.slice(i*3,i*3+3).map(v=>v.toFixed(7)).join(','),edges=new Map<string,{face:number;sign:number}[]>(),count=(b.indices.length-ii)/3,adj:Array<{face:number;flip:boolean}[]>=Array.from({length:count},()=>[]);
+  for(let f=0;f<count;f++)for(let j=0;j<3;j++){const a=key(b.indices[ii+f*3+j]),c=key(b.indices[ii+f*3+(j+1)%3]);if(a===c)throw Error('Degenerate enrichment edge: '+kind);const k=[a,c].sort().join('|'),list=edges.get(k)??[];list.push({face:f,sign:a<c?1:-1});edges.set(k,list);}
+  for(const es of edges.values()){if(es.length!==2)throw Error('Open enrichment seam: '+kind);const [a,c]=es;adj[a.face].push({face:c.face,flip:a.sign===c.sign});adj[c.face].push({face:a.face,flip:a.sign===c.sign});}
+  const flips:Array<boolean|undefined>=Array(count);for(let seed=0;seed<count;seed++){if(flips[seed]!==undefined)continue;flips[seed]=false;const queue=[seed];for(let n=0;n<queue.length;n++)for(const e of adj[queue[n]]){const expected=flips[queue[n]]!==e.flip;if(flips[e.face]===undefined){flips[e.face]=expected;queue.push(e.face);}else if(flips[e.face]!==expected)throw Error('Non-orientable enrichment solid');}}
+  for(let f=0;f<count;f++)if(flips[f])[b.indices[ii+f*3+1],b.indices[ii+f*3+2]]=[b.indices[ii+f*3+2],b.indices[ii+f*3+1]];
+  return bound(kind,b,start,role,true,ii)!;
+ };
+
+ // Clip the actual triangulated terrain; preserve its diagonals under every
+ // foot. Boundary edges are split at the same terrain crossings as the base.
+ const clippedBase=(footprint:pc.Vec3[])=>{
+  const pieces=terrainPieces(footprint),key=(p:pc.Vec3)=>p.x.toFixed(7)+','+p.z.toFixed(7),edges=new Map<string,{a:pc.Vec3;b:pc.Vec3;count:number}>();
+  for(const poly of pieces)for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(a.distance(b)<1e-8)continue;const k=[key(a),key(b)].sort().join('|'),old=edges.get(k);if(old)old.count++;else edges.set(k,{a,b,count:1});}
+  const border=[...edges.values()].filter(e=>e.count===1),loop:pc.Vec3[]=[border[0].a];let current=border[0].b;border.splice(0,1);
+  while(border.length){loop.push(current);const i=border.findIndex(e=>key(e.a)===key(current)||key(e.b)===key(current));if(i<0)throw Error('Enrichment terrain boundary is not continuous');const e=border.splice(i,1)[0];current=key(e.a)===key(current)?e.b:e.a;}
+  if(key(current)!==key(loop[0]))throw Error('Enrichment terrain boundary is not closed');
+  return{pieces,loop};
+ };
+ const foundationSlab=(kind:string,x:number,z:number,w:number,d:number,yaw=0)=>{
+  const footprint=rect(vec(x,0,z),w,d,yaw),ext=terrainExtrema(footprint),base=clippedBase(footprint),top=ext.high+.24,start=foundationStone.positions.length/3,ii=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));foundationStone.tri(t[0],t[1],t[2]);}
+  const bottomEnd=foundationStone.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>vec(p.x,top,p.z));foundationStone.tri(t[2],t[1],t[0]);}
+  for(let i=0;i<base.loop.length;i++){const p=base.loop[i],q=base.loop[(i+1)%base.loop.length];foundationStone.quad(p.clone().add(vec(0,-.04,0)),q.clone().add(vec(0,-.04,0)),vec(p.x,top,p.z),vec(q.x,top,q.z));}
+  const part=own(closedPart(kind,foundationStone,start,'support',ii));
+  assembly.groundContacts.push({pieceId:part.id,footprint:footprint.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});
+  return{part,top,at:local(vec(x,top,z),yaw)};
+ };
+ // Broad wind-packed snow is modeled as closed terrain-seated shells with
+ // unequal rounded shoulders, not new terrain, identical cones or borrowed art.
+ const drift=(id:string,cx:number,cz:number,w:number,d:number,yaw:number,h:number,seed:number)=>{
+  assembly=beginAssembly(id);const at=local(vec(cx,0,cz),yaw),outline=Array.from({length:24},(_,i)=>{const a=i*Math.PI/12,r=1+.025*Math.sin(3*a+seed);return at(Math.cos(a)*w/2*r,0,Math.sin(a)*d/2*r);}),ext=terrainExtrema(outline),base=clippedBase(outline),b=roofSnow,start=b.positions.length/3,ii=b.indices.length;
+  for(const poly of base.pieces)for(let j=1;j<poly.length-1;j++){const t=[poly[0],poly[j],poly[j+1]].map(p=>p.clone().add(vec(0,-.04,0)));b.tri(t[0],t[1],t[2]);}const bottomEnd=b.indices.length;
+  const rings=[{s:1,h:-.04},{s:.97,h:h*.35},{s:.77,h:h*.78},{s:.43,h:h*.96},{s:.13,h}];
+  const ring=(r:typeof rings[number],p:pc.Vec3)=>{const x=cx+(p.x-cx)*r.s,z=cz+(p.z-cz)*r.s;return vec(x,r.h<0?p.y+r.h:groundY(x,z)+r.h*(.92+.08*Math.cos(Math.atan2(p.z-cz,p.x-cx)+seed)),z);};
+  for(let k=0;k<rings.length-1;k++)for(let j=0;j<base.loop.length;j++){const n=(j+1)%base.loop.length;b.quad(ring(rings[k],base.loop[j]),ring(rings[k],base.loop[n]),ring(rings[k+1],base.loop[j]),ring(rings[k+1],base.loop[n]));}
+  const top=rings.at(-1)!,center=vec(cx,groundY(cx,cz)+h,cz);for(let j=0;j<base.loop.length;j++)b.tri(center,ring(top,base.loop[j]),ring(top,base.loop[(j+1)%base.loop.length]));
+  const part=own(closedPart('snow-enrichment-wind-packed-drift',b,start,'structure',ii));assembly.groundContacts.push({pieceId:part.id,footprint:base.loop.map(tuple),bottom:ext.low-.04,terrainLow:ext.low,terrainHigh:ext.high,bottomIndexStart:ii,bottomIndexEnd:bottomEnd,terrainPenetrationMetres:.04});finishAssembly();
+ };
+ drift('snow-enrichment-first-near-shelf',42,-168,30,38,-.10,5.6,.4);
+ drift('snow-enrichment-first-middle-shelf',52,-211,26,23,-.06,4.7,1.0);
+ drift('snow-enrichment-first-exit-shelf',-25,-338,39,20,-.14,7.4,1.2);
+ drift('snow-enrichment-second-near-shelf',80,137,43,17,-.16,5.4,.7);
+ drift('snow-enrichment-second-high-shelf',117,162,42,18,-.25,6.7,1.7);
+ // Fence posts have terrain-clipped independent feet. Broad horizontal snow
+ // baffles are actual closed planks with clear daylight gaps, not a proxy wall.
+ const fence=(id:string,cx:number,cz:number,length:number,yaw:number)=>{
+  assembly=beginAssembly(id);const at=local(vec(cx,0,cz),yaw),posts:EnrichmentPiece[]=[],tops:number[]=[];
+  for(let i=0;i<5;i++){const x=-length/2+i*length/4,p=at(x,0,0),foot=foundationSlab('snow-enrichment-fence-footing',p.x,p.z,1.25,1.25,yaw),top=foot.top+5.6;tops.push(top);posts.push(own(box('snow-enrichment-fence-bearing-upright',timber,vec(p.x,(foot.top+top)/2,p.z),vec(.50,top-foot.top,.56),yaw)!,[foot.part.id]));}
+  for(let i=0;i<4;i++)for(let row=0;row<3;row++){const x0=-length/2+i*length/4,x1=x0+length/4,inset=.24,t=inset/(length/4),y0=tops[i]+(tops[i+1]-tops[i])*t-3.7+row*1.1,y1=tops[i+1]-(tops[i+1]-tops[i])*t-3.7+row*1.1,a=at(x0+inset,0,-.31),c=at(x1-inset,0,-.31);beam('snow-enrichment-fence-slatted-baffle',boards,vec(a.x,y0,a.z),vec(c.x,y1,c.z),.18,.70);ownLast([posts[i].id,posts[i+1].id]);}
+  finishAssembly();
+ };
+ fence('snow-enrichment-first-bowl-fence',53,-193,24,0);
+ fence('snow-enrichment-second-bowl-fence',103,146,20,.65);
+ // Two coherent snow-laden windbreak groups add unequal middle-ground depth.
+ // Every crown is closed and supported by its continuous trunk; each snow
+ // underside exactly coincides with the upper conical crown faces and tip.
+ const firGroup=(id:string,trees:{x:number;z:number;h:number;r:number}[])=>{
+  assembly=beginAssembly(id);
+  for(const tree of trees){
+   const root=foundationSlab('snow-enrichment-fir-terrain-root',tree.x,tree.z,1.6,1.6),at=root.at,crownFootprint=Array.from({length:18},(_,i)=>vec(tree.x+Math.cos(i/18*Math.PI*2)*tree.r,0,tree.z+Math.sin(i/18*Math.PI*2)*tree.r)),stemLift=Math.max(0,terrainExtrema(crownFootprint).high+.30-root.top-tree.h*.14);
+   const trunk=own(turned('snow-enrichment-fir-continuous-trunk',timber,at,[[0,.46],[tree.h+stemLift-.2,.18]],12),[root.part.id]);
+   for(const [j,tier] of [{y:.14,h:.29,r:1},{y:.46,h:.25,r:.76},{y:.74,h:.26,r:.49}].entries()){
+    const y=tree.h*tier.y+stemLift,h=tree.h*tier.h,r=tree.r*tier.r,tip=.60,segments=18;
+    const crown=own(turned('snow-enrichment-fir-supported-crown',evergreen,at,[[y,r],[y+h,tip]],segments),[trunk.id]);
+    const b=roofSnow,start=b.positions.length/3,ii=b.indices.length,u=.34,lo=y+h*u,rr=r+(tip-r)*u,thick=.42;
+    const ring=(i:number,upper:boolean,lift=0)=>{const a=i/segments*Math.PI*2,rad=upper?tip:rr;return at(Math.cos(a)*rad,(upper?y+h:lo)+lift,Math.sin(a)*rad);};
+    for(let i=0;i<segments;i++)b.quad(ring(i,false),ring(i+1,false),ring(i,true),ring(i+1,true));
+    for(let i=0;i<segments;i++)b.tri(at(0,y+h,0),ring(i,true),ring(i+1,true));const bottomEnd=b.indices.length;
+    for(let i=0;i<segments;i++){b.quad(ring(i,false,thick),ring(i+1,false,thick),ring(i,true,thick),ring(i+1,true,thick));b.tri(at(0,y+h+thick,0),ring(i,true,thick),ring(i+1,true,thick));b.quad(ring(i,false),ring(i+1,false),ring(i,false,thick),ring(i+1,false,thick));}
+    const cap=own(closedPart('snow-enrichment-fir-seated-snow-mantle',b,start,'structure',ii),j<2?[crown.id,trunk.id]:[crown.id]);cap.supportIndexStart=ii;cap.supportIndexEnd=bottomEnd;
+   }
+  }
+  finishAssembly();
+ };
+ firGroup('snow-enrichment-first-bowl-windbreak',[{x:40,z:-240,h:19,r:6},{x:55,z:-230,h:24,r:7},{x:70,z:-225,h:16,r:5}]);
+ firGroup('snow-enrichment-second-bowl-windbreak',[{x:144,z:168,h:21,r:6},{x:154,z:188,h:26,r:7},{x:173,z:176,h:17,r:5}]);
+ // A layered pair of original station annexes preserves the clock hall as
+ // the tallest identifying landmark. Every aperture remains geometrically open.
+ const station=(id:string,cx:number,cz:number,w:number,d:number,h:number,rise:number,yaw:number,shelter:boolean)=>{
+  assembly=beginAssembly(id);const slab=foundationSlab('snow-enrichment-station-ground-seat',cx,cz,w+3.4,d+3.4,yaw),at=slab.at;
+  const put=(kind:string,b:Batch,x:number,y:number,z:number,ww:number,hh:number,dd:number,supports:string[])=>own(box('snow-enrichment-'+kind,b,at(x,y,z),vec(ww,hh,dd),yaw)!,supports);
+  const wallL=put('station-west-masonry',paleStone,-w/2+.4,h/2,.4,.8,h,d-.8,[slab.part.id]),wallR=put('station-east-masonry',paleStone,w/2-.4,h/2,.4,.8,h,d-.8,[slab.part.id]);
+  const back=put('station-rear-masonry',paleStone,0,h/2,d/2-.4,w-1.6,h,.8,[slab.part.id]);
+  const piers:EnrichmentPiece[]=[],bay=(w-.8)/3;for(let i=0;i<=3;i++)piers.push(put('station-open-front-pier',teal,-w/2+.4+i*bay,(h-.9)/2,-d/2+.4,.8,h-.9,.8,[slab.part.id]));
+  const lintels:EnrichmentPiece[]=[];for(let i=0;i<3;i++)lintels.push(put('station-open-front-header',timber,-w/2+.4+(i+.5)*bay,h-.45,-d/2+.4,bay,.9,.8,[piers[i].id,piers[i+1].id]));
+  // Separate low sills and recessed panes occupy only the two outer bays.
+  for(const i of [0,2]){const x=-w/2+.4+(i+.5)*bay,sill=put('station-window-parapet',paleStone,x,1.15,-d/2+.4,bay-.8,2.3,.8,[slab.part.id]);put('station-recessed-window',i===0?warm:glass,x,(2.3+h-.9)/2,-d/2+.66,bay-.96,h-3.2,.12,[sill.id,lintels[i].id]);}
+  const eaves:EnrichmentPiece[]=[];for(const side of [-1,1]){const wall=side<0?wallL:wallR;const x0=side<0?-w/2:w/2-.8,x1=x0+.8,yy=(x:number)=>h+rise*(1-Math.abs(x)/(w/2+1.2)),v=[at(x0,h,-d/2),at(x1,h,-d/2),at(x0,h,d/2),at(x1,h,d/2),at(x0,yy(x0),-d/2),at(x1,yy(x1),-d/2),at(x0,yy(x0),d/2),at(x1,yy(x1),d/2)],start=timber.positions.length/3,ii=timber.indices.length;for(const f of [[0,1,2,3],[4,6,5,7],[0,4,1,5],[2,3,6,7],[0,2,4,6],[1,5,3,7]])timber.quad(v[f[0]],v[f[1]],v[f[2]],v[f[3]]);eaves.push(own(closedPart('snow-enrichment-sloping-eave-seat',timber,start,'structure',ii),[wall.id]));}
+  for(const side of [-1,1]){const x0=side<0?-w/2-1.2:0,x1=side<0?0:w/2+1.2,y0=side<0?h:h+rise,y1=side<0?h+rise:h;
+   const slate=own(roofPanel('snow-enrichment-annex-thick-slate',roofSlate,at,x0,x1,y0,y1,-d/2-1.2,d/2+1.2,.38),[eaves[side<0?0:1].id]);
+   const cap=own(roofPanel('snow-enrichment-annex-attached-snow',roofSnow,at,x0,x1,y0+.38,y1+.38,-d/2-1.2,d/2+1.2,.62),[slate.id]);cap.supportIndexStart=cap.indexStart;cap.supportIndexEnd=cap.indexStart+6;
+  }
+  if(shelter){
+   // The platform extension is a second low, genuinely open roof in front.
+   const porch=foundationSlab('snow-enrichment-platform-ground-seat',cx+Math.sin(yaw)*(-d/2-5.4),cz+Math.cos(yaw)*(-d/2-5.4),w+3.4,7.4,yaw),pa=porch.at,ph=slab.top+h-2.2-porch.top,posts:EnrichmentPiece[]=[];
+   for(const x of [-w/2+1,0,w/2-1])for(const z of [-2.8,2.8])posts.push(own(box('snow-enrichment-platform-upright',teal,pa(x,ph/2,z),vec(.6,ph,.6),yaw)!,[porch.part.id]));
+   const beams:EnrichmentPiece[]=[];for(const z of [-2.8,2.8])beams.push(own(box('snow-enrichment-platform-crossbeam',timber,pa(0,ph+.3,z),vec(w-.8,.6,.6),yaw)!,posts.filter((_,i)=>i%2===(z<0?0:1)).map(p=>p.id)));
+   const roof=own(box('snow-enrichment-platform-slate-seat',roofSlate,pa(0,ph+.8,0),vec(w+1.4,.4,7.4),yaw)!,beams.map(p=>p.id));
+   const cap=own(box('snow-enrichment-platform-snow-seat',roofSnow,pa(0,ph+1.28,0),vec(w+1.4,.56,7.4),yaw)!,[roof.id]);cap.supportIndexStart=cap.indexStart+30;cap.supportIndexEnd=cap.indexStart+36;
+  }
+  finishAssembly();
+ };
+ station('snow-enrichment-station-near-annex',442,-584,28,9,10.2,3.5,Math.PI/2,true);
+ station('snow-enrichment-station-high-annex',484,-624,22,14,8.7,3.5,2.35,false);
+ // An open lower yard roof gives the Service Cut a second readable roof mass
+ // without extending sidings or covering any original roundhouse bay.
+ const yard=()=>{
+  assembly=beginAssembly('snow-enrichment-open-maintenance-yard');const slab=foundationSlab('snow-enrichment-yard-ground-seat',133,-574,29,17,.1),at=slab.at,yaw=.1,posts:EnrichmentPiece[]=[];
+  for(const x of [-12,0,12])for(const z of [-6,6])posts.push(own(box('snow-enrichment-yard-bearing-post',teal,at(x,4.5,z),vec(.7,9,.7),yaw)!,[slab.part.id]));
+  const beams:EnrichmentPiece[]=[];for(const z of [-6,6])beams.push(own(box('snow-enrichment-yard-bearing-beam',timber,at(0,9.4,z),vec(24.7,.8,.7),yaw)!,posts.filter(p=>Math.abs((p.min[2]+p.max[2])/2-at(0,0,z).z)<2).map(p=>p.id)));
+  const roof=own(box('snow-enrichment-yard-thick-roof',roofSlate,at(0,10,0),vec(27,.4,15),yaw)!,beams.map(p=>p.id));const cap=own(box('snow-enrichment-yard-attached-snow',roofSnow,at(0,10.55,0),vec(27,.7,15),yaw)!,[roof.id]);cap.supportIndexStart=cap.indexStart+30;cap.supportIndexEnd=cap.indexStart+36;
+  for(const x of [-7,5]){const base=own(box('snow-enrichment-yard-stock-bearer',timber,at(x,.45,0),vec(3.5,.9,7),yaw)!,[slab.part.id]);const b=oxide,start=b.positions.length/3,ii=b.indices.length,xs=[-3.5,-1.75,0,1.75,3.5],front=(xx:number,y:number,side:number)=>at(x+1.05-.13*xx*xx-side*.30,y,xx);for(let i=0;i<xs.length-1;i++){const a=xs[i],c=xs[i+1];for(const side of [0,1])b.quad(front(a,.9,side),front(c,.9,side),front(a,3.9,side),front(c,3.9,side));b.quad(front(a,.9,0),front(c,.9,0),front(a,.9,1),front(c,.9,1));b.quad(front(a,3.9,0),front(c,3.9,0),front(a,3.9,1),front(c,3.9,1));}for(const xx of [xs[0],xs.at(-1)!])b.quad(front(xx,.9,0),front(xx,.9,1),front(xx,3.9,0),front(xx,3.9,1));own(closedPart('snow-enrichment-yard-curved-plow-blade-stock',b,start,'structure',ii),[base.id]);}
+  finishAssembly();
+ };yard();
+ const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
+ if(originalTriangleCount!==106286||enrichmentTriangles>12000)throw Error('Snow bounded append geometry contract changed');
+
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
- if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Snow emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
- return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts,structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,budget};
+ if(budget.batches!==23||budget.triangles>=120000||budget.vertices>=200000)throw new Error('Snow emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
+ return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts,structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,budget,enrichmentAssemblies};
 }
