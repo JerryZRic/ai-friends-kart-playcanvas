@@ -25,6 +25,7 @@ export interface GardenSceneGeometry extends LandSceneGeometry {
  terrainExposure:number[];terrainPartitions:{sourceTriangle:number;material:'meadow'|'fern';batch:string;indexStart:number;indexEnd:number}[];
  arbor:{from:number;to:number;faces:{kind:string;points:number[][]}[];members:{id:string;kind:string;component:number;aNode:string;bNode:string}[];supports:{id:string;s:number;side:number;footprint:number[][];bottom:number;top:number;terrainLow:number;terrainHigh:number;component:number}[]};
  assemblies:{id:string;components:number[];closed:boolean}[];
+ enrichmentAssemblies:any[];
  budget:{batches:number;triangles:number;vertices:number};
 }
 export const GARDEN_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Verdant Canopy garden stone leaf and laminated timber',ambient:'#c4d9b5',sky:'#e4efd5',fogStart:1050,fogEnd:2250,cameraName:'Verdant Canopy chase camera',sunName:'Verdant Canopy warm morning sunlight',sunColor:'#fff2d5',sunIntensity:1.6,sunEuler:[43,-36,0] as const});
@@ -244,6 +245,92 @@ export function buildGardenSceneGeometry(course:SceneryForkCourse):GardenSceneGe
  for(const [i,x,z]of [[0,-450,130],[1,-205,255],[2,-76,353],[3,138,375],[4,328,155],[5,382,-118],[6,421,-315],[7,286,-542],[8,-28,-643],[9,-448,-296]]){
   const footprint=oval(vec(x,0,z),2.4,2.0,0,20),f=foundation('garden-low-leaf-clump-'+i,footprint,.08),base=vec(x,f.top,z),root=loft('garden-low-clump-planted-root',stem,[{p:base.clone().add(vec(0,-.04,0)),rx:.65,rz:.65},{p:base.clone().add(vec(0,.45,0)),rx:.42,rz:.42}],16);contact('garden-low-clump-root-footing-bearing',root,f.component);for(let j=0;j<4;j++){const shape=blade('garden-low-attached-leaf',base.clone().add(vec(0,.3,0)),2.6+j*.23,.62,j*Math.PI/2+i*.37,.44+(j%2)*.18,.08,j%2?newLeaf:leaf,false,6,2);contact('garden-low-leaf-root-bearing',shape.surface,root);}
  }
+ // ORIGINAL GARDEN ENRICHMENT: three composed off-road planting/court groups.
+ // Append-only: original terrain, road, heroes and all material buffers above
+ // remain byte-identical. These are scenic meshes, never driving surfaces.
+ const enrichmentAssemblies:any[]=[],enrichmentOpenings:any[]=[];
+ const enrichStart=components.length;
+ const composition=(id:string,recipe:()=>void)=>{
+  const first=components.length,firstFoundation=foundations.length,firstContact=structuralContacts.length,firstOpening=enrichmentOpenings.length;
+  recipe();
+  const grouped=new Map<string,number[]>();for(let i=first;i<components.length;i++){const c=components[i],key=c.assembly??id+'-solid-'+i;const list=grouped.get(key)??[];list.push(i);grouped.set(key,list);}
+  const ids=new Map<number,string>();let serial=0;for(const list of grouped.values()){const key=id+'-piece-'+serial++;for(const i of list)ids.set(i,key);}
+  const pieces=[...grouped.values()].map(list=>{const firstPart=components[list[0]],parts=list.map(i=>components[i]);return{...firstPart,id:ids.get(list[0]),componentIndices:list,min:[0,1,2].map(k=>Math.min(...parts.map(c=>c.min[k]))),max:[0,1,2].map(k=>Math.max(...parts.map(c=>c.max[k]))),supportOwner:[...new Set(structuralContacts.slice(firstContact).filter(q=>list.includes(q.first)).map(q=>ids.get(q.second)).filter(Boolean))]};});
+  enrichmentAssemblies.push({id,pieces,groundContacts:foundations.slice(firstFoundation).map(q=>({...q,pieceId:ids.get(q.component)})),openBayWitnesses:enrichmentOpenings.slice(firstOpening),roofSeats:structuralContacts.slice(firstContact).filter(q=>q.kind==='garden-enrichment-roof-full-seat-bearing').map(q=>({roofPieceId:ids.get(q.first),supportPieceId:ids.get(q.second),roofUnderside:facesFor(components[q.first]).slice(0,2),supportTop:facesFor(components[q.second]).slice(2,4)}))});
+ };
+ const site=(edge:SceneryRoadEdge,s:number,offset:number)=>{const f=edge.sample(s,offset);return{p:vec(f.p.x,0,f.p.z),yaw:Math.atan2(-f.t.z,f.t.x)};};
+ const plantedBed=(name:string,edge:SceneryRoadEdge,s:number,offset:number,rx:number,rz:number,rise:number,plants:number,scale:number)=>{
+  const {p,yaw:routeYaw}=site(edge,s,offset),gx=groundY(p.x+1,p.z)-groundY(p.x-1,p.z),gz=groundY(p.x,p.z+1)-groundY(p.x,p.z-1),yaw=rise>.5?Math.atan2(gx,gz):routeYaw,fp=oval(p,rx,rz,yaw,16),f=foundation(name,fp,rise),at=local(vec(p.x,f.top,p.z),yaw);
+  const rim=annulus(name+'-thick-stone-rim',planterStone,at,rx,rz,1-.7/rz,0,1.05,0,Math.PI*2,16);
+  const bed=solid(name+'-deep-soil',soil,oval(p,rx*(1-.7/rz)+.12,rz-.58,yaw,16),f.top-.05,f.top+.76);
+  contact('garden-enrichment-rim-pad-bearing',rim,f.component);contact('garden-enrichment-soil-pad-bearing',bed,f.component);contact('garden-enrichment-soil-retaining-rim-interface',bed,rim);
+  for(let j=0;j<plants;j++){
+   const x=(j-(plants-1)/2)*rx*1.24/Math.max(1,plants-1),z=(j%2?1:-1)*rz*(name==='garden-enrichment-west-high'?.10:.20),rootAt=at(x,.65,z);
+   const crown=loft(name+'-root-'+j,stem,[{p:rootAt,rx:.82,rz:.82},{p:rootAt.clone().add(vec(0,1.60,0)),rx:.86,rz:.86}],8);
+   contact('garden-enrichment-root-soil-bearing',crown,bed);
+   if(j===0||j===plants-1){
+    const low=blade(name+'-broad-low-underplanting-'+j,rootAt.clone().add(vec(0,.25,0)),Math.min(5.3,rx*.44),1.5,yaw+(j===0?Math.PI/2:-Math.PI/2),.18,j===0?.06:-.06,j===0?leaf:newLeaf,false,4,2);
+    contact('garden-enrichment-underplanting-root-bearing',low.surface,crown);
+   }
+   for(let k=0;k<3;k++){
+    const a=yaw+k*2.1+j*.67+((name==='garden-enrichment-west-low'&&j===1||name==='garden-enrichment-west-high'&&j===0)&&k===1?.45:0),L=scale*(.86+.12*k+.07*(j%2)),r=rootAt.clone().add(vec(Math.sin(a)*.55,1.40,Math.cos(a)*.55));
+    const bladeShape=blade(name+'-fan-'+j+'-'+k,r,L,.66,a,.56+.13*k,(k-1)*.08,k===1?newLeaf:leaf,false,8,2);
+    contact('garden-enrichment-leaf-root-bearing',bladeShape.surface,crown);
+   }
+  }
+  if(name==='garden-enrichment-west-low'){
+   const origin=at(rx*.32,.65,-rz*.67),flowerStem=loft(name+'-single-focal-flower-stem',stem,[{p:origin,rx:.26,rz:.26},{p:origin.clone().add(vec(0,3.55,0)),rx:.20,rz:.20}],8);
+   contact('garden-enrichment-focal-flower-soil-bearing',flowerStem,bed);
+   const heart=loft(name+'-warm-focal-receptacle',amber,[{p:origin.clone().add(vec(0,3.10,0)),rx:.28,rz:.28},{p:origin.clone().add(vec(0,3.62,0)),rx:.72,rz:.72},{p:origin.clone().add(vec(0,4.12,0)),rx:.25,rz:.25}],8);
+   contact('garden-enrichment-focal-heart-stem-bearing',heart,flowerStem);
+   const pivot=origin.clone().add(vec(0,3.62,0)),approach=course.commonStart.sample(270).p.clone().sub(pivot);approach.y=0;approach.normalize();
+   const axis=vec(approach.z,0,-approach.x),angleTilt=.90,cs=Math.cos(angleTilt),sn=Math.sin(angleTilt);
+   for(let k=0;k<5;k++){
+    const angle=k*Math.PI*2/5+.3,petal=blade(name+'-warm-focal-petal-'+k,pivot.clone().add(vec(Math.sin(angle)*.42,0,Math.cos(angle)*.42)),2.55,.90,angle,.05,0,k%2?blush:ivory,true,4,2);
+    // Tilt the whole closed petal shell toward the natural driving approach;
+    // only its newly appended vertices change, before normal computation.
+    for(const c of petal.parts){const b=batches.find(b=>b.name===c.batch)!;for(let i=c.vertexStart;i<c.vertexEnd;i++){const q=vec(...b.positions.slice(i*3,i*3+3) as [number,number,number]).sub(pivot),cross=new pc.Vec3().cross(axis,q),rot=q.clone().mulScalar(cs).add(cross.mulScalar(sn)).add(axis.clone().mulScalar(axis.dot(q)*(1-cs))).add(pivot);b.positions.splice(i*3,3,rot.x,rot.y,rot.z);b.uvs.splice(i*2,2,rot.x*.15,rot.z*.15);}for(let d=0;d<3;d++){const values=b.positions.slice(c.vertexStart*3,c.vertexEnd*3).filter((_,i)=>i%3===d);c.min[d]=Math.min(...values);c.max[d]=Math.max(...values);}}
+    contact('garden-enrichment-focal-petal-heart-bearing',petal.surface,heart);if(k===3)contact('garden-enrichment-focal-petal-stem-bearing',petal.surface,flowerStem);
+   }
+  }
+ };
+ composition('garden-enrichment-west-terraces',()=>{
+  plantedBed('garden-enrichment-west-low',course.commonStart,341,-33,14,4.6,.40,3,5.4);
+  plantedBed('garden-enrichment-west-high',course.commonStart,365,-41,11,3.2,.65,3,6.5);
+  plantedBed('garden-enrichment-west-return',course.commonStart,387,-35,10,4.4,.35,2,5.0);
+ });
+ // Two unequal nursery wings: literal open bays with sloping thick timber
+ // roofs, complete transverse seats and individual visible column bearings.
+ composition('garden-enrichment-nursery-court',()=>{
+  for(const [wing,s,offset,width,depth,height] of [[0,789,-41,15,12,7.2],[1,810,-43,17,12,9.0]]){
+   const name='garden-enrichment-nursery-wing-'+wing,{p,yaw}=site(course.commonStart,s,offset),baseY=groundY(p.x,p.z)+.35,at=local(vec(p.x,baseY,p.z),yaw);
+   const slope=.13,roofBottom=(z:number)=>height+slope*z;
+   const wedge=(kind:string,b:Batch,x0:number,x1:number,z0:number,z1:number,low:(z:number)=>number,high:(z:number)=>number)=>{
+    const start=b.positions.length/3;for(const y of [low,high])for(const [x,z]of [[x0,z0],[x1,z0],[x1,z1],[x0,z1]])b.vertex(at(x,y(z),z));
+    for(const t of [[0,2,1],[0,3,2],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]])b.indices.push(...t.map(i=>i+start));return bound(kind,b,start)!;
+   };
+   const beams:GardenComponent[]=[];
+   for(const z of [-4.6,4.6]){
+    const low=roofBottom(z)-.8;
+    const seat=wedge(name+'-complete-roof-bearing',darkTimber,-width/2+.3,width/2-.3,z-.46,z+.46,()=>low,zz=>roofBottom(zz)+.025);beams.push(seat);
+    for(const x of [-width/2+1.0,width/2-1.0]){
+     const footAt=at(x,0,z),f=foundation(name+'-column-foot-'+x+'-'+z,rect(footAt,1.7,1.7,yaw),.18),shoeY=f.top-baseY;
+     const shoe=box(name+'-stone-column-shoe',planterStone,at(x,shoeY+.25,z),vec(1.35,.50,1.35),yaw);contact('garden-enrichment-column-shoe-pad-bearing',shoe,f.component);
+     const postBottom=shoeY+.38,post=box(name+'-timber-column',timber,at(x,(low+postBottom)/2,z),vec(.78,low-postBottom+.025,.78),yaw);contact('garden-enrichment-column-shoe-bearing',post,shoe);contact('garden-enrichment-crossbeam-column-bearing',seat,post);
+    }
+   }
+   const roof=wedge(name+'-sloped-opaque-roof',timber,-width/2-.65,width/2+.65,-depth/2-.6,depth/2+.6,roofBottom,z=>roofBottom(z)+.48);for(const seat of beams)contact('garden-enrichment-roof-full-seat-bearing',roof,seat);
+   const openingFootprint=rect(p,width-3.9,8,yaw),openingBottom=terrainExtrema(openingFootprint).high+.2,openingTop=baseY+roofBottom(-4.6)-1.05;
+   enrichmentOpenings.push({label:name+'-literal-open-bay',corners:[...openingFootprint.map(q=>[q.x,openingBottom,q.z]),...openingFootprint.map(q=>[q.x,openingTop,q.z])],bottom:openingBottom,top:openingTop,width:width-3.9,depth:8,yaw});
+  }
+  plantedBed('garden-enrichment-nursery-front-bed',course.commonStart,770,-33,9,4,.32,2,4.8);
+  plantedBed('garden-enrichment-nursery-upper-bed',course.commonStart,838,-40,11,3.8,.55,3,5.7);
+ });
+ composition('garden-enrichment-return-terraces',()=>{
+  plantedBed('garden-enrichment-return-low',course.commonFinish,375,34,12,4.7,.35,3,5.5);
+  plantedBed('garden-enrichment-return-high',course.commonFinish,400,34,11,3.5,.55,3,6.2);
+ });
+
  // Each target is a centroid of emitted hero triangles, never a guessed icon.
  for(const sight of sightlines){const seed=[...sight.target];let best=Infinity;for(const c of components.filter(c=>c.landmark===sight.targetId))for(const face of facesFor(c)){const p=[0,1,2].map(k=>(face[0][k]+face[1][k]+face[2][k])/3),d=p.reduce((n,v,k)=>n+(v-seed[k])**2,0);if(d<best){best=d;sight.target=p;}}}
  // Every non-road source face is represented exactly once: the separately
@@ -252,9 +339,10 @@ export function buildGardenSceneGeometry(course:SceneryForkCourse):GardenSceneGe
  meshBlock('garden-actual-source-shoulder-triangles',shoulderFaces.map(f=>f.points));
  meshBlock('garden-actual-open-arbor-triangles',components.filter(c=>c.kind.startsWith('arbor-')).flatMap(facesFor));
  for(const p of plots)meshBlock('garden-actual-'+p.id,components.filter(c=>c.landmark===p.id).flatMap(facesFor));
- meshBlock('garden-actual-other-source-triangles',components.filter(c=>!c.landmark&&!c.kind.startsWith('arbor-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders').flatMap(facesFor));
+ meshBlock('garden-actual-other-source-triangles',components.slice(0,enrichStart).filter(c=>!c.landmark&&!c.kind.startsWith('arbor-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders').flatMap(facesFor));
+ for(const group of enrichmentAssemblies)meshBlock(group.id+'-exact-triangles',group.pieces.flatMap((piece:any)=>piece.componentIndices.flatMap((i:number)=>facesFor(components[i]))));
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
- if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Garden emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
- return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:arbor.from,to:arbor.to,overheadClearance:22.95}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts:[],structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,arbor,assemblies,budget};
+ if(budget.batches!==21||budget.triangles>=120000||budget.triangles-108557>10000||budget.vertices>=200000)throw new Error('Garden emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
+ return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:arbor.from,to:arbor.to,overheadClearance:22.95}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts:[],structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,arbor,assemblies,budget,enrichmentAssemblies};
 }
