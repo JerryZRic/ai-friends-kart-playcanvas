@@ -1,4 +1,4 @@
-import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
+import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Additive Desert scenery has no permission to rebaseline native safety gates. */
 import test from 'node:test';
 import assert from 'node:assert/strict';

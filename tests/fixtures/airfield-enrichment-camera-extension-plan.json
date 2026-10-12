@@ -1,0 +1,19 @@
+{
+  "schema": "airfield-enrichment-camera-extension-plan-v1",
+  "sourceSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+  "originalPlanSha256": "3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a",
+  "originalOutputFixtureSha256": "596e883062ddd1683ebae3f3aedfcdae4bf04e7faf8100af15003674a5b39f67",
+  "reason": "Visually approved runway workshop relocation has actual nearest-start projected extent beyond300m. Preserve all original frozen rows and add independently executed original-only safety coverage before candidate testing. Every fixed actual review camera stays unchanged.",
+  "candidateSourceUnderReview": "e9c7ac2e29b254c547bd652202c28ea0683e31947e99232d3b1c2be0df36a9aa",
+  "windows": [
+    {
+      "id": "workshop-extension",
+      "edge": "start",
+      "from": 300,
+      "to": 330
+    }
+  ],
+  "windowExpansionMetres": 25,
+  "spacingMetres": 2,
+  "note": "Extra matrix includes overlap275\u2013325 with original coverage, to retain complete local live histories. Do not claim all extra station totals are physically distinct."
+}

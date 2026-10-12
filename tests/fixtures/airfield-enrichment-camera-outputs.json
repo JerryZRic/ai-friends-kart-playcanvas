@@ -1,0 +1,84 @@
+{
+  "schema": "airfield-enrichment-camera-original-outputs-v1",
+  "baselineCommit": "fc5360139c00e0d60148afabd0d24ed85c272ed6",
+  "baselineSourceSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+  "planSha256": "3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a",
+  "retained": {
+    "rows": 519453,
+    "outputSha256": "71ac01fad98604566f3ef7cbeb2dad97fa93225fd549d7a036c8a8d3af1bbd4f",
+    "labelSha256": "f2ac2722dc074dfc464fbbdefffa883241c0012014833153382268641416045d",
+    "phases": {
+      "retained-whole-course-safe-and-interpolated": {
+        "rows": 342798,
+        "outputSha256": "74ed48f91e7b66163d7373b23c2f606dcc91f760349f519888ddf58a406aa5ec",
+        "labelSha256": "ca6f0de49cbfed1278298fc9ee4aaceb3c80a34d7fdf4344f79a8d6a1113ccc8"
+      },
+      "retained-split-merge-lap-transitions": {
+        "rows": 29160,
+        "outputSha256": "52fbc56f8defa0a56b87f1817ba83ccbce1b682b787867244b10fb50636fb535",
+        "labelSha256": "d9c9cf3f11e68955cc93aa66fcbfb7b6bb9c106ed60b5b0a96e3e90c7a182585"
+      },
+      "retained-live-full-route-histories": {
+        "rows": 77652,
+        "outputSha256": "fe051ea1e2bab6750daad8f844b3e741a46d10b1a6e955d1af7dcafb61421871",
+        "labelSha256": "f81319b942308b423e05f16a70618ec1d119a8307c8793ca79b84a0e7caafa01"
+      },
+      "retained-gameplay-grid-safe-and-idempotence": {
+        "rows": 14400,
+        "outputSha256": "d823c5a4bca41ed0c41e7c96b5324c4363da5fabc812bf07d9b8641e9fd5f01f",
+        "labelSha256": "6ad40d3df1ce2f20f7834989caf0f29f9716e94e1c72975f200e880548b258cf"
+      },
+      "retained-fixed-pickup-bob-rays": {
+        "rows": 720,
+        "outputSha256": "24cface20382949f78973ec2d3f3f1b63acf19ddda7d9605dc341e1a1eba7ecd",
+        "labelSha256": "e74f1923e22454c98e933a11ed7781b8dfc095fa59d303711f0bc270d9f3bdd8"
+      },
+      "retained-full-legal-lane-pickup-approaches": {
+        "rows": 1440,
+        "outputSha256": "08f7c00c1860588d87d3456562320c4696738069b359e7becbdee18533ff6493",
+        "labelSha256": "26c2fd9866f61006ecc17be40a70b3090fab22230e801ff3c216964db3fbdb6e"
+      },
+      "retained-sampled-cpu-query-outputs": {
+        "rows": 552,
+        "outputSha256": "0413ea8b05ff16ddad7238405e61b8047e63ef55fdd05bcb2d8d99a5d57ced47",
+        "labelSha256": "964e860435fcf87cda69b5e6c17ac9d1bfebe650c7161d6f0385a9ebeb9e2cad"
+      },
+      "retained-nine-original-fraction-review-poses": {
+        "rows": 27,
+        "outputSha256": "25a1fc7b7880999d8aa64bcce65267c6b2951cb8a42d5aadb942acc8050c95f7",
+        "labelSha256": "cca958b6d28d55a3e9f2c7ff42b31311e14fca0346f46a30a009146464703f81"
+      },
+      "retained-full-hangar-aperture": {
+        "rows": 52704,
+        "outputSha256": "6862614bf5a0f1e1e7691102c5b84b9129913426493455d5134495c6458b9e60",
+        "labelSha256": "2af0a8daff9794758a00992966dc290957458f507b36c5719bfd3ea7b08c95f8"
+      }
+    }
+  },
+  "local": {
+    "rows": 311356,
+    "outputSha256": "73561bea9f4b6130f05ba5821de49dd0ae7272544d79611ce922a3ae99240cde",
+    "labelSha256": "d555c83e03ec55e784b5f74e650b17273ca4ef8dbec6b2c79f7f0a7071bf2075",
+    "phases": {
+      "frozen-source-views-and-normal-chases": {
+        "rows": 100,
+        "outputSha256": "649540dfb4b9b671407978b5ec1efaddea807ced57184962e6e869ddb3796ceb",
+        "labelSha256": "841a34965a9287ac220735a987e1c3938e7caa9c107587ce649e2f9e2a20a966"
+      },
+      "dense-local-2m-safe-and-interpolated": {
+        "rows": 286344,
+        "outputSha256": "22d10bd0fc4392e55e5e4aee35108ea63e6ac05f254e5f6dee1e3e2a3c9ae0b1",
+        "labelSha256": "d185565df9c3ca5c002573e978b9ad3001bb824c080adf9a2f014cf51517d4a5"
+      },
+      "local-live-30-60-144hz-forward-reverse": {
+        "rows": 24912,
+        "outputSha256": "292c5fb966a68735f7d4b98be2809fad646b777206cdf17cd84d8d08c32e7f77",
+        "labelSha256": "3c25d2ef6748ac3fca3dce54913232591e59f6f1ebbd78c6dcff48cb14204426"
+      }
+    }
+  },
+  "retainedRetractions": 55,
+  "retainedRetractionOutputSha256": "2de2804751d6c0644a8498d38cc3ceceb91f7c8c2a1c5809c70bce922160807d",
+  "localBaselineFailuresSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "localBaselineWitnesses": 0
+}

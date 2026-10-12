@@ -1,3 +1,4 @@
+import {airfieldReviewedHash,airfieldReviewedPathsWithin} from './helpers/airfield-enrichment-reviewed-revisions';
 import {gardenIndependentCompatibility} from './helpers/garden-enrichment-original-assemblies';
 /** Immutable original evidence and exact separately reviewed current identities. */
 import test from 'node:test';
@@ -16,8 +17,8 @@ test('Garden independently frozen original source and every old test snapshot re
 test('Garden current-source changes have separately reviewed exact hashes without rebasing old evidence',()=>{
  const reviewed=JSON.parse(readFileSync('tests/fixtures/garden-enrichment-reviewed-changes.json','utf8'));
  assert.equal(reviewed.baselineCommit,original.baselineCommit);assert.equal(reviewed.certifiedIncomingAssertions.length,108);for(const row of reviewed.certifiedIncomingAssertions){assert.ok(Object.hasOwn(reviewed.changes,row.path));assert.equal(row.incomingExpectedSha256,original.sourceInventory[row.path],row.consumer+' original incoming expectation');}const changed:string[]=[];
- for(const [path,hash]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(path)),revision=reviewed.changes[path];if(revision){assert.equal(revision.previousSha256,hash);assert.equal(actual,revision.currentSha256,path+' separately reviewed current revision');assert.ok(revision.scope);}else assert.equal(actual,hash,path+' unchanged original input');if(actual!==hash)changed.push(path);}
- assert.deepEqual(changed.sort(),Object.keys(reviewed.changes).sort());
+ for(const [path,hash]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(path)),revision=reviewed.changes[path];if(revision){assert.equal(revision.previousSha256,hash);assert.equal(actual,airfieldReviewedHash(path,revision.currentSha256),path+' separately reviewed current revision');assert.ok(revision.scope);}else assert.equal(actual,airfieldReviewedHash(path,hash),path+' unchanged original input');if(actual!==hash)changed.push(path);}
+ assert.deepEqual(changed.sort(),[...new Set([...Object.keys(reviewed.changes),...airfieldReviewedPathsWithin(original.sourceInventory)])].sort());
  const sceneRevisions=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));delete sceneRevisions.revisions['src/garden-scenery.ts'];assert.deepEqual(sceneRevisions,reviewed.historicalSceneRevisionRecord,'All eight complete older scene revision records remain exact');
  for(const [path,record]of Object.entries(reviewed.historicalJsonRecords) as [string,any][]){const current=JSON.parse(readFileSync(path,'utf8'));for(const [key,value]of Object.entries(record))assert.deepEqual(current[key],value,path+' exact old nested record '+key);}
 });
@@ -26,7 +27,7 @@ test('Garden portable manifest contains every retained runner, baseline snapshot
  const walk=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(dir+'/'+e.name):[dir+'/'+e.name]);
  const required=[...walk('docs/scene-baselines/garden-original'),...readdirSync('tests').filter(p=>/^garden-.*\.test\.ts$/.test(p)).map(p=>'tests/'+p),...readdirSync('tests/helpers').filter(p=>p.includes('garden-enrichment')||p==='run-garden-retained-audit.ts'||p==='run-garden-final-audit.ts').map(p=>'tests/helpers/'+p),...readdirSync('tests/fixtures').filter(p=>p.startsWith('garden-enrichment')).map(p=>'tests/fixtures/'+p),...readdirSync('scripts').filter(p=>p.includes('garden-enrichment')||['verify-garden-art-pixels.py','verify-garden-visible-groups.py'].includes(p)).map(p=>'scripts/'+p)];
  const included=new Set([...manifest.newQaFiles,...manifest.unchangedSharedHelperDependencies,...manifest.retainedTestFiles,...manifest.baselineSnapshots,...manifest.artDependencies]);for(const p of required)assert.ok(included.has(p),p+' portable dependency omitted');for(const p of included)assert.ok(Object.hasOwn(manifest.finalFileSha256,p as string),p+' listed dependency lacks final identity');
- for(const [file,hash]of Object.entries(manifest.finalFileSha256))assert.equal(sha(readFileSync(file)),hash,file+' final portable identity');
+ for(const [file,hash]of Object.entries(manifest.finalFileSha256))assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,hash),file+' final portable identity');
 });
 
 test('Garden retained safety source changes are exactly the approved cap and native ownership transformations',()=>{

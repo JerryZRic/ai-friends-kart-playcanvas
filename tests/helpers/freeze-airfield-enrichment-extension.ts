@@ -1,0 +1,15 @@
+/** One-time additional immutable-original outputs; earlier original fixture remains exact. */
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {existsSync,mkdirSync,readFileSync,statfsSync,writeFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {boundedTestProcess} from './bounded-test-process';
+import {cleanupInstrumentedSourceManifest} from './instrumented-source-files';
+import {airfieldAuditHashes} from './airfield-enrichment-source-stability';
+import {airfieldSha as sha} from './airfield-enrichment-contract';
+const path='tests/fixtures/airfield-enrichment-camera-extension-outputs.json';assert.ok(!existsSync(path),'Never replace extension baseline outputs');
+const disk=resolve(process.env.TMPDIR??'../verification-temp/airfield');mkdirSync(disk,{recursive:true});assert.notEqual(statfsSync(disk).type,0x01021994);const run=join(disk,'airfield-original-camera-extension-'+randomUUID());mkdirSync(run);const before=airfieldAuditHashes(),ledger=join(run,'source-ledger.json'),started=new Date().toISOString();
+try{const result=await boundedTestProcess(process.execPath,['--max-old-space-size=448','--import','tsx','tests/helpers/airfield-enrichment-extension-worker.ts','baseline',run,ledger],{timeoutMs:950000,env:{...process.env,NODE_OPTIONS:'--max-old-space-size=448',TMPDIR:disk}});assert.equal(result.termination,null,result.output);assert.equal(result.code,0,result.output);}finally{cleanupInstrumentedSourceManifest(ledger);}
+const after=airfieldAuditHashes();assert.deepEqual(after,before);const report=JSON.parse(readFileSync(join(run,'baseline-extension-report.json'),'utf8')),input=JSON.parse(readFileSync('tests/fixtures/airfield-enrichment-camera-extension-plan.json','utf8')),o=report.outputs;
+const expected={schema:'airfield-original-extra-camera-outputs-v1',originalPlanSha256:input.originalPlanSha256,extensionPlanSha256:sha(readFileSync('tests/fixtures/airfield-enrichment-camera-extension-plan.json')),sourceSha256:report.sourceSha256,outputs:{rows:o.rows,outputSha256:o.outputSha256,labelSha256:o.labelSha256,phases:o.phases},baselineFailuresSha256:report.baselineFailuresSha256,retractions:report.camera.retractions,forwardRetractions:report.camera.forwardRetractions};writeFileSync(path,JSON.stringify(expected,null,2)+'\n',{flag:'wx'});
+const output=resolve(process.env.AIRFIELD_ENRICHMENT_AUDIT_DIR??'../land-map-artifacts/airfield-enrichment-audit');mkdirSync(output,{recursive:true});writeFileSync(join(output,'original-extension-freeze-receipt.json'),JSON.stringify({status:'passed',started,finished:new Date().toISOString(),sourceHashesBefore:before,sourceHashesAfter:after,stable:true,originalOutputsFixtureSha256:sha(readFileSync('tests/fixtures/airfield-enrichment-camera-outputs.json')),extensionFixtureSha256:sha(readFileSync(path)),expected,run},null,2)+'\n');console.log(JSON.stringify({status:'extra-original-outputs-frozen',rows:o.rows,fixtureSha256:sha(readFileSync(path)),witnesses:report.camera.witnesses.length,retractions:report.camera.retractions}));

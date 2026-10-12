@@ -1,4 +1,4 @@
-import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
+import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Historical source inventories/goldens are immutable. Reviewed subsequent
  * scene, QA and derived catalog revisions require exact individual hashes. */
 import test from 'node:test';
@@ -33,5 +33,5 @@ test('Forest reviewed revision fits the exact historical Mountain and Town isola
  for(const [file,review]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){assert.equal(review.previousSHA256,town.sourceInventory[file],file+' original Town isolation golden');assert.equal(review.previousSHA256,mountain.isolatedSceneSources[file],file+' original Mountain isolation golden');assert.equal(sha(readFileSync(file)),review.currentSHA256,file+' exact reviewed scene revision');}
  const townChanges=Object.entries(town.sourceInventory).filter(([file,original])=>sha(readFileSync(file))!==original).map(([file])=>file);assert.deepEqual(townChanges.sort(),[...new Set([...Object.keys(reviewed.revisions),...Object.keys(town.reviewedTestContractChanges),...gardenReviewedPathsWithin(town.sourceInventory)])].sort());
  for(const [file,digest]of Object.entries(town.reviewedTestContractChanges))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,digest),file+' exact Town QA contract revision');
- for(const [file,digest]of Object.entries(mountain.isolatedSceneSources))assert.equal(sha(readFileSync(file)),reviewed.revisions[file]?.currentSHA256??digest,file+' unrelated Mountain input is exact');
+ for(const [file,digest]of Object.entries(mountain.isolatedSceneSources))assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,reviewed.revisions[file]?.currentSHA256??digest),file+' unrelated Mountain input is exact');
 });

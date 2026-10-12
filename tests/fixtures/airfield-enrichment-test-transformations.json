@@ -1,0 +1,253 @@
+{
+  "schema": "airfield-enrichment-test-transformations-v1",
+  "baselineCommit": "fc5360139c00e0d60148afabd0d24ed85c272ed6",
+  "files": [
+    {
+      "path": "tests/airfield-gameplay.test.ts",
+      "beforeSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf",
+      "afterSha256": "2c071bd227a79b5c56bde1e2192b0a0bc8fe26a0a3ef975d7d4ce610640097f6",
+      "scope": "Only native original/new face classification",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {airfieldNativeBlockerComponents} from './helpers/airfield-enrichment-native-provenance';\n"
+          ]
+        },
+        {
+          "startLine": 63,
+          "removedLines": [
+            " const componentRanges=new Map<any,any[]>();\n"
+          ],
+          "insertedLines": [
+            " const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=airfieldNativeBlockerComponents(geometry);\n"
+          ]
+        },
+        {
+          "startLine": 65,
+          "removedLines": [
+            "  const components=solid.kind==='airfield-actual-source-shoulder-triangles'?geometry.components.filter(c=>c.kind==='source-exact-layer-owned-shoulders')\n",
+            "   :solid.kind==='airfield-actual-open-hangar-triangles'?geometry.components.filter(c=>c.kind.startsWith('hangar-'))\n",
+            "   :solid.kind==='airfield-actual-other-source-triangles'?geometry.components.filter(c=>!c.landmark&&!c.kind.startsWith('hangar-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders')\n",
+            "   :geometry.components.filter(c=>'airfield-actual-'+c.landmark===solid.kind);\n"
+          ],
+          "insertedLines": [
+            "  const components=certifiedBlockerComponents.get(solid)!;\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "beforeSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393",
+      "afterSha256": "d28064d8940ce7177db1bf0ce9f08a5f58da0b1fecd3dabb2f9692a9de70eedf",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "startLine": 29,
+          "removedLines": [
+            "  assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),revision?.currentSHA256??golden.isolatedSceneSources[file],file+' unreviewed scene input changed');\n"
+          ],
+          "insertedLines": [
+            "  assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),airfieldReviewedHash(file,revision?.currentSHA256??golden.isolatedSceneSources[file]),file+' unreviewed scene input changed');\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "beforeSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb",
+      "afterSha256": "9239eedd5950aa0a606a10186bed56e56695ce0fb0aa409206d7d96af1acadd7",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash,airfieldReviewedPathsWithin} from './airfield-enrichment-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "startLine": 42,
+          "removedLines": [],
+          "insertedLines": [
+            " for(const path of airfieldReviewedPathsWithin(contract.sourceInventory))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,contract.reviewedTestContractChanges[path]??reviewed.revisions[path]?.currentSHA256??contract.sourceInventory[path]),path+' exact subsequent Airfield review');\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "beforeSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42",
+      "afterSha256": "d5274b11f9e1139802943d06d746c2dc17d002317971bcd288443b3edd7aa63c",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "beforeSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5",
+      "afterSha256": "f0dd0a9dc7bbeb51135283bcb2381d9f23b013e971a9e076e960fd5e35801d4e",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "startLine": 35,
+          "removedLines": [
+            " for(const [file,digest]of Object.entries(mountain.isolatedSceneSources))assert.equal(sha(readFileSync(file)),reviewed.revisions[file]?.currentSHA256??digest,file+' unrelated Mountain input is exact');\n"
+          ],
+          "insertedLines": [
+            " for(const [file,digest]of Object.entries(mountain.isolatedSceneSources))assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,reviewed.revisions[file]?.currentSHA256??digest),file+' unrelated Mountain input is exact');\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "beforeSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60",
+      "afterSha256": "bbb30c46e51c17eb331db4239c75b5fa3f536b0a08453a6ec0d5ce77fb439f72",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "beforeSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe",
+      "afterSha256": "3d597d803824d3404f162ad4e06ce7b4ecb1f867d196ae34de42645e978e2a25",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "beforeSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859",
+      "afterSha256": "a8e2facb3f7da30cbbba781724e374ef7657e552dc1aa6825408366c84ddb10c",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "beforeSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503",
+      "afterSha256": "611fd3e5193e5c1cb2a38b6fa72a152a23a16b8e2491fcd6dba37315e9366f2d",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/caldera-enrichment-inventory.test.ts",
+      "beforeSha256": "526e9b4cad7844feeb98fea7efe5f81b5bc2e874dcd71b9ed3bc39e7507b4731",
+      "afterSha256": "dbe2f6d10ea4d289926c5230a6945fcfe5f3312c868ab11921ab79f9a9c97684",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [
+            "import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/garden-enrichment-inventory.test.ts",
+      "beforeSha256": "b31f2815f300284ec3ca9a511e7bb3519a661f52d1f9e93ec84973e57d741f22",
+      "afterSha256": "a344f91b0ace621ab32d23bb8c218ec2439214a6a00cfff09194e568ff2df976",
+      "scope": "Only exact Airfield incoming/reviewed hash overlay",
+      "hunks": [
+        {
+          "startLine": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {airfieldReviewedHash,airfieldReviewedPathsWithin} from './helpers/airfield-enrichment-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "startLine": 18,
+          "removedLines": [
+            " for(const [path,hash]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(path)),revision=reviewed.changes[path];if(revision){assert.equal(revision.previousSha256,hash);assert.equal(actual,revision.currentSha256,path+' separately reviewed current revision');assert.ok(revision.scope);}else assert.equal(actual,hash,path+' unchanged original input');if(actual!==hash)changed.push(path);}\n",
+            " assert.deepEqual(changed.sort(),Object.keys(reviewed.changes).sort());\n"
+          ],
+          "insertedLines": [
+            " for(const [path,hash]of Object.entries(original.sourceInventory)){const actual=sha(readFileSync(path)),revision=reviewed.changes[path];if(revision){assert.equal(revision.previousSha256,hash);assert.equal(actual,airfieldReviewedHash(path,revision.currentSha256),path+' separately reviewed current revision');assert.ok(revision.scope);}else assert.equal(actual,airfieldReviewedHash(path,hash),path+' unchanged original input');if(actual!==hash)changed.push(path);}\n",
+            " assert.deepEqual(changed.sort(),[...new Set([...Object.keys(reviewed.changes),...airfieldReviewedPathsWithin(original.sourceInventory)])].sort());\n"
+          ]
+        },
+        {
+          "startLine": 28,
+          "removedLines": [
+            " for(const [file,hash]of Object.entries(manifest.finalFileSha256))assert.equal(sha(readFileSync(file)),hash,file+' final portable identity');\n"
+          ],
+          "insertedLines": [
+            " for(const [file,hash]of Object.entries(manifest.finalFileSha256))assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,hash),file+' final portable identity');\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

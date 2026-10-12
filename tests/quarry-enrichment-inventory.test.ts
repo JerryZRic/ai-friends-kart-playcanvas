@@ -1,4 +1,4 @@
-import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
+import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Original source and gameplay goldens remain immutable. Separately reviewed
  * scene and QA-contract revisions have explicit old/new hashes, never wildcards. */
 import test from 'node:test';

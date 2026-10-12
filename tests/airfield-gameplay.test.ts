@@ -1,3 +1,4 @@
+import {airfieldNativeBlockerComponents} from './helpers/airfield-enrichment-native-provenance';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -61,12 +62,9 @@ async function auditAirfieldNative({qa,game,course,routes,id,key,canvas,docEvent
  assert.ok(hangar.length>0,'open hangar retains actual emitted triangle blockers');
  assert.ok(solids.some(o=>o.kind.includes('other')||o.kind.includes('rail')),'rails and supports are included in actual solid geometry');
  assert.equal(geometry.cameraObstacles,obstacles,'native game and audit inspect the SAME emitted source object');
- const componentRanges=new Map<any,any[]>();
+ const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=airfieldNativeBlockerComponents(geometry);
  for(const solid of solids){
-  const components=solid.kind==='airfield-actual-source-shoulder-triangles'?geometry.components.filter(c=>c.kind==='source-exact-layer-owned-shoulders')
-   :solid.kind==='airfield-actual-open-hangar-triangles'?geometry.components.filter(c=>c.kind.startsWith('hangar-'))
-   :solid.kind==='airfield-actual-other-source-triangles'?geometry.components.filter(c=>!c.landmark&&!c.kind.startsWith('hangar-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders')
-   :geometry.components.filter(c=>'airfield-actual-'+c.landmark===solid.kind);
+  const components=certifiedBlockerComponents.get(solid)!;
   let from=0;const ranges=components.map(component=>{const range={from,to:from+(component.indexEnd-component.indexStart)/3,component};from=range.to;return range;});
   assert.equal(from,solid.triangles.length,solid.kind+' exact source component coverage');componentRanges.set(solid,ranges);
  }

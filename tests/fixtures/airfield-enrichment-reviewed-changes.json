@@ -1,0 +1,603 @@
+{
+  "schema": "airfield-enrichment-reviewed-changes-v1",
+  "baselineCommit": "fc5360139c00e0d60148afabd0d24ed85c272ed6",
+  "changes": {
+    "docs/airfield-preview-provenance.json": {
+      "previousSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518",
+      "currentSha256": "bfecf37649380a08708c83369b04b94451ac643657aa6c881b2bcf776b08c7b4",
+      "scope": "Append-only original Airfield service architecture or exact source-matched catalog"
+    },
+    "public/map-previews/airfield.webp": {
+      "previousSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03",
+      "currentSha256": "f546d21e2624dfdc53a6e111b5385833e85ff6abadd9d8f15c4826fdedb60729",
+      "scope": "Append-only original Airfield service architecture or exact source-matched catalog"
+    },
+    "src/airfield-scenery.ts": {
+      "previousSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+      "currentSha256": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+      "scope": "Append-only original Airfield service architecture or exact source-matched catalog"
+    },
+    "tests/airfield-gameplay.test.ts": {
+      "previousSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf",
+      "currentSha256": "2c071bd227a79b5c56bde1e2192b0a0bc8fe26a0a3ef975d7d4ce610640097f6",
+      "scope": "Exact reviewed original-prefix and appended-face native classification"
+    },
+    "tests/caldera-enrichment-inventory.test.ts": {
+      "previousSha256": "526e9b4cad7844feeb98fea7efe5f81b5bc2e874dcd71b9ed3bc39e7507b4731",
+      "currentSha256": "dbe2f6d10ea4d289926c5230a6945fcfe5f3312c868ab11921ab79f9a9c97684",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/desert-enrichment-inventory.test.ts": {
+      "previousSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859",
+      "currentSha256": "a8e2facb3f7da30cbbba781724e374ef7657e552dc1aa6825408366c84ddb10c",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/forest-enrichment-inventory.test.ts": {
+      "previousSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5",
+      "currentSha256": "f0dd0a9dc7bbeb51135283bcb2381d9f23b013e971a9e076e960fd5e35801d4e",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/garden-enrichment-inventory.test.ts": {
+      "previousSha256": "b31f2815f300284ec3ca9a511e7bb3519a661f52d1f9e93ec84973e57d741f22",
+      "currentSha256": "a344f91b0ace621ab32d23bb8c218ec2439214a6a00cfff09194e568ff2df976",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/harvest-enrichment-inventory.test.ts": {
+      "previousSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe",
+      "currentSha256": "3d597d803824d3404f162ad4e06ce7b4ecb1f867d196ae34de42645e978e2a25",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/helpers/town-enrichment-geometry-worker.ts": {
+      "previousSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb",
+      "currentSha256": "9239eedd5950aa0a606a10186bed56e56695ce0fb0aa409206d7d96af1acadd7",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/mountain-enrichment-contract.test.ts": {
+      "previousSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393",
+      "currentSha256": "d28064d8940ce7177db1bf0ce9f08a5f58da0b1fecd3dabb2f9692a9de70eedf",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/quarry-enrichment-inventory.test.ts": {
+      "previousSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42",
+      "currentSha256": "d5274b11f9e1139802943d06d746c2dc17d002317971bcd288443b3edd7aa63c",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/snow-enrichment-inventory.test.ts": {
+      "previousSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503",
+      "currentSha256": "611fd3e5193e5c1cb2a38b6fa72a152a23a16b8e2491fcd6dba37315e9366f2d",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    },
+    "tests/workshop-enrichment-inventory.test.ts": {
+      "previousSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60",
+      "currentSha256": "bbb30c46e51c17eb331db4239c75b5fa3f536b0a08453a6ec0d5ce77fb439f72",
+      "scope": "Exact Airfield-only incoming-baseline/current-reviewed identity overlay; unchanged historical fixtures and assertions"
+    }
+  },
+  "certifiedIncomingAssertions": [
+    {
+      "consumer": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/quarry-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/quarry-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/quarry-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/quarry-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/forest-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/workshop-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/harvest-enrichment-inventory.test.ts",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/desert-enrichment-inventory.test.ts",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "docs/airfield-preview-provenance.json",
+      "incomingExpectedSha256": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "public/map-previews/airfield.webp",
+      "incomingExpectedSha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/airfield-gameplay.test.ts",
+      "incomingExpectedSha256": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/caldera-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "526e9b4cad7844feeb98fea7efe5f81b5bc2e874dcd71b9ed3bc39e7507b4731"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503"
+    },
+    {
+      "consumer": "tests/snow-enrichment-inventory.test.ts#portable",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/caldera-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "526e9b4cad7844feeb98fea7efe5f81b5bc2e874dcd71b9ed3bc39e7507b4731"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503"
+    },
+    {
+      "consumer": "tests/caldera-enrichment-inventory.test.ts#portable",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/caldera-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "526e9b4cad7844feeb98fea7efe5f81b5bc2e874dcd71b9ed3bc39e7507b4731"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/desert-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "69c8bd58383bb8110a1cb83bd549cde8e09dec4a34f7a69ff9e3ed4c0f28b859"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/forest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "061203c505fcedc435f33b7b99f00cfae6747ae5e41cb0552f0e3497723810a5"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/garden-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "b31f2815f300284ec3ca9a511e7bb3519a661f52d1f9e93ec84973e57d741f22"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/harvest-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "01822911ae37447dc86b4bdbf8348298f7521ee3bfe8a0a76bfa058d2adbedfe"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/helpers/town-enrichment-geometry-worker.ts",
+      "incomingExpectedSha256": "d3d47e59e2566b5d412e3577d120c7ee0571a32157c00f5eb228ee11040503bb"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/mountain-enrichment-contract.test.ts",
+      "incomingExpectedSha256": "f32b1ca88f0765a842a268ab62034ef10b10354f091b0f4e3ed6340cfe964393"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/quarry-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "2030f493689fae49f64c87d2d1ef42a545871bd872db218c3c669edbc1921f42"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/snow-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "d8bc6bf1c31e667c6bd934997fcd6948bfdd6621dcc7ce9ad2baa6092ca20503"
+    },
+    {
+      "consumer": "tests/garden-enrichment-inventory.test.ts#portable",
+      "path": "tests/workshop-enrichment-inventory.test.ts",
+      "incomingExpectedSha256": "1f41ce550a1f7d1d34fa27ebc6864511f9edab843e36c2f6ea3a7c5fee6bcb60"
+    },
+    {
+      "consumer": "tests/mountain-enrichment-contract.test.ts",
+      "path": "src/airfield-scenery.ts",
+      "incomingExpectedSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2"
+    }
+  ]
+}

@@ -1,0 +1,465 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime Airfield mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both physical fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. Connected rolling dry uplands follow the graded road; the steel hangar has thick opaque asymmetric split roof panels and literal open ridge/end gables. Original static aviation-inspired exhibits retain their joined members and full-footprint supports.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm airfield daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/airfield-scenery.ts": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "geometryTexturesRoutesThemeSha256": "69459a30e4d93edf818f6a7942af7dd2e329b8e7859a8c9e547eebbd803cf441",
+  "generatorHashes": {
+    "scripts/export-airfield-preview.ts": "97047d8b749352214966268c1d8e12bc8f7ec7c4ae1cf9d914711728b81442ec",
+    "scripts/render-airfield-preview.py": "846b6442b81e8fd2e1d4858644bab2b3525264f4e22f1012d5fc6d91fad380f1"
+  },
+  "batches": 20,
+  "vertices": 103278,
+  "triangles": 94747,
+  "routeLengthsMetres": {
+    "start": 1203.3254077843299,
+    "alley": 379.64416145376265,
+    "boulevard": 431.33655446126255,
+    "finish": 1431.8777751189264
+  },
+  "normalShading": {
+    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
+    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
+    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
+    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
+  },
+  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Hangar Cut (alley), Perimeter Taxiway (boulevard) and finish. Overview/topdown also include emitted non-terrain component and non-heightfield camera bounds; the complete unchanged terrain remains visible even when its distant outer boundary falls outside the camera. Camera fitting reserves at least six percent on every side.",
+  "lapLengthsMetres": {
+    "hangarCutLapLength": 3014.8473443570188,
+    "perimeterTaxiwayLapLength": 3066.5397373645187
+  },
+  "originalModels": {
+    "glb": {
+      "file": "airfield-original-scene.glb",
+      "sha256": "e3fbc3e46aa8bcf7f5fb73ab457d9e36b95b93a5b8f7c569367b2a9d987d95b5",
+      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+    },
+    "blend": {
+      "file": "airfield-original-scene.blend",
+      "sha256": "c60c1c8848de24640c894195599c910c9eca83584449d90cccb954a5d7a4332c",
+      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+    }
+  },
+  "views": {
+    "airfield-overview": {
+      "file": "airfield-overview.png",
+      "sha256": "ba99f17edf6c649dc99d80756f8c6e25527e198469b2009c087fc1edec42c0a9",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        560.107177734375,
+        1062.4083251953125,
+        961.7427978515625
+      ],
+      "cameraQuaternionBlender": [
+        0.14319540560245514,
+        0.06807500123977661,
+        0.4239201545715332,
+        0.8917132616043091
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Copperwing Airfield circuit: long launch runway, graded reversing ridge, actual dry ochre/sage/clay contours, both physical Hangar Cut and Perimeter Taxiway, open split-roof steel hangar and five original aviation-inspired exhibits. Exact emitted source geometry; approximate offline CPU lighting, materials and shadows.",
+      "routeScreenBounds": [
+        0.1627735197544098,
+        0.24666409194469452,
+        0.8736184239387512,
+        0.7402587532997131
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.1985088288784027,
+          0.5820111036300659,
+          0.4348514974117279,
+          0.6817229986190796
+        ],
+        "boulevard": [
+          0.1985088288784027,
+          0.5820111036300659,
+          0.4348514974117279,
+          0.7212472558021545
+        ]
+      },
+      "orthographicScaleMetres": 1471.7979736328125,
+      "fittedSubjectScreenBounds": [
+        0.08442756533622742,
+        0.06999975442886353,
+        0.9155724048614502,
+        0.9299997091293335
+      ]
+    },
+    "airfield-topdown": {
+      "file": "airfield-topdown.png",
+      "sha256": "071588b3cba834a308c6b77e4e41f314e515437c7efc8fa4f44f0149a74001e1",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        197.50001525878906,
+        -37.49999237060547,
+        1516.0137939453125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "projection": "ORTHO",
+      "description": "True vertical overhead original source geometry, both complete physical alternatives and owned split/merge unions. Actual road widths, graded reversing ridge, long runway and descent, continuous dry terrain, hangar roof and museum exhibits remain unchanged. No source mesh is hidden to expose roads.",
+      "routeScreenBounds": [
+        0.1356547623872757,
+        0.15116748213768005,
+        0.887993574142456,
+        0.8795757293701172
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.1983586996793747,
+          0.7171160578727722,
+          0.4822564423084259,
+          0.7702286243438721
+        ],
+        "boulevard": [
+          0.1983586996793747,
+          0.7502506375312805,
+          0.4822564423084259,
+          0.8795722723007202
+        ]
+      },
+      "orthographicScaleMetres": 1268.062255859375,
+      "fittedSubjectScreenBounds": [
+        0.09844239801168442,
+        0.07000000774860382,
+        0.9015576243400574,
+        0.9300000071525574
+      ]
+    },
+    "airfield-driver-reveal": {
+      "file": "airfield-driver-reveal.png",
+      "sha256": "f5625556c8f5046018e8bd6cf018bdc72af037ff2bb9dd28be461193c6661d7e",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -99.66764831542969,
+        150.00021362304688,
+        9.601499557495117
+      ],
+      "cameraQuaternionBlender": [
+        0.656091570854187,
+        0.6884828805923462,
+        -0.22375820577144623,
+        -0.21323101222515106
+      ],
+      "projection": "PERSP",
+      "description": "Frozen source-design driver eye on the real launch runway at exactly 1.6 m above physical road support, aimed at the actual emitted Twinboom Courier source sightline target. Closed crescent wings, paired tail booms, original landing gear and connected dry runway bank remain unchanged. This source-derived review aim/lens differs from the shared gameplay chase camera; no HUD or vehicle, approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -14323.7900390625,
+        -336.8312683105469,
+        4151.18115234375,
+        98.03618621826172
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -4417.61181640625,
+          -103.65582275390625,
+          4151.18115234375,
+          98.03618621826172
+        ],
+        "boulevard": [
+          -683.4686279296875,
+          -14.45938491821289,
+          1833.3739013671875,
+          40.3339958190918
+        ]
+      },
+      "lensMillimetres": 28.0,
+      "roadEdge": "start",
+      "roadDistanceMetres": 120.33254077843299,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "launch-runway-twinboom",
+        "edge": "start",
+        "fraction": 0.1,
+        "s": 120.33254077843299,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -99.66764796166466,
+          8.001499325520353,
+          -150.00022047412043
+        ],
+        "physicalTangent": [
+          0.9999891002621552,
+          0.0044771901194650176,
+          -0.0013244340374450408
+        ],
+        "driverEye": [
+          -99.66764796166466,
+          9.601499325520352,
+          -150.00022047412043
+        ],
+        "driverLook": [
+          -67.70450740981804,
+          9.692378904608631,
+          -151.4047693706512
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -110.16763875231703,
+              "y": 12.601499325520352,
+              "z": -149.9863137773451
+            },
+            "look": {
+              "x": -84.53252610126484,
+              "y": 9.001499325520353,
+              "z": -150.02026616316599
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -114.66763480545377,
+              "y": 15.901499325520355,
+              "z": -149.98035376444136
+            },
+            "look": {
+              "x": -88.76577209135534,
+              "y": 9.001499325520353,
+              "z": -150.01465944697608
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -54.764382536711224,
+        13.283598101987204,
+        -211.78494886108572
+      ],
+      "sourceSightline": {
+        "name": "runway grounded Twinboom Courier",
+        "eye": [
+          -99.66764796166466,
+          9.601499325520352,
+          -150.00022047412043
+        ],
+        "target": [
+          -54.764382536711224,
+          13.283598101987204,
+          -211.78494886108572
+        ],
+        "radius": 2,
+        "targetId": "twinboom-courier"
+      }
+    },
+    "airfield-hangar-architecture": {
+      "file": "airfield-hangar-architecture.png",
+      "sha256": "f8565ca1363975140f204b3f8df509d793eb444783b9097bd6f99b141ec83756",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        323.32464599609375,
+        -258.2079162597656,
+        21.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.43629857897758484,
+        0.5399979948997498,
+        -0.5598520636558533,
+        -0.45233991742134094
+      ],
+      "projection": "PERSP",
+      "description": "Actual Hangar Cut support before the first portal, eye exactly 1.6 m above physical road. Opaque asymmetric roof sheets have source thickness and a literal open ridge slot; steel portal, rafters, webs, purlins, lattice braces, shoes and full-footprint foundations remain enabled. A legitimate narrow lattice brace can cross the open slot; no filled panel or blocker is hidden. Architectural upward aim and recorded wide lens differ from gameplay.",
+      "routeScreenBounds": [
+        -446.1173400878906,
+        -19.450288772583008,
+        726.6657104492188,
+        34.14433670043945
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -3.29794979095459,
+          -0.40854552388191223,
+          13.45519733428955,
+          6.081838130950928
+        ],
+        "boulevard": [
+          -74.0741195678711,
+          -1.5894917249679565,
+          104.9369888305664,
+          2.9721686840057373
+        ]
+      },
+      "lensMillimetres": 10.354689598083496,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 112.0256391123437,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "hangar-first-portal-approach",
+        "edge": "alley",
+        "s": 112.0256391123437,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          323.3246582671821,
+          20,
+          258.2079025180315
+        ],
+        "physicalTangent": [
+          0.950450154556044,
+          0,
+          0.3108769912753148
+        ],
+        "driverEye": [
+          323.3246582671821,
+          21.6,
+          258.2079025180315
+        ],
+        "driverLook": [
+          354.011500304051,
+          21.6,
+          267.15145675107055
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": 313.3449316443436,
+              "y": 24.6,
+              "z": 254.94369410964072
+            },
+            "look": {
+              "x": 337.7098497955979,
+              "y": 21,
+              "z": 262.9130677913876
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": 309.0679059488414,
+              "y": 27.900000000000002,
+              "z": 253.5447476489018
+            },
+            "look": {
+              "x": 333.6863569611146,
+              "y": 21,
+              "z": 261.5970478604043
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        394.95313349286187,
+        37,
+        260.7947691145132
+      ],
+      "opaqueSteelAndLiteralOpenRidgeSlot": true,
+      "roofThicknessMetres": 0.35,
+      "ridgeSlotLateralMetres": [
+        2,
+        8
+      ],
+      "firstPortalScreenBounds": [
+        0.2751961946487427,
+        0.3168409466743469,
+        0.9549999833106995,
+        0.7757848501205444
+      ]
+    },
+    "airfield-rotor-detail": {
+      "file": "airfield-rotor-detail.png",
+      "sha256": "4d61cb36a5f145ec3179bf138798a46d680c407bd0bb7b9980d20e1ed9553a51",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        423.5830993652344,
+        -375.5638122558594,
+        39.97179412841797
+      ],
+      "cameraQuaternionBlender": [
+        0.18668563663959503,
+        0.14157059788703918,
+        -0.5874241590499878,
+        -0.7746219038963318
+      ],
+      "projection": "PERSP",
+      "description": "Original Rotor Cutaway Court: nine stationary thick rooted fan blades, joined hub and continuous shaft, paired visible bearing saddles, partial open casing rings, ribs, braces and grounded sled. All source terrain, road and museum meshes remain visible and unmodified. Static architectural detail camera; approximate offline CPU lighting/materials, no moving rotor or gameplay claim.",
+      "routeScreenBounds": [
+        -4047.060791015625,
+        -558.9049072265625,
+        3089.083251953125,
+        427.60394287109375
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -161.2294464111328,
+          -31.16124725341797,
+          1211.041748046875,
+          241.5059051513672
+        ],
+        "boulevard": [
+          -163.48297119140625,
+          -60.824642181396484,
+          1079.7716064453125,
+          215.42286682128906
+        ]
+      },
+      "lensMillimetres": 20.04074478149414,
+      "sourceLandmark": "rotor-cutaway-court",
+      "sourceLandmarkPosition": [
+        445.6210624461887,
+        18.971792475713514,
+        417.3050153082067
+      ],
+      "originalStaticMechanicalAssembly": true
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/airfield.webp",
+    "sha256": "d36132ddcfc83165f5dd08162a9ebf7bc3a7c3c7231fe35e97f086109ab09a03",
+    "resolution": [
+      1280,
+      720
+    ]
+  },
+  "modelPostprocessing": {
+    "kind": "portable-blend-metadata-only-normalization",
+    "file": "airfield-original-scene.blend",
+    "inputSha256": "a3f11f0da146dfb9d1fa1faee66c0811c1871b3b55766781dd3b639715d85314",
+    "outputSha256": "c60c1c8848de24640c894195599c910c9eca83584449d90cccb954a5d7a4332c",
+    "script": "source/scripts/make-airfield-blend-portable.py",
+    "scriptSha256": "cc7eec396ec9b61b020b9708aaa5f477a15d586d898e325d1bac30ded1c8684d",
+    "changedFileBrowserDirectories": [
+      {
+        "screen": "Shading",
+        "space": "FILE_BROWSER",
+        "directory": "//"
+      }
+    ],
+    "sceneGeometryShadersLightsCamerasUntouched": true,
+    "blendCompression": "none",
+    "notice": "Only editor file-browser directory metadata was replaced; independently reopen and validate source geometry/materials after this save."
+  }
+}

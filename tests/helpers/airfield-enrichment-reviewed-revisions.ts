@@ -1,0 +1,14 @@
+/** Exact Airfield-only layer. Every historical record stays byte-identical. */
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {airfieldSha} from './airfield-enrichment-contract';
+import {gardenReviewedHash,gardenReviewedPathsWithin} from './garden-enrichment-reviewed-revisions';
+export const AIRFIELD_REVIEWED_CHANGES_SHA256='b036ddf5cd27fdd7dcb18a38715ea45c7ef426101ebcac77009c0e2f7dd44324';
+export const AIRFIELD_REVIEWED_PATHS:string[]=["docs/airfield-preview-provenance.json", "public/map-previews/airfield.webp", "src/airfield-scenery.ts", "tests/airfield-gameplay.test.ts", "tests/caldera-enrichment-inventory.test.ts", "tests/desert-enrichment-inventory.test.ts", "tests/forest-enrichment-inventory.test.ts", "tests/garden-enrichment-inventory.test.ts", "tests/harvest-enrichment-inventory.test.ts", "tests/helpers/town-enrichment-geometry-worker.ts", "tests/mountain-enrichment-contract.test.ts", "tests/quarry-enrichment-inventory.test.ts", "tests/snow-enrichment-inventory.test.ts", "tests/workshop-enrichment-inventory.test.ts"];
+export function assertAirfieldReviewedBytes(text:string){assert.equal(airfieldSha(text),AIRFIELD_REVIEWED_CHANGES_SHA256,'Independently pinned exact reviewed replacements');const record=JSON.parse(text);assert.deepEqual(Object.keys(record.changes).sort(),[...AIRFIELD_REVIEWED_PATHS].sort(),'Every changed path is explicitly enumerated');return record;}
+let cached:any;
+export function airfieldReviewedRevisions(){if(!cached){const raw=readFileSync('tests/fixtures/airfield-enrichment-original-inventory.json','utf8');assert.equal(airfieldSha(raw),'803c61344abe2f97fb9acaaf8c5960f64036938fff7e1248d8263e1db332b6cf');const original=JSON.parse(raw),record=assertAirfieldReviewedBytes(readFileSync('tests/fixtures/airfield-enrichment-reviewed-changes.json','utf8'));assert.equal(record.baselineCommit,original.baselineCommit);for(const [path,row]of Object.entries<any>(record.changes)){assert.equal(row.previousSha256,original.sourceInventory[path],path+' independently fixed incoming baseline');assert.ok(row.scope);assert.match(row.currentSha256,/^[0-9a-f]{64}$/);}cached=record;}return cached;}
+export function airfieldReviewedHash(path:string,incoming:unknown){const row=airfieldReviewedRevisions().changes[path];if(!row)return incoming;assert.equal(incoming,row.previousSha256,path+' wrong incoming historical revision');return row.currentSha256;}
+export function airfieldReviewedPathsWithin(inventory:Record<string,unknown>){return AIRFIELD_REVIEWED_PATHS.filter(p=>p in inventory);}
+export function airfieldAfterGardenHash(path:string,incoming:unknown){return airfieldReviewedHash(path,gardenReviewedHash(path,incoming));}
+export function airfieldAfterGardenPathsWithin(inventory:Record<string,unknown>){return [...new Set([...gardenReviewedPathsWithin(inventory),...airfieldReviewedPathsWithin(inventory)])];}

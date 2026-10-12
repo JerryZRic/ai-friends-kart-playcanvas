@@ -1,4 +1,4 @@
-import {gardenReviewedHash,gardenReviewedPathsWithin} from './helpers/garden-enrichment-reviewed-revisions';
+import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Historical source inventories and geometry goldens remain immutable. */
 import test from 'node:test';
 import assert from 'node:assert/strict';

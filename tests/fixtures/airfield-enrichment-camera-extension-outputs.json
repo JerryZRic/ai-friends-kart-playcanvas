@@ -1,0 +1,31 @@
+{
+  "schema": "airfield-original-extra-camera-outputs-v1",
+  "originalPlanSha256": "3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a",
+  "extensionPlanSha256": "edaf7659414757a19e5a4aac373cf1722103c0deaee2211b75b4ecb329546f2b",
+  "sourceSha256": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+  "outputs": {
+    "rows": 51864,
+    "outputSha256": "234483983d22bbf8d11593fa7f582acb4b8ac0dd7bbeccda6e1db21af851f0a2",
+    "labelSha256": "a22adced0390a230b51f202ed36dff4d3b4996b75a29523aa9c0935596a81188",
+    "phases": {
+      "frozen-source-views-and-normal-chases": {
+        "rows": 0,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "labelSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "dense-local-2m-safe-and-interpolated": {
+        "rows": 47724,
+        "outputSha256": "23581a637aaed64f0e7a6b27c5292d44e47a780c15f6beb8d6e827d4c7b3b6d6",
+        "labelSha256": "625dad3aed8fc688ae3d789ef1326c3e0330118ea29d32e8c3a4cb01b2d41850"
+      },
+      "local-live-30-60-144hz-forward-reverse": {
+        "rows": 4140,
+        "outputSha256": "8316a42c6167471623ea03e264d2150eeb6995737a71eae95b1cc74fe24a153e",
+        "labelSha256": "c624e0b505dad6877bcb891addc9afe1b40ffc02316dd68f87f48a85c0db0ffa"
+      }
+    }
+  },
+  "baselineFailuresSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "retractions": 28,
+  "forwardRetractions": 0
+}

@@ -1,3 +1,4 @@
+import {airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -27,7 +28,7 @@ test('Mountain isolation preserves unrelated inputs with only exact separately r
    assert.equal(revision.previousSHA256,golden.isolatedSceneSources[file],'historical isolation baseline must remain exact');
    assert.match(revision.currentSHA256,/^[a-f0-9]{64}$/);
   }
-  assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),revision?.currentSHA256??golden.isolatedSceneSources[file],file+' unreviewed scene input changed');
+  assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),airfieldReviewedHash(file,revision?.currentSHA256??golden.isolatedSceneSources[file]),file+' unreviewed scene input changed');
  }
  assert.equal(mountainUnrelatedLoaderContract(readFileSync('src/land-course.ts','utf8')),golden.unrelatedLoaderSHA256,'non-Mountain loader branches stay source-exact');
  assert.equal(mountainUnrelatedMenuContract(readFileSync('src/menu-backdrop.ts','utf8')),golden.unrelatedMenuSHA256,'non-Mountain menu branches stay source-exact');

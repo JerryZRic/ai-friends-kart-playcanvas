@@ -1,4 +1,4 @@
-import {gardenReviewedHash,gardenReviewedPathsWithin} from './garden-enrichment-reviewed-revisions';
+import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash,airfieldReviewedPathsWithin} from './airfield-enrichment-reviewed-revisions';
 /** Bounded, independent CPU audit of actual emitted Town architecture. */
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
@@ -40,6 +40,7 @@ audit('Town exact original source route road bridge terrain texture protection a
   assert.equal(revision.previousSHA256,contract.sourceInventory[path],path+' original source golden remains exact');
   assert.equal(sha(readFileSync(new URL(path,root))),revision.currentSHA256,path+' separately reviewed scene revision changed');
  }
+ for(const path of airfieldReviewedPathsWithin(contract.sourceInventory))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,contract.reviewedTestContractChanges[path]??reviewed.revisions[path]?.currentSHA256??contract.sourceInventory[path]),path+' exact subsequent Airfield review');
  const changedInventory=Object.entries(contract.sourceInventory).filter(([path,hash])=>sha(readFileSync(new URL(path,root)))!==hash).map(([path])=>path);
  assert.deepEqual(changedInventory.sort(),[...new Set([...Object.keys(reviewed.revisions),...Object.keys(contract.reviewedTestContractChanges),...gardenReviewedPathsWithin(contract.sourceInventory)])].sort());
  for(const [path,hash] of Object.entries(contract.reviewedTestContractChanges))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,hash),path+' reviewed test contract changed');
