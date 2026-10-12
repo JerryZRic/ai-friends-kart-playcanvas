@@ -1,0 +1,1804 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime Airfield mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both physical fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. Connected rolling dry uplands follow the graded road; the steel hangar has thick opaque asymmetric split roof panels and literal open ridge/end gables. Original static aviation-inspired exhibits retain their joined members and full-footprint supports.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/airfield-scenery.ts": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "generatorHashes": {
+    "scripts/export-airfield-preview.ts": "97047d8b749352214966268c1d8e12bc8f7ec7c4ae1cf9d914711728b81442ec",
+    "scripts/render-airfield-preview.py": "846b6442b81e8fd2e1d4858644bab2b3525264f4e22f1012d5fc6d91fad380f1",
+    "scripts/freeze-airfield-enrichment-cameras.ts": "9366f3d5713503b5b34836d34911d34ee0c1c3644019a727004d3e4d1076c427",
+    "scripts/render-airfield-enrichment-preview.py": "7e8376008b9cc99d1e2119d6ced81d3e0f1f6fd0b3561cb07e8b35f560fc33d5",
+    "docs/airfield-enrichment-cameras.json": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+    "docs/airfield-enrichment-final-views.json": "424759ca547c170eb0af91f1281a762d08cdfc7c5801022835e283999ff86046"
+  },
+  "geometryJsonSha256": "cf8a913397a95386a2f97d06f5b78a2f65cfbb8f54e041580b05a1e63b4b9333",
+  "geometryTexturesRoutesThemeSha256": "cacb2a5e9f762ae0ea749f14304bffc4900040d2cf2e839df33a53a3ea45b3e0",
+  "frozenCameraManifestSha256": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Airfield connected dry ochre uplands",
+      "normalFloat32Sha256": "074e002b2075d48826c0c7b0eabe2edd172aaf35c3e9343d322d149cb8aa2f1b",
+      "positionFloat32Sha256": "24cda1150543a00bb252e3bf3e4ed4ac6fabb894f0ae76b98b4ec4332bf6b064"
+    },
+    {
+      "batch": "Airfield connected muted sage banks",
+      "normalFloat32Sha256": "a6f9676688013b94e77e90e2e163ef1cc4065467f2bbd9dd8a93d9824fbfc993",
+      "positionFloat32Sha256": "dec3b653e04eb7a5460702c2c58f1798e7422a2a2b1763018b88642f5c920d74"
+    },
+    {
+      "batch": "Airfield connected warm clay contours",
+      "normalFloat32Sha256": "ea33315dc4dc7e813628391f13857b28d123699d5bc1de3af5f678e0fad0ae62",
+      "positionFloat32Sha256": "1535f024c547b0b4e77adf655bd75e723bcccaab167b63c2110876288c80e6c9"
+    },
+    {
+      "batch": "Airfield charcoal runway and taxiway",
+      "normalFloat32Sha256": "89b4ac5b325ec69e3a72f5621899a47c7345d19a644354651336dd6ebe9140fd",
+      "positionFloat32Sha256": "f96793934314e159aee7accbd57cec1c490e2ccb3f116d61038f00ea70ec7d97"
+    },
+    {
+      "batch": "Airfield full-width gravel shoulder stitches",
+      "normalFloat32Sha256": "aff008c1e6726b1d19ac842deea39c3598f65ac56e5d0d09d5f3d96846947659",
+      "positionFloat32Sha256": "7515718b9efb0519ffd74e27941ab990d23b1b4909d7d12700927864e739ac32"
+    },
+    {
+      "batch": "Airfield whole footprint warm concrete",
+      "normalFloat32Sha256": "a1ae8ae2c74926fce824b8937d1e598ae8afbbddfffc0b82d302b339b97a0eed",
+      "positionFloat32Sha256": "8ca69e41cfe44377da4550935a677e965d6ab14901af3cd442b308ba6e9b249d"
+    },
+    {
+      "batch": "Airfield pale limestone edge and plaques",
+      "normalFloat32Sha256": "c550952b0509679955c85ab306621c2b34da5329bf5a0cf52e12d2ddb5995a45",
+      "positionFloat32Sha256": "c5f8b4fa1f5e526c9df7f63282ddbf8c3693fadde848245870abc3e0c6345acd"
+    },
+    {
+      "batch": "Airfield opaque blue steel structure",
+      "normalFloat32Sha256": "85296063598640d278b5e12f3c31e5b1c605f6cce8613dbd807d53ff1c483762",
+      "positionFloat32Sha256": "1ee2d3dffed1b9edaa6c956cfa16f8e8aafa485ef0371ca4806717e62a2a54e0"
+    },
+    {
+      "batch": "Airfield dark steel joints and webs",
+      "normalFloat32Sha256": "f629a77b353dd35cc404127aed95aab03312687964efdf414c209c15191e503a",
+      "positionFloat32Sha256": "aa25962e9de9141332eb3ba207a96f63e59b587a4ae97f4137f6026125c49b95"
+    },
+    {
+      "batch": "Airfield muted copper dimensional panels",
+      "normalFloat32Sha256": "e6b8f7c883a2a92fe4b1c9958448ecefb910c7a6b1aee06eb16102cedaace796",
+      "positionFloat32Sha256": "5f984e33fb569d4335a5c67ce163bbb517606d0cd274ee9b57f57790d6b79c33"
+    },
+    {
+      "batch": "Airfield cream closed fuselage skins",
+      "normalFloat32Sha256": "76d451f335636b31877d3eec977c05cb801480f54b024f5c58c4fad01b967689",
+      "positionFloat32Sha256": "dd272c83009edbc5d8787c97435ae4505a6a3ee4ef132f1821ac96dc44f90396"
+    },
+    {
+      "batch": "Airfield cool teal closed wing skins",
+      "normalFloat32Sha256": "e9880bcbcb55fafc67e13a5e19438dd6cd9f8679b7c6d6423d724b20dec24143",
+      "positionFloat32Sha256": "442d6cd07baf16f3ef4641597a7a714b1045c4e4bbfc3beee084bdcc823fc00e"
+    },
+    {
+      "batch": "Airfield shaded blue wing undersides",
+      "normalFloat32Sha256": "e9a7eda42a5d08364c4d858f4ffc59833097b565f1bee6bed722984f2b620fd3",
+      "positionFloat32Sha256": "a9874884cd515944a6aa7bbfd17e15dd9335fcca3d8c36efae05d08c577143b5"
+    },
+    {
+      "batch": "Airfield dark rubber closed tread",
+      "normalFloat32Sha256": "e23b7cb659c9eb01ad7dd228eb97d98569613c0e7d0d27313e5188f9aa1124ac",
+      "positionFloat32Sha256": "0188bd5096aff2dfd708c868d17df7eeb4c095d67bcc7b4d622761b3e730dc37"
+    },
+    {
+      "batch": "Airfield pale alloy hubs and bearing shoes",
+      "normalFloat32Sha256": "9231aba3069fd165f6cc88cd981d4f14a26eaca5af7a6d9bdeb6b4f7eeb346f8",
+      "positionFloat32Sha256": "e94026c852e60ee3fef50eb33ac9708c69eab26130c7c76844f6e7f82e399609"
+    },
+    {
+      "batch": "Airfield warm brass spars and rib edges",
+      "normalFloat32Sha256": "29895b06547847939ca491abdf2027890f628a163cfab769027c806fe62857ff",
+      "positionFloat32Sha256": "66ec6fd5037456f5022b24bd56c34a9456b99d8cfac7aac1e87d4f4d9129c35d"
+    },
+    {
+      "batch": "Airfield muted terracotta tower fins",
+      "normalFloat32Sha256": "fba16bff41249337c5052ecb751c0d3b7d51c59a95edd4943229352659a9a9aa",
+      "positionFloat32Sha256": "15f7410d1d1d7f601d806a5720a43deef93aed153474e449e56e4d9f9d4b9aa3"
+    },
+    {
+      "batch": "Airfield deep teal museum signs",
+      "normalFloat32Sha256": "0a5a5149c49ab68655bcf17ac457827252d5d73686ed5209b3794411d94e5810",
+      "positionFloat32Sha256": "23382c9e713b890c23335414238817e5b24902cc3e1b6c078eee59c07dba04cf"
+    },
+    {
+      "batch": "Airfield original ivory runway markings",
+      "normalFloat32Sha256": "bf6199085bd3eabe4adef810b09085dc7bfb2d81862622f91bf97a46d2dbe1e9",
+      "positionFloat32Sha256": "c9742350956f26c3c78db01bcf8322514fb3318bb23e3e76dc0021eb992fcfc0"
+    },
+    {
+      "batch": "Airfield sparse grounded dry grass",
+      "normalFloat32Sha256": "bc93013df48d1a79522edff1a8c9803ea5e4ca5ce4554132273ca22dde29df5f",
+      "positionFloat32Sha256": "fe37435a853569657196a73b1587562e9186f2d0a9e1b3776d52ce9199b71ba9"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.0
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#d7e5e4",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9629999995231628,
+      0.9020000100135803
+    ]
+  },
+  "batches": 20,
+  "vertices": 105784,
+  "triangles": 96431,
+  "routeLengthsMetres": {
+    "start": 1203.3254077843299,
+    "alley": 379.64416145376265,
+    "boulevard": 431.33655446126255,
+    "finish": 1431.8777751189264
+  },
+  "lapLengthsMetres": {
+    "hangarCutLapLength": 3014.8473443570188,
+    "perimeterTaxiwayLapLength": 3066.5397373645187
+  },
+  "framingSource": "60 immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
+  "originalModels": {
+    "glb": {
+      "file": "airfield-original-scene.glb",
+      "sha256": "ab83f506a112832eb5cbdea8b6f99f1cb927f4ca36466184694c56fae9730cf3",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
+    },
+    "blend": {
+      "file": "airfield-original-scene.blend",
+      "sha256": "d3c3de1b67b0d7424f2fae486565c278e22df66ebbbcc7d515db8504aafdc20c",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all 65 original source-derived cameras"
+    }
+  },
+  "views": {
+    "eye-workshop-middle": {
+      "name": "eye-workshop-middle",
+      "edge": "start",
+      "s": 170,
+      "kind": "eye",
+      "sourceEye": [
+        -50.07058531757221,
+        9.765351234304633,
+        -152.48731582897412
+      ],
+      "sourceTarget": [
+        -18.09400269009075,
+        10.142703388325401,
+        -152.45028062550645
+      ],
+      "sourceAnchor": [
+        -50.07058531757221,
+        9.515351234304633,
+        -152.48731582897412
+      ],
+      "cameraPositionBlender": [
+        -50.070587158203125,
+        152.48731994628906,
+        9.765351295471191
+      ],
+      "cameraQuaternionBlender": [
+        -0.4967533051967621,
+        -0.5026500225067139,
+        0.5032325387001038,
+        0.4973289966583252
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.001158237806521356,
+          -0.011800047941505909,
+          -0.9999297261238098,
+          -50.070587158203125
+        ],
+        [
+          -0.9999993443489075,
+          1.3647913874592632e-05,
+          0.001158147002570331,
+          152.48731994628906
+        ],
+        [
+          -8.963429110053767e-09,
+          0.9999303817749023,
+          -0.011800066567957401,
+          9.765351295471191
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-workshop-middle.png",
+      "sha256": "01d71d8b2768a94185ec0114fd2f316c639127a10140a43da80e295bb3783def",
+      "routeScreenBounds": [
+        -3247.5224609375,
+        -167.07284545898438,
+        402.4332275390625,
+        52.83601379394531
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.8981820940971375,
+          0.5041645169258118,
+          1.4698269367218018,
+          0.524462878704071
+        ],
+        "boulevard": [
+          0.8981820940971375,
+          0.5041645169258118,
+          1.4698269367218018,
+          0.524462878704071
+        ]
+      }
+    },
+    "chase0-workshop-middle": {
+      "name": "chase0-workshop-middle",
+      "edge": "start",
+      "s": 170,
+      "kind": "chase0",
+      "sourceEye": [
+        -60.557241008190815,
+        12.765351234304633,
+        -151.9581160307726
+      ],
+      "sourceTarget": [
+        -34.95468522298684,
+        9.165351234304634,
+        -153.25012634890422
+      ],
+      "sourceAnchor": [
+        -50.07058531757221,
+        9.515351234304633,
+        -152.48731582897412
+      ],
+      "sourceDesiredEye": [
+        -60.557241008190815,
+        12.765351234304633,
+        -151.9581160307726
+      ],
+      "cameraPositionBlender": [
+        -60.5572395324707,
+        151.95811462402344,
+        12.765351295471191
+      ],
+      "cameraQuaternionBlender": [
+        0.5469178557395935,
+        0.4754795730113983,
+        -0.45208996534347534,
+        -0.5200141072273254
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.05039998143911362,
+          0.13889090716838837,
+          -0.9890243411064148,
+          -60.5572395324707
+        ],
+        [
+          -0.9987291097640991,
+          0.007009007968008518,
+          -0.04991021752357483,
+          151.95811462402344
+        ],
+        [
+          -2.243462304818422e-08,
+          0.9902828335762024,
+          0.13906767964363098,
+          12.765351295471191
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-workshop-middle.png",
+      "sha256": "1b1d42c3ca64297736302baf77849c12449f6e50bb1aea8cca860c0e25fc97f2",
+      "routeScreenBounds": [
+        -1659.8968505859375,
+        -66.20880889892578,
+        435.6647644042969,
+        29.752456665039062
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9415735602378845,
+          0.6432977318763733,
+          1.5636671781539917,
+          0.6590843200683594
+        ],
+        "boulevard": [
+          0.9415735602378845,
+          0.6432977318763733,
+          1.5636671781539917,
+          0.6590843200683594
+        ]
+      }
+    },
+    "chase1-workshop-middle": {
+      "name": "chase1-workshop-middle",
+      "edge": "start",
+      "s": 170,
+      "kind": "chase1",
+      "sourceEye": [
+        -65.05152201845593,
+        16.065351234304636,
+        -151.73131611725768
+      ],
+      "sourceTarget": [
+        -39.182554945624275,
+        9.165351234304634,
+        -153.03677064523183
+      ],
+      "sourceAnchor": [
+        -50.07058531757221,
+        9.515351234304633,
+        -152.48731582897412
+      ],
+      "sourceDesiredEye": [
+        -65.05152201845593,
+        16.065351234304636,
+        -151.73131611725768
+      ],
+      "cameraPositionBlender": [
+        -65.05152130126953,
+        151.7313232421875,
+        16.065351486206055
+      ],
+      "cameraQuaternionBlender": [
+        0.5746273994445801,
+        0.44159185886383057,
+        -0.41986924409866333,
+        -0.5463605523109436
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          0.05039992928504944,
+          0.25708580017089844,
+          -0.9650734663009644,
+          -65.05152130126953
+        ],
+        [
+          -0.9987291693687439,
+          0.01297355443239212,
+          -0.04870157688856125,
+          151.7313232421875
+        ],
+        [
+          -1.2336448529381983e-10,
+          0.9663015604019165,
+          0.2574129104614258,
+          16.065351486206055
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase1-workshop-middle.png",
+      "sha256": "078ab3ebb103b13fdcbe090bd4b25d1ab4ff1928c16137e78371502057824281",
+      "routeScreenBounds": [
+        -13139.4541015625,
+        -381.44805908203125,
+        294.4464111328125,
+        17.031003952026367
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9492800831794739,
+          0.7568774819374084,
+          1.5714157819747925,
+          0.7656766176223755
+        ],
+        "boulevard": [
+          0.9492800831794739,
+          0.7568774819374084,
+          1.5714157819747925,
+          0.7656766176223755
+        ]
+      }
+    },
+    "eye-court-middle": {
+      "name": "eye-court-middle",
+      "edge": "boulevard",
+      "s": 150,
+      "kind": "eye",
+      "sourceEye": [
+        338.1164606652635,
+        21.6,
+        372.5084689239267
+      ],
+      "sourceTarget": [
+        366.53244867535545,
+        21.6,
+        386.95336495754583
+      ],
+      "sourceAnchor": [
+        338.1164606652635,
+        21.35,
+        372.5084689239267
+      ],
+      "cameraPositionBlender": [
+        338.116455078125,
+        -372.50848388671875,
+        21.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.3697468042373657,
+        -0.3697468042373657,
+        0.6027331948280334,
+        0.6027331948280334
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.4531492292881012,
+          0.0,
+          -0.8914346694946289,
+          338.116455078125
+        ],
+        [
+          -0.8914346694946289,
+          -6.782705952446122e-09,
+          0.4531491994857788,
+          -372.50848388671875
+        ],
+        [
+          0.0,
+          1.0,
+          -6.782705952446122e-09,
+          21.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-court-middle.png",
+      "sha256": "a079346fa169e1a34a6922aa696abad6fd79ffa5edd76dad563e0066b140e0b8",
+      "routeScreenBounds": [
+        -397.5491027832031,
+        -16.739748001098633,
+        982.9125366210938,
+        42.772239685058594
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -290.4371337890625,
+          -5.047517776489258,
+          206.71298217773438,
+          5.03363561630249
+        ],
+        "boulevard": [
+          -4.752994060516357,
+          -8.327674865722656,
+          41.31482696533203,
+          7.175535202026367
+        ]
+      }
+    },
+    "chase0-court-middle": {
+      "name": "chase0-court-middle",
+      "edge": "boulevard",
+      "s": 150,
+      "kind": "chase0",
+      "sourceEye": [
+        329.47018501292894,
+        24.6,
+        366.55095960006946
+      ],
+      "sourceTarget": [
+        350.5795607046647,
+        21,
+        381.09586975110835
+      ],
+      "sourceAnchor": [
+        338.1164606652635,
+        21.35,
+        372.5084689239267
+      ],
+      "sourceDesiredEye": [
+        329.47018501292894,
+        24.6,
+        366.55095960006946
+      ],
+      "cameraPositionBlender": [
+        329.4701843261719,
+        -366.55096435546875,
+        24.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.3509919345378876,
+        -0.3051454424858093,
+        0.5808205008506775,
+        0.6680856943130493
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.5673819184303284,
+          0.11451592296361923,
+          -0.8154532313346863,
+          329.4701843261719
+        ],
+        [
+          -0.8234548568725586,
+          -0.07890447229146957,
+          0.5618685483932495,
+          -366.55096435546875
+        ],
+        [
+          1.2806498972395275e-08,
+          0.9902828931808472,
+          0.139067605137825,
+          24.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-court-middle.png",
+      "sha256": "4c5771dfc0c192321d5fc994c2a002f4a523975e5d734b22f7c74400cf6fc6cf",
+      "routeScreenBounds": [
+        -1896.76904296875,
+        -98.48301696777344,
+        1021.1991577148438,
+        53.8836784362793
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -130.25575256347656,
+          -6.159900188446045,
+          357.5011901855469,
+          22.450098037719727
+        ],
+        "boulevard": [
+          -57.57316589355469,
+          -44.51313018798828,
+          5.705770492553711,
+          7.749039173126221
+        ]
+      }
+    },
+    "chase1-court-middle": {
+      "name": "chase1-court-middle",
+      "edge": "boulevard",
+      "s": 150,
+      "kind": "chase1",
+      "sourceEye": [
+        325.76463830478554,
+        27.900000000000002,
+        363.9977413184164
+      ],
+      "sourceTarget": [
+        347.09367081540427,
+        21,
+        378.69400074389006
+      ],
+      "sourceAnchor": [
+        338.1164606652635,
+        21.35,
+        372.5084689239267
+      ],
+      "sourceDesiredEye": [
+        325.76463830478554,
+        27.900000000000002,
+        363.9977413184164
+      ],
+      "cameraPositionBlender": [
+        325.7646484375,
+        -363.99774169921875,
+        27.899999618530273
+      ],
+      "cameraQuaternionBlender": [
+        -0.3687748908996582,
+        -0.28339752554893494,
+        0.5394250154495239,
+        0.7019341588020325
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.5673817992210388,
+          0.21196796000003815,
+          -0.7957056164741516,
+          325.7646484375
+        ],
+        [
+          -0.8234547972679138,
+          -0.14605143666267395,
+          0.5482618808746338,
+          -363.99774169921875
+        ],
+        [
+          -4.963649047340368e-09,
+          0.9663015007972717,
+          0.25741299986839294,
+          27.899999618530273
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase1-court-middle.png",
+      "sha256": "c61c483c5bf3c2784dbb2e63bc33dba2c5df0718b6d8333179f028406b6c044c",
+      "routeScreenBounds": [
+        -619.982666015625,
+        -44.51500701904297,
+        252.10301208496094,
+        17.746000289916992
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -196.75634765625,
+          -18.822311401367188,
+          186.9735565185547,
+          19.07569694519043
+        ],
+        "boulevard": [
+          -12.351385116577148,
+          -15.15819263458252,
+          9.14539909362793,
+          9.992754936218262
+        ]
+      }
+    },
+    "eye-terrace-middle": {
+      "name": "eye-terrace-middle",
+      "edge": "finish",
+      "s": 680,
+      "kind": "eye",
+      "sourceEye": [
+        322.0793166076419,
+        9.6,
+        -243.71110162314963
+      ],
+      "sourceTarget": [
+        292.7362014622794,
+        9.6,
+        -256.4387575257339
+      ],
+      "sourceAnchor": [
+        322.0793166076419,
+        9.35,
+        -243.71110162314963
+      ],
+      "cameraPositionBlender": [
+        322.0793151855469,
+        243.7111053466797,
+        9.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5911707282066345,
+        0.5911707282066345,
+        0.3879654109477997,
+        0.3879654109477997
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.39793136715888977,
+          0.0,
+          0.917415201663971,
+          322.0793151855469
+        ],
+        [
+          0.917415201663971,
+          2.003948473827677e-08,
+          -0.3979313373565674,
+          243.7111053466797
+        ],
+        [
+          0.0,
+          1.0,
+          2.003948473827677e-08,
+          9.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-terrace-middle.png",
+      "sha256": "71cdc0aac18d6a34870a3bbab2b823b172809c6fa47643c54402b77e2168d2b7",
+      "routeScreenBounds": [
+        -751.557861328125,
+        -8.753388404846191,
+        327.4966125488281,
+        21.77736473083496
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9955253601074219,
+          0.413423627614975,
+          3.189657688140869,
+          0.4783053398132324
+        ],
+        "boulevard": [
+          0.9955253601074219,
+          0.413423627614975,
+          3.189657688140869,
+          0.4783053398132324
+        ]
+      }
+    },
+    "chase0-terrace-middle": {
+      "name": "chase0-terrace-middle",
+      "edge": "finish",
+      "s": 680,
+      "kind": "chase0",
+      "sourceEye": [
+        331.4632737447597,
+        12.6,
+        -239.00033221160595
+      ],
+      "sourceTarget": [
+        308.55289190549007,
+        9,
+        -250.5013998740234
+      ],
+      "sourceAnchor": [
+        322.0793166076419,
+        9.35,
+        -243.71110162314963
+      ],
+      "sourceDesiredEye": [
+        331.4632737447597,
+        12.6,
+        -239.00033221160595
+      ],
+      "cameraPositionBlender": [
+        331.4632873535156,
+        239.00033569335938,
+        12.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6422819495201111,
+        0.5583872199058533,
+        0.34448498487472534,
+        0.39624202251434326
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.4486446976661682,
+          -0.12428617477416992,
+          0.8850259184837341,
+          331.4632873535156
+        ],
+        [
+          0.893710196018219,
+          0.062391944229602814,
+          -0.44428521394729614,
+          239.00033569335938
+        ],
+        [
+          -1.2608175836703595e-08,
+          0.9902828931808472,
+          0.1390676200389862,
+          12.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-terrace-middle.png",
+      "sha256": "e6f9d144e728fb3e2fd4cae0a524dd27665732b738e1b30e2bd0930a874497b0",
+      "routeScreenBounds": [
+        -952.75,
+        -8.027534484863281,
+        440.489501953125,
+        19.952661514282227
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9553427696228027,
+          0.5784025192260742,
+          2.7878899574279785,
+          0.616715133190155
+        ],
+        "boulevard": [
+          0.9553427696228027,
+          0.5784025192260742,
+          2.7878899574279785,
+          0.616715133190155
+        ]
+      }
+    },
+    "chase1-terrace-middle": {
+      "name": "chase1-terrace-middle",
+      "edge": "finish",
+      "s": 680,
+      "kind": "chase1",
+      "sourceEye": [
+        335.48496966066733,
+        15.900000000000002,
+        -236.9814310352301
+      ],
+      "sourceTarget": [
+        312.33619035916587,
+        9,
+        -248.602174806187
+      ],
+      "sourceAnchor": [
+        322.0793166076419,
+        9.35,
+        -243.71110162314963
+      ],
+      "sourceDesiredEye": [
+        335.48496966066733,
+        15.900000000000002,
+        -236.9814310352301
+      ],
+      "cameraPositionBlender": [
+        335.4849548339844,
+        236.98143005371094,
+        15.899999618530273
+      ],
+      "cameraQuaternionBlender": [
+        0.6748230457305908,
+        0.5185905694961548,
+        0.31993332505226135,
+        0.41631758213043213
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          0.4486446678638458,
+          -0.23005259037017822,
+          0.8635935187339783,
+          335.4849548339844
+        ],
+        [
+          0.893710196018219,
+          0.1154869869351387,
+          -0.43352600932121277,
+          236.98143005371094
+        ],
+        [
+          -1.7668398299974797e-08,
+          0.9663015007972717,
+          0.25741297006607056,
+          15.899999618530273
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase1-terrace-middle.png",
+      "sha256": "d8271e85c6ffab0773fb67afb0333c5d39f4c8f56224163a4f4f1260e451f0f2",
+      "routeScreenBounds": [
+        -871.9758911132812,
+        -8.008756637573242,
+        476.7198486328125,
+        22.084129333496094
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9712594747543335,
+          0.718195378780365,
+          2.9262535572052,
+          0.741489052772522
+        ],
+        "boulevard": [
+          0.9712594747543335,
+          0.718195378780365,
+          2.9262535572052,
+          0.741489052772522
+        ]
+      }
+    },
+    "eye-original-reveal": {
+      "name": "eye-original-reveal",
+      "edge": "start",
+      "s": 120.33254077843299,
+      "kind": "eye",
+      "sourceEye": [
+        -99.66764796166466,
+        9.601499325520352,
+        -150.00022047412043
+      ],
+      "sourceTarget": [
+        -67.70450740981804,
+        9.692378904608631,
+        -151.4047693706512
+      ],
+      "sourceAnchor": [
+        -99.66764796166466,
+        9.351499325520352,
+        -150.00022047412043
+      ],
+      "cameraPositionBlender": [
+        -99.66764831542969,
+        150.00021362304688,
+        9.601499557495117
+      ],
+      "cameraQuaternionBlender": [
+        0.5101311802864075,
+        0.5115822553634644,
+        -0.48959559202194214,
+        -0.4882068634033203
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          0.04390043020248413,
+          -0.0028377475682646036,
+          -0.9990319013595581,
+          -99.66764831542969
+        ],
+        [
+          -0.9990358948707581,
+          -0.00012469095236156136,
+          -0.0439002625644207,
+          150.00021362304688
+        ],
+        [
+          1.7914764782744896e-08,
+          0.9999959468841553,
+          -0.0028404954355210066,
+          9.601499557495117
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-original-reveal.png",
+      "sha256": "94e966955a1814763e7ea06be54d1152a43073090a7739441e6533039eea39cf",
+      "routeScreenBounds": [
+        -849.48681640625,
+        -52.53173828125,
+        618.7869873046875,
+        70.59255981445312
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.9048904776573181,
+          0.5121365785598755,
+          1.3978464603424072,
+          0.5299372673034668
+        ],
+        "boulevard": [
+          0.9048904776573181,
+          0.5121365785598755,
+          1.3978464603424072,
+          0.5299372673034668
+        ]
+      }
+    },
+    "eye-original-hangar": {
+      "name": "eye-original-hangar",
+      "edge": "alley",
+      "s": 112.0256391123437,
+      "kind": "eye",
+      "sourceEye": [
+        323.3246582671821,
+        21.6,
+        258.2079025180315
+      ],
+      "sourceTarget": [
+        354.011500304051,
+        21.6,
+        267.15145675107055
+      ],
+      "sourceAnchor": [
+        323.3246582671821,
+        21.35,
+        258.2079025180315
+      ],
+      "cameraPositionBlender": [
+        323.32464599609375,
+        -258.2079162597656,
+        21.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.42432162165641785,
+        -0.42432162165641785,
+        0.565642237663269,
+        0.565642237663269
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.2798045575618744,
+          0.0,
+          -0.9600569009780884,
+          323.32464599609375
+        ],
+        [
+          -0.9600569009780884,
+          4.073231352208495e-08,
+          0.27980461716651917,
+          -258.2079162597656
+        ],
+        [
+          0.0,
+          0.9999999403953552,
+          4.073231352208495e-08,
+          21.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-original-hangar.png",
+      "sha256": "6f5838dc9385cbc8dce4a2fb5f1d1a0352174013a8e5af0bcc734b0aa1fc2214",
+      "routeScreenBounds": [
+        -638.599609375,
+        -34.752071380615234,
+        692.2830200195312,
+        39.99244689941406
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -28.879648208618164,
+          -5.1996612548828125,
+          3.222085952758789,
+          13.469146728515625
+        ],
+        "boulevard": [
+          -123.45243835449219,
+          -14.298299789428711,
+          575.2695922851562,
+          5.037497520446777
+        ]
+      }
+    },
+    "airfield-overview": {
+      "name": "airfield-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "airfield-overview.png",
+      "sha256": "d73e5fb4c2821846238bd70d7693509a85d7b2386b18843356f4c6804c0d812f",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        560.107177734375,
+        1062.4083251953125,
+        961.7427978515625
+      ],
+      "cameraQuaternionBlender": [
+        0.14319540560245514,
+        0.06807500123977661,
+        0.4239201545715332,
+        0.8917132616043091
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Copperwing Airfield circuit: long launch runway, graded reversing ridge, actual dry ochre/sage/clay contours, both physical Hangar Cut and Perimeter Taxiway, open split-roof steel hangar and five original aviation-inspired exhibits. Exact emitted source geometry; approximate offline CPU lighting, materials and shadows.",
+      "routeScreenBounds": [
+        0.16277356445789337,
+        0.24666409194469452,
+        0.8736184239387512,
+        0.740257978439331
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.1985088735818863,
+          0.5820111036300659,
+          0.4348514974117279,
+          0.6817229986190796
+        ],
+        "boulevard": [
+          0.1985088735818863,
+          0.5820111036300659,
+          0.4348514974117279,
+          0.7212472558021545
+        ]
+      },
+      "orthographicScaleMetres": 1471.7979736328125,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9497216939926147,
+          -0.19766175746917725,
+          0.2428136020898819,
+          560.107177734375
+        ],
+        [
+          0.31309521198272705,
+          -0.5995734930038452,
+          0.7365344166755676,
+          1062.4083251953125
+        ],
+        [
+          -7.41753751754004e-08,
+          0.7755265235900879,
+          0.6313149929046631,
+          961.7427978515625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "airfield-topdown": {
+      "name": "airfield-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "airfield-topdown.png",
+      "sha256": "1bd5aa923ff702449a72cb67305ca3091c5edbbf6fe84f37e44997704948ebbb",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        197.50001525878906,
+        -37.49999237060547,
+        1516.0137939453125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True vertical overhead original source geometry, both complete physical alternatives and owned split/merge unions. Actual road widths, graded reversing ridge, long runway and descent, continuous dry terrain, hangar roof and museum exhibits remain unchanged. No source mesh is hidden to expose roads.",
+      "routeScreenBounds": [
+        0.1356547623872757,
+        0.15116748213768005,
+        0.8879926800727844,
+        0.8795757293701172
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.1983586996793747,
+          0.7171160578727722,
+          0.4822564423084259,
+          0.7702286243438721
+        ],
+        "boulevard": [
+          0.1983586996793747,
+          0.7502506375312805,
+          0.4822564423084259,
+          0.8795722723007202
+        ]
+      },
+      "orthographicScaleMetres": 1268.062255859375,
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          197.50001525878906
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          -37.49999237060547
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1516.0137939453125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "airfield-driver-reveal": {
+      "name": "airfield-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 28,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "airfield-driver-reveal.png",
+      "sha256": "4224349a090a76171e2783069939750c1896567a85561a0e9d61392e90a483e4",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -99.66764831542969,
+        150.00021362304688,
+        9.601499557495117
+      ],
+      "cameraQuaternionBlender": [
+        0.656091570854187,
+        0.6884828805923462,
+        -0.22375820577144623,
+        -0.21323101222515106
+      ],
+      "projection": "PERSP",
+      "description": "Frozen source-design driver eye on the real launch runway at exactly 1.6 m above physical road support, aimed at the actual emitted Twinboom Courier source sightline target. Closed crescent wings, paired tail booms, original landing gear and connected dry runway bank remain unchanged. This source-derived review aim/lens differs from the shared gameplay chase camera; no HUD or vehicle, approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -14333.7763671875,
+        -337.0664367675781,
+        2316.12646484375,
+        54.84050369262695
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -4418.56201171875,
+          -103.67823028564453,
+          4150.34423828125,
+          98.01651763916016
+        ],
+        "boulevard": [
+          -683.4896850585938,
+          -14.459845542907715,
+          1833.2227783203125,
+          40.330711364746094
+        ]
+      },
+      "roadEdge": "start",
+      "roadDistanceMetres": 120.33254077843299,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "launch-runway-twinboom",
+        "edge": "start",
+        "fraction": 0.1,
+        "s": 120.33254077843299,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -99.66764796166466,
+          8.001499325520353,
+          -150.00022047412043
+        ],
+        "physicalTangent": [
+          0.9999891002621552,
+          0.0044771901194650176,
+          -0.0013244340374450408
+        ],
+        "driverEye": [
+          -99.66764796166466,
+          9.601499325520352,
+          -150.00022047412043
+        ],
+        "driverLook": [
+          -67.70450740981804,
+          9.692378904608631,
+          -151.4047693706512
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -110.16763875231703,
+              "y": 12.601499325520352,
+              "z": -149.9863137773451
+            },
+            "look": {
+              "x": -84.53252610126484,
+              "y": 9.001499325520353,
+              "z": -150.02026616316599
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -114.66763480545377,
+              "y": 15.901499325520355,
+              "z": -149.98035376444136
+            },
+            "look": {
+              "x": -88.76577209135534,
+              "y": 9.001499325520353,
+              "z": -150.01465944697608
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -54.764382536711224,
+        13.283598101987204,
+        -211.78494886108572
+      ],
+      "sourceSightline": {
+        "name": "runway grounded Twinboom Courier",
+        "eye": [
+          -99.66764796166466,
+          9.601499325520352,
+          -150.00022047412043
+        ],
+        "target": [
+          -54.764382536711224,
+          13.283598101987204,
+          -211.78494886108572
+        ],
+        "radius": 2,
+        "targetId": "twinboom-courier"
+      },
+      "cameraMatrixWorldBlender": [
+        [
+          0.8089296221733093,
+          -0.028309248387813568,
+          -0.5872235298156738,
+          -99.66764831542969
+        ],
+        [
+          -0.5879055261611938,
+          -0.038952283561229706,
+          -0.8079912662506104,
+          150.00021362304688
+        ],
+        [
+          -5.762458243907531e-08,
+          0.9988400340080261,
+          -0.048152823001146317,
+          9.601499557495117
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "airfield-hangar-architecture": {
+      "name": "airfield-hangar-architecture",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 10.354689598083496,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "airfield-hangar-architecture.png",
+      "sha256": "fcacaad47b75d455651c599e43ac7293d69c9f61e323dc2b731d3ac3f3e9ac04",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        323.32464599609375,
+        -258.2079162597656,
+        21.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.43629857897758484,
+        0.5399979948997498,
+        -0.5598520636558533,
+        -0.45233991742134094
+      ],
+      "projection": "PERSP",
+      "description": "Actual Hangar Cut support before the first portal, eye exactly 1.6 m above physical road. Opaque asymmetric roof sheets have source thickness and a literal open ridge slot; steel portal, rafters, webs, purlins, lattice braces, shoes and full-footprint foundations remain enabled. A legitimate narrow lattice brace can cross the open slot; no filled panel or blocker is hidden. Architectural upward aim and recorded wide lens differ from gameplay.",
+      "routeScreenBounds": [
+        -446.180908203125,
+        -19.45309066772461,
+        178.62266540527344,
+        8.671632766723633
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -3.297835111618042,
+          -0.4085594117641449,
+          13.453755378723145,
+          6.081209659576416
+        ],
+        "boulevard": [
+          -74.07218933105469,
+          -1.589547038078308,
+          104.9394302368164,
+          2.972121477127075
+        ]
+      },
+      "roadEdge": "alley",
+      "roadDistanceMetres": 112.0256391123437,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "hangar-first-portal-approach",
+        "edge": "alley",
+        "s": 112.0256391123437,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          323.3246582671821,
+          20,
+          258.2079025180315
+        ],
+        "physicalTangent": [
+          0.950450154556044,
+          0,
+          0.3108769912753148
+        ],
+        "driverEye": [
+          323.3246582671821,
+          21.6,
+          258.2079025180315
+        ],
+        "driverLook": [
+          354.011500304051,
+          21.6,
+          267.15145675107055
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": 313.3449316443436,
+              "y": 24.6,
+              "z": 254.94369410964072
+            },
+            "look": {
+              "x": 337.7098497955979,
+              "y": 21,
+              "z": 262.9130677913876
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": 309.0679059488414,
+              "y": 27.900000000000002,
+              "z": 253.5447476489018
+            },
+            "look": {
+              "x": 333.6863569611146,
+              "y": 21,
+              "z": 261.5970478604043
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        394.95313349286187,
+        37,
+        260.7947691145132
+      ],
+      "opaqueSteelAndLiteralOpenRidgeSlot": true,
+      "roofThicknessMetres": 0.35,
+      "ridgeSlotLateralMetres": [
+        2,
+        8
+      ],
+      "firstPortalScreenBounds": [
+        0.2751961946487427,
+        0.3168409466743469,
+        0.9549999833106995,
+        0.7757848501205444
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.03609146922826767,
+          -0.20992745459079742,
+          -0.9770506024360657,
+          323.32464599609375
+        ],
+        [
+          -0.999348521232605,
+          0.0075815292075276375,
+          0.035286158323287964,
+          -258.2079162597656
+        ],
+        [
+          2.278014932244332e-08,
+          0.9776875972747803,
+          -0.2100643366575241,
+          21.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "airfield-rotor-detail": {
+      "name": "airfield-rotor-detail",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 20.04074478149414,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "airfield-rotor-detail.png",
+      "sha256": "a157022567e6e67dba2e62f6942973e071fbb4b60ddb5d55b76d3be6ffc6c24e",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        423.5830993652344,
+        -375.5638122558594,
+        39.97179412841797
+      ],
+      "cameraQuaternionBlender": [
+        0.18668563663959503,
+        0.14157059788703918,
+        -0.5874241590499878,
+        -0.7746219038963318
+      ],
+      "projection": "PERSP",
+      "description": "Original Rotor Cutaway Court: nine stationary thick rooted fan blades, joined hub and continuous shaft, paired visible bearing saddles, partial open casing rings, ribs, braces and grounded sled. All source terrain, road and museum meshes remain visible and unmodified. Static architectural detail camera; approximate offline CPU lighting/materials, no moving rotor or gameplay claim.",
+      "routeScreenBounds": [
+        -517.864990234375,
+        -102.02393341064453,
+        3089.115234375,
+        427.60821533203125
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -161.22915649414062,
+          -31.161191940307617,
+          1211.0565185546875,
+          241.5089569091797
+        ],
+        "boulevard": [
+          -163.48265075683594,
+          -60.824520111083984,
+          1079.783447265625,
+          215.4252166748047
+        ]
+      },
+      "sourceLandmark": "rotor-cutaway-court",
+      "sourceLandmarkPosition": [
+        445.6210624461887,
+        18.971792475713514,
+        417.3050153082067
+      ],
+      "originalStaticMechanicalAssembly": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8902124762535095,
+          0.12289758771657944,
+          -0.43865469098091125,
+          423.5830993652344
+        ],
+        [
+          -0.4555455446243286,
+          -0.240162655711174,
+          0.8572048544883728,
+          -375.5638122558594
+        ],
+        [
+          -6.592254919723928e-08,
+          0.9629216194152832,
+          0.269781231880188,
+          39.97179412841797
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/airfield.webp",
+    "sha256": "f546d21e2624dfdc53a6e111b5385833e85ff6abadd9d8f15c4826fdedb60729",
+    "resolution": [
+      1280,
+      720
+    ],
+    "sourceView": "airfield-overview"
+  },
+  "finalPairedProofSha256": "6e216a5e588ad5a80870eb1ef6265120b64cc64b5c76761997d987632fc72e22",
+  "reopenedModelProofSha256": "c1115ded91a5cf0dea2878938cfc9590690aa370da8f0a5326495af9cde1761b",
+  "localCatalogUpdaterSha256": "2a4245757c720d131077c4f54c81051fc2fcc8fa9eb810ad2aa5b12aaa8a8572"
+}

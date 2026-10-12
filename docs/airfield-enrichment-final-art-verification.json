@@ -1,0 +1,199 @@
+{
+  "schema": "airfield-portable-final-art-evidence-v1",
+  "status": "verified-final-artifacts",
+  "sourceBaseCommit": "fc5360139c00e0d60148afabd0d24ed85c272ed6",
+  "candidateSourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/airfield-scenery.ts": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "frozenCameraManifestSha256": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+  "viewSelectionSha256": "424759ca547c170eb0af91f1281a762d08cdfc7c5801022835e283999ff86046",
+  "baselineGeometrySha256": "50683751e167315672f5cc5a4b6c0eae4a985af77099c6a2c24dd7afef9df5c6",
+  "candidateGeometrySha256": "cf8a913397a95386a2f97d06f5b78a2f65cfbb8f54e041580b05a1e63b4b9333",
+  "baselineRenderRecordSha256": "5ac3aec5a3d77b8bf95ef731a0436e102da3c7b1c4d8d7e26de129db1cedaf26",
+  "candidateRenderRecordSha256": "c38cce549ecbaf000ab9f371680892bdc52c976bfb9900be8726dc21d2cfc0db",
+  "baselineReopenedModelProofSha256": "655ffc7317299dc9503926270f8de67d349cc7d1406657ef46e2c514cd1a86da",
+  "candidateReopenedModelProofSha256": "c1115ded91a5cf0dea2878938cfc9590690aa370da8f0a5326495af9cde1761b",
+  "pairedRenderProofSha256": "6e216a5e588ad5a80870eb1ef6265120b64cc64b5c76761997d987632fc72e22",
+  "completeSourcePixelEqualityProofSha256": "d46d38072a6531414c52aaf76c820fc0869480708075a62b6337709c570edf53",
+  "visibleFirstHitProofSha256": "2216b1b11aa36e856146b3f48b34cf10012f3e8232d2e3154e0f07e3cf89df8b",
+  "verifiedPairCount": 16,
+  "nativeProjectionPairs": 11,
+  "unchangedCatalogPairs": 5,
+  "completeSourcePixelsCompared": 44354800,
+  "allSourcePixelsIdenticalInsideUnscaledPairs": true,
+  "visiblePrimaryGroupsMeetMinimumSpan": true,
+  "views": [
+    {
+      "name": "eye-workshop-middle",
+      "pairSha256": "9ce0066064b08237abaa2890295ca4659dbe43d36dc479613f3f915f7cf992f6",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "9dcd9dd8eb25b60153c4f51991d49b7e1de799eea10e03d5570a6b3c236891d1",
+      "candidateSha256": "01d71d8b2768a94185ec0114fd2f316c639127a10140a43da80e295bb3783def"
+    },
+    {
+      "name": "chase0-workshop-middle",
+      "pairSha256": "e624a9ae8ec8871bfc4684ec494ffafd7d8014fd43ff623690b56ab2cf3f3dec",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "dde3785d21290499ca8534ab52bf51a6b1aff1d5576227c892ec75cee4aca747",
+      "candidateSha256": "1b1d42c3ca64297736302baf77849c12449f6e50bb1aea8cca860c0e25fc97f2"
+    },
+    {
+      "name": "chase1-workshop-middle",
+      "pairSha256": "59b3a6bb8ace1f6ca8aa3fb65e4d113a268515ce939e65822ce5b666c44070be",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "16a59532ef611841482916df6aae20c2c6647fa63932a2d9ee5c8e5e322281f0",
+      "candidateSha256": "078ab3ebb103b13fdcbe090bd4b25d1ab4ff1928c16137e78371502057824281"
+    },
+    {
+      "name": "eye-court-middle",
+      "pairSha256": "1233e277f3e707e86c39c57a01da4fcd7c8ce74192a9b79b79e9f0f4c7f28c62",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "641febb8470ba04c74f901387273a5308d86ece727691bdc7f6dcd59c0ef251f",
+      "candidateSha256": "a079346fa169e1a34a6922aa696abad6fd79ffa5edd76dad563e0066b140e0b8"
+    },
+    {
+      "name": "chase0-court-middle",
+      "pairSha256": "2626ec196ebe3f9a1724d2a7e2cb517c7e23921e9b9ca4fae1dd9d2ba42a727c",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "09cd6ea98843a41193e36e6af749d1be0a2bb226639d6988af24355a747dc49f",
+      "candidateSha256": "4c5771dfc0c192321d5fc994c2a002f4a523975e5d734b22f7c74400cf6fc6cf"
+    },
+    {
+      "name": "chase1-court-middle",
+      "pairSha256": "523ccf30c04e2fe9593226aa095ffaa2b06ddf820cbcc53fa54b948f2b8ccb9b",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "09bce8e23dcf82355f2450f29932c12fc929192d50f8c52eea6db0f1f436c9ff",
+      "candidateSha256": "c61c483c5bf3c2784dbb2e63bc33dba2c5df0718b6d8333179f028406b6c044c"
+    },
+    {
+      "name": "eye-terrace-middle",
+      "pairSha256": "044ec7971b200d0710615d77687120b2851bb6c37a6b4dff5f820965668ce67e",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "08a9970373414fe803132c156c49c7ec83c386356d4b249fc0cfe126cffa3767",
+      "candidateSha256": "71cdc0aac18d6a34870a3bbab2b823b172809c6fa47643c54402b77e2168d2b7"
+    },
+    {
+      "name": "chase0-terrace-middle",
+      "pairSha256": "c41c3f5ce2c7a74c88f25f1759b73ad62e8ba4d428572e16281892e2565c646f",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "5afaee7e92685ba4cc5d031f25f7caeae56807a9f5a0ef7050f46d3cd1fea21e",
+      "candidateSha256": "e6f9d144e728fb3e2fd4cae0a524dd27665732b738e1b30e2bd0930a874497b0"
+    },
+    {
+      "name": "chase1-terrace-middle",
+      "pairSha256": "d6610b2bfb1c96e5a3ea68c3d02bdaaa9f7bac0faf11a7182837c989433c06f0",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "4173dbe8a82a44c8b72b61e52167f8d2d1c959185704f75602067e52d0e92561",
+      "candidateSha256": "d8271e85c6ffab0773fb67afb0333c5d39f4c8f56224163a4f4f1260e451f0f2"
+    },
+    {
+      "name": "eye-original-reveal",
+      "pairSha256": "880b3bb5c940a0e2626f5bd9251ec4450c02b0fb61d9192f84c0e9d7ecf9d1fc",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "0b777e3014e52dd4c61abec99964f5b975a0f25c197eae2c9d78fe8ede65a138",
+      "candidateSha256": "94e966955a1814763e7ea06be54d1152a43073090a7739441e6533039eea39cf"
+    },
+    {
+      "name": "eye-original-hangar",
+      "pairSha256": "aee4f0c6d5ecdd594247e3e604879e183cdf44b720b38fe88ce9eca5f89acc6e",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "fd1cdace9606ea81e0390ca11a32142c39f2ff2edda6a4f3bbd53c5993802aaa",
+      "candidateSha256": "6f5838dc9385cbc8dce4a2fb5f1d1a0352174013a8e5af0bcc734b0aa1fc2214"
+    },
+    {
+      "name": "airfield-overview",
+      "pairSha256": "d75348ea42b7ede0ea3cd93382af8d5a187a2a56b8149101e48583e07ca0f00c",
+      "sourceResolution": [
+        1920,
+        1080
+      ],
+      "baselineSha256": "9dcce142422083aaa8f7d41d6e454ad94f4004b6ff02e7e55f95cf6578b32e7e",
+      "candidateSha256": "d73e5fb4c2821846238bd70d7693509a85d7b2386b18843356f4c6804c0d812f"
+    },
+    {
+      "name": "airfield-topdown",
+      "pairSha256": "324ed7ea90713305291963680ede665c2ee357c980402296af5482bd9f515963",
+      "sourceResolution": [
+        1920,
+        1440
+      ],
+      "baselineSha256": "71fef1bd8135b7eeb98985ab18e8da624d9dd9bddda5988d902ab6da0f07eedc",
+      "candidateSha256": "1bd5aa923ff702449a72cb67305ca3091c5edbbf6fe84f37e44997704948ebbb"
+    },
+    {
+      "name": "airfield-driver-reveal",
+      "pairSha256": "e04207bc7281bd6b6ec4d08abcdea1195f75710563a5b0016fa25b812c51f453",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "d87409e091b61184e2f59689768acb85b64f8b9990eaef7619f48469175a3827",
+      "candidateSha256": "4224349a090a76171e2783069939750c1896567a85561a0e9d61392e90a483e4"
+    },
+    {
+      "name": "airfield-hangar-architecture",
+      "pairSha256": "589a94f659131d824e00e12ed4837cc0b52486f1896399c127aaed67b89b72b7",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "7311372f72f1b4d16c0096924d90842d9cbc11def61f2eb208b0087dc12c3d98",
+      "candidateSha256": "fcacaad47b75d455651c599e43ac7293d69c9f61e323dc2b731d3ac3f3e9ac04"
+    },
+    {
+      "name": "airfield-rotor-detail",
+      "pairSha256": "6b6d6c2011f0519102e03e392cc8ccb2e483864d9156dff736b994110dc475c6",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "8f427fe7934af4f8b63aca87eed39d9a92d56e1b14b40ab1ff7650e054b95f33",
+      "candidateSha256": "a157022567e6e67dba2e62f6942973e071fbb4b60ddb5d55b76d3be6ffc6c24e"
+    }
+  ],
+  "notice": "Portable evidence identities only; no private filesystem or Library identifiers. Complete original-source pixel equality and reopened model identity are verified. Offline approximate lighting/materials, no native gameplay/GPU/FPS claim. The art-direction document records visual review separately."
+}

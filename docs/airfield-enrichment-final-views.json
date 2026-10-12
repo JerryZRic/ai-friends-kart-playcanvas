@@ -1,0 +1,24 @@
+{
+  "schema": "airfield-final-source-view-selection-v1",
+  "frozenCameraManifestSha256": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+  "views": [
+    "eye-workshop-middle",
+    "chase0-workshop-middle",
+    "chase1-workshop-middle",
+    "eye-court-middle",
+    "chase0-court-middle",
+    "chase1-court-middle",
+    "eye-terrace-middle",
+    "chase0-terrace-middle",
+    "chase1-terrace-middle",
+    "eye-original-reveal",
+    "eye-original-hangar",
+    "airfield-overview",
+    "airfield-topdown",
+    "airfield-driver-reveal",
+    "airfield-hangar-architecture",
+    "airfield-rotor-detail"
+  ],
+  "samples": 48,
+  "notice": "Nine frozen native primary forward/chase pairs, two frozen original forward regression pairs, and five unchanged historical catalog pairs. No camera refit or retouching."
+}

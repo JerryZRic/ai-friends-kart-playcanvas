@@ -1,0 +1,182 @@
+{
+  "schema": "airfield-adjacent-source-pair-proof-v1",
+  "status": "passed",
+  "pairs": 6,
+  "samples": 8,
+  "candidateSceneSha256": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+  "baselineGeometrySha256": "50683751e167315672f5cc5a4b6c0eae4a985af77099c6a2c24dd7afef9df5c6",
+  "candidateGeometrySha256": "cf8a913397a95386a2f97d06f5b78a2f65cfbb8f54e041580b05a1e63b4b9333",
+  "frozenCameraManifestSha256": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+  "primaryFinalArtReceiptSha256": "60c81e0627c4e1059b98a3512e9c02e95387e2feb030e285f3f017b55b4929aa",
+  "verifierSha256": "2e18a6c77965455663c0374c1c32588cea8f9e2c5dc4c10f1d18626cc320ab23",
+  "baselineRenderRecordSha256": "2705747b8751ec27a67e240e1637e5d65e00f4807732beed1d5f0079373f8884",
+  "candidateRenderRecordSha256": "dd02e1471ca34523bdbd7e1910bf51e7b0e9b3341723a1efe86fc5cacbed5534",
+  "identicalCameraFields": [
+    "sourceEye",
+    "sourceTarget",
+    "sourceAnchor",
+    "cameraPositionBlender",
+    "cameraQuaternionBlender",
+    "cameraMatrixWorldBlender",
+    "projection",
+    "resolution",
+    "lensMillimetres",
+    "clipStart",
+    "clipEnd",
+    "sensorFit",
+    "sensorWidthMillimetres",
+    "sensorHeightMillimetres",
+    "verticalFovDegrees"
+  ],
+  "identicalSettingsAndLighting": true,
+  "completeSourcePixelsCompared": 12288000,
+  "scaled": false,
+  "retouched": false,
+  "views": [
+    {
+      "name": "eye-workshop-before",
+      "edge": "start",
+      "s": 120,
+      "pairSha256": "aca1e9ba0a422e28d74586207958715b8cb0eea6758133511ef37d8dd41d4ed6",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "dcede87c5cea427207cd8ad19b36a18bdb33138c638f54d0b73a1a660ad158c3",
+          "rgbPixelsSha256": "176c2f4be1c25aab98f8a1364b6f7d28f3404fb929d72abd7918c5cfd51b4cec",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "67866cbc08e1b1caef688f644083029ead64efb9fee7fbe5f8f03674f5e49b29",
+          "rgbPixelsSha256": "23809c54c1b03174e9b43d81d3d511e9dece179963bda5f5d9d7c2d4c9d4b6ce",
+          "completePixelEquality": true
+        }
+      ]
+    },
+    {
+      "name": "eye-workshop-after",
+      "edge": "start",
+      "s": 220,
+      "pairSha256": "b50ad367e79b67eec088b19e1375fb783e81159a8304ad95ba73ce6228d52e45",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "b3612c22c5e77b20852745183733149864855a62b8607fd9534c66362cb34cab",
+          "rgbPixelsSha256": "6ca434a6e6f95f393526dac0a801e82c4ace5e92f6faf06e2a655105eb80dee6",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "68b530a7825291e66d309d392c42018a1271b459b87c39d0820a4c4dadf41d76",
+          "rgbPixelsSha256": "314234f203a090cd68c09f7b0ab6305c1d99075d61c2931b25a651014258e8a5",
+          "completePixelEquality": true
+        }
+      ]
+    },
+    {
+      "name": "eye-court-before",
+      "edge": "boulevard",
+      "s": 90,
+      "pairSha256": "71c86343a3e9a9d62e1d3032c68adc2ac5331dd826b5c5129f9acbd53d66c9ea",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "d75ce77b7af1d67cc033a8ae902d7cac1ee4491e96ca2fbe1ac431c3ca38dd11",
+          "rgbPixelsSha256": "e7ba5db140cf27cb60f3704c65d093fd743472079061654a0436e7d054cdc356",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "5b883be6505753b35e46c554e7d264b622e8adb2a6f8b8e822bf309a6a995249",
+          "rgbPixelsSha256": "7451e04159fbccc491dc4588f4effaf4122901a99aef25025e2de038980db35d",
+          "completePixelEquality": true
+        }
+      ]
+    },
+    {
+      "name": "eye-court-after",
+      "edge": "boulevard",
+      "s": 210,
+      "pairSha256": "f63cac81a4c662ce86613c1f6ab82d46b91c8c261fed0c09689abc2dc5e07e87",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "16a2434ac28555fe2bc1a3783ff4fe8affb688b80cd9473d7724452082b41142",
+          "rgbPixelsSha256": "707ecb476e01838dfc71c4d0392ba7ac8a3e5df2fca123cb5560566111a99f55",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "61a1a07fa35cd16c51adda3bd0f2f582742d225f404c9f96f439e79a388d5aaa",
+          "rgbPixelsSha256": "33917d636a5d3a33dc54ad23de80ea1f7ffd53f0e245eb281b519460ff579e10",
+          "completePixelEquality": true
+        }
+      ]
+    },
+    {
+      "name": "eye-terrace-before",
+      "edge": "finish",
+      "s": 620,
+      "pairSha256": "e32ede76a8fb6bb72a3789e766fee4a36cee9a8c20bf7d527d90ef55b0661138",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "9aec5ad482f835bf5e17f039f8c4de8dcadfcf9a0fea601dbb0daed81e102921",
+          "rgbPixelsSha256": "e54b34d23484c4395c4f09d3cda47c22e065979f3e56ba1ece8a263258485edd",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "dfbd98bfd6dfe633bc31369934945b68c21339abad154899c824e84811a125a9",
+          "rgbPixelsSha256": "2404d00a80c7173ff69cd33f1292ec4bdb37bb987cbaf7f285acbf150001e3ec",
+          "completePixelEquality": true
+        }
+      ]
+    },
+    {
+      "name": "eye-terrace-after",
+      "edge": "finish",
+      "s": 740,
+      "pairSha256": "903762de760d57407c14c02b9f7d93e9b0e16f1ef2d42daffb0904d1ad76e319",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "sources": [
+        {
+          "side": "baseline",
+          "sourceSha256": "2fde5b8f2e9cc9c6314c30abe56e3bac1d54144ebf0a4e5adfa53246c2430d93",
+          "rgbPixelsSha256": "2b5fdf008e22562f7906a3360abd7dd75b06305aff8ff055da9c5a1f0b325986",
+          "completePixelEquality": true
+        },
+        {
+          "side": "candidate",
+          "sourceSha256": "102967026e84957b97c1e9cd91926e4ca98d1465873837aa9f6a387de3d9c7c0",
+          "rgbPixelsSha256": "61112affb25477adc76f9b462107e186167a4a855a1a088733dc572233314128",
+          "completePixelEquality": true
+        }
+      ]
+    }
+  ],
+  "notice": "Supplementary fixed forward poses around the original review positions. Same geometry as the final reopened models, but lower eight-sample image quality. Pair names before/after refer to the frozen review midpoint, not guaranteed visibility or a claim that every composition has been passed. Main final 16-pair proof remains authoritative. Offline source geometry only; no native GPU/gameplay/FPS claim."
+}
