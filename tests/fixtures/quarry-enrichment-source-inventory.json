@@ -452,6 +452,21 @@
     "waterpark.html": "e4dde253e80cc3245c045efdcd4394c404ff61f8df63e6303fb1ce07d0163e0c"
   },
   "reviewedChanges": {
+    "src/workshop-scenery.ts": {
+      "previousSHA256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+      "currentSHA256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+      "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
+    },
+    "src/forest-scenery.ts": {
+      "previousSHA256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+      "currentSHA256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+      "scope": "Separately reviewed Forest woodland enrichment at exact source revision; no Quarry geometry or gameplay changes"
+    },
+    "tests/forest-scene.test.ts": {
+      "previousSHA256": "3213c98164beaaf6bd84dac6188279108e59b4c7033657ca33d140b5896748db",
+      "currentSHA256": "7db79e1a8b64aadc56db0d83260766b556eec26559fb62f7f798f7aa3b2c5b3f",
+      "scope": "Forest exact reviewed108772 triangle/99 tree/21 batch scene contract with four banks and four beds"
+    },
     "src/quarry-scenery.ts": {
       "previousSHA256": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
       "currentSHA256": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
@@ -469,33 +484,23 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "6da192647239a8b9317ebe35ca28b7f2e8413d981110d78697a380645b2d8abb",
-      "currentSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
+      "currentSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
       "scope": "Allow only the exact separately reviewed Quarry scene revision alongside exact Town revision"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "4222f593279854a27c59b45e59aba3867c12c3db91ae34dba9fb728e4d797d6d",
-      "currentSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
+      "currentSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
       "scope": "Validate both exact scene revisions against immutable historical source hashes and retain every other protection"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "a862c3827f4dd7b57dec2a90e754a63757afa606b0db1d356cb289603421590c",
-      "currentSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
+      "currentSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
       "scope": "Exact reviewed QA-contract hashes only; original source/geometry goldens and Town artifact pins unchanged"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "8995ff01ac66d3e27753c65a39c7b519b7745f19f489b9bc4f099ff039411c99",
-      "currentSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
+      "currentSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
       "scope": "Add exact original/current Quarry scene revision; original Town revision unchanged"
-    },
-    "src/forest-scenery.ts": {
-      "previousSHA256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
-      "currentSHA256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
-      "scope": "Separately reviewed Forest woodland enrichment at exact source revision; no Quarry geometry or gameplay changes"
-    },
-    "tests/forest-scene.test.ts": {
-      "previousSHA256": "3213c98164beaaf6bd84dac6188279108e59b4c7033657ca33d140b5896748db",
-      "currentSHA256": "7db79e1a8b64aadc56db0d83260766b556eec26559fb62f7f798f7aa3b2c5b3f",
-      "scope": "Forest exact reviewed108772 triangle/99 tree/21 batch scene contract with four banks and four beds"
     }
   },
   "reviewedArtifactRevisions": {},

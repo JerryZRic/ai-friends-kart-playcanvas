@@ -16,6 +16,11 @@
       "previousSHA256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
       "currentSHA256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
       "scope": "Forest coherent ordinary cedar crowns, grouped woodland screens, four grounded indexed banks and four terrain-conforming understory beds; exact original roads, terrain, nine landmark cedars, observatory, bridge, signs and gameplay retained"
+    },
+    "src/workshop-scenery.ts": {
+      "previousSHA256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+      "currentSHA256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+      "scope": "Workshop additive original room-scale joinery and grounded work-zone furniture; exact original road/support/landmark/floor geometry and shared gameplay preserved; only two explicitly approved road wood-to-none texture selectors differ"
     }
   }
 }

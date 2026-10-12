@@ -1,0 +1,29 @@
+/** Historical source inventories and geometry goldens remain immutable. */
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const sha=(data:string|Buffer)=>createHash('sha256').update(data).digest('hex');
+const receipt=JSON.parse(readFileSync('tests/fixtures/workshop-enrichment-protected.json','utf8'));
+const reviewedPaths=['src/workshop-scenery.ts','tests/mountain-enrichment-contract.test.ts','tests/helpers/town-enrichment-geometry-worker.ts','tests/fixtures/reviewed-scene-revisions.json','tests/fixtures/town-enrichment-protected.json','tests/quarry-enrichment-inventory.test.ts','tests/fixtures/quarry-enrichment-source-inventory.json','tests/forest-enrichment-inventory.test.ts','tests/fixtures/forest-enrichment-protected.json','docs/workshop-preview-provenance.json','public/map-previews/workshop-overview.webp'];
+test('Workshop protects573 exact original inputs and all nested historical source and geometry contracts',()=>{
+ assert.equal(receipt.schema,'workshop-enrichment-protected-v1');assert.equal(receipt.baselineSourceCommit,'824e294e744ea9be2af5cddb6347c39b4595a530');assert.equal(receipt.baselinePublicCommit,'915109353ed1d2fcdc8afbb5bdacafca3648e92e');assert.equal(receipt.baselineSourceTree,'546c70332556d4e812105504df1c1e2bef52b401');
+ assert.equal(Object.keys(receipt.sourceInventory).length,573);assert.equal(sha(JSON.stringify(receipt.sourceInventory)),'32047325903da4ba25d70e43629afe2f6a5be8c496b0c82fca3afb96d6714d46','Original source inventory is immutable');assert.equal(sha(JSON.stringify(receipt.historicalContracts)),'dac44029d6c62ae3387610c1da5cd555aa26a9d329d743d137dedecae7366645','Every older nested original golden is immutable');
+ for(const [file,golden]of Object.entries(receipt.historicalContracts)){const actual=JSON.parse(readFileSync(file,'utf8'));for(const [key,value]of Object.entries(golden))assert.deepEqual(actual[key],value,file+' original '+key+' remains exact');}
+ assert.deepEqual(Object.keys(receipt.reviewedMaterialChanges).sort(),['Workshop cabinet road inlay','Workshop pale sealed maple road']);
+ for(const [name,color,roughness]of [['Workshop pale sealed maple road','#dabd7e',.87],['Workshop cabinet road inlay','#8eab90',.89]] as const){const review=receipt.reviewedMaterialChanges[name];assert.deepEqual(review.previous,{name,color,roughness,metalness:0,texture:'wood'});assert.deepEqual(review.current,{name,color,roughness,metalness:0,texture:'none'});assert.ok(review.scope);}
+ assert.equal(receipt.originalScenerySha256,'a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874');assert.equal(sha(readFileSync('docs/scene-baselines/workshop-scenery.ts.txt')),receipt.originalScenerySha256);assert.deepEqual(receipt.baselineCounts,{batches:21,vertices:146357,triangles:97508});
+ assert.deepEqual(Object.keys(receipt.reviewedChanges).sort(),[...reviewedPaths].sort());const changed:string[]=[];
+ for(const [file,original]of Object.entries(receipt.sourceInventory)){const actual=sha(readFileSync(file)),revision=receipt.reviewedChanges[file];if(revision){assert.equal(revision.previousSHA256,original,file+' historical source hash');assert.match(revision.currentSHA256,/^[a-f0-9]{64}$/);assert.ok(revision.scope);assert.equal(actual,revision.currentSHA256,file+' exact reviewed revision');}else assert.equal(actual,original,file+' original input changed without review');if(actual!==original)changed.push(file);}
+ assert.deepEqual(changed.sort(),[...reviewedPaths].sort());
+ const files=(directory:string):string[]=>readdirSync(directory,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(directory+'/'+e.name):[directory+'/'+e.name]);const transient=/^\.[a-z][a-z0-9-]+-\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.ts$/;
+ assert.deepEqual(files('src').filter(p=>!transient.test(p.split('/').at(-1)!)).sort(),Object.keys(receipt.sourceInventory).filter(p=>p.startsWith('src/')).sort(),'No new production input, map012 or alternate gameplay implementation');
+});
+test('Workshop final scene and preview identities are explicitly reviewed by Mountain Town Quarry and Forest',()=>{
+ const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(all.revisions).sort(),['src/forest-scenery.ts','src/quarry-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
+ const file='src/workshop-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(readFileSync(file)));
+ const mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));assert.equal(mountain.isolatedSceneSources[file],review.previousSHA256);
+ for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected']){const source=JSON.parse(readFileSync('tests/fixtures/'+name+'.json','utf8'));assert.equal(source.sourceInventory[file],review.previousSHA256);if(source.reviewedChanges)assert.equal(source.reviewedChanges[file].currentSHA256,review.currentSHA256);}
+ const preview=JSON.parse(readFileSync('docs/workshop-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],review.currentSHA256);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));
+ const manifest=JSON.parse(readFileSync('docs/workshop-enrichment-cameras.json','utf8'));assert.equal(manifest.baselineSourceTree,receipt.baselineSourceTree);assert.equal(manifest.baselineGeometryContract.sourceHashes[file],receipt.originalScenerySha256);assert.equal(manifest.views.length,30);assert.equal(Object.keys(manifest.catalogViews).length,6);
+});

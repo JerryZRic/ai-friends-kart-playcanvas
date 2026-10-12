@@ -552,6 +552,21 @@
     "waterpark.html": "e4dde253e80cc3245c045efdcd4394c404ff61f8df63e6303fb1ce07d0163e0c"
   },
   "reviewedChanges": {
+    "src/workshop-scenery.ts": {
+      "previousSHA256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+      "currentSHA256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+      "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
+    },
+    "docs/workshop-preview-provenance.json": {
+      "previousSHA256": "b4bed46eda594357850dfdc99992f09c8f9cc2b346ef6e17060bfacde90f9204",
+      "currentSHA256": "edb9a5a9c928923e00d79d4e4be7f45a7c7bc14e82b80a10d356a8a5deecaa5d",
+      "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
+    },
+    "public/map-previews/workshop-overview.webp": {
+      "previousSHA256": "8895cd3207b3bcd68b32ab33625566004decd7c1cc41c2160a56cb4d00472d3c",
+      "currentSHA256": "8685e61e211c5311222cc309b7eb206b6e0f3eb727614e3ff05646b4134f62f4",
+      "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
+    },
     "src/forest-scenery.ts": {
       "previousSHA256": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
       "currentSHA256": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
@@ -564,32 +579,32 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "bb8a0934c0c3f4f0534f9f112e0c548497b109e5515008a8b6fb504192a0ee80",
-      "currentSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
+      "currentSHA256": "959d8e99054247544664d3fbff58de1653bc4c2043986ee55b04e85824860769",
       "scope": "Permit only the explicit exact separately reviewed Forest source revision alongside existing Town and Quarry revisions"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "ebf85c6ea173281a98ebee9f8ea8c9b1308b75fd06344c2ca1544f1c6278a120",
-      "currentSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
+      "currentSHA256": "65b11521e0b48372cf2b705f489bec689d7664e76d2df8d097ecb26d7a5faecc",
       "scope": "Permit only the explicit exact separately reviewed Forest source revision alongside existing Town and Quarry revisions"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "36a97adbc70a0ab959984b8c5a971faa5538fd1742a7a9a3aec15496dbb73da5",
-      "currentSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
+      "currentSHA256": "9d94eb81de851abdabacc8dc45d46e167f795865c3bf119afe6708364c4e7677",
       "scope": "Add the exact old/new Forest scene SHA256 pair; preserve original Mountain, Town and Quarry identities"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "1480aa695a69056ac9c105d24524ebf75143b25f765b624227e60a2898608b45",
-      "currentSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
+      "currentSHA256": "0a2902d4c135047704a31959fa5734d88d2682dbae3c46bc99265b411d864eeb",
       "scope": "Update exact reviewed QA consumer hashes for Forest compatibility; every original source inventory and geometry golden field remains immutable"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "ce56695989addc81d9aed0e2bad04c24448fc76fc3d66d29a4cb4dbd86705222",
-      "currentSHA256": "7504e03e78feb1afe2af3146233944b66072cfcefc7b2b9ebeede0b6cdccc44a",
+      "currentSHA256": "d1d1a3355f7d791114b9f0487e31af837ec502486b0df0a5ad92a51d949af0e0",
       "scope": "Add only Forest source and its precise scene-count assertion to the exact reviewed-path list"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "7474b131b395d4d27058f4d43ccb0faeaa2557a465d53684a5f0c90d157d25ef",
-      "currentSHA256": "5065857829e3beded4b2fa7e0f3c210b79cc37fde106c407bc10f06c16e4b3fa",
+      "currentSHA256": "d254f4cfd834c8b020433038ceba1acf2631c479a4e494fcce29408385218b01",
       "scope": "Record exact reviewed Forest source and QA consumer hashes while preserving the entire original Quarry source inventory and base identity"
     },
     "docs/forest-preview-provenance.json": {

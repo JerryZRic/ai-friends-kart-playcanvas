@@ -1,0 +1,215 @@
+{
+  "schema": "workshop-enrichment-public-audit-v1",
+  "sourceSha256": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+  "baselineSourceSha256": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+  "baselineLocalCommit": "824e294e744ea9be2af5cddb6347c39b4595a530",
+  "baselinePublicCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "baselineTree": "546c70332556d4e812105504df1c1e2bef52b401",
+  "geometry": {
+    "budget": {
+      "batches": 21,
+      "triangles": 99572,
+      "vertices": 150485
+    },
+    "addedTriangles": 2064,
+    "assemblies": 7,
+    "pieces": 172,
+    "contacts": 134,
+    "grounded": 38,
+    "cameraFaces": 2064,
+    "bodyPoints": 9060,
+    "exposedCoflush": 0,
+    "independentStructureIntersections": 0
+  },
+  "coflush": {
+    "initialTriangleOverlapWitnesses": 99,
+    "initialDistinctPiecePairs": 31,
+    "exposedWitnessesEliminatedByNorthSillRecess": 35,
+    "wholeOutwardPolygonBuriedWitnesses": 64,
+    "acceptance": "Every retained coincidence has exact triangle-derived coverage by a named third closed pier; no assembly/material/region waiver"
+  },
+  "forwardVisibility": {
+    "frozenForwardChasePoses": 13,
+    "unseenAssemblies": [],
+    "scope": "Finite indexed face-center visibility in13 frozen actual forward-chase poses; not full silhouette or GPU proof"
+  },
+  "camera": {
+    "staticStations": 217,
+    "staticPoses": 31248,
+    "staticSafeAndSmoothedBooms": 62496,
+    "motionRuns": 582,
+    "motionFrames": 19788,
+    "actualPreviousRetained": true,
+    "frozenSourcePoses": 26,
+    "indexedSegmentInspections": 102098,
+    "minimumObservedClearance": 0.4932594262374601,
+    "strictMargin": 0.3,
+    "totalFailures": 0,
+    "baselineFailures": 0,
+    "inheritedFailures": 0,
+    "newFailures": 0,
+    "inheritedShorteningProofs": 0,
+    "archivedRuntimeReplay": {
+      "count": 102072,
+      "identicalPosesAlreadyInspected": 102072,
+      "additionalChangedPoseQueries": 0
+    },
+    "contract": "Gate actual candidate safe/interpolated/moving booms and 26 fixed source-review poses. Archived baseline runtime replay is diagnostic. Inherit only exact witnesses or proved same-anchor collinear shortening of the same-label baseline segment on unchanged indexed-face geometry/multiplicity with no worse clearance or intersection.",
+    "limits": [
+      "Finite CPU source audit of actual safe, post-smoothing, live moving, rear and orbit-switching segments against all indexed triangles. Static 35 m grid plus 3 m densification at 13 fixed architecture/crossing approaches, contiguous 40 m motion windows at 30/60 Hz and 55 m/s, 26 fixed chase/road-eye source views. Retained Workshop independent audit separately supplies its full 12 m/3 m matrix, 8 yaws, seam/crossing frames, pickups and authored landmark rays. No GPU, browser or performance claim.",
+      "Inherited failures remain reported witnesses with exact identity or numerical subsegment proof; no face batch, region or camera mode is excluded"
+    ]
+  },
+  "checks": {
+    "finalTypecheck": "passed",
+    "indexedGeometryAndOracleSentinels": {
+      "passed": 3,
+      "failed": 0
+    },
+    "strictCamera": {
+      "passed": 2,
+      "failed": 0
+    },
+    "retainedOriginalWorkshop": {
+      "passed": 86,
+      "failed": 0,
+      "excluded": "Preview-assets is validated in the final source-current consumer batch"
+    }
+  },
+  "retainedCoverage": {
+    "desiredBooms": 76464,
+    "genuinelyInterpolatedBooms": 76464,
+    "pickupRaysAt55Metres": 96,
+    "seamFrames": 3000,
+    "crossingFrames": 11664,
+    "fullRoadSupportProbes": 15075,
+    "closedSolids": 2548,
+    "bodyPoints": 9060,
+    "landmarkFoundations": 6,
+    "actualSupportingLegFootprints": 102,
+    "landmarkVertexReservationChecks": 26205,
+    "landmarkLowerContactSamples": 1529,
+    "authoredLandmarkCenterRays": 4,
+    "wholeBoomMarginProbes": 18336,
+    "minimumObservedMarginMetres": 0.49575,
+    "minimumFullSourceCrossingClearanceMetres": 24.432446,
+    "broadphaseQueries": 1440,
+    "maximumCandidateCameraTriangles": 384,
+    "allSourceCameraTriangles": 16884
+  },
+  "notice": "Finite CPU indexed-source validation of the existing Workshop005 scenery. This is not GPU gameplay capture, a frame-rate measurement, full landmark silhouettes, an all-material clear tube, or a proof of every possible camera trajectory.",
+  "reviewedMaterialChanges": {
+    "Workshop pale sealed maple road": {
+      "previous": {
+        "name": "Workshop pale sealed maple road",
+        "color": "#dabd7e",
+        "roughness": 0.87,
+        "metalness": 0,
+        "texture": "wood"
+      },
+      "current": {
+        "name": "Workshop pale sealed maple road",
+        "color": "#dabd7e",
+        "roughness": 0.87,
+        "metalness": 0,
+        "texture": "none"
+      },
+      "scope": "Explicitly approved smooth warm road: only this source-local texture selector changes; original color, roughness, metalness, positions, indices, normals, UVs and shared procedural pixels remain exact"
+    },
+    "Workshop cabinet road inlay": {
+      "previous": {
+        "name": "Workshop cabinet road inlay",
+        "color": "#8eab90",
+        "roughness": 0.89,
+        "metalness": 0,
+        "texture": "wood"
+      },
+      "current": {
+        "name": "Workshop cabinet road inlay",
+        "color": "#8eab90",
+        "roughness": 0.89,
+        "metalness": 0,
+        "texture": "none"
+      },
+      "scope": "Explicitly approved smooth warm road: only this source-local texture selector changes; original color, roughness, metalness, positions, indices, normals, UVs and shared procedural pixels remain exact"
+    }
+  },
+  "preservation": {
+    "originals": "All original batch positions, indices, UVs and computed normals are exact ordered prefixes; floor batch remains solely the original floor. Original road samples/faces/undersides, support faces, structures, six landmarks/foundations, original contact records, gears, drawers, rails, bridge members, sightlines and exact heightfield remain byte-for-number identical.",
+    "materials": "Only the two specifically listed road texture selectors differ. All other original material values, theme and all four shared procedural texture byte arrays are unchanged.",
+    "sourceIsolation": "The original573-file inventory and nested earlier historical contracts remain immutable;11 exact current-file revisions are listed in tests/fixtures/workshop-enrichment-protected.json. No added production source, map012, route/physics/AI/checkpoint/pickup/control/shared-camera change, main/stable workflow or Windows packaging change."
+  },
+  "localConsumerChecks": {
+    "status": "passed",
+    "passed": 10,
+    "failed": 0,
+    "scope": "9 Workshop/Forest/Quarry inventory + Mountain + Workshop-preview checks;1 explicitly selected Town exact-source/geometry-protection check. Other Town tests were not rerun."
+  },
+  "releaseChecks": "Complete-suite, build/distribution, reproducibility and exact-head CI/publication are separate release gates; this document records the local focused validation scope.",
+  "reproduction": {
+    "environment": "Pinned package-lock dependencies, Node with --max-old-space-size=448, disk-backed TMPDIR, --test-concurrency=1. Run each heavy check serially.",
+    "tests": [
+      "tests/workshop-enrichment-geometry.test.ts",
+      "tests/workshop-enrichment-oracles.test.ts",
+      "tests/workshop-enrichment-camera.test.ts",
+      "tests/workshop-enrichment-inventory.test.ts",
+      "tests/workshop-independent-audit.test.ts",
+      "tests/workshop-scene.test.ts",
+      "tests/workshop-preview-assets.test.ts"
+    ],
+    "contracts": [
+      "tests/fixtures/workshop-enrichment-protected.json",
+      "tests/helpers/workshop-enrichment-camera-frozen.json",
+      "docs/workshop-enrichment-cameras.json",
+      "docs/scene-baselines/workshop-scenery.ts.txt"
+    ],
+    "reports": "Set WORKSHOP_ENRICHMENT_GEOMETRY_AUDIT_DIR and WORKSHOP_ENRICHMENT_CAMERA_AUDIT_DIR to writable local folders to retain complete emitted-face, support/contact, visibility and camera witnesses. Report wall-time/resource fields depend on the execution environment."
+  },
+  "localDistinctPassingTests": 101,
+  "localFailedTests": 0,
+  "executedCommands": [
+    {
+      "scope": "Typecheck",
+      "command": "npm run check",
+      "result": "passed"
+    },
+    {
+      "scope": "Indexed geometry and focused oracles",
+      "command": "node --max-old-space-size=448 --import tsx --test --test-concurrency=1 tests/workshop-enrichment-oracles.test.ts tests/workshop-enrichment-geometry.test.ts",
+      "passed": 3
+    },
+    {
+      "scope": "Finite actual indexed camera audit",
+      "command": "node --max-old-space-size=448 --import tsx --test --test-concurrency=1 tests/workshop-enrichment-camera.test.ts",
+      "passed": 2
+    },
+    {
+      "scope": "Retained Workshop source/gameplay/menu tests; preview deferred to final artifacts",
+      "command": "node --max-old-space-size=448 --import tsx --test --test-concurrency=1 tests/workshop-gameplay-balance.test.ts tests/workshop-gameplay-npc.test.ts tests/workshop-gameplay-routes.test.ts tests/workshop-gameplay.test.ts tests/workshop-independent-audit.test.ts tests/workshop-menu.test.ts tests/workshop-route-cursor.test.ts tests/workshop-route-footprints.test.ts tests/workshop-route-geometry.test.ts tests/workshop-route-shared-tail.test.ts tests/workshop-scene.test.ts",
+      "passed": 86
+    },
+    {
+      "scope": "Final reviewed inventories, Mountain isolation and source-current Workshop preview",
+      "command": "node --max-old-space-size=448 --import tsx --test --test-concurrency=1 tests/workshop-enrichment-inventory.test.ts tests/forest-enrichment-inventory.test.ts tests/quarry-enrichment-inventory.test.ts tests/mountain-enrichment-contract.test.ts tests/workshop-preview-assets.test.ts",
+      "passed": 9
+    },
+    {
+      "scope": "Only Town exact-source/geometry-protection consumer selected; other Town audits not rerun",
+      "command": "node --max-old-space-size=448 --import tsx --test --test-concurrency=1 --test-name-pattern='Town exact original source route road bridge terrain texture protection and fixed budget' tests/helpers/town-enrichment-geometry-worker.ts",
+      "passed": 1
+    }
+  ],
+  "changedHistoricalPaths": [
+    "docs/workshop-preview-provenance.json",
+    "public/map-previews/workshop-overview.webp",
+    "src/workshop-scenery.ts",
+    "tests/fixtures/forest-enrichment-protected.json",
+    "tests/fixtures/quarry-enrichment-source-inventory.json",
+    "tests/fixtures/reviewed-scene-revisions.json",
+    "tests/fixtures/town-enrichment-protected.json",
+    "tests/forest-enrichment-inventory.test.ts",
+    "tests/helpers/town-enrichment-geometry-worker.ts",
+    "tests/mountain-enrichment-contract.test.ts",
+    "tests/quarry-enrichment-inventory.test.ts"
+  ]
+}
