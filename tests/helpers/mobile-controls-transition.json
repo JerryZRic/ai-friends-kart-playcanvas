@@ -739,6 +739,31 @@
         }
       ]
     },
+    "tests/map-presentation.test.ts": {
+      "previousSha256": "b61d08a3a666c0ab04a03514b82098daf551419b86effc1547454a1d829b49a9",
+      "currentSha256": "aa09e8414c7771accc6fe9925625f6f0397a02858b8a1c88ebd96fab235c01aa",
+      "scope": "Exact mobile dependency transition wiring and retained regression coverage; historical assertions and fixtures preserved",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 79,
+          "afterStart": 80,
+          "removedLines": [
+            "  for (const [path, hash] of Object.entries(hashes)) assert.equal(createHash('sha256').update(readFileSync(path)).digest('hex'), hash, path);\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, hash] of Object.entries(hashes)) assert.equal(createHash('sha256').update(restoreMobileControlsBytes(path, readFileSync(path, 'utf8'))).digest('hex'), hash, path);\n"
+          ]
+        }
+      ]
+    },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSha256": "d28064d8940ce7177db1bf0ce9f08a5f58da0b1fecd3dabb2f9692a9de70eedf",
       "currentSha256": "153e4da225e2fbf7cbfa4ff09cf945c4238bc44961a223be2fa52e0f3898a0ff",

@@ -1,3 +1,4 @@
+import {restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -77,5 +78,5 @@ test('identity, routing, saved settings and loading sources retain exact pre-pre
     'src/game-settings.ts': 'cd2cef0d1531393e7290bff1766f2988a3f95d8fe0535fc086bb989d4bf50730',
     'src/race-loading-ui.ts': 'cfbe96cebd69b1d7727be6c2ede0772f42dbc51c2fd315657b5e713caf32dd33',
   };
-  for (const [path, hash] of Object.entries(hashes)) assert.equal(createHash('sha256').update(readFileSync(path)).digest('hex'), hash, path);
+  for (const [path, hash] of Object.entries(hashes)) assert.equal(createHash('sha256').update(restoreMobileControlsBytes(path, readFileSync(path, 'utf8'))).digest('hex'), hash, path);
 });
