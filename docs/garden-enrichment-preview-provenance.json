@@ -1,0 +1,1489 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime garden mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. The original connected planted terraces follow the physical road, the timber arbor has literal open gaps between opaque joined members, and botanical landmarks have dimensional joined leaves and petals with grounded bearing assemblies.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/garden-scenery.ts": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "generatorHashes": {
+    "scripts/export-garden-preview.ts": "c7915b01b6c962255340d6c54130f438090fd207949db036a5dd35225747faf4",
+    "scripts/render-garden-preview.py": "f3b357b04c72abe9d68687339193e47ec05674e25011f16c208656fb042b0a83",
+    "scripts/freeze-garden-enrichment-cameras.ts": "62fb72ddb9807b5a2c7b240275cfb9c0da1bbe195fb92ccdc04e020cedbc4f15",
+    "scripts/render-garden-enrichment-preview.py": "7b0f439a19a9b87c88c532441690fa22acf0b06e5661f39840818e2a69b17969",
+    "docs/garden-enrichment-cameras.json": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+    "docs/garden-enrichment-final-views.json": "b0cfa7b80c6e5eb31b9fcdc31a4d4f38c8e8393af678cc6f6d04d92541a06186"
+  },
+  "geometryJsonSha256": "2ec1fbf4b70e9fa0eee1c2aa9703e285275e6371488d151009ffda1abb104373",
+  "geometryTexturesRoutesThemeSha256": "ec333b19565eecfc50f7cf9efd4eb6916c41e3fa551b7be7f461bf3b08f3accc",
+  "frozenCameraManifestSha256": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Garden connected sunlit meadow",
+      "normalFloat32Sha256": "050f70d30fa802ca28f73eaebba17554138394633104c1f097c2e16c9e79d752",
+      "positionFloat32Sha256": "11ccdb7e74ad92c2a547c6f1a1176a1fcd044d63e4201ff22d34864d11790709"
+    },
+    {
+      "batch": "Garden connected deep fern terraces",
+      "normalFloat32Sha256": "26b2319e12a1d38e340f64df408065cc20dab4f00895657a0c9e2d2f1fcfd306",
+      "positionFloat32Sha256": "2b738b22a4e22370ee52e679df02238f9d5d19859e8fadcfb8d775a57fc34205"
+    },
+    {
+      "batch": "Garden planted rich soil",
+      "normalFloat32Sha256": "b6b35654a7f41179aec64fdefff437680deff1a0e0cdebabe7934985ab9f5c61",
+      "positionFloat32Sha256": "70bc9b3c31eb1e89cc1ffa710e65b041173252356a6c776ef4ca475874efe04f"
+    },
+    {
+      "batch": "Garden warm dressed garden paving",
+      "normalFloat32Sha256": "6201a5dd28f2a9ed562ffa27175185f57109acd2eb8f9d39e91cb42c8bbe4d2e",
+      "positionFloat32Sha256": "c094de2e08ecf42c0ccc650cba23e51c87068b9d80aca755ceafca59b3508949"
+    },
+    {
+      "batch": "Garden graded gravel shoulder stitches",
+      "normalFloat32Sha256": "b4d7f4173cced2a4f2968e89f320f49f8a39d9cc73aeb6fb536b96773882da4b",
+      "positionFloat32Sha256": "f395dfb7e51fe7f6cb07a025ca823f9d3318cf730059bef29a652e1fa87142b5"
+    },
+    {
+      "batch": "Garden whole footprint limestone foundations",
+      "normalFloat32Sha256": "a8da24b42186011ebb98121a6f1a27402d6c4cde110ce3050e9a5f6ace0de8f3",
+      "positionFloat32Sha256": "fe682d70a709f5332edf0f789ae045b65541052cd149f47d6c0180468dfe3c55"
+    },
+    {
+      "batch": "Garden pale limestone planter rims",
+      "normalFloat32Sha256": "db1723b3f53cc2a2370d14bc578f36d71121c426ad063986cb65ee83baa2f52e",
+      "positionFloat32Sha256": "3ace2e8b77f3e7643fc68e82e8362609a3b5385db0a4a696bc8c072165e0830d"
+    },
+    {
+      "batch": "Garden opaque honey laminated timber",
+      "normalFloat32Sha256": "a65ba5eb291d2a79494c8a29eceb131fe007f8711c892607c09f9631970314e0",
+      "positionFloat32Sha256": "50f520102354f3a031613a69be69736c02ab40d40846389591a1e064b9adcf7f"
+    },
+    {
+      "batch": "Garden opaque umber truss webs",
+      "normalFloat32Sha256": "10ae3f5f5b3adc3734576add44b29f62b70fafc03eabc58cf664d1accc73d102",
+      "positionFloat32Sha256": "eeca8b69e2a2d06ad3bfcb32fd17ef5e420647fd662b91db072ff7ed6ce8d5b4"
+    },
+    {
+      "batch": "Garden quiet bronze bearing hardware",
+      "normalFloat32Sha256": "ac4922e88b178da7eb33d4841422bccb0e57b59b74dac256fc900d1c687838f0",
+      "positionFloat32Sha256": "f8bb9b4eb373f80c56e7bed5e24f799fa761a156329f610a7bd295a4bc035dcc"
+    },
+    {
+      "batch": "Garden emerald modeled leaf surfaces",
+      "normalFloat32Sha256": "c41a96f1db4a7086f238d3206db7a743fd916583c2b2628f3babf3f77212fa9d",
+      "positionFloat32Sha256": "fefbc47751650982fd62f91e0f029077613378988e30b80b473651290c790d05"
+    },
+    {
+      "batch": "Garden lime new modeled leaf surfaces",
+      "normalFloat32Sha256": "14af27c62b36282205375325b82ff05534600c44e4cd44a685ec9217827344d3",
+      "positionFloat32Sha256": "c76f9f6b4ee1dcaedd8191758e53bb7a57419572ee5fd5baeb39d8254d0ca841"
+    },
+    {
+      "batch": "Garden teal modeled leaf underside",
+      "normalFloat32Sha256": "6c111e85bb2ef1e9ee22895b219b5639e176acf6ee9d038425c1a8c214f705bd",
+      "positionFloat32Sha256": "31f8816cc483ecd8a771e42b4f3755778387b9bbb2644bb6420e6515d9c823c0"
+    },
+    {
+      "batch": "Garden warm ivory petal solids",
+      "normalFloat32Sha256": "56bcab4d03e97f4d72cfc1f0142fa2497eaa269c39b77a514907d508dbb8f141",
+      "positionFloat32Sha256": "80c63e56ddff9dc7bd36857e4ed1c2343e06777c98bb8fdb5475f31378b9f9f8"
+    },
+    {
+      "batch": "Garden muted coral petal solids",
+      "normalFloat32Sha256": "e9acbad6fc282b54e0ef3cdf5d21eb78ff966f3d4741e8fbb269c8d65fd0036d",
+      "positionFloat32Sha256": "75800bc18f5dab032a0e1b922b2fed7fbec7269901a9a7b1494a29ff6f649aa8"
+    },
+    {
+      "batch": "Garden amber petal and seed heart",
+      "normalFloat32Sha256": "f0e0ec99e382cb83f3d8fc90eaee52c1576bec6c771d9635e762f04326195c51",
+      "positionFloat32Sha256": "d4a5cf1db80de2811c14a9c47fcd75cfce152a461b6b7c21cb61f35fc85aa5a5"
+    },
+    {
+      "batch": "Garden continuous green stems and midribs",
+      "normalFloat32Sha256": "44b1f07ba02d5cfd99f2e9934b58ff270d04305e7d5f715b9c054fea244d4990",
+      "positionFloat32Sha256": "beeab11926f98c1f189989a2e989275589f72146681057365efd4a6e6129597c"
+    },
+    {
+      "batch": "Garden specimen board and bench oak",
+      "normalFloat32Sha256": "534608a3c13e670f084b8aa2516cd98c379b2d148d1b89cd5723517ddc2ea321",
+      "positionFloat32Sha256": "237a6fed4c9a89b930ebc087789be223a7eb6f6accba3a6669185079c50065eb"
+    },
+    {
+      "batch": "Garden ivory inset route glyphs",
+      "normalFloat32Sha256": "ac03da99225a3afcf47fd14c7a589fe9149db6a9e18ff7ec81e0ea1c79655f42",
+      "positionFloat32Sha256": "80e9114c64c2ca5784ef0e85183a3e09b330125c392ae5ba26c06f2d02e59002"
+    },
+    {
+      "batch": "Garden seed section chestnut shell",
+      "normalFloat32Sha256": "c2be61d4940f20555f0bb3094562b4dcc89f0c6fda9b8eea0da672525cdc16b4",
+      "positionFloat32Sha256": "c06bb0b5b2348d16f9c96258d84bab69859e2403c623afc4cc65ef176518a0c0"
+    },
+    {
+      "batch": "Garden seed section warm heartwood",
+      "normalFloat32Sha256": "442e72e75aff10402f59c93b4aafec2abd0d1f0c3e97179becc082dfda1b92e2",
+      "positionFloat32Sha256": "15169806f1831f3b544fc9b95bb572e546623c7f1f39f6286241f5074c87c12c"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.0
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#e4efd5",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9629999995231628,
+      0.9020000100135803
+    ]
+  },
+  "batches": 21,
+  "vertices": 130857,
+  "triangles": 118333,
+  "routeLengthsMetres": {
+    "start": 1393.9187422626346,
+    "alley": 390.46049633045226,
+    "boulevard": 441.21933090504297,
+    "finish": 923.9572174706034
+  },
+  "lapLengthsMetres": {
+    "arborWeaveLapLength": 2708.33645606369,
+    "petalSweepLapLength": 2759.095290638281
+  },
+  "framingSource": "Sixty immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
+  "originalModels": {
+    "glb": {
+      "file": "garden-original-scene.glb",
+      "sha256": "2dc7e00ee1c90ddf047d77c99b686f8e258b5bc0e40d9c83594bf7c871b79018",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
+    },
+    "blend": {
+      "file": "garden-original-scene.blend",
+      "sha256": "e357b55b1e8de92e3b5ca2161313c3527bde456b174372c78a11e8aa6f711ec3",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all65 original source-derived cameras"
+    }
+  },
+  "views": {
+    "eye-west-middle": {
+      "name": "eye-west-middle",
+      "edge": "start",
+      "s": 270,
+      "kind": "eye",
+      "sourceEye": [
+        -293.9845045193286,
+        19.937891643112092,
+        95.2047782511099
+      ],
+      "sourceTarget": [
+        -266.3422040340988,
+        21.386742262713145,
+        111.04319862678672
+      ],
+      "sourceAnchor": [
+        -293.9845045193286,
+        19.687891643112092,
+        95.2047782511099
+      ],
+      "cameraPositionBlender": [
+        -293.9844970703125,
+        -95.20478057861328,
+        19.937891006469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.3464113473892212,
+        -0.36252346634864807,
+        0.6255335807800293,
+        0.5977321267127991
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.4971519112586975,
+          -0.039418820291757584,
+          -0.8667677044868469,
+          -293.9844970703125
+        ],
+        [
+          -0.867663562297821,
+          0.02258608117699623,
+          0.49663853645324707,
+          -95.20478057861328
+        ],
+        [
+          1.6062681851281013e-08,
+          0.9989675283432007,
+          -0.045431047677993774,
+          19.937891006469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-west-middle.png",
+      "sha256": "3a77ea8f8a093cec5520f157e75f2f41da8d6bc015a1642e41342b4c74b22ae3",
+      "routeScreenBounds": [
+        -618.7913208007812,
+        -4.245294570922852,
+        814.8141479492188,
+        3.951838731765747
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -2.838064193725586,
+          0.4438813328742981,
+          -0.337665319442749,
+          0.45173749327659607
+        ],
+        "boulevard": [
+          -2.838064193725586,
+          0.4438813328742981,
+          -0.337665319442749,
+          0.4529271423816681
+        ]
+      }
+    },
+    "chase0-west-middle": {
+      "name": "chase0-west-middle",
+      "edge": "start",
+      "s": 270,
+      "kind": "chase0",
+      "sourceEye": [
+        -302.20670842318816,
+        22.93789164311209,
+        88.67443653238212
+      ],
+      "sourceTarget": [
+        -282.1326790723238,
+        19.33789164311209,
+        104.61788343125806
+      ],
+      "sourceAnchor": [
+        -293.9845045193286,
+        19.687891643112092,
+        95.2047782511099
+      ],
+      "sourceDesiredEye": [
+        -302.20670842318816,
+        22.93789164311209,
+        88.67443653238212
+      ],
+      "cameraPositionBlender": [
+        -302.2066955566406,
+        -88.6744384765625,
+        22.937891006469727
+      ],
+      "cameraQuaternionBlender": [
+        -0.32811543345451355,
+        -0.2852570712566376,
+        0.5908422470092773,
+        0.6796131730079651
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6219375729560852,
+          0.10889929533004761,
+          -0.7754579782485962,
+          -302.2066955566406
+        ],
+        [
+          -0.7830671668052673,
+          -0.08649151772260666,
+          0.6158939599990845,
+          -88.6744384765625
+        ],
+        [
+          -6.860034318378894e-09,
+          0.9902830123901367,
+          0.13906751573085785,
+          22.937891006469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-west-middle.png",
+      "sha256": "fb595d8475478ab4726360062f68c6a25970ecb7b8f535ad3150191d9cfd6219",
+      "routeScreenBounds": [
+        -1093.8116455078125,
+        -8.75440788269043,
+        3107.374755859375,
+        27.102859497070312
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -15.16669750213623,
+          0.47337284684181213,
+          -0.6435868740081787,
+          0.614429771900177
+        ],
+        "boulevard": [
+          -15.16669750213623,
+          0.47337284684181213,
+          -0.6435868740081787,
+          0.6156612634658813
+        ]
+      }
+    },
+    "eye-nursery-middle": {
+      "name": "eye-nursery-middle",
+      "edge": "start",
+      "s": 725,
+      "kind": "eye",
+      "sourceEye": [
+        -11.935278083566402,
+        25.800772586143335,
+        278.5516213501523
+      ],
+      "sourceTarget": [
+        13.830917436978847,
+        24.952508582849248,
+        297.3612159223223
+      ],
+      "sourceAnchor": [
+        -11.935278083566402,
+        25.550772586143335,
+        278.5516213501523
+      ],
+      "cameraPositionBlender": [
+        -11.935277938842773,
+        -278.5516357421875,
+        25.800771713256836
+      ],
+      "cameraQuaternionBlender": [
+        -0.32453474402427673,
+        -0.31602001190185547,
+        0.6219654083251953,
+        0.6387234330177307
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.5896171927452087,
+          0.021468861028552055,
+          -0.8073975443840027,
+          -11.935277938842773
+        ],
+        [
+          -0.8076829314231873,
+          -0.01567254401743412,
+          0.589408814907074,
+          -278.5516357421875
+        ],
+        [
+          -4.642970452550799e-09,
+          0.9996467232704163,
+          0.02658076584339142,
+          25.800771713256836
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-nursery-middle.png",
+      "sha256": "489a014a13e701f978f7618860c280960d59d5b947ba048381b5f5eae38becd9",
+      "routeScreenBounds": [
+        -1420.3363037109375,
+        -46.441741943359375,
+        2827.30712890625,
+        86.63461303710938
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          2.083996057510376,
+          0.5507542490959167,
+          5.497303009033203,
+          0.6527343392372131
+        ],
+        "boulevard": [
+          2.083996057510376,
+          0.5507542490959167,
+          8.154842376708984,
+          0.6684420108795166
+        ]
+      }
+    },
+    "chase0-nursery-middle": {
+      "name": "chase0-nursery-middle",
+      "edge": "start",
+      "s": 725,
+      "kind": "chase0",
+      "sourceEye": [
+        -19.512673803704086,
+        28.80077258614333,
+        271.28298501997045
+      ],
+      "sourceTarget": [
+        -1.0129058743589319,
+        25.200772586143334,
+        289.0289349792432
+      ],
+      "sourceAnchor": [
+        -11.935278083566402,
+        25.550772586143335,
+        278.5516213501523
+      ],
+      "sourceDesiredEye": [
+        -19.512673803704086,
+        28.80077258614333,
+        271.28298501997045
+      ],
+      "cameraPositionBlender": [
+        -19.51267433166504,
+        -271.2829895019531,
+        28.800771713256836
+      ],
+      "cameraQuaternionBlender": [
+        -0.2960349917411804,
+        -0.25736695528030396,
+        0.6035134196281433,
+        0.694188117980957
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6922512054443359,
+          0.10035912692546844,
+          -0.7146443724632263,
+          -19.51267433166504
+        ],
+        [
+          -0.7216567993164062,
+          -0.09626978635787964,
+          0.6855244636535645,
+          -271.2829895019531
+        ],
+        [
+          1.5757571247831947e-08,
+          0.9902829527854919,
+          0.139067605137825,
+          28.800771713256836
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-nursery-middle.png",
+      "sha256": "7aea6dab987b84cf9b47bf41584edeaab158dc6d958b2528d24d289cf64fa240",
+      "routeScreenBounds": [
+        -1388.1795654296875,
+        -79.93351745605469,
+        284.9372253417969,
+        47.941436767578125
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          1.649424433708191,
+          0.659798800945282,
+          3.0607097148895264,
+          0.7258573174476624
+        ],
+        "boulevard": [
+          1.649424433708191,
+          0.659798800945282,
+          3.539644956588745,
+          0.7258573174476624
+        ]
+      }
+    },
+    "eye-crown-middle": {
+      "name": "eye-crown-middle",
+      "edge": "finish",
+      "s": 330,
+      "kind": "eye",
+      "sourceEye": [
+        -64.59500321200196,
+        26.60057597372236,
+        -502.50384571362355
+      ],
+      "sourceTarget": [
+        -89.82880369527813,
+        26.107800776732063,
+        -482.94056224046085
+      ],
+      "sourceAnchor": [
+        -64.59500321200196,
+        26.35057597372236,
+        -502.50384571362355
+      ],
+      "cameraPositionBlender": [
+        -64.59500122070312,
+        502.50384521484375,
+        26.600576400756836
+      ],
+      "cameraQuaternionBlender": [
+        0.31355467438697815,
+        0.30875280499458313,
+        0.6300444006919861,
+        0.6398431658744812
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6127104759216309,
+          -0.012195679359138012,
+          0.7902134656906128,
+          -64.59500122070312
+        ],
+        [
+          0.7903075814247131,
+          -0.009455143474042416,
+          0.612637460231781,
+          502.50384521484375
+        ],
+        [
+          1.0624091828503879e-08,
+          0.9998809695243835,
+          0.01543151680380106,
+          26.600576400756836
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-crown-middle.png",
+      "sha256": "e34330867385dbbb31aac5d2366443e94c2153edab96817a06409ed436781c38",
+      "routeScreenBounds": [
+        -362.9473876953125,
+        -10.607208251953125,
+        2040.21826171875,
+        59.041107177734375
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.930851936340332,
+          0.5486627221107483,
+          203.59840393066406,
+          6.765694618225098
+        ],
+        "boulevard": [
+          0.930851936340332,
+          0.5486627221107483,
+          203.59840393066406,
+          6.765694618225098
+        ]
+      }
+    },
+    "chase0-crown-middle": {
+      "name": "chase0-crown-middle",
+      "edge": "finish",
+      "s": 330,
+      "kind": "chase0",
+      "sourceEye": [
+        -56.89187292251247,
+        29.600575973722357,
+        -509.6390950956108
+      ],
+      "sourceTarget": [
+        -75.69861444009491,
+        26.00057597372236,
+        -492.21880155940767
+      ],
+      "sourceAnchor": [
+        -64.59500321200196,
+        26.35057597372236,
+        -502.50384571362355
+      ],
+      "sourceDesiredEye": [
+        -56.89187292251247,
+        29.600575973722357,
+        -509.6390950956108
+      ],
+      "cameraPositionBlender": [
+        -56.89187240600586,
+        509.63909912109375,
+        29.600576400756836
+      ],
+      "cameraQuaternionBlender": [
+        0.30208319425582886,
+        0.26262515783309937,
+        0.6012438535690308,
+        0.6915776133537292
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6795475482940674,
+          -0.10202442854642868,
+          0.7265027165412903,
+          -56.89187240600586
+        ],
+        [
+          0.7336314916610718,
+          -0.09450313448905945,
+          0.6729443073272705,
+          509.63909912109375
+        ],
+        [
+          3.209608934184871e-08,
+          0.9902828931808472,
+          0.13906770944595337,
+          29.600576400756836
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-crown-middle.png",
+      "sha256": "d004bd37ea5c91d7fe45704049370f90ad9c6750c42a5da12195b2767c0b07f2",
+      "routeScreenBounds": [
+        -671.6839599609375,
+        -34.47434616088867,
+        1087.0184326171875,
+        46.63264465332031
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -774.2708129882812,
+          -38.395286560058594,
+          282.3551025390625,
+          15.373170852661133
+        ],
+        "boulevard": [
+          -315.93035888671875,
+          -12.758454322814941,
+          1022.7153930664062,
+          45.8801383972168
+        ]
+      }
+    },
+    "eye-original-arbor": {
+      "name": "eye-original-arbor",
+      "edge": "alley",
+      "s": 99.7072233487035,
+      "kind": "eye",
+      "sourceEye": [
+        192.48292667351043,
+        19.599999999999998,
+        -242.82571761878626
+      ],
+      "sourceTarget": [
+        208.2327216814079,
+        19.6,
+        -270.5721111967237
+      ],
+      "sourceAnchor": [
+        192.48292667351043,
+        19.349999999999998,
+        -242.82571761878626
+      ],
+      "cameraPositionBlender": [
+        192.48292541503906,
+        242.82571411132812,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6836777925491333,
+        0.6836777925491333,
+        -0.18051236867904663,
+        -0.18051236867904663
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          0.8696611523628235,
+          0.0,
+          -0.4936491847038269,
+          192.48292541503906
+        ],
+        [
+          -0.4936491847038269,
+          -7.854195160916788e-08,
+          -0.8696612119674683,
+          242.82571411132812
+        ],
+        [
+          0.0,
+          1.0000001192092896,
+          -7.854195160916788e-08,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-original-arbor.png",
+      "sha256": "2c76a7b9195e6e198afe50a0e277b3518397a36eaaf0af41f0d93045cbaea28f",
+      "routeScreenBounds": [
+        -514.71240234375,
+        -4.481379985809326,
+        713.2982177734375,
+        10.398125648498535
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -2.8218414783477783,
+          -6.903515815734863,
+          17.470537185668945,
+          3.656912326812744
+        ],
+        "boulevard": [
+          -177.1262969970703,
+          -44.791996002197266,
+          1405.832763671875,
+          8.141129493713379
+        ]
+      }
+    },
+    "chase0-original-arbor": {
+      "name": "chase0-original-arbor",
+      "edge": "alley",
+      "s": 99.7072233487035,
+      "kind": "chase0",
+      "sourceEye": [
+        189.0383736721762,
+        22.599999999999994,
+        -232.90679355309248
+      ],
+      "sourceTarget": [
+        197.44804811687513,
+        18.999999999999996,
+        -257.1232658215881
+      ],
+      "sourceAnchor": [
+        192.48292667351043,
+        19.349999999999998,
+        -242.82571761878626
+      ],
+      "sourceDesiredEye": [
+        189.0383736721762,
+        22.599999999999994,
+        -232.90679355309248
+      ],
+      "cameraPositionBlender": [
+        189.0383758544922,
+        232.90679931640625,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7441603541374207,
+        0.6469582915306091,
+        -0.10913808643817902,
+        -0.1255355030298233
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          0.944659411907196,
+          0.045621514320373535,
+          -0.3248650133609772,
+          189.0383758544922
+        ],
+        [
+          -0.32805272936820984,
+          0.13137145340442657,
+          -0.9354801774024963,
+          232.90679931640625
+        ],
+        [
+          5.916334089306474e-09,
+          0.9902830123901367,
+          0.13906753063201904,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase0-original-arbor.png",
+      "sha256": "0050de60446f25ab0b7b5d29f7ef00cdef64273c1c2d666b8364ef762d4a3c8c",
+      "routeScreenBounds": [
+        -2392.835693359375,
+        -83.82666015625,
+        732.1166381835938,
+        26.280776977539062
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -1171.2864990234375,
+          -1885.819091796875,
+          49.50885772705078,
+          4.574029445648193
+        ],
+        "boulevard": [
+          -74.5887680053711,
+          -24.02451515197754,
+          194.54544067382812,
+          7.6515960693359375
+        ]
+      }
+    },
+    "garden-overview": {
+      "name": "garden-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "garden-overview.png",
+      "sha256": "e752f0239db052f87b56963a3b504f6e40b8f16685292e65637124aa622e72f9",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        385.4844970703125,
+        1339.6361083984375,
+        885.7286376953125
+      ],
+      "cameraQuaternionBlender": [
+        0.14035584032535553,
+        0.07375182211399078,
+        0.45927152037620544,
+        0.8740312457084656
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Verdant Canopy circuit: connected planted terraces, upper three-lobe fold rhythm, low western basin return, both physical Arbor Weave and Petal Sweep roads, open timber lattice and grounded botanical assemblies. Exact emitted source geometry; approximate offline CPU lighting, materials and shadows.",
+      "routeScreenBounds": [
+        0.3085373640060425,
+        0.23232093453407288,
+        0.7462665438652039,
+        0.7512999773025513
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.3701660633087158,
+          0.25311359763145447,
+          0.44584545493125916,
+          0.45614200830459595
+        ],
+        "boulevard": [
+          0.3360886573791504,
+          0.25311359763145447,
+          0.44584545493125916,
+          0.45614200830459595
+        ]
+      },
+      "orthographicScaleMetres": 1727.80029296875,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9497218728065491,
+          -0.17760655283927917,
+          0.2578456699848175,
+          385.4844970703125
+        ],
+        [
+          0.31309500336647034,
+          -0.5387399196624756,
+          0.7821323275566101,
+          1339.6361083984375
+        ],
+        [
+          -8.644869353702234e-08,
+          0.8235383033752441,
+          0.5672606825828552,
+          885.7286376953125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "garden-topdown": {
+      "name": "garden-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "garden-topdown.png",
+      "sha256": "271762318ca7a6a6b1e0e7d148aa0254bb5b17793e8303de33441ac35ef15dd0",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -9.999995231628418,
+        140,
+        1519.0738525390625
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead original source geometry with both complete physical alternatives: Arbor Weave and Petal Sweep. Actual banked widths, owned split/merge unions, upper garden folds and connected terrace contours remain unchanged. No terrain or arbor roof member is hidden to expose roads.",
+      "routeScreenBounds": [
+        0.30786973237991333,
+        0.17834387719631195,
+        0.7056590914726257,
+        0.83891361951828
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.36837661266326904,
+          0.23033905029296875,
+          0.39385852217674255,
+          0.4927119016647339
+        ],
+        "boulevard": [
+          0.3078695237636566,
+          0.23033905029296875,
+          0.3794724643230438,
+          0.4927119016647339
+        ]
+      },
+      "orthographicScaleMetres": 1829.4576416015625,
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          -9.999995231628418
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          140.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1519.0738525390625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "garden-driver-reveal": {
+      "name": "garden-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 30,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "garden-driver-reveal.png",
+      "sha256": "b680602afe9016c6cc6f2910fcb9bfa63dfe7088b969b62b0fb1c4d5bb931eee",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -337.3247375488281,
+        -19.537397384643555,
+        16.85334014892578
+      ],
+      "cameraQuaternionBlender": [
+        0.11369725316762924,
+        0.11703938245773315,
+        -0.7076607346534729,
+        -0.6874525547027588
+      ],
+      "projection": "PERSP",
+      "description": "Frozen source-design driver eye on the real start road at 181.2094364941425 m, exactly 1.6 m above physical support. Actual rising road and connected planted terraces frame the approaching western fold. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -31105.4921875,
+        -2.2199976444244385,
+        890.4991455078125,
+        99.65101623535156
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -1594.6539306640625,
+          -1.526915431022644,
+          643.056640625,
+          5.547956943511963
+        ],
+        "boulevard": [
+          -3489.168212890625,
+          -2.8023130893707275,
+          1083.560302734375,
+          11.46985149383545
+        ]
+      },
+      "roadEdge": "start",
+      "roadDistanceMetres": 181.2094364941425,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "west-planted-ascent",
+        "edge": "start",
+        "s": 181.2094364941425,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -337.3247257814255,
+          15.253339388065235,
+          19.537397850254706
+        ],
+        "physicalTangent": [
+          0.2604669643619471,
+          0.02578269569743362,
+          0.9651384424416249
+        ],
+        "driverEye": [
+          -337.3247257814255,
+          16.853339388065237,
+          19.537397850254706
+        ],
+        "driverLook": [
+          -327.0347447703201,
+          17.779391351883408,
+          49.794837621735226
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": -340.06053837054117,
+              "y": 19.853339388065237,
+              "z": 9.400074264749687
+            },
+            "look": {
+              "x": -333.38121213945703,
+              "y": 16.253339388065235,
+              "z": 34.14975617170338
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": -341.23302948016214,
+              "y": 23.153339388065238,
+              "z": 5.055507013818964
+            },
+            "look": {
+              "x": -334.48420050424903,
+              "y": 16.253339388065235,
+              "z": 30.062725499562873
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -327.0347447703201,
+        17.779391351883408,
+        49.794837621735226
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9467494487762451,
+          -0.009325416758656502,
+          -0.3218362033367157,
+          -337.3247375488281
+        ],
+        [
+          -0.3219712972640991,
+          0.027421535924077034,
+          0.9463522434234619,
+          -19.537397384643555
+        ],
+        [
+          1.1846656633451857e-07,
+          0.999580442905426,
+          -0.028963865712285042,
+          16.85334014892578
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "garden-arbor-passage": {
+      "name": "garden-arbor-passage",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 14.595168113708496,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "garden-arbor-passage.png",
+      "sha256": "8bf6a2dbb39a0d6f6d128fc519ed05a5e55c4a7cfb3cdaf24b4ed5e504da4deb",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        192.48292541503906,
+        242.82571411132812,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6211032867431641,
+        0.7515881061553955,
+        -0.17123593389987946,
+        -0.1415073275566101
+      ],
+      "projection": "PERSP",
+      "description": "Actual Arbor Weave road support at 99.7072233487035 m, eye exactly 1.6 m above it, looking toward genuine opaque timber portals, joined truss webs and open purlin/lattice gaps. Physical paving, complete timber members and their grounded plinths remain present. The source-derived architectural camera looks upward; this is not the shared gameplay camera.",
+      "routeScreenBounds": [
+        -3208.267333984375,
+        -32.48158264160156,
+        317.1471252441406,
+        11.743091583251953
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -4.302218437194824,
+          -0.9398075938224792,
+          6.724648475646973,
+          3.160707712173462
+        ],
+        "boulevard": [
+          -134.83038330078125,
+          -0.5812593102455139,
+          30.59492301940918,
+          5.920383453369141
+        ]
+      },
+      "roadEdge": "alley",
+      "roadDistanceMetres": 99.7072233487035,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "arbor-portal-approach",
+        "edge": "alley",
+        "s": 99.7072233487035,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          192.48292667351043,
+          17.999999999999996,
+          -242.82571761878626
+        ],
+        "physicalTangent": [
+          0.3280526667937386,
+          0,
+          -0.9446594348279788
+        ],
+        "driverEye": [
+          192.48292667351043,
+          19.599999999999998,
+          -242.82571761878626
+        ],
+        "driverLook": [
+          208.2327216814079,
+          19.6,
+          -270.5721111967237
+        ],
+        "actualSharedChase": [
+          {
+            "view": 0,
+            "position": {
+              "x": 189.0383736721762,
+              "y": 22.599999999999994,
+              "z": -232.90679355309248
+            },
+            "look": {
+              "x": 197.44804811687513,
+              "y": 18.999999999999996,
+              "z": -257.1232658215881
+            }
+          },
+          {
+            "view": 1,
+            "position": {
+              "x": 187.56213667160435,
+              "y": 25.9,
+              "z": -228.65582609636658
+            },
+            "look": {
+              "x": 196.05931926260473,
+              "y": 18.999999999999996,
+              "z": -253.12428654967374
+            }
+          }
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        224.99695013795548,
+        34,
+        -310.4770551964865
+      ],
+      "opaqueTimberAndLiteralOpenGaps": true,
+      "firstPortalScreenBounds": [
+        0.20239484310150146,
+        0.2832548916339874,
+        0.9549999833106995,
+        0.850346028804779
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.9013078808784485,
+          -0.08161644637584686,
+          -0.4254208505153656,
+          192.48292541503906
+        ],
+        [
+          -0.43317911028862,
+          -0.16981801390647888,
+          -0.8851653933525085,
+          242.82571411132812
+        ],
+        [
+          -4.594326696860662e-08,
+          0.9820899367332458,
+          -0.1884128600358963,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "garden-crown-bloom": {
+      "name": "garden-crown-bloom",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 40,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "garden-crown-bloom.png",
+      "sha256": "10a92165ece78b56141914721841b28fda405eb96e6c4dd68dffab69d6d23dda",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -165.32000732421875,
+        590.7175903320312,
+        44.46037673950195
+      ],
+      "cameraQuaternionBlender": [
+        0.267340749502182,
+        0.21075649559497833,
+        -0.5821198225021362,
+        -0.7384085059165955
+      ],
+      "projection": "PERSP",
+      "description": "Original Crown Bloom Terrace: thick dimensional coral and ivory petals in two joined whorls, shared receptacle and calyx, continuous supported stem and soil-seated buttressed base. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -0.7425103783607483,
+        -3.7983992099761963,
+        19.660316467285156,
+        0.8786817193031311
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -0.3954271078109741,
+          0.7657570838928223,
+          0.487173467874527,
+          0.8435477018356323
+        ],
+        "boulevard": [
+          -0.3954271078109741,
+          0.7657570838928223,
+          0.487173467874527,
+          0.8435477018356323
+        ]
+      },
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7682211995124817,
+          0.14944230020046234,
+          -0.6224974989891052,
+          -165.32000732421875
+        ],
+        [
+          -0.6401844620704651,
+          -0.17933084070682526,
+          0.7469968795776367,
+          590.7175903320312
+        ],
+        [
+          -7.875341623275744e-08,
+          0.9723720550537109,
+          0.23343642055988312,
+          44.46037673950195
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/garden-overview.webp",
+    "sha256": "380c8be1d2f66112fac62c42bb39d2104d0b7f2494acd773a97103b271f30f79",
+    "resolution": [
+      1280,
+      720
+    ],
+    "sourceView": "garden-overview"
+  },
+  "finalPairedProofSha256": "22c3ceece5b0f83578cd8eb1f18ba3a1b7415732da7ee357a4c4e6ba6ac722c4",
+  "reopenedModelProofSha256": "f702f28915e5b70d54c77fab8a6928b24611611b702d35742a3e98baa6c04150",
+  "localCatalogUpdaterSha256": "434814d1c447ddd28107f25b97f6913ef941aff8b0524a11c06ab163468c439c"
+}

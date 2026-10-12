@@ -1,0 +1,21 @@
+{
+  "schema": "garden-enrichment-final-view-selection-v1",
+  "frozenCameraManifestSha256": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+  "samples": 48,
+  "views": [
+    "eye-west-middle",
+    "chase0-west-middle",
+    "eye-nursery-middle",
+    "chase0-nursery-middle",
+    "eye-crown-middle",
+    "chase0-crown-middle",
+    "eye-original-arbor",
+    "chase0-original-arbor",
+    "garden-overview",
+    "garden-topdown",
+    "garden-driver-reveal",
+    "garden-arbor-passage",
+    "garden-crown-bloom"
+  ],
+  "notice": "Eight frozen native-projection road-eye/chase views including preserved arbor approach, plus the unchanged five original catalog cameras. Catalog architectural images are not native-driving evidence."
+}

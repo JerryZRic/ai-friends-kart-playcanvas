@@ -1,7 +1,8 @@
 {
   "kind": "offline-native-geometry-render",
   "description": "Exact original static runtime garden mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. The original connected planted terraces follow the physical road, the timber arbor has literal open gaps between opaque joined members, and botanical landmarks have dimensional joined leaves and petals with grounded bearing assemblies.",
-  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Approximate warm garden daylight, AgX view transform, zero exposure. All original static batches included. No gameplay/GPU or FPS claim.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
   "sourceHashes": {
     "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
     "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
@@ -11,52 +12,197 @@
     "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
     "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
     "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
-    "src/garden-scenery.ts": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "src/garden-scenery.ts": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
     "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
     "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
     "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
   },
-  "geometryTexturesRoutesThemeSha256": "1a06e71a012a869063de3076df982dfac2d23c6443a3e6da1747cc15d9ae131a",
   "generatorHashes": {
     "scripts/export-garden-preview.ts": "c7915b01b6c962255340d6c54130f438090fd207949db036a5dd35225747faf4",
-    "scripts/render-garden-preview.py": "f3b357b04c72abe9d68687339193e47ec05674e25011f16c208656fb042b0a83"
+    "scripts/render-garden-preview.py": "f3b357b04c72abe9d68687339193e47ec05674e25011f16c208656fb042b0a83",
+    "scripts/freeze-garden-enrichment-cameras.ts": "62fb72ddb9807b5a2c7b240275cfb9c0da1bbe195fb92ccdc04e020cedbc4f15",
+    "scripts/render-garden-enrichment-preview.py": "7b0f439a19a9b87c88c532441690fa22acf0b06e5661f39840818e2a69b17969",
+    "docs/garden-enrichment-cameras.json": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+    "docs/garden-enrichment-final-views.json": "b0cfa7b80c6e5eb31b9fcdc31a4d4f38c8e8393af678cc6f6d04d92541a06186"
+  },
+  "geometryJsonSha256": "2ec1fbf4b70e9fa0eee1c2aa9703e285275e6371488d151009ffda1abb104373",
+  "geometryTexturesRoutesThemeSha256": "ec333b19565eecfc50f7cf9efd4eb6916c41e3fa551b7be7f461bf3b08f3accc",
+  "frozenCameraManifestSha256": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Garden connected sunlit meadow",
+      "normalFloat32Sha256": "050f70d30fa802ca28f73eaebba17554138394633104c1f097c2e16c9e79d752",
+      "positionFloat32Sha256": "11ccdb7e74ad92c2a547c6f1a1176a1fcd044d63e4201ff22d34864d11790709"
+    },
+    {
+      "batch": "Garden connected deep fern terraces",
+      "normalFloat32Sha256": "26b2319e12a1d38e340f64df408065cc20dab4f00895657a0c9e2d2f1fcfd306",
+      "positionFloat32Sha256": "2b738b22a4e22370ee52e679df02238f9d5d19859e8fadcfb8d775a57fc34205"
+    },
+    {
+      "batch": "Garden planted rich soil",
+      "normalFloat32Sha256": "b6b35654a7f41179aec64fdefff437680deff1a0e0cdebabe7934985ab9f5c61",
+      "positionFloat32Sha256": "70bc9b3c31eb1e89cc1ffa710e65b041173252356a6c776ef4ca475874efe04f"
+    },
+    {
+      "batch": "Garden warm dressed garden paving",
+      "normalFloat32Sha256": "6201a5dd28f2a9ed562ffa27175185f57109acd2eb8f9d39e91cb42c8bbe4d2e",
+      "positionFloat32Sha256": "c094de2e08ecf42c0ccc650cba23e51c87068b9d80aca755ceafca59b3508949"
+    },
+    {
+      "batch": "Garden graded gravel shoulder stitches",
+      "normalFloat32Sha256": "b4d7f4173cced2a4f2968e89f320f49f8a39d9cc73aeb6fb536b96773882da4b",
+      "positionFloat32Sha256": "f395dfb7e51fe7f6cb07a025ca823f9d3318cf730059bef29a652e1fa87142b5"
+    },
+    {
+      "batch": "Garden whole footprint limestone foundations",
+      "normalFloat32Sha256": "a8da24b42186011ebb98121a6f1a27402d6c4cde110ce3050e9a5f6ace0de8f3",
+      "positionFloat32Sha256": "fe682d70a709f5332edf0f789ae045b65541052cd149f47d6c0180468dfe3c55"
+    },
+    {
+      "batch": "Garden pale limestone planter rims",
+      "normalFloat32Sha256": "db1723b3f53cc2a2370d14bc578f36d71121c426ad063986cb65ee83baa2f52e",
+      "positionFloat32Sha256": "3ace2e8b77f3e7643fc68e82e8362609a3b5385db0a4a696bc8c072165e0830d"
+    },
+    {
+      "batch": "Garden opaque honey laminated timber",
+      "normalFloat32Sha256": "a65ba5eb291d2a79494c8a29eceb131fe007f8711c892607c09f9631970314e0",
+      "positionFloat32Sha256": "50f520102354f3a031613a69be69736c02ab40d40846389591a1e064b9adcf7f"
+    },
+    {
+      "batch": "Garden opaque umber truss webs",
+      "normalFloat32Sha256": "10ae3f5f5b3adc3734576add44b29f62b70fafc03eabc58cf664d1accc73d102",
+      "positionFloat32Sha256": "eeca8b69e2a2d06ad3bfcb32fd17ef5e420647fd662b91db072ff7ed6ce8d5b4"
+    },
+    {
+      "batch": "Garden quiet bronze bearing hardware",
+      "normalFloat32Sha256": "ac4922e88b178da7eb33d4841422bccb0e57b59b74dac256fc900d1c687838f0",
+      "positionFloat32Sha256": "f8bb9b4eb373f80c56e7bed5e24f799fa761a156329f610a7bd295a4bc035dcc"
+    },
+    {
+      "batch": "Garden emerald modeled leaf surfaces",
+      "normalFloat32Sha256": "c41a96f1db4a7086f238d3206db7a743fd916583c2b2628f3babf3f77212fa9d",
+      "positionFloat32Sha256": "fefbc47751650982fd62f91e0f029077613378988e30b80b473651290c790d05"
+    },
+    {
+      "batch": "Garden lime new modeled leaf surfaces",
+      "normalFloat32Sha256": "14af27c62b36282205375325b82ff05534600c44e4cd44a685ec9217827344d3",
+      "positionFloat32Sha256": "c76f9f6b4ee1dcaedd8191758e53bb7a57419572ee5fd5baeb39d8254d0ca841"
+    },
+    {
+      "batch": "Garden teal modeled leaf underside",
+      "normalFloat32Sha256": "6c111e85bb2ef1e9ee22895b219b5639e176acf6ee9d038425c1a8c214f705bd",
+      "positionFloat32Sha256": "31f8816cc483ecd8a771e42b4f3755778387b9bbb2644bb6420e6515d9c823c0"
+    },
+    {
+      "batch": "Garden warm ivory petal solids",
+      "normalFloat32Sha256": "56bcab4d03e97f4d72cfc1f0142fa2497eaa269c39b77a514907d508dbb8f141",
+      "positionFloat32Sha256": "80c63e56ddff9dc7bd36857e4ed1c2343e06777c98bb8fdb5475f31378b9f9f8"
+    },
+    {
+      "batch": "Garden muted coral petal solids",
+      "normalFloat32Sha256": "e9acbad6fc282b54e0ef3cdf5d21eb78ff966f3d4741e8fbb269c8d65fd0036d",
+      "positionFloat32Sha256": "75800bc18f5dab032a0e1b922b2fed7fbec7269901a9a7b1494a29ff6f649aa8"
+    },
+    {
+      "batch": "Garden amber petal and seed heart",
+      "normalFloat32Sha256": "f0e0ec99e382cb83f3d8fc90eaee52c1576bec6c771d9635e762f04326195c51",
+      "positionFloat32Sha256": "d4a5cf1db80de2811c14a9c47fcd75cfce152a461b6b7c21cb61f35fc85aa5a5"
+    },
+    {
+      "batch": "Garden continuous green stems and midribs",
+      "normalFloat32Sha256": "44b1f07ba02d5cfd99f2e9934b58ff270d04305e7d5f715b9c054fea244d4990",
+      "positionFloat32Sha256": "beeab11926f98c1f189989a2e989275589f72146681057365efd4a6e6129597c"
+    },
+    {
+      "batch": "Garden specimen board and bench oak",
+      "normalFloat32Sha256": "534608a3c13e670f084b8aa2516cd98c379b2d148d1b89cd5723517ddc2ea321",
+      "positionFloat32Sha256": "237a6fed4c9a89b930ebc087789be223a7eb6f6accba3a6669185079c50065eb"
+    },
+    {
+      "batch": "Garden ivory inset route glyphs",
+      "normalFloat32Sha256": "ac03da99225a3afcf47fd14c7a589fe9149db6a9e18ff7ec81e0ea1c79655f42",
+      "positionFloat32Sha256": "80e9114c64c2ca5784ef0e85183a3e09b330125c392ae5ba26c06f2d02e59002"
+    },
+    {
+      "batch": "Garden seed section chestnut shell",
+      "normalFloat32Sha256": "c2be61d4940f20555f0bb3094562b4dcc89f0c6fda9b8eea0da672525cdc16b4",
+      "positionFloat32Sha256": "c06bb0b5b2348d16f9c96258d84bab69859e2403c623afc4cc65ef176518a0c0"
+    },
+    {
+      "batch": "Garden seed section warm heartwood",
+      "normalFloat32Sha256": "442e72e75aff10402f59c93b4aafec2abd0d1f0c3e97179becc082dfda1b92e2",
+      "positionFloat32Sha256": "15169806f1831f3b544fc9b95bb572e546623c7f1f39f6286241f5074c87c12c"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.0
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#e4efd5",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9629999995231628,
+      0.9020000100135803
+    ]
   },
   "batches": 21,
-  "vertices": 117223,
-  "triangles": 108557,
+  "vertices": 130857,
+  "triangles": 118333,
   "routeLengthsMetres": {
     "start": 1393.9187422626346,
     "alley": 390.46049633045226,
     "boulevard": 441.21933090504297,
     "finish": 923.9572174706034
   },
-  "normalShading": {
-    "storage": "Original source normal vectors in a FLOAT_VECTOR POINT mesh attribute, transformed (x,y,z) to (x,-z,y) and stored at float32 precision",
-    "mapping": "Each original loop uses its unchanged source vertex index to interpolate the corresponding POINT vector",
-    "shader": "Attribute Vector -> object-to-world NORMAL transform -> vector normalization -> multiply by (1 - 2 * Backfacing) -> Principled BSDF Normal; matches runtime twoSidedLighting=true",
-    "blenderCornerEncodingNotice": "Built-in custom-corner encoding can differ, especially at degenerate poles when present. The render uses the preserved source vector attribute instead; no original triangles are removed."
-  },
-  "framingSource": "Union of exact left/right routeRoadSamples, independent edge samples including all endpoints, and emitted road-face vertices from start, Arbor Weave (alley), Petal Sweep (boulevard) and finish. Overview/topdown also include emitted component and non-heightfield camera bounds. Camera fitting reserves at least six percent on every side.",
   "lapLengthsMetres": {
     "arborWeaveLapLength": 2708.33645606369,
     "petalSweepLapLength": 2759.095290638281
   },
+  "framingSource": "Sixty immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
   "originalModels": {
     "glb": {
       "file": "garden-original-scene.glb",
-      "sha256": "73ec5e11a03df54d0d0a1e0e24515911fcddce0309463f59beb99ce713490b77",
-      "note": "Complete static geometry in original +Y-up coordinates and float32 GPU precision, original UVs/normals/material settings, embedded original procedural texture PNGs. glTF PBR response can differ from the runtime."
+      "sha256": "2dc7e00ee1c90ddf047d77c99b686f8e258b5bc0e40d9c83594bf7c871b79018",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
     },
     "blend": {
       "file": "garden-original-scene.blend",
-      "sha256": "ddef89351023376fe3b5f104d5bfc85dc9481c5d6edf35847bb77b6a0b5ad4de",
-      "note": "Editable original mesh batches, packed source textures, original UVs and exact float32 source normal POINT attributes driving normalized, two-sided object-to-world shading. Built-in Blender corner encoding can differ at degenerate poles. Approximate offline lighting/camera."
+      "sha256": "e357b55b1e8de92e3b5ca2161313c3527bde456b174372c78a11e8aa6f711ec3",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all65 original source-derived cameras"
     }
   },
   "views": {
     "garden-overview": {
+      "name": "garden-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "garden-overview.png",
-      "sha256": "cbdae8138c22693cac9ee7204a42819bad786c997e97c1639ea4e8eb021e906a",
+      "sha256": "e752f0239db052f87b56963a3b504f6e40b8f16685292e65637124aa622e72f9",
       "resolution": [
         1920,
         1080
@@ -75,58 +221,86 @@
       "projection": "ORTHO",
       "description": "Complete original Verdant Canopy circuit: connected planted terraces, upper three-lobe fold rhythm, low western basin return, both physical Arbor Weave and Petal Sweep roads, open timber lattice and grounded botanical assemblies. Exact emitted source geometry; approximate offline CPU lighting, materials and shadows.",
       "routeScreenBounds": [
-        0.3085367977619171,
-        0.2323208451271057,
-        0.7462666034698486,
-        0.751300036907196
+        0.3085373640060425,
+        0.23232093453407288,
+        0.7462665438652039,
+        0.7512999773025513
       ],
       "physicalBranchScreenBounds": {
         "alley": [
           0.3701660633087158,
-          0.2531135380268097,
+          0.25311359763145447,
           0.44584545493125916,
-          0.45614197850227356
+          0.45614200830459595
         ],
         "boulevard": [
-          0.336088627576828,
-          0.2531135380268097,
+          0.3360886573791504,
+          0.25311359763145447,
           0.44584545493125916,
-          0.45614197850227356
+          0.45614200830459595
         ]
       },
       "orthographicScaleMetres": 1727.80029296875,
-      "fittedSubjectScreenBounds": [
-        0.11825063079595566,
-        0.06999990344047546,
-        0.88174968957901,
-        0.929999828338623
-      ]
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9497218728065491,
+          -0.17760655283927917,
+          0.2578456699848175,
+          385.4844970703125
+        ],
+        [
+          0.31309500336647034,
+          -0.5387399196624756,
+          0.7821323275566101,
+          1339.6361083984375
+        ],
+        [
+          -8.644869353702234e-08,
+          0.8235383033752441,
+          0.5672606825828552,
+          885.7286376953125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "garden-topdown": {
+      "name": "garden-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "garden-topdown.png",
-      "sha256": "0e2687d5fc3de7a2035e92dcb4172b412404f4300e1535b96af324804d351a61",
+      "sha256": "271762318ca7a6a6b1e0e7d148aa0254bb5b17793e8303de33441ac35ef15dd0",
       "resolution": [
         1920,
         1440
       ],
       "cameraPositionBlender": [
         -9.999995231628418,
-        140.0,
+        140,
         1519.0738525390625
       ],
       "cameraQuaternionBlender": [
         7.549790126404332e-08,
-        0.0,
-        -0.0,
-        -1.0
+        0,
+        0,
+        -1
       ],
       "projection": "ORTHO",
       "description": "True overhead original source geometry with both complete physical alternatives: Arbor Weave and Petal Sweep. Actual banked widths, owned split/merge unions, upper garden folds and connected terrace contours remain unchanged. No terrain or arbor roof member is hidden to expose roads.",
       "routeScreenBounds": [
-        0.3078695237636566,
+        0.30786973237991333,
         0.17834387719631195,
         0.7056590914726257,
-        0.8389146327972412
+        0.83891361951828
       ],
       "physicalBranchScreenBounds": {
         "alley": [
@@ -143,16 +317,44 @@
         ]
       },
       "orthographicScaleMetres": 1829.4576416015625,
-      "fittedSubjectScreenBounds": [
-        0.22669491171836853,
-        0.07000003010034561,
-        0.7733051180839539,
-        0.9299999475479126
-      ]
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          -9.999995231628418
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          140.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1519.0738525390625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "garden-driver-reveal": {
+      "name": "garden-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 30,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "garden-driver-reveal.png",
-      "sha256": "49de636ee5bc132311d9ecc57990bbe6147fff1f54398f5c12fee1ccb4924e70",
+      "sha256": "b680602afe9016c6cc6f2910fcb9bfa63dfe7088b969b62b0fb1c4d5bb931eee",
       "resolution": [
         1800,
         1125
@@ -171,26 +373,25 @@
       "projection": "PERSP",
       "description": "Frozen source-design driver eye on the real start road at 181.2094364941425 m, exactly 1.6 m above physical support. Actual rising road and connected planted terraces frame the approaching western fold. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
       "routeScreenBounds": [
-        -31105.130859375,
-        -13.951211929321289,
-        4534.95751953125,
-        99.64971160888672
+        -31105.4921875,
+        -2.2199976444244385,
+        890.4991455078125,
+        99.65101623535156
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          -1594.65283203125,
-          -1.5269125699996948,
-          643.0567626953125,
-          5.547945022583008
+          -1594.6539306640625,
+          -1.526915431022644,
+          643.056640625,
+          5.547956943511963
         ],
         "boulevard": [
-          -3489.16357421875,
-          -2.8023080825805664,
-          1083.5606689453125,
-          11.469820022583008
+          -3489.168212890625,
+          -2.8023130893707275,
+          1083.560302734375,
+          11.46985149383545
         ]
       },
-      "lensMillimetres": 30.0,
       "roadEdge": "start",
       "roadDistanceMetres": 181.2094364941425,
       "heightAboveSampledRoadMetres": 1.6,
@@ -252,11 +453,45 @@
         -327.0347447703201,
         17.779391351883408,
         49.794837621735226
-      ]
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9467494487762451,
+          -0.009325416758656502,
+          -0.3218362033367157,
+          -337.3247375488281
+        ],
+        [
+          -0.3219712972640991,
+          0.027421535924077034,
+          0.9463522434234619,
+          -19.537397384643555
+        ],
+        [
+          1.1846656633451857e-07,
+          0.999580442905426,
+          -0.028963865712285042,
+          16.85334014892578
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "garden-arbor-passage": {
+      "name": "garden-arbor-passage",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 14.595168113708496,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "garden-arbor-passage.png",
-      "sha256": "8a90b74af4a54337d96a473038e6f6c5b3346d62b9353ea49fe05d5bbfc5c82c",
+      "sha256": "8bf6a2dbb39a0d6f6d128fc519ed05a5e55c4a7cfb3cdaf24b4ed5e504da4deb",
       "resolution": [
         1800,
         1125
@@ -275,26 +510,25 @@
       "projection": "PERSP",
       "description": "Actual Arbor Weave road support at 99.7072233487035 m, eye exactly 1.6 m above it, looking toward genuine opaque timber portals, joined truss webs and open purlin/lattice gaps. Physical paving, complete timber members and their grounded plinths remain present. The source-derived architectural camera looks upward; this is not the shared gameplay camera.",
       "routeScreenBounds": [
-        -3207.90478515625,
-        -32.4778938293457,
-        317.1505126953125,
-        11.743062019348145
+        -3208.267333984375,
+        -32.48158264160156,
+        317.1471252441406,
+        11.743091583251953
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          -4.30214262008667,
-          -0.939821720123291,
-          6.724644184112549,
-          3.160706043243408
+          -4.302218437194824,
+          -0.9398075938224792,
+          6.724648475646973,
+          3.160707712173462
         ],
         "boulevard": [
-          -134.82601928710938,
-          -0.5812671184539795,
-          30.59514045715332,
-          5.920158863067627
+          -134.83038330078125,
+          -0.5812593102455139,
+          30.59492301940918,
+          5.920383453369141
         ]
       },
-      "lensMillimetres": 14.595168113708496,
       "roadEdge": "alley",
       "roadDistanceMetres": 99.7072233487035,
       "heightAboveSampledRoadMetres": 1.6,
@@ -363,11 +597,45 @@
         0.2832548916339874,
         0.9549999833106995,
         0.850346028804779
-      ]
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.9013078808784485,
+          -0.08161644637584686,
+          -0.4254208505153656,
+          192.48292541503906
+        ],
+        [
+          -0.43317911028862,
+          -0.16981801390647888,
+          -0.8851653933525085,
+          242.82571411132812
+        ],
+        [
+          -4.594326696860662e-08,
+          0.9820899367332458,
+          -0.1884128600358963,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     },
     "garden-crown-bloom": {
+      "name": "garden-crown-bloom",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 40,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
       "file": "garden-crown-bloom.png",
-      "sha256": "841098b7e76a34deca69c074459de5b5a0a2a76a2f96646fd48d94f861ff314b",
+      "sha256": "10a92165ece78b56141914721841b28fda405eb96e6c4dd68dffab69d6d23dda",
       "resolution": [
         1800,
         1125
@@ -386,34 +654,64 @@
       "projection": "PERSP",
       "description": "Original Crown Bloom Terrace: thick dimensional coral and ivory petals in two joined whorls, shared receptacle and calyx, continuous supported stem and soil-seated buttressed base. Every terrain, road, rail and landmark mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
       "routeScreenBounds": [
-        -0.7425106167793274,
-        -3.798431634902954,
-        19.660327911376953,
+        -0.7425103783607483,
+        -3.7983992099761963,
+        19.660316467285156,
         0.8786817193031311
       ],
       "physicalBranchScreenBounds": {
         "alley": [
-          -0.3954271972179413,
+          -0.3954271078109741,
           0.7657570838928223,
           0.487173467874527,
           0.8435477018356323
         ],
         "boulevard": [
-          -0.3954271972179413,
+          -0.3954271078109741,
           0.7657570838928223,
           0.487173467874527,
           0.8435477018356323
         ]
       },
-      "lensMillimetres": 40.0
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7682211995124817,
+          0.14944230020046234,
+          -0.6224974989891052,
+          -165.32000732421875
+        ],
+        [
+          -0.6401844620704651,
+          -0.17933084070682526,
+          0.7469968795776367,
+          590.7175903320312
+        ],
+        [
+          -7.875341623275744e-08,
+          0.9723720550537109,
+          0.23343642055988312,
+          44.46037673950195
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
     }
   },
   "menuAsset": {
     "file": "public/map-previews/garden-overview.webp",
-    "sha256": "8a47cf9ef27fce65c81e345059e2dc2b22c169b2c9a2c2575e8cae9cd69fdc27",
+    "sha256": "380c8be1d2f66112fac62c42bb39d2104d0b7f2494acd773a97103b271f30f79",
     "resolution": [
       1280,
       720
-    ]
-  }
+    ],
+    "sourceView": "garden-overview"
+  },
+  "finalPairedProofSha256": "22c3ceece5b0f83578cd8eb1f18ba3a1b7415732da7ee357a4c4e6ba6ac722c4",
+  "reopenedModelProofSha256": "f702f28915e5b70d54c77fab8a6928b24611611b702d35742a3e98baa6c04150",
+  "localCatalogUpdaterSha256": "434814d1c447ddd28107f25b97f6913ef941aff8b0524a11c06ab163468c439c"
 }

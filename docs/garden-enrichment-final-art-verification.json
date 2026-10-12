@@ -1,0 +1,169 @@
+{
+  "schema": "garden-portable-final-art-evidence-v1",
+  "status": "verified-final-artifacts",
+  "sourceBaseCommit": "36a4e224e915f2481513c805a9ed4f6445199d6d",
+  "candidateSourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/garden-scenery.ts": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a"
+  },
+  "frozenCameraManifestSha256": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+  "viewSelectionSha256": "b0cfa7b80c6e5eb31b9fcdc31a4d4f38c8e8393af678cc6f6d04d92541a06186",
+  "baselineGeometrySha256": "0fae36b7b43a1e4649d2fe1ca6811f8f89d1d5118e965163fbda4f1b1a6e2ca4",
+  "candidateGeometrySha256": "2ec1fbf4b70e9fa0eee1c2aa9703e285275e6371488d151009ffda1abb104373",
+  "baselineRenderRecordSha256": "136436db0406ec6491509a467fcd25080007ef1ffd87c37d769ed0afb9479629",
+  "candidateRenderRecordSha256": "97f61aff83cc4f38844eb0848842f6d7e5be5975aebabbe013a1b94e77b9bc75",
+  "baselineReopenedModelProofSha256": "309caa2fdc3643e37f523d404f5e6d721e83447d85ac4d4e377d8b060f0ce3f0",
+  "candidateReopenedModelProofSha256": "f702f28915e5b70d54c77fab8a6928b24611611b702d35742a3e98baa6c04150",
+  "pairedRenderProofSha256": "22c3ceece5b0f83578cd8eb1f18ba3a1b7415732da7ee357a4c4e6ba6ac722c4",
+  "completeSourcePixelEqualityProofSha256": "23b6ab8ae94d27a53694e9c1a81e8162139d5e34f258ddcf3fb304aa1536fae7",
+  "visibleFirstHitProofSha256": "e1079eb8fa0c0fab980bd02bd116f0d3eb02465ad4b090cc9ab4d97272253ef9",
+  "verifiedPairCount": 13,
+  "nativeProjectionPairs": 8,
+  "unchangedCatalogPairs": 5,
+  "completeSourcePixelsCompared": 38210800,
+  "allSourcePixelsIdenticalInsideUnscaledPairs": true,
+  "visiblePrimaryGroupsMeetMinimumSpan": true,
+  "views": [
+    {
+      "name": "eye-west-middle",
+      "pairSha256": "ba5014585ec569a22021dc08ebab26488d107ba71e5f47caed3fabf826ab364c",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "b8000ab639ccbcdafe518f76542d2e39f464296c1d0b07b1143ee183aae678bb",
+      "candidateSha256": "3a77ea8f8a093cec5520f157e75f2f41da8d6bc015a1642e41342b4c74b22ae3"
+    },
+    {
+      "name": "chase0-west-middle",
+      "pairSha256": "b0a41dc03f51ad596967e211a34c19707bc52c3fe6a82b6b894de412123b773d",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "e9998d0b67cd01da7d0b6894ab29e6a64bf7d9fa57f8d0fa066d006f6b4b653e",
+      "candidateSha256": "fb595d8475478ab4726360062f68c6a25970ecb7b8f535ad3150191d9cfd6219"
+    },
+    {
+      "name": "eye-nursery-middle",
+      "pairSha256": "b99ae1e2f74835e87e46f8983bf9187f353d08ec22f1f1c9d1efc08d95d90513",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "979d333bdcc5b1d2f22cc3dc68e87b03baf640591210a0df60736febd068db8d",
+      "candidateSha256": "489a014a13e701f978f7618860c280960d59d5b947ba048381b5f5eae38becd9"
+    },
+    {
+      "name": "chase0-nursery-middle",
+      "pairSha256": "5e184a0f133dde066ccfeb9f890e705b5b27a17eb663caaced2a4d9a1f675fe1",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "8c9437d9950c9dc3cc14556fb95d7a9afef5c450a93973c3aa298f415058e1d3",
+      "candidateSha256": "7aea6dab987b84cf9b47bf41584edeaab158dc6d958b2528d24d289cf64fa240"
+    },
+    {
+      "name": "eye-crown-middle",
+      "pairSha256": "b037840ee321a0f9ad2ec39447c225b8362d7e8562187f47c5625c057c4a7a87",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "029cdeadf9b417639cae1e73acfc2e180b412a20d6059703eade24004b03c78c",
+      "candidateSha256": "e34330867385dbbb31aac5d2366443e94c2153edab96817a06409ed436781c38"
+    },
+    {
+      "name": "chase0-crown-middle",
+      "pairSha256": "ac3b33bad652cca50419545252e2252fa1372e4c9d2c0bf96ed3e4f785136c51",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "b8b155940421b5f637071e4cabd9719e2e30ae5ef5c6f1a2e621eb0317827bcf",
+      "candidateSha256": "d004bd37ea5c91d7fe45704049370f90ad9c6750c42a5da12195b2767c0b07f2"
+    },
+    {
+      "name": "eye-original-arbor",
+      "pairSha256": "a302da96fbeb324d7a021ba506b88eb3b89522787cd00e66a6b07c1ea2db5dca",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "886e1fa93b1bde9942d1f52985acc8d95e234fed992e13aa96cb079ba50d1f0a",
+      "candidateSha256": "2c76a7b9195e6e198afe50a0e277b3518397a36eaaf0af41f0d93045cbaea28f"
+    },
+    {
+      "name": "chase0-original-arbor",
+      "pairSha256": "cb406a73e6c4bd429b27f6053517c6ad4b6d149c5e5f8ce11552fe32737e82ca",
+      "sourceResolution": [
+        1280,
+        800
+      ],
+      "baselineSha256": "e4a7a6f7bce361b150387ee3ea9d8485a6a0f8e2001a1a31e102b8a3baf1be0f",
+      "candidateSha256": "0050de60446f25ab0b7b5d29f7ef00cdef64273c1c2d666b8364ef762d4a3c8c"
+    },
+    {
+      "name": "garden-overview",
+      "pairSha256": "e6133176f0e2906574a0cdc0c944214be044945269b4d0b340ff0a87cd25cbc6",
+      "sourceResolution": [
+        1920,
+        1080
+      ],
+      "baselineSha256": "2976c9811050f538757b1d1537e8092fa9c563ad81bd89da2fd0a4d773c595b1",
+      "candidateSha256": "e752f0239db052f87b56963a3b504f6e40b8f16685292e65637124aa622e72f9"
+    },
+    {
+      "name": "garden-topdown",
+      "pairSha256": "c3797397e6f80d8f378c2aeedeaba9eebf842d03b7b066cce582beb29e1a0ccb",
+      "sourceResolution": [
+        1920,
+        1440
+      ],
+      "baselineSha256": "6c94cf1876f54b7fc545a4647a09bde9a80e5283127478ad4c9a534f02606bbb",
+      "candidateSha256": "271762318ca7a6a6b1e0e7d148aa0254bb5b17793e8303de33441ac35ef15dd0"
+    },
+    {
+      "name": "garden-driver-reveal",
+      "pairSha256": "dd9037e6fec630cd35ee5e146d8af8f1e4c2bc544010279f2f214ff356421769",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "a131dcf9616b8a52e325ab5b0a876dfa1ee46eb39ce38c3d45c1b8052e0a3e79",
+      "candidateSha256": "b680602afe9016c6cc6f2910fcb9bfa63dfe7088b969b62b0fb1c4d5bb931eee"
+    },
+    {
+      "name": "garden-arbor-passage",
+      "pairSha256": "0c27c6d5b63a8b6ad5d59436208075eef9b3de254db6bce5d88e796a4002a862",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "6806938274abf450ee748e763bdefd4e2b398547092895838269e08ea4413b7a",
+      "candidateSha256": "8bf6a2dbb39a0d6f6d128fc519ed05a5e55c4a7cfb3cdaf24b4ed5e504da4deb"
+    },
+    {
+      "name": "garden-crown-bloom",
+      "pairSha256": "82817d5ddd9dce9c52af693a807fbdfbe7f21dc7774f6db2e975e8354be653d9",
+      "sourceResolution": [
+        1800,
+        1125
+      ],
+      "baselineSha256": "abe5b02b30b56f8482d6b89c2bbe092a0d2dd0dc7921bc3c8dbb81cd5d14fdfe",
+      "candidateSha256": "10a92165ece78b56141914721841b28fda405eb96e6c4dd68dffab69d6d23dda"
+    }
+  ],
+  "notice": "Portable evidence identities only; no private filesystem or Library identifiers. Complete original-source pixel equality and reopened model identity are verified. Offline approximate lighting/materials, no native gameplay/GPU/FPS claim. The art-direction document records visual review separately."
+}
