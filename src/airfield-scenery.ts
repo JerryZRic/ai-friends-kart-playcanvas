@@ -27,6 +27,7 @@ export interface AirfieldSceneGeometry extends LandSceneGeometry {
  hangar:{from:number;to:number;faces:{kind:string;points:number[][]}[];members:{id:string;kind:string;component:number;aNode:string;bNode:string}[];supports:{id:string;s:number;side:number;footprint:number[][];bottom:number;top:number;terrainLow:number;terrainHigh:number;component:number}[]};
  assemblies:{id:string;components:number[];closed:boolean}[];
  budget:{batches:number;triangles:number;vertices:number};
+ enrichmentAssemblies:any[];
 }
 export const AIRFIELD_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Copperwing Airfield concrete dry upland and opaque aircraft skins',ambient:'#d1c7a9',sky:'#d7e5e4',fogStart:1250,fogEnd:2650,cameraName:'Copperwing Airfield chase camera',sunName:'Copperwing Airfield warm late afternoon sunlight',sunColor:'#ffedc7',sunIntensity:1.55,sunEuler:[38,-29,0] as const});
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
@@ -264,6 +265,95 @@ export function buildAirfieldSceneGeometry(course:SceneryForkCourse):AirfieldSce
  for(const side of [-1,1]){const e=course.commonStart,s=e.length-118,p=point(e,s,side*(e.halfWidthAt(s)+24)),top=terrainExtrema(rect(p,5.8,1.1)).high+4.1,at=local(vec(p.x,0,p.z)),posts:AirfieldComponent[]=[];for(const x of [-2,2])posts.push(grounded('airfield-wayfinding-full-footprint-stake',at(x,0,0),.42,.48,top-.1,darkSteel));const board=box('airfield-wayfinding-bearing-museum-tablet',signFace,at(0,top-.7,0),vec(5.5,1.55,.36));for(const post of posts)contact('airfield-wayfinding-board-stake-bearing',board,post);for(let i=0;i<(side<0?2:3);i++){const icon=box('airfield-wayfinding-attached-branch-glyph',inlay,at(-1.5+i*.65,top-.7,-.20),vec(.24,side<0?.58:.97,.08));contact('airfield-wayfinding-glyph-board-bearing',icon,board);}for(const sign of [-1,1]){const arrow=beam('airfield-wayfinding-attached-direction',inlay,at(side*1.87,top-.7,-.20),at(side*.93,top-.7+sign*.43,-.20),.12,.08,'detail');contact('airfield-wayfinding-arrow-board-bearing',arrow,board);}}
  // Sparse low original dry tussocks have continuous ground-seated sockets.
  for(const [i,x,z]of [[0,-310,-190],[1,-180,-360],[2,-130,75],[3,-170,265],[4,250,445],[5,560,375],[6,705,120],[7,560,-145],[8,210,-350],[9,5,-370]]){const f=foundation('airfield-low-upland-grass-'+i,oval(vec(x,0,z),1.7,1.45,0,16),.05),at=local(vec(x,f.top,z));for(let j=0;j<7;j++){const a=j/7*Math.PI*2,p=at(Math.cos(a)*.6,0,Math.sin(a)*.6),tip=at(Math.cos(a)*1.2,1.1+(j%3)*.3,Math.sin(a)*1.2),blade=tube('airfield-grounded-dry-grass-blade',grass,[p,tip],[.14,.025],5,'detail');contact('airfield-dry-grass-full-foundation',blade,f.component,p);}}
+ // Append-only service architecture. All existing terrain, road, museum heroes,
+ // materials and physical gameplay buffers above retain their original prefixes.
+ // These founded open workshops are scenic objects, never new driving routes.
+ const enrichmentAssemblies:any[]=[],enrichmentOpenings:any[]=[];
+ const enrichStart=components.length;
+ const composition=(id:string,recipe:()=>void)=>{
+  const first=components.length,firstFoundation=foundations.length,firstContact=structuralContacts.length,firstOpening=enrichmentOpenings.length;
+  recipe();
+  const grouped=new Map<string,number[]>();for(let i=first;i<components.length;i++){const c=components[i],key=c.assembly??id+'-solid-'+i,list=grouped.get(key)??[];list.push(i);grouped.set(key,list);}
+  const ids=new Map<number,string>();let serial=0;for(const list of grouped.values()){const key=id+'-piece-'+serial++;for(const i of list)ids.set(i,key);}
+  const pieces=[...grouped.values()].map(list=>{const firstPart=components[list[0]],parts=list.map(i=>components[i]);return{...firstPart,id:ids.get(list[0]),componentIndices:list,min:[0,1,2].map(k=>Math.min(...parts.map(c=>c.min[k]))),max:[0,1,2].map(k=>Math.max(...parts.map(c=>c.max[k]))),supportOwner:[...new Set(structuralContacts.slice(firstContact).filter(q=>list.includes(q.first)).map(q=>ids.get(q.second)).filter(Boolean))]};});
+  enrichmentAssemblies.push({id,pieces,groundContacts:foundations.slice(firstFoundation).map(q=>({...q,pieceId:ids.get(q.component)})),openBayWitnesses:enrichmentOpenings.slice(firstOpening),roofSeats:structuralContacts.slice(firstContact).filter(q=>q.kind==='airfield-enrichment-roof-full-seat-bearing').map(q=>({roofPieceId:ids.get(q.first),supportPieceId:ids.get(q.second),roofUnderside:facesFor(components[q.first]).slice(0,2),supportTop:facesFor(components[q.second]).slice(2,4)}))});
+ };
+ const serviceSite=(edge:SceneryRoadEdge,s:number,offset:number)=>{const f=edge.sample(s,offset);return{p:vec(f.p.x,0,f.p.z),yaw:Math.atan2(-f.t.z,f.t.x)};};
+ const serviceWedge=(kind:string,b:Batch,at:(x:number,y:number,z:number)=>pc.Vec3,x0:number,x1:number,z0:number,z1:number,low:(z:number)=>number,high:(z:number)=>number)=>{
+  const start=b.positions.length/3;for(const y of [low,high])for(const [x,z]of [[x0,z0],[x1,z0],[x1,z1],[x0,z1]])b.vertex(at(x,y(z),z));
+  for(const t of [[0,2,1],[0,3,2],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]])b.indices.push(...t.map(i=>i+start));return bound(kind,b,start)!;
+ };
+ const openWorkshop=(name:string,p:pc.Vec3,yaw:number,width:number,depth:number,height:number,roofMaterial:Batch,endScreen:boolean,serviceBay=false)=>{
+  const f=foundation(name+'-complete-working-pad',rect(p,width+2,depth+2,yaw),.35),at=local(vec(p.x,f.top,p.z),yaw),slope=.10,roofBottom=(z:number)=>height+slope*z;
+  const seats:AirfieldComponent[]=[];
+  for(const [row,z]of [-depth/2+1,0,depth/2-1].entries()){
+   const beamBottom=roofBottom(z-.45)-.68,seat=serviceWedge(name+'-roof-bearing-'+row,darkSteel,at,-width/2+.25,width/2-.25,z-.45,z+.45,()=>beamBottom,roofBottom);seats.push(seat);
+   const xs=row===1?[-width/2+1,width/2-1]:[-width/2+1,0,width/2-1];
+   for(const [column,x]of xs.entries()){
+    const shoe=box(name+'-complete-column-shoe-'+row+'-'+column,paleStone,at(x,.24,z),vec(1.5,.48,1.5),yaw);contact('airfield-enrichment-shoe-pad-bearing',shoe,f.component);
+    const bottom=.48,post=box(name+'-blue-steel-column-'+row+'-'+column,steel,at(x,(bottom+beamBottom)/2,z),vec(.76,beamBottom-bottom,.76),yaw);contact('airfield-enrichment-column-shoe-bearing',post,shoe);contact('airfield-enrichment-beam-column-bearing',seat,post);
+   }
+  }
+  const roof=serviceWedge(name+'-thick-opaque-shed-roof',roofMaterial,at,-width/2-.7,width/2+.7,-depth/2-.6,depth/2+.6,roofBottom,z=>roofBottom(z)+.42);for(const seat of seats)contact('airfield-enrichment-roof-full-seat-bearing',roof,seat);
+  // A thick short end screen is seated on its complete pad; it does not fill
+  // the front openings or touch the columns, roof, or other opaque surfaces.
+  if(endScreen){const screen=box(name+'-founded-short-end-screen',cream,at(width/2+.45,1.8,depth/2-3.6),vec(.6,3.6,3.6),yaw);contact('airfield-enrichment-end-screen-pad-bearing',screen,f.component);}
+  // The lower runway service wing is a substantial original opaque L-plan
+  // workroom. Its cream lower wall and teal upper band form real thick solids,
+  // seated edge-to-edge outside the columns, with broad front bays left open.
+  if(serviceBay){
+   const wallHeight=height-.35,lowerHeight=3.1;
+   for(const [part,x,z,w,d]of [['rear',0,depth/2+.45,width+1.5,.6],['return',width/2+.45,.975,.6,depth-1.65]] as const){
+    const lower=box(name+'-'+part+'-cream-service-wall',cream,at(x,lowerHeight/2,z),vec(w,lowerHeight,d),yaw);contact('airfield-enrichment-service-wall-pad-bearing',lower,f.component);
+    const top=part==='return'?height-.7:wallHeight,upper=box(name+'-'+part+'-teal-service-band',teal,at(x,(lowerHeight+top)/2,z),vec(w,top-lowerHeight,d),yaw);contact('airfield-enrichment-service-band-wall-bearing',upper,lower);
+   }
+  }
+  // Both front bays have real connected empty volume through the rear beam.
+  for(const side of [-1,1]){const x=side*(width/4-.25),w=width/2-2.7,footprint=rect(at(x,0,0),w,depth-1.9,yaw),bottom=f.top+.8,top=f.top+roofBottom(-depth/2+1-.45)-.85;
+   enrichmentOpenings.push({label:name+(serviceBay?'-open-front-workroom-bay-':'-literal-through-bay-')+side,corners:[...footprint.map(q=>[q.x,bottom,q.z]),...footprint.map(q=>[q.x,top,q.z])],bottom,top,width:w,depth:depth-1.9,yaw});
+  }
+  return{pad:f,at};
+ };
+ // An original mid-scale propeller overhaul cart behind the tall service bay.
+ // Four faceted wheels have full flat bearing patches at both pad and deck;
+ // the four swept blades meet actual octagonal hub flats without hidden overlap.
+ const propellerServiceCart=(name:string,p:pc.Vec3,yaw:number)=>{
+  const f=foundation(name+'-whole-maintenance-pad',rect(p,6.5,4.6,yaw),.28),at=local(vec(p.x,f.top,p.z),yaw),radius=.9,half=radius*Math.sin(Math.PI/3),wheels:AirfieldComponent[]=[];
+  const angles=[0,30,60,120,150,180,210,240,300,330].map(a=>a*Math.PI/180);
+  for(const [i,x,z]of [[0,-2,-1.1],[1,2,-1.1],[2,-2,1.1],[3,2,1.1]]){
+   const wheel=ringLoft(name+'-flat-contact-wheel-'+i,tire,[-.24,.24].map(dz=>angles.map(a=>at(x+Math.cos(a)*radius,half+Math.sin(a)*radius,z+dz))));contact('airfield-enrichment-cart-wheel-pad-bearing',wheel,f.component);wheels.push(wheel);
+  }
+  const deck=box(name+'-blue-steel-working-deck',steel,at(0,half*2+.25,0),vec(5.6,.5,3.4),yaw);for(const wheel of wheels)contact('airfield-enrichment-cart-deck-wheel-bearing',deck,wheel);
+  const floor=half*2+.5,stand=box(name+'-broad-propeller-service-stand',cream,at(0,(floor+6.5)/2,.45),vec(2.2,6.5-floor,.6),yaw);contact('airfield-enrichment-cart-stand-deck-bearing',stand,deck);
+  const hubY=5.5,hubRadius=.8,hubFlat=hubRadius*Math.cos(Math.PI/8),hub=ringLoft(name+'-octagonal-propeller-hub',copper,[-.55,.15].map(z=>Array.from({length:8},(_,i)=>{const a=Math.PI/8+i*Math.PI/4;return at(Math.cos(a)*hubRadius,hubY+Math.sin(a)*hubRadius,z);})));contact('airfield-enrichment-propeller-hub-stand-bearing',hub,stand);
+  for(let blade=0;blade<4;blade++){
+   const angle=blade*Math.PI/2,cs=Math.cos(angle),sn=Math.sin(angle),outline=[[hubFlat,-.25],[hubFlat,.25],[2.2,.65],[3,.45],[2.85,-.05]],v=[-.4,0].flatMap(z=>outline.map(([x,y])=>at(x*cs-y*sn,hubY+x*sn+y*cs,z))),n=outline.length,faces=[[4,3,2,1,0],[5,6,7,8,9]];
+   for(let i=0;i<n;i++){const j=(i+1)%n;faces.push([i,j,j+n,i+n]);}
+   const part=closedPolyhedron(name+'-swept-spare-propeller-blade-'+blade,blade%2?brass:teal,v,faces);contact('airfield-enrichment-spare-blade-hub-flat-bearing',part,hub);
+  }
+ };
+ composition('airfield-enrichment-runway-workshop',()=>{
+  const {p,yaw}=serviceSite(course.commonStart,280,-38),at=local(p,yaw);
+  openWorkshop('airfield-enrichment-runway-low-wing',at(-13.8,0,2),yaw,18,14,5.7,teal,false,true);
+  openWorkshop('airfield-enrichment-runway-high-workshop',at(10,0,0),yaw,24,18,8.6,copper,false);
+  foundation('airfield-enrichment-runway-loading-terrace',rect(at(-3,0,-15),32,5,yaw),.65);
+ });
+ composition('airfield-enrichment-perimeter-court',()=>{
+  const {p,yaw}=serviceSite(course.alternates.boulevard,195,-34),at=local(p,yaw);
+  openWorkshop('airfield-enrichment-perimeter-low-bay',at(-15,0,0),yaw,16,14,7.0,teal,false);
+  openWorkshop('airfield-enrichment-perimeter-high-bay',at(15,0,2),yaw,18,16,10.0,copper,true);
+  propellerServiceCart('airfield-enrichment-perimeter-propeller-overhaul-cart',at(15,0,14),yaw);
+  foundation('airfield-enrichment-perimeter-low-apron',rect(at(-16,0,-8.75),18,1,yaw),.7);
+  foundation('airfield-enrichment-perimeter-return-apron',rect(at(16,0,-8.5),20,2,yaw),.9);
+  const gap=rect(at(-.5,0,0),10.5,15,yaw),bottom=terrainExtrema(gap).high+.25,top=bottom+5;
+  enrichmentOpenings.push({label:'airfield-enrichment-perimeter-open-sky-court',corners:[...gap.map(q=>[q.x,bottom,q.z]),...gap.map(q=>[q.x,top,q.z])],bottom,top,width:10.5,depth:15,yaw});
+ });
+ composition('airfield-enrichment-return-terrace',()=>{
+  const {p,yaw}=serviceSite(course.commonFinish,775,-50),at=local(p,yaw);
+  openWorkshop('airfield-enrichment-return-low-shelter',at(0,0,5),yaw,22,12,6.1,copper,true);
+  foundation('airfield-enrichment-return-long-terrace',rect(at(-16,0,-11),26,7,yaw),1.25);
+  foundation('airfield-enrichment-return-short-terrace',rect(at(16,0,-10),22,8,yaw),1.6);
+ });
  // Reveal targets are actual emitted triangle centroids.
  for(const sight of sightlines){const seed=[...sight.target];let best=Infinity;for(const c of components.filter(c=>c.landmark===sight.targetId))for(const face of facesFor(c)){const p=[0,1,2].map(k=>(face[0][k]+face[1][k]+face[2][k])/3),d=p.reduce((n,v,k)=>n+(v-seed[k])**2,0);if(d<best){best=d;sight.target=p;}}}
  // Exact non-road triangle provenance preserves roof slots, engine openings,
@@ -271,9 +361,10 @@ export function buildAirfieldSceneGeometry(course:SceneryForkCourse):AirfieldSce
  meshBlock('airfield-actual-source-shoulder-triangles',shoulderFaces.map(f=>f.points));
  meshBlock('airfield-actual-open-hangar-triangles',components.filter(c=>c.kind.startsWith('hangar-')).flatMap(facesFor));
  for(const p of plots)meshBlock('airfield-actual-'+p.id,components.filter(c=>c.landmark===p.id).flatMap(facesFor));
- meshBlock('airfield-actual-other-source-triangles',components.filter(c=>!c.landmark&&!c.kind.startsWith('hangar-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders').flatMap(facesFor));
+ meshBlock('airfield-actual-other-source-triangles',components.slice(0,enrichStart).filter(c=>!c.landmark&&!c.kind.startsWith('hangar-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders').flatMap(facesFor));
+ for(const group of enrichmentAssemblies)meshBlock(group.id+'-exact-triangles',group.pieces.flatMap((piece:any)=>piece.componentIndices.flatMap((i:number)=>facesFor(components[i]))));
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
  if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Airfield emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
- return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:hangar.from,to:hangar.to,overheadClearance:24.95}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts,bearingPoints,structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,hangar,assemblies,budget};
+ return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:hangar.from,to:hangar.to,overheadClearance:24.95}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts,bearingPoints,structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,hangar,assemblies,budget,enrichmentAssemblies};
 }
