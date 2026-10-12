@@ -7,7 +7,17 @@ import {cameraTerrainHeight,type CameraBlocker,type CameraHeightfield} from './l
 
 type Face={edgeId:string;distance:number;points:number[][]};
 type Component={kind:string;batch:string;vertexStart:number;vertexEnd:number;min:number[];max:number[];landmark?:string};
+export interface WorkshopEnrichmentPiece {
+  id:string;role:string;batch:string;vertexStart:number;vertexEnd:number;indexStart:number;indexEnd:number;
+  supportOwner:string;min:number[];max:number[];
+}
+export interface WorkshopEnrichmentAssembly {
+  id:string;label:string;support:string;pieces:WorkshopEnrichmentPiece[];
+  groundContacts:{pieceId:string;footprint:number[][];bottom:number;supportType:string;supportTop?:number}[];
+  cameraBlockerKind:string;
+}
 export interface WorkshopSceneGeometry extends LandSceneGeometry {
+  enrichmentAssemblies:WorkshopEnrichmentAssembly[];
   routeRoadSamples:{edgeId:string;distance:number;left:number[];right:number[];rendered:boolean}[];
   roadFaces:Face[];roadUndersideFaces:Face[];supportFaces:Face[];
   cameraObstacles:(CameraBlocker&{kind:string;triangles?:number[][][]})[];
@@ -45,8 +55,8 @@ export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSce
   const seam=new Batch('Workshop dark joints and contact trim','#493a2b',.96,'wood');
   const maple=new Batch('Workshop continuous maple worktops','#b98345',.86,'wood');
   const endgrain=new Batch('Workshop cut wood edges and fascia','#d4aa6a',.91,'wood');
-  const road=new Batch('Workshop pale sealed maple road','#dabd7e',.87,'wood');
-  const inlay=new Batch('Workshop cabinet road inlay','#8eab90',.89,'wood');
+  const road=new Batch('Workshop pale sealed maple road','#dabd7e',.87,'none');
+  const inlay=new Batch('Workshop cabinet road inlay','#8eab90',.89,'none');
   const soffit=new Batch('Workshop open deck undersides','#705034',.97,'wood');
   const rail=new Batch('Workshop forest green safety rails','#285b4a',.78,'none',.22);
   const steel=new Batch('Workshop brushed steel tools','#a6b2ad',.48,'none',.7);
@@ -247,8 +257,91 @@ export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSce
     {name:'cabinet branch preview',eye:tuple(point(course.commonStart,1366.5928793955359,0,1.6)),target:[280,66,-190],radius:3,targetId:'tool-cabinet-bank'},
     {name:'outside rim tool silhouette',eye:tuple(point(course.alternates.boulevard,216.7751306434509,0,1.6)),target:[423.05358192538665,78,-223.39097080856916],radius:3,targetId:'upright-drafting-square'},
   ];
+  // Additive room architecture and work-zone compositions. Original geometry,
+  // all original texture pixels, road/support ownership and all geometry prefixes
+  // above are unchanged. New pieces own exact indexed faces, explicit supports
+  // and exact camera meshes; open windows/furniture are never solid AABBs.
+  const enrichmentAssemblies:WorkshopEnrichmentAssembly[]=[];
+  const assembly=(id:string,label:string,support:string,build:(a:WorkshopEnrichmentAssembly)=>void)=>{
+    const a:WorkshopEnrichmentAssembly={id,label,support,pieces:[],groundContacts:[],cameraBlockerKind:'workshop-enrichment-'+id+'-exact-faces'};
+    build(a);const triangles:number[][][]=[];
+    for(const piece of a.pieces){const batch=batches.find(b=>b.name===piece.batch)!;for(let i=piece.indexStart;i<piece.indexEnd;i+=3)triangles.push(batch.indices.slice(i,i+3).map(k=>batch.positions.slice(k*3,k*3+3)));}
+    meshBlock(a.cameraBlockerKind,triangles);enrichmentAssemblies.push(a);
+  };
+  const newBox=(a:WorkshopEnrichmentAssembly,id:string,role:string,b:Batch,p:pc.Vec3,size:pc.Vec3,supportOwner:string,paint=false,yaw=0)=>{
+    const vertexStart=b.positions.length/3,indexStart=b.indices.length;
+    box('enrichment-'+a.id+'-'+id,b,p,size,yaw);
+    // Quiet paint is sampled at a constant original-texture coordinate; timber
+    // uses a much broader grain scale. Neither changes shared texture pixels.
+    for(let i=vertexStart*2;i<b.uvs.length;i++)b.uvs[i]=paint?(i%2?.31:.23):b.uvs[i]*.085;
+    const c=components[components.length-1],piece={id:a.id+'/'+id,role,batch:b.name,vertexStart,vertexEnd:b.positions.length/3,indexStart,indexEnd:b.indices.length,supportOwner,min:c.min,max:c.max};
+    a.pieces.push(piece);return piece.id;
+  };
+  const rootBox=(a:WorkshopEnrichmentAssembly,id:string,role:string,b:Batch,x:number,z:number,w:number,d:number,top:number,paint=false,yaw=0)=>{
+    const at=local(vec(x,0,z),yaw),footprint=[at(-w/2,0,-d/2),at(w/2,0,-d/2),at(w/2,0,d/2),at(-w/2,0,d/2)];
+    const supportTop=a.support==='floor'?undefined:35.55,bottom=supportTop===undefined?floorExtrema(footprint).low-.12:supportTop-.025;
+    const pieceId=newBox(a,id,role,b,vec(x,(top+bottom)/2,z),vec(w,top-bottom,d),a.support,paint,yaw);
+    a.groundContacts.push({pieceId,footprint:footprint.map(tuple),bottom,supportType:a.support,...(supportTop===undefined?{}:{supportTop})});return pieceId;
+  };
+  // North daylight wall: opaque light panels, deep timber piers and sage dado.
+  // This is a background wall on the emitted room floor, not an enclosing roof.
+  assembly('north-window-wall','Five opaque high-window bays behind the spool','floor',a=>{
+    const piers:number[]=[-450,-270,-90,90,270,450];
+    const owners=piers.map((x,i)=>rootBox(a,'pier-'+i,'floor-grounded timber pier',maple,x,188.5,9,9,118+(i%2)*4));
+    for(let i=0;i<piers.length-1;i++){
+      const x=(piers[i]+piers[i+1])/2,w=piers[i+1]-piers[i]-7;
+      const base=rootBox(a,'sage-dado-'+i,'broad painted lower wall',wall,x,190,w,4,31,true);
+      newBox(a,'dado-cap-'+i,'thick maple sill',endgrain,vec(x,32,188.1),vec(w+1,2.4,8),base);
+      newBox(a,'window-head-'+i,'warm lintel spanning open window',maple,vec(x,112.5,188.5),vec(w+3,9,8),owners[i]);
+      newBox(a,'window-mullion-'+i,'structural central mullion',endgrain,vec(x,72,190),vec(3.8,80,4.5),a.id+'/dado-cap-'+i);
+      newBox(a,'window-transom-'+i,'upper window division',endgrain,vec(x,89,190.7),vec(w-1,2.8,3.2),a.id+'/window-mullion-'+i);
+      for(const side of [-1,1])newBox(a,'opaque-pane-'+i+'-'+side,'opaque ivory high-window panel',ivory,vec(x+side*w/4,72,192.0),vec((w-2)/2,77.5,.8),a.id+'/window-head-'+i);
+      // Large recessed rectangles read as painted joinery, not tiny décor.
+      for(const side of [-1,1])newBox(a,'dado-inset-'+i+'-'+side,'recessed sage panel',green,vec(x+side*w*.24,15,187.82),vec(w*.43,21,.5),base,true);
+    }
+  });
+  // West wall remains behind the lamp/return; east and south stay open.
+  assembly('west-window-wall','Three opaque windows framing the return','floor',a=>{
+    const zs=[-368,-190,-12,166];
+    const owners=zs.map((z,i)=>rootBox(a,'pier-'+i,'floor-grounded timber pier',maple,-472,z,9,9,103+(i%2)*6));
+    for(let i=0;i<zs.length-1;i++){
+      const z=(zs[i]+zs[i+1])/2,d=zs[i+1]-zs[i]-7;
+      const base=rootBox(a,'sage-dado-'+i,'painted return wall',wall,-474,z,4,d,28,true);
+      newBox(a,'dado-cap-'+i,'warm return sill',endgrain,vec(-471.8,29,z),vec(8,2.4,d+1),base);
+      newBox(a,'window-head-'+i,'return window lintel',maple,vec(-472,98.5,z),vec(8,8,d+3),owners[i]);
+      newBox(a,'window-mullion-'+i,'return window central mullion',endgrain,vec(-473,63,z),vec(4.5,70,3.8),base);
+      newBox(a,'window-transom-'+i,'return window upper division',endgrain,vec(-473.7,78,z),vec(3.2,2.8,d-1),a.id+'/window-mullion-'+i);
+      for(const side of [-1,1])newBox(a,'opaque-pane-'+i+'-'+side,'opaque ivory return-window panel',ivory,vec(-475,63.5,z+side*d/4),vec(1,66.5,(d-2)/2),a.id+'/window-head-'+i);
+      for(const side of [-1,1])newBox(a,'dado-inset-'+i+'-'+side,'recessed painted return panel',green,vec(-471.82,14,z+side*d*.24),vec(.5,19,d*.43),base,true);
+    }
+  });
+  // Oversized but low furniture creates room-scale work zones. Each table has
+  // separated legs and stretchers, a real thin worktop and supported contents.
+  const serviceTable=(id:string,label:string,support:string,x:number,z:number,w:number,d:number,top:number)=>{
+    assembly(id,label,support,a=>{
+      const legs:string[]=[];
+      for(const sx of [-1,1])for(const sz of [-1,1])legs.push(rootBox(a,'leg-'+sx+'-'+sz,'separate grounded table leg',green,x+sx*(w/2-5),z+sz*(d/2-5),6,6,top-.65,true));
+      for(const sz of [-1,1])newBox(a,'apron-'+sz,'visible structural table apron',green,vec(x,top-5,z+sz*(d/2-5)),vec(w-6,8,3.8),legs[sz<0?0:1],true);
+      const worktop=newBox(a,'worktop','thin joined worktop',endgrain,vec(x,top-.6,z),vec(w,1.6,d),legs[0]);
+      // Three broad storage fronts keep the middle layer readable from racing
+      // cameras. They are supported by the tabletop, with inset drawer gaps.
+      for(let i=0;i<3;i++){
+        const cx=x+(i-1)*w*.29,ww=w*.265,h=8+(i%2)*3;
+        const body=newBox(a,'case-'+i,'painted parts box',green,vec(cx,top+h/2,z+d*.12),vec(ww,h,d*.5),worktop,true);
+        newBox(a,'case-front-'+i,'broad removable parts-tray front',wall,vec(cx,top+h*.51,z-d*.135),vec(ww-2,h-1,1.3),body,true);
+        newBox(a,'case-pull-'+i,'large brass tray pull',brass,vec(cx,top+h*.5,z-d*.135-.75),vec(ww*.35,.7,.6),a.id+'/case-front-'+i);
+      }
+      // Two unpainted planing blanks lie directly on the actual tabletop.
+      for(let i=0;i<2;i++)newBox(a,'maple-blank-'+i,'large supported cut timber',lightWood,vec(x+(i?1:-1)*w*.22,top+1,z-d*.29),vec(w*.36,2.2,d*.19),worktop);
+    });
+  };
+  serviceTable('clock-service-table','Low clockmaker parts service table','floor',-254,34,112,56,31);
+  serviceTable('cabinet-companion-table','Low organized cabinet parts table','east-workbench-slab',231,-183,58,46,50);
+  serviceTable('rim-parts-bench','Long low rim-side assembly bench','east-workbench-slab',427,-153,42,42,53);
+  serviceTable('lamp-material-table','Warm material table behind the lamp work zone','floor',-203,-237,88,34,24);
+  serviceTable('return-lumber-table','Low timber stock table beside the descent','floor',-251,-362,116,25,22);
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}
   const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
   if(budget.batches>24||budget.triangles>=110000||budget.vertices>=200000)throw new Error('Workshop emitted geometry budget exceeded: '+JSON.stringify(budget));
-  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,supportFaces,props,structures:[{kind:'viaduct',from:1250,to:1350,overheadClearance:24.3}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,gears,drawers,railMembers,bridgeMembers,sightlines,terrainGrid,budget};
+  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,supportFaces,props,structures:[{kind:'viaduct',from:1250,to:1350,overheadClearance:24.3}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,gears,drawers,railMembers,bridgeMembers,sightlines,terrainGrid,enrichmentAssemblies,budget};
 }
