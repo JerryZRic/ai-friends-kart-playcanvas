@@ -1,0 +1,71 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import * as pc from 'playcanvas';
+import {buildDesertSceneGeometry,DESERT_SCENE_THEME} from '../src/desert-scenery';
+import {DESERT_COURSE,DESERT_ROAD_EDGES} from '../src/maps/desert';
+import {cameraTerrainHeight,safeLandCamera} from '../src/land-camera';
+import {footprintArea,intersectRoadFootprint,RoadFootprintIndex,roadFootprint,sampleRoadFootprints} from '../src/land-road-mesh';
+const geometry=buildDesertSceneGeometry(DESERT_COURSE),sourceIndex=new RoadFootprintIndex(sampleRoadFootprints(DESERT_ROAD_EDGES,1.65));
+const vec=(p:readonly number[])=>new pc.Vec3(...p),byName=new Map(geometry.batches.map(b=>[b.name,b]));
+const components=(kind:string)=>geometry.components.filter(c=>c.kind===kind);
+const points=(c:typeof geometry.components[number])=>{const b=byName.get(c.batch)!;return Array.from({length:c.vertexEnd-c.vertexStart},(_,i)=>b.positions.slice((c.vertexStart+i)*3,(c.vertexStart+i)*3+3));};
+const intersects=(a:typeof geometry.components[number],b:typeof a)=>[0,1,2].every(k=>Math.min(a.max[k],b.max[k])-Math.max(a.min[k],b.min[k])>1e-6);
+const terrainExtrema=(polygon:number[][])=>{const f=geometry.terrainGrid,b=byName.get('Desert connected sculpted dune terrain')!,poly=polygon.map(vec),x0=Math.max(0,Math.floor((Math.min(...poly.map(p=>p.x))-f.minX)/f.dx)),x1=Math.min(f.columns-2,Math.floor((Math.max(...poly.map(p=>p.x))-f.minX)/f.dx)),z0=Math.max(0,Math.floor((Math.min(...poly.map(p=>p.z))-f.minZ)/f.dz)),z1=Math.min(f.rows-2,Math.floor((Math.max(...poly.map(p=>p.z))-f.minZ)/f.dz));let low=Infinity,high=-Infinity;for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++){const i=z*f.columns+x;for(const ids of [[i,i+f.columns,i+1],[i+1,i+f.columns,i+f.columns+1]])for(const p of intersectRoadFootprint(ids.map(i=>vec(b.positions.slice(i*3,i*3+3))),poly)){low=Math.min(low,p.y);high=Math.max(high,p.y);}}return{low,high};};
+
+test('original desert geometry is finite, fully indexed and inside every hard budget',()=>{
+ assert.equal(geometry.trackId,'desert');let vertices=0,triangles=0;for(const b of geometry.batches){vertices+=b.positions.length/3;triangles+=b.indices.length/3;assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));}assert.deepEqual(geometry.budget,{batches:22,triangles,vertices});assert.ok(triangles>60000&&triangles<110000);assert.ok(vertices<200000);assert.equal(geometry.landmarks.length,5);assert.equal(DESERT_SCENE_THEME.textureLabel,'sunweave original desert textures');
+});
+test('road samples preserve physical source metres and exact banked full width',()=>{
+ assert.equal(geometry.routeRoadSamples.length,DESERT_ROAD_EDGES.reduce((n,e)=>n+Math.ceil(e.length/1.65),0));for(const s of geometry.routeRoadSamples){const e=DESERT_ROAD_EDGES.find(e=>e.id===s.edgeId)!;for(const [l,p]of [[-e.halfWidthAt(s.distance),s.left],[e.halfWidthAt(s.distance),s.right]] as const)assert.ok(e.sample(s.distance,l).p.distance(vec(p))<1e-8);}
+ assert.equal(geometry.roadFaces.length,geometry.roadUndersideFaces.length);for(let i=0;i<geometry.roadFaces.length;i++)for(let j=0;j<3;j++){const a=geometry.roadFaces[i].points[j],b=geometry.roadUndersideFaces[i].points[2-j];assert.ok(Math.abs(a[0]-b[0])+Math.abs(a[2]-b[2])<1e-8);assert.ok(Math.abs(a[1]-b[1]-.22)<1e-8);}
+});
+test('full spatial road union contains no duplicate split or merge triangles',()=>{
+ const faces=geometry.roadFaces.map(f=>roadFootprint(DESERT_ROAD_EDGES.find(e=>e.id===f.edgeId)!,f.distance,f.points.map(vec))),index=new RoadFootprintIndex(faces),ids=new Map(faces.map((f,i)=>[f,i]));let checked=0;for(const a of faces)for(const b of index.query(a.minX,a.maxX,a.minZ,a.maxZ)){if(a.edge===b.edge||ids.get(a)!>=ids.get(b)!)continue;assert.ok(footprintArea(intersectRoadFootprint(a.points,b.points))<1e-6);checked++;}assert.ok(checked>100);
+ for(const s of geometry.shoulderFaces){const poly=s.points.map(vec);for(const r of sourceIndex.query(Math.min(...poly.map(p=>p.x)),Math.max(...poly.map(p=>p.x)),Math.min(...poly.map(p=>p.z)),Math.max(...poly.map(p=>p.z))))assert.ok(footprintArea(intersectRoadFootprint(poly,r.points))<1e-6,'shoulder enters full source union');}
+});
+test('protected 27000 triangle landform heightfield exactly matches every emitted diagonal',()=>{
+ const f=geometry.terrainGrid,b=byName.get('Desert connected sculpted dune terrain')!;assert.equal(b.indices.length/3,27000);assert.equal(f.heights.length,b.positions.length/3);for(let i=0;i<f.heights.length;i++)assert.equal(f.heights[i],b.positions[i*3+1]);let k=0;for(let z=0;z<f.rows-1;z++)for(let x=0;x<f.columns-1;x++){const i=z*f.columns+x;assert.deepEqual(b.indices.slice(k,k+6),[i,i+f.columns,i+1,i+1,i+f.columns,i+f.columns+1]);k+=6;}assert.ok(Math.max(...f.heights)-Math.min(...f.heights)>42);assert.ok(components('wind-carved-sandstone-corridor').length>=3);
+});
+test('the exact complete terrain stays beneath every legal road triangle',()=>{
+ const f=geometry.terrainGrid,b=byName.get('Desert connected sculpted dune terrain')!;for(let z=0;z<f.rows-1;z++)for(let x=0;x<f.columns-1;x++){const i=z*f.columns+x;for(const ids of [[i,i+f.columns,i+1],[i+1,i+f.columns,i+f.columns+1]]){const t=ids.map(i=>vec(b.positions.slice(i*3,i*3+3)));for(const r of sourceIndex.query(Math.min(...t.map(p=>p.x)),Math.max(...t.map(p=>p.x)),Math.min(...t.map(p=>p.z)),Math.max(...t.map(p=>p.z)))){const terrain=intersectRoadFootprint(t,r.points);if(footprintArea(terrain)<1e-10)continue;for(const p of terrain){const [a,c,d]=r.points,den=(c.x-a.x)*(d.z-a.z)-(c.z-a.z)*(d.x-a.x),u=((p.x-a.x)*(d.z-a.z)-(p.z-a.z)*(d.x-a.x))/den,v=((c.x-a.x)*(p.z-a.z)-(c.z-a.z)*(p.x-a.x))/den,y=a.y+u*(c.y-a.y)+v*(d.y-a.y);assert.ok(p.y<=y-.37,'terrain protrudes through physical road');}}}}
+});
+test('whole footing and rooted support footprints match exact emitted terrain',()=>{
+ for(const d of geometry.groundedDetails){const e=terrainExtrema(d.footprint);assert.ok(d.bottom<e.low+1e-8,d.kind);assert.equal(d.terrainY,cameraTerrainHeight(geometry.terrainGrid,d.x,d.z));}for(const f of geometry.foundations){const e=terrainExtrema(f.footprint);assert.ok(Math.abs(f.terrainLow-e.low)<1e-8);assert.ok(Math.abs(f.terrainHigh-e.high)<1e-8);assert.ok(f.bottom<e.low);assert.ok(f.top>=e.high,f.kind);const cap=components(f.kind+'-foundation-cap').find(c=>Math.abs(c.max[1]-f.top)<1e-8&&c.min[0]<=f.footprint[0][0]+1e-6);assert.ok(cap,'foundation metadata names actual top surface');}
+});
+test('complete source component provenance covers every emitted triangle without duplication',()=>{
+ for(const b of geometry.batches){const uses=new Uint8Array(b.indices.length/3);for(const c of geometry.components.filter(c=>c.batch===b.name)){for(let i=c.indexStart;i<c.indexEnd;i+=3){assert.equal(uses[i/3]++,0,c.kind+' overlaps primitive range');for(const id of b.indices.slice(i,i+3))assert.ok(id>=c.vertexStart&&id<c.vertexEnd,c.kind+' false index range');}const p=points(c);for(let k=0;k<3;k++){assert.equal(c.min[k],Math.min(...p.map(p=>p[k])));assert.equal(c.max[k],Math.max(...p.map(p=>p[k])));}}assert.ok(uses.every(n=>n===1),b.name+' has unowned triangles');}
+});
+test('two independent elliptical arch holes retain 52m opening and actual 11.8m lane',()=>{
+ assert.equal(geometry.arches.length,2);for(const arch of geometry.arches){assert.equal(arch.portalWidth,52);assert.equal(arch.driveableWidth,11.8);assert.equal(arch.headroom,20);assert.ok(arch.triangles.length>2000);const blocker={kind:'arch',min:[arch.center[0]-5,17,259],max:[arch.center[0]+5,55,321],triangles:arch.triangles};for(const z of [270,280,290,300,310])for(const y of [19,25,36]){const a={x:arch.center[0]+12,y,z},d={x:arch.center[0]-12,y,z};assert.deepEqual(safeLandCamera(a,d,[blocker],.45),d);}const a={x:arch.center[0],y:60,z:290},d={x:arch.center[0],y:45,z:290};assert.ok(safeLandCamera(a,d,[blocker]).y>53.8);}
+ assert.equal(components('arch-seated-closed-elliptical-voussoir').length,48);assert.ok(!geometry.cameraObstacles.some(b=>!b.triangles&&!b.heightfield));
+});
+test('ring feet, pier caps and continuous plinths make connected load bearing chains',()=>{
+ const caps=components('arch-pier-ring-contact-cap'),piers=components('arch-six-course-pier-ashlar'),plinths=components('arch-outward-plinth-foundation-cap'),rings=components('arch-seated-closed-elliptical-voussoir');assert.equal(caps.length,4);assert.equal(piers.length,48);for(const c of caps){assert.ok(piers.some(p=>intersects(c,p)));assert.ok(rings.some(r=>intersects(c,r)||Math.abs(r.min[1]-c.max[1])<.02));}for(const p of piers.filter(p=>p.min[1]<18.1))assert.ok(plinths.some(f=>intersects(p,f)||Math.abs(p.min[1]-f.max[1])<1e-8));
+});
+test('caravan cloth and supported timber are individually modeled and joined',()=>{
+ const posts=components('sail-tapered-post'),shoes=components('sail-post-seated-stone-shoe'),bars=components('sail-post-seated-crossbar'),cloth=components('sail-supported-sagging-closed-cloth');assert.equal(posts.length,12);assert.equal(cloth.length,3);for(const p of posts){assert.ok(shoes.some(s=>intersects(p,s)));assert.ok(bars.some(b=>intersects(p,b)));}for(const c of cloth)assert.ok(bars.some(b=>intersects(c,b)));assert.equal(components('sail-cloth-joined-edge-hem').length,12);assert.equal(components('sail-corner-anchored-rope').length,12);
+});
+test('all five hero assemblies stay inside their full planned reservation cylinders',()=>{
+ for(const l of geometry.landmarks){assert.ok(sourceIndex.clearAt(l.position[0],l.position[2],l.radius+19.9),l.kind);for(const c of geometry.components.filter(c=>c.landmark===l.kind))for(const p of points(c)){assert.ok(Math.hypot(p[0]-l.position[0],p[2]-l.position[2])<=l.radius+1e-8,`${l.kind}/${c.kind} footprint`);assert.ok(p[1]<=l.position[1]+l.height+1e-8,`${l.kind}/${c.kind} height`);}}
+});
+test('pottery, beacon recesses, kiln chamber and grounded open cart wheels retain original craft detail',()=>{
+ for(const kind of ['amphora-foot-belly-neck-hollow-lip','amphora-seated-paired-handle','beacon-deep-slit-back','beacon-supported-concentric-dial-ring','beacon-socket-seated-gnomon','kiln-mouth-separated-lower-masonry','kiln-recessed-firing-chamber-back','waystation-deep-niche-back','cart-eight-joined-wheel-spokes'])assert.ok(components(kind).length,kind);
+ const wheels=components('cart-open-grounded-wheel-rim'),axles=components('cart-joined-through-axle');assert.equal(wheels.length,2);assert.equal(components('cart-eight-joined-wheel-spokes').length,16);for(const w of wheels){const f=geometry.foundations.find(f=>f.kind===w.landmark)!;assert.ok(w.min[1]>=f.top-.14&&w.min[1]<=f.top+.01);assert.ok(axles.some(a=>intersects(w,a)));}
+});
+test('lane rails and complete wayfinding board/posts/icons retain exact source camera blockers',()=>{
+ assert.ok(geometry.railMembers.length>100);const rail=geometry.cameraObstacles.find(b=>b.kind==='exact-exposed-desert-rail-triangles'),sign=geometry.cameraObstacles.find(b=>b.kind==='desert-fork-wayfinding-exact-triangles');assert.ok(rail?.triangles&&rail.triangles.length>1000);assert.ok(sign?.triangles&&sign.triangles.length>100);assert.equal(geometry.props.filter(p=>p.kind==='desert-fork-wayfinding').length,2);
+ for(const r of geometry.railMembers){const e=DESERT_ROAD_EDGES.find(e=>e.id===r.edgeId)!;for(const p of r.points)assert.ok(sourceIndex.clearAt(p[0],p[2],.015,f=>f.edge!==e),'rail lies in another source ribbon');}
+});
+test('visual coping faces have upward winding independently of structural solid queries',()=>{
+ for(const c of components('road-edge-coping')){assert.equal(c.role,'visual-coping');assert.equal(c.solid,false);const b=byName.get(c.batch)!;for(let i=c.indexStart;i<c.indexEnd;i+=3){const [a,v,w]=b.indices.slice(i,i+3).map(k=>vec(b.positions.slice(k*3,k*3+3)));assert.ok(new pc.Vec3().cross(v.sub(a),w.sub(a)).y>0);}}
+});
+test('all closed solids have outward signed volume and circular rims weld both periodic end sections',()=>{
+ for(const c of geometry.components.filter(c=>c.solid)){const b=byName.get(c.batch)!,o=b.positions.slice(c.vertexStart*3,c.vertexStart*3+3);let volume=0;for(let i=c.indexStart;i<c.indexEnd;i+=3){const p=b.indices.slice(i,i+3).map(k=>b.positions.slice(k*3,k*3+3).map((v,j)=>v-o[j]));volume+=p[0][0]*(p[1][1]*p[2][2]-p[1][2]*p[2][1])+p[0][1]*(p[1][2]*p[2][0]-p[1][0]*p[2][2])+p[0][2]*(p[1][0]*p[2][1]-p[1][1]*p[2][0]);}assert.ok(volume>0,c.kind+' non-positive closed-solid volume');}
+ for(const c of geometry.components.filter(c=>c.kind==='cart-open-grounded-wheel-rim'||c.kind==='beacon-supported-concentric-dial-ring')){const b=byName.get(c.batch)!,edges=new Map<string,number>(),key=(i:number)=>b.positions.slice(i*3,i*3+3).map(x=>x.toFixed(6)).join(',');for(let i=c.indexStart;i<c.indexEnd;i+=3){const ids=b.indices.slice(i,i+3).map(key);for(let j=0;j<3;j++){const a=ids[j],d=ids[(j+1)%3],key=[a,d].sort().join('|');edges.set(key,(edges.get(key)??0)+1);}}assert.ok([...edges.values()].every(n=>n===2),c.kind+' has an unclosed periodic seam');}
+});
+test('kiln shelves use two continuous piers and mouth joints have no duplicate exposed coplanar faces',()=>{
+ const piers=components('kiln-shelf-grounded-masonry-ledge'),shelves=components('kiln-ledge-seated-pottery-shelf'),jambs=components('kiln-mouth-seated-jamb'),lintel=components('kiln-mouth-jamb-seated-lintel')[0];assert.equal(piers.length,2);assert.equal(shelves.length,3);for(const shelf of shelves)assert.equal(piers.filter(pier=>intersects(shelf,pier)).length,2);
+ for(const jamb of jambs)assert.ok(Math.abs(jamb.max[1]-lintel.min[1])<1e-8,'lintel must seat exactly on jamb top');
+ const pairs=[...piers.flatMap(p=>shelves.map(s=>[p,s] as const)),...jambs.map(j=>[j,lintel] as const)];
+ for(const [a,b]of pairs)for(const axis of [0,2]){const along=2-axis,vertical=Math.min(a.max[1],b.max[1])-Math.max(a.min[1],b.min[1]),width=Math.min(a.max[along],b.max[along])-Math.max(a.min[along],b.min[along]),coincident=[a.min[axis],a.max[axis]].some(x=>[b.min[axis],b.max[axis]].some(y=>Math.abs(x-y)<1e-8));assert.ok(!(coincident&&vertical>1e-8&&width>1e-8),`${a.kind}/${b.kind} duplicate exposed coplanar side faces`);}
+});

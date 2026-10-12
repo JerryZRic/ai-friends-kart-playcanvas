@@ -446,14 +446,17 @@
   "themeSha256": "377e01bc4da57a94a41a7fb598c57c80e4464d8c2f3d57028a220cf08b899e5f",
   "originalScenerySha256": "d1004e50aed1908abbfa92f83feb1f9a9435291c652560c090da658d415dad5c",
   "reviewedTestContractChanges": {
-    "tests/mountain-enrichment-contract.test.ts": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
+    "tests/mountain-enrichment-contract.test.ts": "046579533d6dff97c2b8a0ba78f03f51e54ef0c81069bb15db97d92096cc2663",
     "tests/town-gameplay-camera.test.ts": "6444c557009a271986184828a50942f4b58020568b7bba2a9bdf397f9a1ab2f7",
     "tests/quarry-scene.test.ts": "9bc08e35f64475fa5f727da1b4ecaf26c3ae1cd38c1ee31ae55eb59461b8fbfd",
     "tests/quarry-gameplay-camera.test.ts": "ca11ca65299c52c3788b198e4c35b6a7152e7c54b1ccac9da919b9b8a9c6ecf5",
     "tests/forest-scene.test.ts": "7db79e1a8b64aadc56db0d83260766b556eec26559fb62f7f798f7aa3b2c5b3f",
     "tests/harvest-scene.test.ts": "ce528b2cb2205d9b30b429b6df353f7d25d8a9318feca5b1ae80f99b4be2141b",
     "tests/harvest-independent-audit.test.ts": "e8083ac601500d8a381fe2ba49e19fde42f8fd6a9609635099817315eb5607fb",
-    "tests/harvest-preview-assets.test.ts": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d"
+    "tests/harvest-preview-assets.test.ts": "bb612c51f37ffc39358973a65edc29b5a2792b4c56f2750d3b1e2e2a73e3c22d",
+    "tests/desert-scene.test.ts": "eb2fda34e4daf73460194e51813ca8ea1cb569d52041ddda3ce3a0140831cdee",
+    "tests/desert-independent-audit.test.ts": "015ded184038687452d8a4c85a769510fa63be0277ed2563e15bf982deeff8a9",
+    "tests/desert-preview-assets.test.ts": "acf08146a1bed14d92430881cb125269db0d288c5026036d84981fb65c3ef228"
   },
   "reviewedArtifactRevisions": {
     "docs/town-preview-provenance.json": {

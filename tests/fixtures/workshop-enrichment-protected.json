@@ -592,42 +592,42 @@
     },
     "tests/mountain-enrichment-contract.test.ts": {
       "previousSHA256": "579636dae6c3021308d67870b214a35aeb7692f98b5b3cc36f3c60f6e16a8ceb",
-      "currentSHA256": "3472dd2e8108047da8cc67d63e22873fcf047d92430c8eacdaa3426c60aa80df",
+      "currentSHA256": "046579533d6dff97c2b8a0ba78f03f51e54ef0c81069bb15db97d92096cc2663",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/helpers/town-enrichment-geometry-worker.ts": {
       "previousSHA256": "9b454d97792bc613e8a56cfe998703f9305533d6ebf1ea790125d74a95f5a43b",
-      "currentSHA256": "79160e27cfc4fa4269a8004f33f9a600abe94eb62656187209344d13d4233b41",
+      "currentSHA256": "0d7c35e642b8f6de9b8e7f8f835717d99873b636b3735e946710f5fad4de2c63",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/reviewed-scene-revisions.json": {
       "previousSHA256": "9e201ff78f2c097acb2cc08b177a8ff8441482e459e51586016d5a218e7fd938",
-      "currentSHA256": "95057edc5f6051858e2bf1d497e55841831b48d00155936c92c82e9a68f70d9f",
+      "currentSHA256": "70b379131949416f622ca67c1e4a98344b7025800755814758e1746ca30f1df5",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/town-enrichment-protected.json": {
       "previousSHA256": "0afed4caa943ae0ce0c57df9ad8b6888a54f2b78379a6b7025b8563915234c73",
-      "currentSHA256": "c8a8219800ac54711f886d1eb4e9a55d73bcdd0141fd6645e52e4928b1c2aff7",
+      "currentSHA256": "6a3c8bba656c40720a60b0ccea7aaa28447c100bf9c71bddb23e100ceab9ff7c",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/quarry-enrichment-inventory.test.ts": {
       "previousSHA256": "7504e03e78feb1afe2af3146233944b66072cfcefc7b2b9ebeede0b6cdccc44a",
-      "currentSHA256": "131153e41d0fd14a0cf5c30a717be4538b89157a451885d792a58ac6a7d21662",
+      "currentSHA256": "12609911dcb1248e526bd0675c841f0b71ee28fc19752c60b805b720a0df0762",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/quarry-enrichment-source-inventory.json": {
       "previousSHA256": "5065857829e3beded4b2fa7e0f3c210b79cc37fde106c407bc10f06c16e4b3fa",
-      "currentSHA256": "8b322af6e434dc694eab3720611d04bc9fc489f1e62ab5d665fb2db52a76db78",
+      "currentSHA256": "b259974c040dd72cb47936d37ad6d49e2dbc0370218d632b45b1ce10127b53a2",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/forest-enrichment-inventory.test.ts": {
       "previousSHA256": "a75466882c6a6b0c98ff0a4c8db9d78ed1c4a4a79702344110d9ec872014421a",
-      "currentSHA256": "c299c119ef8a8e1bee3f194e9bb731c1ad3cbb178f58f5a96191cdc732ad7b22",
+      "currentSHA256": "d991d3b3beb2122c3dabe2c7ce8419e81ea75a51b6918ed4ac547c1b51a1d0d3",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "tests/fixtures/forest-enrichment-protected.json": {
       "previousSHA256": "afa7cae0ad4fbbc67ea8a8e7349fb2f30abfc68b6a81a70b43a1ee3afb3774b2",
-      "currentSHA256": "f5a56baa80e242e8a495591bfe1ec1bd5d8e64fa8d0fca5e0569056a2c7ae279",
+      "currentSHA256": "e70351823b42b80548ef14c8c594051cf303de20afe553c14f0c4b75be680bd6",
       "scope": "Exact independently reviewed Workshop source, QA-consumer or derived preview revision; historical golden retained"
     },
     "docs/workshop-preview-provenance.json": {
@@ -669,6 +669,36 @@
       "previousSHA256": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
       "currentSHA256": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
       "scope": "Exact separately reviewed Harvest agricultural enrichment; original route/support/terrain/architecture/gameplay goldens retained"
+    },
+    "src/desert-scenery.ts": {
+      "previousSHA256": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
+      "currentSHA256": "aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "tests/desert-scene.test.ts": {
+      "previousSHA256": "5814b5013582326625b0188bf10aa38efb37ce94285dcc2303b6708bad5afbc9",
+      "currentSHA256": "eb2fda34e4daf73460194e51813ca8ea1cb569d52041ddda3ce3a0140831cdee",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "tests/desert-independent-audit.test.ts": {
+      "previousSHA256": "147fd6a9856e7e7089974adb120c9ada3abc84d217112402a749ea1f853a18b2",
+      "currentSHA256": "015ded184038687452d8a4c85a769510fa63be0277ed2563e15bf982deeff8a9",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "tests/desert-preview-assets.test.ts": {
+      "previousSHA256": "8fc072762b4044a4ab02ce3e804a6e974e2ff62f65691f186bf1f05a54112d1b",
+      "currentSHA256": "acf08146a1bed14d92430881cb125269db0d288c5026036d84981fb65c3ef228",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "docs/desert-preview-provenance.json": {
+      "previousSHA256": "71e89791c4721dccc9599a2efd436e117d1a9888eb154d182a16bca165ce064a",
+      "currentSHA256": "5f49439ca583d7178934f9ed2e5817a7c95a43bc549fe03ad87d65f3bd6a53fc",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
+    },
+    "public/map-previews/desert-overview.webp": {
+      "previousSHA256": "d3636ef280894592a810df5e163f5f698c721599f13b8383126a62ef66fa6024",
+      "currentSHA256": "7090ee77080edabec9683585c7f314d894b2bbb3d6dfda73bb0b5af5a008b675",
+      "scope": "Exact reviewed Desert007 additive scenery, three bounded cap-only native-test changes, and current-source preview; all original goldens retained"
     }
   },
   "historicalContracts": {

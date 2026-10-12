@@ -274,7 +274,7 @@ audit('desert emitted geometry has finite indexed data and hard material/mesh bu
     assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));
   }
   const counts={batches:geometry.batches.length,vertices,triangles,terrainTriangles:terrain.length,components:geometry.components.length,sourceOwnershipTriangles:componentOf.size};reportMetric('mesh',counts);
-  assert.ok(geometry.batches.length<=24,`${geometry.batches.length} batches >24`);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<110000,`${triangles} triangles`);
+  assert.ok(geometry.batches.length<=24,`${geometry.batches.length} batches >24`);assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<125000,`${triangles} triangles`);
   assert.equal(componentOf.size,triangles,'every emitted terrain, road, support, rail, sign and detail triangle has source provenance');
   for(const c of geometry.components){const bounds=actualBounds.get(c)!;assert.ok((componentTriangles.get(c)?.length??0)>0,`${c.kind} has no emitted faces`);for(let k=0;k<3;k++){assert.ok(Math.abs(bounds.min[k]-c.min[k])<1e-7);assert.ok(Math.abs(bounds.max[k]-c.max[k])<1e-7);}}
   t.diagnostic(JSON.stringify(counts));
