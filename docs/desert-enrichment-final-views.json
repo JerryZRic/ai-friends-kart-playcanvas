@@ -1,0 +1,27 @@
+{
+  "schema": "desert-final-representative-views-v1",
+  "frozenCameraManifestSha256": "91fcce98660780c4c1b7727b7d7b82c43fe36dcf2f580b58eb3d2fbb254b1ca0",
+  "samples": 48,
+  "views": [
+    "eye-crown",
+    "chase-crown",
+    "eye-descent",
+    "chase-descent",
+    "eye-court-approach",
+    "chase-court-middle",
+    "eye-court-exit",
+    "chase-court-exit",
+    "eye-release",
+    "chase-release",
+    "desert-overview",
+    "desert-topdown",
+    "desert-driver-reveal",
+    "desert-arch-passage",
+    "desert-caravan-detail",
+    "eye-arch-approach",
+    "chase-arch-middle",
+    "eye-spire"
+  ],
+  "notice": "Exactly18 paired final offline CPU source-geometry views. All35 transforms are retained in the model; the other17 are optional unrendered cameras, not pixel evidence. No native gameplay/GPU/FPS claim.",
+  "selection": "Accepted eight composition views, two1200m release views, five unchanged catalog transforms, two actual forward arch driving witnesses and the original spire approach"
+}

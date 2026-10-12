@@ -1,0 +1,1935 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime desert mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no driver, vehicle or downloaded asset.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/desert.ts": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/desert-scenery.ts": "aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "generatorHashes": {
+    "scripts/export-desert-preview.ts": "a3bec407f93a19f9b9601c7cdc7cf6d4e382e51de3d1c4417a48d3404bd82e24",
+    "scripts/render-desert-preview.py": "8d50a35da756df7a5a31de44a1b133eca812154d76749070455840bdea355231",
+    "scripts/freeze-desert-enrichment-cameras.ts": "717496a4876015cdb32e36930b7d6684733bf58dbb431695178bc38319261069",
+    "scripts/render-desert-enrichment-preview.py": "2ea850a423a7abcbf1fe5b52aad6fd0c514a48eab6cbac052176af4465991048",
+    "docs/desert-enrichment-cameras.json": "91fcce98660780c4c1b7727b7d7b82c43fe36dcf2f580b58eb3d2fbb254b1ca0",
+    "docs/desert-enrichment-final-views.json": "eed2a2a13219b3deb105462b05ed266ed934d2cb36752f79a8bdbb9488ad848c"
+  },
+  "geometryJsonSha256": "0a4ee6fb5090acde01559215f8d09a7d0459f3737d175d87d50ff052b0cc8b6a",
+  "geometryTexturesRoutesThemeSha256": "5ed6a56398091b2a54b42d3cbeffbbed7d8e922e3d2a50d2adf8c8df4204b1b5",
+  "frozenCameraManifestSha256": "91fcce98660780c4c1b7727b7d7b82c43fe36dcf2f580b58eb3d2fbb254b1ca0",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Desert connected sculpted dune terrain",
+      "normalFloat32Sha256": "489c8ade8a6ad7bd64f40893e99cbb0335a52a163b1fcdc03de628d4611baffb",
+      "positionFloat32Sha256": "3a10a7c95fc9fdfd95b4b64d55807352731a50607b8c85a860fec2268b64ce94"
+    },
+    {
+      "batch": "Desert wind rounded sandstone",
+      "normalFloat32Sha256": "a3830263c45559535d65955b3268586d1b9b95ec7807091b5b1fc7cbc2ac562d",
+      "positionFloat32Sha256": "1484bfb83c993ad5a6883a58a8cae72d3af89d775277fa04fe6356169fa6688f"
+    },
+    {
+      "batch": "Desert pale eroded strata",
+      "normalFloat32Sha256": "efe88d0a9ecbe9f900edf4ceb28b1ea7968ed448f61f704a6f8a674e46538c7f",
+      "positionFloat32Sha256": "541bd6e816ccb7eaedaa3271e939ea49b8a261a3564121bc639e52651ee09fc6"
+    },
+    {
+      "batch": "Desert compact road support",
+      "normalFloat32Sha256": "dffffe93d9d274748d355b931f72a0909a5de786063a2ee36d4f0c4be6add6a4",
+      "positionFloat32Sha256": "0af8cf23ad26136e88e9f95e19a6b218a691f7bef095b131ae8d6401f6a58513"
+    },
+    {
+      "batch": "Desert warm hardpan racing ribbon",
+      "normalFloat32Sha256": "1f538755f444132c9857cf17c57043f2b3cf1552ae089dd1b960fbd2778bc977",
+      "positionFloat32Sha256": "4be1d7d43b019741fdf00047834a0bf4ae5a6dd32e3b1d104d7fc30046050915"
+    },
+    {
+      "batch": "Desert sandstone lane and visual coping",
+      "normalFloat32Sha256": "330f1acd67a46689b5831ba2a2879fa320408ae9027550820eb0a3bdf89812c1",
+      "positionFloat32Sha256": "d28fb38e9216b218a97a1ceebe0d94adfc185ffb2cdeb93ac349d1a55237e144"
+    },
+    {
+      "batch": "Desert ruin foundation masonry",
+      "normalFloat32Sha256": "f78d7801f9ccc277ed5cb7447c10923de190874b0250bbace9c3f5dcfd401ef4",
+      "positionFloat32Sha256": "98b2def16a033a2e6ac4c794d3c6fd9489c003685e023146ae5894500894adc7"
+    },
+    {
+      "batch": "Desert ochre arch voussoirs",
+      "normalFloat32Sha256": "eda39679475572106ecd7899d90000ee17a119426e6485cb4a52303ca6dc17bd",
+      "positionFloat32Sha256": "18186221d6e220a1f2e31d111d47ef253ad5f4e3e9bd6ffdf8ad56b4cb55b4f1"
+    },
+    {
+      "batch": "Desert pale keystones and contact trim",
+      "normalFloat32Sha256": "67c7979f93ef6de04433b71a2d2ae41bee7177856033359d1c7184eccfdde58a",
+      "positionFloat32Sha256": "6e92a439e6026871a45be37399dcd6967998abb10502f7e2ea35b589bac3ceb8"
+    },
+    {
+      "batch": "Desert beacon cut limestone",
+      "normalFloat32Sha256": "1c4efd8b7cea99a4c4844adddc9864996b41ecf5428252b7d316c43d39c4bdfa",
+      "positionFloat32Sha256": "73d0160e55bc3e66976ddd5a2d16e73c67f524ddfc986c2e63338790538d0009"
+    },
+    {
+      "batch": "Desert original bronze dial",
+      "normalFloat32Sha256": "c5c1d461e6bf1927626d03dda0d6ddb2f96cfb170b1fd8635649b776c816f6a9",
+      "positionFloat32Sha256": "793cc72d040a6325803c21de48359a9ae5b2ac3c9f1421a223dc7790f9e56b37"
+    },
+    {
+      "batch": "Desert dark structural timber",
+      "normalFloat32Sha256": "82e6621ed5a973042aed0c3d5176cbe835796d2699f201bcf9337abf1e2bf1ac",
+      "positionFloat32Sha256": "f0242eba18fbe5a640b693fc812589957db96b4a4417a1c91b32ff9f57a8182e"
+    },
+    {
+      "batch": "Desert worn cart slats",
+      "normalFloat32Sha256": "4a12df3c2f52a15c79bf8d15f876fcbdbc5f42045f71142f106a3ca0a2d34764",
+      "positionFloat32Sha256": "d8eae16fa6250d2fcdbe729c487829ce783dcda108cc906c610b3a38faac2a08"
+    },
+    {
+      "batch": "Desert warm woven sail cloth",
+      "normalFloat32Sha256": "c1f1d59b155171d5146d350d58ed243805ea66c029a655cec710518bdd5a033a",
+      "positionFloat32Sha256": "f32652bc7b11aa3ee33aa29c437bc43475d01b6eadd784fa870133805b76892b"
+    },
+    {
+      "batch": "Desert reinforced cream cloth",
+      "normalFloat32Sha256": "88878436dd1830b8618301927cf50d8fae84ca021a23f4f0b4c6da6194b196c8",
+      "positionFloat32Sha256": "460277af5d76663d6e216da07d365f5a86e9c526a1522ae7b04c020d02a0db6a"
+    },
+    {
+      "batch": "Desert fired terracotta",
+      "normalFloat32Sha256": "2b93ab5fe9a2c15ec2e5eba015bc9e747f66fd72ce34e8c5d19c7760fc309cf2",
+      "positionFloat32Sha256": "4aa838d1e58076b1453ce2644ccb2a3650473241a4fb35d38652277fa5e33b67"
+    },
+    {
+      "batch": "Desert turquoise ceramic glaze",
+      "normalFloat32Sha256": "e6d1128d06e2513a22010063259ae944978d0355e76af3d80c748dc4025dcc9a",
+      "positionFloat32Sha256": "ad4ee47295a9e5996f4f2bfaef2698eef78bbf2baa3d5e8f55b06055b469cf27"
+    },
+    {
+      "batch": "Desert coarse bound rope",
+      "normalFloat32Sha256": "a1e040014994ad032f260f77ea27e1890faa5b1db304e8ebd26c0cf308767ccc",
+      "positionFloat32Sha256": "e8a846c036a95df0cc115fb19f019eededc2ec968390cb77619b51bbb30c86d5"
+    },
+    {
+      "batch": "Desert dark iron fasteners",
+      "normalFloat32Sha256": "cead9554e18f1c84af5a236e841a207e9e81832c3fcc5de19f11f6191f8bc84a",
+      "positionFloat32Sha256": "77017da70757b11fc585488ffb9d66e36010c1d7ec1d67cee2bd43c98836f530"
+    },
+    {
+      "batch": "Desert deep masonry and pottery recesses",
+      "normalFloat32Sha256": "65be84f1768aff4020b9162a7ff5583ac95a5686402da559b860ce2c7d441392",
+      "positionFloat32Sha256": "ee420a3faba5d18482257e1279c87889bbbd080fe249de66de5a68f26051d85c"
+    },
+    {
+      "batch": "Desert dry roots and baskets",
+      "normalFloat32Sha256": "53c829ca788e9313ea9833d4a28b736cda0bbf1aa021c1a0335ed2bc85a8f6ba",
+      "positionFloat32Sha256": "793ec7d8e517a44441939ec5c056dd013346dfee4ddc66e660945794e2b051ba"
+    },
+    {
+      "batch": "Desert ivory wayfinding and relief",
+      "normalFloat32Sha256": "831c2e46c2356d5677153ee65b612c086d8aab4b31de1ace55a24251aaadaea8",
+      "positionFloat32Sha256": "f3064df3d974accaadbfd7f21bd9eb0bd84ea401a9beae064d4e7ce599b60a43"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.3499999940395355
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#e6dbc3",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9449999928474426,
+      0.8299999833106995
+    ]
+  },
+  "batches": 22,
+  "vertices": 154180,
+  "triangles": 118490,
+  "routeLengthsMetres": {
+    "start": 1501.1606892319999,
+    "alley": 527.7831907192183,
+    "boulevard": 584.8322648642281,
+    "finish": 697.5813569881483
+  },
+  "lapLengthsMetres": {
+    "archwayLapLength": 2726.5252369393666,
+    "sailcourtLapLength": 2783.5743110843764
+  },
+  "framingSource": "Thirty immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
+  "originalModels": {
+    "glb": {
+      "file": "desert-original-scene.glb",
+      "sha256": "431d632023a4107550f5b5fd8b8fdf4bfe33db850b206223d24d2e7b32370def",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
+    },
+    "blend": {
+      "file": "desert-original-scene.blend",
+      "sha256": "746611582aa074afa2c92f552a25ddfd75c454f8c6f0b5fc1b6c0e3d941f6996",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all35 original source-derived cameras"
+    }
+  },
+  "views": {
+    "eye-crown": {
+      "name": "eye-crown",
+      "edge": "start",
+      "s": 820,
+      "kind": "eye",
+      "sourceEye": [
+        319.5503618963745,
+        44.77091152043424,
+        -175.62428418635622
+      ],
+      "sourceTarget": [
+        339.0024649938122,
+        45.021986011370444,
+        -150.26558518585136
+      ],
+      "sourceAnchor": [
+        319.5503618963745,
+        44.52091152043424,
+        -175.62428418635622
+      ],
+      "sourceDesiredEye": [
+        312.5127986794166,
+        47.77091152043424,
+        -183.4167615823659
+      ],
+      "cameraPositionBlender": [
+        319.55035400390625,
+        175.62428283691406,
+        44.770912170410156
+      ],
+      "cameraQuaternionBlender": [
+        -0.2263452708721161,
+        -0.22813040018081665,
+        0.6722234487533569,
+        0.6669632792472839
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7934487462043762,
+          -0.004781240597367287,
+          -0.6086183786392212,
+          319.55035400390625
+        ],
+        [
+          -0.6086371541023254,
+          0.00623300950974226,
+          0.7934242486953735,
+          175.62428283691406
+        ],
+        [
+          -2.411852051409369e-09,
+          0.9999691843986511,
+          -0.007855689153075218,
+          44.770912170410156
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-crown.png",
+      "sha256": "e30067d8763718b4118f01f8851d1e2ebc0492c8f87a76b8dbba5b0e1f66648f",
+      "routeScreenBounds": [
+        -1324.239501953125,
+        -1101.73388671875,
+        19428.96875,
+        73.52474212646484
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -1005.3714599609375,
+          -151.33404541015625,
+          2751.71533203125,
+          57.51252746582031
+        ],
+        "boulevard": [
+          -271.4747314453125,
+          -158.01719665527344,
+          1959.854736328125,
+          21.026582717895508
+        ]
+      }
+    },
+    "chase-crown": {
+      "name": "chase-crown",
+      "edge": "start",
+      "s": 820,
+      "kind": "chase",
+      "sourceEye": [
+        312.5127986794166,
+        47.77091152043424,
+        -183.4167615823659
+      ],
+      "sourceTarget": [
+        329.6945971640615,
+        44.17091152043424,
+        -164.39188433625222
+      ],
+      "sourceAnchor": [
+        319.5503618963745,
+        44.52091152043424,
+        -175.62428418635622
+      ],
+      "sourceDesiredEye": [
+        312.5127986794166,
+        47.77091152043424,
+        -183.4167615823659
+      ],
+      "cameraPositionBlender": [
+        312.5127868652344,
+        183.41676330566406,
+        47.770912170410156
+      ],
+      "cameraQuaternionBlender": [
+        -0.2709793150424957,
+        -0.2355840653181076,
+        0.6123449206352234,
+        0.7043465375900269
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7421407103538513,
+          0.09320927411317825,
+          -0.6637312769889832,
+          312.5127868652344
+        ],
+        [
+          -0.6702440977096558,
+          -0.1032077968120575,
+          0.7349292039871216,
+          183.41676330566406
+        ],
+        [
+          -2.7109415157156036e-08,
+          0.9902828931808472,
+          0.13906769454479218,
+          47.770912170410156
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-crown.png",
+      "sha256": "42e053f40852adcf032adb4003c789cd1f834016303c56fe6599da4cdedf4dec",
+      "routeScreenBounds": [
+        -727.2843017578125,
+        -664.5927124023438,
+        9974.751953125,
+        87.41682434082031
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -2506.9296875,
+          -105.97380065917969,
+          1598.4622802734375,
+          171.86395263671875
+        ],
+        "boulevard": [
+          -1826.138427734375,
+          -2977.4052734375,
+          34554.7265625,
+          168.43844604492188
+        ]
+      }
+    },
+    "eye-descent": {
+      "name": "eye-descent",
+      "edge": "start",
+      "s": 1050,
+      "kind": "eye",
+      "sourceEye": [
+        315.43495292484647,
+        35.58488373503302,
+        34.67617661840397
+      ],
+      "sourceTarget": [
+        292.0903757976689,
+        33.87547970077837,
+        56.42926857522389
+      ],
+      "sourceAnchor": [
+        315.43495292484647,
+        35.33488373503302,
+        34.67617661840397
+      ],
+      "sourceDesiredEye": [
+        322.2017577906901,
+        38.58488373503302,
+        26.647456178159807
+      ],
+      "cameraPositionBlender": [
+        315.4349670410156,
+        -34.676177978515625,
+        35.58488464355469
+      ],
+      "cameraQuaternionBlender": [
+        0.28952422738075256,
+        0.2744290828704834,
+        0.6308258175849915,
+        0.6655247807502747
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6817288994789124,
+          -0.03913719579577446,
+          0.7305574417114258,
+          315.4349670410156
+        ],
+        [
+          0.7316049933433533,
+          -0.03646910935640335,
+          0.680752694606781,
+          -34.676177978515625
+        ],
+        [
+          -4.4784975727907295e-09,
+          0.9985681772232056,
+          0.05349493399262428,
+          35.58488464355469
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-descent.png",
+      "sha256": "ce9d7b90b3d42d591253d2bc0c642bb5275c4f44b6c05146a1ef1596d921542e",
+      "routeScreenBounds": [
+        -309.0351257324219,
+        -20.07265853881836,
+        685.0446166992188,
+        11.353212356567383
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.5385347604751587,
+          0.5019952058792114,
+          0.8140289187431335,
+          0.527392566204071
+        ],
+        "boulevard": [
+          0.5385347604751587,
+          0.5019952058792114,
+          0.9067251682281494,
+          0.527392566204071
+        ]
+      }
+    },
+    "chase-descent": {
+      "name": "chase-descent",
+      "edge": "start",
+      "s": 1050,
+      "kind": "chase",
+      "sourceEye": [
+        322.2017577906901,
+        38.58488373503302,
+        26.647456178159807
+      ],
+      "sourceTarget": [
+        305.6809999650718,
+        34.984883735033016,
+        46.24910698271988
+      ],
+      "sourceAnchor": [
+        315.43495292484647,
+        35.33488373503302,
+        34.67617661840397
+      ],
+      "sourceDesiredEye": [
+        322.2017577906901,
+        38.58488373503302,
+        26.647456178159807
+      ],
+      "cameraPositionBlender": [
+        322.2017517089844,
+        -26.647457122802734,
+        38.58488464355469
+      ],
+      "cameraQuaternionBlender": [
+        0.25888746976852417,
+        0.22507165372371674,
+        0.6162863969802856,
+        0.7088801860809326
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7646400928497314,
+          -0.08962319791316986,
+          0.6381953358650208,
+          322.2017517089844
+        ],
+        [
+          0.6444575786590576,
+          -0.10633673518896103,
+          0.7572099566459656,
+          -26.647457122802734
+        ],
+        [
+          1.961245033044179e-08,
+          0.9902828931808472,
+          0.1390676498413086,
+          38.58488464355469
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-descent.png",
+      "sha256": "b98711197e44e198ba617b9a23128c6acc03f4bb58d73b7922a9f6199d389f17",
+      "routeScreenBounds": [
+        -467.5873107910156,
+        -268.8995666503906,
+        4996.08251953125,
+        25.764583587646484
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.6075062155723572,
+          0.5753812789916992,
+          0.9074167609214783,
+          0.6032426953315735
+        ],
+        "boulevard": [
+          0.6075062155723572,
+          0.5753812789916992,
+          1.0097780227661133,
+          0.6032426953315735
+        ]
+      }
+    },
+    "eye-court-approach": {
+      "name": "eye-court-approach",
+      "edge": "boulevard",
+      "s": 175.44967945926842,
+      "kind": "eye",
+      "sourceEye": [
+        -105.04210434838154,
+        19.6,
+        164.97151453669682
+      ],
+      "sourceTarget": [
+        -131.39685494089113,
+        19.6,
+        146.82207280173336
+      ],
+      "sourceAnchor": [
+        -105.04210434838154,
+        19.35,
+        164.97151453669682
+      ],
+      "sourceDesiredEye": [
+        -96.34572440344537,
+        22.6,
+        170.8556436866486
+      ],
+      "cameraPositionBlender": [
+        -105.04210662841797,
+        -164.9715118408203,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6259347200393677,
+        0.6259347200393677,
+        0.32894644141197205,
+        0.32894644141197205
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.5671769380569458,
+          0.0,
+          0.8235960006713867,
+          -105.04210662841797
+        ],
+        [
+          0.8235960006713867,
+          -7.013672131961357e-08,
+          -0.5671769976615906,
+          -164.9715118408203
+        ],
+        [
+          0.0,
+          1.0000001192092896,
+          -7.013672131961357e-08,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-court-approach.png",
+      "sha256": "e6d766d04c5d56da58c4b79fd4f0f589594f2fdd768ddc91a680908151923a82",
+      "routeScreenBounds": [
+        -639.3339233398438,
+        -35.60816192626953,
+        5851.41015625,
+        152.4029541015625
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -1798.02978515625,
+          -35.61235809326172,
+          348.0072326660156,
+          6.311010837554932
+        ],
+        "boulevard": [
+          -3.35569429397583,
+          -23.959962844848633,
+          72.06077575683594,
+          14.646451950073242
+        ]
+      }
+    },
+    "chase-court-middle": {
+      "name": "chase-court-middle",
+      "edge": "boulevard",
+      "s": 230,
+      "kind": "chase",
+      "sourceEye": [
+        -141.39041359364205,
+        22.6,
+        140.0617314630611
+      ],
+      "sourceTarget": [
+        -163.79304443992334,
+        19,
+        127.60050020118791
+      ],
+      "sourceAnchor": [
+        -150.5663989218237,
+        19.35,
+        134.95768471004294
+      ],
+      "sourceDesiredEye": [
+        -141.39041359364205,
+        22.6,
+        140.0617314630611
+      ],
+      "cameraPositionBlender": [
+        -141.39041137695312,
+        -140.06173706054688,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6505321264266968,
+        0.5655597448348999,
+        0.3325783312320709,
+        0.38254648447036743
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.4860996901988983,
+          -0.12153172492980957,
+          0.8654115796089172,
+          -141.39041137695312
+        ],
+        [
+          0.8739033937454224,
+          0.06760072708129883,
+          -0.4813762307167053,
+          -140.06173706054688
+        ],
+        [
+          6.249415207548736e-09,
+          0.9902828931808472,
+          0.1390676498413086,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-court-middle.png",
+      "sha256": "84b6507789aa0f21d4d28c99cf3488eddd4ed11d44af6ac94a60abbf8f7fc1c5",
+      "routeScreenBounds": [
+        -329.9933776855469,
+        -8.902946472167969,
+        1146.2642822265625,
+        38.312416076660156
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -255.72491455078125,
+          -10.002937316894531,
+          705.282470703125,
+          32.213741302490234
+        ],
+        "boulevard": [
+          -16.897104263305664,
+          -7.542201042175293,
+          6.595390796661377,
+          16.001867294311523
+        ]
+      }
+    },
+    "eye-court-exit": {
+      "name": "eye-court-exit",
+      "edge": "boulevard",
+      "s": 290,
+      "kind": "eye",
+      "sourceEye": [
+        -207.7672591321572,
+        19.6,
+        120.40986375617743
+      ],
+      "sourceTarget": [
+        -238.35495217713873,
+        19.6,
+        129.31303470529738
+      ],
+      "sourceAnchor": [
+        -207.7672591321572,
+        19.35,
+        120.40986375617743
+      ],
+      "sourceDesiredEye": [
+        -197.32442366311759,
+        22.6,
+        119.31570317995099
+      ],
+      "cameraPositionBlender": [
+        -207.7672576904297,
+        -120.40986633300781,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.4244195222854614,
+        0.4244195222854614,
+        0.5655688047409058,
+        0.5655688047409058
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.279472291469574,
+          0.0,
+          0.9601537585258484,
+          -207.7672576904297
+        ],
+        [
+          0.9601537585258484,
+          -7.586152150906855e-09,
+          0.279472291469574,
+          -120.40986633300781
+        ],
+        [
+          0.0,
+          1.0,
+          -7.586152150906855e-09,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-court-exit.png",
+      "sha256": "2caee6e818ab463cb0d5564653b99b14f3946e7932c03d194905546c020dd299",
+      "routeScreenBounds": [
+        -497.0435485839844,
+        -124.16390991210938,
+        3301.40380859375,
+        6.802292346954346
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -131.55691528320312,
+          -1.764083981513977,
+          405.4260559082031,
+          6.931478977203369
+        ],
+        "boulevard": [
+          -7.788331508636475,
+          -1.4349379539489746,
+          56.61217498779297,
+          11.367270469665527
+        ]
+      }
+    },
+    "chase-court-exit": {
+      "name": "chase-court-exit",
+      "edge": "boulevard",
+      "s": 290,
+      "kind": "chase",
+      "sourceEye": [
+        -197.32442366311759,
+        22.6,
+        119.31570317995099
+      ],
+      "sourceTarget": [
+        -222.81999494338547,
+        19,
+        121.98703215434168
+      ],
+      "sourceAnchor": [
+        -207.7672591321572,
+        19.35,
+        120.40986375617743
+      ],
+      "sourceDesiredEye": [
+        -197.32442366311759,
+        22.6,
+        119.31570317995099
+      ],
+      "cameraPositionBlender": [
+        -197.3244171142578,
+        -119.31570434570312,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5050668716430664,
+        0.439095139503479,
+        0.4875054955482483,
+        0.5607506036758423
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.10420594364404678,
+          -0.1383105367422104,
+          0.9848917126655579,
+          -197.3244171142578
+        ],
+        [
+          0.9945559501647949,
+          -0.014491800218820572,
+          0.10319319367408752,
+          -119.31570434570312
+        ],
+        [
+          -2.112825114863881e-08,
+          0.9902830719947815,
+          0.13906748592853546,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-court-exit.png",
+      "sha256": "0d21fdfdda850cdfbad35463e0e6bfcead9191f068c3add043ec0350c5634a33",
+      "routeScreenBounds": [
+        -847.309814453125,
+        -169.3782196044922,
+        2443.1201171875,
+        38.415626525878906
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -147.14108276367188,
+          -6.504843235015869,
+          1193.4871826171875,
+          53.9285888671875
+        ],
+        "boulevard": [
+          -36.445274353027344,
+          -23.290130615234375,
+          12.637313842773438,
+          4.501492977142334
+        ]
+      }
+    },
+    "eye-release": {
+      "name": "eye-release",
+      "edge": "start",
+      "s": 1200,
+      "kind": "eye",
+      "sourceEye": [
+        270.4957626505789,
+        27.676713606629125,
+        156.27600095171712
+      ],
+      "sourceTarget": [
+        274.47435476404263,
+        25.73462879756222,
+        187.56445779623758
+      ],
+      "sourceAnchor": [
+        270.4957626505789,
+        27.426713606629125,
+        156.27600095171712
+      ],
+      "sourceDesiredEye": [
+        266.61778037879,
+        30.67671360662912,
+        146.51837554900305
+      ],
+      "cameraPositionBlender": [
+        270.4957580566406,
+        -156.2760009765625,
+        27.676713943481445
+      ],
+      "cameraQuaternionBlender": [
+        -0.04604025557637215,
+        -0.043292541056871414,
+        0.6836641430854797,
+        0.7270552515983582
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9920123219490051,
+          0.0077525037340819836,
+          -0.12590430676937103,
+          270.4957580566406
+        ],
+        [
+          -0.12614275515079498,
+          -0.0609673410654068,
+          0.990136981010437,
+          -156.2760009765625
+        ],
+        [
+          5.0955062391722095e-09,
+          0.998109757900238,
+          0.061458028852939606,
+          27.676713943481445
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-release.png",
+      "sha256": "a1565518b9599e92d1a5944575e5b616b7f80162dd8cb90ed507c6e70ca5e334",
+      "routeScreenBounds": [
+        -1126.015380859375,
+        -76.55265808105469,
+        3390.15185546875,
+        28.322799682617188
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -888.6165161132812,
+          -445.2779541015625,
+          19607.650390625,
+          20.728748321533203
+        ],
+        "boulevard": [
+          -5934.01123046875,
+          -14.072311401367188,
+          471.1739501953125,
+          146.72714233398438
+        ]
+      }
+    },
+    "chase-release": {
+      "name": "chase-release",
+      "edge": "start",
+      "s": 1200,
+      "kind": "chase",
+      "sourceEye": [
+        266.61778037879,
+        30.67671360662912,
+        146.51837554900305
+      ],
+      "sourceTarget": [
+        276.0856470063107,
+        27.076713606629124,
+        170.34104657725092
+      ],
+      "sourceAnchor": [
+        270.4957626505789,
+        27.426713606629125,
+        156.27600095171712
+      ],
+      "sourceDesiredEye": [
+        266.61778037879,
+        30.67671360662912,
+        146.51837554900305
+      ],
+      "cameraPositionBlender": [
+        266.6177673339844,
+        -146.51837158203125,
+        30.676713943481445
+      ],
+      "cameraQuaternionBlender": [
+        -0.14189322292804718,
+        -0.12335915863513947,
+        0.6443979144096375,
+        0.7412152886390686
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9292978644371033,
+          0.051362089812755585,
+          -0.36574286222457886,
+          266.6177673339844
+        ],
+        [
+          -0.3693316876888275,
+          -0.12923535704612732,
+          0.9202677011489868,
+          -146.51837158203125
+        ],
+        [
+          4.42340564177357e-09,
+          0.9902830123901367,
+          0.13906753063201904,
+          30.676713943481445
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-release.png",
+      "sha256": "89d7e85220c95c54c5bb44f29624fc648d23865a2279a07a1cd90ef837ec4488",
+      "routeScreenBounds": [
+        -7348.2607421875,
+        -49.4823112487793,
+        722.4674682617188,
+        445.3344421386719
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -338.1256408691406,
+          -77.66407012939453,
+          1224.31103515625,
+          21.090333938598633
+        ],
+        "boulevard": [
+          -533.8557739257812,
+          -1089.2939453125,
+          15718.947265625,
+          42.963783264160156
+        ]
+      }
+    },
+    "desert-overview": {
+      "name": "desert-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "desert-overview.png",
+      "sha256": "3597c7e304fac06c06be68d7226758c55dbe8bd995da559d36dfd822ad8552c5",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        99.06704711914062,
+        1237.9564208984375,
+        746.8687133789062
+      ],
+      "cameraQuaternionBlender": [
+        0.07274259626865387,
+        0.042401961982250214,
+        0.5018057823181152,
+        0.8608725666999817
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Sunweave Caravan circuit, connected dune ascent and wind-carved sandstone descent, both physical fork roads, two open stone arches, caravan sailcourt, beacon, kiln and waystation. Exact emitted source geometry with approximate offline light.",
+      "routeScreenBounds": [
+        0.1732025146484375,
+        0.28570422530174255,
+        0.826827883720398,
+        0.6862959861755371
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.36283668875694275,
+          0.6122848391532898,
+          0.7153316140174866,
+          0.6835804581642151
+        ],
+        "boulevard": [
+          0.36283668875694275,
+          0.5563721656799316,
+          0.7153316140174866,
+          0.6761693954467773
+        ]
+      },
+      "orthographicScaleMetres": 1407.3927001953125,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9858212471008301,
+          -0.08268911391496658,
+          0.14601068198680878,
+          99.06704711914062
+        ],
+        [
+          0.16779930889606476,
+          -0.48579901456832886,
+          0.8578128218650818,
+          1237.9564208984375
+        ],
+        [
+          6.083266157475009e-08,
+          0.8701505064964294,
+          0.4927860498428345,
+          746.8687133789062
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "desert-topdown": {
+      "name": "desert-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "desert-topdown.png",
+      "sha256": "03a03f33af6f46fec2add830d7a71cac680a555faecc98b14a299a8473cdbeed",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -112.50003051757812,
+        -5,
+        1520.45361328125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: the technical Archway Weave and broad banked Sailcourt Sweep. Actual road widths, branch ownership, split/merge throats and complete connected landform are retained.",
+      "routeScreenBounds": [
+        0.12260952591896057,
+        0.15986701846122742,
+        0.883606493473053,
+        0.8062429428100586
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.38022834062576294,
+          0.7451077103614807,
+          0.7729223370552063,
+          0.8062429428100586
+        ],
+        "boulevard": [
+          0.38022834062576294,
+          0.6104887127876282,
+          0.7729223370552063,
+          0.7665083408355713
+        ]
+      },
+      "orthographicScaleMetres": 1273.2559814453125,
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          -112.50003051757812
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          -5.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1520.45361328125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "desert-driver-reveal": {
+      "name": "desert-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 30,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "desert-driver-reveal.png",
+      "sha256": "a3b5f4e9f5685c791576640377c5de2f4b3e9cfd6cf27accd73a44d673b0eb90",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        315.4349670410156,
+        -34.676177978515625,
+        35.58488464355469
+      ],
+      "cameraQuaternionBlender": [
+        0.2895244061946869,
+        0.2744292914867401,
+        0.6308256983757019,
+        0.6655246615409851
+      ],
+      "projection": "PERSP",
+      "description": "Blueprint driver-eye pose on the real start road at 1050 m, exactly 1.6 m above source support. The original carved sandstone shoulder and connected dune landform frame the next bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle.",
+      "routeScreenBounds": [
+        -438.5419616699219,
+        -28.647668838500977,
+        970.372314453125,
+        15.889776229858398
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.5546376705169678,
+          0.5028288960456848,
+          0.945258378982544,
+          0.53883957862854
+        ],
+        "boulevard": [
+          0.5546376705169678,
+          0.5028288960456848,
+          1.0766915082931519,
+          0.53883957862854
+        ]
+      },
+      "roadEdge": "start",
+      "roadDistanceMetres": 1050,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "carved-canyon",
+        "edge": "start",
+        "s": 1050,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          315.43495292484647,
+          33.984883735033016,
+          34.67617661840397
+        ],
+        "driverEye": [
+          315.43495292484647,
+          35.58488373503302,
+          34.67617661840397
+        ],
+        "driverLook": [
+          292.0903757976689,
+          33.87547970077837,
+          56.42926857522389
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        292.0903757976689,
+        33.87547970077837,
+        56.42926857522389
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.6817286014556885,
+          -0.03913716971874237,
+          0.730557918548584,
+          315.4349670410156
+        ],
+        [
+          0.7316055297851562,
+          -0.03646921366453171,
+          0.6807522773742676,
+          -34.676177978515625
+        ],
+        [
+          5.146688408785849e-08,
+          0.9985682368278503,
+          0.05349482223391533,
+          35.58488464355469
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "desert-arch-passage": {
+      "name": "desert-arch-passage",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 21,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "desert-arch-passage.png",
+      "sha256": "0f21a18ddf4e337ef0ca9d87284588d414fb62d4f2effb18df0fc7a12f862d70",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -200.43447875976562,
+        -288.4808349609375,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.4230544865131378,
+        0.5552268624305725,
+        0.5695681571960449,
+        0.4339817464351654
+      ],
+      "projection": "PERSP",
+      "description": "Low approach on the actual Archway Weave, exactly 1.6 m above source road. Both genuinely open stone rings, seated piers and crown blocks, the flush through-road and daylight between arches remain unmodified. No cutaway, hidden wall or gameplay claim.",
+      "routeScreenBounds": [
+        -2557.97314453125,
+        -27.592182159423828,
+        1416.59326171875,
+        53.79241943359375
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -6.262749195098877,
+          -1.9242281913757324,
+          32.1011962890625,
+          13.545437812805176
+        ],
+        "boulevard": [
+          -135.92091369628906,
+          -7.3544087409973145,
+          620.7318115234375,
+          2.823221206665039
+        ]
+      },
+      "roadEdge": "alley",
+      "roadDistanceMetres": 258.72575808588084,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "twin-arch-approach",
+        "edge": "alley",
+        "s": 258.72575808588084,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -200.4344805814387,
+          18,
+          288.4808492184638
+        ],
+        "driverEye": [
+          -200.4344805814387,
+          19.6,
+          288.4808492184638
+        ],
+        "driverLook": [
+          -232.01196855626918,
+          19.6,
+          290.3922366953077
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -260,
+        36,
+        290
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          -0.02549608424305916,
+          0.2652832269668579,
+          0.9638333916664124,
+          -200.43447875976562
+        ],
+        [
+          0.999674916267395,
+          0.006765950005501509,
+          0.02458193711936474,
+          -288.4808349609375
+        ],
+        [
+          -8.170294307774384e-08,
+          0.9641467928886414,
+          -0.2653695046901703,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "desert-caravan-detail": {
+      "name": "desert-caravan-detail",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "desert-caravan-detail.png",
+      "sha256": "72d91abb03266b6671bce5612caeab221f8a1442f6b7a5861b0cee367993dfb5",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -181.8203125,
+        -149.6459503173828,
+        20.68000030517578
+      ],
+      "cameraQuaternionBlender": [
+        0.21516215801239014,
+        0.26618191599845886,
+        0.7307283878326416,
+        0.5906678438186646
+      ],
+      "projection": "PERSP",
+      "description": "Nearby low perspective of the original grounded caravan sailcourt with connected timber frames, actual cloth surfaces, seated posts, rope ties and source-built detail. All scenery remains visible and unchanged; approximate offline material response.",
+      "routeScreenBounds": [
+        -1173.5108642578125,
+        -14.0901460647583,
+        1450.086181640625,
+        45.80121612548828
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -864.1878662109375,
+          -19.285465240478516,
+          1450.086181640625,
+          42.050804138183594
+        ],
+        "boulevard": [
+          -68.2925796508789,
+          -51.41062927246094,
+          442.1390380859375,
+          6.585458755493164
+        ]
+      },
+      "cameraMatrixWorldBlender": [
+        [
+          -0.7657049298286438,
+          0.1348346322774887,
+          0.628900408744812,
+          -181.8203125
+        ],
+        [
+          0.6431921124458313,
+          0.1605173647403717,
+          0.7486909627914429,
+          -149.6459503173828
+        ],
+        [
+          3.0786893034928653e-09,
+          0.9777800440788269,
+          -0.20963357388973236,
+          20.68000030517578
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "eye-arch-approach": {
+      "name": "eye-arch-approach",
+      "edge": "alley",
+      "s": 258.72575808588084,
+      "kind": "eye",
+      "sourceEye": [
+        -200.4344805814387,
+        19.6,
+        288.4808492184638
+      ],
+      "sourceTarget": [
+        -232.01196855626918,
+        19.6,
+        290.3922366953077
+      ],
+      "sourceAnchor": [
+        -200.4344805814387,
+        19.35,
+        288.4808492184638
+      ],
+      "sourceDesiredEye": [
+        -190.58793389285913,
+        22.6,
+        284.8345472137441
+      ],
+      "cameraPositionBlender": [
+        -200.43447875976562,
+        -288.4808349609375,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.4846598207950592,
+        0.4846598207950592,
+        0.5148833394050598,
+        0.5148833394050598
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.060419414192438126,
+          0.0,
+          0.9981730580329895,
+          -200.43447875976562
+        ],
+        [
+          0.9981730580329895,
+          9.819990154369407e-09,
+          0.06041942164301872,
+          -288.4808349609375
+        ],
+        [
+          0.0,
+          1.0,
+          9.819990154369407e-09,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-arch-approach.png",
+      "sha256": "a0ea337c755a8073f5ac89fe7692ea5d741a52040cb0fec93446a79b0935f1fe",
+      "routeScreenBounds": [
+        -486.85772705078125,
+        -11.498858451843262,
+        563.87353515625,
+        11.399843215942383
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -10.245326042175293,
+          -2.286975383758545,
+          4.03341007232666,
+          4.864323139190674
+        ],
+        "boulevard": [
+          -81.7338638305664,
+          -6.157445430755615,
+          508.8817138671875,
+          1.8706600666046143
+        ]
+      }
+    },
+    "chase-arch-middle": {
+      "name": "chase-arch-middle",
+      "edge": "alley",
+      "s": 318.72575808588084,
+      "kind": "chase",
+      "sourceEye": [
+        -249.49999999993435,
+        22.6,
+        290
+      ],
+      "sourceTarget": [
+        -275.1351351350695,
+        19,
+        290
+      ],
+      "sourceAnchor": [
+        -259.99999999993435,
+        19.35,
+        290
+      ],
+      "sourceDesiredEye": [
+        -249.49999999993435,
+        22.6,
+        290
+      ],
+      "cameraPositionBlender": [
+        -249.5,
+        -290,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        0.46393218636512756,
+        0.5336355566978455
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          3.81645044456036e-08,
+          -0.1390676647424698,
+          0.9902828335762024,
+          -249.5
+        ],
+        [
+          0.9999999403953552,
+          3.81645044456036e-08,
+          0.0,
+          -290.0
+        ],
+        [
+          0.0,
+          0.9902828335762024,
+          0.13906770944595337,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-arch-middle.png",
+      "sha256": "f99b8a5b7fe5d69f9877c1b345ef6eaf873ba77112b109aad1c4b3f700f11204",
+      "routeScreenBounds": [
+        -7887.7705078125,
+        -11.650492668151855,
+        375.3949279785156,
+        368.8891296386719
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -16.4964599609375,
+          -2.7784483432769775,
+          17.496261596679688,
+          22.042394638061523
+        ],
+        "boulevard": [
+          -280.28131103515625,
+          -4.114925861358643,
+          101.8277359008789,
+          14.343755722045898
+        ]
+      }
+    },
+    "eye-spire": {
+      "name": "eye-spire",
+      "edge": "start",
+      "s": 975.7544480008,
+      "kind": "eye",
+      "sourceEye": [
+        347.2489443899509,
+        40.226643086635086,
+        -31.94365481089188
+      ],
+      "sourceTarget": [
+        335.2527296406931,
+        38.129468599934235,
+        -2.359929107175992
+      ],
+      "sourceAnchor": [
+        347.2489443899509,
+        39.976643086635086,
+        -31.94365481089188
+      ],
+      "sourceDesiredEye": [
+        350.7678372426377,
+        43.226643086635086,
+        -41.836449819953266
+      ],
+      "cameraPositionBlender": [
+        347.2489318847656,
+        31.943655014038086,
+        40.22664260864258
+      ],
+      "cameraQuaternionBlender": [
+        0.13972817361354828,
+        0.13085007667541504,
+        0.6708964109420776,
+        0.7164162993431091
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9267086386680603,
+          -0.024633388966321945,
+          0.37497252225875854,
+          347.2489318847656
+        ],
+        [
+          0.37578076124191284,
+          -0.060748111456632614,
+          0.9247153401374817,
+          31.943655014038086
+        ],
+        [
+          -4.968516265080325e-09,
+          0.9978491067886353,
+          0.06555252522230148,
+          40.22664260864258
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-spire.png",
+      "sha256": "facd910e1cf52ef625a389676bc85da9dec821343bebdf5a9a2d43b8fe0df115",
+      "routeScreenBounds": [
+        -681.4803466796875,
+        -141.6450653076172,
+        2013.0194091796875,
+        48.786582946777344
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.7666612863540649,
+          0.5049497485160828,
+          1.182445764541626,
+          0.5252625942230225
+        ],
+        "boulevard": [
+          0.7666612863540649,
+          0.49743714928627014,
+          1.295709490776062,
+          0.5252625942230225
+        ]
+      }
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/desert-overview.webp",
+    "sha256": "7090ee77080edabec9683585c7f314d894b2bbb3d6dfda73bb0b5af5a008b675",
+    "resolution": [
+      1280,
+      720
+    ],
+    "sourceView": "desert-overview"
+  },
+  "finalPairedProofSha256": "3db795d647078d0a59541c51fdd6ad010bf578d0a9767b94d12bd9d657e6e5fe",
+  "reopenedModelProofSha256": "e3578e47fed6b3a3386da5bb97854795773bbfe4c49fa2431595c1667f5875fb",
+  "localCatalogUpdaterSha256": "15b015aecb5df5f48bbe88f19ecbaa71824a7842d0090e93867c3814c5132051"
+}
