@@ -1,0 +1,21 @@
+{
+  "schema": "snow-bounded-final-views-v1",
+  "frozenCameraManifestSha256": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+  "samples": 48,
+  "views": [
+    "eye-first-bowl",
+    "chase-first-bowl",
+    "eye-second-bowl",
+    "chase-second-bowl",
+    "eye-service-yard",
+    "chase-service-yard",
+    "eye-clock-approach",
+    "chase-clock-approach",
+    "snow-overview",
+    "snow-topdown",
+    "snow-driver-reveal",
+    "snow-plow-depot",
+    "snow-clock-hall"
+  ],
+  "notice": "Eight normal-driving views plus all five original catalog transforms. Selection only; rendering and verification are separate gates. No camera refit."
+}

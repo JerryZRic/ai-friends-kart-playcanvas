@@ -1,0 +1,1416 @@
+{
+  "kind": "offline-native-geometry-render",
+  "description": "Exact original static runtime snow mesh positions, triangle indices, computed normals, UVs, material values and procedural texture pixels. Both real fork roads are exported independently. Lighting, shaders and renderer differ from PlayCanvas. No gameplay/GPU capture or frame-rate claim; no racing driver, kart, HUD or downloaded asset. Original stationary service vehicles remain included.",
+  "renderer": "Blender 4.3.2 Cycles CPU, 2 threads, 48 samples. Fixed original source-derived cameras. No gameplay/GPU or FPS claim.",
+  "sourceIdentity": "local-unpublished-candidate",
+  "sourceHashes": {
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/maps/snow.ts": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/snow-scenery.ts": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+  },
+  "generatorHashes": {
+    "scripts/export-snow-preview.ts": "881004bc2865895bea49b359fca7fd7f58f131a9dda2402e783a7826e76fdc4a",
+    "scripts/render-snow-preview.py": "6741a8262c9cf9c13685c7ada0bf61e1cde23d873486e7d26bf5374de5de4ad6",
+    "scripts/freeze-snow-enrichment-cameras.ts": "97e3d5975e6e4bd380fd26978ad8b3aabf2928a39b885203db871275d60b57a7",
+    "scripts/render-snow-enrichment-preview.py": "29ae682e4b41d862b894af030933e36183f17403df53d74aad6620ec6ea188b8",
+    "docs/snow-enrichment-cameras.json": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+    "docs/snow-enrichment-final-views.json": "e984f219eabc6e96e6590256d7ae909d331c25d4704df4636e50a196c460bceb"
+  },
+  "geometryJsonSha256": "39ffbfd6436c7d826627286cd9d964362849ffdc1b160ecc2e3be9aa1dcb6e13",
+  "geometryTexturesRoutesThemeSha256": "3a44af3d5a98dc8ca6485a1230d11628f305810dd4d8537f37bc2a8ec00993f1",
+  "frozenCameraManifestSha256": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+  "normalShading": {
+    "storage": "Exact float32 source normal FLOAT_VECTOR POINT attribute, source (x,y,z) to Blender (x,-z,y)",
+    "mapping": "Unchanged vertex-index interpolation",
+    "shader": "Attribute Vector -> object-to-world NORMAL -> normalize -> multiply (1 - 2 * Backfacing) -> Principled BSDF Normal",
+    "notice": "Exact source normal data and two-sided transform convention; approximate offline material/light response"
+  },
+  "normalVerification": [
+    {
+      "batch": "Snow connected wind sculpted terrain",
+      "normalFloat32Sha256": "15cd5e3907ce5749cc1f802fb17fde690bba59100fdc6f442d1c88d848e33122",
+      "positionFloat32Sha256": "57fccac83aa79a681b80a600c06a5544e38d9bd57a9c6ba8bb63374bce790678"
+    },
+    {
+      "batch": "Snow connected blue slate ribs",
+      "normalFloat32Sha256": "76b5a07e9393f55c7a414231209a934b67de8123461bdc3154137a632dd4bf21",
+      "positionFloat32Sha256": "47a0ab0668c1b09ee6963d20e1d356c3a1d768d9fe6f6865ddf8595f90dc5af2"
+    },
+    {
+      "batch": "Snow compressed leeside strata",
+      "normalFloat32Sha256": "c0fca61616dd28f56f440ead473f7788eb6a25fa16a587428b4d5d5e294ca4da",
+      "positionFloat32Sha256": "17921f81dee8ddb40f0f5c24333e10437d31c9735257489f4acbdebf4f13edbd"
+    },
+    {
+      "batch": "Snow exact road shoulder and support",
+      "normalFloat32Sha256": "f7b3c7ba928f4306657ecea050f9c75224135044db4b2ac24dfca78a63f2b189",
+      "positionFloat32Sha256": "1f6e416dc607f272b4771e4fad23067ab62037da683fdf0362b140400d661643"
+    },
+    {
+      "batch": "Snow packed racing ribbon",
+      "normalFloat32Sha256": "42c48bcd8aa959da149c1743e38a4dd23b820513ec37fcb3867208aa9ac1de00",
+      "positionFloat32Sha256": "8c4bcb46ece0c75400fe90b62ceea6d4919374ff00e1695d8ce99a4604ce1871"
+    },
+    {
+      "batch": "Snow service paving and edge stones",
+      "normalFloat32Sha256": "586b95904ec8b044c2e9b3192f98c1e0a717a5ae1d262f3b2257a69257ffdf18",
+      "positionFloat32Sha256": "2c8ab4281d2c427b71f2006668d5f3a8f9d6819873f7583c5fa2f20f91ee9895"
+    },
+    {
+      "batch": "Snow foundation and platform stone",
+      "normalFloat32Sha256": "f702e4f6172ba54b8ef7c44a0970771b625b11e8ffef509ffdfa29db31bcca87",
+      "positionFloat32Sha256": "3db2e1e4a4552716625578f36765b53ca2634cc6f5db9d2644ca4da23d8cb2ce"
+    },
+    {
+      "batch": "Snow warm pale station masonry",
+      "normalFloat32Sha256": "ec313263de203b024d09c6961cf415e8e1a9a00c81882602f6704004291ea17c",
+      "positionFloat32Sha256": "8912e3eb9ef64e70291a71f8a3ba0c59deb5519d962a149c01d86da391a761d3"
+    },
+    {
+      "batch": "Snow recessed masonry and mortar",
+      "normalFloat32Sha256": "8f4212f1b26b3c8e03a4d53505b8b1d60f3ba2b360bc82cc987cca7264d69e80",
+      "positionFloat32Sha256": "529e4f8b33146a92b05b19c3a1fdf7154a37745d285fe931d2e91212e582aa68"
+    },
+    {
+      "batch": "Snow teal structural painted timber",
+      "normalFloat32Sha256": "ad3c1df2de40a7799a04876d2a7b4ac9f0455b11684ffe4e610ff23ae394a51f",
+      "positionFloat32Sha256": "5b9a589235d8b95dd3716747787a1f2be21b98d1370352fa7b9f879804d7695a"
+    },
+    {
+      "batch": "Snow aged structural timber",
+      "normalFloat32Sha256": "1a2043093e6b02c64b37a408264fbb51f201685d31452d3d9e0ae1f15048fff7",
+      "positionFloat32Sha256": "a5993b9376609dbfc6c5100fbfd2eb955b4465898d93b4da40d370a1d0646fbe"
+    },
+    {
+      "batch": "Snow worn cart and bench boards",
+      "normalFloat32Sha256": "8bab40b99ee24ecf7bd90e21b9eb18fa6a96c306e4e3d6e2331aca46127b2e88",
+      "positionFloat32Sha256": "3882a1f2b61dc3233f9d14a2d45e47263335db1caa6b1be5a8830aa101d2a267"
+    },
+    {
+      "batch": "Snow thick slate roof planes",
+      "normalFloat32Sha256": "2925036ed5d5672c079e55adc5b2daa9ff410214fc5b405838eafea27f58a785",
+      "positionFloat32Sha256": "15231f4b11bbabd33b34bab5bf7dc87640f0348170e37ba5e8f26134ba1154a0"
+    },
+    {
+      "batch": "Snow seated roof caps",
+      "normalFloat32Sha256": "4f3d859408425cd00097d1e45a62df85fe63dbe7e71e1b1bd591dd80e6345f43",
+      "positionFloat32Sha256": "661f3a82e5ee73a3a0163978bf4323aabdc17c24cc2cf7c32540a5aec04bb167"
+    },
+    {
+      "batch": "Snow clock and signal bronze",
+      "normalFloat32Sha256": "0f19f8a9b33f404ca707412ac0bbca65156451d9236419a69d7d3913673180b3",
+      "positionFloat32Sha256": "a5385a51b3595a26acc3ccff9da36d96d5b85be466d3973132f5d444e812e805"
+    },
+    {
+      "batch": "Snow recessed cool window glass",
+      "normalFloat32Sha256": "584d894ee7c5d4ad7162e7b6c91faaedfa2332a87b08e57a4fc17c8f6f243e4d",
+      "positionFloat32Sha256": "e67aff226c24921a183b3dfb983fde1dd2fe82e134fa2d11ddf0471a4284bcab"
+    },
+    {
+      "batch": "Snow static rails axles and ironwork",
+      "normalFloat32Sha256": "d685b765c0f27b092cf3c3b0e7de9b88c0f5368de94a1ad41a3a6432a9d9f9bd",
+      "positionFloat32Sha256": "60fa25b5f0410e0f490ba91717937280a147c52ceb01493e3aa6c6f91821f3fc"
+    },
+    {
+      "batch": "Snow oxide plow steel",
+      "normalFloat32Sha256": "1177af270746faf70a5f2f785ae6a826903eb33b4026e988028ca1172b9faaf7",
+      "positionFloat32Sha256": "4afd8684761f8285f8afe5150d84b647b5d4f57ca1f6a580e2e10d90d8d34d32"
+    },
+    {
+      "batch": "Snow dark wheel treads",
+      "normalFloat32Sha256": "7ed2ad4ec95b858882cb76f0d2ee14bfdc9946d03f449ffc878b13bcb263728a",
+      "positionFloat32Sha256": "418dd732c00d44f074fb53ea4d57d3c76970bd039b20eba3c8e6146c4f86d85d"
+    },
+    {
+      "batch": "Snow sparse rooted fir boughs",
+      "normalFloat32Sha256": "985ee581b6cb2aac6d8459df201b1fcffa471d7588491ae1f717fe100b37a156",
+      "positionFloat32Sha256": "191695b05ec99afe325cbe9c5a8f0b14cebe45333bff38f7c920e3ae6955ec32"
+    },
+    {
+      "batch": "Snow route marker ivory relief",
+      "normalFloat32Sha256": "4812b815bf4f2d6de408811d42b58821dc874f5febce5688c0d6df3e48f7f727",
+      "positionFloat32Sha256": "3177054bcc0ed1d5abb92f646af343545244e6c8123f96a7c72934834c450130"
+    },
+    {
+      "batch": "Snow tied yard cargo",
+      "normalFloat32Sha256": "7c5faa332c5e02dd73391a403e3c8f5a6c9b0f858f83180f524ccdbb3aa59c22",
+      "positionFloat32Sha256": "671ed99dbabacfd65aca8897b6b7f3426cfa0ed09eee6749e96298ef60f30e60"
+    },
+    {
+      "batch": "Snow warm window and signal inserts",
+      "normalFloat32Sha256": "6e7f2137067c7a9d6711d73b91d2d756283010b20e8101a85dd1f58bc2732a2c",
+      "positionFloat32Sha256": "9f7377d80e71c4aabb930121d9720edcf08fe967ed8d9f8589ed7541c187dee2"
+    }
+  ],
+  "verifiedRenderSettings": {
+    "samples": 48,
+    "cpuThreads": 2,
+    "seed": 17,
+    "denoising": false,
+    "adaptiveSampling": false,
+    "viewTransform": "AgX",
+    "exposure": 0.0
+  },
+  "verifiedLighting": {
+    "worldColorHex": "#c3d9e4",
+    "worldStrength": 0.699999988079071,
+    "sunEulerRadians": [
+      -0.6108652353286743,
+      0.0,
+      -0.27925267815589905
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09000000357627869,
+    "sunColorLinear": [
+      1.0,
+      0.9629999995231628,
+      0.9020000100135803
+    ]
+  },
+  "batches": 23,
+  "vertices": 172192,
+  "triangles": 114800,
+  "routeLengthsMetres": {
+    "start": 1804.37166902813,
+    "alley": 518.3166696310494,
+    "boulevard": 568.5820115628107,
+    "finish": 1212.2364284845742
+  },
+  "lapLengthsMetres": {
+    "serviceCutLapLength": 3534.9247671437533,
+    "terraceSweepLapLength": 3585.1901090755155
+  },
+  "framingSource": "Twenty-four immutable forward/chase transforms plus five pre-enrichment catalog transforms; no geometry refit",
+  "originalModels": {
+    "glb": {
+      "file": "snow-original-scene.glb",
+      "sha256": "ef204d54a29864d6c748556283ccade32790eead8c02a0276cfaf2abfd88c543",
+      "note": "Original static source geometry at float32 GPU precision, source UVs/normals/material values and embedded procedural textures; approximate glTF PBR response"
+    },
+    "blend": {
+      "file": "snow-original-scene.blend",
+      "sha256": "060102094c27a561fd6f210417d1947c2b3cc4e1548a8a5010b7984a34923dde",
+      "note": "Editable exact source float32 positions, UVs and normal POINT attributes, explicit two-sided source-normal shader, packed procedural textures, frozen daylight and all29 original source-derived cameras"
+    }
+  },
+  "views": {
+    "eye-first-bowl": {
+      "name": "eye-first-bowl",
+      "edge": "start",
+      "s": 380,
+      "kind": "eye",
+      "sourceEye": [
+        -53.03474267419315,
+        33.04854802998334,
+        -144.59285786499228
+      ],
+      "sourceTarget": [
+        -30.289118333192196,
+        34.31597002648913,
+        -167.0085102550393
+      ],
+      "sourceAnchor": [
+        -53.03474267419315,
+        32.79854802998334,
+        -144.59285786499228
+      ],
+      "sourceDesiredEye": [
+        -61.15634193964122,
+        36.04854802998334,
+        -137.93781275834775
+      ],
+      "cameraPositionBlender": [
+        -53.03474426269531,
+        144.59286499023438,
+        33.04854965209961
+      ],
+      "cameraQuaternionBlender": [
+        0.6392239332199097,
+        0.665096640586853,
+        -0.27834299206733704,
+        -0.26751524209976196
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.7019215226173401,
+          -0.02824568748474121,
+          -0.7116940021514893,
+          -53.03474426269531
+        ],
+        [
+          -0.7122542858123779,
+          -0.027835892513394356,
+          -0.7013694047927856,
+          144.59286499023438
+        ],
+        [
+          2.669430188007027e-08,
+          0.9992133378982544,
+          -0.03965672478079796,
+          33.04854965209961
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-first-bowl.png",
+      "sha256": "12dbea02592932490df7b45883cd759f6697693fa7ec75d506b18739333db9e1",
+      "routeScreenBounds": [
+        -9636.30078125,
+        -111.18024444580078,
+        746.5448608398438,
+        70.77363586425781
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.2677236497402191,
+          0.4232839047908783,
+          0.6261937022209167,
+          0.4427229166030884
+        ],
+        "boulevard": [
+          0.2677236497402191,
+          0.4232839047908783,
+          0.6261937022209167,
+          0.4427229166030884
+        ]
+      }
+    },
+    "chase-first-bowl": {
+      "name": "chase-first-bowl",
+      "edge": "start",
+      "s": 380,
+      "kind": "chase",
+      "sourceEye": [
+        -61.15634193964122,
+        36.04854802998334,
+        -137.93781275834775
+      ],
+      "sourceTarget": [
+        -41.32793292219593,
+        32.448548029983336,
+        -154.18571567637179
+      ],
+      "sourceAnchor": [
+        -53.03474267419315,
+        32.79854802998334,
+        -144.59285786499228
+      ],
+      "sourceDesiredEye": [
+        -61.15634193964122,
+        36.04854802998334,
+        -137.93781275834775
+      ],
+      "cameraPositionBlender": [
+        -61.156341552734375,
+        137.93780517578125,
+        36.04854965209961
+      ],
+      "cameraQuaternionBlender": [
+        0.6820968389511108,
+        0.5930014848709106,
+        -0.28074076771736145,
+        -0.3229205906391144
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.6338137984275818,
+          0.10756684094667435,
+          -0.7659695744514465,
+          -61.156341552734375
+        ],
+        [
+          -0.7734856009483337,
+          0.08814306557178497,
+          -0.6276549100875854,
+          137.93780517578125
+        ],
+        [
+          9.606679896023707e-10,
+          0.9902828335762024,
+          0.13906772434711456,
+          36.04854965209961
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-first-bowl.png",
+      "sha256": "2baaf9d797ea709ce65e1a529865c12a229d430d0fdc4c99c79574ed26af1de5",
+      "routeScreenBounds": [
+        -2386.115478515625,
+        -188.4332275390625,
+        4274.201171875,
+        59.68246078491211
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.2061665952205658,
+          0.5862724781036377,
+          0.5688365697860718,
+          0.6072244048118591
+        ],
+        "boulevard": [
+          0.2061665952205658,
+          0.5862724781036377,
+          0.5688365697860718,
+          0.6072244048118591
+        ]
+      }
+    },
+    "eye-second-bowl": {
+      "name": "eye-second-bowl",
+      "edge": "start",
+      "s": 1100,
+      "kind": "eye",
+      "sourceEye": [
+        83.44361027391479,
+        33.68663581990379,
+        43.15116871407351
+      ],
+      "sourceTarget": [
+        102.16698459003894,
+        34.74365868757761,
+        68.99656572029842
+      ],
+      "sourceAnchor": [
+        83.44361027391479,
+        33.43663581990379,
+        43.15116871407351
+      ],
+      "sourceDesiredEye": [
+        78.29494080646181,
+        36.68663581990379,
+        34.00014676486382
+      ],
+      "cameraPositionBlender": [
+        83.44361114501953,
+        -43.15116882324219,
+        33.6866340637207
+      ],
+      "cameraQuaternionBlender": [
+        -0.21440498530864716,
+        -0.22162368893623352,
+        0.6836914420127869,
+        0.6614223122596741
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8098269104957581,
+          -0.01941995695233345,
+          -0.5863474011421204,
+          83.44361114501953
+        ],
+        [
+          -0.5866689085960388,
+          0.02680693008005619,
+          0.8093830943107605,
+          -43.15116882324219
+        ],
+        [
+          1.5853540702437385e-09,
+          0.9994519948959351,
+          -0.03310209512710571,
+          33.6866340637207
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-second-bowl.png",
+      "sha256": "cfc58edfb09ca3d92225da7e7d39b94842a291743f2f49e3225c0b39b2741425",
+      "routeScreenBounds": [
+        -179.85545349121094,
+        -13.784442901611328,
+        415.3729248046875,
+        30.675676345825195
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          1.1246310472488403,
+          0.49307897686958313,
+          1.5690644979476929,
+          0.539259135723114
+        ],
+        "boulevard": [
+          1.1246310472488403,
+          0.49307897686958313,
+          1.7260680198669434,
+          0.539259135723114
+        ]
+      }
+    },
+    "chase-second-bowl": {
+      "name": "chase-second-bowl",
+      "edge": "start",
+      "s": 1100,
+      "kind": "chase",
+      "sourceEye": [
+        78.29494080646181,
+        36.68663581990379,
+        34.00014676486382
+      ],
+      "sourceTarget": [
+        90.86511581258574,
+        33.08663581990379,
+        56.3418309832046
+      ],
+      "sourceAnchor": [
+        83.44361027391479,
+        33.43663581990379,
+        43.15116871407351
+      ],
+      "sourceDesiredEye": [
+        78.29494080646181,
+        36.68663581990379,
+        34.00014676486382
+      ],
+      "cameraPositionBlender": [
+        78.29493713378906,
+        -34.000144958496094,
+        36.6866340637207
+      ],
+      "cameraQuaternionBlender": [
+        -0.19127251207828522,
+        -0.16628852486610413,
+        0.6346765160560608,
+        0.7300333380699158
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8715258836746216,
+          0.0681917741894722,
+          -0.48558467626571655,
+          78.29493713378906
+        ],
+        [
+          -0.4903494715690613,
+          -0.12120109796524048,
+          0.8630571961402893,
+          -34.000144958496094
+        ],
+        [
+          9.384825361280491e-09,
+          0.9902828931808472,
+          0.13906769454479218,
+          36.6866340637207
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-second-bowl.png",
+      "sha256": "58a7dd63c947ded35c9e846f6177b159a59d700b1dc41bde8a59e1fc4e7065b0",
+      "routeScreenBounds": [
+        -625.4344482421875,
+        -58.32598876953125,
+        130.4778594970703,
+        11.856518745422363
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          1.0113320350646973,
+          0.6589651107788086,
+          1.3840333223342896,
+          0.7072563767433167
+        ],
+        "boulevard": [
+          1.0113320350646973,
+          0.6589651107788086,
+          1.4822882413864136,
+          0.7072563767433167
+        ]
+      }
+    },
+    "eye-service-yard": {
+      "name": "eye-service-yard",
+      "edge": "alley",
+      "s": 210,
+      "kind": "eye",
+      "sourceEye": [
+        234.25961130122494,
+        19.6,
+        -536.7391502430266
+      ],
+      "sourceTarget": [
+        215.68391998667542,
+        19.6,
+        -562.3647732957373
+      ],
+      "sourceAnchor": [
+        234.25961130122494,
+        19.35,
+        -536.7391502430266
+      ],
+      "sourceDesiredEye": [
+        241.8113997197652,
+        22.6,
+        -529.4439126402065
+      ],
+      "cameraPositionBlender": [
+        234.25961303710938,
+        536.7391357421875,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6726168394088745,
+        0.6726168394088745,
+        0.21814343333244324,
+        0.21814343333244324
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.8096536993980408,
+          0.0,
+          0.5869079232215881,
+          234.25961303710938
+        ],
+        [
+          0.5869079232215881,
+          -1.2669399040987628e-07,
+          -0.8096538186073303,
+          536.7391357421875
+        ],
+        [
+          0.0,
+          1.0000001192092896,
+          -1.2669399040987628e-07,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-service-yard.png",
+      "sha256": "e4591fadfd5a1128a999d2da9fc2631e9c3dc3b56cf5a1461cc0232efdd48d3a",
+      "routeScreenBounds": [
+        -1052.40576171875,
+        -99.89938354492188,
+        24325.859375,
+        98.83831024169922
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -15.839370727539062,
+          -6.558736324310303,
+          5.046191692352295,
+          2.614208936691284
+        ],
+        "boulevard": [
+          -98.18074798583984,
+          -7.352940082550049,
+          380.0515441894531,
+          2.1525983810424805
+        ]
+      }
+    },
+    "chase-service-yard": {
+      "name": "chase-service-yard",
+      "edge": "alley",
+      "s": 210,
+      "kind": "chase",
+      "sourceEye": [
+        241.8113997197652,
+        22.6,
+        -529.4439126402065
+      ],
+      "sourceTarget": [
+        223.37415051774346,
+        19,
+        -547.2548080488936
+      ],
+      "sourceAnchor": [
+        234.25961130122494,
+        19.35,
+        -536.7391502430266
+      ],
+      "sourceDesiredEye": [
+        241.8113997197652,
+        22.6,
+        -529.4439126402065
+      ],
+      "cameraPositionBlender": [
+        241.8114013671875,
+        529.4439086914062,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6947075128555298,
+        0.6039649844169617,
+        0.25630542635917664,
+        0.29481396079063416
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.6947844624519348,
+          -0.10001995414495468,
+          0.7122293710708618,
+          241.8114013671875
+        ],
+        [
+          0.7192180752754211,
+          0.09662187099456787,
+          -0.6880332827568054,
+          529.4439086914062
+        ],
+        [
+          7.0968155796435894e-09,
+          0.9902830719947815,
+          0.13906747102737427,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-service-yard.png",
+      "sha256": "3c7edcdf3bb3221b4b3c81f36e7d85bac5a821e5bff9671cb7ae41acc08c0e2d",
+      "routeScreenBounds": [
+        -6679.52734375,
+        -851.2384643554688,
+        15024.603515625,
+        392.216064453125
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -7.629410266876221,
+          -12.132251739501953,
+          10.513630867004395,
+          4.88545036315918
+        ],
+        "boulevard": [
+          -314.6244201660156,
+          -3.9636728763580322,
+          88.90176391601562,
+          12.911948204040527
+        ]
+      }
+    },
+    "eye-clock-approach": {
+      "name": "eye-clock-approach",
+      "edge": "boulevard",
+      "s": 160,
+      "kind": "eye",
+      "sourceEye": [
+        346.549123666624,
+        19.6,
+        -480.3174930027442
+      ],
+      "sourceTarget": [
+        367.7910631695942,
+        19.6,
+        -504.22577151988946
+      ],
+      "sourceAnchor": [
+        346.549123666624,
+        19.35,
+        -480.3174930027442
+      ],
+      "sourceDesiredEye": [
+        339.25564382418116,
+        22.6,
+        -472.7640069341875
+      ],
+      "cameraPositionBlender": [
+        346.54913330078125,
+        480.3175048828125,
+        19.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6609770059585571,
+        0.6609770059585571,
+        -0.2512158155441284,
+        -0.2512158155441284
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.7475624680519104,
+          0.0,
+          -0.664191484451294,
+          346.54913330078125
+        ],
+        [
+          -0.664191484451294,
+          2.3229119960888056e-08,
+          -0.7475624084472656,
+          480.3175048828125
+        ],
+        [
+          0.0,
+          1.0,
+          2.3229119960888056e-08,
+          19.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "eye-clock-approach.png",
+      "sha256": "ddc7dcb4f2a7bc725c01dfed8cc54cc9b0e18779b8c0f3900e656d197abd683e",
+      "routeScreenBounds": [
+        -680.698974609375,
+        -6.900797367095947,
+        542.8953247070312,
+        5.197428226470947
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -129.30941772460938,
+          -1.3309892416000366,
+          648.8364868164062,
+          10.395034790039062
+        ],
+        "boulevard": [
+          -18.57707977294922,
+          -3.349477767944336,
+          6.140721321105957,
+          4.295200347900391
+        ]
+      }
+    },
+    "chase-clock-approach": {
+      "name": "chase-clock-approach",
+      "edge": "boulevard",
+      "s": 160,
+      "kind": "chase",
+      "sourceEye": [
+        339.25564382418116,
+        22.6,
+        -472.7640069341875
+      ],
+      "sourceTarget": [
+        357.0622477638388,
+        19,
+        -491.20540084931247
+      ],
+      "sourceAnchor": [
+        346.549123666624,
+        19.35,
+        -480.3174930027442
+      ],
+      "sourceDesiredEye": [
+        339.25564382418116,
+        22.6,
+        -472.7640069341875
+      ],
+      "cameraPositionBlender": [
+        339.2556457519531,
+        472.7640075683594,
+        22.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6997302770614624,
+        0.6083316206932068,
+        -0.24576164782047272,
+        -0.2826860547065735
+      ],
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        1280,
+        800
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "cameraMatrixWorldBlender": [
+        [
+          0.7193796038627625,
+          0.09659881889820099,
+          -0.6878674626350403,
+          339.2556457519531
+        ],
+        [
+          -0.6946171522140503,
+          0.10004246979951859,
+          -0.712389349937439,
+          472.7640075683594
+        ],
+        [
+          2.2696511337017e-10,
+          0.9902828931808472,
+          0.13906770944595337,
+          22.600000381469727
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "chase-clock-approach.png",
+      "sha256": "0977ee1a0ac7824825209efb7c23063d9346a7befdc30739fea157a2b6057832",
+      "routeScreenBounds": [
+        -345.67987060546875,
+        -6.813523769378662,
+        1197.5504150390625,
+        22.22955322265625
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -268.6650390625,
+          -10.544157028198242,
+          167.15921020507812,
+          8.167229652404785
+        ],
+        "boulevard": [
+          -7.291953086853027,
+          -5.3657331466674805,
+          8.28396224975586,
+          7.2018303871154785
+        ]
+      }
+    },
+    "snow-overview": {
+      "name": "snow-overview",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "snow-overview.png",
+      "sha256": "c0e59ffe85c7244768b0aa9522f1bd0b70c5361dedc5a361adab568a655ed892",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        307.8783264160156,
+        1678.2403564453125,
+        840.2438354492188
+      ],
+      "cameraQuaternionBlender": [
+        0.09326677024364471,
+        0.052087705582380295,
+        0.48480311036109924,
+        0.8680749535560608
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Frostloop Depot circuit, connected opposing highland snow bowls, low saddle, both physical fork roads, station clock hall, open roundhouse and plow shed. Exact emitted source geometry; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        0.296317458152771,
+        0.20052553713321686,
+        0.7302151322364807,
+        0.7354168891906738
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.37115567922592163,
+          0.2556074857711792,
+          0.4346325099468231,
+          0.4879205524921417
+        ],
+        "boulevard": [
+          0.32541781663894653,
+          0.2556074857711792,
+          0.4346325099468231,
+          0.4879205524921417
+        ]
+      },
+      "orthographicScaleMetres": 1898.8438720703125,
+      "cameraMatrixWorldBlender": [
+        [
+          -0.9771763682365417,
+          -0.11142053455114365,
+          0.1808641105890274,
+          307.8783264160156
+        ],
+        [
+          0.21242965757846832,
+          -0.512534499168396,
+          0.8319747447967529,
+          1678.2403564453125
+        ],
+        [
+          2.459362669071652e-08,
+          0.851406991481781,
+          0.524505615234375,
+          840.2438354492188
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "snow-topdown": {
+      "name": "snow-topdown",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "snow-topdown.png",
+      "sha256": "d9cf6920d383aa7dde913d2f967ecd7153273b2f3698416c43060e8d620984ed",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        29.999982833862305,
+        400.0000305175781,
+        1521.903564453125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-08,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: technical Service Cut and broad banked Terrace Sweep. Actual road widths, split/merge union, continuous snow/slate landform and complete original architecture remain unchanged.",
+      "routeScreenBounds": [
+        0.3345588743686676,
+        0.1609847992658615,
+        0.6714962720870972,
+        0.8097508549690247
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.3941858112812042,
+          0.24671238660812378,
+          0.4213850498199463,
+          0.5294520854949951
+        ],
+        "boulevard": [
+          0.3345586359500885,
+          0.24671238660812378,
+          0.40258732438087463,
+          0.5294520854949951
+        ]
+      },
+      "orthographicScaleMetres": 2263.566162109375,
+      "cameraMatrixWorldBlender": [
+        [
+          -1.0,
+          1.5099580252808664e-07,
+          0.0,
+          29.999982833862305
+        ],
+        [
+          -1.5099580252808664e-07,
+          -1.0,
+          0.0,
+          400.0000305175781
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1521.903564453125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "snow-driver-reveal": {
+      "name": "snow-driver-reveal",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 30,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "snow-driver-reveal.png",
+      "sha256": "a1b0c711e967ebd265efae648a35c76bc5e2bd13dac5807516992fc9be9c8078",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -53.03474426269531,
+        144.59286499023438,
+        33.04854965209961
+      ],
+      "cameraQuaternionBlender": [
+        0.6392238736152649,
+        0.665096640586853,
+        -0.2783430218696594,
+        -0.26751530170440674
+      ],
+      "projection": "PERSP",
+      "description": "Blueprint driver eye on the real start road at 380 m, exactly 1.6 m above source support. Connected snow shoulder and slate relief frame the next banked bend. No raised camera, hidden foreground, lowered terrain, HUD, driver or vehicle; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -13683.9169921875,
+        -158.0894012451172,
+        1058.20361328125,
+        100.13040924072266
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.17065714299678802,
+          0.39122486114501953,
+          0.6789289712905884,
+          0.41878724098205566
+        ],
+        "boulevard": [
+          0.17065714299678802,
+          0.39122486114501953,
+          0.6789289712905884,
+          0.41878724098205566
+        ]
+      },
+      "roadEdge": "start",
+      "roadDistanceMetres": 380,
+      "heightAboveSampledRoadMetres": 1.6,
+      "sourceDriverPose": {
+        "id": "ascending-bowl",
+        "edge": "start",
+        "s": 380,
+        "heightAboveSampledRoadMetres": 1.6,
+        "physicalRoadPosition": [
+          -53.03474267419315,
+          31.448548029983336,
+          -144.59285786499228
+        ],
+        "driverEye": [
+          -53.03474267419315,
+          33.04854802998334,
+          -144.59285786499228
+        ],
+        "driverLook": [
+          -30.289118333192196,
+          34.31597002648913,
+          -167.0085102550393
+        ]
+      },
+      "lookTargetSourceCoordinates": [
+        -30.289118333192196,
+        34.31597002648913,
+        -167.0085102550393
+      ],
+      "cameraMatrixWorldBlender": [
+        [
+          0.7019214630126953,
+          -0.028245681896805763,
+          -0.711694061756134,
+          -53.03474426269531
+        ],
+        [
+          -0.7122543454170227,
+          -0.02783595584332943,
+          -0.7013692855834961,
+          144.59286499023438
+        ],
+        [
+          -4.7671754543898714e-08,
+          0.9992133378982544,
+          -0.039656758308410645,
+          33.04854965209961
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "snow-plow-depot": {
+      "name": "snow-plow-depot",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 28,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "snow-plow-depot.png",
+      "sha256": "38c493aa82737d281c29a31616558063c5cd4789f2d1d6664fffcd6b5a349cc0",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -50.669036865234375,
+        844.702392578125,
+        20.875394821166992
+      ],
+      "cameraQuaternionBlender": [
+        0.17102520167827606,
+        0.16205881536006927,
+        -0.6684589385986328,
+        -0.7054430842399597
+      ],
+      "projection": "PERSP",
+      "description": "Nearby source-built open plow shed, load-bearing trusses and original stationary wedge plow with actual seated wheels and blade supports. Every terrain, rail, support and architecture mesh remains visible and unmodified; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -1897.5057373046875,
+        -28.363283157348633,
+        608.0746459960938,
+        180.1961669921875
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -0.8540913462638855,
+          0.5433046221733093,
+          0.4444930851459503,
+          0.560929000377655
+        ],
+        "boulevard": [
+          -0.8540913462638855,
+          0.5433046221733093,
+          0.4444930851459503,
+          0.5610999464988708
+        ]
+      },
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8889746069908142,
+          0.02463776431977749,
+          -0.45729318261146545,
+          -50.669036865234375
+        ],
+        [
+          -0.4579564332962036,
+          -0.04782601073384285,
+          0.8876872062683105,
+          844.702392578125
+        ],
+        [
+          1.085031939851433e-07,
+          0.9985517263412476,
+          0.05379917472600937,
+          20.875394821166992
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    },
+    "snow-clock-hall": {
+      "name": "snow-clock-hall",
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 26,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "file": "snow-clock-hall.png",
+      "sha256": "7bbe7ee6fc33556f825cebab9d2defb7b33fc9e649541fb005d76390991f1d2c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        419.37841796875,
+        564.5060424804688,
+        24.06999969482422
+      ],
+      "cameraQuaternionBlender": [
+        0.20742104947566986,
+        0.22542104125022888,
+        -0.7004992365837097,
+        -0.6445639133453369
+      ],
+      "projection": "PERSP",
+      "description": "Original depot clock hall with bronze twelve-tick dial, snow-capped slate roof, open platform porch and grounded cart details. Source-built complete assembly without cutaway or hidden terrain; approximate offline CPU lighting/materials.",
+      "routeScreenBounds": [
+        -36952.890625,
+        -1307.1204833984375,
+        9939.28515625,
+        345.5386962890625
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -9765.798828125,
+          -8.21674633026123,
+          200.4006805419922,
+          423.3968200683594
+        ],
+        "boulevard": [
+          -465.6754150390625,
+          -13.858698844909668,
+          79.79803466796875,
+          86.14141845703125
+        ]
+      },
+      "cameraMatrixWorldBlender": [
+        [
+          -0.8123236298561096,
+          -0.04842228814959526,
+          -0.5811930894851685,
+          419.37841796875
+        ],
+        [
+          -0.5832067728042603,
+          0.06744543462991714,
+          0.8095189332962036,
+          564.5060424804688
+        ],
+        [
+          3.662093917000675e-08,
+          0.9965472221374512,
+          -0.08302765339612961,
+          24.06999969482422
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "samples": 48
+    }
+  },
+  "menuAsset": {
+    "file": "public/map-previews/snow-overview.webp",
+    "sha256": "d5eeee9af0ff16d467e6b099590bb7cb2061295fd97b6d292c1e6810c405c7af",
+    "resolution": [
+      1280,
+      720
+    ],
+    "sourceView": "snow-overview"
+  },
+  "finalPairedProofSha256": "3f25d4dd8a9984d541cdf035d535158f9517871f47ad91cf38f7fae44dd8b322",
+  "reopenedModelProofSha256": "7a6295acb810f75e62163cafa410d87271a20ac8285f38d04fcac1703371f60d",
+  "localCatalogUpdaterSha256": "221d6bc5f018e4c6647161093315beafaaa4ef449989c582bf6543c9daf0083e"
+}
