@@ -1,0 +1,1992 @@
+{
+  "schema": "harvest-frozen-camera-manifest-v1",
+  "reviewSelection": "Eight first-gate shared-chase/forward-eye views, five additional district chase views and five original catalog poses. All39 fixed cameras remain available; unrendered transforms are not pixel evidence.",
+  "notice": "Frozen before/after source geometry. Static offline CPU rendering, approximate light/material response. No driver, vehicle, HUD, gameplay, GPU or performance claim. Normal shared-chase, forward driver-height and authored landmark-directed road-eye views are explicitly distinct.",
+  "baselineSourceCommit": "15db9eb703aeed462a931b9a743c22690656c0a6",
+  "baselineSourceTree": "54d19313d66167911f8b5139d527835457913c08",
+  "lastVerifiedPublicDevCommit": "915109353ed1d2fcdc8afbb5bdacafca3648e92e",
+  "baselineIdentity": "Local sealed Workshop candidate; not published. Harvest source unchanged from last verified public dev commit.",
+  "baselineManifestSha256": "00e60ede56a67977213270cad1af0380e4251da99b84790d5ecc464c701b0052",
+  "render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "threads": 2,
+    "denoise": false,
+    "seed": 17,
+    "viewTransform": "AgX",
+    "exposure": 0.35,
+    "filmTransparent": false,
+    "imageFormat": "PNG",
+    "colorMode": "RGBA",
+    "pixelAspect": [
+      1,
+      1
+    ],
+    "resolutionPercentage": 100,
+    "blenderVersion": "4.3.2",
+    "adaptiveSampling": false,
+    "look": "None",
+    "gamma": 1,
+    "displayDevice": "sRGB",
+    "maxBounces": 12,
+    "diffuseBounces": 4,
+    "glossyBounces": 4,
+    "transmissionBounces": 12,
+    "transparentMaxBounces": 8,
+    "filterWidth": 1.5,
+    "lightSamplingThreshold": 0.009999999776482582,
+    "sampleClampDirect": 0,
+    "sampleClampIndirect": 10,
+    "filmExposure": 1,
+    "colorDepth": "8",
+    "compression": 15
+  },
+  "lighting": {
+    "worldColorHex": "#dde0c4",
+    "worldStrength": 0.7,
+    "sunEulerRadians": [
+      -0.6108652381980153,
+      0,
+      -0.2792526803190927
+    ],
+    "sunEnergy": 2.25,
+    "sunAngleRadians": 0.09,
+    "sunColorLinear": [
+      1,
+      0.945,
+      0.83
+    ]
+  },
+  "views": [
+    {
+      "name": "harvest-chase-launch-fields",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -278.5115158042606,
+        14.588232448875635,
+        -276.9924503733575
+      ],
+      "sourceTarget": [
+        -252.9674325864652,
+        10.988232448875635,
+        -274.83375494347814
+      ],
+      "cameraPositionBlender": [
+        -278.5115051269531,
+        276.9924621582031,
+        14.588232040405273
+      ],
+      "cameraQuaternionBlender": [
+        -0.5106732249259949,
+        -0.443969190120697,
+        0.4830709397792816,
+        0.5556498169898987
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 100,
+      "sourceRoad": [
+        -268.0488101320271,
+        9.988232448875635,
+        -276.1082614703442
+      ],
+      "sourceAnchor": [
+        -268.0488101320271,
+        11.338232448875635,
+        -276.1082614703442
+      ],
+      "sourceDesiredEye": [
+        -278.5115158042606,
+        14.588232448875635,
+        -276.9924503733575
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-terrace-mill-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -87.76569670943627,
+        24.707706761729263,
+        -175.91317434064055
+      ],
+      "sourceTarget": [
+        -87.45881545100785,
+        21.10770676172926,
+        -150.2798761273816
+      ],
+      "cameraPositionBlender": [
+        -87.76569366455078,
+        175.91317749023438,
+        24.707706451416016
+      ],
+      "cameraQuaternionBlender": [
+        -0.004517230670899153,
+        -0.003927191253751516,
+        0.6560874581336975,
+        0.7546611428260803
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 334.75895627672134,
+      "sourceRoad": [
+        -87.63999995782906,
+        20.10770676172926,
+        -165.41392673299575
+      ],
+      "sourceAnchor": [
+        -87.63999995782906,
+        21.457706761729263,
+        -165.41392673299575
+      ],
+      "sourceDesiredEye": [
+        -87.76569670943627,
+        24.707706761729263,
+        -175.91317434064055
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-ridge-exterior-fields",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -286.7481011101444,
+        37.32970842482134,
+        -52.75837808937914
+      ],
+      "sourceTarget": [
+        -309.7973483197714,
+        33.72970842482134,
+        -41.53820177765659
+      ],
+      "cameraPositionBlender": [
+        -286.74810791015625,
+        52.75837707519531,
+        37.329708099365234
+      ],
+      "cameraQuaternionBlender": [
+        0.4001599848270416,
+        0.3478911817073822,
+        0.5562714338302612,
+        0.6398482918739319
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 600,
+      "sourceRoad": [
+        -296.18893668309124,
+        32.72970842482134,
+        -48.162660116680975
+      ],
+      "sourceAnchor": [
+        -296.18893668309124,
+        34.07970842482134,
+        -48.162660116680975
+      ],
+      "sourceDesiredEye": [
+        -286.7481011101444,
+        37.32970842482134,
+        -52.75837808937914
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-orchard-descent",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -363.48033363958444,
+        35.37025636478056,
+        162.29181570007273
+      ],
+      "sourceTarget": [
+        -342.4314733056946,
+        31.770256364780558,
+        176.92416452181152
+      ],
+      "cameraPositionBlender": [
+        -363.4803466796875,
+        -162.29180908203125,
+        35.37025451660156
+      ],
+      "cameraQuaternionBlender": [
+        -0.349605530500412,
+        -0.30394014716148376,
+        0.5814521312713623,
+        0.6688122153282166
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 873.28423376536,
+      "sourceRoad": [
+        -354.8588447205373,
+        30.770256364780558,
+        168.2851393872056
+      ],
+      "sourceAnchor": [
+        -354.8588447205373,
+        32.12025636478056,
+        168.2851393872056
+      ],
+      "sourceDesiredEye": [
+        -363.48033363958444,
+        35.37025636478056,
+        162.29181570007273
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-press-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -340.2644479652658,
+        34.173950566470275,
+        177.41722947960423
+      ],
+      "sourceTarget": [
+        -316.7853679690334,
+        30.573950566470273,
+        187.70765978776726
+      ],
+      "cameraPositionBlender": [
+        -340.2644348144531,
+        -177.417236328125,
+        34.1739501953125
+      ],
+      "cameraQuaternionBlender": [
+        -0.41286325454711914,
+        -0.35893514752388,
+        0.5492100715637207,
+        0.6317260265350342
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 901,
+      "sourceRoad": [
+        -330.64755542068355,
+        29.573950566470273,
+        181.63212897851972
+      ],
+      "sourceAnchor": [
+        -330.64755542068355,
+        30.923950566470275,
+        181.63212897851972
+      ],
+      "sourceDesiredEye": [
+        -340.2644479652658,
+        34.173950566470275,
+        177.41722947960423
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-fork-signs",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        46.97894964285353,
+        20.50171433105934,
+        107.88460371560139
+      ],
+      "sourceTarget": [
+        72.5559166479314,
+        16.90171433105934,
+        109.6105562693519
+      ],
+      "cameraPositionBlender": [
+        46.97895050048828,
+        -107.88460540771484,
+        20.5017147064209
+      ],
+      "cameraQuaternionBlender": [
+        -0.5153583288192749,
+        -0.4480423629283905,
+        0.479295551776886,
+        0.5513071417808533
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1310.4737229422667,
+      "sourceRoad": [
+        57.455124320210146,
+        15.901714331059338,
+        108.59154369149182
+      ],
+      "sourceAnchor": [
+        57.455124320210146,
+        17.25171433105934,
+        108.59154369149182
+      ],
+      "sourceDesiredEye": [
+        46.97894964285353,
+        20.50171433105934,
+        107.88460371560139
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-decision-input-zone",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        111.90000000000354,
+        20.6,
+        110.4
+      ],
+      "sourceTarget": [
+        137.5351351351387,
+        17,
+        110.4
+      ],
+      "cameraPositionBlender": [
+        111.9000015258789,
+        -110.4000015258789,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5336355566978455,
+        0.46393218636512756,
+        -0.46393218636512756,
+        -0.5336355566978455
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1375.4737229422667,
+      "sourceRoad": [
+        122.40000000000354,
+        16,
+        110.4
+      ],
+      "sourceAnchor": [
+        122.40000000000354,
+        17.35,
+        110.4
+      ],
+      "sourceDesiredEye": [
+        111.90000000000354,
+        20.6,
+        110.4
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-barn-historical-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        277.3240766971834,
+        20.6,
+        72.9337233027119
+      ],
+      "sourceTarget": [
+        286.61986408553173,
+        17,
+        49.04338026986148
+      ],
+      "cameraPositionBlender": [
+        277.3240661621094,
+        -72.93372344970703,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7417222261428833,
+        0.6448386311531067,
+        -0.12103432416915894,
+        -0.13921909034252167
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 94.23489743943789,
+      "sourceRoad": [
+        281.1315763285733,
+        16,
+        63.14837984645213
+      ],
+      "sourceAnchor": [
+        281.1315763285733,
+        17.35,
+        63.14837984645213
+      ],
+      "sourceDesiredEye": [
+        277.3240766971834,
+        20.6,
+        72.9337233027119
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-barn-north-portal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        281.7621626914004,
+        20.6,
+        43.052048453054624
+      ],
+      "sourceTarget": [
+        279.5121396579608,
+        17,
+        17.515847683448527
+      ],
+      "cameraPositionBlender": [
+        281.7621765136719,
+        -43.05204772949219,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7539461851119995,
+        0.6554659008979797,
+        0.028821084648370743,
+        0.0331512987613678
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 125.11487126700081,
+      "sourceRoad": [
+        280.8405665411724,
+        16,
+        32.592571385060985
+      ],
+      "sourceAnchor": [
+        280.8405665411724,
+        17.35,
+        32.592571385060985
+      ],
+      "sourceDesiredEye": [
+        281.7621626914004,
+        20.6,
+        43.052048453054624
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-barn-interior",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        280.6,
+        20.6,
+        10.500000000112813
+      ],
+      "sourceTarget": [
+        280.6,
+        17,
+        -15.135135135022322
+      ],
+      "cameraPositionBlender": [
+        280.6000061035156,
+        -10.5,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7546746730804443,
+        0.6560992002487183,
+        0,
+        0
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 157.71487126710332,
+      "sourceRoad": [
+        280.6,
+        16,
+        1.1281287015663111e-10
+      ],
+      "sourceAnchor": [
+        280.6,
+        17.35,
+        1.1281287015663111e-10
+      ],
+      "sourceDesiredEye": [
+        280.6,
+        20.6,
+        10.500000000112813
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-barn-south-exit",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        280.50660720433194,
+        20.6,
+        -22.10061898702336
+      ],
+      "sourceTarget": [
+        280.81409142627876,
+        17,
+        -47.73390997452423
+      ],
+      "cameraPositionBlender": [
+        280.5066223144531,
+        22.100618362426758,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7546610832214355,
+        0.6560873985290527,
+        -0.003934907726943493,
+        -0.004526107106357813
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 190.31487126720583,
+      "sourceRoad": [
+        280.6325509262364,
+        16,
+        -32.59986363504032
+      ],
+      "sourceAnchor": [
+        280.6325509262364,
+        17.35,
+        -32.59986363504032
+      ],
+      "sourceDesiredEye": [
+        280.50660720433194,
+        20.6,
+        -22.10061898702336
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-contour-silo-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        346.0150165303746,
+        20.6,
+        8.619081789939152
+      ],
+      "sourceTarget": [
+        352.7515343755713,
+        17,
+        -16.115094580378646
+      ],
+      "cameraPositionBlender": [
+        346.0150146484375,
+        -8.619081497192383,
+        20.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7480143904685974,
+        0.6503089070320129,
+        -0.08697394281625748,
+        -0.10004132241010666
+      ],
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 198,
+      "sourceRoad": [
+        348.7742544669681,
+        16,
+        -1.5118908193054068
+      ],
+      "sourceAnchor": [
+        348.7742544669681,
+        17.35,
+        -1.5118908193054068
+      ],
+      "sourceDesiredEye": [
+        346.0150165303746,
+        20.6,
+        8.619081789939152
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-granary-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        31.128723157978463,
+        19.827837314170928,
+        -206.09754729493181
+      ],
+      "sourceTarget": [
+        11.300865955323074,
+        16.22783731417093,
+        -222.34612360634281
+      ],
+      "cameraPositionBlender": [
+        31.12872314453125,
+        206.09754943847656,
+        19.827836990356445
+      ],
+      "cameraQuaternionBlender": [
+        0.6821023225784302,
+        0.5930062532424927,
+        0.2807306945323944,
+        0.32290902733802795
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 146,
+      "sourceRoad": [
+        23.007349912610387,
+        15.22783731417093,
+        -212.7528682195319
+      ],
+      "sourceAnchor": [
+        23.007349912610387,
+        16.57783731417093,
+        -212.7528682195319
+      ],
+      "sourceDesiredEye": [
+        31.128723157978463,
+        19.827837314170928,
+        -206.09754729493181
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-market-home-straight",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -148.6234671938943,
+        14.453552108461908,
+        -371.82899692599557
+      ],
+      "sourceTarget": [
+        -171.004206876869,
+        10.853552108461908,
+        -384.32950270134563
+      ],
+      "cameraPositionBlender": [
+        -148.62347412109375,
+        371.8290100097656,
+        14.45355224609375
+      ],
+      "cameraQuaternionBlender": [
+        0.6508673429489136,
+        0.5658512115478516,
+        0.33208221197128296,
+        0.38197582960128784
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 391.08262039325814,
+      "sourceRoad": [
+        -157.79048603083228,
+        9.853552108461908,
+        -376.9491302878548
+      ],
+      "sourceAnchor": [
+        -157.79048603083228,
+        11.203552108461908,
+        -376.9491302878548
+      ],
+      "sourceDesiredEye": [
+        -148.6234671938943,
+        14.453552108461908,
+        -371.82899692599557
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-chase-market-late-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -138.33610229036626,
+        14.543601481677108,
+        -365.4846892000649
+      ],
+      "sourceTarget": [
+        -160.31181358491796,
+        10.943601481677108,
+        -378.684244741641
+      ],
+      "cameraPositionBlender": [
+        -138.3361053466797,
+        365.48468017578125,
+        14.543601036071777
+      ],
+      "cameraQuaternionBlender": [
+        0.6568056344985962,
+        0.5710138082504272,
+        0.32312437891960144,
+        0.3716720938682556
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 379,
+      "sourceRoad": [
+        -147.3372238907177,
+        9.943601481677108,
+        -370.89114921893923
+      ],
+      "sourceAnchor": [
+        -147.3372238907177,
+        11.293601481677108,
+        -370.89114921893923
+      ],
+      "sourceDesiredEye": [
+        -138.33610229036626,
+        14.543601481677108,
+        -365.4846892000649
+      ],
+      "description": "Unchanged shared chaseCamera view=0, center lane, yaw/pitch=0, rearView=false; baseline safeLandCamera against all original scenery. Frozen pose and target, vertical FOV 56 degrees, 16:9. Static offline source geometry only, no gameplay capture."
+    },
+    {
+      "name": "harvest-road-eye-launch-fields",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -268.0488101320271,
+        11.588232448875635,
+        -276.1082614703442
+      ],
+      "sourceTarget": [
+        -228.17184323843006,
+        11.971071020610323,
+        -273.00384696681476
+      ],
+      "cameraPositionBlender": [
+        -268.0487976074219,
+        276.1082763671875,
+        11.588232040405273
+      ],
+      "cameraQuaternionBlender": [
+        -0.47790083289146423,
+        -0.4824969470500946,
+        0.5215191841125488,
+        0.5165513157844543
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 100,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-terrace-mill-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -87.63999995782906,
+        21.707706761729263,
+        -165.41392673299575
+      ],
+      "sourceTarget": [
+        -94.6495526478982,
+        24.483784802906566,
+        -126.37994455048438
+      ],
+      "cameraPositionBlender": [
+        -87.63999938964844,
+        165.41392517089844,
+        21.707706451416016
+      ],
+      "cameraQuaternionBlender": [
+        0.06050734594464302,
+        0.06489090621471405,
+        0.7284941077232361,
+        0.6792822480201721
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 334.75895627672134,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-ridge-exterior-fields",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -296.18893668309124,
+        34.32970842482134,
+        -48.162660116680975
+      ],
+      "sourceTarget": [
+        -329.7684150071763,
+        35.028743294295,
+        -26.53076192529212
+      ],
+      "cameraPositionBlender": [
+        -296.1889343261719,
+        48.16265869140625,
+        34.329708099365234
+      ],
+      "cameraQuaternionBlender": [
+        0.33556750416755676,
+        0.3414914309978485,
+        0.626204788684845,
+        0.61534184217453
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 600,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-orchard-descent",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        -354.8588447205373,
+        32.37025636478056,
+        168.2851393872056
+      ],
+      "sourceTarget": [
+        -319.253112233505,
+        30.631151962221484,
+        186.18438843163673
+      ],
+      "cameraPositionBlender": [
+        -354.8588562011719,
+        -168.28514099121094,
+        32.37025451660156
+      ],
+      "cameraQuaternionBlender": [
+        -0.3791004717350006,
+        -0.36291754245758057,
+        0.5886355638504028,
+        0.6148836016654968
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 873.28423376536,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-press-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -330.64755542068355,
+        31.173950566470275,
+        181.63212897851972
+      ],
+      "sourceTarget": [
+        -292.7436225080211,
+        29.3867600763714,
+        194.12908153566707
+      ],
+      "cameraPositionBlender": [
+        -330.6475524902344,
+        -181.6321258544922,
+        31.1739501953125
+      ],
+      "cameraQuaternionBlender": [
+        -0.42355820536613464,
+        -0.4050159454345703,
+        0.5599953532218933,
+        0.5856328010559082
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 901,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-fork-signs",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        57.455124320210146,
+        17.50171433105934,
+        108.59154369149182
+      ],
+      "sourceTarget": [
+        97.40000000000458,
+        17.6,
+        110.4
+      ],
+      "cameraPositionBlender": [
+        57.45512390136719,
+        -108.59154510498047,
+        17.5017147064209
+      ],
+      "cameraQuaternionBlender": [
+        -0.4879615008831024,
+        -0.4891623854637146,
+        0.5118097066879272,
+        0.5105531811714172
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1310.4737229422667,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-decision-input-zone",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        122.40000000000354,
+        17.6,
+        110.4
+      ],
+      "sourceTarget": [
+        162.40000000000188,
+        17.6,
+        110.4
+      ],
+      "cameraPositionBlender": [
+        122.4000015258789,
+        -110.4000015258789,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.5,
+        0.5,
+        -0.5,
+        -0.5
+      ],
+      "roadEdge": "start",
+      "roadDistanceMetres": 1375.4737229422667,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-barn-historical-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        281.1315763285733,
+        17.6,
+        63.14837984645213
+      ],
+      "sourceTarget": [
+        280.6,
+        17.6,
+        23.479973827778693
+      ],
+      "cameraPositionBlender": [
+        281.1315612792969,
+        -63.148380279541016,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7070909142494202,
+        0.7070909142494202,
+        0.004737472161650658,
+        0.004737472161650658
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 94.23489743943789,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-barn-north-portal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        280.8405665411724,
+        17.6,
+        32.592571385060985
+      ],
+      "sourceTarget": [
+        280.6,
+        17.6,
+        -7.399999999784772
+      ],
+      "cameraPositionBlender": [
+        280.840576171875,
+        -32.59257125854492,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7071036100387573,
+        0.7071036100387573,
+        0.002126693958416581,
+        0.002126693958416581
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 125.11487126700081,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-barn-interior",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        280.6,
+        17.6,
+        1.1281287015663111e-10
+      ],
+      "sourceTarget": [
+        280.7535725272314,
+        17.6,
+        -39.998860465689205
+      ],
+      "cameraPositionBlender": [
+        280.6000061035156,
+        -1.1281287015663111e-10,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7071054577827454,
+        0.7071054577827454,
+        -0.0013574333861470222,
+        -0.0013574333861470222
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 157.71487126710332,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-barn-south-exit",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        280.6325509262364,
+        17.6,
+        -32.59986363504032
+      ],
+      "sourceTarget": [
+        280.2393106062143,
+        17.6,
+        -72.58437898524274
+      ],
+      "cameraPositionBlender": [
+        280.6325378417969,
+        32.5998649597168,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7070982456207275,
+        0.7070982456207275,
+        0.00347700621932745,
+        0.00347700621932745
+      ],
+      "roadEdge": "alley",
+      "roadDistanceMetres": 190.31487126720583,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-contour-silo-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": true,
+      "sourceEye": [
+        348.7742544669681,
+        17.6,
+        -1.5118908193054068
+      ],
+      "sourceTarget": [
+        354.19950969172515,
+        17.6,
+        -41.02658133953688
+      ],
+      "cameraPositionBlender": [
+        348.7742614746094,
+        1.5118907690048218,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.7054619193077087,
+        0.7054619193077087,
+        -0.04820285737514496,
+        -0.04820285737514496
+      ],
+      "roadEdge": "boulevard",
+      "roadDistanceMetres": 198,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-granary-return",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        23.007349912610387,
+        16.82783731417093,
+        -212.7528682195319
+      ],
+      "sourceTarget": [
+        -5.833906263097839,
+        15.74119820047413,
+        -240.41050577158126
+      ],
+      "cameraPositionBlender": [
+        23.007349014282227,
+        212.75286865234375,
+        16.827836990356445
+      ],
+      "cameraQuaternionBlender": [
+        0.6591926217079163,
+        0.641510546207428,
+        0.2736283540725708,
+        0.28117039799690247
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 146,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-market-home-straight",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -157.79048603083228,
+        11.453552108461908,
+        -376.9491302878548
+      ],
+      "sourceTarget": [
+        -193.72730510592638,
+        11.395147309210065,
+        -394.464402573189
+      ],
+      "cameraPositionBlender": [
+        -157.7904815673828,
+        376.9491271972656,
+        11.45355224609375
+      ],
+      "cameraQuaternionBlender": [
+        0.6000466346740723,
+        0.5991706848144531,
+        0.3745184540748596,
+        0.37506598234176636
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 391.08262039325814,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-road-eye-market-late-approach",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -147.3372238907177,
+        11.543601481677108,
+        -370.89114921893923
+      ],
+      "sourceTarget": [
+        -182.66167407159736,
+        11.382582212427579,
+        -389.61412229446955
+      ],
+      "cameraPositionBlender": [
+        -147.33721923828125,
+        370.8911437988281,
+        11.543601036071777
+      ],
+      "cameraQuaternionBlender": [
+        0.6070887446403503,
+        0.6046485900878906,
+        0.3638492822647095,
+        0.3653176426887512
+      ],
+      "roadEdge": "finish",
+      "roadDistanceMetres": 379,
+      "description": "Forward driver-height view, source road +1.6m looking 40m ahead on the same physical edge. Separate from shared chase and target-facing landmark views."
+    },
+    {
+      "name": "harvest-landmark-windmill-above-grain-terraces",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -87.63999995782906,
+        21.707706761729263,
+        -165.41392673299575
+      ],
+      "sourceTarget": [
+        -205,
+        66.93758814568045,
+        11.95
+      ],
+      "cameraPositionBlender": [
+        -87.63999938964844,
+        165.41392517089844,
+        21.707706451416016
+      ],
+      "cameraQuaternionBlender": [
+        0.18131475150585175,
+        0.22392988204956055,
+        0.7442205548286438,
+        0.6025912165641785
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "windmill above grain terraces"
+    },
+    {
+      "name": "harvest-landmark-orchard-descent-mill-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -354.8588447205373,
+        32.37025636478056,
+        168.2851393872056
+      ],
+      "sourceTarget": [
+        -205,
+        66.93758814568045,
+        11.95
+      ],
+      "cameraPositionBlender": [
+        -354.8588562011719,
+        -168.28514099121094,
+        32.37025451660156
+      ],
+      "cameraQuaternionBlender": [
+        0.6021808981895447,
+        0.7059240937232971,
+        -0.28369608521461487,
+        -0.2420038878917694
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "orchard descent mill reveal"
+    },
+    {
+      "name": "harvest-landmark-fork-meadow-silo-reveal",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        177.40000000000163,
+        17.6,
+        110.4
+      ],
+      "sourceTarget": [
+        395.5564852979575,
+        39.63011830357348,
+        -51.413882819346284
+      ],
+      "cameraPositionBlender": [
+        177.39999389648438,
+        -110.4000015258789,
+        17.600000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6055451035499573,
+        0.6566476821899414,
+        -0.33050674200057983,
+        -0.3047855794429779
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "fork meadow silo reveal"
+    },
+    {
+      "name": "harvest-landmark-market-canopy-home-straight",
+      "projection": "PERSP",
+      "sensorFit": "VERTICAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 22.568717584155984,
+      "verticalFovDegrees": 56,
+      "clipStart": 0.12,
+      "clipEnd": 2200,
+      "resolution": [
+        960,
+        540
+      ],
+      "samples": 48,
+      "renderByDefault": false,
+      "sourceEye": [
+        -157.79048603083228,
+        11.453552108461908,
+        -376.9491302878548
+      ],
+      "sourceTarget": [
+        -165.2363233219158,
+        19.911873477988692,
+        -438.4465763627862
+      ],
+      "cameraPositionBlender": [
+        -157.7904815673828,
+        376.9491271972656,
+        11.45355224609375
+      ],
+      "cameraQuaternionBlender": [
+        0.6563453674316406,
+        0.7520543336868286,
+        0.04536205902695656,
+        0.03958912938833237
+      ],
+      "description": "Authored landmark-directed road-eye view, source road+1.6m aiming at original dome target. This is not a shared chase view.",
+      "sightlineName": "market canopy home straight"
+    }
+  ],
+  "catalogViews": [
+    {
+      "name": "harvest-overview",
+      "file": "harvest-overview.png",
+      "sha256": "c89cdc3d7551b9a66e9d3627ffe28f73d4cf67e69236324db069b3c13c94933d",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "cameraPositionBlender": [
+        832.0369262695312,
+        763.2643432617188,
+        1057.0863037109375
+      ],
+      "cameraQuaternionBlender": [
+        0.4108216464519501,
+        0.17670752108097076,
+        0.35341495275497437,
+        0.8216434121131897
+      ],
+      "projection": "ORTHO",
+      "description": "Complete original Amberwind Harvest circuit on connected grain terraces and orchard terrain, with both physical fork roads, drive-through barn, windmill, granary, silos, press and market. Exact emitted source geometry and approximate offline light.",
+      "routeScreenBounds": [
+        0.26490917801856995,
+        0.24256519973278046,
+        0.7943349480628967,
+        0.8516784310340881
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.27822116017341614,
+          0.27683719992637634,
+          0.46960508823394775,
+          0.44798901677131653
+        ],
+        "boulevard": [
+          0.2649092674255371,
+          0.24256519973278046,
+          0.46960508823394775,
+          0.44798901677131653
+        ]
+      },
+      "orthographicScaleMetres": 1535.43212890625,
+      "fittedSubjectScreenBounds": [
+        0.16856256127357483,
+        0.06999997049570084,
+        0.8314374089241028,
+        0.9299999475479126
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/harvest-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "harvest-topdown",
+      "file": "harvest-topdown.png",
+      "sha256": "6090916ed5d58b759c1a402936ca6f258c0c34bf2b8159ab0f74c0651b449920",
+      "resolution": [
+        1920,
+        1440
+      ],
+      "cameraPositionBlender": [
+        -18.79275131225586,
+        100.43844604492188,
+        1517.5499267578125
+      ],
+      "cameraQuaternionBlender": [
+        7.549790126404332e-8,
+        0,
+        0,
+        -1
+      ],
+      "projection": "ORTHO",
+      "description": "True overhead source geometry with both complete physical roads: the drive-through Barnyard Cut and broad Golden Contour. Real road width, split/merge throats, terraced terrain and planted orchard rows are retained.",
+      "routeScreenBounds": [
+        0.15007686614990234,
+        0.10434966534376144,
+        0.8933707475662231,
+        0.8788464665412903
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          0.21878963708877563,
+          0.37525832653045654,
+          0.3342317044734955,
+          0.768775463104248
+        ],
+        "boulevard": [
+          0.15007686614990234,
+          0.37525832653045654,
+          0.3342317044734955,
+          0.768775463104248
+        ]
+      },
+      "orthographicScaleMetres": 1093.0484619140625,
+      "fittedSubjectScreenBounds": [
+        0.09931080043315887,
+        0.06999999284744263,
+        0.9006891846656799,
+        0.9299999475479126
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/harvest-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "harvest-barn-passage",
+      "file": "harvest-barn-passage.png",
+      "sha256": "3c096cea67357aa4e823f7257a22169990f6ebe07f331ce9bf965e1940c4f17c",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        281.1315612792969,
+        -63.148380279541016,
+        18.100000381469727
+      ],
+      "cameraQuaternionBlender": [
+        0.6500416994094849,
+        0.7598868608474731,
+        0.0031981393694877625,
+        0.0027358336374163628
+      ],
+      "projection": "PERSP",
+      "description": "Real source barn passage from 2.1 m above the independently sampled Barnyard Cut approach. Open portals, actual structural posts, roof supports and through-road are unmodified; no removed wall, hidden mesh or gameplay claim.",
+      "routeScreenBounds": [
+        -5782.81298828125,
+        -236.0070343017578,
+        1914.4525146484375,
+        217.38699340820312
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -6.563759803771973,
+          -3.3460397720336914,
+          19.414037704467773,
+          10.551340103149414
+        ],
+        "boulevard": [
+          -124.09012603759766,
+          -236.0070343017578,
+          1263.077880859375,
+          9.270584106445312
+        ]
+      },
+      "lensMillimetres": 29,
+      "roadEdge": "alley",
+      "roadDistanceMetres": 94.23489743943789,
+      "heightAboveSampledRoadMetres": 2.1,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/harvest-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "harvest-windmill-detail",
+      "file": "harvest-windmill-detail.png",
+      "sha256": "90c04f85817765d4480da574a3067015c71a75f84beaf1ecbebdc0a9a2bebec0",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        654.253662109375,
+        1087.2305908203125,
+        585.0616455078125
+      ],
+      "cameraQuaternionBlender": [
+        0.2660441994667053,
+        0.18355895578861237,
+        0.5374175906181335,
+        0.7789152264595032
+      ],
+      "projection": "ORTHO",
+      "description": "Original windmill construction: masonry tower, actual static slatted sails, supported axle and grounded foundation. All source mesh batches remain visible; no animated machinery or gameplay claim.",
+      "routeScreenBounds": [
+        -3.6036477088928223,
+        -2.422471523284912,
+        4.425711631774902,
+        1.354645848274231
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          -3.3418686389923096,
+          -2.292470932006836,
+          -0.9063984751701355,
+          -0.9048122763633728
+        ],
+        "boulevard": [
+          -3.6036477088928223,
+          -2.422471523284912,
+          -0.9063984751701355,
+          -0.9048122763633728
+        ]
+      },
+      "orthographicScaleMetres": 108.09661865234375,
+      "fittedSubjectScreenBounds": [
+        0.3054567277431488,
+        0.06999427080154419,
+        0.6945498585700989,
+        0.9299941658973694
+      ],
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "lensMillimetres": 50,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/harvest-preview-provenance.json pose; no refit"
+    },
+    {
+      "name": "harvest-orchard-detail",
+      "file": "harvest-orchard-detail.png",
+      "sha256": "6401043d5585f701dbbfdc9b67496616e8847b51e794cb0d66be223f2bd820b6",
+      "resolution": [
+        1800,
+        1125
+      ],
+      "cameraPositionBlender": [
+        -293.3322448730469,
+        -211.56971740722656,
+        28.46681022644043
+      ],
+      "cameraQuaternionBlender": [
+        0.06156616657972336,
+        0.054887548089027405,
+        0.6631931066513062,
+        0.7438896894454956
+      ],
+      "projection": "PERSP",
+      "description": "Nearby lower-front perspective of the actual orchard press, including threaded static horizontal spindles, basket presses, supporting frame, stone trough and grounded foundation. All roof, posts and surrounding terrain remain unmodified; no hidden geometry.",
+      "routeScreenBounds": [
+        -1.6008456945419312,
+        0.49854472279548645,
+        4.036354064941406,
+        0.9179586172103882
+      ],
+      "physicalBranchScreenBounds": {
+        "alley": [
+          1.0309094190597534,
+          0.6502929329872131,
+          2.3730242252349854,
+          0.7017841339111328
+        ],
+        "boulevard": [
+          1.0309094190597534,
+          0.6502026915550232,
+          2.39375901222229,
+          0.7017841339111328
+        ]
+      },
+      "lensMillimetres": 24,
+      "sensorFit": "HORIZONTAL",
+      "sensorWidthMillimetres": 36,
+      "sensorHeightMillimetres": 24,
+      "clipStart": 0.1,
+      "clipEnd": 10000,
+      "samples": 48,
+      "renderByDefault": true,
+      "poseSource": "Exact pre-enrichment docs/harvest-preview-provenance.json pose; no refit"
+    }
+  ],
+  "baselineGeometryContract": {
+    "geometryJsonSha256": "fbdf34fd8eabd145d30ed1f99d1bf217f055ccdcc0ec84ddcf74976b9dbb250d",
+    "glbSha256": "40d0227873482b0db350d2291c299851fca9a77334a88a9545a37cef1ab6c269",
+    "sourceHashes": {
+      "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+      "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+      "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e",
+      "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+      "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+      "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+      "src/harvest-scenery.ts": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+      "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf"
+    },
+    "scenerySnapshot": "docs/scene-baselines/harvest-scenery.ts.txt",
+    "additionalProtectedSourceHashes": {
+      "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+      "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+      "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+      "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+      "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+      "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+      "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+      "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+      "src/race-controls.ts": "057cd58ba0d04e7ffc55454c5969902ab57f3d6a8ed1a5b8871ec79244b9def3",
+      "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+      "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+      "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+      "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b",
+      "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e"
+    }
+  }
+}
