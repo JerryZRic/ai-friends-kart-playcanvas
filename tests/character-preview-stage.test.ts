@@ -22,7 +22,7 @@ test('portrait lighting is bounded and explicit, isolated from racing and garage
     assert.equal(app.scene.exposure, 1); assert.equal(PORTRAIT_CLEAR_COLOR.a, 1);
     const lights = stage.room.findComponents('light') as pc.LightComponent[];
     assert.equal(lights.length, 2);
-    assert.equal(lights[0].intensity, .95); assert.equal(lights[1].intensity, .30);
+    assert.equal(lights[0].intensity, 1.08); assert.equal(lights[1].intensity, .36);
     assert.ok(lights.every(light => !light.castShadows));
     assert.deepEqual(otherApp.scene.ambientLight, previousAmbient); assert.equal(otherApp.scene.exposure, previousExposure);
     const source = readFileSync('src/character-preview.ts', 'utf8');

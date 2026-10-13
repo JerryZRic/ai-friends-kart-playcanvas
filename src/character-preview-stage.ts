@@ -2,7 +2,7 @@ import * as pc from 'playcanvas';
 
 /** Selection-only lighting. Original portrait materials and race scenes are untouched. */
 export const PORTRAIT_LIGHTING = Object.freeze({
-  ambient: Object.freeze([.40, .43, .45]), key: .95, fill: .30, exposure: 1,
+  ambient: Object.freeze([.40, .43, .45]), key: 1.08, fill: .36, exposure: 1,
 });
 export const PORTRAIT_CLEAR_COLOR = new pc.Color(.67, .71, .68, 1);
 
