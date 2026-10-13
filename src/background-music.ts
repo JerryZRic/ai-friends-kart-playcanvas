@@ -10,6 +10,7 @@ export interface MusicState {
 }
 export interface BackgroundMusicOptions {
   themeUrl?: string;
+  preloadTheme?: boolean;
   raceUrl?: string;
   document?: Document;
   window?: Window;
@@ -86,10 +87,12 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   }
   const [theme, race] = tracks;
   tracks.forEach(audio => { audio.loop = true; audio.preload = 'metadata'; audio.volume = 1; });
+  // Menu pages may buffer the theme while their heavier UI graph loads.
+  if (options.preloadTheme) { theme.preload = 'auto'; try { theme.load(); } catch { /* optional */ } }
   let savedPosition = 0;
   try { savedPosition = Number(session?.getItem(POSITION_KEY) ?? 0); } catch { /* optional */ }
   const restorePosition = () => {
-    if (!Number.isFinite(savedPosition) || savedPosition <= 0) return;
+    if (!Number.isFinite(savedPosition) || savedPosition <= 0 || theme.readyState < 1) return;
     try {
       theme.currentTime = Number.isFinite(theme.duration) && theme.duration > 0 ? savedPosition % theme.duration : savedPosition;
       savedPosition = 0;
@@ -98,6 +101,8 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   restorePosition();
   theme.addEventListener('loadedmetadata', restorePosition);
   const savePosition = () => {
+    // A destination unloaded before metadata must not erase the handoff position.
+    if (Number.isFinite(savedPosition) && savedPosition > 0) return;
     try { session?.setItem(POSITION_KEY, String(theme.currentTime)); } catch { /* optional */ }
   };
   let context: AudioContext | undefined;

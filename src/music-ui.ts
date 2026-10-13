@@ -7,9 +7,9 @@ export function raceMusicUrl(map?: string): string {
   return map === 'waterpark' ? './assets/music/dfy_fusion.mp3' : './assets/music/dfy_bgm.mp3';
 }
 
-export function getDocumentMusic(document: Document, map?: string): BackgroundMusic | null {
+export function getDocumentMusic(document: Document, map?: string, preloadTheme = false): BackgroundMusic | null {
   if (!document.defaultView || !document.addEventListener) return null;
-  return createBackgroundMusic({document, window: document.defaultView, raceUrl: raceMusicUrl(map)});
+  return createBackgroundMusic({document, window: document.defaultView, preloadTheme, raceUrl: raceMusicUrl(map)});
 }
 
 export const MUSIC_SETTINGS_MARKUP = `<div data-music-settings style="display:grid;gap:8px;min-width:0"><label style="display:flex;align-items:center;gap:8px"><input data-music-enabled type="checkbox">背景音乐</label><label style="display:flex;align-items:center;gap:8px">音量 <input data-music-volume type="range" min="0" max="100" step="1" aria-label="背景音乐音量" style="min-width:60px;width:100%;flex:1"><output data-music-level style="min-width:3em"></output></label><small data-music-status role="status" aria-live="polite">音乐设置自动保存</small></div>`;
@@ -48,7 +48,10 @@ export function bindMusicNavigation(document: Document, music: BackgroundMusic |
     if (!pending) returnPhase = music?.getState().phase ?? 'silent';
     pending = true;
     const commit = () => {if (!disposed && current === version) {pending = false; window.location.href = href;}};
-    if (music) void music.fadeOut(500).then(commit, commit); else commit();
+    // Keep race-entry silence, but do not add half a second to theme-only hops.
+    const destination = new URL(href, new URL(window.location.href, window.location.origin));
+    const menuHop = music?.getState().phase === 'menu' && /\/(?:index|garage)\.html$/.test(destination.pathname);
+    if (music) void music.fadeOut(menuHop ? 120 : 500).then(commit, commit); else commit();
   };
   const click = (event: MouseEvent) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;

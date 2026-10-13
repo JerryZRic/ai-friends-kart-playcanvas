@@ -171,7 +171,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     if(scenario.mountain||forkMap){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
       await assert.rejects(import(copy.url.href),/Injected mountain chunk failure/);
-      assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);
+      assert.match(element('raceLoadingStatus').textContent,/赛道载入或初始化失败.*Injected mountain chunk failure/);
       assert.equal(element('raceLoadingRetry').disabled,false);assert.equal(element('raceLoadingRetry').hidden,false);
       assert.equal(element('raceLoadingExit').hidden,false);assert.match(element('raceLoadingExit').href,new RegExp('map='+(forkMap||'mountain')));
       if(scenario.garden||scenario.airfield){let reloads=0;const before=g.location.href;g.location.reload=()=>reloads++;element('raceLoadingRetry').click();assert.equal(reloads,1,'native retry invokes shared page reload');assert.equal(g.location.href,before,'retry preserves selected map and driver query');}

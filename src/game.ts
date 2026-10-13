@@ -56,7 +56,8 @@ loadingUi.exitLink.href=initialLinks.changeMap;
 let course:Awaited<ReturnType<typeof loadLandCourse>>;
 try {course=await loadLandCourse(query.toString());}
 catch(error){
-  loadingUi.update({progress:null,status:'赛道程序下载失败，请重试或返回地图选择',busy:false,canRetry:true,canExit:true});
+  const detail=error instanceof Error?error.message:String(error);
+  loadingUi.update({progress:null,status:'赛道载入或初始化失败：'+detail+'；请重试或返回地图选择',busy:false,canRetry:true,canExit:true});
   loadingUi.retryButton.onclick=()=>location.reload();
   throw error;
 }
@@ -179,14 +180,14 @@ function renderLoadingUI(){
   }else if(loadingError&&courseBuilt){
     $('loading').textContent='模型准备失败：'+loadingError+'；请重试';
   }else if(!courseBuilt){
-    $('loading').textContent='赛道资源加载失败，请检查网络后重试';
+    $('loading').textContent='赛道准备失败'+(loadingError?'：'+loadingError:'')+'；请重试';
   }else if(bundledFailures.size){
     $('loading').textContent='角色加载失败：'+[...bundledFailures.keys()].map(id=>getDriver(id).label).join('、')+'；请重试失败资源';
   }else $('loading').textContent='6 / 6 角色与组装赛车已就绪 · 非商业试玩';
   const canRetry=!loadingBusy&&!localDrivers.busy&&(loadingError||!courseBuilt||bundledFailures.size>0)&&(state==='loading'||state==='menu'||state==='finished');
   $('retryLoading').classList[!loadingBusy&&(loadingError||!courseBuilt||bundledFailures.size>0)?'remove':'add']('hidden');
   $('retryLoading').disabled=!canRetry;
-  const shortStatus=!loadingBusy&&(loadingError||!courseBuilt)?'赛道或模型准备失败，请重试':!loadingBusy&&bundledFailures.size?`角色加载失败 ${bundledFailures.size} / 6，请重试`:$('loading').textContent;
+  const shortStatus=!loadingBusy&&(loadingError||!courseBuilt)?$('loading').textContent:!loadingBusy&&bundledFailures.size?`角色加载失败 ${bundledFailures.size} / 6：${[...bundledFailures].map(([id,error])=>getDriver(id).label+' · '+error).join('；')}`:$('loading').textContent;
   loadingUi.update({progress:hasTotal?Math.min(1,status.receivedBytes/status.totalBytes):null,status:shortStatus,busy:loadingBusy,canRetry:!!canRetry,canContinue:ready&&!loadingBusy&&!localDrivers.busy,continueLabel:'开始比赛'});
   $('retryLoading').textContent=courseBuilt?(loadingError?'重试模型准备':'重试失败角色（'+bundledFailures.size+'）'):'重试赛道资源';
 }
@@ -228,18 +229,22 @@ function boot(): Promise<boolean> {
   $('startText').textContent = courseBuilt ? '正在重试角色' : '正在准备赛道'; updateDriverUI();
   loadingTimer = setInterval(renderLoadingUI, 250);
   loadingPromise = lifetime.run(async signal => {
+    let stage='赛道资源';
     try {
       if (!courseBuilt) { await prepareCourseAssets(signal); if (disposed||contextUnavailable) return false; buildCourse(); }
+      stage='角色下载 / 解析';
       const loaded = await loadBundledDrivers(app, { signal, existingDrivers: bundledDrivers, onStatus: status => setLoadingSnapshot({ phase: 'drivers', ...status }), onProgress: updateDriverUI });
       if (disposed||contextUnavailable) return false;
       bundledDrivers = loaded.drivers; bundledFailures = loaded.failures;
+      stage='赛车零件装配';
       await prepareKarts(signal); if (disposed||contextUnavailable) return false;
+      stage='选手初始化';
       setupRacers(); ready = bundledFailures.size===0&&bundledDrivers.size===DRIVERS.length; state = returnState;
       $('startText').textContent = bundledFailures.size ? '请重试失败资源' : returnState === 'finished' ? '再来一场' : '开始比赛';
       return true;
     } catch (error) {
       if (disposed||contextUnavailable) return false;
-      console.error(error); loadingError = error instanceof Error ? error.message : '未知准备错误';
+      console.error(error); loadingError = stage+' · '+(error instanceof Error ? error.message : '未知准备错误');
       $('startText').textContent = '资源加载未完成';
       if (courseBuilt) for (const slot of DRIVERS) if (!bundledDrivers.has(slot.id)) bundledFailures.set(slot.id, loadingError);
       return false;

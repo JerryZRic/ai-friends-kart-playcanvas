@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createBackgroundMusic } from '../src/background-music.ts';
 
 class FakeAudio extends EventTarget {
-  loop = false; preload = ''; volume = 1; currentTime = 0; duration = 100; paused = true;
+  readyState = 1; loop = false; preload = ''; volume = 1; currentTime = 0; duration = 100; paused = true;
   playCalls = 0; pauseCalls = 0; fail = false;
   pending?: Promise<void>;
   constructor(public src: string, private log: string[]) { super(); }
@@ -259,4 +259,27 @@ test('explicit loading/countdown silence immediately cancels every track and ram
   h.music.setPhase('race', true); h.tick(); await flush();
   assert.equal(h.audios[1].paused, false); assert.equal(h.audios[0].paused, true);
   h.music.dispose();
+});
+
+// Regression: real media at HAVE_NOTHING can accept a default start position,
+// then reset it while loading. Do not consume persisted handoff until metadata.
+test('cross-page theme handoff survives delayed metadata and an early unload', () => {
+  const h = harness(); h.music.dispose();
+  h.saved.set('ai-friends-kart.music.theme-position.v1', '142');
+  const factory = h.options.createAudio;
+  h.options.createAudio = url => { const audio = factory(url); (audio as any).readyState = 0; return audio; };
+  const music = createBackgroundMusic(h.options);
+  const theme = h.audios[2]; assert.equal(theme.currentTime, 0);
+  h.win.dispatchEvent(new Event('pagehide'));
+  assert.equal(h.saved.get('ai-friends-kart.music.theme-position.v1'), '142');
+  theme.readyState = 1; theme.dispatchEvent(new Event('loadedmetadata'));
+  assert.equal(theme.currentTime, 42);
+  music.dispose();
+});
+test('menu preload buffers only theme without creating a context or starting playback', () => {
+  const h = harness(); h.music.dispose();
+  const music = createBackgroundMusic({...h.options, preloadTheme: true});
+  assert.equal(h.audios[2].preload, 'auto'); assert.equal(h.audios[3].preload, 'metadata');
+  assert.equal(h.audios[2].playCalls, 0); assert.equal(h.context.sources.length, 0);
+  music.dispose();
 });
