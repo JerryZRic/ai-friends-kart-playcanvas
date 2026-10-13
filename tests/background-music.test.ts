@@ -292,3 +292,10 @@ test('single-document land and water races reuse media sources and theme positio
  h.music.silence();h.music.setRaceUrl?.('./assets/music/dfy_bgm.mp3');h.music.setPhase('race');h.tick();
  assert.equal(h.audios[1].src,'./assets/music/dfy_bgm.mp3');assert.equal(h.context.sources.length,2);assert.ok(h.audios.every(audio=>audio.loop));h.music.dispose();
 });
+
+test('intro presentation holds audio without changing settings and preserves real gesture unlock',async()=>{
+ const h=harness();h.music.setPresentationReady?.(false);h.music.setPhase('menu');assert.equal(h.audios[0].playCalls,0);
+ h.doc.dispatchEvent(new Event('pointerdown'));assert.ok(h.log.includes('resume'));assert.equal(h.audios[0].playCalls,0);
+ assert.equal(h.music.getState().muted,false);assert.equal(h.music.getState().volume,.65);
+ h.music.setPresentationReady?.(true);await flush();assert.equal(h.audios[0].paused,false);h.music.dispose();
+});

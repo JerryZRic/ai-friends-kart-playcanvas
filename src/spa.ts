@@ -1,3 +1,4 @@
+import {mountBrandIntro} from './brand-intro';
 import {sceneForUrl,type SceneKind} from './scene-routes';
 import {getDocumentMusic,registerSceneNavigator} from './music-ui';
 import menuHtml from '../index.html?raw';
@@ -17,11 +18,20 @@ import raceCss from './race-ui.css?inline';
 type Scene = SceneKind;
 type Handle = {dispose():void};
 const directory=new URL('./',location.href);
-const music=getDocumentMusic(document);
+(window as Window & {__releaseColdRecovery?:()=>void}).__releaseColdRecovery?.();
+const music=getDocumentMusic(document,undefined,!/\/(?:coast|waterpark)\.html$/.test(location.pathname));
+const introOverlay=document.getElementById('brand-intro');
+const sceneRoot=document.createElement('div');sceneRoot.id='app-scene';sceneRoot.style.display='contents';
+sceneRoot.inert=!!introOverlay;
+if(introOverlay)music?.setPresentationReady?.(false);
+// The overlay stays outside scene replacements while real resources load beneath it.
+document.body.append(sceneRoot);
+for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay)node.remove();
+const intro=mountBrandIntro(document,window,()=>{sceneRoot.inert=false;music?.setPresentationReady?.(true);});
 const templates={menu:menuHtml,garage:garageHtml,land:landHtml,water:waterHtml};
 const css={menu:menuCss+uiCss+menuFixedCss+emblemCss+titleCss,garage:uiCss+garageCss+garageStatsCss+emblemCss+garageCarsCss,land:raceCss+emblemCss,water:raceCss+emblemCss};
 const style=document.createElement('style');style.dataset.sceneStyles='true';
-for(const node of document.head.querySelectorAll('link[rel="stylesheet"],style'))node.remove();
+for(const node of document.head.querySelectorAll('link[rel="stylesheet"],style:not([data-brand-intro-style])'))node.remove();
 document.head.append(style);
 let active:Handle|undefined,kind:Scene|undefined,version=0,disposed=false;
 const sceneFor=(url:URL)=>sceneForUrl(url,directory);
@@ -32,15 +42,15 @@ function loading(url:URL,error?:unknown){
  const panel=document.createElement('main');panel.id='scene-loading';panel.setAttribute('role','status');
  const text=document.createElement('p');text.textContent=error?'场景暂时无法载入，请重试':'正在切换场景…';panel.append(text);
  if(error){const detail=document.createElement('small');detail.textContent=String(error instanceof Error?error.message:error).slice(0,180);panel.append(detail);const retry=document.createElement('button');retry.textContent='重试';retry.onclick=()=>void show(url,false);panel.append(retry);}
- const back=document.createElement('button');back.textContent='返回主菜单';back.onclick=()=>navigate(new URL('index.html',directory).href);panel.append(back);document.body.replaceChildren(panel);back.focus();
+ const back=document.createElement('button');back.textContent='返回主菜单';back.onclick=()=>navigate(new URL('index.html',directory).href);panel.append(back);sceneRoot.replaceChildren(panel);back.focus();
 }
 function mountMarkup(next:Scene){
  const parsed=new DOMParser().parseFromString(templates[next],'text/html');
- for(const script of parsed.querySelectorAll('script,noscript'))script.remove();
- style.textContent=css[next]+Array.from(parsed.head.querySelectorAll('style'),s=>s.textContent??'').join('\n');
+ for(const script of parsed.querySelectorAll('script,noscript,[data-brand-intro],[data-cold-recovery]'))script.remove();
+ style.textContent=css[next]+Array.from(parsed.head.querySelectorAll('style:not([data-brand-intro-style])'),s=>s.textContent??'').join('\n');
  document.body.className=parsed.body.className;for(const key of Object.keys(document.body.dataset))delete document.body.dataset[key];
  for(const [key,value] of Object.entries(parsed.body.dataset))document.body.dataset[key]=value;
- document.body.replaceChildren(...Array.from(parsed.body.childNodes).map(node=>document.importNode(node,true)));
+ sceneRoot.replaceChildren(...Array.from(parsed.body.childNodes).map(node=>document.importNode(node,true)));
  document.title=parsed.title;window.scrollTo({top:0});
 }
 async function show(url:URL,push:boolean){
@@ -81,7 +91,7 @@ const pop=(event:PopStateEvent)=>{
  event.stopImmediatePropagation();void show(url,false);
 };
 document.addEventListener('click',click);window.addEventListener('popstate',pop);
-function dispose(){if(disposed)return;disposed=true;version++;active?.dispose();active=undefined;releaseNavigator();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);music?.dispose();}
+function dispose(){if(disposed)return;disposed=true;version++;active?.dispose();active=undefined;releaseNavigator();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
 window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
 if(import.meta.hot)import.meta.hot.dispose(dispose);
 void show(new URL(location.href),false);

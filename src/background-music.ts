@@ -26,6 +26,7 @@ export interface BackgroundMusic {
   unlock(): void;
   preloadRace(): void;
   setRaceUrl?(url: string): void;
+  setPresentationReady?(ready: boolean): void;
   silence(): void;
   setVolume(volume: number): void;
   setMuted(muted: boolean): void;
@@ -111,6 +112,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   let graphFailed = false, racePreloaded = false;
   let gains: GainNode[] = [];
   let sources: MediaElementAudioSourceNode[] = [];
+  let presentationReady=true;
   let phase: MusicPhase = 'silent', blocked = false, playing = false, disposed = false;
   let hidden = !!doc?.hidden, fading = false, generation = 0;
   let fadeTimer: ReturnType<typeof setTimeout> | undefined;
@@ -122,9 +124,9 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   const getState = (): MusicState => ({ phase, volume, muted, blocked, playing, settingsSaved });
   const emit = () => listeners.forEach(listener => listener(getState()));
   const target = () => phase === 'menu' ? theme : phase === 'race' || phase === 'paused' ? race : undefined;
-  const desired = (audio: HTMLAudioElement) => !disposed && !hidden && !muted && volume > 0 && target() === audio;
-  const mayPlay = (audio: HTMLAudioElement) => desired(audio) || (!disposed && !hidden && !muted && volume > 0 && (audio === outgoing || fading));
-  const level = () => hidden || muted || phase === 'silent' ? 0 : volume * (phase === 'paused' ? .3 : 1);
+  const desired = (audio: HTMLAudioElement) => !disposed && !hidden && presentationReady && !muted && volume > 0 && target() === audio;
+  const mayPlay = (audio: HTMLAudioElement) => desired(audio) || (!disposed && !hidden && presentationReady && !muted && volume > 0 && (audio === outgoing || fading));
+  const level = () => !presentationReady || hidden || muted || phase === 'silent' ? 0 : volume * (phase === 'paused' ? .3 : 1);
   const applyGains = () => gains.forEach((gain, index) => {
     gain.gain.cancelScheduledValues(context!.currentTime);
     gain.gain.setValueAtTime(desired(tracks[index]) ? level() : 0, context!.currentTime);
@@ -232,7 +234,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
     if (disposed || hidden) return;
     // An early loading-screen gesture may unlock the context without playing a track.
     if (!context && !ensureGraph()) { emit(); return; }
-    if (!target() && context!.state !== 'running') {
+    if ((!target() || !presentationReady) && context!.state !== 'running') {
       try { void context!.resume().catch(() => { if (!disposed) { blocked = true; emit(); } }); } catch { blocked = true; emit(); }
     }
     // Ordinary input must not cancel the phase crossfade or restart playback.
@@ -292,6 +294,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       tracks.forEach(audio => audio.pause());
       playing = false; applyGains(); emit();
     },
+    setPresentationReady(ready) {if(disposed||presentationReady===ready)return;presentationReady=ready;refresh();},
     setRaceUrl(url) {
       if(disposed||currentRaceUrl===url)return;
       currentRaceUrl=url;

@@ -8,8 +8,14 @@
   <title>晴空水上乐园 · AI Friends Kart · 非商业试玩</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23172936'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="/src/race-ui.css">
-<link rel="stylesheet" href="/src/character-emblems.css"></head>
-<body class="menu waterpark-race">
+<link rel="stylesheet" href="/src/character-emblems.css"><link rel="preload" as="image" href="./brand/timewish.svg"><style data-brand-intro-style>
+#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover 2s linear forwards}
+#brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo 2s linear forwards}
+@keyframes timewish-cover{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes timewish-logo{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}
+</style></head>
+<body class="menu waterpark-race"><div id="brand-intro" data-brand-intro role="img" aria-label="Timewish"><img src="./brand/timewish.svg" alt="" width="591" height="132" decoding="async" fetchpriority="high"></div>
   <div id="raceUi" class="fixed-ui-root">
   <div id="raceHud"></div>
   <div id="raceLoading"></div>
@@ -44,5 +50,12 @@
   </div>
   </div>
   
-<script type="module" src="/src/spa.ts"></script></body>
+<aside id="startup-recovery" data-cold-recovery hidden style="position:fixed;inset:0;z-index:2147483646;display:none;place-content:center;gap:16px;background:#fff;color:#232334;text-align:center;font:18px system-ui"><p>游戏程序暂时未能载入，请检查网络后重试</p><button onclick="location.reload()" style="font:inherit;padding:12px">重新加载</button></aside><script>
+(function(){var panel=document.getElementById('startup-recovery'),timer;
+function fail(){if(!panel.isConnected)return;panel.hidden=false;panel.style.display='grid';var intro=document.getElementById('brand-intro');if(intro)intro.remove();}
+function error(event){if(event.target&&event.target.tagName==='SCRIPT')fail();}
+function release(){clearTimeout(timer);removeEventListener('error',error,true);removeEventListener('unhandledrejection',fail);delete window.__releaseColdRecovery;}
+window.__releaseColdRecovery=release;addEventListener('error',error,true);addEventListener('unhandledrejection',fail);timer=setTimeout(fail,15000);
+})();
+</script><script type="module" src="/src/spa.ts"></script></body>
 </html>
