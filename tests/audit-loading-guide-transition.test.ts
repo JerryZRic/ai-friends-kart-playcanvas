@@ -1,3 +1,4 @@
+import {touchOpacityHash, restoreTouchOpacityBytes} from './helpers/touch-opacity-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -26,7 +27,7 @@ test('loading guide pins exact published mobile dev tree with a presentation-onl
 
 test('every loading-guide change reconstructs exact prior bytes and the complete forward round trip', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), original = restoreLoadingGuideBytes(path, current);
+    const raw = read(path), current = restoreTouchOpacityBytes(path, raw), original = restoreLoadingGuideBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path);
     assert.equal(sha(original), row.previousSha256, path);
     const lines = original.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -35,14 +36,14 @@ test('every loading-guide change reconstructs exact prior bytes and the complete
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' exact forward reconstruction');
-    assert.throws(() => restoreLoadingGuideBytes(path, current + ' '));
+    assert.throws(() => restoreLoadingGuideBytes(path, raw + ' '));
     assert.throws(() => restoreLoadingGuideBytes(path, original), undefined, path + ' no historical fallback');
   }
 });
 
 test('loading-guide overlay rejects wrong incoming pairs, aliases and modified review records', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(loadingGuideHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(loadingGuideHash(path, row.previousSha256), touchOpacityHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => loadingGuideHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(loadingGuideHash(alias, row.previousSha256), row.previousSha256);
   }

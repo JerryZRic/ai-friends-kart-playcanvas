@@ -163,3 +163,6 @@ body.menu .game-ui{visibility:hidden}
 .loading-driving-tip{margin:0 0 24px;max-width:520px;font-size:13px;line-height:1.7;color:#f1f6ec}
 .loading-driving-tip h2{margin:0 0 8px;font-size:13px;font-weight:750;color:var(--lime);letter-spacing:1px}
 .loading-driving-tip p{margin:4px 0;overflow-wrap:break-word}
+
+/* Dedicated track pages keep licensing in the main menu, never over the course. */
+#raceUi ~ #source-license{display:none}

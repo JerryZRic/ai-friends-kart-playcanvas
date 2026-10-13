@@ -1,3 +1,4 @@
+import {touchOpacityHash, touchOpacityPathsWithin, restoreTouchOpacityBytes, touchOpacityAuditDependencies} from './touch-opacity-reviewed-revisions';
 /** Exact loading-guide presentation follow-up; prior mobile and geometry evidence remains immutable. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -37,15 +38,16 @@ export function assertLoadingGuideReviewBytes(bytes: string): Review {
 export function loadingGuideReview() { return assertLoadingGuideReviewBytes(readFileSync(LOADING_GUIDE_REVIEW_PATH, 'utf8')); }
 export function loadingGuideHash(path: string, incoming: unknown) {
   const review = loadingGuideReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return touchOpacityHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-loading-guide incoming identity');
-  return row.currentSha256;
+  return touchOpacityHash(path, row.currentSha256);
 }
 export function loadingGuidePathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(loadingGuideReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(loadingGuideReview().changes).filter(path => Object.hasOwn(inventory, path)), ...touchOpacityPathsWithin(inventory)])];
 }
 export function restoreLoadingGuideBytes(path: string, current: string) {
+  current = restoreTouchOpacityBytes(path, current);
   const review = loadingGuideReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -60,5 +62,5 @@ export function restoreLoadingGuideBytes(path: string, current: string) {
   return original;
 }
 export function loadingGuideAuditDependencies() {
-  return [LOADING_GUIDE_REVIEW_PATH, 'tests/helpers/loading-guide-reviewed-revisions.ts', 'tests/audit-loading-guide-transition.test.ts', ...Object.keys(loadingGuideReview().changes)];
+  return [LOADING_GUIDE_REVIEW_PATH, 'tests/helpers/loading-guide-reviewed-revisions.ts', 'tests/audit-loading-guide-transition.test.ts', ...Object.keys(loadingGuideReview().changes), ...touchOpacityAuditDependencies()];
 }

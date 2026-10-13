@@ -4,9 +4,9 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 .controls-guide{border-top:1px solid #ffffff15;padding:15px 0}.controls-guide h2{font-size:16px}.controls-guide h3{font-size:12px;color:#d2e3dd;margin-top:20px}.controls-guide p{line-height:2.1}
 
-/* The cover contains exactly the title and four choices. Legal links remain on submenus. */
+/* Keep the cover uncluttered; the source/license shortcut stays accessible in menus. */
 body[data-screen=main]{background:#132d39;overflow-x:hidden}
-body[data-screen=main] .masthead,body[data-screen=main] .site-footer,body[data-screen=main] .ambient,body[data-screen=main] #source-license{display:none!important}
+body[data-screen=main] .masthead,body[data-screen=main] .site-footer,body[data-screen=main] .ambient{display:none!important}
 main.screen-main{max-width:none;margin:0;padding:0;min-height:900px}
 .title-screen{position:relative;isolation:isolate;min-height:900px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:clamp(44px,72px,100px) 86.4px max(63px,30px);gap:36px}
 .title-background{position:absolute;inset:0;z-index:-1;overflow:hidden;background:linear-gradient(155deg,#78999d,#385f68 50%,#152c38)}

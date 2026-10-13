@@ -23,15 +23,17 @@ body.menu .mobile-controls,body.race-paused .mobile-controls{display:none}
 .mobile-controls button {
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   min-width:48px;min-height:48px;padding:6px;pointer-events:auto;touch-action:none;
-  color:#f4f9f7;background:#15313980;border:1px solid #eaf6f488;
-  border-radius:50%;font:700 12px/1.2 system-ui;backdrop-filter:blur(5px);
-  box-shadow:inset 0 0 0 3px #ffffff08,0 2px 12px #061a2833;
+  color:#f4f9f7;background:#15313933;border:1px solid #eaf6f440;
+  border-radius:50%;font:700 12px/1.2 system-ui;backdrop-filter:none;
+  text-shadow:0 1px 2px #031820,0 0 3px #031820;
+  box-shadow:inset 0 0 0 3px #ffffff04,0 2px 12px #061a2814;
   -webkit-tap-highlight-color:transparent;
 }
 .mobile-controls button:active,.mobile-controls button.is-pressed,
 .mobile-controls button[aria-pressed='true'] {
-  background:#d5ff609e;color:#142f31;border-color:#edffb5;
-  box-shadow:inset 0 0 0 3px #d5ff6040,0 0 20px #d5ff602e;
+  background:#d5ff6066;color:#142f31;border-color:#edffb5b3;
+  text-shadow:0 1px 2px #efffd080;
+  box-shadow:inset 0 0 0 3px #d5ff6026,0 0 20px #d5ff6014;
 }
 .mobile-controls button:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
 .mobile-steering {
@@ -46,13 +48,13 @@ body.menu .mobile-controls,body.race-paused .mobile-controls{display:none}
   display:flex;flex-direction:column;gap:14px;
 }
 .mobile-pedals button{width:var(--mobile-primary);height:var(--mobile-primary)}
-.mobile-pedals .throttle{background:#d5ff6026;border-color:#e2ff9ac2;color:#efffd0}
+.mobile-pedals .throttle{background:#d5ff6014;border-color:#e2ff9a59;color:#efffd0}
 .mobile-arrow{display:block;font-size:37px;font-weight:900;line-height:24px;margin-bottom:3px}
 .mobile-drift,.mobile-brake,.mobile-item{position:absolute}
 .mobile-controls .mobile-drift {
   right:calc(var(--mobile-edge) + var(--mobile-primary) + 20px + env(safe-area-inset-right));
   bottom:calc(var(--mobile-bottom) + env(safe-area-inset-bottom));
-  width:78px;height:78px;color:#efffd0;border-color:#d5ff60b3;font-size:15px;
+  width:78px;height:78px;color:#efffd0;border-color:#d5ff6059;font-size:15px;
 }
 .mobile-controls .mobile-brake {
   right:calc(var(--mobile-edge) + var(--mobile-primary) + 112px + env(safe-area-inset-right));
@@ -67,7 +69,7 @@ body.menu .mobile-controls,body.race-paused .mobile-controls{display:none}
   position:absolute;right:calc(var(--mobile-edge) + env(safe-area-inset-right));
   bottom:calc(var(--mobile-bottom) + 178px + env(safe-area-inset-bottom));display:flex;gap:10px;
 }
-.mobile-utilities button{width:48px;height:48px;font-size:11px;background:#15313970}
+.mobile-utilities button{width:48px;height:48px;font-size:11px;background:#15313926}
 .mobile-utilities button[data-mobile-action='pause']{font-size:20px}
 .mobile-rotate-hint{display:none;pointer-events:none}
 body[data-input-mode='touch'] .look-hint{display:none}
