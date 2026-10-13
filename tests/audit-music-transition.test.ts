@@ -1,3 +1,4 @@
+import {CI_BUILD_DEPLOYMENT_REVIEW_PATH, ciBuildDeploymentHash, restoreCiBuildDeploymentBytes} from './helpers/ci-build-deployment-reviewed-revisions';
 import {airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -32,7 +33,7 @@ test('music pins the exact dev baseline and complete bounded change and addition
 
 test('every music edit has exact reversible bounded hunks and rejects altered or historical bytes', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreMusicBytes(path, current);
+    const raw = read(path), current = restoreCiBuildDeploymentBytes(path, raw), previous = restoreMusicBytes(path, raw);
     assert.equal(sha(current), row.currentSha256); assert.equal(sha(previous), row.previousSha256);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -40,8 +41,8 @@ test('every music edit has exact reversible bounded hunks and rejects altered or
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' complete forward proof');
-    for (const altered of [current + ' ', current.slice(1), previous]) assert.throws(() => restoreMusicBytes(path, altered));
-    assert.equal(musicHash(path, row.previousSha256), row.currentSha256);
+    for (const altered of [raw + ' ', raw.slice(1), previous]) assert.throws(() => restoreMusicBytes(path, altered));
+    assert.equal(musicHash(path, row.previousSha256), ciBuildDeploymentHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => musicHash(path, incoming));
     for (const alias of ['./' + path, path + '/extra', path.includes('/') ? path.replace('/', '//') : path + '/']) assert.equal(musicHash(alias, row.previousSha256), row.previousSha256);
   }
@@ -49,19 +50,19 @@ test('every music edit has exact reversible bounded hunks and rejects altered or
 
 test('new music binaries, documentation, source and tests have exact pinned bytes and no aliases', () => {
   for (const [path, row] of Object.entries(review.additions)) {
-    const bytes = readFileSync(path); assert.equal(sha(bytes), row.sha256); assertMusicAddition(path, bytes);
+    const bytes = readFileSync(path); assert.equal(sha(bytes), ciBuildDeploymentHash(path, row.sha256)); assertMusicAddition(path, bytes);
     assert.throws(() => assertMusicAddition(path, Buffer.concat([bytes, Buffer.from(' ')])));
     for (const alias of ['./' + path, path + '/extra', path.includes('/') ? path.replace('/', '//') : path + '/']) assert.throws(() => assertMusicAddition(alias, bytes));
   }
   assert.throws(() => assertMusicAddition('src/unreviewed.ts', 'unreviewed'));
 });
 
-test('all frozen JSON, legal, geometry, workflow, packaging and stable publication evidence stays byte exact', () => {
-  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' immutable baseline bytes');
+test('all frozen evidence stays byte exact and only exact CI workflow and composition successors advance', () => {
+  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), ciBuildDeploymentHash(path, hash), path + ' exact baseline or bounded CI successor bytes');
   for (const path of ['docs/stable-pages-manifest.json', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs', 'scripts/compose-dev-pages.mjs', '.github/workflows/pages.yml', '.github/workflows/pages-stable.yml', 'package.json', 'package-lock.json']) assert.ok(Object.hasOwn(review.protectedFiles, path), path);
   assert.ok(Object.keys(review.changes).every(path => !path.endsWith('.json') && !path.startsWith('.github/') && !path.startsWith('docs/') && !path.startsWith('scripts/')));
   const baselineJson = Object.keys(review.protectedFiles).filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH].sort());
   const stable = JSON.parse(read('docs/stable-pages-manifest.json'));
   assert.equal(stable.stableCommit, '16dd2d0540e300de6e85aa816e73ed94d4e796c0'); assert.equal(stable.files.length, 219);
   assert.equal(stable.files.reduce((sum: number, row: {bytes: number}) => sum + row.bytes, 0), 328819057);
@@ -139,7 +140,7 @@ test('approved title portrait replacement preserves exact old identity and new P
   assert.equal(bytes.toString('ascii', 12, 16), 'IHDR');
   assert.equal(bytes.readUInt32BE(16), 1181); assert.equal(bytes.readUInt32BE(20), 1331);
   assert.equal(bytes[24], 8); assert.equal(bytes[25], 6, 'Same RGBA8 image representation');
-  assert.equal(musicHash(path, row.previousSha256), row.currentSha256);
+  assert.equal(musicHash(path, row.previousSha256), ciBuildDeploymentHash(path, row.currentSha256));
   for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => musicHash(path, incoming));
   for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) assert.equal(musicHash(alias, row.previousSha256), row.previousSha256);
   assert.notEqual(sha(Buffer.concat([bytes, Buffer.from(' ')])), row.currentSha256);

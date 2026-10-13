@@ -1,3 +1,4 @@
+import {CI_BUILD_DEPLOYMENT_REVIEW_PATH} from './helpers/ci-build-deployment-reviewed-revisions';
 import {MUSIC_REVIEW_PATH, musicHash, musicPathsWithin, restoreMusicBytes, musicAddedPaths} from './helpers/music-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -131,7 +132,7 @@ test('all 988 baseline identities survive and every non-manifest JSON, productio
   }
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/')).sort();
-  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
+  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
   for (const path of baselineJson.filter(path => path !== stablePath)) assert.ok(Object.hasOwn(review.protectedFiles, path), path + ' historical JSON cannot change');
 });
 

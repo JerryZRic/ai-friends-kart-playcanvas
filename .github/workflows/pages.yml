@@ -19,31 +19,65 @@ jobs:
   build:
     if: ${{ github.ref == 'refs/heads/dev' && (github.event_name == 'push' || inputs.publish) }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: read
+    outputs:
+      artifact-id: ${{ steps.build-artifact.outputs.artifact-id }}
+      provenance-sha256: ${{ steps.provenance.outputs.sha256 }}
     steps:
       - uses: actions/checkout@v6
-      - name: Check the pinned stable branch has not advanced
-        run: |
-          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
-          actual=$(git ls-remote origin refs/heads/main | cut -f1)
-          test "$actual" = "$expected" || { echo 'Stable main advanced. Refresh the exact stable artifact manifest before preview publication.' >&2; exit 1; }
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run check && npm test && npm run build
-      - run: npm run test:dist
+      - run: npm run build
+      - name: Seal the compiled build and its exact run identity
+        id: provenance
+        run: node scripts/verified-build-artifact.mjs seal
+      # Persist before any stable-site network access. Failed compose/deploy jobs
+      # can be retried without rebuilding the successfully compiled preview.
+      - uses: actions/upload-artifact@v4
+        id: build-artifact
+        with:
+          name: verified-dev-build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: verified-build
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
+  compose:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download only this run's successful build artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: verified-build
+          merge-multiple: true
+      - name: Verify every build byte and originating run before composition
+        env:
+          EXPECTED_PROVENANCE_SHA256: ${{ needs.build.outputs.provenance-sha256 }}
+        run: node scripts/verified-build-artifact.mjs verify
+      - name: Check the pinned stable branch has not advanced
+        run: |
+          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
+          actual=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$actual" = "$expected" || { echo 'Stable main advanced. Refresh the exact stable artifact manifest before preview publication.' >&2; exit 1; }
       - name: Preserve the stable site and add the dev build
-        run: node scripts/compose-dev-pages.mjs
+        run: node scripts/compose-dev-pages.mjs compose verified-build/dist
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-pages
   deploy:
-    needs: build
+    needs: [build, compose]
     permissions:
       contents: read
       pages: write
@@ -59,5 +93,9 @@ jobs:
           expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
           actual=$(git ls-remote origin refs/heads/main | cut -f1)
           test "$actual" = "$expected" || { echo 'Stable main advanced; refusing to replace the site.' >&2; exit 1; }
+      - name: Refuse an obsolete preview deployment
+        run: |
+          actual=$(git ls-remote origin refs/heads/dev | cut -f1)
+          test "$actual" = "$GITHUB_SHA" || { echo 'Dev advanced; refusing an obsolete preview deployment.' >&2; exit 1; }
       - id: deployment
         uses: actions/deploy-pages@v4

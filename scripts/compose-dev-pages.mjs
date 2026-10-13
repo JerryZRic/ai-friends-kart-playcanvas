@@ -52,21 +52,50 @@ export function verifyBytes(record, bytes) {
   assert.equal(sha256(bytes), record.sha256, `Stable SHA-256 changed: ${record.path}`);
 }
 
-export async function fetchStableFile(record, fetchImpl = fetch) {
-  const response = await fetchImpl(new URL(record.path, canonicalBase), {
-    redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(60000),
-  });
-  assert.ok(response.ok, `Cannot preserve stable file ${record.path}: HTTP ${response.status}`);
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of response.body) {
-    size += chunk.length;
-    assert.ok(size <= record.bytes, `Oversized stable response: ${record.path}`);
-    chunks.push(chunk);
+const transientStatuses = new Set([429, 502, 503, 504]);
+const transientCodes = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EAI_AGAIN', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_BODY_TIMEOUT', 'UND_ERR_SOCKET']);
+export function retryDelay(attempt, retryAfter, { now = Date.now, random = Math.random } = {}) {
+  const parsed = retryAfter && (/^\d+(?:\.\d+)?$/.test(retryAfter) ? Number(retryAfter) * 1000 : (/^[A-Za-z]{3}, /.test(retryAfter) ? Date.parse(retryAfter) - now() : NaN));
+  const backoff = 1000 * (2 ** attempt) + Math.floor(random() * 500);
+  return Math.min(30000, Math.max(backoff, Number.isFinite(parsed) ? parsed : 0));
+}
+function transientNetworkError(error) {
+  return error?.name === 'TimeoutError' || transientCodes.has(error?.code) || transientCodes.has(error?.cause?.code);
+}
+export async function fetchStableFile(record, fetchImpl = fetch, retry = {}) {
+  const sleep = retry.sleep ?? (ms => new Promise(resolve => setTimeout(resolve, ms)));
+  for (let attempt = 0; attempt < 4; attempt++) {
+    let bytes;
+    try {
+      const response = await fetchImpl(new URL(record.path, canonicalBase), {
+        redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(60000),
+      });
+      if (!response.ok) {
+        const error = new Error(`Cannot preserve stable file ${record.path}: HTTP ${response.status}`);
+        error.retryableStatus = transientStatuses.has(response.status);
+        error.retryAfter = response.headers.get('retry-after');
+        await response.body?.cancel();
+        throw error;
+      }
+      const chunks = [];
+      let size = 0;
+      for await (const chunk of response.body) {
+        size += chunk.length;
+        assert.ok(size <= record.bytes, `Oversized stable response: ${record.path}`);
+        chunks.push(chunk);
+      }
+      bytes = Buffer.concat(chunks);
+    } catch (error) {
+      if (attempt === 3 || !(error.retryableStatus || transientNetworkError(error))) throw error;
+      const delay = retryDelay(attempt, error.retryAfter, retry);
+      console.warn(`Transient stable download failure for ${record.path}; retry ${attempt + 1}/3 in ${delay}ms`);
+      await sleep(delay);
+      continue;
+    }
+    // Integrity failures are permanent and must never be retried or hidden.
+    verifyBytes(record, bytes);
+    return bytes;
   }
-  const bytes = Buffer.concat(chunks);
-  verifyBytes(record, bytes);
-  return bytes;
 }
 
 export async function restoreStable(manifest, output, fetchImpl = fetch) {

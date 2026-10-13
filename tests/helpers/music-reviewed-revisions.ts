@@ -1,3 +1,4 @@
+import {ciBuildDeploymentHash, ciBuildDeploymentPathsWithin, restoreCiBuildDeploymentBytes, ciBuildDeploymentAddedPaths, ciBuildDeploymentAuditDependencies} from './ci-build-deployment-reviewed-revisions';
 /** Exact additive music transition; all earlier proof records and stable publication stay frozen. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -59,21 +60,22 @@ export function assertMusicReviewBytes(bytes: string): Review {
 export function musicReview() { return assertMusicReviewBytes(readFileSync(MUSIC_REVIEW_PATH, 'utf8')); }
 export function musicHash(path: string, incoming: unknown) {
   const review = musicReview();
-  if (!Object.hasOwn(review.changes, path) && !Object.hasOwn(review.binaryChanges, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path) && !Object.hasOwn(review.binaryChanges, path)) return ciBuildDeploymentHash(path, incoming);
   const row = review.changes[path] ?? review.binaryChanges[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-music incoming identity');
-  return row.currentSha256;
+  return ciBuildDeploymentHash(path, row.currentSha256);
 }
-export function musicPathsWithin(inventory: Record<string, unknown>) { const review = musicReview(); return [...Object.keys(review.changes), ...Object.keys(review.binaryChanges)].filter(path => Object.hasOwn(inventory, path)); }
+export function musicPathsWithin(inventory: Record<string, unknown>) { const review = musicReview(); return [...new Set([...Object.keys(review.changes), ...Object.keys(review.binaryChanges)].filter(path => Object.hasOwn(inventory, path)).concat(ciBuildDeploymentPathsWithin(inventory)))]; }
 export function assertMusicAddition(path: string, bytes: string | Buffer) {
   const review = musicReview(); assert.ok(Object.hasOwn(review.additions, path), path + ' exact named music addition');
-  assert.equal(musicSha(bytes), review.additions[path].sha256, path + ' exact music addition bytes');
+  assert.equal(musicSha(bytes), ciBuildDeploymentHash(path, review.additions[path].sha256), path + ' exact music addition bytes');
 }
 export function musicSourcePaths(previous: string[]) {
   for (const path of MUSIC_SOURCE_ADDITIONS) { assert.ok(!previous.includes(path), path + ' must be new'); assertMusicAddition(path, readFileSync(path)); }
   return [...previous, ...MUSIC_SOURCE_ADDITIONS];
 }
 export function restoreMusicBytes(path: string, current: string) {
+  current = restoreCiBuildDeploymentBytes(path, current);
   const review = musicReview(); if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path]; assert.equal(musicSha(current), row.currentSha256, path + ' exact reviewed bytes before music inverse');
   const lines = current.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -83,5 +85,5 @@ export function restoreMusicBytes(path: string, current: string) {
   }
   const previous = lines.join(''); assert.equal(musicSha(previous), row.previousSha256, path + ' all pre-music bytes reconstructed'); return previous;
 }
-export function musicAddedPaths() { return [MUSIC_REVIEW_PATH, 'tests/helpers/music-reviewed-revisions.ts', ...Object.keys(musicReview().additions)]; }
-export function musicAuditDependencies() { return [...musicAddedPaths(), ...Object.keys(musicReview().changes), ...Object.keys(musicReview().binaryChanges)]; }
+export function musicAddedPaths() { return [MUSIC_REVIEW_PATH, 'tests/helpers/music-reviewed-revisions.ts', ...Object.keys(musicReview().additions), ...ciBuildDeploymentAddedPaths()]; }
+export function musicAuditDependencies() { return [...musicAddedPaths(), ...Object.keys(musicReview().changes), ...Object.keys(musicReview().binaryChanges), ...ciBuildDeploymentAuditDependencies()]; }

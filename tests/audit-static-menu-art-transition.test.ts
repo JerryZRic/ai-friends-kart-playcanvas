@@ -1,3 +1,4 @@
+import {CI_BUILD_DEPLOYMENT_REVIEW_PATH} from './helpers/ci-build-deployment-reviewed-revisions';
 import {MUSIC_REVIEW_PATH, musicHash} from './helpers/music-reviewed-revisions';
 import {STABLE_PAGES_V050_REPIN_REVIEW_PATH, stablePagesV050RepinHash, stablePagesV050RepinPathsWithin, restoreStablePagesV050RepinBytes} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import test from 'node:test';
@@ -156,7 +157,7 @@ test('all frozen geometry, legal and historical proof bytes and all 216 stable p
   const historicalPaths = [...new Set([...Object.keys(review.protectedProduction), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)])];
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const historicalJson = historicalPaths.filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
+  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
   assert.deepEqual(walk('docs/scene-baselines').sort(), historicalPaths.filter(path => path.startsWith('docs/scene-baselines/')).sort(), 'Every archived source baseline remains present and immutable');
   const stableBytes = restoreStablePagesV050RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')), manifest = JSON.parse(stableBytes);
   assert.equal(sha(stableBytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');
