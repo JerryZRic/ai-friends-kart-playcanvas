@@ -1,3 +1,4 @@
+import {assertRuntimeAppendGeometry} from './geometry-runtime-contract';
 import * as pc from 'playcanvas';
 import {LandMeshBatch as Batch} from './land-mesh-builder';
 import {footprintArea,intersectRoadFootprint,subtractRoadFootprint,sampleRoadFootprints,RoadFootprintIndex,roadFootprint,type SceneryForkCourse,type SceneryRoadEdge} from './land-road-mesh';
@@ -408,7 +409,7 @@ export function buildSnowSceneGeometry(course:SceneryForkCourse):SnowSceneGeomet
  // triangle camera payload. Original terrain and architecture stay immutable.
  const enrichmentAssemblies:SnowSceneGeometry['enrichmentAssemblies']=[];
  type EnrichmentPiece=SnowSceneGeometry['enrichmentAssemblies'][number]['pieces'][number];
- const originalTriangleCount=components.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0);
+ const originalTriangleCount=batches.reduce((n,b)=>n+b.indices.length/3,0);
  const beginAssembly=(id:string)=>{const a:SnowSceneGeometry['enrichmentAssemblies'][number]={id,pieces:[],groundContacts:[]};enrichmentAssemblies.push(a);return a;};
  let assembly:SnowSceneGeometry['enrichmentAssemblies'][number];
  const own=(c:Component,supportOwner:string[]=[])=>{c.enrichmentAssembly=assembly.id;const p:EnrichmentPiece={...c,id:assembly.id+':'+assembly.pieces.length,supportOwner};assembly.pieces.push(p);return p;};
@@ -534,7 +535,7 @@ export function buildSnowSceneGeometry(course:SceneryForkCourse):SnowSceneGeomet
   finishAssembly();
  };yard();
  const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
- if(originalTriangleCount!==106286||enrichmentTriangles>12000)throw Error('Snow bounded append geometry contract changed');
+ assertRuntimeAppendGeometry('Snow',batches,originalTriangleCount,enrichmentTriangles,12000);
 
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
