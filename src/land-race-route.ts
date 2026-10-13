@@ -1,6 +1,7 @@
 import {advanceCursor,advanceRouteProgress,canonicalProgress,createCursor,createRouteProgress,routeGap,sampleAhead,sampleCursor,type BranchId,type ForkCourse,type LandCursor,type RouteAdvance,type RouteProgress} from './land-routes';
 import type {LandDrivingTrack} from './land-driving';
 import type {Combatant,PickupRacer,RacingPickup,RouteInteractions} from './npc-tactics';
+import {PICKUP_LONGITUDINAL_HALF_RANGE,PICKUP_LATERAL_HALF_RANGE} from './pickup-size';
 
 /** A private physical cursor per actor. Canonical totals are output for ranking,
  * never input to driving, interactions, visual support or checkpoint awards. */
@@ -57,8 +58,8 @@ export function createLandRaceRoute(course:ForkCourse,seed:number) {
     const motion=motions.get(racer.actor.id);if(!motion)return null;
     const target=boxCursor(box),travel=Math.abs(motion.requestedMetres);let earliest=Infinity;
     if(travel<1e-9){
-      const at=cursor(racer.actor.id);if(at.edgeId!==target.edgeId||Math.abs(at.s-target.s)>1.8)return null;
-      const start=motion.previousLane,delta=motion.nextLane-start,lo=box.lateral-1.25,hi=box.lateral+1.25;
+      const at=cursor(racer.actor.id);if(at.edgeId!==target.edgeId||Math.abs(at.s-target.s)>PICKUP_LONGITUDINAL_HALF_RANGE)return null;
+      const start=motion.previousLane,delta=motion.nextLane-start,lo=box.lateral-PICKUP_LATERAL_HALF_RANGE,hi=box.lateral+PICKUP_LATERAL_HALF_RANGE;
       if(Math.abs(delta)<1e-9)return start>=lo&&start<=hi?0:null;
       const a=(lo-start)/delta,b=(hi-start)/delta,enter=Math.max(0,Math.min(a,b)),leave=Math.min(1,Math.max(a,b));return enter<=leave?enter:null;
     }
@@ -68,7 +69,7 @@ export function createLandRaceRoute(course:ForkCourse,seed:number) {
       let enter=0,leave=1;
       const startLane=motion.previousLane+(motion.nextLane-motion.previousLane)*base;
       const laneDelta=(motion.nextLane-motion.previousLane)*span;
-      for(const [start,delta,low,high] of [[sweep.from,sweep.to-sweep.from,target.s-1.8,target.s+1.8],[startLane,laneDelta,box.lateral-1.25,box.lateral+1.25]]){
+      for(const [start,delta,low,high] of [[sweep.from,sweep.to-sweep.from,target.s-PICKUP_LONGITUDINAL_HALF_RANGE,target.s+PICKUP_LONGITUDINAL_HALF_RANGE],[startLane,laneDelta,box.lateral-PICKUP_LATERAL_HALF_RANGE,box.lateral+PICKUP_LATERAL_HALF_RANGE]]){
         if(Math.abs(delta)<1e-9){if(start<low||start>high){enter=2;break;}}
         else {const a=(low-start)/delta,b=(high-start)/delta;enter=Math.max(enter,Math.min(a,b));leave=Math.min(leave,Math.max(a,b));}
       }

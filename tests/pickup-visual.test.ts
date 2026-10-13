@@ -29,6 +29,7 @@ test('shared pickup visual preserves translucent front glass, one opaque display
   try {
     const root = parent(app), visual = createPickupVisual(app, root);
     assert.equal(visual.mesh.parent, root);
+    assert.deepEqual(visual.mesh.getLocalScale().toArray(), [1.2, 1.2, 1.2], 'contents, translucent glass and frame enlarge together');
     const glass = shell(visual).material as pc.StandardMaterial;
     assert.equal(glass.opacity, .16); assert.equal(glass.blendType, pc.BLEND_NORMAL);
     assert.equal(glass.depthWrite, false); assert.equal(glass.depthTest, true);

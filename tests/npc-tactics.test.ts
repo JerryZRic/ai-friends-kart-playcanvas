@@ -185,13 +185,23 @@ test('swept pickup collision prevents tunnelling but requires simultaneous longi
   const actor = racer('bot', { total: 40 }), pickup = box(20);
   collectPickups([swept(actor, 0)], [pickup], LENGTH);
   assert.equal(actor.held, 'boost'); assert.equal(pickup.cool, PICKUP_RESPAWN_SECONDS); assert.equal(pickup.mesh.enabled, false);
-  const lateralMiss = racer('miss', { total: 40, lateral: 1.251 }), untouched = box(20);
+  const lateralMiss = racer('miss', { total: 40, lateral: 1.501 }), untouched = box(20);
   collectPickups([swept(lateralMiss, 0)], [untouched], LENGTH);
   assert.equal(lateralMiss.held, null); assert.equal(untouched.cool, 0);
   const mistimed = racer('mistimed', { total: 40, lateral: 0 }), separateIntervals = box(10);
   collectPickups([swept(mistimed, 0, 6)], [separateIntervals], LENGTH);
   assert.equal(mistimed.held, null, 'crossing each axis at separate times is not contact');
   assert.equal(separateIntervals.mesh.enabled, true);
+});
+
+test('enlarged pickup bounds include the added reach equally for players, NPCs, fixed and dynamic boxes', () => {
+  for (const id of ['player', 'bot']) for (const dynamic of [false, true]) {
+    for (const [distance, lateral, expected] of [[2.15, 1.49, 'boost'], [2.17, 0, null], [0, 1.51, null]] as const) {
+      const actor = racer(id, { total: 20 - distance, lateral }), pickup = {...box(20), dynamic};
+      collectPickups([swept(actor, actor.total)], [pickup], LENGTH);
+      assert.equal(actor.held, expected);
+    }
+  }
 });
 
 test('pickup competition uses earliest contact rather than player or iteration priority', () => {

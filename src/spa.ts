@@ -38,11 +38,11 @@ const sceneFor=(url:URL)=>sceneForUrl(url,directory);
 
 function loading(url:URL,error?:unknown){
  document.body.className='';for(const key of Object.keys(document.body.dataset))delete document.body.dataset[key];
- style.textContent='html,body{margin:0;width:100%;height:100%;background:#123641;color:#fff5dd;font:18px system-ui}#scene-loading{position:fixed;inset:0;display:grid;place-content:center;text-align:center;gap:16px}button{font:inherit;padding:12px}';
+ style.textContent='html,body{margin:0;width:100%;height:100%;background:#123641;color:#fff5dd;font:18px system-ui}#scene-loading{position:fixed;inset:0;display:grid;place-content:center;text-align:center;gap:16px}#scene-loading .game-nav{display:inline-flex;align-items:center;justify-content:center;gap:12px;justify-self:center;min-height:54px;min-width:168px;padding:12px 20px;border:1px solid #dce7ba77;border-radius:13px;background:linear-gradient(#335250,#1a383f);box-shadow:inset 0 1px 0 #f7f1d526,0 4px 0 #071d26;color:#fff0c9;font:750 15px/1.2 system-ui;cursor:pointer;touch-action:manipulation}#scene-loading .game-nav svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}#scene-loading .game-nav:hover{background:#365c57;border-color:#f5ebbd}#scene-loading .game-nav:active{transform:translateY(3px);box-shadow:inset 0 2px 5px #071d2666,0 1px 0 #071d26}#scene-loading .game-nav:focus-visible{outline:3px solid #d5ff60;outline-offset:5px}';
  const panel=document.createElement('main');panel.id='scene-loading';panel.setAttribute('role','status');
  const text=document.createElement('p');text.textContent=error?'场景暂时无法载入，请重试':'正在切换场景…';panel.append(text);
- if(error){const detail=document.createElement('small');detail.textContent=String(error instanceof Error?error.message:error).slice(0,180);panel.append(detail);const retry=document.createElement('button');retry.textContent='重试';retry.onclick=()=>void show(url,false);panel.append(retry);}
- const back=document.createElement('button');back.textContent='返回主菜单';back.onclick=()=>navigate(new URL('index.html',directory).href);panel.append(back);sceneRoot.replaceChildren(panel);back.focus();
+ if(error){const detail=document.createElement('small');detail.textContent=String(error instanceof Error?error.message:error).slice(0,180);panel.append(detail);const retry=document.createElement('button');retry.className='game-nav';retry.textContent='重新加载';retry.onclick=()=>void show(url,false);panel.append(retry);}
+ const back=document.createElement('button');back.className='game-nav';back.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg><span>返回主菜单</span>';back.onclick=()=>navigate(new URL('index.html',directory).href);panel.append(back);sceneRoot.replaceChildren(panel);back.focus();
 }
 function mountMarkup(next:Scene){
  const parsed=new DOMParser().parseFromString(templates[next],'text/html');

@@ -39,7 +39,7 @@ function harness(initial?: string, brokenStorage = false) {
   const timers = new Map<number, { fn: () => void; delay: number }>(); let id = 0;
   const options = {
     document: doc as unknown as Document, window: win as unknown as Window,
-    storage, sessionStorage: storage,
+    storage,
     createAudio: (url: string) => { const audio = new FakeAudio(url, log); audios.push(audio); return audio as unknown as HTMLAudioElement; },
     createContext: () => context as unknown as AudioContext,
     setTimeout: ((fn: () => void, delay: number) => { timers.set(++id, { fn, delay }); return id; }) as unknown as typeof setTimeout,
@@ -111,11 +111,12 @@ test('late play settlement after silent or disposal cannot restore audio or stat
   h.music.dispose(); assert.ok(h.context.closed); assert.ok(h.context.sources.every(node => node.disconnected));
   const plays = h.audios[0].playCalls; h.doc.dispatchEvent(new Event('pointerdown')); assert.equal(h.audios[0].playCalls, plays);
 });
-test('session menu position is saved for page navigation, and pagehide silences immediately', () => {
-  const h = harness(); h.music.setPhase('menu'); h.audios[0].currentTime = 42;
-  h.win.dispatchEvent(new Event('pagehide')); assert.equal(h.saved.get('ai-friends-kart.music.theme-position.v1'), '42');
-  assert.equal(h.audios[0].paused, true); h.music.dispose();
-  const restored = createBackgroundMusic(h.options); assert.equal(h.audios[2].currentTime, 42); restored.dispose();
+test('cold controller starts theme at zero while volume/mute persist and pagehide stays silent', () => {
+  const h = harness(); h.music.setVolume(.4); h.music.setMuted(true); h.audios[0].currentTime = 42;
+  h.win.dispatchEvent(new Event('pagehide')); assert.equal(h.audios[0].paused, true); h.music.dispose();
+  const restored = createBackgroundMusic(h.options);
+  assert.equal(h.audios[2].currentTime, 0); assert.equal(restored.getState().volume, .4); assert.equal(restored.getState().muted, true);
+  restored.dispose();
 });
 test('dispose resolves pending fade and unsubscribes observers', async () => {
   const h = harness(); let calls = 0; const off = h.music.subscribe(() => calls++);
@@ -254,27 +255,20 @@ test('explicit loading/countdown silence immediately cancels every track and ram
   assert.equal(h.music.getState().phase, 'silent'); assert.equal(h.music.getState().playing, false);
   assert.ok(h.audios.every(audio => audio.paused)); assert.equal(h.timers.size, 0);
   assert.ok(h.context.gains.every(gain => gain.gain.value === 0));
-  assert.equal(h.saved.get('ai-friends-kart.music.theme-position.v1'), '15');
+  assert.equal(h.audios[0].currentTime, 15, 'loading silence retains the same-document media position');
   stalePhase(); staleNavigation(); assert.ok(h.audios.every(audio => audio.paused));
   h.music.setPhase('race', true); h.tick(); await flush();
   assert.equal(h.audios[1].paused, false); assert.equal(h.audios[0].paused, true);
   h.music.dispose();
 });
 
-// Regression: real media at HAVE_NOTHING can accept a default start position,
-// then reset it while loading. Do not consume persisted handoff until metadata.
-test('cross-page theme handoff survives delayed metadata and an early unload', () => {
-  const h = harness(); h.music.dispose();
-  h.saved.set('ai-friends-kart.music.theme-position.v1', '142');
-  const factory = h.options.createAudio;
-  h.options.createAudio = url => { const audio = factory(url); (audio as any).readyState = 0; return audio; };
-  const music = createBackgroundMusic(h.options);
-  const theme = h.audios[2]; assert.equal(theme.currentTime, 0);
-  h.win.dispatchEvent(new Event('pagehide'));
-  assert.equal(h.saved.get('ai-friends-kart.music.theme-position.v1'), '142');
+test('obsolete session playback positions are never read or replayed after a cold reload', () => {
+  const h = harness(); h.music.dispose(); let sessionReads = 0, sessionWrites = 0;
+  Object.assign(h.options.window, {sessionStorage: {getItem() {sessionReads++; return '142';}, setItem() {sessionWrites++;}}});
+  const music = createBackgroundMusic(h.options), theme = h.audios[2];
   theme.readyState = 1; theme.dispatchEvent(new Event('loadedmetadata'));
-  assert.equal(theme.currentTime, 42);
-  music.dispose();
+  assert.equal(theme.currentTime, 0); h.win.dispatchEvent(new Event('pagehide')); music.dispose();
+  assert.equal(sessionReads, 0); assert.equal(sessionWrites, 0);
 });
 test('menu preload buffers only theme without creating a context or starting playback', () => {
   const h = harness(); h.music.dispose();

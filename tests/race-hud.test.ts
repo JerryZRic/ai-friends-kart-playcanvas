@@ -38,3 +38,10 @@ test('mount applies map identity through text and keeps common controls intact',
   for(const id of controls)assert.ok(elements.has(id));
   assert.throws(()=>mountRaceHud({subtitle:'',canvasLabel:''},{getElementById:()=>null} as unknown as Document),/Missing shared race HUD mount/);
 });
+
+
+test('duplicate HUD sound switch is hidden while camera, pause and ESC sound controls remain',()=>{
+ assert.match(RACE_HUD_MARKUP, /id="sound" hidden tabindex="-1" aria-hidden="true" style="display:none"/);
+ assert.match(RACE_HUD_MARKUP, /id="camera" title=/);assert.match(RACE_HUD_MARKUP, /id="pause" title=/);
+ const shell=read('src/race-shell.ts');assert.match(shell,/data-sfx-enabled/);assert.match(shell,/data-sfx-volume/);
+});

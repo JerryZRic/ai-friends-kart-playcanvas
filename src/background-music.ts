@@ -15,7 +15,6 @@ export interface BackgroundMusicOptions {
   document?: Document;
   window?: Window;
   storage?: Pick<Storage, 'getItem' | 'setItem'> | null;
-  sessionStorage?: Pick<Storage, 'getItem' | 'setItem'> | null;
   createAudio?: (url: string) => HTMLAudioElement;
   createContext?: () => AudioContext;
   setTimeout?: typeof globalThis.setTimeout;
@@ -36,7 +35,6 @@ export interface BackgroundMusic {
   dispose(): void;
 }
 const SETTINGS_KEY = 'ai-friends-kart.music.v1';
-const POSITION_KEY = 'ai-friends-kart.music.theme-position.v1';
 const controllers = new WeakMap<Document, BackgroundMusic>();
 
 export function createBackgroundMusic(options: BackgroundMusicOptions = {}): BackgroundMusic {
@@ -46,11 +44,10 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   if (existing) return existing;
   const later = options.setTimeout ?? globalThis.setTimeout;
   const cancelTimer = options.clearTimeout ?? globalThis.clearTimeout;
-  const safelyGetStorage = (session: boolean) => {
-    try { return session ? win?.sessionStorage : win?.localStorage; } catch { return null; }
+  const safelyGetStorage = () => {
+    try { return win?.localStorage; } catch { return null; }
   };
-  const storage = options.storage === undefined ? safelyGetStorage(false) : options.storage;
-  const session = options.sessionStorage === undefined ? safelyGetStorage(true) : options.sessionStorage;
+  const storage = options.storage === undefined ? safelyGetStorage() : options.storage;
   let volume = .65, muted = false;
   let settingsSaved = !!storage;
   try {
@@ -92,22 +89,8 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   tracks.forEach(audio => { audio.loop = true; audio.preload = 'metadata'; audio.volume = 1; });
   // Menu pages may buffer the theme while their heavier UI graph loads.
   if (options.preloadTheme) { theme.preload = 'auto'; try { theme.load(); } catch { /* optional */ } }
-  let savedPosition = 0;
-  try { savedPosition = Number(session?.getItem(POSITION_KEY) ?? 0); } catch { /* optional */ }
-  const restorePosition = () => {
-    if (!Number.isFinite(savedPosition) || savedPosition <= 0 || theme.readyState < 1) return;
-    try {
-      theme.currentTime = Number.isFinite(theme.duration) && theme.duration > 0 ? savedPosition % theme.duration : savedPosition;
-      savedPosition = 0;
-    } catch { /* Some browsers require loadedmetadata before seeking. */ }
-  };
-  restorePosition();
-  theme.addEventListener('loadedmetadata', restorePosition);
-  const savePosition = () => {
-    // A destination unloaded before metadata must not erase the handoff position.
-    if (Number.isFinite(savedPosition) && savedPosition > 0) return;
-    try { session?.setItem(POSITION_KEY, String(theme.currentTime)); } catch { /* optional */ }
-  };
+  // A cold document always starts new media at zero. Same-document scene hops
+  // keep these elements alive, so they preserve position without storage.
   let context: AudioContext | undefined;
   let graphFailed = false, racePreloaded = false;
   let gains: GainNode[] = [];
@@ -246,7 +229,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   };
   tracks.forEach(audio => audio.addEventListener('error', onMediaError));
   const onVisibility = () => { hidden = !!doc.hidden; refresh(); };
-  const onPageHide = () => { savePosition(); hidden = true; refresh(); };
+  const onPageHide = () => { hidden = true; refresh(); };
   const onPageShow = () => { hidden = !!doc?.hidden; refresh(); };
   const controller: BackgroundMusic = {
     getState,
@@ -255,7 +238,6 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       if (disposed) return;
       if (phase === next && !restartRace && !fading) { attempt(phaseTimer !== undefined); return; }
       const previous = target();
-      if (phase === 'menu' && next !== 'menu') savePosition();
       if (next === 'race' && (restartRace || (phase !== 'race' && phase !== 'paused'))) {
         try { race.currentTime = 0; } catch { /* not loaded */ }
       }
@@ -279,7 +261,6 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
         phaseTimer = undefined;
         if (outgoing && outgoing !== target()) outgoing.pause();
         outgoing = undefined;
-        if (previous === theme && selected !== theme) savePosition();
         applyGains();
       }, seconds * 1000);
       attempt(true);
@@ -287,7 +268,6 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
     unlock,
     silence() {
       if (disposed) return;
-      savePosition();
       phase = 'silent';
       // Loading/countdowns must be silent immediately, unlike navigational fades.
       generation++; cancelFade(); cancelTransition();
@@ -315,7 +295,6 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       generation++;
       const token = generation;
       fading = true;
-      savePosition();
       const ms = Number.isFinite(durationMs) ? Math.max(0, Math.min(500, durationMs)) : 500;
       gains.forEach(gain => {
         const now = context!.currentTime;
@@ -328,7 +307,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
         fadeTimer = later(() => {
           fadeTimer = undefined; finishFade = undefined;
           if (!disposed && token === generation) {
-            tracks.forEach(audio => audio.pause()); savePosition();
+            tracks.forEach(audio => audio.pause());
             phase = 'silent'; fading = false; playing = false; applyGains(); emit();
           }
           resolve();
@@ -337,9 +316,8 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
     },
     dispose() {
       if (disposed) return;
-      savePosition(); disposed = true; generation++; cancelFade(); cancelTransition();
+      disposed = true; generation++; cancelFade(); cancelTransition();
       tracks.forEach(audio => { audio.removeEventListener('error', onMediaError); audio.pause(); audio.removeAttribute('src'); audio.load(); });
-      theme.removeEventListener('loadedmetadata', restorePosition);
       doc?.removeEventListener('visibilitychange', onVisibility);
       doc?.removeEventListener('pointerdown', unlock, true);
       doc?.removeEventListener('pointerup', unlock, true);

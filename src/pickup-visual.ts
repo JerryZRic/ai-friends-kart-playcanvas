@@ -1,5 +1,6 @@
 import * as pc from 'playcanvas';
 import { createItemModel, type ItemDisplay } from './item-models';
+import { PICKUP_SCALE } from './pickup-size';
 
 export interface PickupVisual {
   mesh: pc.Entity;
@@ -76,6 +77,7 @@ function resourcesFor(app: pc.AppBase, parent: pc.Entity): Resources {
 export function createPickupVisual(app: pc.AppBase, parent: pc.Entity): PickupVisual {
   const { shell, frame, glass, glow } = resourcesFor(app, parent);
   const mesh = new pc.Entity('Energy item box', app);
+  mesh.setLocalScale(PICKUP_SCALE, PICKUP_SCALE, PICKUP_SCALE);
   parent.addChild(mesh);
   for (const [name, geometry, material] of [
     ['Translucent pickup glass', shell, glass], ['Luminous edges', frame, glow],

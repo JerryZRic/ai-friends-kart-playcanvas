@@ -47,6 +47,16 @@ test('route swept pickups retain global contact fractions across edge transition
  collectPickups([a,b].map(actor=>({actor,previous,previousLane:2})),[box],course.canonicalLength,()=>.2,runtime.contact);
  assert.ok(b.held);assert.equal(a.held,null);
 });
+test('route-aware pickup bounds include the enlarged reach for stationary and swept actors',()=>{
+ for(const id of ['player','bot'])for(const dynamic of [false,true])for(const travel of [0,.1]){
+  for(const [distance,lateral,expected] of [[2.15,1.49,'boost'],[2.17,0,null],[0,1.51,null]] as const){
+   const runtime=createLandRaceRoute(course,2),a=actor(id);runtime.init(id);place(runtime,id,locate('start',20-distance-travel,lateral));a.lateral=lateral;
+   const previous=runtime.total(id);assert.ok(runtime.advance(id,travel,.1,lateral,'boulevard').accepted);a.total=runtime.total(id);
+   const box={edgeId:'start',s:20,d:20,lateral:0,cool:0,display:'boost',mesh:{enabled:true},dynamic} as RacingPickup;
+   collectPickups([{actor:a,previous,previousLane:lateral}],[box],course.canonicalLength,()=>.2,runtime.contact);assert.equal(a.held,expected);
+  }
+ }
+});
 test('rail contact loss is bounded, equal for both actors and absent on clean support',()=>{
  assert.equal(landRailScrape(30,2,4,1/60).speed,30);const contact=landRailScrape(30,4.4,4,1/60);assert.ok(contact.contact);assert.ok(contact.speed<30&&contact.speed>29.8);assert.equal(contact.lateral,4);assert.deepEqual(contact,landRailScrape(30,4.4,4,1/60));
 });

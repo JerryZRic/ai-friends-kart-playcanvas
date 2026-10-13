@@ -14,10 +14,11 @@ No CDN, MIDI SDK, transcoding, or required-model loading gate is involved.
 - First home: theme starts only when the home is revealed (including the
   explicit fallback), then loops through same-document map, character,
   race-settings and settings navigation.
-- Garage: theme loops. Garage is a separate HTML document. Leaving any game
-  page fades over 500 ms before navigation; theme position is retained through
-  session storage and restored on the next page where possible. Full-page
-  navigation has a short interruption and is not seamless playback.
+- Garage and other menu scenes share the same document and music controller.
+  Returning to the homepage does not restart or interrupt the playing theme.
+- A full document reload replays the Timewish intro and starts new theme media
+  at time zero. Playback position is no longer read from or written to session
+  storage; only the user's volume and mute preferences persist.
 - Entering a track: menu theme fades before navigation. Track resource loading
   and its camera return are silent. Race audio preloads independently without
   playback. Music is optional and never blocks play.
