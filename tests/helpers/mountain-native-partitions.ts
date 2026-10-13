@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {getHeapStatistics} from 'node:v8';
 import type {LandTrack} from '../../src/land-track';
+import {v100Review} from './v100-reviewed-revisions';
 
 export type NativePartition={kind:'mesh'|'camera'|'capture';id:string;start:number;end:number};
 export type NativePose={index:number;d:number;lane:number;yaw:number;racerIndex:number;racer:string};
@@ -11,9 +12,10 @@ export const NATIVE_ASSEMBLIES=22734,NATIVE_MESH_BOUNDS=1136700;
 export const NATIVE_RACER_MESH_BOUNDS={whale:46,gemini:52,gpt:52,claude:48,grok:50,glm:52} as const;
 export const nativeMeshBounds=(poses:readonly NativePose[])=>poses.reduce((sum,pose)=>sum+NATIVE_RACER_MESH_BOUNDS[pose.racer],0);
 export function nativeSourceHashes(){
- const sources=['src/game.ts','src/maps/mountain.ts','src/land-course.ts','src/land-track.ts','src/land-driving.ts','src/race-camera.ts','src/land-camera.ts','src/kart-driver.ts','tests/helpers/gameplay-scenario.ts','tests/helpers/instrumented-source-files.ts','tests/mountain-enrichment-gameplay.test.ts','tests/helpers/mountain-native-partitions.ts','tests/helpers/mountain-native-audit-worker.ts','tests/helpers/bounded-test-process.ts','tests/mountain-native-partitions.test.ts'];
+ const sources=['src/game.ts','src/maps/mountain.ts','src/land-course.ts','src/land-track.ts','src/land-driving.ts','src/race-camera.ts','src/land-camera.ts','src/kart-driver.ts','tests/helpers/gameplay-scenario.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/v100-historical-runtime.ts','tests/helpers/v100-reviewed-revisions.ts','tests/helpers/v100-transition.json','src/npc-tactics.ts','src/land-race-route.ts','src/pickup-visual.ts','src/pickup-size.ts','tests/mountain-enrichment-gameplay.test.ts','tests/helpers/mountain-native-partitions.ts','tests/helpers/mountain-native-audit-worker.ts','tests/helpers/bounded-test-process.ts','tests/mountain-native-partitions.test.ts'];
  if(!process.env.MOUNTAIN_NATIVE_GOLDEN_CAPTURE)sources.push('src/mountain-scenery.ts','src/alpine-props.ts','src/generated/alpine-props.json','tests/helpers/emitted-scene-oracle.ts','tests/helpers/native-mesh-oracle.ts','tests/helpers/mountain-baseline-contract.ts','tests/fixtures/mountain-native-control-baseline.json');
- return Object.fromEntries(sources.map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));
+ const review=v100Review();sources.push(...Object.keys({...review.protectedFiles,...review.changes,...review.additions}).filter(path=>path.startsWith('src/')));
+ return Object.fromEntries([...new Set(sources)].map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));
 }
 export function nativeResources(){
  const memory=process.memoryUsage(),flag=process.execArgv.find(arg=>arg.startsWith('--max-old-space-size='));

@@ -1,3 +1,4 @@
+import {restoreV100Bytes} from './v100-reviewed-revisions';
 /** Exact certification of independently reproduced Math.pow fingerprints.
  * Never derives acceptance from candidate geometry and never rounds a number.
  * The historical fixtures remain immutable. Only 51 indexed-buffer Float64 scalars
@@ -19,7 +20,13 @@ export function assertGeometryCertificateBytes(text:string){
  const record=JSON.parse(text);assert.equal(record.schema,'geometry-runtime-portability-v1');return record;
 }
 export function assertGeometryCertificateDependencies(record:any,read:(path:string)=>Buffer=readFileSync){
- for(const [path,hash]of Object.entries(record.dependencies))assert.equal(sha(read(path)),hash,path+' exact original geometry dependency');
+ for(const [path,hash]of Object.entries(record.dependencies)){
+  const current=read(path);
+  // Only the exact v1.0 package-version metadata delta is reversed; all locked
+  // resolutions, integrity strings, sources and installed SDK bytes stay exact.
+  const original=path==='package-lock.json'?restoreV100Bytes(path,current.toString('utf8')):current;
+  assert.equal(sha(original),hash,path+' exact original geometry dependency');
+ }
 }
 let certificate:any;
 export function geometryRuntimeCertificate(){

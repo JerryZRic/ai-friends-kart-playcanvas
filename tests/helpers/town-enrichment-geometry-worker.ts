@@ -38,7 +38,7 @@ audit('Town exact original source route road bridge terrain texture protection a
  assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
  for(const [path,revision]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){
   assert.equal(revision.previousSHA256,contract.sourceInventory[path],path+' original source golden remains exact');
-  assert.equal(sha(readFileSync(new URL(path,root))),revision.currentSHA256,path+' separately reviewed scene revision changed');
+  assert.equal(sha(readFileSync(new URL(path,root))),airfieldReviewedHash(path,revision.currentSHA256),path+' separately reviewed scene revision and bounded successors');
  }
  for(const path of airfieldReviewedPathsWithin(contract.sourceInventory))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,contract.reviewedTestContractChanges[path]??reviewed.revisions[path]?.currentSHA256??contract.sourceInventory[path]),path+' exact subsequent Airfield review');
  const changedInventory=Object.entries(contract.sourceInventory).filter(([path,hash])=>sha(readFileSync(new URL(path,root)))!==hash).map(([path])=>path);

@@ -70,7 +70,7 @@ test('every input-mode revision reconstructs all baseline bytes and an exact for
     assert.throws(() => restoreInputModeBytes(path, previous), undefined, path + ' no historical-byte fallback');
   }
   for (const [path, row] of Object.entries(review.additions)) {
-    assert.equal(sha(readFileSync(path)), row.sha256, path);
+    assert.equal(sha(restoreStaticMenuArtBytes(path, read(path))), row.sha256, path);
     assertInputModeAddition(path, readFileSync(path));
     assert.throws(() => assertInputModeAddition(path, read(path) + ' '));
     for (const alias of ['./' + path, path + '/extra', 'src/unreviewed.ts']) assert.throws(() => assertInputModeAddition(alias, read(path)));

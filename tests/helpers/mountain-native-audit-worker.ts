@@ -29,11 +29,13 @@ async function auditMountainNative({qa,game,track,app,key,canvas,docEvents,event
  const capture=process.env.MOUNTAIN_NATIVE_GOLDEN_CAPTURE;
  if(capture){writeFileSync(capture,JSON.stringify({baseCommit:'769911cc562b9330a57f043e9a7f9a2f0a976dac',scope:'All-frame complete player/NPC physical/control/checkpoint/item digest with full 90-frame samples. Camera output intentionally excluded.',control},null,2)+'\n');t.diagnostic(JSON.stringify({capturedFrames:control.frames,sha256:control.sha256,sourceHashes:sourceHashes(),resources:nativeResources()}));return;}
  const golden=JSON.parse(readFileSync(new URL('../fixtures/mountain-native-control-baseline.json',import.meta.url),'utf8'));
+ // This historical invariance proof uses the entire hash-verified pre-v1.0
+ // source graph; current 1.2 pickup behavior is exercised by mountain-gameplay.
  // The pristine fixture was captured through JSON, including inactive dynamic
  // pickup cooldown Infinity encoded as null. Compare the same representation;
  // the complete all-frame and sample-stream digests remain independently exact.
  const compactControl=JSON.parse(JSON.stringify({frames:control.frames,sha256:control.sha256,sampleCount:control.samples.length,samplesSHA256:createHash('sha256').update(JSON.stringify(control.samples)).digest('hex'),first:control.samples[0],finish:control.samples.at(-1)}));
- assert.deepEqual(compactControl,golden.control,'enriched scenery preserves the complete deterministic player/NPC/control/checkpoint/item result, not just a lap clock');
+ assert.deepEqual(compactControl,golden.control,'enriched scenery with exact historical runtime preserves the complete deterministic player/NPC/control/checkpoint/item result, not just a lap clock');
  assert.ok(geometry,'audit observes the exact current production geometry');assert.equal(qa.course.cameraObstacles,geometry.cameraObstacles);
  globalThis.gc?.();
  const mesh=new MeshOracle(geometry.batches);

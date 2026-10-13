@@ -6,6 +6,7 @@ import {createLandRaceRoute} from '../src/land-race-route';
 import {createCursor,createRouteProgress,resetCursor,sampleCursor,routeGap,type LandCursor,type RouteProgress} from '../src/land-routes';
 import {CHARACTER_PROFILES} from '../src/character-profiles';
 import {collectPickups,type Combatant,type RacingPickup} from '../src/npc-tactics';
+import {PICKUP_SCALE} from '../src/pickup-size';
 import {createDynamicPickupDirector,type DynamicPickupTrack,type DynamicPickupRacer} from '../src/dynamic-pickups';
 
 const near=(actual:number,expected:number)=>assert.ok(Math.abs(actual-expected)<1e-7,`${actual} != ${expected}`);
@@ -44,17 +45,31 @@ test('stationary and lateral-only physical pickup contacts retain earliest full-
   assert.equal(runtime.contact({actor:racer,previous:0,previousLane:0},box),0);
   assert.equal(runtime.contact({actor:racer,previous:0,previousLane:0},pickup('boulevard',30)),null);
   collectPickups([{actor:racer,previous:0,previousLane:0}],[box],course.canonicalLength,()=>.5,runtime.contact);assert.equal(racer.held,'boost');
-  runtime.states.set('p',createRouteProgress(locate('alley',30,-3)));
-  runtime.advance('p',0,.1,3,'alley');
-  near(runtime.contact({actor:racer,previous:0,previousLane:-3},pickup('alley',30))!,(3-1.25)/6);
+  // The authored half-width is enlarged with the visible world pickup. Solve
+  // the first boundary crossing from the actual lateral segment, in both directions.
+  const halfWidth=1.25*PICKUP_SCALE;
+  for(const [from,to]of [[-3,3],[3,-3],[-4,2],[4,-2]]){
+    runtime.states.set('p',createRouteProgress(locate('alley',30,from)));
+    runtime.advance('p',0,.1,to,'alley');
+    const firstBoundary=from<0?-halfWidth:halfWidth;
+    near(runtime.contact({actor:racer,previous:0,previousLane:from},pickup('alley',30))!,(firstBoundary-from)/(to-from));
+  }
+  runtime.states.set('p',createRouteProgress(locate('alley',30,halfWidth+.01)));
+  runtime.advance('p',0,.1,halfWidth+.01,'alley');
+  assert.equal(runtime.contact({actor:racer,previous:0,previousLane:halfWidth+.01},pickup('alley',30)),null,'stationary position outside the scaled bound cannot collect');
 });
 
 test('terminal clipped pickup motion uses requested frame distance rather than its shortened sweep',()=>{
   const runtime=createLandRaceRoute(course,7),racer=actor('p');runtime.init('p');
-  runtime.states.set('p',{cursor:{...locate('finish',course.commonFinish.length-4),lap:2},nextGate:23,laps:2,finished:false});
-  runtime.advance('p',8,.1,0,'boulevard');
-  const contact=runtime.contact({actor:racer,previous:0,previousLane:0},pickup('finish',course.commonFinish.length-1));
-  near(contact!,1.2/8);
+  const finish=course.commonFinish.length,start=finish-4,center=finish-1,requestedTravel=8;
+  runtime.states.set('p',{cursor:{...locate('finish',start),lap:2},nextGate:23,laps:2,finished:false});
+  const movement=runtime.advance('p',requestedTravel,.1,0,'boulevard');
+  const contact=runtime.contact({actor:racer,previous:0,previousLane:0},pickup('finish',center));
+  const firstBoundary=center-1.8*PICKUP_SCALE,requestedFraction=(firstBoundary-start)/requestedTravel;
+  near(contact!,requestedFraction);
+  near(movement.finishFraction!,(finish-start)/requestedTravel);
+  assert.ok(contact!<movement.finishFraction!,'pickup contact precedes the clipped finish');
+  assert.ok(Math.abs(contact!-(firstBoundary-start)/(finish-start))>1e-7,'contact fraction must not renormalize to the shortened terminal sweep');
 });
 
 test('six supported characters own independent branch ledgers and reset clears every actor motion',()=>{

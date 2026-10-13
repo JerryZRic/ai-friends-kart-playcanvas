@@ -2444,6 +2444,64 @@
         }
       ]
     },
+    "tests/audit-geometry-runtime-portability.test.ts": {
+      "previousSha256": "750cd262cbdd8f9a185c8d086088727fa74ef1e47f07361e37d3086c12c20846",
+      "currentSha256": "84167cab3434fd4b9754c6bd71f85aa23ef9bbee3d4217284a9c37cca56a1213",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restoreV100Bytes} from './helpers/v100-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 43,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "\n",
+            "test('Geometry certification reverses only exact release-version lock metadata and rejects dependency drift',()=>{\n",
+            " const record=assertGeometryCertificateBytes(readFileSync(GEOMETRY_RUNTIME_CERTIFICATE,'utf8'));\n",
+            " const path='package-lock.json',current=readFileSync(path,'utf8'),original=restoreV100Bytes(path,current);\n",
+            " const currentLock=JSON.parse(current),originalLock=JSON.parse(original);\n",
+            " assert.equal(currentLock.version,'1.0.0');assert.equal(currentLock.packages[''].version,'1.0.0');\n",
+            " assert.equal(originalLock.version,'0.1.0');assert.equal(originalLock.packages[''].version,'0.1.0');\n",
+            " currentLock.version=originalLock.version;currentLock.packages[''].version=originalLock.packages[''].version;\n",
+            " assert.deepEqual(currentLock,originalLock,'Every dependency, resolution, integrity, option and other lock field remains unchanged');\n",
+            " const verify=(bytes:string)=>assertGeometryCertificateDependencies(record,file=>file===path?Buffer.from(bytes):readFileSync(file));\n",
+            " verify(current);\n",
+            " for(const bytes of [original,current+' ',current.replace('\"version\": \"1.0.0\"','\"version\": \"1.0.1\"')])assert.throws(()=>verify(bytes),'Historical or altered lock bytes cannot substitute for the exact approved candidate');\n",
+            " for(const field of ['version','resolved','integrity']){\n",
+            "  const changed=JSON.parse(current);const entry=Object.values(changed.packages).find((value:any)=>typeof value[field]==='string'&&value.integrity) as Record<string,string>;\n",
+            "  assert.ok(entry,'A locked package exercises '+field);entry[field]+='-unreviewed';\n",
+            "  assert.throws(()=>verify(JSON.stringify(changed)),field+' drift cannot inherit the geometry certificate');\n",
+            " }\n",
+            "});\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-input-mode-transition.test.ts": {
+      "previousSha256": "0f659bba0c53188f8b8d8d6e01e2f43fca866f2dc3509fde98cbf20cd7cbee59",
+      "currentSha256": "6cd02cfa1edfb0bd56103223d4debba5aeee8224b18aa0802d383d31f582e8f5",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 72,
+          "afterStart": 72,
+          "removedLines": [
+            "    assert.equal(sha(readFileSync(path)), row.sha256, path);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(sha(restoreStaticMenuArtBytes(path, read(path))), row.sha256, path);\n"
+          ]
+        }
+      ]
+    },
     "tests/audit-music-transition.test.ts": {
       "previousSha256": "00cde2423f0e694ae53aa7bf17531fb27a50e60633359a494dfd4fc269be348b",
       "currentSha256": "21e035095881cde98878d939ead1375df09ef6ed8a18f3f3bf46e09f264bfdcf",
@@ -2819,6 +2877,105 @@
         }
       ]
     },
+    "tests/desert-enrichment-inventory.test.ts": {
+      "previousSha256": "dc97608adc0074d15b97aa6b4595f98f6ea5faf83358712931b8d0eb0465279e",
+      "currentSha256": "a47204dfdb16ea03a0bbedd17575787034d00b0e9232cab180f9429953a6222c",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths,restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 44,
+          "removedLines": [
+            " assert.equal(sha(readFileSync(file)),currentSHA256);assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);\n"
+          ],
+          "insertedLines": [
+            " assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,currentSHA256));assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);\n"
+          ]
+        },
+        {
+          "beforeStart": 65,
+          "afterStart": 65,
+          "removedLines": [
+            " for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),hash,file+' actual source and generator binding');\n"
+          ],
+          "insertedLines": [
+            " for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,hash),file+' exact historical source and bounded successor binding');\n"
+          ]
+        },
+        {
+          "beforeStart": 88,
+          "afterStart": 88,
+          "removedLines": [
+            " for(const {file,before,after}of deltas){const original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);assert.equal(readFileSync(file,'utf8'),original.replace(before,after),file+' all original camera/contact/pickup/route assertions must remain byte-identical');}\n"
+          ],
+          "insertedLines": [
+            " for(const {file,before,after}of deltas){const original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);assert.equal(restoreMenuPresentationBytes(file,readFileSync(file,'utf8')),original.replace(before,after),file+' all original camera/contact/pickup/route assertions must remain byte-identical');}\n"
+          ]
+        }
+      ]
+    },
+    "tests/desert-preview-assets.test.ts": {
+      "previousSha256": "acf08146a1bed14d92430881cb125269db0d288c5026036d84981fb65c3ef228",
+      "currentSha256": "a55af968983ea8934d52b9229a7a72f80c99840d7a111c91cf20499da8e6b3e4",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 7,
+          "removedLines": [
+            "test('desert menu poster derives from current original runtime geometry with both physical branches framed',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('desert menu poster retains its exact reviewed source provenance and bounded successors with both physical branches framed',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 11,
+          "removedLines": [
+            " for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);\n"
+          ],
+          "insertedLines": [
+            " for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),menuPresentationHash(path,digest),path);\n"
+          ]
+        }
+      ]
+    },
+    "tests/forest-enrichment-inventory.test.ts": {
+      "previousSha256": "62e4eb84eaa1e515c1e20ff43aac813eb2b99a6395d060c011fcab884ddca772",
+      "currentSha256": "f8cd33fb53645711c3ac6614c96e9fede856bbdc815b85b740b62ba6ba1beb72",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 33,
+          "afterStart": 33,
+          "removedLines": [
+            " for(const [file,review]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){assert.equal(review.previousSHA256,town.sourceInventory[file],file+' original Town isolation golden');assert.equal(review.previousSHA256,mountain.isolatedSceneSources[file],file+' original Mountain isolation golden');assert.equal(sha(readFileSync(file)),review.currentSHA256,file+' exact reviewed scene revision');}\n"
+          ],
+          "insertedLines": [
+            " for(const [file,review]of Object.entries(reviewed.revisions) as [string,{previousSHA256:string;currentSHA256:string}][]){assert.equal(review.previousSHA256,town.sourceInventory[file],file+' original Town isolation golden');assert.equal(review.previousSHA256,mountain.isolatedSceneSources[file],file+' original Mountain isolation golden');assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,review.currentSHA256),file+' exact reviewed scene revision and bounded successors');}\n"
+          ]
+        }
+      ]
+    },
     "tests/free-mode-menu-dom.test.ts": {
       "previousSha256": "dca42fe8471fd8a59fbbca256b060e1122c58b820ef6bba5a53ccec4838b93bb",
       "currentSha256": "35241fe378bac053884fc0d98dbf085dd4e43b61426b1ac1797cd25f3f21f626",
@@ -2997,48 +3154,239 @@
     },
     "tests/helpers/gameplay-scenario.ts": {
       "previousSha256": "8ed1dae990728f97f580f968394ccb5394039e7d824530c3a56438b3ba77269f",
-      "currentSha256": "d0a4b3fb06ce4d68af00a8eec2e24d752e01a664974274cc3919e5a3efdcfc56",
+      "currentSha256": "16f329fb21dcda234449cf8d057d431485fbe9aa3660e4cf09efb720f70acbc1",
       "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
       "hunks": [
         {
-          "beforeStart": 133,
-          "afterStart": 133,
+          "beforeStart": 6,
+          "afterStart": 6,
           "removedLines": [],
           "insertedLines": [
+            "import {createV100HistoricalRuntime} from './v100-historical-runtime';\n"
+          ]
+        },
+        {
+          "beforeStart": 132,
+          "afterStart": 133,
+          "removedLines": [
+            "  const sourceFiles=createInstrumentedSourceFiles(undefined,scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);\n"
+          ],
+          "insertedLines": [
+            "  const historical=scenario.mountainAudit&&!process.env.MOUNTAIN_NATIVE_GOLDEN_CAPTURE?createV100HistoricalRuntime():undefined;\n",
+            "  const runtimeRead=(path:string)=>historical?historical.read(path):readFileSync(path,'utf8');\n",
+            "  const sourceFiles=createInstrumentedSourceFiles(historical?.directory,historical?undefined:scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);\n",
             "  let mounted:{dispose():void;ready:Promise<void>}|undefined;\n"
           ]
         },
         {
+          "beforeStart": 134,
+          "afterStart": 138,
+          "removedLines": [
+            "  let source = readFileSync('src/game.ts', 'utf8');\n"
+          ],
+          "insertedLines": [
+            "  let source = runtimeRead('src/game.ts');\n"
+          ]
+        },
+        {
+          "beforeStart": 161,
+          "afterStart": 165,
+          "removedLines": [
+            "  if(scenario.mountainAudit&&!scenario.courseFailure&&readFileSync('src/land-course.ts','utf8').includes(\"./mountain-scenery\")){\n",
+            "    const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker=\"    return {id:mapId,profile:resolveMap(mapId),forkHint:''\";\n"
+          ],
+          "insertedLines": [
+            "  if(scenario.mountainAudit&&!scenario.courseFailure&&runtimeRead('src/land-course.ts').includes(\"./mountain-scenery\")){\n",
+            "    const original=runtimeRead('src/land-course.ts'),marker=\"    return {id:mapId,profile:resolveMap(mapId),forkHint:''\";\n"
+          ]
+        },
+        {
           "beforeStart": 172,
-          "afterStart": 173,
+          "afterStart": 176,
           "removedLines": [
             "      await assert.rejects(import(copy.url.href),/Injected mountain chunk failure/);\n",
             "      assert.match(element('raceLoadingStatus').textContent,/赛道程序下载失败/);\n"
           ],
           "insertedLines": [
-            "      const entry=await import(copy.url.href);mounted=entry.mountLandRace();await mounted.ready;\n",
+            "      const entry=await import(copy.url.href);if(!historical)mounted=entry.mountLandRace();await mounted.ready;\n",
             "      assert.match(element('raceLoadingStatus').textContent,/赛道载入或初始化失败.*Injected mountain chunk failure/);\n"
           ]
         },
         {
           "beforeStart": 179,
-          "afterStart": 180,
+          "afterStart": 183,
           "removedLines": [
             "    await import(copy.url.href);\n"
           ],
           "insertedLines": [
-            "    const entry=await import(copy.url.href);mounted=entry.mountLandRace();\n",
+            "    const entry=await import(copy.url.href);if(!historical)mounted=entry.mountLandRace();\n",
             "    // Mount is synchronous; the selected course module remains dynamically loaded.\n",
             "    for(let i=0;i<1600&&!g.window.neonKart;i++)await new Promise(resolve=>setTimeout(resolve,5));\n",
             "    assert.ok(g.window.neonKart,'race bootstrap exposes its own debug handle');\n"
           ]
         },
         {
+          "beforeStart": 994,
+          "afterStart": 1001,
+          "removedLines": [
+            "        randomSeed=0x51a7c0de;\n"
+          ],
+          "insertedLines": []
+        },
+        {
+          "beforeStart": 997,
+          "afterStart": 1003,
+          "removedLines": [],
+          "insertedLines": [
+            "        // Isolate collection eligibility from a full AI race: an idle human and\n",
+            "        // five inventory-holding opponents need not receive a dynamic offer.\n",
+            "        // Keep real track sampling, authored density, seeded director and spawn\n",
+            "        // safety intact; only park unrelated traffic and cool authored rewards.\n",
+            "        const bots=parkBots(),bot=bots.find(candidate=>candidate.id===profile.id);assert.ok(bot);\n",
+            "        qa.set({pos:800,lane:-5,speed:0,held:null});\n",
+            "        for(const authored of qa.boxes().filter(candidate=>!candidate.dynamic)){authored.cool=Infinity;authored.mesh.enabled=false;}\n",
+            "        Object.assign(bot,{total:0,lateral:0,targetLane:0,speed:12});\n"
+          ]
+        },
+        {
+          "beforeStart": 999,
+          "afterStart": 1013,
+          "removedLines": [
+            "        const bots=parkBots(),bot=bots.find(candidate=>candidate.id===profile.id);assert.ok(bot);\n"
+          ],
+          "insertedLines": [
+            "        assert.equal(bot.held,null,'candidate stays eligible until a dynamic pickup is offered');\n",
+            "        assert.ok(game.getState().elapsed<=4+1/60+1e-8,'an eligible isolated racer receives the first scheduled offer');\n",
+            "        assertBoxVisible(box);\n",
+            "        parkBots();\n"
+          ]
+        },
+        {
           "beforeStart": 1401,
-          "afterStart": 1405,
+          "afterStart": 1418,
           "removedLines": [],
           "insertedLines": [
             "    mounted?.dispose();\n"
+          ]
+        },
+        {
+          "beforeStart": 1409,
+          "afterStart": 1427,
+          "removedLines": [
+            "    } finally {sourceFiles.cleanup();}\n"
+          ],
+          "insertedLines": [
+            "    } finally {try{sourceFiles.cleanup();}finally{historical?.dispose();}}\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/geometry-runtime-portability.ts": {
+      "previousSha256": "513104c3266ac15d0ff4a32908e438b031f6e8124b64b654dfef72dcaaf39370",
+      "currentSha256": "f59295bc8879bf8f3180e931b68ade33af224ff291bd1cffd53dcbceb83ea553",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restoreV100Bytes} from './v100-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 22,
+          "removedLines": [
+            " for(const [path,hash]of Object.entries(record.dependencies))assert.equal(sha(read(path)),hash,path+' exact original geometry dependency');\n"
+          ],
+          "insertedLines": [
+            " for(const [path,hash]of Object.entries(record.dependencies)){\n",
+            "  const current=read(path);\n",
+            "  // Only the exact v1.0 package-version metadata delta is reversed; all locked\n",
+            "  // resolutions, integrity strings, sources and installed SDK bytes stay exact.\n",
+            "  const original=path==='package-lock.json'?restoreV100Bytes(path,current.toString('utf8')):current;\n",
+            "  assert.equal(sha(original),hash,path+' exact original geometry dependency');\n",
+            " }\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/input-mode-reviewed-revisions.ts": {
+      "previousSha256": "5f6c97e4eb267276fb4a1cc011b114d147fb1d4254ecbf6c262ebb51e12bfd22",
+      "currentSha256": "75f5774197cd7da50406bf106909a7df84f2604b602c263cecfe733619bfd599",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 73,
+          "afterStart": 73,
+          "removedLines": [
+            "  assert.equal(inputModeSha(bytes), row.sha256, path + ' exact new dependency bytes');\n"
+          ],
+          "insertedLines": [
+            "  assert.equal(inputModeSha(bytes), staticMenuArtHash(path, row.sha256), path + ' exact new dependency or reviewed successor bytes');\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/mountain-native-audit-worker.ts": {
+      "previousSha256": "a2074caed6095fa32b4121acb6ba4eb9699b79d4070f99406a6e5337a858859c",
+      "currentSha256": "5350781c44071680e5e8531d0b1c0b8c06df8402570df076e473ca30c36551d7",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 31,
+          "afterStart": 31,
+          "removedLines": [],
+          "insertedLines": [
+            " // This historical invariance proof uses the entire hash-verified pre-v1.0\n",
+            " // source graph; current 1.2 pickup behavior is exercised by mountain-gameplay.\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 37,
+          "removedLines": [
+            " assert.deepEqual(compactControl,golden.control,'enriched scenery preserves the complete deterministic player/NPC/control/checkpoint/item result, not just a lap clock');\n"
+          ],
+          "insertedLines": [
+            " assert.deepEqual(compactControl,golden.control,'enriched scenery with exact historical runtime preserves the complete deterministic player/NPC/control/checkpoint/item result, not just a lap clock');\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/mountain-native-partitions.ts": {
+      "previousSha256": "6e660c453d56f3867d4716f3080449b3d208a2ed6ddff20ffdd577f4b55eeb3c",
+      "currentSha256": "39c75a44a0a73510711b326c80c17499061c75f34a00a2016183cc1f7c837f95",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "removedLines": [],
+          "insertedLines": [
+            "import {v100Review} from './v100-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 14,
+          "removedLines": [
+            " const sources=['src/game.ts','src/maps/mountain.ts','src/land-course.ts','src/land-track.ts','src/land-driving.ts','src/race-camera.ts','src/land-camera.ts','src/kart-driver.ts','tests/helpers/gameplay-scenario.ts','tests/helpers/instrumented-source-files.ts','tests/mountain-enrichment-gameplay.test.ts','tests/helpers/mountain-native-partitions.ts','tests/helpers/mountain-native-audit-worker.ts','tests/helpers/bounded-test-process.ts','tests/mountain-native-partitions.test.ts'];\n"
+          ],
+          "insertedLines": [
+            " const sources=['src/game.ts','src/maps/mountain.ts','src/land-course.ts','src/land-track.ts','src/land-driving.ts','src/race-camera.ts','src/land-camera.ts','src/kart-driver.ts','tests/helpers/gameplay-scenario.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/v100-historical-runtime.ts','tests/helpers/v100-reviewed-revisions.ts','tests/helpers/v100-transition.json','src/npc-tactics.ts','src/land-race-route.ts','src/pickup-visual.ts','src/pickup-size.ts','tests/mountain-enrichment-gameplay.test.ts','tests/helpers/mountain-native-partitions.ts','tests/helpers/mountain-native-audit-worker.ts','tests/helpers/bounded-test-process.ts','tests/mountain-native-partitions.test.ts'];\n"
+          ]
+        },
+        {
+          "beforeStart": 15,
+          "afterStart": 16,
+          "removedLines": [
+            " return Object.fromEntries(sources.map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));\n"
+          ],
+          "insertedLines": [
+            " const review=v100Review();sources.push(...Object.keys({...review.protectedFiles,...review.changes,...review.additions}).filter(path=>path.startsWith('src/')));\n",
+            " return Object.fromEntries([...new Set(sources)].map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));\n"
           ]
         }
       ]
@@ -3139,6 +3487,23 @@
           "insertedLines": [
             "export function qualityTierAddedPaths() { return [QUALITY_TIER_REVIEW_PATH, 'tests/helpers/quality-tier-reviewed-revisions.ts', ...Object.keys(qualityTierReview().additions), ...v100AddedPaths()]; }\n",
             "export function qualityTierAuditDependencies() { return [...qualityTierAddedPaths(), ...Object.keys(qualityTierReview().changes), ...v100AuditDependencies()]; }\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/town-enrichment-geometry-worker.ts": {
+      "previousSha256": "9239eedd5950aa0a606a10186bed56e56695ce0fb0aa409206d7d96af1acadd7",
+      "currentSha256": "408f252b10eb038a160bb05d6607d090bb4c3095e65642950eac83835f736e4b",
+      "scope": "Exact additive v1.0 audit bridge; historical records and geometry outputs remain frozen",
+      "hunks": [
+        {
+          "beforeStart": 40,
+          "afterStart": 40,
+          "removedLines": [
+            "  assert.equal(sha(readFileSync(new URL(path,root))),revision.currentSHA256,path+' separately reviewed scene revision changed');\n"
+          ],
+          "insertedLines": [
+            "  assert.equal(sha(readFileSync(new URL(path,root))),airfieldReviewedHash(path,revision.currentSHA256),path+' separately reviewed scene revision and bounded successors');\n"
           ]
         }
       ]
@@ -3444,6 +3809,98 @@
         }
       ]
     },
+    "tests/snow-enrichment-inventory.test.ts": {
+      "previousSha256": "e3705f3a73acd37d71deed3fcef6eb39ada5f53a487e0d4b367d88e1001df0e9",
+      "currentSha256": "0369d27b273ef73d293e784edb8ee40071dd3d6e7e90889d15226d1a003ec630",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [
+            "import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ],
+          "insertedLines": [
+            "import {menuPresentationSourcePaths,restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "removedLines": [
+            " for(const {file,before,after}of deltas){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);original=original.replace(before,after);if(file==='tests/snow-independent-audit.test.ts')for(const p of projection){assert.equal(original.split(p.before).length-1,1);original=original.replace(p.before,p.after);}assert.equal(readFileSync(file,'utf8'),original,file+' all remaining native assertions and loops stay byte-identical');}\n"
+          ],
+          "insertedLines": [
+            " for(const {file,before,after}of deltas){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);original=original.replace(before,after);if(file==='tests/snow-independent-audit.test.ts')for(const p of projection){assert.equal(original.split(p.before).length-1,1);original=original.replace(p.before,p.after);}assert.equal(restoreMenuPresentationBytes(file,readFileSync(file,'utf8')),original,file+' all remaining native assertions and loops stay byte-identical');}\n"
+          ]
+        },
+        {
+          "beforeStart": 39,
+          "afterStart": 39,
+          "removedLines": [
+            " const file='src/snow-scenery.ts',hash=sha(readFileSync(file)),all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,receipt.historicalSceneRevisions.baseCommit);assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/garden-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());assert.equal(all.revisions[file].previousSHA256,SNOW_ORIGINAL_SOURCE_SHA256);assert.equal(all.revisions[file].currentSHA256,hash);assert.equal(receipt.reviewedChanges[file].currentSHA256,hash);assert.ok(all.revisions[file].scope);\n"
+          ],
+          "insertedLines": [
+            " const file='src/snow-scenery.ts',hash=receipt.reviewedChanges[file].currentSHA256;assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,hash),'Exact reviewed Snow endpoint and bounded successors');const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,receipt.historicalSceneRevisions.baseCommit);assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/garden-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());assert.equal(all.revisions[file].previousSHA256,SNOW_ORIGINAL_SOURCE_SHA256);assert.equal(all.revisions[file].currentSHA256,hash);assert.equal(receipt.reviewedChanges[file].currentSHA256,hash);assert.ok(all.revisions[file].scope);\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 42,
+          "removedLines": [
+            " const preview=JSON.parse(readFileSync('docs/snow-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],hash);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),hash);\n"
+          ],
+          "insertedLines": [
+            " const preview=JSON.parse(readFileSync('docs/snow-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],hash);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,hash));\n"
+          ]
+        },
+        {
+          "beforeStart": 47,
+          "afterStart": 47,
+          "removedLines": [
+            " const recipes=JSON.parse(readFileSync('tests/fixtures/snow-enrichment-assembly-recipes.json','utf8')),windows=JSON.parse(readFileSync('tests/fixtures/snow-enrichment-camera-windows.json','utf8'));assert.equal(digest(recipes),'634d996ef5dd43b7c2e9824cd188a0a8a0f2c075ace7ad9c14ec74bfd05123e5');assert.equal(digest(windows),'30cccfa513a2ecb4ae104ceadfc8d10a0b12e05a7efbc1959da09ccc18aae309');assert.equal(windows.spacingMetres,3);assert.equal(windows.stations.length,259);assert.equal(windows.expectedStaticPoses,51282);assert.equal(sha(readFileSync('src/snow-scenery.ts')),'1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9');\n"
+          ],
+          "insertedLines": [
+            " const recipes=JSON.parse(readFileSync('tests/fixtures/snow-enrichment-assembly-recipes.json','utf8')),windows=JSON.parse(readFileSync('tests/fixtures/snow-enrichment-camera-windows.json','utf8'));assert.equal(digest(recipes),'634d996ef5dd43b7c2e9824cd188a0a8a0f2c075ace7ad9c14ec74bfd05123e5');assert.equal(digest(windows),'30cccfa513a2ecb4ae104ceadfc8d10a0b12e05a7efbc1959da09ccc18aae309');assert.equal(windows.spacingMetres,3);assert.equal(windows.stations.length,259);assert.equal(windows.expectedStaticPoses,51282);assert.equal(sha(readFileSync('src/snow-scenery.ts')),gardenReviewedHash('src/snow-scenery.ts','1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9'));\n"
+          ]
+        }
+      ]
+    },
+    "tests/snow-preview-assets.test.ts": {
+      "previousSha256": "5d5e2d51c6af2e3ce3b3617a518df5ee38a2a3be27d759823e8cb6e64973ebd8",
+      "currentSha256": "bbd575053c12edb012b150cd88f4f25ffc3b1c36e87e36ded027890a63534ced",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 7,
+          "removedLines": [
+            "test('snow menu poster derives from current original runtime geometry with both physical branches framed',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('snow menu poster retains its exact reviewed source provenance and bounded successors with both physical branches framed',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 11,
+          "removedLines": [
+            " for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);\n"
+          ],
+          "insertedLines": [
+            " for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),menuPresentationHash(path,digest),path);\n"
+          ]
+        }
+      ]
+    },
     "tests/title-menu.test.ts": {
       "previousSha256": "b989938308fe69157c4fb270356c213cf2995938289cc8d29ad8c8b5304795f9",
       "currentSha256": "c668abe06539335569c4d0cd74cf4f04b1a94c0ddc2a8b4664718227963f9271",
@@ -3537,6 +3994,65 @@
         }
       ]
     },
+    "tests/town-runtime-audit.test.ts": {
+      "previousSha256": "5d437a3c2d57d92235104c58c44954d5be1b213f7024f45a568cd60a8ddd5638",
+      "currentSha256": "70124ce8ccb477e59db1cac227e6095916443de0748245c227040488b2d3b19f",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [],
+          "insertedLines": [
+            "import {PICKUP_SCALE} from '../src/pickup-size';\n"
+          ]
+        },
+        {
+          "beforeStart": 46,
+          "afterStart": 47,
+          "removedLines": [
+            "  runtime.states.set('p',createRouteProgress(locate('alley',30,-3)));\n",
+            "  runtime.advance('p',0,.1,3,'alley');\n",
+            "  near(runtime.contact({actor:racer,previous:0,previousLane:-3},pickup('alley',30))!,(3-1.25)/6);\n"
+          ],
+          "insertedLines": [
+            "  // The authored half-width is enlarged with the visible world pickup. Solve\n",
+            "  // the first boundary crossing from the actual lateral segment, in both directions.\n",
+            "  const halfWidth=1.25*PICKUP_SCALE;\n",
+            "  for(const [from,to]of [[-3,3],[3,-3],[-4,2],[4,-2]]){\n",
+            "    runtime.states.set('p',createRouteProgress(locate('alley',30,from)));\n",
+            "    runtime.advance('p',0,.1,to,'alley');\n",
+            "    const firstBoundary=from<0?-halfWidth:halfWidth;\n",
+            "    near(runtime.contact({actor:racer,previous:0,previousLane:from},pickup('alley',30))!,(firstBoundary-from)/(to-from));\n",
+            "  }\n",
+            "  runtime.states.set('p',createRouteProgress(locate('alley',30,halfWidth+.01)));\n",
+            "  runtime.advance('p',0,.1,halfWidth+.01,'alley');\n",
+            "  assert.equal(runtime.contact({actor:racer,previous:0,previousLane:halfWidth+.01},pickup('alley',30)),null,'stationary position outside the scaled bound cannot collect');\n"
+          ]
+        },
+        {
+          "beforeStart": 53,
+          "afterStart": 63,
+          "removedLines": [
+            "  runtime.states.set('p',{cursor:{...locate('finish',course.commonFinish.length-4),lap:2},nextGate:23,laps:2,finished:false});\n",
+            "  runtime.advance('p',8,.1,0,'boulevard');\n",
+            "  const contact=runtime.contact({actor:racer,previous:0,previousLane:0},pickup('finish',course.commonFinish.length-1));\n",
+            "  near(contact!,1.2/8);\n"
+          ],
+          "insertedLines": [
+            "  const finish=course.commonFinish.length,start=finish-4,center=finish-1,requestedTravel=8;\n",
+            "  runtime.states.set('p',{cursor:{...locate('finish',start),lap:2},nextGate:23,laps:2,finished:false});\n",
+            "  const movement=runtime.advance('p',requestedTravel,.1,0,'boulevard');\n",
+            "  const contact=runtime.contact({actor:racer,previous:0,previousLane:0},pickup('finish',center));\n",
+            "  const firstBoundary=center-1.8*PICKUP_SCALE,requestedFraction=(firstBoundary-start)/requestedTravel;\n",
+            "  near(contact!,requestedFraction);\n",
+            "  near(movement.finishFraction!,(finish-start)/requestedTravel);\n",
+            "  assert.ok(contact!<movement.finishFraction!,'pickup contact precedes the clipped finish');\n",
+            "  assert.ok(Math.abs(contact!-(firstBoundary-start)/(finish-start))>1e-7,'contact fraction must not renormalize to the shortened terminal sweep');\n"
+          ]
+        }
+      ]
+    },
     "tests/ui-layout.test.ts": {
       "previousSha256": "ea89e7acbeb4bc851b707df261157feb0360831e527cd850c8dab60875083d4a",
       "currentSha256": "38ad9c7a3479fd2fbfd7e6560e71779764e85a1fd2332367e5b047cce495d321",
@@ -3593,6 +4109,48 @@
             "    if(trigger!=='release'){assert.equal(panel.hidden,false);assert.equal(panel.style.display,'grid');assert.equal(removed,true);}\n",
             "    win.__releaseColdRecovery!();assert.equal(timers.size,0);assert.equal(events.size,0);assert.equal(win.__releaseColdRecovery,undefined);\n",
             "    if(trigger==='release'){assert.equal(panel.hidden,true);assert.equal(removed,false);}\n",
+            "  }\n"
+          ]
+        }
+      ]
+    },
+    "tests/waterpark-integration.test.ts": {
+      "previousSha256": "189a38f062fbd705b7c7ece28fd13c83ebb7d05d4ac9fab0789db832d5d14d44",
+      "currentSha256": "8ba854384d5727188ca453fbee4a8465973cf6a97628fe8ae5a53fd7e794463b",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "removedLines": [],
+          "insertedLines": [
+            "import {sceneForUrl} from '../src/scene-routes';\n"
+          ]
+        },
+        {
+          "beforeStart": 54,
+          "afterStart": 55,
+          "removedLines": [
+            "  assert.match(coast, /src\\/game\\.ts/); assert.match(read('index.html'), /src\\/menu\\.ts/);\n",
+            "  assert.doesNotMatch(coast, /src\\/waterpark-play\\.ts/);\n",
+            "  assert.match(waterpark, /src\\/waterpark-play\\.ts/); assert.doesNotMatch(waterpark, /src\\/game\\.ts/);\n"
+          ],
+          "insertedLines": [
+            "  for(const html of [coast,waterpark,read('index.html')]){\n",
+            "    assert.match(html, /<script type=\"module\" src=\"\\/src\\/spa\\.ts\"><\\/script>/);\n",
+            "    assert.doesNotMatch(html, /src\\/(?:game|waterpark-play|menu)\\.ts/,'HTML does not eagerly bootstrap another scene runtime');\n",
+            "  }\n",
+            "  const host=read('src/spa.ts');\n",
+            "  assert.doesNotMatch(host,/import\\s+[^;\\n]*from\\s*['\"]\\.\\/(?:game|waterpark-play)['\"]/,'race runtimes must not enter the eager import graph');\n",
+            "  assert.doesNotMatch(host,/import\\s*['\"]\\.\\/(?:game|waterpark-play)['\"]/,'side-effect imports must not eagerly bootstrap either race');\n",
+            "  for(const module of ['game','waterpark-play'])assert.equal(host.split(\"import('./\"+module+\"')\").length-1,1,'each race has exactly one lazy entry');\n",
+            "  assert.match(host,/else if\\(next==='land'\\)\\{\\s*const \\{mountLandRace\\}=await import\\('\\.\\/game'\\);[^}]*active=mountLandRace\\(\\)/,'land routing lazily mounts only the kart runtime');\n",
+            "  assert.match(host,/\\}else\\{\\s*const \\{mountWaterRace\\}=await import\\('\\.\\/waterpark-play'\\);[^}]*active=mountWaterRace\\(\\)/,'water routing lazily mounts only the water runtime');\n",
+            "  for(const prefix of ['/', '/preview/nested/']){\n",
+            "    const base=new URL('https://example.invalid'+prefix);\n",
+            "    assert.equal(sceneForUrl(new URL('./coast.html',base),base),'land');\n",
+            "    assert.equal(sceneForUrl(new URL('./waterpark.html',base),base),'water');\n",
+            "    assert.equal(sceneForUrl(new URL('./index.html',base),base),'menu');\n",
             "  }\n"
           ]
         }
@@ -3797,6 +4355,10 @@
       "sha256": "3609176b392d47adffe5bf74b7b157d82b6af98d47436f6874344c7f5ba17549",
       "scope": "Explicit v1.0 feature, asset, documentation or regression addition"
     },
+    "tests/helpers/v100-historical-runtime.ts": {
+      "sha256": "5e280d3c0bd346d9b4a97b905e640c755ed1c7607e6e3874f6165616f18be47d",
+      "scope": "Explicit v1.0 feature, asset, documentation or regression addition"
+    },
     "tests/menu-spa-lifecycle.test.ts": {
       "sha256": "2b8ab37d133439d6a5886fc733d1579abba2c127f69a096138cb971819c44531",
       "scope": "Explicit v1.0 feature, asset, documentation or regression addition"
@@ -3811,6 +4373,10 @@
     },
     "tests/settings-game-panels.test.ts": {
       "sha256": "348b3dcb8249404f533b71b2f7d315dc53b73b35fadc2b67023bdeadcb01f89f",
+      "scope": "Explicit v1.0 feature, asset, documentation or regression addition"
+    },
+    "tests/v100-historical-runtime.test.ts": {
+      "sha256": "bfc9c08295cc39eeac0a3cc6bdd6af3c6970d7b2730354421bd259b1768e7498",
       "scope": "Explicit v1.0 feature, asset, documentation or regression addition"
     }
   },
@@ -4347,8 +4913,6 @@
     "tests/asset-download.test.mjs": "3117fb5e9d4c19ba2ed5505288f43febad6392254c6410dd7ed9dc944365e36a",
     "tests/audit-camera-dependency-transition.test.ts": "fedf0243d205fc7e24cc3ea102a5470580256bd95a661110f6fcf188541851ba",
     "tests/audit-fixture-publication.test.ts": "eb6ca483ec95dbc5b08fc00dbb35c56a302e8a68adcdbb9b5f5531b543e8db48",
-    "tests/audit-geometry-runtime-portability.test.ts": "750cd262cbdd8f9a185c8d086088727fa74ef1e47f07361e37d3086c12c20846",
-    "tests/audit-input-mode-transition.test.ts": "0f659bba0c53188f8b8d8d6e01e2f43fca866f2dc3509fde98cbf20cd7cbee59",
     "tests/audit-loading-guide-transition.test.ts": "17efe4634a9f85d34af8ef60a770b75c0272a29e7b4b666e50565872f25ff0f2",
     "tests/audit-menu-presentation-transition.test.ts": "3fc7ab955d42a89049d468b4f8ca8b2109c8a10ea148b112c633c8c8c4cdc220",
     "tests/audit-mobile-controls-transition.test.ts": "57352f07ae014884fb99604b0d50e5c49096568205f8f74ef917f3784a637186",
@@ -4386,7 +4950,6 @@
     "tests/control-mode.test.ts": "a2f6a77c7c04b394cb2aab638af9e1b81612aeb3f795c1aba70cce2231e8a6fd",
     "tests/desert-enrichment-camera.test.ts": "a0958ce708dd2f4520d9ea6f4eab11c98e90297bb002731a274526d2813dbf9d",
     "tests/desert-enrichment-geometry.test.ts": "008b1e59a11cae9381bc248790d898ec109f50099984b8d10d34799dc23297ae",
-    "tests/desert-enrichment-inventory.test.ts": "dc97608adc0074d15b97aa6b4595f98f6ea5faf83358712931b8d0eb0465279e",
     "tests/desert-enrichment-oracles.test.ts": "476bbda9ea9669475442c018b5f28f21fba2104d8590f0650a145164d5c0e6f1",
     "tests/desert-gameplay-balance.test.ts": "4492db71fc9ec07fadfe6f86c29c7e170e5585ff5dd44797d3ad6e4a67bc7dea",
     "tests/desert-gameplay-camera.test.ts": "d82f65c118daf720e10cdfbe6ce254c9ea53135cafc18571d964202790ea620a",
@@ -4395,7 +4958,6 @@
     "tests/desert-gameplay.test.ts": "c893c88a4654dff18d78c27709971b20f5145bf0bebcd3fbe5d78dd01dca9b8f",
     "tests/desert-independent-audit.test.ts": "015ded184038687452d8a4c85a769510fa63be0277ed2563e15bf982deeff8a9",
     "tests/desert-menu.test.ts": "bc91974dc1340333d2c0dbf8372ecd9d71e7f8c6c74d30e0cc02cd025cfdb106",
-    "tests/desert-preview-assets.test.ts": "acf08146a1bed14d92430881cb125269db0d288c5026036d84981fb65c3ef228",
     "tests/desert-route-cursor.test.ts": "8d8c37b44c4f3c63f6f753a6cc0ac87e72a510222239100fea111999286a8ac2",
     "tests/desert-route-footprints.test.ts": "52d931012930f4586a2aa72c0fa6e7d6c0a85cd60e3dd7dfc0d697984ad9f980",
     "tests/desert-route-geometry.test.ts": "b5e36bc1f99edbcf1e63b6efbabc1ebc2392fdd4ba836dcc6dc6515c5cac949c",
@@ -4442,7 +5004,6 @@
     "tests/food-kart-payload.test.ts": "c9451aa78ac717b3de667eda63e0212d494890805ffe4c48f03f9d6ebc74752f",
     "tests/forest-enrichment-camera.test.ts": "86ac98e76e4afaeb4920c4bcb0f8a190f079cc350c0e1df5220453686f9e0eb2",
     "tests/forest-enrichment-geometry.test.ts": "04550d1c3985906c491b33eb15a8dccee40b254d9711ffc8a11912da9409eece",
-    "tests/forest-enrichment-inventory.test.ts": "62e4eb84eaa1e515c1e20ff43aac813eb2b99a6395d060c011fcab884ddca772",
     "tests/forest-gameplay-balance.test.ts": "a3971961772009134a6e5515d4ea2b357947e2e21a980d5affdadb582638ca29",
     "tests/forest-gameplay-camera.test.ts": "e8ca25951014e1b232cb5b4dbaaf5dc79f078d86ec4974b7cda2efbf7a7a3c0d",
     "tests/forest-gameplay-npc.test.ts": "3d8ca827bad4046300eb82f8cee48ec46b732bd5e2cf0d26c6019a55e258feb5",
@@ -4573,7 +5134,6 @@
     "tests/helpers/garden-enrichment-scene.ts": "b89d49153f62ee45a36e81a6209ca359f85b44fec9a844ba97a75315de641469",
     "tests/helpers/garden-enrichment-solids.ts": "34a873e5b9b5a21047ac21eaed1525d36c51370359a79c6cc3b63b28efd00a7d",
     "tests/helpers/garden-enrichment-source-stability.ts": "2017266a5a461fd31039508dbc525fe25a678cf068f93efafa9a5d6fbfe93a9a",
-    "tests/helpers/geometry-runtime-portability.ts": "513104c3266ac15d0ff4a32908e438b031f6e8124b64b654dfef72dcaaf39370",
     "tests/helpers/harvest-enrichment-assemblies.ts": "fb4fd28e153165585aa1bb95a173e9883dd41bd56aa91011c88435824920ad1f",
     "tests/helpers/harvest-enrichment-camera-checks.ts": "e8cc6b930474c5f7cc68fdec6cf89788081475a28c395f7916710fae6efc9d20",
     "tests/helpers/harvest-enrichment-camera-oracle.ts": "a1ada25f3e87001ed88f8e836556e58d253585fee7c3cde538478ba63ee4fbfe",
@@ -4582,7 +5142,6 @@
     "tests/helpers/harvest-enrichment-landscape.ts": "1d9568f0efd1b445193a9fe5fc7174cc1ca494b56c76bcff07bd2a9c67b354cb",
     "tests/helpers/harvest-enrichment-scene.ts": "7a616c015d5283bff5efb22394bc6333aa2d52660f4f3670fb5fae6c535bca75",
     "tests/helpers/harvest-enrichment-surface-support.ts": "d2d9f7b0ac4de7b4a066503f80f3f2ed25e07ebbf047e06e89dd6590d29135fb",
-    "tests/helpers/input-mode-reviewed-revisions.ts": "5f6c97e4eb267276fb4a1cc011b114d147fb1d4254ecbf6c262ebb51e12bfd22",
     "tests/helpers/input-mode-transition.json": "fed720938f85546ad240223bb4c60b51c5f3058adf93cc8073e17eed57a2359e",
     "tests/helpers/instrumented-source-files.ts": "d7cf9b9497405293ab07c0af98a4da8dcc45e2c98a33ed14e9f098acc6b547e1",
     "tests/helpers/instrumented-source-worker.ts": "dbabafe98b15d79be31a42748f3e89feaf650e876e7237c9e41bc5e5f8dc0ece",
@@ -4596,8 +5155,6 @@
     "tests/helpers/mountain-art-cylinder-oracle.ts": "f09943e1073d925269df1447a7167035ae9151ba4a5ded1542f8a30a5f25341e",
     "tests/helpers/mountain-art-pass-contract.ts": "6871597ffdbaa4688f0bc107071ccd7a8e024a8185ca18309b762d82c103dd09",
     "tests/helpers/mountain-baseline-contract.ts": "c6f090fd85cb45027ae81e6310a3ac6f5c16b779522490792c192fcdd7ff7cd6",
-    "tests/helpers/mountain-native-audit-worker.ts": "a2074caed6095fa32b4121acb6ba4eb9699b79d4070f99406a6e5337a858859c",
-    "tests/helpers/mountain-native-partitions.ts": "6e660c453d56f3867d4716f3080449b3d208a2ed6ddff20ffdd577f4b55eeb3c",
     "tests/helpers/music-transition.json": "8d58514a2de87c63627e2b13f85d1c6cd75d717e73f8930b31c18b75d6225b22",
     "tests/helpers/native-mesh-oracle.ts": "51bc9a6270a0957291cc6d8b14734781c1858cba603cc3b70b32ecb7b50fb779",
     "tests/helpers/original-track.json": "98e7d15c057e4bc2dd16af1b61bdb79d542ff157e97c807d2d68bbe040bd816d",
@@ -4640,7 +5197,6 @@
     "tests/helpers/town-enrichment-camera-frozen.json": "bff2d07d74d139131a9bebc65a2f467660e3b38aaef13d9dd13f08350e54f48b",
     "tests/helpers/town-enrichment-camera-scene.ts": "d5541acdcbbe58f1ddb1c688e4e5f042b85c6454d141b36048427adf9d08d0c5",
     "tests/helpers/town-enrichment-camera-worker.ts": "1a570e56dc8e4c9944cf21f819ec64403c9ca73f354a3660e8a28046f3a3baba",
-    "tests/helpers/town-enrichment-geometry-worker.ts": "9239eedd5950aa0a606a10186bed56e56695ce0fb0aa409206d7d96af1acadd7",
     "tests/helpers/town-enrichment-geometry.ts": "2d44fd30af1f962b9ba8085a11441f51c1121890a3fc3f5ca371194be19e81e6",
     "tests/helpers/town-enrichment-provenance.ts": "35f66268d061edaa63e39a4f3918f82de715e0aee2688c68274313cc8050200a",
     "tests/helpers/workshop-enrichment-camera-frozen.json": "b36e8b7a964940c07f31a5f91921e40b74aed84b85c40ba565a0575db6078c8b",
@@ -4718,7 +5274,6 @@
     "tests/shared-race-architecture.test.ts": "c27849f12de0b79424b87733b9b6bce50d011383fe171791d7ae73b5377e8a6a",
     "tests/snow-enrichment-camera.test.ts": "3c7b13c69b7c78b10a8650bc349420f30f7cec13ce3ece6298b1df8c762c2ca8",
     "tests/snow-enrichment-geometry.test.ts": "17752f10b2fdfb20bc469792b4d1ae182fa760ee8507d0b599758dfb7c884166",
-    "tests/snow-enrichment-inventory.test.ts": "e3705f3a73acd37d71deed3fcef6eb39ada5f53a487e0d4b367d88e1001df0e9",
     "tests/snow-enrichment-oracles.test.ts": "a2a639ef1b9566702dc2caf898c34c7894be28d0787793008a92f59fc4a49566",
     "tests/snow-gameplay-balance.test.ts": "e3becb1bf17bf413d30fd793ae9477866829c5794533d61a7a6dbe502e048d68",
     "tests/snow-gameplay-camera.test.ts": "318836346efc3166bfb644e3b206a929079ee755fdd44122d05b3e9f01dc3031",
@@ -4727,7 +5282,6 @@
     "tests/snow-gameplay.test.ts": "c5a51e1599acd7b6d9b329f871ddcf393e74c938476d24dbb48b063885509393",
     "tests/snow-independent-audit.test.ts": "c0eedf06dca52f1779bb1080e5cd3a315cdf18d8db206d0464c31d1951f7d01b",
     "tests/snow-menu.test.ts": "2bbf24a78b06005bb9d48259e82fafbd35967a1b501f10e8c7e3621540d645e3",
-    "tests/snow-preview-assets.test.ts": "5d5e2d51c6af2e3ce3b3617a518df5ee38a2a3be27d759823e8cb6e64973ebd8",
     "tests/snow-route-cursor.test.ts": "435a82fbe4b1af306fd7c2f3dc26ddadd6871311ce621eb656291061fa2d17de",
     "tests/snow-route-footprints.test.ts": "f1e876ad3d7a46fe24c4b04185c4276dc79393187c569d0599816f225803d77c",
     "tests/snow-route-geometry.test.ts": "17105fe6a54934dddc4657f237fe584d6b4f93bf118ab211121738140117d8a9",
@@ -4745,7 +5299,6 @@
     "tests/town-preview-assets.test.ts": "0e8d138dcaebea3c4588992e866b37761e4865816f68950b9dad07cf6713f868",
     "tests/town-route-cursor.test.ts": "fbc008dd34e7ebf5e033e1c58ea7055f7dc3921dda75aeaa98b4d4d7b544b2a8",
     "tests/town-route-geometry.test.ts": "e77aee2eed4dc7ebd17f8cf4a697a66841d5f75fce34a8e49b3c78399bc39b2b",
-    "tests/town-runtime-audit.test.ts": "5d437a3c2d57d92235104c58c44954d5be1b213f7024f45a568cd60a8ddd5638",
     "tests/town-scene.test.ts": "e2bd584260b15863fd4b83850e60364e9a1984b84da269c679a0bd610402d8cd",
     "tests/town-shared-merge.test.ts": "55952609a6fe7acfc3ee91cf47fd4abd5184db4ab34ded38fbe49d34c328b98e",
     "tests/vehicle-controls.test.mjs": "e9511c52250510d2b5bc7d7a3e8444cf5af0665619039a25e93c09e255592f49",
@@ -4754,7 +5307,6 @@
     "tests/waterpark-bed.test.ts": "ad649360eb5b18ff7e5a09c66e241a87ac761309e64522973fb51b24cc25ef77",
     "tests/waterpark-design.test.ts": "2166e4836950ff52a3789f3de6fb22ce48ec8285843b953771249f7c57788e69",
     "tests/waterpark-environment.test.ts": "db32dc9a905271a92727d72112a50cd6bc7aebecd1ad503e6fabb94514c1e060",
-    "tests/waterpark-integration.test.ts": "189a38f062fbd705b7c7ece28fd13c83ebb7d05d4ac9fab0789db832d5d14d44",
     "tests/waterpark-loop-geometry.test.ts": "aef39944dec04a49b542bc3140f707678699babd951ae4a287f2f8030d513359",
     "tests/waterpark-motion.test.ts": "690e491d0c2ad6753a56a12ff9fe305df60b60510d1615ebf536fbccad07a3ba",
     "tests/waterpark-performance-ui.test.ts": "1d2f0bdfd5eff0690768d5ff3218cb6bef2b0c2beb0d675fbe0279e745c37a45",

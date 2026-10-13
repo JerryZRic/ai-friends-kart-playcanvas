@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createWaterparkInput,isWaterparkGameKeyTarget} from '../src/waterpark-input';
 import {createWaterparkLifetime} from '../src/waterpark-lifetime';
 import {MAP_PROFILES} from '../src/map-profiles';
+import {sceneForUrl} from '../src/scene-routes';
 
 test('touch capture, overlapping pointers, keyboard releases and pause clear stay independent', () => {
   const input = createWaterparkInput();
@@ -52,8 +53,21 @@ test('both map entries remain relative and keep the kart runtime isolated from t
     for (const prefix of ['/', '/preview/nested/']) assert.ok(new URL(map.entry, `https://example.invalid${prefix}`).pathname.startsWith(prefix));
   }
   const coast = read('coast.html'), waterpark = read('waterpark.html'), study = read('waterpark-study.html');
-  assert.match(coast, /src\/game\.ts/); assert.match(read('index.html'), /src\/menu\.ts/);
-  assert.doesNotMatch(coast, /src\/waterpark-play\.ts/);
-  assert.match(waterpark, /src\/waterpark-play\.ts/); assert.doesNotMatch(waterpark, /src\/game\.ts/);
+  for(const html of [coast,waterpark,read('index.html')]){
+    assert.match(html, /<script type="module" src="\/src\/spa\.ts"><\/script>/);
+    assert.doesNotMatch(html, /src\/(?:game|waterpark-play|menu)\.ts/,'HTML does not eagerly bootstrap another scene runtime');
+  }
+  const host=read('src/spa.ts');
+  assert.doesNotMatch(host,/import\s+[^;\n]*from\s*['"]\.\/(?:game|waterpark-play)['"]/,'race runtimes must not enter the eager import graph');
+  assert.doesNotMatch(host,/import\s*['"]\.\/(?:game|waterpark-play)['"]/,'side-effect imports must not eagerly bootstrap either race');
+  for(const module of ['game','waterpark-play'])assert.equal(host.split("import('./"+module+"')").length-1,1,'each race has exactly one lazy entry');
+  assert.match(host,/else if\(next==='land'\)\{\s*const \{mountLandRace\}=await import\('\.\/game'\);[^}]*active=mountLandRace\(\)/,'land routing lazily mounts only the kart runtime');
+  assert.match(host,/\}else\{\s*const \{mountWaterRace\}=await import\('\.\/waterpark-play'\);[^}]*active=mountWaterRace\(\)/,'water routing lazily mounts only the water runtime');
+  for(const prefix of ['/', '/preview/nested/']){
+    const base=new URL('https://example.invalid'+prefix);
+    assert.equal(sceneForUrl(new URL('./coast.html',base),base),'land');
+    assert.equal(sceneForUrl(new URL('./waterpark.html',base),base),'water');
+    assert.equal(sceneForUrl(new URL('./index.html',base),base),'menu');
+  }
   assert.match(study, /src\/waterpark-preview\.ts/);
 });

@@ -71,7 +71,7 @@ export function assertInputModeAddition(path: string, bytes: string | Buffer) {
   const review = inputModeReview();
   assert.ok(Object.hasOwn(review.additions, path), path + ' explicit reviewed input-mode addition');
   const row = review.additions[path];
-  assert.equal(inputModeSha(bytes), row.sha256, path + ' exact new dependency bytes');
+  assert.equal(inputModeSha(bytes), staticMenuArtHash(path, row.sha256), path + ' exact new dependency or reviewed successor bytes');
 }
 export function inputModeSourcePaths(previous: string[]) {
   for (const path of INPUT_MODE_SOURCE_ADDITIONS) {

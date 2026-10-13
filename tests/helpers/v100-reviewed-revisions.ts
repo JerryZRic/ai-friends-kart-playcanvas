@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 export const V100_BASELINE_COMMIT = '6c73581de6623076a535830b03ffc8703f0facf5';
 export const V100_BASELINE_TREE = '5f560bc4399b87f8274c7c9b410981f990b14e30';
 export const V100_REVIEW_PATH = 'tests/helpers/v100-transition.json';
-export const V100_REVIEW_SHA256 = '3070f81c861a0bd6f1c6cdff75c3c00662f49eb0f3ce876b260f9bbd80e0695b';
+export const V100_REVIEW_SHA256 = '4aefb146e6329e73ad33debd71eb7c0a487c91e9e2e2f51cc9f02f5ce2bfe6c0';
 type Hunk = {beforeStart: number; afterStart: number; removedLines: string[]; insertedLines: string[]};
 type Revision = {previousSha256: string; currentSha256: string; scope: string; hunks: Hunk[]};
 type Review = {schema: string; baselineCommit: string; baselineTree: string; baselineFileCount: number; approvedFeatureCommit: string; approvedFeatureTree: string; changes: Record<string, Revision>; additions: Record<string, {sha256: string; scope: string}>; protectedFiles: Record<string, string>};

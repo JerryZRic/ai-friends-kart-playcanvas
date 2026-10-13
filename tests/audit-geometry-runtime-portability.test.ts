@@ -1,3 +1,4 @@
+import {restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -39,4 +40,23 @@ for(const map of ['garden','caldera'] as const)test(map+' fresh immutable origin
   try{assert.throws(()=>assertCertifiedOriginalGeometry(map,geometry,actual,frozen),'Any additional single-ULP position mutation fails complete immutable raw-byte proof');}finally{array[index]=old;}
   assert.deepEqual(geometryOriginalBufferDigests(geometry),proof.originalBuffers);
  }finally{cleanupInstrumentedSourceManifest(ledger);}
+});
+
+
+test('Geometry certification reverses only exact release-version lock metadata and rejects dependency drift',()=>{
+ const record=assertGeometryCertificateBytes(readFileSync(GEOMETRY_RUNTIME_CERTIFICATE,'utf8'));
+ const path='package-lock.json',current=readFileSync(path,'utf8'),original=restoreV100Bytes(path,current);
+ const currentLock=JSON.parse(current),originalLock=JSON.parse(original);
+ assert.equal(currentLock.version,'1.0.0');assert.equal(currentLock.packages[''].version,'1.0.0');
+ assert.equal(originalLock.version,'0.1.0');assert.equal(originalLock.packages[''].version,'0.1.0');
+ currentLock.version=originalLock.version;currentLock.packages[''].version=originalLock.packages[''].version;
+ assert.deepEqual(currentLock,originalLock,'Every dependency, resolution, integrity, option and other lock field remains unchanged');
+ const verify=(bytes:string)=>assertGeometryCertificateDependencies(record,file=>file===path?Buffer.from(bytes):readFileSync(file));
+ verify(current);
+ for(const bytes of [original,current+' ',current.replace('"version": "1.0.0"','"version": "1.0.1"')])assert.throws(()=>verify(bytes),'Historical or altered lock bytes cannot substitute for the exact approved candidate');
+ for(const field of ['version','resolved','integrity']){
+  const changed=JSON.parse(current);const entry=Object.values(changed.packages).find((value:any)=>typeof value[field]==='string'&&value.integrity) as Record<string,string>;
+  assert.ok(entry,'A locked package exercises '+field);entry[field]+='-unreviewed';
+  assert.throws(()=>verify(JSON.stringify(changed)),field+' drift cannot inherit the geometry certificate');
+ }
 });

@@ -1,4 +1,4 @@
-import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
+import {menuPresentationSourcePaths,restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Additive Desert scenery has no permission to rebaseline native safety gates. */
 import test from 'node:test';
@@ -42,7 +42,7 @@ test('Desert immutable source and native safety inventories retain the exact ori
 });
 test('Desert final source and six inherited isolation consumers bind exactly one new reviewed revision',()=>{
  const file='src/desert-scenery.ts',currentSHA256='aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713';
- assert.equal(sha(readFileSync(file)),currentSHA256);assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);
+ assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,currentSHA256));assert.equal(receipt.reviewedChanges[file].currentSHA256,currentSHA256);
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));
  assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,receipt.historicalSceneRevisions.baseCommit);
  assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/garden-scenery.ts','src/snow-scenery.ts',file,...Object.keys(receipt.historicalSceneRevisions.revisions)].sort());
@@ -63,7 +63,7 @@ test('Desert final catalog uses current source and the exact frozen legacy camer
  assert.equal(preview.localCatalogUpdaterSha256,sha(readFileSync('scripts/update-desert-enrichment-catalog.py')));
  assert.equal(preview.frozenCameraManifestSha256,sha(readFileSync('docs/desert-enrichment-cameras.json')));
  assert.equal(preview.verifiedRenderSettings.samples,48);assert.equal(preview.verifiedRenderSettings.cpuThreads,2);assert.equal(preview.verifiedRenderSettings.seed,17);
- for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),hash,file+' actual source and generator binding');
+ for(const [file,hash]of Object.entries({...preview.sourceHashes,...preview.generatorHashes}))assert.equal(sha(readFileSync(file)),gardenReviewedHash(file,hash),file+' exact historical source and bounded successor binding');
  for(const [file,hash]of Object.entries(receipt.sourceInventory))if(file==='scripts/export-desert-preview.ts'||file==='scripts/render-desert-preview.py')assert.equal(preview.generatorHashes[file],hash,'Original exporter and source-normal importer stay exact');
  assert.deepEqual(Object.keys(preview.views).sort(),Object.keys(frozen.catalogViews).sort());
  for(const [name,original]of Object.entries<any>(frozen.catalogViews))for(const key of ['resolution','cameraPositionBlender','cameraQuaternionBlender','projection','orthographicScaleMetres','lensMillimetres','roadEdge','roadDistanceMetres','heightAboveSampledRoadMetres','sourceDriverPose','lookTargetSourceCoordinates'])if(key in original)assert.deepEqual(preview.views[name][key],original[key],name+' frozen '+key);
@@ -86,7 +86,7 @@ test('Desert permits only three exact numeric native-test cap replacements',()=>
   {file:'tests/desert-preview-assets.test.ts',before:'p.triangles<110000',after:'p.triangles<125000'},
  ];
  assert.deepEqual(receipt.permittedNativeTestDeltas,deltas);
- for(const {file,before,after}of deltas){const original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);assert.equal(readFileSync(file,'utf8'),original.replace(before,after),file+' all original camera/contact/pickup/route assertions must remain byte-identical');}
+ for(const {file,before,after}of deltas){const original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file]);assert.equal(original.split(before).length-1,1);assert.equal(restoreMenuPresentationBytes(file,readFileSync(file,'utf8')),original.replace(before,after),file+' all original camera/contact/pickup/route assertions must remain byte-identical');}
  const scene=readFileSync('src/desert-scenery.ts','utf8');assert.equal(scene.split('budget.triangles>=125000').length-1,1);assert.ok(!scene.includes('budget.triangles>=110000'));assert.equal(scene.split('budget.vertices>=200000').length-1,1);
 });
 test('Desert art-review manifest preserves every pre-edit native-like and catalog camera',()=>{

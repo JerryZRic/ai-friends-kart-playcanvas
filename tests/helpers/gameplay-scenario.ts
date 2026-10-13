@@ -4,6 +4,7 @@ import {npcDriving,npcSkill} from '../../src/npc-difficulty';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {createInstrumentedSourceFiles} from './instrumented-source-files';
+import {createV100HistoricalRuntime} from './v100-historical-runtime';
 import { gunzipSync } from 'node:zlib';
 import * as pc from 'playcanvas';
 import { CHARACTER_PROFILES, characterTuning } from '../../src/character-profiles';
@@ -130,10 +131,12 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     onStatus({ records: RUNTIME_MODELS.map(r => ({ id: r.id, stage: 'ready', receivedBytes: 100, totalBytes: 100 })), receivedBytes: 600, totalBytes: 600, completed: 6, total: 6, loaded: 6, failed: 0 });
     return { drivers, failures };
   };
-  const sourceFiles=createInstrumentedSourceFiles(undefined,scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);
+  const historical=scenario.mountainAudit&&!process.env.MOUNTAIN_NATIVE_GOLDEN_CAPTURE?createV100HistoricalRuntime():undefined;
+  const runtimeRead=(path:string)=>historical?historical.read(path):readFileSync(path,'utf8');
+  const sourceFiles=createInstrumentedSourceFiles(historical?.directory,historical?undefined:scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);
   let mounted:{dispose():void;ready:Promise<void>}|undefined;
   try {
-  let source = readFileSync('src/game.ts', 'utf8');
+  let source = runtimeRead('src/game.ts');
   source = source.replace('loadCourseAssets, loadBundledDrivers,', 'loadCourseAssets as unusedCourseLoader, loadBundledDrivers as unusedDriverLoader,');
   source = source.replace('declare global', 'const loadCourseAssets = (globalThis as any).__loadCourseAssets, loadBundledDrivers = (globalThis as any).__loadBundledDrivers;\ndeclare global');
   source = source.replace(/app = new pc\.Application\(canvas,.*?\);/, 'app = (globalThis as any).__testApp;');
@@ -160,8 +163,8 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   }
   // Mountain observation hook reads the exact already-created production geometry.
   // Baseline source lacks it; baseline controls are captured without a second scene.
-  if(scenario.mountainAudit&&!scenario.courseFailure&&readFileSync('src/land-course.ts','utf8').includes("./mountain-scenery")){
-    const original=readFileSync(new URL('../../src/land-course.ts',import.meta.url),'utf8'),marker="    return {id:mapId,profile:resolveMap(mapId),forkHint:''";
+  if(scenario.mountainAudit&&!scenario.courseFailure&&runtimeRead('src/land-course.ts').includes("./mountain-scenery")){
+    const original=runtimeRead('src/land-course.ts'),marker="    return {id:mapId,profile:resolveMap(mapId),forkHint:''";
     assert.equal(original.split(marker).length,2);
     const mountainCourseCopy=sourceFiles.write('land-course-mountain-test',original.replace(marker,'    (globalThis as any).__mountainSourceGeometry=geometry;\n'+marker));
     source=source.replace("from './land-course';",`from '${mountainCourseCopy.specifier}';`);
@@ -171,14 +174,14 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
     if(scenario.mountain||forkMap){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
-      const entry=await import(copy.url.href);mounted=entry.mountLandRace();await mounted.ready;
+      const entry=await import(copy.url.href);if(!historical)mounted=entry.mountLandRace();await mounted.ready;
       assert.match(element('raceLoadingStatus').textContent,/赛道载入或初始化失败.*Injected mountain chunk failure/);
       assert.equal(element('raceLoadingRetry').disabled,false);assert.equal(element('raceLoadingRetry').hidden,false);
       assert.equal(element('raceLoadingExit').hidden,false);assert.match(element('raceLoadingExit').href,new RegExp('map='+(forkMap||'mountain')));
       if(scenario.garden||scenario.airfield){let reloads=0;const before=g.location.href;g.location.reload=()=>reloads++;element('raceLoadingRetry').click();assert.equal(reloads,1,'native retry invokes shared page reload');assert.equal(g.location.href,before,'retry preserves selected map and driver query');}
       assert.equal(element('loadingMapName').textContent,forkMap==='airfield'?'铜翼空港':forkMap==='garden'?'蔓穹花园':forkMap==='caldera'?'玄岩环冕':forkMap==='snow'?'霜环雪站':forkMap==='desert'?'星砂古驿':forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':forkMap==='forest'?'杉影星台环线':'云岭盘山道');return;
     }
-    const entry=await import(copy.url.href);mounted=entry.mountLandRace();
+    const entry=await import(copy.url.href);if(!historical)mounted=entry.mountLandRace();
     // Mount is synchronous; the selected course module remains dynamically loaded.
     for(let i=0;i<1600&&!g.window.neonKart;i++)await new Promise(resolve=>setTimeout(resolve,5));
     assert.ok(g.window.neonKart,'race bootstrap exposes its own debug handle');
@@ -996,12 +999,22 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     });
     await t.test('all six characters can collect dynamic pool items as NPCs and use the earned reward', () => {
       for(const [index,profile] of CHARACTER_PROFILES.entries()){
-        randomSeed=0x51a7c0de;
         qa.set({state:'menu'});assert.equal(game.selectDriver(CHARACTER_PROFILES[(index+1)%CHARACTER_PROFILES.length].id),true);
         race();const pool=qa.boxes().filter(box=>box.dynamic);let box:any;
+        // Isolate collection eligibility from a full AI race: an idle human and
+        // five inventory-holding opponents need not receive a dynamic offer.
+        // Keep real track sampling, authored density, seeded director and spawn
+        // safety intact; only park unrelated traffic and cool authored rewards.
+        const bots=parkBots(),bot=bots.find(candidate=>candidate.id===profile.id);assert.ok(bot);
+        qa.set({pos:800,lane:-5,speed:0,held:null});
+        for(const authored of qa.boxes().filter(candidate=>!candidate.dynamic)){authored.cool=Infinity;authored.mesh.enabled=false;}
+        Object.assign(bot,{total:0,lateral:0,targetLane:0,speed:12});
         for(let frame=0;frame<60*100&&!box;frame++){qa.update(1/60);box=pool.find(candidate=>candidate.mesh.enabled);}
         assert.ok(box,`${profile.id} scenario receives a real runtime spawn`);
-        const bots=parkBots(),bot=bots.find(candidate=>candidate.id===profile.id);assert.ok(bot);
+        assert.equal(bot.held,null,'candidate stays eligible until a dynamic pickup is offered');
+        assert.ok(game.getState().elapsed<=4+1/60+1e-8,'an eligible isolated racer receives the first scheduled offer');
+        assertBoxVisible(box);
+        parkBots();
         for(const [slot,other] of bots.entries())Object.assign(other,{total:box.d+150+slot*30,lateral:5,targetLane:5});
         Object.assign(bot,{total:box.d,lateral:box.lateral,targetLane:box.lateral,decisionIn:1000});
         qa.set({pos:box.d+12,lane:box.lateral,speed:0,held:null,shield:0,slow:0});
@@ -1412,6 +1425,6 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     delete g.__mountainSourceGeometry;
     delete g.__testApp; delete g.__loadCourseAssets; delete g.__loadBundledDrivers;
     g.gc?.();
-    } finally {sourceFiles.cleanup();}
+    } finally {try{sourceFiles.cleanup();}finally{historical?.dispose();}}
   }
 }
