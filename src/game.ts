@@ -297,7 +297,6 @@ function boot(): Promise<boolean> {
   });
   return loadingPromise;
 }
-function tone(freq=500,d=.1){shell.tone(freq,d)}
 function toast(s){shell.toast(s)}
 function standings(){return coastStandings([{id:selectedDriverId,total:pos,finishedAt:Number.isFinite(playerFinishedAt)?playerFinishedAt:null},...bots.map(({id,total,finishedAt})=>({id,total,finishedAt}))]);}
 function rank(){return standings().findIndex(r=>r.id===selectedDriverId)+1;}
@@ -355,7 +354,7 @@ if(initialCameraReturn){
   loadingUi.update({progress:1,status:'模型已就绪 · 镜头返回起点',busy:true,canRetry:false,canContinue:false});
   return;
 }
-frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
+frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true}
 const canImport=()=>!disposed&&ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModularDriverContract,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(!disposed&&ready){setupRacers();updateDriverUI();}}});
 defer(()=>localDrivers.dispose());
@@ -414,8 +413,8 @@ function useCombatItem(actor: Combatant, racers: Combatant[]) {
   }
   if (!bot) {
     toast(result.item === 'boost' ? '涡轮加速！' : result.item === 'shield' ? '能量护盾 · 6 秒' : result.target ? result.blocked ? '前车护盾挡住了脉冲' : '脉冲命中前车！' : '前方无目标 · 转化为加速');
-    tone(result.item === 'pulse' && result.target ? 160 : 850, .3);
-  } else if (result.target?.id === selectedDriverId) { toast(result.blocked ? '护盾挡住了对手的脉冲！' : '被对手脉冲击中 · 短暂减速'); tone(result.blocked ? 650 : 160, .2); }
+    shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');
+  } else if (result.target?.id === selectedDriverId) { toast(result.blocked ? '护盾挡住了对手的脉冲！' : '被对手脉冲击中 · 短暂减速'); shell.cue(result.blocked?'block':'hit'); }
 }
 function useItem() {
   if (state !== 'running' || !held) return;
@@ -446,14 +445,14 @@ function updateHUD(){
     rank:finishRank||rank(),lap:routes?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos,LENGTH),
     elapsed,speed,charge,boost,shield,held,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
 }
-function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI();tone(1000,.4)}
+function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI()}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
   sparks.push({ p: p.clone(), v: new pc.Vec3((Math.random() - .5) * 4, 1 + Math.random() * 2, (Math.random() - .5) * 4), t: type === 'pulse' ? .8 : .45, max: .65 });
 }
-function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(cur!==old)tone(cur>0?500:1000,.15);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
+function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
 elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,priorRoute:routes?.get(b.id),onPickup:()=>{b.pickups++;b.reaction=skill.reaction+b.phase*.025}}));for(const box of boxes)if(!box.dynamic)advancePickup(box,dt,raceRng);const tuning=racerTuning(selectedDriverId,pos,speed),input=driveInput(keys),steer=input.steer;let now=actorSample(selectedDriverId,pos),next=routes?routes.sampleAhead(selectedDriverId,7):sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
-let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(COAST_DRIFT.maxCharge,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(coastDriftReady(charge)&&!input.brake&&!input.reverse){boost=Math.max(boost,coastDriftBoost(charge));toast('漂移加速！');tone(850,.2)}charge=0}drifting=wantDrift;
+let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(COAST_DRIFT.maxCharge,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(coastDriftReady(charge)&&!input.brake&&!input.reverse){boost=Math.max(boost,coastDriftBoost(charge));toast('漂移加速！');shell.cue('release')}charge=0}drifting=wantDrift;
 const playerTrack=actorTrack(selectedDriverId,pos);speed=stepLandSpeed(playerTrack,pos,speed,input,dt,tuning,boost,Math.max(hit,slow),Math.abs(lane)>actorLimit(selectedDriverId,pos,.9));lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering*landSteeringGrip(playerTrack,pos)+curvature*speed*dt*.43+landBankDrift(playerTrack,pos,speed,dt);const rail=landRailScrape(speed,lane,actorLimit(selectedDriverId,pos),dt);if(routes){speed=rail.speed;if(rail.contact){emit(actorSample(selectedDriverId,pos,rail.lateral).p);}}lane=rail.lateral;steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
 let previous=pos;let routeFinish:number|undefined;
 if(routes){
@@ -464,7 +463,7 @@ if(routes){
   const progress=routes.advance(selectedDriverId,speed*dt,dt,lane,selected);pos=progress.total;routeFinish=progress.finishFraction;if(!progress.accepted)speed=0;
 }else pos+=speed*dt;
 lane=clamp(lane,-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);if(course.track&&playerProgress){const progress=advanceLapProgress(course.track,playerProgress,pos,dt,lane);playerProgress=progress.state;if(!progress.accepted&&progress.reason!=='off-road'){pos=progress.state.distance;speed=0;}}
-playerFinishedAt=(routes?(routeFinish===undefined?null:elapsed-dt+dt*routeFinish):(!playerProgress||playerProgress.laps>=3?crossingTime(previous,pos,LENGTH*3,elapsed,dt):null))??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');tone(750,.2)}
+playerFinishedAt=(routes?(routeFinish===undefined?null:elapsed-dt+dt*routeFinish):(!playerProgress||playerProgress.laps>=3?crossingTime(previous,pos,LENGTH*3,elapsed,dt):null))??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');shell.cue('lap')}
 const human=playerCombatant(), racers: Combatant[]=[human,...bots.filter(b=>!botFinished(b))];
 for(const b of bots){tickEffects(b,dt);tickBrain(b,dt);}
 for(const b of bots){
@@ -508,10 +507,10 @@ for(const b of bots){
 for(const b of bots){
   if(botFinished(b))continue;
   if(b.bump<=0&&b.shield<=0&&racers.some(r=>r.id!==b.id&&(routes?routes.collides(b,r):Math.abs(nearbyGap(b.total,r.total,LENGTH))<2.9&&Math.abs(b.lateral-r.lateral)<1.85))){b.slow=Math.max(b.slow,.55);b.bump=.8;}
-  if((routes?routes.collides(playerCombatant(),b):Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85)&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);tone(110,.1)}
+  if((routes?routes.collides(playerCombatant(),b):Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85)&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);shell.cue('collision')}
 }
 human.total=pos;human.lateral=lane;
-collectPickups([{actor:human,previous,previousLane,onPickup:()=>{tone(1200,.12);toast('获得道具 · E 使用')}},...botPrevious.filter(r=>!botFinished(r.actor))],boxes,LENGTH,raceRng,routes?.contact);
+collectPickups([{actor:human,previous,previousLane,onPickup:()=>{shell.cue('pickup');toast('获得道具 · E 使用')}},...botPrevious.filter(r=>!botFinished(r.actor))],boxes,LENGTH,raceRng,routes?.contact);
 applyPlayerCombatant(human);
 if(Number.isFinite(playerFinishedAt)){
   const fraction=dt>0?clamp((playerFinishedAt-(elapsed-dt))/dt,0,1):1;

@@ -4,7 +4,7 @@ import { createRaceMinimap, createRaceShell, createRaceSound, formatRaceResults,
 import { itemImage } from '../src/item-models';
 
 /** Shared DOM presentation contract. Simulation/GPU work belongs to map tests. */
-function fixture(map: 'coast' | 'waterpark' = 'coast') {
+function fixture(map: 'coast' | 'waterpark' = 'coast', audioFactory:()=>AudioContext|null=()=>null) {
   let activeElement: FakeElement | null = null;
   class FakeElement {
     textContent = ''; innerHTML = ''; style: Record<string, string> = {}; dataset: Record<string, string> = {};
@@ -25,7 +25,7 @@ function fixture(map: 'coast' | 'waterpark' = 'coast') {
   const document = { getElementById: $, body: $('body') } as unknown as Document;
   const canvas = $('game') as unknown as HTMLCanvasElement;
   const storage = new Map<string, string>();
-  const shell = createRaceShell(document, canvas, { map, driver: 'grok', storage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, value); } }, audioFactory: () => null });
+  const shell = createRaceShell(document, canvas, { map, driver: 'grok', storage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, value); } }, audioFactory });
   return { shell, $, storage, get activeElement() { return activeElement; } };
 }
 
@@ -144,14 +144,14 @@ test('minimap fits different track bounds, caches the path and paints player las
 });
 
 test('sound is shared across maps using an independent fail-safe preference', () => {
-  const values = new Map<string, string>();
+  const values = new Map<string, string>([[RACE_SOUND_KEY,'off']]);
   const storage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); } };
   let creations = 0, tones = 0, closes = 0;
   const audioFactory = () => {
     creations++;
     return { currentTime: 0, resume: () => Promise.resolve(), close: () => { closes++; return Promise.resolve(); }, destination: {},
       createOscillator: () => ({ frequency: { value: 0 }, connect() {}, disconnect() {}, start() { tones++; }, stop() {} }),
-      createGain: () => ({ connect() {}, disconnect() {}, gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} } }),
+      createGain: () => ({ connect() {}, disconnect() {}, gain: { setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} } }),
     } as unknown as AudioContext;
   };
   const sound = createRaceSound({ storage, audioFactory });
@@ -161,7 +161,7 @@ test('sound is shared across maps using an independent fail-safe preference', ()
   sound.toggle(); sound.tone(); assert.equal(tones, 2); assert.equal(values.get(RACE_SOUND_KEY), 'off');
   sound.dispose(); sound.dispose(); sound.toggle(); sound.tone(); assert.equal(closes, 1); assert.equal(tones, 2);
   const blocked = createRaceSound({ storage: { getItem() { throw Error('denied'); }, setItem() { throw Error('denied'); } }, audioFactory() { throw Error('unsupported'); } });
-  assert.equal(blocked.muted, true); assert.doesNotThrow(() => { blocked.toggle(); blocked.tone(); blocked.dispose(); });
+  assert.equal(blocked.muted, false); assert.doesNotThrow(() => { blocked.toggle(); blocked.tone(); blocked.dispose(); });
 });
 
 
@@ -208,5 +208,18 @@ test('race exits preserve explicit difficulty seed and independent car while swi
    assert.equal(state.map,map);assert.equal(state.driver,'glm');assert.equal(state.difficulty,'hard');assert.equal(state.seed,42);assert.equal(state.kart,kart);
    assert.equal(state.screen,key==='main'?'main':key==='changeMap'?'maps':'characters');
   }
+ }
+});
+
+
+test('both maps sound each countdown edge once and do not replay on pause/resume',()=>{
+ for(const map of ['coast','waterpark'] as const){
+  let starts=0;const audio={state:'running',currentTime:0,destination:{},resume:async()=>{},close:async()=>{},createOscillator:()=>({frequency:{value:0},connect(){},disconnect(){},start(){starts++;},stop(){}}),createGain:()=>({connect(){},disconnect(){},gain:{setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}}})};
+  const {shell}=fixture(map,()=>audio as unknown as AudioContext);
+  shell.start(3);shell.renderCountdown(2.9);assert.equal(starts,1);
+  audio.currentTime=1;shell.renderCountdown(2);shell.renderCountdown(1.9);assert.equal(starts,2);
+  shell.setPaused(true,1.9);audio.currentTime=10;shell.renderCountdown(1);assert.equal(starts,2);shell.setPaused(false,1.9);assert.equal(starts,2);
+  audio.currentTime=11;shell.renderCountdown(1);assert.equal(starts,3);
+  audio.currentTime=12;shell.renderCountdown(0);shell.renderCountdown(0);assert.equal(starts,5,'GO uses two bright notes exactly once');shell.dispose();
  }
 });

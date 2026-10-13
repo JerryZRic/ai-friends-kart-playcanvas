@@ -1,3 +1,4 @@
+import {createRaceSound,type RaceSoundOptions,type RaceCue} from './race-sound';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP,type BackgroundMusic} from './music-ui';
 import {touchHint} from './mobile-controls';
 import {characterDisplayName,characterEmblem} from './character-identity.js';
@@ -162,61 +163,7 @@ export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceM
   };
 }
 
-export const RACE_SOUND_KEY = 'ai-friends-kart.sound.v1';
-type SoundStorage = Pick<Storage, 'getItem' | 'setItem'>;
-export interface RaceSoundOptions {
-  storage?: SoundStorage;
-  audioFactory?: () => AudioContext | null;
-}
-
-function soundStorage(): SoundStorage | undefined {
-  try { return globalThis.localStorage; } catch { return undefined; }
-}
-
-function browserAudio(): AudioContext | null {
-  const browser = typeof window === 'undefined' ? undefined : window;
-  const Audio = browser?.AudioContext || (browser as Window & { webkitAudioContext?: typeof AudioContext })?.webkitAudioContext;
-  return Audio ? new Audio() : null;
-}
-
-/** Independent of quality/refraction settings; denied storage/audio never blocks a race. */
-export function createRaceSound(options: RaceSoundOptions = {}) {
-  const storage = options.storage ?? soundStorage(), factory = options.audioFactory ?? browserAudio;
-  let muted = true, audio: AudioContext | null = null, disposed = false;
-  try { muted = storage?.getItem(RACE_SOUND_KEY) !== 'on'; } catch { /* default muted */ }
-  return {
-    get muted() { return muted; },
-    toggle() {
-      if (disposed) return muted;
-      muted = !muted;
-      try { storage?.setItem(RACE_SOUND_KEY, muted ? 'off' : 'on'); } catch { /* session preference still applies */ }
-      return muted;
-    },
-    tone(frequency = 500, duration = .1) {
-      if (muted || disposed) return;
-      try {
-        audio = audio || factory();
-        if (!audio) return;
-        void audio.resume()?.catch(() => {});
-        const oscillator = audio.createOscillator(), gain = audio.createGain();
-        const stopAt = audio.currentTime + clamp(positive(duration, .1), .01, 2);
-        oscillator.connect(gain); gain.connect(audio.destination);
-        oscillator.frequency.value = clamp(positive(frequency, 500), 20, 20000);
-        gain.gain.setValueAtTime(.035, audio.currentTime);
-        gain.gain.exponentialRampToValueAtTime(.001, stopAt);
-        oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
-        oscillator.start(); oscillator.stop(stopAt);
-      } catch { /* Audio is optional, including on unsupported browsers. */ }
-    },
-    dispose() {
-      if (disposed) return;
-      disposed = true;
-      try { void audio?.close()?.catch(() => {}); } catch { /* already closed */ }
-      audio = null;
-    },
-  };
-}
-
+export {RACE_SOUND_KEY,createRaceSound} from './race-sound';
 const ITEMS = Object.freeze({
   boost: { name: 'ϟ 涡轮加速', alt: '涡轮加速模型', action: '使用涡轮加速' },
   shield: { name: '◉ 能量护盾', alt: '能量护盾模型', action: '使用能量护盾' },
@@ -240,6 +187,12 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     if (element) element.classList[value ? 'add' : 'remove']('hidden');
   };
   const sound = createRaceSound(options);
+  const unlockSound=()=>sound.unlock(), stopSound=()=>sound.stop();
+  document.addEventListener?.('pointerdown',unlockSound,true);document.addEventListener?.('keydown',unlockSound,true);
+  document.defaultView?.addEventListener('blur',stopSound);
+  const visibilitySound=()=>{if(document.hidden)sound.stop();};document.addEventListener?.('visibilitychange',visibilitySound);
+  let disposeSoundSettings=()=>{};
+
   const music = options.music === undefined ? getDocumentMusic(document, options.map) : options.music;
   music?.preloadRace();
   const musicNavigation = bindMusicNavigation(document, music);
@@ -247,20 +200,27 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
   let disposeMusicSettings = () => {};
   if (pauseActions && document.createElement) {
     const musicPanel = document.createElement('div');
-    musicPanel.innerHTML = MUSIC_SETTINGS_MARKUP;
+    musicPanel.innerHTML = MUSIC_SETTINGS_MARKUP + `<div style="display:grid;gap:8px;margin-top:14px"><label><input data-sfx-enabled type="checkbox"> 游戏音效</label><label style="display:flex;gap:8px">音效音量 <input data-sfx-volume type="range" min="0" max="100" aria-label="游戏音效音量"><output data-sfx-level></output></label><small>原创合成音效 · 与背景音乐独立</small></div>`;
+    const enabled=musicPanel.querySelector<HTMLInputElement>('[data-sfx-enabled]')!,volume=musicPanel.querySelector<HTMLInputElement>('[data-sfx-volume]')!,level=musicPanel.querySelector<HTMLOutputElement>('[data-sfx-level]')!;
+    const sync=()=>{enabled.checked=!sound.muted;volume.value=String(Math.round(sound.volume*100));level.value=volume.value+'%';};sync();
+    const change=()=>{sound.setMuted(!enabled.checked);updateSound();},input=()=>{sound.unlock();sound.setVolume(Number(volume.value)/100);sync();};
+    enabled.addEventListener('change',change);volume.addEventListener('input',input);
+    disposeSoundSettings=()=>{enabled.removeEventListener('change',change);volume.removeEventListener('input',input);};
+
     pauseActions.insertBefore(musicPanel, elements.resumeRace);
     pauseActions.style.maxHeight = 'calc(100% - 32px)'; pauseActions.style.overflowY = 'auto';
     disposeMusicSettings = bindMusicSettings(musicPanel, music);
   }
   const minimap = options.track ? createRaceMinimap(document.getElementById('map') as HTMLCanvasElement | null, options.track) : null;
   let mapId = options.map, phase: 'menu' | 'running' | 'paused' | 'finished' = 'menu';
-  let raceMusicStarted = false;
+  let raceMusicStarted = false, lastCount=-1, driftStage=0;
   let toastRemaining = 0, shownItem: ItemKind | null | undefined, disposed = false;
   const portraits = new Map<ItemKind, string>();
   const focus = (element: HTMLElement | null) => element?.focus?.({ preventScroll: true });
 
   function updateSound() {
     text('sound', sound.muted ? '♪' : '♫');
+    const enabled=document.querySelector?.<HTMLInputElement>('[data-sfx-enabled]');if(enabled)enabled.checked=!sound.muted;
     elements.sound?.setAttribute('aria-label', sound.muted ? '开启音效' : '关闭音效');
     elements.sound?.setAttribute('aria-pressed', String(!sound.muted));
   }
@@ -278,6 +238,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
 
   function renderCountdown(seconds: number, waitingForFinish = false) {
     if (disposed || phase !== 'running') return;
+    const countValue=Math.max(0,Math.ceil(seconds)); if(countValue!==lastCount){lastCount=countValue;sound.play(countValue>0?'count':'go');}
     if (seconds <= 0 && !raceMusicStarted) { raceMusicStarted = true; music?.setPhase('race', true); }
     text('count', seconds > 0 ? String(Math.ceil(seconds)) : waitingForFinish ? '冲线！等待其他选手…' : '');
     if (elements.count) elements.count.classList[waitingForFinish && seconds <= 0 ? 'add' : 'remove']('waiting');
@@ -314,6 +275,8 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       const speed = Number.isFinite(snapshot.speed) ? snapshot.speed : 0;
       text('speed', `${speed < -.1 ? 'R ' : ''}${Math.round(Math.abs(speed) * 3.6)}`);
       const charge = nonnegative(snapshot.charge ?? 0);
+      const nextDrift=charge>=(snapshot.chargeMax??1.4)?3:charge>.6?2:charge>0?1:0;
+      if(phase==='running'&&nextDrift>driftStage)sound.play(nextDrift===3?'full':nextDrift===2?'ready':'drift');driftStage=nextDrift;
       if (elements.charge) elements.charge.style.width = `${clamp(charge / positive(snapshot.chargeMax ?? 1.4,1.4) * 100, 0, 100)}%`;
       if (elements.charge) elements.charge.dataset.state = snapshot.chargeState || 'idle';
       text('chargeLabel', snapshot.chargeLabel ?? ((snapshot.boost ?? 0) > 0 ? '涡轮加速中！' : (snapshot.shield ?? 0) > 0 ? '能量护盾保护中' : charge >= .6 ? '松开 Shift，释放漂移加速' : Math.abs(speed) < .1 ? '按住 W 油门起步' : snapshot.slideLabel || '左 Shift + A / D 手刹漂移'));
@@ -344,7 +307,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     start(countdown = 3) {
       if (disposed) return;
-      raceMusicStarted = false; music?.silence();
+      sound.stop();sound.unlock();lastCount=-1;driftStage=0;raceMusicStarted = false; music?.silence();
       phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.remove('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = false;
@@ -355,6 +318,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       if (disposed || (paused ? phase !== 'running' : phase !== 'paused')) return;
       music?.setPhase(raceMusicStarted ? (paused ? 'paused' : 'race') : 'silent');
       if (paused) {
+        sound.stop();driftStage=0;
         phase = 'paused'; document.body.classList.add('race-paused'); text('count', '已暂停');
         elements.count?.classList.remove('waiting'); elements.count?.classList.add('paused');
         hidden('pausePanel', false); text('pause', '▶');
@@ -368,7 +332,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     renderCountdown,
     showMenu() {
       if (disposed) return;
-      music?.silence();
+      sound.stop();music?.silence();
       phase = 'menu'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
@@ -377,7 +341,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     finish(snapshot: RaceFinishSnapshot) {
       if (disposed) return;
-      music?.setPhase('menu');
+      sound.stop();sound.play('finish');music?.setPhase('menu');
       phase = 'finished'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.add('finished');
       hidden('overlay', false); hidden('menu', false); hidden('results', false); text('count', '');
@@ -404,9 +368,10 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       if (!toastRemaining && elements.toast) elements.toast.style.opacity = '0';
     },
     drawMinimap(racers: readonly RaceMapRacer[]) { if (!disposed) minimap?.draw(racers); },
+    cue(cue:RaceCue,distance=0){sound.play(cue,distance);},
     tone(frequency = 500, duration = .1) { sound.tone(frequency, duration); },
     toggleSound() { if (!disposed) { sound.toggle(); updateSound(); sound.tone(); } return sound.muted; },
     get muted() { return sound.muted; },
-    dispose() { if (disposed) return; disposed = true; disposeMusicSettings(); musicNavigation.dispose(); sound.dispose(); clearToast(); },
+    dispose() { if (disposed) return; disposed = true; disposeMusicSettings();disposeSoundSettings();document.removeEventListener?.('pointerdown',unlockSound,true);document.removeEventListener?.('keydown',unlockSound,true);document.removeEventListener?.('visibilitychange',visibilitySound);document.defaultView?.removeEventListener('blur',stopSound); musicNavigation.dispose(); sound.dispose(); clearToast(); },
   };
 }

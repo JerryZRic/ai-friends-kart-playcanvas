@@ -35,6 +35,7 @@ export function useWaterItem(race:WaterRace,racer:WaterRacer){
  if(racer.finishTime!==null||race.countdown>0||race.finished)return;
  const result=activateItem(racer,race.racers.filter(r=>r.finishTime===null),WATER_RACE_LENGTH);
  if(result){racer.uses++;racer.cooldown=RULES.cooldown;racer.pulseFlash=result.item==='pulse'?.8:0;race.announcements.push(`${racer.id} 使用${result.item==='boost'?'加速':result.item==='shield'?'护盾':'脉冲'}${result.target?` → ${result.target.id}${result.blocked?'（护盾抵挡）':''}`:''}`);if(race.announcements.length>4)race.announcements.shift();}
+ return result;
 }
 const dynamicDirectors=new WeakMap<WaterRace,ReturnType<typeof createDynamicPickupDirector>>();
 export function resetWaterPickups(race:WaterRace,boxes:readonly RacingPickup[]){

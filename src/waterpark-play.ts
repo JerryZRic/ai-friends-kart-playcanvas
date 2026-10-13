@@ -230,7 +230,7 @@ reportStartupError=error=>{
     } else if(mode==='paused')start();
   }
   function restart(){if(contextLost||mode==='menu'||mode==='transition'||busy)return;performancePanel.interrupt('restart');mode='finished';start();}
-  function useItem(){if(mode==='riding')useWaterItem(race,race.racers[0]);}
+  function useItem(){if(mode==='riding'){const result=useWaterItem(race,race.racers[0]);if(result){shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');}}}
   function navigate(screen=''){clearWaterDynamicPickups(race);clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;shell.navigate(screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main);}
   function switchCamera(){if(contextLost||mode==='menu'||mode==='transition')return;view=(view+1)%2;controls.orbit.recenter(true);snapCamera=true;shell.toast(view?'高位追逐视角':'低位追逐视角');}
   $('start').addEventListener('click',start,{signal:events.signal});
@@ -271,17 +271,20 @@ reportStartupError=error=>{
     shell.tick(step);
     const pressed=(key:string)=>!!controls.keys[key];
     if(mode==='riding') {
-      const oldCount=Math.ceil(race.countdown);
+      const human=race.racers[0],before={pickups:human.pickups,bump:human.bump,slow:human.slow,shield:human.shield,slide:human.motion.slideBoost,bank:human.motion.bankHit};
       steer=(pressed('KeyA')||pressed('ArrowLeft')?1:0)-(pressed('KeyD')||pressed('ArrowRight')?1:0); visualSteer=steer;
       advanceWaterRace(race,{throttle:pressed('KeyW')||pressed('ArrowUp'),brake:pressed('Space'),reverse:pressed('KeyS')||pressed('ArrowDown'),drift:pressed('ShiftLeft')||pressed('ShiftRight'),steer},step,pickups);
       clock=race.elapsed;
-      if(Math.ceil(race.countdown)!==oldCount)shell.tone(race.countdown>0?500:1000,.15);
+      if(human.pickups>before.pickups)shell.cue('pickup');
+      if(human.slow>before.slow)shell.cue('hit');
+      if(human.bump>before.bump||human.motion.bankHit&&!before.bank)shell.cue('collision');
+      if(human.motion.slideBoost>before.slide)shell.cue('release');
       if(race.finished) {
         performancePanel.interrupt('finished');mode='finished';clearKeys();controls.mouseLook.release();
         const rank=waterStandings(race).findIndex(r=>r.id===selected)+1;
         $('message').textContent=`三圈 · 第 ${rank} 名`;
         shell.finish({rank,elapsed:race.racers[0].finishTime??race.elapsed,selectedDriverId:selected,racers:waterStandings(race).map(r=>({id:r.id,finishedAt:r.finishTime,total:r.total})),trackLength:WATER_RACE_LENGTH});
-        updatePicker();shell.tone(1000,.4);
+        updatePicker();
 
       }
     } else if((mode==='menu'||mode==='transition')&&foreground())clock+=Math.min(step,.05);
