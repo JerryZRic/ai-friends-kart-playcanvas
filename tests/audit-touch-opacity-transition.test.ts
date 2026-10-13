@@ -1,3 +1,4 @@
+import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {inputModeHash, inputModePathsWithin, inputModeSourcePaths, restoreInputModeBytes} from './helpers/input-mode-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -92,10 +93,11 @@ test('touch overlay rejects wrong incoming identities, aliases, modified evidenc
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => touchOpacityHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(touchOpacityHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = review.protectedProduction[mobilePath];
   assert.equal(touchOpacityHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Exact protected mobile source advances only through the new input-mode layer');
   assert.throws(() => touchOpacityHash(mobilePath, 'unchanged'));
+  assert.throws(() => touchOpacityHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
   assert.throws(() => assertTouchOpacityReviewBytes(read(TOUCH_OPACITY_REVIEW_PATH) + ' '));
   for (const mutate of [
     (copy: typeof review) => { copy.baselineTree = '0'.repeat(40); },
@@ -148,7 +150,7 @@ test('legal visibility delta is exactly menu shortcut restoration and dedicated-
 test('all historical proofs, geometry and stable publication evidence remain byte-exact', () => {
   assert.ok(Object.keys(review.protectedEvidence).length > 100);
   for (const path of ['tests/helpers/loading-guide-transition.json', 'tests/helpers/mobile-controls-transition.json', 'tests/helpers/menu-presentation-transition.json', 'tests/helpers/stable-pages-repin-transition.json', 'tests/helpers/mobile-controls-protected-evidence.json', 'docs/stable-pages-manifest.json']) assert.ok(Object.hasOwn(review.protectedEvidence, path), path);
-  for (const [path, hash] of Object.entries(review.protectedEvidence)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged historical evidence');
+  for (const [path, hash] of Object.entries(review.protectedEvidence)) assert.equal(sha(readFileSync(path)), stablePagesV050RepinHash(path, hash), path + ' unchanged historical evidence');
   for (const [path, row] of Object.entries(loadingGuideReview().changes)) {
     assert.equal(sha(restoreTouchOpacityBytes(path, read(path))), row.currentSha256, path + ' original loading endpoint');
     assert.equal(sha(restoreLoadingGuideBytes(path, read(path))), row.previousSha256, path + ' complete pre-loading history');

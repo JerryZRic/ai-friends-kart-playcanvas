@@ -1,3 +1,4 @@
+import {stablePagesV050RepinHash, restoreStablePagesV050RepinBytes} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {mobileControlsHash, restoreMobileControlsBytes} from './helpers/mobile-controls-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -25,7 +26,7 @@ test('stable repin identifies the exact successful main artifact and all 216 pub
   assert.equal(STABLE_PAGES_REPIN_BASELINE_COMMIT, '58a3452177acd1e1a2d84e019f014c778f834d89');
   assert.equal(STABLE_PAGES_REPIN_PUBLIC_BASELINE_COMMIT, '6844110cb77bb5b71041786f1802217766a8f759');
   assert.equal(STABLE_PAGES_REPIN_BASELINE_TREE, 'eac91a077f6a27e21f9d3a48039c302a16b4ed2a');
-  const bytes = read(stablePath), manifest = validateManifest(JSON.parse(bytes));
+  const raw = read(stablePath), bytes = restoreStablePagesV050RepinBytes(stablePath, raw), manifest = validateManifest(JSON.parse(bytes));
   assert.equal(sha(bytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');
   assert.equal(Buffer.byteLength(bytes), 37147);
   const {files, ...metadata} = manifest;
@@ -37,7 +38,7 @@ test('stable repin identifies the exact successful main artifact and all 216 pub
   assert.deepEqual(files.find(row => row.path === 'source.zip'), {
     path: 'source.zip', bytes: 29339231, sha256: '63a7166aff8da917915c34830e4b7db165a25b6312b5c3da2246b4ad0c2c2d78',
   });
-  const previous = JSON.parse(restoreStablePagesRepinBytes(stablePath, bytes));
+  const previous = JSON.parse(restoreStablePagesRepinBytes(stablePath, raw));
   const {files: oldFiles, ...oldMetadata} = previous;
   assert.deepEqual(oldMetadata, review.previousPublication);
   assert.equal(oldFiles.length, 138);
@@ -153,6 +154,6 @@ test('both camera stability snapshots capture every repin proof dependency and t
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of stablePagesRepinAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
     for (const path of menuPresentationAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
-    assert.equal(hashes[stablePath], review.changes[stablePath].currentSha256);
+    assert.equal(hashes[stablePath], stablePagesV050RepinHash(stablePath, review.changes[stablePath].currentSha256));
   }
 });

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "repository": "JerryZRic/ai-friends-kart-playcanvas",
-  "stableCommit": "6844110cb77bb5b71041786f1802217766a8f759",
-  "workflowRunId": 38236353768,
-  "artifactId": 11742248971,
-  "artifactSha256": "067e402c9999bcb80d0b9c30d92d9ce217982e06baab03596893a5c32d6c3f18",
+  "stableCommit": "16dd2d0540e300de6e85aa816e73ed94d4e796c0",
+  "workflowRunId": 38415797273,
+  "artifactId": 11828367988,
+  "artifactSha256": "2676a53f4e55e5398f08469c0305d65613b8918bef38bed674a951a5c3619fca",
   "baseUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/",
   "files": [
     {
@@ -148,14 +148,14 @@
       "sha256": "7260febf927bd4fce5143b12f8e294111bc1686ed38e83d37107d788e473d491"
     },
     {
-      "path": "assets/coast-BaeZQB4A.js",
+      "path": "assets/coast-BOQC0oRN.js",
       "bytes": 62897,
-      "sha256": "90ecf7b3de2f5160a24f55b6d6c22b2b52146565a37054335f694829d48cc3d6"
+      "sha256": "253c7088dd9425d15bb6e840c034b771809646d570e9c33ba477453425188dfa"
     },
     {
-      "path": "assets/coast-BaeZQB4A.js.map",
+      "path": "assets/coast-BOQC0oRN.js.map",
       "bytes": 212531,
-      "sha256": "f702b991c70d75a27af0533737e1cb6725133a04235849f144eee6d30683cfab"
+      "sha256": "1d3952e72e7bf818946cc9539fe7db5e3dc75aa7a458370711cffecf0f9a2616"
     },
     {
       "path": "assets/desert-D0YIt7HZ.js",
@@ -378,19 +378,19 @@
       "sha256": "cc8bee2e43edc6fa9ae9705098aabd981b1644f96bc48415c6eaac3c37c7887b"
     },
     {
-      "path": "assets/main-C86917cj.js",
-      "bytes": 22049,
-      "sha256": "ee868b6aca20d98862048e25329f12f423a9a97e661018847ca76b8710ac02da"
+      "path": "assets/main-D-tnfOaI.css",
+      "bytes": 32658,
+      "sha256": "e2daad3e635513c4e137c97967ba960bccb5fdd98a0899694eb55fcb52c6fa4a"
     },
     {
-      "path": "assets/main-C86917cj.js.map",
-      "bytes": 41807,
-      "sha256": "2ba6aee6013a099234e183d496b41c2c45b2d66af85f230f76bc5a1f0fe78603"
+      "path": "assets/main-H2VumPTo.js",
+      "bytes": 24067,
+      "sha256": "823ed64e467887e866eb4d70af95ce74bd7ae041ad465e74f5906f766cf5b2ac"
     },
     {
-      "path": "assets/main-Cg2GkH-M.css",
-      "bytes": 26341,
-      "sha256": "755ff25f68f2ccdc4572e768587aa23fa878cb7f200ab9adb74847e9486d8a46"
+      "path": "assets/main-H2VumPTo.js.map",
+      "bytes": 45710,
+      "sha256": "91a42eb984f413aed2ee2b10f96947bb1806381d1d5efc8528adcb57389b7a27"
     },
     {
       "path": "assets/menu-backdrop-CMWIsRX3.js",
@@ -403,14 +403,14 @@
       "sha256": "c4bd04665e77ca69002fa9163d2a42d932aba046bcf07252ef721176edff8635"
     },
     {
-      "path": "assets/menu-state-DlR_sXeD.js",
-      "bytes": 1481,
-      "sha256": "8b5793a3138016e0204c0f95754d6669f3037eaffe0178fe2380e1203a5bc8d5"
+      "path": "assets/menu-state-I5wUYOdP.js",
+      "bytes": 2489,
+      "sha256": "4429b7e9bb0e6658fecb2c40b9c1c6e541cb9af0d28ea6cff04485450d36a6f7"
     },
     {
-      "path": "assets/menu-state-DlR_sXeD.js.map",
-      "bytes": 4983,
-      "sha256": "53f6cf50d7a9743c25a26efd1e9b983fcfc266cff1365f91fde3d5ad3e89efb3"
+      "path": "assets/menu-state-I5wUYOdP.js.map",
+      "bytes": 9097,
+      "sha256": "29f6d2aad6010c3cb646a83845a0a2f9282c4825266b9c0f1fe81f1a04621f77"
     },
     {
       "path": "assets/modulepreload-polyfill-P2Xu9kJm.js",
@@ -613,29 +613,29 @@
       "sha256": "c0bcdad408304cc6ea3115da36e0798aa12d68f1f5b930777f5e98e75f3965a2"
     },
     {
-      "path": "assets/waterpark-DDmbepeD.js",
+      "path": "assets/waterpark-CHU0E8jh.js",
       "bytes": 35729,
-      "sha256": "47b662d981a81fc5ca9b70f04f70b6a8809ba72375678c72d40bb42a2d08ea9d"
+      "sha256": "dc660ffa7a162fc5e399e573fec5fd6ec6d357b19fc821d76db5af5fea7caa85"
     },
     {
-      "path": "assets/waterpark-DDmbepeD.js.map",
+      "path": "assets/waterpark-CHU0E8jh.js.map",
       "bytes": 121538,
-      "sha256": "20ac22a2a123fd357cff0009b7fa388c0f55f119ea68cde4234f720109af6045"
+      "sha256": "e2e79071e232a43f762241fb8ceb01305f6121b400777686b6e4c0670fe94af1"
     },
     {
-      "path": "assets/waterpark-performance-ui-BPR-BLye.css",
-      "bytes": 21397,
-      "sha256": "f9df957b2151687a4791d7882821eb04a765f123b443aa50266eaf93da4ecc16"
+      "path": "assets/waterpark-performance-ui-D9pA9QnD.css",
+      "bytes": 29087,
+      "sha256": "fdd5183868112734192c05b79ab2a74fe1fa78851972bd25b9e1ea3b56ffb937"
     },
     {
-      "path": "assets/waterpark-performance-ui-DxDLnyPa.js",
-      "bytes": 40968,
-      "sha256": "2ac76c30a85a16180a7f9dc733b86e01227db3e5d13d6f477cd1d0cdbaa9d122"
+      "path": "assets/waterpark-performance-ui-DFp1qFPa.js",
+      "bytes": 50597,
+      "sha256": "4f605eab862b927c4adf94cf7c813215d0166ee1d2ade89e5d61064474de0dd5"
     },
     {
-      "path": "assets/waterpark-performance-ui-DxDLnyPa.js.map",
-      "bytes": 127878,
-      "sha256": "7def532974ac4a9a1e0edbc0f54d16b3a4d39168fa19d588161bf33dff69b43a"
+      "path": "assets/waterpark-performance-ui-DFp1qFPa.js.map",
+      "bytes": 151878,
+      "sha256": "9ddda92bc92d6834f0443fab13d1ee2ca30571757fb553c51bd046f5322e50c0"
     },
     {
       "path": "assets/waterpark-scene-QikkbrZX.js",
@@ -699,8 +699,8 @@
     },
     {
       "path": "coast.html",
-      "bytes": 6368,
-      "sha256": "04fd9cdbe7e12bbcd6c160aaa9c3b08339ed0c409b249b3179e5213dc486291b"
+      "bytes": 6353,
+      "sha256": "576bc37df1fe58332118cd0720396e3936fa70fc821a27a4228ebf7beb832c2b"
     },
     {
       "path": "garage-workshop.svg",
@@ -714,8 +714,13 @@
     },
     {
       "path": "index.html",
-      "bytes": 7687,
-      "sha256": "880fb6a3b6f3703d5551ebf19bc4eee56d7dd805beb0c112b709e89b476be3f3"
+      "bytes": 7707,
+      "sha256": "a9e98a95eeea1d41cc15888817d9ecd69327dc86e7b415fe96d724cb90a5ff6d"
+    },
+    {
+      "path": "map-previews/airfield-overview.webp",
+      "bytes": 46452,
+      "sha256": "f546d21e2624dfdc53a6e111b5385833e85ff6abadd9d8f15c4826fdedb60729"
     },
     {
       "path": "map-previews/airfield.webp",
@@ -781,6 +786,16 @@
       "path": "map-previews/workshop-overview.webp",
       "bytes": 103994,
       "sha256": "8685e61e211c5311222cc309b7eb206b6e0f3eb727614e3ff05646b4134f62f4"
+    },
+    {
+      "path": "menu-art/title-logo.png",
+      "bytes": 1241942,
+      "sha256": "15def3a47f7974c73c2433a0c496c417c1772ec9627558f976b3030b4807f4bf"
+    },
+    {
+      "path": "menu-art/whale-maid.png",
+      "bytes": 1902226,
+      "sha256": "d950597be876ea928f4b577ec07bbdf20185673d3d7989a78311c33c09150c35"
     },
     {
       "path": "models/food-karts/bundles/000-white-rice.zip",
@@ -1074,8 +1089,8 @@
     },
     {
       "path": "source.zip",
-      "bytes": 29339231,
-      "sha256": "63a7166aff8da917915c34830e4b7db165a25b6312b5c3da2246b4ad0c2c2d78"
+      "bytes": 32559340,
+      "sha256": "322279609e56006279fd1c60e1f3cf518cc985dc2b3ca8358ee90bda49a7e4de"
     },
     {
       "path": "waterpark-study.html",
@@ -1084,8 +1099,8 @@
     },
     {
       "path": "waterpark.html",
-      "bytes": 4366,
-      "sha256": "0e73afc81bb121ea70a2e6639a1cfbccc8812d91121e4f76eb44b47bafb9d71a"
+      "bytes": 4351,
+      "sha256": "acef3e16c25557d70c7effc946cc678f7eadae9e13de1a87da2d557b746c95b6"
     }
   ]
 }

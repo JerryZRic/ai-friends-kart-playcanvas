@@ -1,3 +1,4 @@
+import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {staticMenuArtHash, staticMenuArtPathsWithin, restoreStaticMenuArtBytes} from './helpers/static-menu-art-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -82,9 +83,11 @@ test('input-mode overlay rejects incorrect incoming identities, aliases and any 
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => inputModeHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(inputModeHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) {
+  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
     assert.equal(inputModeHash(path, 'unchanged'), 'unchanged'); assert.equal(restoreInputModeBytes(path, 'unchanged'), 'unchanged');
   }
+  assert.throws(() => inputModeHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
+  assert.throws(() => restoreInputModeBytes('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires exact current bytes');
   assert.throws(() => assertInputModeReviewBytes(read(INPUT_MODE_REVIEW_PATH) + ' '));
   for (const mutate of [
     (copy: typeof review) => { copy.baselineTree = '0'.repeat(40); },
@@ -132,7 +135,7 @@ test('all frozen geometry, legal, publication and historical proof bytes remain 
   for (const path of ['tests/helpers/touch-opacity-transition.json', 'tests/helpers/loading-guide-transition.json', 'tests/helpers/mobile-controls-transition.json', 'tests/helpers/menu-presentation-transition.json', 'tests/helpers/stable-pages-repin-transition.json', 'tests/helpers/mobile-controls-protected-evidence.json', 'docs/stable-pages-manifest.json']) assert.ok(Object.hasOwn(review.protectedEvidence, path), path);
   for (const path of ['LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs']) assert.ok(Object.hasOwn(review.protectedLegal, path), path);
   for (const protectedFiles of [review.protectedLegal, review.protectedEvidence]) {
-    for (const [path, hash] of Object.entries(protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' immutable evidence');
+    for (const [path, hash] of Object.entries(protectedFiles)) assert.equal(sha(readFileSync(path)), stablePagesV050RepinHash(path, hash), path + ' immutable evidence');
   }
 });
 

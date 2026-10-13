@@ -1,3 +1,4 @@
+import {STABLE_PAGES_V050_REPIN_REVIEW_PATH, stablePagesV050RepinHash, stablePagesV050RepinPathsWithin, restoreStablePagesV050RepinBytes} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
@@ -65,7 +66,7 @@ test('static-title inventories reject unreviewed and duplicate sources, assets a
 
 test('every static-title revision reconstructs every baseline byte and an exact forward round trip', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreStaticMenuArtBytes(path, current);
+    const raw = read(path), current = restoreStablePagesV050RepinBytes(path, raw), previous = restoreStaticMenuArtBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path); assert.equal(sha(previous), row.previousSha256, path);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -73,7 +74,7 @@ test('every static-title revision reconstructs every baseline byte and an exact 
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' complete exact forward reconstruction');
-    assert.throws(() => restoreStaticMenuArtBytes(path, current + ' '), undefined, path + ' modified current bytes rejected');
+    assert.throws(() => restoreStaticMenuArtBytes(path, raw + ' '), undefined, path + ' modified current bytes rejected');
     assert.throws(() => restoreStaticMenuArtBytes(path, previous), undefined, path + ' no historical-byte fallback');
   }
 });
@@ -90,13 +91,15 @@ test('every added module, binary art asset and regression test is pinned with no
 
 test('static-title overlay rejects wrong incoming identities, aliases and modified review permissions', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(staticMenuArtHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(staticMenuArtHash(path, row.previousSha256), stablePagesV050RepinHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => staticMenuArtHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(staticMenuArtHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/mobile-controls.ts', 'src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) {
+  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/mobile-controls.ts', 'src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
     assert.equal(staticMenuArtHash(path, 'unchanged'), 'unchanged'); assert.equal(restoreStaticMenuArtBytes(path, 'unchanged'), 'unchanged');
   }
+  assert.throws(() => staticMenuArtHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
+  assert.throws(() => restoreStaticMenuArtBytes('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires exact current bytes');
   assert.throws(() => assertStaticMenuArtReviewBytes(read(STATIC_MENU_ART_REVIEW_PATH) + ' '));
   for (const mutate of [
     (copy: typeof review) => { copy.baselineTree = '0'.repeat(40); },
@@ -145,14 +148,14 @@ test('all frozen geometry, legal and historical proof bytes and all 216 stable p
   for (const path of ['tests/helpers/input-mode-transition.json', 'tests/helpers/touch-opacity-transition.json', 'tests/helpers/loading-guide-transition.json', 'tests/helpers/mobile-controls-transition.json', 'tests/helpers/menu-presentation-transition.json', 'tests/helpers/stable-pages-repin-transition.json', 'tests/helpers/mobile-controls-protected-evidence.json', 'docs/stable-pages-manifest.json']) assert.ok(Object.hasOwn(review.protectedEvidence, path), path);
   for (const path of ['LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs']) assert.ok(Object.hasOwn(review.protectedLegal, path), path);
   for (const protectedFiles of [review.protectedLegal, review.protectedEvidence]) {
-    for (const [path, hash] of Object.entries(protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' immutable evidence');
+    for (const [path, hash] of Object.entries(protectedFiles)) assert.equal(sha(readFileSync(path)), stablePagesV050RepinHash(path, hash), path + ' immutable evidence or exact reviewed publication successor');
   }
   const historicalPaths = [...new Set([...Object.keys(review.protectedProduction), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)])];
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const historicalJson = historicalPaths.filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit new transition JSON is added');
+  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the two explicit transition JSONs are added');
   assert.deepEqual(walk('docs/scene-baselines').sort(), historicalPaths.filter(path => path.startsWith('docs/scene-baselines/')).sort(), 'Every archived source baseline remains present and immutable');
-  const stableBytes = read('docs/stable-pages-manifest.json'), manifest = JSON.parse(stableBytes);
+  const stableBytes = restoreStablePagesV050RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')), manifest = JSON.parse(stableBytes);
   assert.equal(sha(stableBytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');
   assert.equal(manifest.stableCommit, '6844110cb77bb5b71041786f1802217766a8f759');
   assert.equal(manifest.files.length, 216); assert.equal(new Set(manifest.files.map((row: {path: string}) => row.path)).size, 216);
@@ -162,7 +165,7 @@ test('all frozen geometry, legal and historical proof bytes and all 216 stable p
 
 test('all new modules, art, regression, audit and legal dependencies join both source-stability closures', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(staticMenuArtPathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));
+  assert.deepEqual(staticMenuArtPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesV050RepinPathsWithin(inventory)])]);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of staticMenuArtAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' explicit current static-title audit closure');
     for (const path of inputModeAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' retained input-mode audit closure');

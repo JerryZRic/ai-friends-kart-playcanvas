@@ -1,3 +1,4 @@
+import {stablePagesV050RepinHash, stablePagesV050RepinPathsWithin, restoreStablePagesV050RepinBytes, stablePagesV050RepinAuditDependencies} from './stable-pages-v050-repin-reviewed-revisions';
 /** Exact static-title art transition; published input, geometry and legal evidence remains immutable. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -55,13 +56,13 @@ export function assertStaticMenuArtReviewBytes(bytes: string): Review {
 export function staticMenuArtReview() { return assertStaticMenuArtReviewBytes(readFileSync(STATIC_MENU_ART_REVIEW_PATH, 'utf8')); }
 export function staticMenuArtHash(path: string, incoming: unknown) {
   const review = staticMenuArtReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return stablePagesV050RepinHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-static-title incoming identity');
-  return row.currentSha256;
+  return stablePagesV050RepinHash(path, row.currentSha256);
 }
 export function staticMenuArtPathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(staticMenuArtReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(staticMenuArtReview().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesV050RepinPathsWithin(inventory)])];
 }
 export function assertStaticMenuArtAddition(path: string, bytes: string | Buffer) {
   const review = staticMenuArtReview();
@@ -76,6 +77,7 @@ export function staticMenuArtSourcePaths(previous: string[]) {
   return [...previous, ...STATIC_MENU_ART_SOURCE_ADDITIONS];
 }
 export function restoreStaticMenuArtBytes(path: string, current: string) {
+  current = restoreStablePagesV050RepinBytes(path, current);
   const review = staticMenuArtReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -92,5 +94,5 @@ export function restoreStaticMenuArtBytes(path: string, current: string) {
 export function staticMenuArtAuditDependencies() {
   const review = staticMenuArtReview();
   return [STATIC_MENU_ART_REVIEW_PATH, 'tests/helpers/static-menu-art-reviewed-revisions.ts', 'tests/audit-static-menu-art-transition.test.ts',
-    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)];
+    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence), ...stablePagesV050RepinAuditDependencies()];
 }

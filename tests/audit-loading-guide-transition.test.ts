@@ -1,3 +1,4 @@
+import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {touchOpacityHash, restoreTouchOpacityBytes} from './helpers/touch-opacity-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +23,7 @@ test('loading guide pins exact published mobile dev tree with a presentation-onl
   assert.equal(sha(read('tests/helpers/mobile-controls-transition.json')), 'c102771cf3f33552d57697ad22394da6c1d3a05735be5446b93e620e5cf5aa34');
   const protectedEvidence = JSON.parse(read('tests/helpers/mobile-controls-protected-evidence.json')) as Record<string, string>;
   assert.ok(Object.keys(protectedEvidence).length > 100);
-  for (const [path, hash] of Object.entries(protectedEvidence)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged historical evidence');
+  for (const [path, hash] of Object.entries(protectedEvidence)) assert.equal(sha(readFileSync(path)), stablePagesV050RepinHash(path, hash), path + ' unchanged historical evidence');
 });
 
 test('every loading-guide change reconstructs exact prior bytes and the complete forward round trip', () => {
@@ -47,11 +48,12 @@ test('loading-guide overlay rejects wrong incoming pairs, aliases and modified r
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => loadingGuideHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(loadingGuideHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'docs/stable-pages-manifest.json']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = mobileControlsReview().additions[mobilePath].sha256;
   assert.equal(sha(restoreTouchOpacityBytes(mobilePath, read(mobilePath))), mobilePin, 'Exact formerly unchanged mobile source survives the input-mode inverse');
   assert.equal(loadingGuideHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Only the new exact input-mode pair advances this source');
   assert.throws(() => loadingGuideHash(mobilePath, 'unchanged'));
+  assert.throws(() => loadingGuideHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
   assert.throws(() => assertLoadingGuideReviewBytes(read(LOADING_GUIDE_REVIEW_PATH) + ' '));
   for (const mutate of [
     (copy: typeof review) => { copy.baselineTree = '0'.repeat(40); },
