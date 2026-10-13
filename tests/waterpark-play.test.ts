@@ -209,7 +209,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     for(const box of g.__waterparkControls.pickups){
       const mesh=box.mesh as pc.Entity,glass=mesh.findByName('Translucent pickup glass') as pc.Entity,material=glass.render!.meshInstances[0].material as pc.StandardMaterial;
       assert.equal(material.opacity,.16);assert.equal(material.depthWrite,false);assert.equal(material.cull,pc.CULLFACE_BACK);
-      assert.ok(mesh.getLocalScale().equals(pc.Vec3.ONE),'water boxes preserve the coast shell native scale');
+      assert.ok(mesh.getLocalScale().equals(new pc.Vec3(1.2,1.2,1.2)),'water boxes scale the complete shell and contents by the approved 1.2 factor');
       for(const model of Object.values(box.models) as pc.Entity[])assert.ok(model.getLocalScale().equals(pc.Vec3.ONE),'water item models preserve their native coast scale');
     }
     assert.equal(g.document.activeElement,canvas);step(1,.8);assert.equal(g.__waterparkControls.mode,'riding','first model-ready frame must not open the pause panel');assert.equal(element('pausePanel').classList.contains('hidden'),true);const initialCountdown=g.__waterparkRace.countdown;step(2,.8);assert.equal(g.__waterparkControls.mode,'riding','successive warm-up frames stay in countdown');assert.equal(g.__waterparkRace.elapsed,0);assert.ok(g.__waterparkRace.countdown<initialCountdown);step(180);assert.equal(element('timer').textContent,'0:00');

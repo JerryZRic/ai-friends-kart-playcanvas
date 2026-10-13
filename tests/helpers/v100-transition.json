@@ -3600,7 +3600,7 @@
     },
     "tests/waterpark-play.test.ts": {
       "previousSha256": "464eef92179359aa5bd43eb5996f5b2b1f78f98dcee26f380a3e74697ffd8f4f",
-      "currentSha256": "54978c07b23a4dcd68b66f599c8897a9b95219c8dcc55875910095e6cec296ca",
+      "currentSha256": "b2d857332c6c9b8e7d7abaf78259c5e871e7a4bec093aa5c93087d8445549046",
       "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
       "hunks": [
         {
@@ -3643,6 +3643,16 @@
           ],
           "insertedLines": [
             "        mounted!.dispose();mounted!.dispose();assert.equal(signal.aborted,true);assert.equal(destroyed,0,'an in-flight parser retains its application');\n"
+          ]
+        },
+        {
+          "beforeStart": 208,
+          "afterStart": 211,
+          "removedLines": [
+            "      assert.ok(mesh.getLocalScale().equals(pc.Vec3.ONE),'water boxes preserve the coast shell native scale');\n"
+          ],
+          "insertedLines": [
+            "      assert.ok(mesh.getLocalScale().equals(new pc.Vec3(1.2,1.2,1.2)),'water boxes scale the complete shell and contents by the approved 1.2 factor');\n"
           ]
         },
         {
