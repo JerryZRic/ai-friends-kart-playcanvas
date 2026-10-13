@@ -11,10 +11,15 @@ export function mountRaceUiLayout(doc: Document, canvas: HTMLCanvasElement) {
   const root = doc.getElementById('raceUi'), host = doc.defaultView;
   // Headless map/shell consumers can omit the browser's presentation root.
   if (!root || !host) return null;
+  // SPA scenes live under #app-scene; the reference must belong to this parent.
+  // Keep physical layers beside (not inside) the transformed race UI, so they
+  // also leave with their scene instead of leaking into the persistent body.
+  const scene = root.parentElement;
+  if (!scene) return null;
   mounts.get(doc)?.dispose();
-  doc.body.insertBefore(canvas, root);
+  scene.insertBefore(canvas, root);
   const vignette = doc.getElementById('vignette');
-  if (vignette) doc.body.insertBefore(vignette, root);
+  if (vignette) scene.insertBefore(vignette, root);
   root.classList.add('fixed-ui-root');
   const layout = mountUiLayout(root, undefined, host);
   const notice = mountUiViewportNotice(root, host);

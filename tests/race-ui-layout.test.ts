@@ -202,3 +202,20 @@ test('physical touch layout arithmetic keeps driving targets separate at represe
     }
   }
 });
+
+
+test('land and water SPA wrappers retain their own physical layers without body insertBefore errors', () => {
+  for (const sceneName of ['land', 'water']) {
+    const f = fixture();
+    const scene = f.doc.createElement('div'); scene.id = `app-scene-${sceneName}`;
+    f.doc.body.appendChild(scene); scene.appendChild(f.root as unknown as Node);
+    const mount = mountRaceUiLayout(f.doc, f.canvas as unknown as HTMLCanvasElement)!;
+    assert.ok(mount, sceneName);
+    assert.equal(f.canvas.parentElement, scene); assert.equal(f.vignette.parentElement, scene);
+    assert.equal(f.root.parentElement, scene); assert.equal(f.hud.parentElement, f.root);
+    assert.equal(f.canvas.width, 2880); assert.equal(f.canvas.height, 1800);
+    assert.equal(f.canvas.props.size, 0, 'physical canvas remains unscaled');
+    mount.dispose(); assert.equal(f.notices().length, 0);
+    scene.remove(); assert.equal(f.host.count('resize'), 0);
+  }
+});
