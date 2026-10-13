@@ -31,7 +31,16 @@ let state=parseMenuState(location.search),settings=readGameSettings();
 let disposeBackdrop:MenuBackdropController|undefined,disposeCharacter:CharacterPreviewController|undefined,renderVersion=0;
 const shell=document.getElementById('menu-ui')!;
 window.__menuBoot?.releaseLayout?.();
-const menuLayout=mountUiLayout(shell,()=>{disposeBackdrop?.resize();disposeCharacter?.resize();});
+const menuLayout=mountUiLayout(shell,layout=>{
+ const style=window.getComputedStyle?.(shell);
+ const inset=(edge:string)=>Math.max(0,parseFloat(style?.getPropertyValue('--title-safe-'+edge)??'0')||0);
+ const left=inset('left'),right=inset('right'),top=inset('top'),bottom=inset('bottom');
+ const scale=Math.min(Math.max(1,layout.viewportWidth-left-right)/1600,Math.max(1,layout.viewportHeight-top-bottom)/900);
+ shell.style.setProperty('--title-scale',String(scale));
+ shell.style.setProperty('--title-center-x',`${layout.centerX+(left-right)/2}px`);
+ shell.style.setProperty('--title-center-y',`${layout.centerY+(top-bottom)/2}px`);
+ disposeBackdrop?.resize();disposeCharacter?.resize();
+});
 const viewportNotice=mountUiViewportNotice(shell);
 let layoutDisposed=false;
 function disposeMenuLayout(){
@@ -99,7 +108,7 @@ function render(){
  if(document.body)document.body.dataset.screen=state.screen;
  document.title=`${screenLabel(state.screen)} · 大肥鱼卡丁车`;
  root.className=`screen-${state.screen}`;
- if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-composition" aria-hidden="true"><img class="title-character" src="./menu-art/whale-maid.png" alt="" draggable="false" decoding="async"><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span></button></nav></section>`;
+ if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-stage"><div class="title-composition" aria-hidden="true"><img class="title-character" src="./menu-art/whale-maid.png" alt="" draggable="false" decoding="async"><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span><span class="title-hit-area" aria-hidden="true"></span></button></nav></div></section>`;
  if(state.screen==='maps'){
   const selected=resolveMap(state.map);
   root.innerHTML=top('选择赛道','从海岸公路、云岭山道到晴空水道，下一站由你决定')+`
