@@ -65,3 +65,42 @@ body[data-screen=main]{background:#07151c;overflow:hidden}
 #menu-ui .race-options-panel .start-race{grid-column:1/-1;grid-row:4;margin:0;height:56px}
 #menu-ui .race-options-panel .fine-print{grid-column:1/-1;grid-row:5;margin:0;font-size:10px;line-height:18px}
 #menu-ui .race-options-panel input[type=number]{height:46px;cursor:text}
+
+/* Centered pit-stop panels. Keep the established 1440 × 900 frame and fit
+   scale; rearrange the existing content inside it rather than stretching it. */
+#menu-ui main.screen-settings,#menu-ui main.screen-race-settings{padding:8px 170px 20px}
+#menu-ui .screen-settings>.section-top,#menu-ui .screen-race-settings>.section-top{height:58px;margin:0 0 10px}
+#menu-ui .screen-settings>.section-heading,#menu-ui .screen-race-settings>.section-heading{text-align:center;margin:0 0 18px}
+#menu-ui .screen-settings>.section-heading h1,#menu-ui .screen-race-settings>.section-heading h1{color:#fff0c9;letter-spacing:3px}
+#menu-ui .screen-settings>.settings-panel,#menu-ui .screen-race-settings>.settings-panel{width:1100px;margin:0 auto;border:1px solid #dbedbb66;border-radius:24px;background:radial-gradient(ellipse at 0 0,#31585366,transparent 65%),linear-gradient(150deg,#1c3d43,#102c36);box-shadow:inset 0 2px 0 #f2f6d919,0 10px 0 #071d2680,0 22px 55px #061b2855}
+#menu-ui .screen-race-settings>.race-options-panel{height:500px;grid-template-columns:290px minmax(0,1fr);grid-template-rows:182px 84px 28px 68px 18px;gap:16px 28px;padding:28px}
+#menu-ui .race-options-panel .start-race{height:68px;border-radius:14px;font-size:19px}
+#menu-ui .race-build-summary h2{color:#e4efcb;font-size:19px}
+#menu-ui .race-build-summary dd{font-size:14px}
+#menu-ui .screen-settings>.system-options-panel{height:548px;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) 60px;gap:12px 28px;padding:26px 30px;scrollbar-gutter:auto}
+#menu-ui .settings-controls{min-width:0}
+#menu-ui .settings-controls .setting-row{padding:12px 0;gap:16px}
+#menu-ui .settings-controls .control-mode-setting{padding-top:0}
+#menu-ui .settings-controls p{font-size:12px;line-height:1.65;margin:7px 0 0}
+#menu-ui .settings-controls fieldset{margin:4px 0 12px}
+#menu-ui .settings-controls .quality-options{margin-top:12px;gap:10px}
+#menu-ui .quality-options label>span{min-height:86px;background:#0c253666;border-radius:12px;box-shadow:inset 0 1px 0 #ffffff0d;transition:background .16s,border-color .16s,transform .16s}
+#menu-ui .quality-options label:hover>span{background:#315353;border-color:#f3e7b8}
+#menu-ui .quality-options label:active>span{transform:translateY(2px)}
+#menu-ui .quality-options input:checked+span{background:#d5ff6015;border-color:var(--lime);box-shadow:inset 0 0 0 1px #d5ff6044}
+#menu-ui .settings-controls [data-music-settings]{width:100%}
+#menu-ui .settings-controls [data-music-volume]{height:32px}
+#menu-ui .system-options-panel .controls-guide{border:0;border-left:1px solid #d6eac12b;padding:0 0 0 26px;min-width:0}
+#menu-ui .system-options-panel .controls-guide h2{font-size:19px;color:#e4efcb;margin:0 0 14px}
+#menu-ui .system-options-panel .controls-guide h3{margin:0 0 9px}
+#menu-ui .system-options-panel .controls-guide p{font-size:12px;line-height:2;margin:10px 0}
+#menu-ui .settings-bottom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid #d6eac12b;padding-top:10px}
+#menu-ui .settings-bottom .settings-status{margin:0;font-size:12px}
+/* Navigation retains native button/link semantics and existing destinations. */
+#menu-ui .game-nav{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:54px;min-width:132px;padding:12px 20px;border:1px solid #dce7ba77;border-radius:13px;background:linear-gradient(#335250,#1a383f);box-shadow:inset 0 1px 0 #f7f1d526,0 4px 0 #071d26;color:#fff0c9;font:750 15px/1.2 system-ui;text-decoration:none;touch-action:manipulation;transition:transform .15s,background .15s,border-color .15s,box-shadow .15s}
+#menu-ui .game-nav svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#menu-ui .game-nav:hover{transform:translateY(-2px);background:#365c57;border-color:#f5ebbd}
+#menu-ui .game-nav:active{transform:translateY(3px);box-shadow:inset 0 2px 5px #071d2666,0 1px 0 #071d26}
+#menu-ui .game-nav:focus-visible{outline:3px solid var(--lime);outline-offset:5px}
+#menu-ui .section-top:has(.game-nav){height:54px}
+#menu-ui .masthead .game-nav{min-height:48px;padding:10px 18px;font-size:13px}
