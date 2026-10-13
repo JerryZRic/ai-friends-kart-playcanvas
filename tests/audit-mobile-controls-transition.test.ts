@@ -1,3 +1,4 @@
+import {inputModeSourcePaths} from './helpers/input-mode-reviewed-revisions';
 import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes} from './helpers/loading-guide-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -70,7 +71,7 @@ test('source additions and camera stability closures include the exact mobile mo
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
   assert.deepEqual(mobileControlsPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...loadingGuidePathsWithin(inventory)])]);
   const previous = Object.keys(inventory).filter(path => path.startsWith('src/'));
-  assert.deepEqual(mobileControlsSourcePaths(previous), [...previous, ...MOBILE_CONTROLS_SOURCE_ADDITIONS]);
+  assert.deepEqual(mobileControlsSourcePaths(previous), inputModeSourcePaths([...previous, ...MOBILE_CONTROLS_SOURCE_ADDITIONS]));
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of mobileControlsAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
   }

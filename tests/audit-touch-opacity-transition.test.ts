@@ -1,3 +1,4 @@
+import {inputModeHash, inputModePathsWithin, inputModeSourcePaths, restoreInputModeBytes} from './helpers/input-mode-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
@@ -54,13 +55,13 @@ test('touch presentation pins the exact published dev tree and only three CSS pr
   const walk = (dir: string): string[] => readdirSync(dir, {withFileTypes: true}).flatMap(entry => entry.isDirectory() ? walk(dir + '/' + entry.name) : [dir + '/' + entry.name]);
   const actualSource = productionSources(walk('src'));
   const protectedSource = Object.keys(review.protectedProduction).filter(path => path.startsWith('src/'));
-  assert.deepEqual(actualSource, [...protectedSource, ...TOUCH_OPACITY_PRODUCTION_PATHS].sort(), 'No unreviewed new or removed production source');
+  assert.deepEqual(actualSource, inputModeSourcePaths([...protectedSource, ...TOUCH_OPACITY_PRODUCTION_PATHS]).sort(), 'No unreviewed new or removed production source');
   assert.ok(protectedSource.length > 100);
-  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged production bytes');
+  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(restoreInputModeBytes(path, read(path))), hash, path + ' exact touch-era production bytes');
 });
 
 test('source inventory tolerates exact parallel fixture names but rejects arbitrary additional production', () => {
-  const expected = [...Object.keys(review.protectedProduction).filter(path => path.startsWith('src/')), ...TOUCH_OPACITY_PRODUCTION_PATHS].sort();
+  const expected = inputModeSourcePaths([...Object.keys(review.protectedProduction).filter(path => path.startsWith('src/')), ...TOUCH_OPACITY_PRODUCTION_PATHS]).sort();
   const suffix = '-123-12345678-abcd-4321-9abc-0123456789ab.ts';
   const fixtures = instrumentedNames.map(name => 'src/.' + name + suffix);
   assert.deepEqual(productionSources([...expected, ...fixtures]), expected);
@@ -71,7 +72,7 @@ test('source inventory tolerates exact parallel fixture names but rejects arbitr
 
 test('every touch-presentation change restores exact previous bytes and complete forward reconstruction', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), original = restoreTouchOpacityBytes(path, current);
+    const raw = read(path), current = restoreInputModeBytes(path, raw), original = restoreTouchOpacityBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path); assert.equal(sha(original), row.previousSha256, path);
     const lines = original.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -79,19 +80,22 @@ test('every touch-presentation change restores exact previous bytes and complete
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' exact forward round trip');
-    assert.throws(() => restoreTouchOpacityBytes(path, current + ' '));
+    assert.throws(() => restoreTouchOpacityBytes(path, raw + ' '));
     assert.throws(() => restoreTouchOpacityBytes(path, original), undefined, path + ' no historical fallback');
   }
-  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact regression addition');
+  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(restoreInputModeBytes(path, read(path))), row.sha256, path + ' exact regression addition');
 });
 
 test('touch overlay rejects wrong incoming identities, aliases, modified evidence and expanded scope', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(touchOpacityHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(touchOpacityHash(path, row.previousSha256), inputModeHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => touchOpacityHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(touchOpacityHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/mobile-controls.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
+  const mobilePath = 'src/mobile-controls.ts', mobilePin = review.protectedProduction[mobilePath];
+  assert.equal(touchOpacityHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Exact protected mobile source advances only through the new input-mode layer');
+  assert.throws(() => touchOpacityHash(mobilePath, 'unchanged'));
   assert.throws(() => assertTouchOpacityReviewBytes(read(TOUCH_OPACITY_REVIEW_PATH) + ' '));
   for (const mutate of [
     (copy: typeof review) => { copy.baselineTree = '0'.repeat(40); },
@@ -103,7 +107,7 @@ test('touch overlay rejects wrong incoming identities, aliases, modified evidenc
 });
 
 test('mobile changes only button paint, preserving every selector, nonvisual declaration and hit target', () => {
-  const current = read('src/mobile-controls.css'), original = restoreTouchOpacityBytes('src/mobile-controls.css', current);
+  const raw = read('src/mobile-controls.css'), current = restoreInputModeBytes('src/mobile-controls.css', raw), original = restoreTouchOpacityBytes('src/mobile-controls.css', raw);
   assert.deepEqual(cssStructure(current, true), cssStructure(original, true), 'All layout, media queries, input semantics, fonts and disabled opacity remain exact');
   const rules = (css: string) => {
     const values: Array<{selector: string; paint: string}> = [];
@@ -129,10 +133,10 @@ test('mobile changes only button paint, preserving every selector, nonvisual dec
 });
 
 test('legal visibility delta is exactly menu shortcut restoration and dedicated-track hiding', () => {
-  const menu = read('src/menu.css'), originalMenu = restoreTouchOpacityBytes('src/menu.css', menu);
+  const rawMenu = read('src/menu.css'), menu = restoreInputModeBytes('src/menu.css', rawMenu), originalMenu = restoreTouchOpacityBytes('src/menu.css', rawMenu);
   const withoutComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '').trim();
   assert.equal(withoutComments(menu), withoutComments(originalMenu.replace(',body[data-screen=main] #source-license', '')));
-  const race = read('src/race-ui.css'), originalRace = restoreTouchOpacityBytes('src/race-ui.css', race);
+  const rawRace = read('src/race-ui.css'), race = restoreInputModeBytes('src/race-ui.css', rawRace), originalRace = restoreTouchOpacityBytes('src/race-ui.css', rawRace);
   assert.equal(race.slice(0, originalRace.length), originalRace, 'Existing race styles remain byte-exact');
   assert.deepEqual(cssStructure(race.slice(originalRace.length)), [{
     type: 'rule', selector: '#raceUi ~ #source-license', nodes: [{type: 'decl', prop: 'display', value: 'none', important: false}],
@@ -158,7 +162,7 @@ test('all historical proofs, geometry and stable publication evidence remain byt
 
 test('all new audit dependencies and legal bytes join both current source-stability closures', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(touchOpacityPathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));
+  assert.deepEqual(touchOpacityPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...inputModePathsWithin(inventory)])]);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of touchOpacityAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' explicit current audit closure');
   }

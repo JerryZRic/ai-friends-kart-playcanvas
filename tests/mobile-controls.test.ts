@@ -2,13 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveControlMode, touchHint} from '../src/mobile-controls';
 
-test('touch detection uses device capabilities, with explicit hybrid overrides', () => {
-  assert.equal(resolveControlMode('auto', 5, true), 'touch');
-  assert.equal(resolveControlMode('auto', 0, true), 'desktop');
-  assert.equal(resolveControlMode('auto', 10, false), 'desktop');
-  assert.equal(resolveControlMode('auto', 10, false, true), 'touch');
-  assert.equal(resolveControlMode('desktop', 5, true, true), 'desktop');
-  assert.equal(resolveControlMode('touch', 0, false), 'touch');
+test('primary pointer detection prefers hybrid mouse and retains explicit overrides', () => {
+  const phone = {touchPoints: 5, coarse: true, fine: false, hover: false, anyCoarse: true, pointerMedia: true};
+  const hybrid = {...phone, coarse: false, fine: true, hover: true};
+  assert.equal(resolveControlMode('auto', phone), 'touch');
+  assert.equal(resolveControlMode('auto', {...phone, touchPoints: 0}), 'desktop');
+  assert.equal(resolveControlMode('auto', hybrid), 'desktop');
+  assert.equal(resolveControlMode('auto', hybrid, 'touch'), 'touch');
+  assert.equal(resolveControlMode('desktop', phone, 'touch'), 'desktop');
+  assert.equal(resolveControlMode('touch', hybrid), 'touch');
 });
 test('mobile feedback converts real bindings without changing driving mechanics', () => {
   assert.equal(touchHint('按住 W 提速，再按左 Shift + A / D 持续转向蓄力'), '按住油门 提速，再按漂移 + 左右转向 持续转向蓄力');
@@ -28,7 +30,7 @@ function mountFixture(saved = 'auto', touchPoints = 5, coarseMatches = true) {
   const nodes = new Map(['mobileTouchControls', 'mobileControlModePanel', 'mobileControlMode'].map(id => [id, new Node()]));
   const canvas = new Node(), media = Object.assign(new EventTarget(), {matches: coarseMatches});
   const storage = new Map([['kart-control-mode', saved]]);
-  const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: touchPoints}, matchMedia: () => media, localStorage: {getItem: (key: string) => storage.get(key), setItem: (key: string, value: string) => storage.set(key, value)}});
+  const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: touchPoints}, matchMedia: (query: string) => query === '(pointer: coarse)' || query === '(any-pointer: coarse)' ? media : Object.assign(new EventTarget(), {matches: false}), localStorage: {getItem: (key: string) => storage.get(key), setItem: (key: string, value: string) => storage.set(key, value)}});
   const body = new Node();
   const doc = Object.assign(new EventTarget(), {body, defaultView: win, getElementById: (id: string) => nodes.get(id)});
   const fire = (target: EventTarget, name: string, values = {}) => { const event = new Event(name); Object.assign(event, values); target.dispatchEvent(event); };
@@ -39,7 +41,7 @@ test('mount restores manual preference, reacts to media/touch and persists expli
   f.doc.addEventListener('racecontrolmodechange', () => changes++);
   const mounted = mountMobileControls(f.doc as any, f.canvas as any)!;
   assert.equal(f.body.dataset.inputMode, 'desktop'); assert.equal(f.selector.value, 'desktop');
-  f.fire(f.canvas, 'pointerdown', {pointerType: 'touch'});
+  f.fire(f.doc, 'pointerdown', {pointerType: 'touch'});
   assert.equal(f.body.dataset.inputMode, 'desktop'); assert.equal(changes, 1);
   f.selector.value = 'auto'; f.fire(f.selector, 'change');
   assert.equal(f.body.dataset.inputMode, 'touch'); assert.equal(f.storage.get('kart-control-mode'), 'auto');
@@ -49,7 +51,7 @@ test('mount restores manual preference, reacts to media/touch and persists expli
   mounted.dispose(); mounted.dispose();
   assert.equal(f.body.dataset.inputMode, undefined);
   f.selector.value = 'touch'; f.fire(f.selector, 'change');
-  f.fire(f.canvas, 'pointerdown', {pointerType: 'touch'});
+  f.fire(f.doc, 'pointerdown', {pointerType: 'touch'});
   assert.equal(f.body.dataset.inputMode, undefined); assert.ok(f.nodes.get('mobileTouchControls')!.removed);
 });
 test('automatic mode updates on capability change and non-persisted pagehide cleans listeners', () => {

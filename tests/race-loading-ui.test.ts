@@ -198,7 +198,7 @@ test('real shared mode controller drives loading guides through auto detection a
     for (const id of ['mobileTouchControls', 'mobileControlModePanel', 'mobileControlMode']) f.elements.set(id, new f.Element());
     const media = Object.assign(new EventTarget(), {matches: true});
     const storage = new Map([['kart-control-mode', saved]]);
-    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: () => media, localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});
+    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: (query: string) => query === '(pointer: coarse)' || query === '(any-pointer: coarse)' ? media : Object.assign(new EventTarget(), {matches: false}), localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});
     Object.defineProperty(f.doc, 'defaultView', {value: win});
     const canvas = new f.Element();
     const controller = mountMobileControls(f.doc, canvas as any)!;
@@ -212,7 +212,7 @@ test('real shared mode controller drives loading guides through auto detection a
     selector.value = 'auto'; selector.dispatchEvent(new Event('change'));
     media.matches = false; media.dispatchEvent(new Event('change'));
     assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);
-    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); canvas.dispatchEvent(touch);
+    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); f.doc.dispatchEvent(touch);
     assert.match(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);
     ui.dispose(); controller.dispose();
   }

@@ -1,18 +1,49 @@
-/* Only the driving surface uses physical CSS pixels. mountMobileControls moves
-   these siblings out of the proportional raceUi plane before showing them. */
-.mobile-control-mode {
-  position:fixed;z-index:75;left:max(12px,env(safe-area-inset-left));
-  top:calc(max(12px,env(safe-area-inset-top)) + 74px);
-  display:flex;align-items:center;gap:7px;pointer-events:auto;
-  padding:0 8px;border:1px solid #e6f6ee38;border-radius:8px;
-  background:#102b37cf;color:#e8f2ef;font-size:11px;
+/* Driving controls and system actions use physical CSS pixels. The controller
+   moves them out of the proportional raceUi plane before showing them. */
+/* System actions share one physical-size corner row, outside the HUD scale. */
+#raceSystemTools {
+  position:fixed;z-index:55;top:max(12px,env(safe-area-inset-top));
+  right:max(12px,env(safe-area-inset-right));left:auto;
+  display:flex;align-items:flex-start;gap:7px;pointer-events:none;
 }
+#raceSystemTools .icon,#raceSystemTools select,#raceSystemTools .mobile-control-popover,#raceSystemTools #performance{pointer-events:auto}
+#raceSystemTools .icon,#raceSystemTools #performance,#raceSystemTools #perf-toggle {
+  width:44px;height:44px;min-width:44px;min-height:44px;flex-shrink:0;
+}
+#raceSystemTools #perf-body {
+  position:fixed;top:calc(max(12px,env(safe-area-inset-top)) + 52px);right:max(12px,env(safe-area-inset-right));
+  max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  max-height:calc(100dvh - 80px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+body.menu #raceSystemTools>:not(.mobile-control-mode){display:none}
+body.race-paused #raceSystemTools{visibility:hidden;pointer-events:none}
+body.race-paused #raceSystemTools *{pointer-events:none}
+.mobile-control-mode {position:relative;pointer-events:none}
+#mobileControlModeToggle {padding:0;font:600 12px system-ui;touch-action:manipulation}
+#mobileControlModeToggle[aria-expanded='true']{border-color:var(--lime);color:var(--lime)}
+.mobile-control-popover {
+  position:absolute;right:0;top:52px;width:224px;
+  max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  max-height:calc(100dvh - 80px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;
+  padding:12px;border:1px solid #e6f6ee38;border-radius:8px;
+  background:#102d39f5;color:#e8f2ef;box-shadow:0 8px 24px #06182166;
+}
+.mobile-control-popover[hidden]{display:none}
+.mobile-control-popover label{display:block;margin-bottom:8px;font:600 13px system-ui}
+.mobile-control-popover p{margin:8px 0 0;font:11px/1.6 system-ui;color:#bfd4d6}
 #mobileControlMode {
-  min-width:106px;min-height:44px;max-width:150px;border:0;
-  background:transparent;color:inherit;font:600 12px system-ui;
+  width:100%;min-width:106px;min-height:44px;padding:6px 10px;
+  border:1px solid #e6f6ee38;border-radius:5px;
+  background:#163b4b;color:inherit;font:600 13px system-ui;
   touch-action:manipulation;cursor:pointer;
 }
 #mobileControlMode option{background:#102b37;color:white}
+#mobileControlMode:focus-visible,.pause-control-setting select:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+/* Reparenting the tools must not push the scoreboard into their old slot.
+   Compact HUDs clear the physical toolbar without resizing driving targets. */
+#raceUi .top .hud{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
+#raceUi[data-ui-compact='true'] .top{top:max(27px,calc((max(12px,env(safe-area-inset-top)) + 52px - var(--ui-top,0px)) / var(--ui-scale,1)))}
+#raceUi[data-ui-compact='true'] #map{top:max(128px,calc((max(12px,env(safe-area-inset-top)) + 52px - var(--ui-top,0px)) / var(--ui-scale,1)));pointer-events:none}
 .mobile-controls {
   --mobile-edge:20px;--mobile-bottom:30px;--mobile-primary:68px;
   position:fixed;inset:0;z-index:30;display:none;pointer-events:none;
@@ -76,9 +107,11 @@ body[data-input-mode='touch'] .look-hint{display:none}
 body[data-input-mode='touch'] .bottom{bottom:240px}
 body[data-input-mode='touch'] .bottom #item{visibility:hidden;pointer-events:none}
 body[data-input-mode='touch'] .tools #camera,
-body[data-input-mode='touch'] .tools #pause{visibility:hidden;pointer-events:none}
+body[data-input-mode='touch'] .tools #pause{display:none}
 body[data-input-mode='touch'] .ui-viewport-notice{display:none}
 @media (orientation:portrait) {
+  /* Use the empty space below the hint instead of the driving utility row. */
+  #raceUi[data-ui-compact] .top{top:calc((max(12px,env(safe-area-inset-top)) + 100px - var(--ui-top,0px)) / var(--ui-scale,1))}
   .mobile-controls{--mobile-edge:12px;--mobile-bottom:22px;--mobile-primary:60px}
   .mobile-steering{gap:10px}
   /* Stagger inward actions above steering on narrow phones, including insets. */
@@ -86,25 +119,29 @@ body[data-input-mode='touch'] .ui-viewport-notice{display:none}
   .mobile-controls .mobile-item{bottom:calc(var(--mobile-bottom) + 206px + env(safe-area-inset-bottom))}
   .mobile-controls .mobile-brake{right:calc(var(--mobile-edge) + var(--mobile-primary) + 20px + env(safe-area-inset-right));bottom:calc(var(--mobile-bottom) + 290px + env(safe-area-inset-bottom))}
   .mobile-utilities{bottom:calc(var(--mobile-bottom) + 360px + env(safe-area-inset-bottom))}
-  .mobile-rotate-hint{display:block;position:absolute;top:calc(18px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:max-content;max-width:90%;margin:0;padding:9px 12px;border-radius:7px;background:#102b3799;font:12px/1.4 system-ui;color:#eaf4ea;text-align:center}
+  .mobile-rotate-hint{display:block;position:absolute;top:calc(max(12px,env(safe-area-inset-top)) + 52px);left:50%;transform:translateX(-50%);width:max-content;max-width:90%;margin:0;padding:9px 12px;border-radius:7px;background:#102b3799;font:12px/1.4 system-ui;color:#eaf4ea;text-align:center}
 }
 @media (max-height:380px) and (orientation:landscape) {
   .mobile-controls{--mobile-bottom:12px;--mobile-edge:14px;--mobile-primary:60px}
   .mobile-utilities{bottom:calc(var(--mobile-bottom) + 160px + env(safe-area-inset-bottom))}
-  .mobile-control-mode{top:calc(max(8px,env(safe-area-inset-top)) + 57px)}
 }
 
 /* Loading mounts only the guide for the effective mode; shared HUD scale applies. */
 
 /* Keep the modal in the established race root but cancel its inherited scale.
-   Targets and text are therefore physical pixels, even on a narrow phone. */
-body[data-input-mode='touch'] .pause-actions {
+   Targets stay physical-size in every input mode, including a phone forced to keyboard. */
+#pausePanel .pause-actions {
   transform:scale(calc(1 / var(--ui-scale, 1)));transform-origin:center;
   width:min(300px,calc(100vw - 32px));min-width:0;flex-shrink:0;
   max-height:calc(100dvh - 24px);overflow:auto;padding:16px;gap:8px;
   border:1px solid #d9efdf66;box-shadow:0 12px 80px #06182199;
 }
-body[data-input-mode='touch'] .pause-actions h2{font-size:18px;line-height:24px;margin:0 0 4px}
-body[data-input-mode='touch'] .pause-actions button{min-height:48px;flex-shrink:0;font-size:14px;padding:10px 12px}
-body[data-input-mode='touch'].race-paused .mobile-control-mode{visibility:hidden}
+#pausePanel .pause-actions h2{font-size:18px;line-height:24px;margin:0 0 4px}
+#pausePanel .pause-actions button{min-height:48px;flex-shrink:0;font-size:14px;padding:10px 12px}
 .mobile-controls button:disabled{opacity:.45;pointer-events:none}
+
+/* The same preference is reachable without dismissing the pause dialog. */
+.pause-control-setting{display:flex;flex-direction:column;gap:7px;flex-shrink:0;text-align:left}
+.pause-control-setting label{font:600 13px system-ui}
+.pause-control-setting select{width:100%;min-height:44px;padding:7px 10px;border:1px solid #b8dce955;border-radius:7px;background:#163b4b;color:#fff;font:600 14px system-ui;touch-action:manipulation}
+.pause-control-setting p{margin:0 0 4px;color:#bfd4d6;font:11px/1.6 system-ui}

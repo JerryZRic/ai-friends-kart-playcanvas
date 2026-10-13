@@ -1,3 +1,4 @@
+import {inputModeSourcePaths} from './input-mode-reviewed-revisions';
 import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes, loadingGuideAuditDependencies} from './loading-guide-reviewed-revisions';
 /** Exact additive mobile-input transition. Historical scene and publication evidence is never regenerated. */
 import assert from 'node:assert/strict';
@@ -56,7 +57,7 @@ export function mobileControlsSourcePaths(previous: string[]) {
     assert.ok(!previous.includes(path), path + ' explicit new production input');
     assert.equal(mobileControlsSha(readFileSync(path)), loadingGuideHash(path, row.sha256), path + ' exact mobile-only addition');
   }
-  return [...previous, ...additions.map(([path]) => path)];
+  return inputModeSourcePaths([...previous, ...additions.map(([path]) => path)]);
 }
 export function restoreMobileControlsBytes(path: string, current: string) {
   current = restoreLoadingGuideBytes(path, current);

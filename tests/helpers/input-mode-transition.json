@@ -1,0 +1,1155 @@
+{
+  "schema": "input-mode-transition-v1",
+  "baselineCommit": "befa8dda74887b4f04ecf33fe30091cd613545c1",
+  "baselineTree": "f3a3bd9865ee129a29e6df818d85c953a8725e25",
+  "changes": {
+    "src/menu.css": {
+      "previousSha256": "236c2851fe4105aaaad5c8b1b122a1dbc645357cfaa00d3004e1db904c0fa48c",
+      "currentSha256": "48cf797d0821e756ce9cf39c73fb2591f9b853850fc33c0e2cbbeb9b5cbc3187",
+      "scope": "Style the main-menu input preference selector without changing legal visibility",
+      "hunks": [
+        {
+          "beforeStart": 102,
+          "afterStart": 102,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "/* Control preference is a native, labelled setting with an ample hit target. */\n",
+            ".control-mode-setting{border-top:0;padding-top:0}\n",
+            ".control-mode-setting select{min-width:150px;min-height:44px;padding:9px 12px;flex-shrink:0;border:1px solid #ffffff40;border-radius:7px;background:#102d39;color:#eff5ed;font:600 13px system-ui;cursor:pointer;touch-action:manipulation}\n",
+            ".control-mode-setting select:focus-visible{outline:3px solid var(--lime);outline-offset:5px}\n"
+          ]
+        }
+      ]
+    },
+    "src/menu.ts": {
+      "previousSha256": "bea1da072bbe01cdc2ac64ecfff53bb42dfa1eae2c1d75fa7c5fe47f63fa2818",
+      "currentSha256": "317cad32146a498d6dbc7334d2aa728353ed8d5bae43e5b8cd2b560b806868e1",
+      "scope": "Expose the same persisted input preference in main-menu settings",
+      "hunks": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [],
+          "insertedLines": [
+            "import {CONTROL_MODE_OPTIONS,CONTROL_PREFERENCE_EVENT,bindControlPreferenceSelect,setControlPreference} from './control-mode';\n"
+          ]
+        },
+        {
+          "beforeStart": 14,
+          "afterStart": 15,
+          "removedLines": [],
+          "insertedLines": [
+            "let disposeControlPreference:(()=>void)|undefined;\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 37,
+          "removedLines": [],
+          "insertedLines": [
+            " disposeControlPreference?.();disposeControlPreference=undefined;\n"
+          ]
+        },
+        {
+          "beforeStart": 76,
+          "afterStart": 79,
+          "removedLines": [
+            "function screenLabel(screen:MenuScreen){return ({main:'主菜单',maps:'地图选择',characters:'角色选择',vehicles:'坐骑选择','race-settings':'比赛设置',settings:'画面设置',exit:'休息页面'})[screen];}\n"
+          ],
+          "insertedLines": [
+            "function screenLabel(screen:MenuScreen){return ({main:'主菜单',maps:'地图选择',characters:'角色选择',vehicles:'坐骑选择','race-settings':'比赛设置',settings:'游戏设置',exit:'休息页面'})[screen];}\n"
+          ]
+        },
+        {
+          "beforeStart": 78,
+          "afterStart": 81,
+          "removedLines": [
+            "function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){return `<div class=\"section-top\"><button class=\"back text-button\" ${vehicle?'id=\"back-vehicle\"':`data-screen=\"${back}\"`}>← 返回${vehicle?(resolveMap(state.map).vehicle==='kart'?'卡丁车 / 改装车库':'坐骑选择'):screenLabel(back)}</button><button class=\"text-button\" data-screen=\"settings\">画面设置 ↗</button></div><div class=\"section-heading\"><p class=\"eyebrow\">FREE PLAY / 自由模式</p><h1>${title}</h1><p>${sub}</p></div>`;}\n"
+          ],
+          "insertedLines": [
+            "function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){return `<div class=\"section-top\"><button class=\"back text-button\" ${vehicle?'id=\"back-vehicle\"':`data-screen=\"${back}\"`}>← 返回${vehicle?(resolveMap(state.map).vehicle==='kart'?'卡丁车 / 改装车库':'坐骑选择'):screenLabel(back)}</button><button class=\"text-button\" data-screen=\"settings\">游戏设置 ↗</button></div><div class=\"section-heading\"><p class=\"eyebrow\">FREE PLAY / 自由模式</p><h1>${title}</h1><p>${sub}</p></div>`;}\n"
+          ]
+        },
+        {
+          "beforeStart": 80,
+          "afterStart": 83,
+          "removedLines": [],
+          "insertedLines": [
+            " disposeControlPreference?.();disposeControlPreference=undefined;\n"
+          ]
+        },
+        {
+          "beforeStart": 140,
+          "afterStart": 144,
+          "removedLines": [
+            " if(state.screen==='settings')root.innerHTML=`<div class=\"section-top\"><button class=\"text-button\" data-screen=\"${state.returnTo}\">← 返回${screenLabel(state.returnTo)}</button></div><div class=\"section-heading\"><p class=\"eyebrow\">MAKE IT YOURS</p><h1>游戏设置</h1><p>应用于接下来进入的赛道，自动保存在此浏览器</p></div><section class=\"settings-panel\" tabindex=\"0\" aria-label=\"画面设置与操作说明\"><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class=\"quality-options\">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type=\"radio\" name=\"quality\" value=\"${q}\" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class=\"setting-row\"><div><label for=\"refraction\">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type=\"checkbox\" id=\"refraction\" ${settings.refraction?'checked':''}></div><div class=\"setting-row muted-row\"><div><strong>背景音乐</strong><p>暂未加入背景音乐，后续版本再见</p></div><span class=\"badge\">待加入</span></div><section class=\"controls-guide\" aria-label=\"操作说明\"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class=\"settings-status\" id=\"settings-status\" role=\"status\" aria-live=\"polite\">设置已载入</p><button class=\"text-button\" id=\"reset-settings\">恢复默认设置</button></section>`;\n"
+          ],
+          "insertedLines": [
+            " if(state.screen==='settings')root.innerHTML=`<div class=\"section-top\"><button class=\"text-button\" data-screen=\"${state.returnTo}\">← 返回${screenLabel(state.returnTo)}</button></div><div class=\"section-heading\"><p class=\"eyebrow\">MAKE IT YOURS</p><h1>游戏设置</h1><p>设置自动保存在此浏览器；比赛中也可在暂停菜单更改操控方式</p></div><section class=\"settings-panel\" tabindex=\"0\" aria-label=\"画面设置与操作说明\"><div class=\"setting-row control-mode-setting\"><div><label for=\"menuControlMode\">操控方式</label><p id=\"menuControlModeHint\">自动根据设备与实际操作识别，也可手动选择；比赛中可在暂停菜单更改</p></div><select id=\"menuControlMode\" aria-describedby=\"menuControlModeHint\">${CONTROL_MODE_OPTIONS}</select></div><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class=\"quality-options\">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type=\"radio\" name=\"quality\" value=\"${q}\" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class=\"setting-row\"><div><label for=\"refraction\">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type=\"checkbox\" id=\"refraction\" ${settings.refraction?'checked':''}></div><div class=\"setting-row muted-row\"><div><strong>背景音乐</strong><p>暂未加入背景音乐，后续版本再见</p></div><span class=\"badge\">待加入</span></div><section class=\"controls-guide\" aria-label=\"操作说明\"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class=\"settings-status\" id=\"settings-status\" role=\"status\" aria-live=\"polite\">设置已载入</p><button class=\"text-button\" id=\"reset-settings\">恢复默认设置</button></section>`;\n"
+          ]
+        },
+        {
+          "beforeStart": 158,
+          "afterStart": 162,
+          "removedLines": [],
+          "insertedLines": [
+            " const controlSelector=root.querySelector<HTMLSelectElement>('#menuControlMode');\n",
+            " if(controlSelector){\n",
+            "  const disposeSelector=bindControlPreferenceSelect(document,controlSelector);\n",
+            "  const preferenceChanged=(event:Event)=>{\n",
+            "   const node=document.getElementById('settings-status'),saved=(event as CustomEvent<{saved:boolean}>).detail?.saved;\n",
+            "   if(node)node.textContent=saved===false?'操控方式本次已切换；此浏览器无法保存，下次打开可能恢复默认':'操控方式已保存，也可在比赛暂停菜单更改';\n",
+            "  };\n",
+            "  document.addEventListener?.(CONTROL_PREFERENCE_EVENT,preferenceChanged);\n",
+            "  disposeControlPreference=()=>{disposeSelector();document.removeEventListener?.(CONTROL_PREFERENCE_EVENT,preferenceChanged);};\n",
+            " }\n"
+          ]
+        },
+        {
+          "beforeStart": 198,
+          "afterStart": 212,
+          "removedLines": [
+            " root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const saved=saveGameSettings(settings);render();status(saved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});\n"
+          ],
+          "insertedLines": [
+            " root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});\n"
+          ]
+        }
+      ]
+    },
+    "src/mobile-controls.css": {
+      "previousSha256": "8b12e11fc1efbf1b8f85b5a52c01a26278b677c631bcb35bdf9840e2c754e5ee",
+      "currentSha256": "34cc4db583449344ab0d1bd82fdf16f83dac4b811d1b72fde846e8c29e9e900d",
+      "scope": "Separate control settings from the touch driving deck and style the top-right selector while retaining low-occlusion button paint",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [
+            "/* Only the driving surface uses physical CSS pixels. mountMobileControls moves\n",
+            "   these siblings out of the proportional raceUi plane before showing them. */\n",
+            ".mobile-control-mode {\n",
+            "  position:fixed;z-index:75;left:max(12px,env(safe-area-inset-left));\n",
+            "  top:calc(max(12px,env(safe-area-inset-top)) + 74px);\n",
+            "  display:flex;align-items:center;gap:7px;pointer-events:auto;\n",
+            "  padding:0 8px;border:1px solid #e6f6ee38;border-radius:8px;\n",
+            "  background:#102b37cf;color:#e8f2ef;font-size:11px;\n"
+          ],
+          "insertedLines": [
+            "/* Driving controls and system actions use physical CSS pixels. The controller\n",
+            "   moves them out of the proportional raceUi plane before showing them. */\n",
+            "/* System actions share one physical-size corner row, outside the HUD scale. */\n",
+            "#raceSystemTools {\n",
+            "  position:fixed;z-index:55;top:max(12px,env(safe-area-inset-top));\n",
+            "  right:max(12px,env(safe-area-inset-right));left:auto;\n",
+            "  display:flex;align-items:flex-start;gap:7px;pointer-events:none;\n"
+          ]
+        },
+        {
+          "beforeStart": 9,
+          "afterStart": 8,
+          "removedLines": [],
+          "insertedLines": [
+            "#raceSystemTools .icon,#raceSystemTools select,#raceSystemTools .mobile-control-popover,#raceSystemTools #performance{pointer-events:auto}\n",
+            "#raceSystemTools .icon,#raceSystemTools #performance,#raceSystemTools #perf-toggle {\n",
+            "  width:44px;height:44px;min-width:44px;min-height:44px;flex-shrink:0;\n",
+            "}\n",
+            "#raceSystemTools #perf-body {\n",
+            "  position:fixed;top:calc(max(12px,env(safe-area-inset-top)) + 52px);right:max(12px,env(safe-area-inset-right));\n",
+            "  max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));\n",
+            "  max-height:calc(100dvh - 80px - env(safe-area-inset-top) - env(safe-area-inset-bottom));\n",
+            "}\n",
+            "body.menu #raceSystemTools>:not(.mobile-control-mode){display:none}\n",
+            "body.race-paused #raceSystemTools{visibility:hidden;pointer-events:none}\n",
+            "body.race-paused #raceSystemTools *{pointer-events:none}\n",
+            ".mobile-control-mode {position:relative;pointer-events:none}\n",
+            "#mobileControlModeToggle {padding:0;font:600 12px system-ui;touch-action:manipulation}\n",
+            "#mobileControlModeToggle[aria-expanded='true']{border-color:var(--lime);color:var(--lime)}\n",
+            ".mobile-control-popover {\n",
+            "  position:absolute;right:0;top:52px;width:224px;\n",
+            "  max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));\n",
+            "  max-height:calc(100dvh - 80px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;\n",
+            "  padding:12px;border:1px solid #e6f6ee38;border-radius:8px;\n",
+            "  background:#102d39f5;color:#e8f2ef;box-shadow:0 8px 24px #06182166;\n",
+            "}\n",
+            ".mobile-control-popover[hidden]{display:none}\n",
+            ".mobile-control-popover label{display:block;margin-bottom:8px;font:600 13px system-ui}\n",
+            ".mobile-control-popover p{margin:8px 0 0;font:11px/1.6 system-ui;color:#bfd4d6}\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 34,
+          "removedLines": [
+            "  min-width:106px;min-height:44px;max-width:150px;border:0;\n",
+            "  background:transparent;color:inherit;font:600 12px system-ui;\n"
+          ],
+          "insertedLines": [
+            "  width:100%;min-width:106px;min-height:44px;padding:6px 10px;\n",
+            "  border:1px solid #e6f6ee38;border-radius:5px;\n",
+            "  background:#163b4b;color:inherit;font:600 13px system-ui;\n"
+          ]
+        },
+        {
+          "beforeStart": 15,
+          "afterStart": 40,
+          "removedLines": [],
+          "insertedLines": [
+            "#mobileControlMode:focus-visible,.pause-control-setting select:focus-visible{outline:3px solid var(--lime);outline-offset:3px}\n",
+            "/* Reparenting the tools must not push the scoreboard into their old slot.\n",
+            "   Compact HUDs clear the physical toolbar without resizing driving targets. */\n",
+            "#raceUi .top .hud{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}\n",
+            "#raceUi[data-ui-compact='true'] .top{top:max(27px,calc((max(12px,env(safe-area-inset-top)) + 52px - var(--ui-top,0px)) / var(--ui-scale,1)))}\n",
+            "#raceUi[data-ui-compact='true'] #map{top:max(128px,calc((max(12px,env(safe-area-inset-top)) + 52px - var(--ui-top,0px)) / var(--ui-scale,1)));pointer-events:none}\n"
+          ]
+        },
+        {
+          "beforeStart": 78,
+          "afterStart": 109,
+          "removedLines": [
+            "body[data-input-mode='touch'] .tools #pause{visibility:hidden;pointer-events:none}\n"
+          ],
+          "insertedLines": [
+            "body[data-input-mode='touch'] .tools #pause{display:none}\n"
+          ]
+        },
+        {
+          "beforeStart": 81,
+          "afterStart": 112,
+          "removedLines": [],
+          "insertedLines": [
+            "  /* Use the empty space below the hint instead of the driving utility row. */\n",
+            "  #raceUi[data-ui-compact] .top{top:calc((max(12px,env(safe-area-inset-top)) + 100px - var(--ui-top,0px)) / var(--ui-scale,1))}\n"
+          ]
+        },
+        {
+          "beforeStart": 88,
+          "afterStart": 121,
+          "removedLines": [
+            "  .mobile-rotate-hint{display:block;position:absolute;top:calc(18px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:max-content;max-width:90%;margin:0;padding:9px 12px;border-radius:7px;background:#102b3799;font:12px/1.4 system-ui;color:#eaf4ea;text-align:center}\n"
+          ],
+          "insertedLines": [
+            "  .mobile-rotate-hint{display:block;position:absolute;top:calc(max(12px,env(safe-area-inset-top)) + 52px);left:50%;transform:translateX(-50%);width:max-content;max-width:90%;margin:0;padding:9px 12px;border-radius:7px;background:#102b3799;font:12px/1.4 system-ui;color:#eaf4ea;text-align:center}\n"
+          ]
+        },
+        {
+          "beforeStart": 93,
+          "afterStart": 126,
+          "removedLines": [
+            "  .mobile-control-mode{top:calc(max(8px,env(safe-area-inset-top)) + 57px)}\n"
+          ],
+          "insertedLines": []
+        },
+        {
+          "beforeStart": 99,
+          "afterStart": 131,
+          "removedLines": [
+            "   Targets and text are therefore physical pixels, even on a narrow phone. */\n",
+            "body[data-input-mode='touch'] .pause-actions {\n"
+          ],
+          "insertedLines": [
+            "   Targets stay physical-size in every input mode, including a phone forced to keyboard. */\n",
+            "#pausePanel .pause-actions {\n"
+          ]
+        },
+        {
+          "beforeStart": 106,
+          "afterStart": 138,
+          "removedLines": [
+            "body[data-input-mode='touch'] .pause-actions h2{font-size:18px;line-height:24px;margin:0 0 4px}\n",
+            "body[data-input-mode='touch'] .pause-actions button{min-height:48px;flex-shrink:0;font-size:14px;padding:10px 12px}\n",
+            "body[data-input-mode='touch'].race-paused .mobile-control-mode{visibility:hidden}\n"
+          ],
+          "insertedLines": [
+            "#pausePanel .pause-actions h2{font-size:18px;line-height:24px;margin:0 0 4px}\n",
+            "#pausePanel .pause-actions button{min-height:48px;flex-shrink:0;font-size:14px;padding:10px 12px}\n"
+          ]
+        },
+        {
+          "beforeStart": 110,
+          "afterStart": 141,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "/* The same preference is reachable without dismissing the pause dialog. */\n",
+            ".pause-control-setting{display:flex;flex-direction:column;gap:7px;flex-shrink:0;text-align:left}\n",
+            ".pause-control-setting label{font:600 13px system-ui}\n",
+            ".pause-control-setting select{width:100%;min-height:44px;padding:7px 10px;border:1px solid #b8dce955;border-radius:7px;background:#163b4b;color:#fff;font:600 14px system-ui;touch-action:manipulation}\n",
+            ".pause-control-setting p{margin:0 0 4px;color:#bfd4d6;font:11px/1.6 system-ui}\n"
+          ]
+        }
+      ]
+    },
+    "src/mobile-controls.ts": {
+      "previousSha256": "ca142f84ade674c05f6026985df033a357639d0421144de2baecb6b0b2031b20",
+      "currentSha256": "d6aef322c3c8459f89c439cb22588b5e5e3709be412d09bbc8bed3312da67aea",
+      "scope": "Use shared preference and robust primary-device signals; reclassify real input, release held controls, and manage top-right control settings",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [
+            "/** Capability detection, independent of UA strings and viewport width. */\n",
+            "export type ControlMode = 'auto' | 'touch' | 'desktop';\n"
+          ],
+          "insertedLines": [
+            "import {bindControlPreferenceSelect, controlPreference, CONTROL_PREFERENCE_EVENT, resolveControlMode, type ControlCapabilities, type EffectiveControlMode} from './control-mode';\n",
+            "export {resolveControlMode, type ControlMode} from './control-mode';\n"
+          ]
+        },
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "removedLines": [
+            "export function resolveControlMode(preference: ControlMode, touchPoints: number, coarse: boolean, observedTouch = false) {\n",
+            "  return preference === 'auto' ? ((touchPoints > 0 && coarse) || observedTouch ? 'touch' : 'desktop') : preference;\n",
+            "}\n"
+          ],
+          "insertedLines": []
+        },
+        {
+          "beforeStart": 20,
+          "afterStart": 17,
+          "removedLines": [
+            "  doc.body.appendChild(panel); doc.body.appendChild(modePanel);\n",
+            "  const coarse = win.matchMedia?.('(any-pointer: coarse)');\n",
+            "  let preference: ControlMode = 'auto', observedTouch = false, disposed = false;\n",
+            "  try { const saved = win.localStorage.getItem('kart-control-mode'); if (saved === 'touch' || saved === 'desktop') preference = saved; } catch { /* Private browsing can disable storage. */ }\n",
+            "  selector.value = preference;\n"
+          ],
+          "insertedLines": [
+            "  const toolbar = doc.getElementById('raceSystemTools');\n",
+            "  const toggle = doc.getElementById('mobileControlModeToggle');\n",
+            "  const popover = doc.getElementById('mobileControlModePopover');\n",
+            "  doc.body.appendChild(panel); doc.body.appendChild(toolbar ?? modePanel);\n",
+            "  function closePopover() { if (popover) popover.hidden = true; toggle?.setAttribute('aria-expanded', 'false'); }\n",
+            "  function togglePopover() {\n",
+            "    if (!popover) return;\n",
+            "    const open = popover.hidden;\n",
+            "    if (open) {\n",
+            "      const perfToggle = doc.getElementById('perf-toggle');\n",
+            "      if (perfToggle?.getAttribute('aria-expanded') === 'true') perfToggle.click();\n",
+            "    }\n",
+            "    popover.hidden = !open; toggle?.setAttribute('aria-expanded', String(open));\n",
+            "    if (open) selector?.focus?.();\n",
+            "  }\n",
+            "  function outside(event: Event) {\n",
+            "    if (!modePanel?.contains?.(event.target as Node)) closePopover();\n",
+            "  }\n",
+            "  function dismiss(event: KeyboardEvent) {\n",
+            "    if (event.code === 'Escape' && popover && !popover.hidden) {\n",
+            "      event.preventDefault(); event.stopImmediatePropagation(); closePopover(); toggle?.focus?.();\n",
+            "    }\n",
+            "  }\n",
+            "  toggle?.addEventListener('click', togglePopover);\n",
+            "  selector.addEventListener('change', closePopover);\n",
+            "  doc.addEventListener('click', outside, true);\n",
+            "  win.addEventListener('keydown', dismiss, true);\n",
+            "  win.addEventListener('resize', closePopover);\n",
+            "  win.addEventListener('blur', closePopover);\n",
+            "  const query = (value: string) => { try { return win.matchMedia?.(value); } catch { return undefined; } };\n",
+            "  const media = {\n",
+            "    coarse: query('(pointer: coarse)'), fine: query('(pointer: fine)'),\n",
+            "    hover: query('(hover: hover)'), anyCoarse: query('(any-pointer: coarse)'),\n",
+            "  };\n",
+            "  let observed: EffectiveControlMode | null = null, lastTouch = -Infinity, disposed = false;\n",
+            "  const selectors = [selector, doc.getElementById('pauseControlMode') as HTMLSelectElement | null].filter((node): node is HTMLSelectElement => !!node);\n",
+            "  const unbind = selectors.map(node => bindControlPreferenceSelect(doc, node));\n"
+          ]
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 55,
+          "removedLines": [
+            "    const mode = resolveControlMode(preference, win.navigator.maxTouchPoints || 0, coarse?.matches ?? false, observedTouch);\n"
+          ],
+          "insertedLines": [
+            "    if (disposed) return;\n",
+            "    const capabilities: ControlCapabilities = {touchPoints: win.navigator.maxTouchPoints || 0,\n",
+            "      coarse: media.coarse?.matches ?? false, fine: media.fine?.matches ?? false,\n",
+            "      hover: media.hover?.matches ?? false, anyCoarse: media.anyCoarse?.matches ?? false,\n",
+            "      pointerMedia: Object.values(media).some(Boolean)};\n",
+            "    const mode = resolveControlMode(controlPreference(doc), capabilities, observed);\n"
+          ]
+        },
+        {
+          "beforeStart": 31,
+          "afterStart": 65,
+          "removedLines": [
+            "  function change() {\n",
+            "    preference = selector!.value === 'touch' || selector!.value === 'desktop' ? selector!.value : 'auto';\n",
+            "    try { win.localStorage.setItem('kart-control-mode', preference); } catch { /* Optional preference only. */ }\n"
+          ],
+          "insertedLines": [
+            "  function preferenceChanged() { observed = null; update(); }\n",
+            "  function capabilityChanged() { observed = null; update(); }\n",
+            "  function pointer(event: PointerEvent) {\n",
+            "    // Do not move/hide a UI target between its pointerdown and click.\n",
+            "    if ((event.target as Element | null)?.closest?.('button,a,input,select,textarea,[contenteditable],.mobile-control-popover,#perf-body,.pause-panel')) return;\n",
+            "    const now = Date.now();\n",
+            "    if (event.pointerType === 'touch') { lastTouch = now; observed = 'touch'; }\n",
+            "    else if (event.pointerType === 'mouse' && !(event as PointerEvent & {sourceCapabilities?: {firesTouchEvents?: boolean}}).sourceCapabilities?.firesTouchEvents && now - lastTouch > 900) observed = 'desktop';\n",
+            "    else return;\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 76,
+          "removedLines": [
+            "  function touch(event: PointerEvent) { if (event.pointerType === 'touch' && !observedTouch) { observedTouch = true; update(); } }\n"
+          ],
+          "insertedLines": [
+            "  function keyboard(event: KeyboardEvent) {\n",
+            "    if (event.repeat || event.ctrlKey || event.metaKey || event.altKey ||\n",
+            "        (event.target as Element | null)?.closest?.('input,select,textarea,button,a,[contenteditable]')) return;\n",
+            "    if (!['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'].includes(event.code)) return;\n",
+            "    observed = 'desktop'; update();\n",
+            "  }\n"
+          ]
+        },
+        {
+          "beforeStart": 39,
+          "afterStart": 84,
+          "removedLines": [
+            "    selector!.removeEventListener('change', change);\n",
+            "    canvas.removeEventListener('pointerdown', touch, true);\n",
+            "    coarse?.removeEventListener?.('change', update);\n"
+          ],
+          "insertedLines": [
+            "    for (const stop of unbind) stop();\n",
+            "    doc.removeEventListener('pointerdown', pointer, {capture: true});\n",
+            "    win.removeEventListener('keydown', keyboard, {capture: true});\n",
+            "    doc.removeEventListener(CONTROL_PREFERENCE_EVENT, preferenceChanged);\n",
+            "    for (const query of Object.values(media)) query?.removeEventListener?.('change', capabilityChanged);\n"
+          ]
+        },
+        {
+          "beforeStart": 43,
+          "afterStart": 90,
+          "removedLines": [
+            "    panel!.remove(); modePanel!.remove();\n"
+          ],
+          "insertedLines": [
+            "    toggle?.removeEventListener('click', togglePopover);\n",
+            "    selector!.removeEventListener('change', closePopover);\n",
+            "    doc.removeEventListener('click', outside, {capture: true});\n",
+            "    win.removeEventListener('keydown', dismiss, {capture: true});\n",
+            "    win.removeEventListener('resize', closePopover);\n",
+            "    win.removeEventListener('blur', closePopover);\n",
+            "    panel!.remove(); (toolbar ?? modePanel)!.remove();\n"
+          ]
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 101,
+          "removedLines": [
+            "  selector.addEventListener('change', change);\n",
+            "  // Capture phase ensures first touch selects controls before gesture handling.\n",
+            "  canvas.addEventListener('pointerdown', touch, {capture: true});\n",
+            "  coarse?.addEventListener?.('change', update);\n"
+          ],
+          "insertedLines": [
+            "  doc.addEventListener(CONTROL_PREFERENCE_EVENT, preferenceChanged);\n",
+            "  // Capture phase changes mode and clears old holds before the new input is read.\n",
+            "  // Pointerdown expresses intent; hover motion never causes mode oscillation.\n",
+            "  doc.addEventListener('pointerdown', pointer, {capture: true});\n",
+            "  win.addEventListener('keydown', keyboard, {capture: true});\n",
+            "  for (const query of Object.values(media)) query?.addEventListener?.('change', capabilityChanged);\n"
+          ]
+        }
+      ]
+    },
+    "src/race-hud.ts": {
+      "previousSha256": "c358f027c99a1a07e81c8b433ea78bc65465657a76b6754b72e87ed653d3d943",
+      "currentSha256": "ce483db744c9028314d6135a88fffc5fd7ca1ef90d0d8895ccbbfcd7506466e6",
+      "scope": "Place the control settings entry alongside existing top-right system controls",
+      "hunks": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "removedLines": [],
+          "insertedLines": [
+            "import { CONTROL_MODE_OPTIONS } from './control-mode';\n"
+          ]
+        },
+        {
+          "beforeStart": 5,
+          "afterStart": 6,
+          "removedLines": [
+            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"真实 3D 卡丁车赛道\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"当前选手\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\"><button class=\"icon\" id=\"camera\" title=\"切换视角 / Z\" aria-label=\"切换视角\">◉</button><button class=\"icon\" id=\"sound\" title=\"音效开关\" aria-label=\"音效开关\">♪</button><button class=\"icon game-ui\" id=\"pause\" title=\"暂停 / Esc / P\" aria-label=\"暂停\">Ⅱ</button><span id=\"raceSettings\"></span></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"赛道进度图\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">按住 W 油门起步</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E 使用</span><strong id=\"itemName\">◇ 等待道具</strong><span id=\"itemHelp\">撞箱拾取 · 问号为随机道具</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停</div><div id=\"mobileControlModePanel\" class=\"mobile-control-mode\"><label for=\"mobileControlMode\">操控</label><select id=\"mobileControlMode\" aria-label=\"选择操控方式\"><option value=\"auto\">自动识别</option><option value=\"touch\">触屏按键</option><option value=\"desktop\">键盘鼠标</option></select></div><div id=\"mobileTouchControls\" class=\"touch mobile-controls\" role=\"group\" aria-label=\"触屏驾驶控制\"><div class=\"mobile-steering\" role=\"group\" aria-label=\"方向\"><button type=\"button\" data-key=\"ArrowLeft\" aria-label=\"按住左转\"><span aria-hidden=\"true\">❮</span></button><button type=\"button\" data-key=\"ArrowRight\" aria-label=\"按住右转\"><span aria-hidden=\"true\">❯</span></button></div><div class=\"mobile-pedals\" role=\"group\" aria-label=\"油门和倒车\"><button type=\"button\" class=\"throttle\" data-key=\"KeyW\" aria-label=\"按住油门\"><span class=\"mobile-arrow\" aria-hidden=\"true\">⌃</span><span>油门</span></button><button type=\"button\" class=\"reverse\" data-key=\"KeyS\" aria-label=\"按住刹车与倒车\"><span class=\"mobile-arrow\" aria-hidden=\"true\">⌄</span><span>倒车</span></button></div><button type=\"button\" class=\"mobile-drift drift\" data-key=\"ShiftLeft\" aria-label=\"按住手刹漂移\">漂移</button><button type=\"button\" class=\"mobile-brake\" data-key=\"Space\" aria-label=\"按住刹车\">刹车</button><button type=\"button\" class=\"mobile-item\" data-mobile-action=\"item\" aria-label=\"使用当前道具\"><span aria-hidden=\"true\">◇</span><span>道具</span></button><div class=\"mobile-utilities\" role=\"group\" aria-label=\"视角与暂停\"><button type=\"button\" data-mobile-action=\"camera\" aria-label=\"切换视角\">视角</button><button type=\"button\" data-mobile-action=\"recenter\" aria-label=\"视角回正\">回正</button><button type=\"button\" data-key=\"RearView\" aria-label=\"按住向后看\">回看</button><button type=\"button\" data-mobile-action=\"pause\" aria-label=\"暂停比赛\">Ⅱ</button></div><p class=\"mobile-rotate-hint\" role=\"status\">建议横屏驾驶 · 如未旋转，请关闭系统旋转锁定</p></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"比赛暂停\"><div class=\"pause-actions\"><h2>比赛已暂停</h2><button id=\"resumeRace\">继续比赛</button><button id=\"restartRace\">重新开始</button><button id=\"pauseChangeMap\">更换地图</button><button id=\"pauseMenu\">返回主菜单</button></div></section>`;\n"
+          ],
+          "insertedLines": [
+            "export const RACE_HUD_MARKUP = `<canvas id=\"game\" tabindex=\"0\" aria-label=\"真实 3D 卡丁车赛道\"></canvas><div id=\"vignette\"></div><div class=\"top\"><div><div class=\"brand\">NEON<i> KART</i><sup style=\"font-size:9px;letter-spacing:1px;margin-left:6px;font-style:normal\">3D</sup></div><div class=\"sub\" id=\"raceSubtitle\">SUNSET COAST GRAND PRIX</div><div id=\"raceDriverIdentity\" class=\"race-driver-identity\" aria-label=\"当前选手\"></div></div><div class=\"hud game-ui\"><div><div class=\"label\">POSITION</div><div class=\"value\" id=\"rank\">1 <small>/ 6</small></div></div><div><div class=\"label\">LAP</div><div class=\"value\" id=\"lap\">1 <small>/ 3</small></div></div><div><div class=\"label\">TIME</div><div class=\"value\" id=\"timer\">0:00</div></div></div><div class=\"tools\" id=\"raceSystemTools\" role=\"group\" aria-label=\"比赛系统设置\"><button class=\"icon\" id=\"camera\" title=\"切换视角 / Z\" aria-label=\"切换视角\">◉</button><button class=\"icon\" id=\"sound\" title=\"音效开关\" aria-label=\"音效开关\">♪</button><button class=\"icon game-ui\" id=\"pause\" title=\"暂停 / Esc / P\" aria-label=\"暂停\">Ⅱ</button><span id=\"raceSettings\"></span><div id=\"mobileControlModePanel\" class=\"mobile-control-mode\"><button type=\"button\" id=\"mobileControlModeToggle\" class=\"icon\" aria-label=\"操控方式\" aria-expanded=\"false\" aria-controls=\"mobileControlModePopover\" title=\"操控方式\">操控</button><div id=\"mobileControlModePopover\" class=\"mobile-control-popover\" hidden><label for=\"mobileControlMode\">操控方式</label><select id=\"mobileControlMode\" aria-describedby=\"mobileControlModeHint\">${CONTROL_MODE_OPTIONS}</select><p id=\"mobileControlModeHint\">自动识别设备与实际操作，也可手动选择</p></div></div></div></div><canvas id=\"map\" class=\"game-ui\" width=\"260\" height=\"230\" aria-label=\"赛道进度图\"></canvas><div class=\"toast\" id=\"toast\" role=\"status\" aria-live=\"polite\"></div><div class=\"center\" id=\"count\" role=\"status\" aria-live=\"polite\"></div><div class=\"bottom game-ui\"><div><div class=\"speed\"><span id=\"speed\">0</span> <small>KM/H</small></div><div class=\"meter\"><div class=\"fill\" id=\"charge\"></div></div><div class=\"hint\" id=\"chargeLabel\">按住 W 油门起步</div></div><button class=\"item\" id=\"item\"><img id=\"itemImage\" width=\"80\" height=\"80\" alt=\"\" hidden><div class=\"itemCopy\"><span>ITEM / E 使用</span><strong id=\"itemName\">◇ 等待道具</strong><span id=\"itemHelp\">撞箱拾取 · 问号为随机道具</span></div></button></div><div id=\"lookHint\" class=\"look-hint game-ui\">单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停</div><div id=\"mobileTouchControls\" class=\"touch mobile-controls\" role=\"group\" aria-label=\"触屏驾驶控制\"><div class=\"mobile-steering\" role=\"group\" aria-label=\"方向\"><button type=\"button\" data-key=\"ArrowLeft\" aria-label=\"按住左转\"><span aria-hidden=\"true\">❮</span></button><button type=\"button\" data-key=\"ArrowRight\" aria-label=\"按住右转\"><span aria-hidden=\"true\">❯</span></button></div><div class=\"mobile-pedals\" role=\"group\" aria-label=\"油门和倒车\"><button type=\"button\" class=\"throttle\" data-key=\"KeyW\" aria-label=\"按住油门\"><span class=\"mobile-arrow\" aria-hidden=\"true\">⌃</span><span>油门</span></button><button type=\"button\" class=\"reverse\" data-key=\"KeyS\" aria-label=\"按住刹车与倒车\"><span class=\"mobile-arrow\" aria-hidden=\"true\">⌄</span><span>倒车</span></button></div><button type=\"button\" class=\"mobile-drift drift\" data-key=\"ShiftLeft\" aria-label=\"按住手刹漂移\">漂移</button><button type=\"button\" class=\"mobile-brake\" data-key=\"Space\" aria-label=\"按住刹车\">刹车</button><button type=\"button\" class=\"mobile-item\" data-mobile-action=\"item\" aria-label=\"使用当前道具\"><span aria-hidden=\"true\">◇</span><span>道具</span></button><div class=\"mobile-utilities\" role=\"group\" aria-label=\"视角与暂停\"><button type=\"button\" data-mobile-action=\"camera\" aria-label=\"切换视角\">视角</button><button type=\"button\" data-mobile-action=\"recenter\" aria-label=\"视角回正\">回正</button><button type=\"button\" data-key=\"RearView\" aria-label=\"按住向后看\">回看</button><button type=\"button\" data-mobile-action=\"pause\" aria-label=\"暂停比赛\">Ⅱ</button></div><p class=\"mobile-rotate-hint\" role=\"status\">建议横屏驾驶 · 如未旋转，请关闭系统旋转锁定</p></div><section id=\"pausePanel\" class=\"pause-panel hidden\" role=\"dialog\" aria-modal=\"true\" aria-label=\"比赛暂停\"><div class=\"pause-actions\"><h2>比赛已暂停</h2><div class=\"pause-control-setting\"><label for=\"pauseControlMode\">操控方式</label><select id=\"pauseControlMode\" aria-describedby=\"pauseControlModeHint\">${CONTROL_MODE_OPTIONS}</select><p id=\"pauseControlModeHint\">切换后立即生效，点击“继续比赛”返回赛道</p></div><button id=\"resumeRace\">继续比赛</button><button id=\"restartRace\">重新开始</button><button id=\"pauseChangeMap\">更换地图</button><button id=\"pauseMenu\">返回主菜单</button></div></section>`;\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-loading-guide-transition.test.ts": {
+      "previousSha256": "11df80b369a87a58845ddaf39c9f7ea60c394a5aa74dd4f2c2051a109aeb44c7",
+      "currentSha256": "c7a34f7f583382f951a1c70d3cb84647bbd776b32333d1b4f0f9e1acbd72f954",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 49,
+          "afterStart": 49,
+          "removedLines": [
+            "  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/mobile-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'docs/stable-pages-manifest.json']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');\n"
+          ],
+          "insertedLines": [
+            "  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'docs/stable-pages-manifest.json']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');\n",
+            "  const mobilePath = 'src/mobile-controls.ts', mobilePin = mobileControlsReview().additions[mobilePath].sha256;\n",
+            "  assert.equal(sha(restoreTouchOpacityBytes(mobilePath, read(mobilePath))), mobilePin, 'Exact formerly unchanged mobile source survives the input-mode inverse');\n",
+            "  assert.equal(loadingGuideHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Only the new exact input-mode pair advances this source');\n",
+            "  assert.throws(() => loadingGuideHash(mobilePath, 'unchanged'));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-menu-presentation-transition.test.ts": {
+      "previousSha256": "8e6230f789da2b350040965f41da94e68ac4676a7c66b96611576e9b10119355",
+      "currentSha256": "3fc7ab955d42a89049d468b4f8ca8b2109c8a10ea148b112c633c8c8c4cdc220",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 127,
+          "afterStart": 127,
+          "removedLines": [
+            "    assert.equal(hashes['src/menu.ts'], review.changes['src/menu.ts'].currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(hashes['src/menu.ts'], mobileControlsHash('src/menu.ts', review.changes['src/menu.ts'].currentSha256));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-mobile-controls-transition.test.ts": {
+      "previousSha256": "16d92ea104b393b468e1d692ede9a75e1647fc0323ea896c7e0a3513a02966ae",
+      "currentSha256": "952c1f7f7c95206afcb333c9e077f50acb34324d2d5906fc06761a825455f23f",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {inputModeSourcePaths} from './helpers/input-mode-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 72,
+          "afterStart": 73,
+          "removedLines": [
+            "  assert.deepEqual(mobileControlsSourcePaths(previous), [...previous, ...MOBILE_CONTROLS_SOURCE_ADDITIONS]);\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(mobileControlsSourcePaths(previous), inputModeSourcePaths([...previous, ...MOBILE_CONTROLS_SOURCE_ADDITIONS]));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-touch-opacity-transition.test.ts": {
+      "previousSha256": "5dd14f5a910cd2855e98199bae256fe5be22973041ac853087483ec8f4efa6cb",
+      "currentSha256": "5b8c18c2309bfc8b1fb4a3366c1d49359c7402088799cb40a0911597c0111e9d",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {inputModeHash, inputModePathsWithin, inputModeSourcePaths, restoreInputModeBytes} from './helpers/input-mode-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 56,
+          "afterStart": 57,
+          "removedLines": [
+            "  assert.deepEqual(actualSource, [...protectedSource, ...TOUCH_OPACITY_PRODUCTION_PATHS].sort(), 'No unreviewed new or removed production source');\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(actualSource, inputModeSourcePaths([...protectedSource, ...TOUCH_OPACITY_PRODUCTION_PATHS]).sort(), 'No unreviewed new or removed production source');\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 59,
+          "removedLines": [
+            "  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged production bytes');\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(restoreInputModeBytes(path, read(path))), hash, path + ' exact touch-era production bytes');\n"
+          ]
+        },
+        {
+          "beforeStart": 62,
+          "afterStart": 63,
+          "removedLines": [
+            "  const expected = [...Object.keys(review.protectedProduction).filter(path => path.startsWith('src/')), ...TOUCH_OPACITY_PRODUCTION_PATHS].sort();\n"
+          ],
+          "insertedLines": [
+            "  const expected = inputModeSourcePaths([...Object.keys(review.protectedProduction).filter(path => path.startsWith('src/')), ...TOUCH_OPACITY_PRODUCTION_PATHS]).sort();\n"
+          ]
+        },
+        {
+          "beforeStart": 73,
+          "afterStart": 74,
+          "removedLines": [
+            "    const current = read(path), original = restoreTouchOpacityBytes(path, current);\n"
+          ],
+          "insertedLines": [
+            "    const raw = read(path), current = restoreInputModeBytes(path, raw), original = restoreTouchOpacityBytes(path, raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 81,
+          "afterStart": 82,
+          "removedLines": [
+            "    assert.throws(() => restoreTouchOpacityBytes(path, current + ' '));\n"
+          ],
+          "insertedLines": [
+            "    assert.throws(() => restoreTouchOpacityBytes(path, raw + ' '));\n"
+          ]
+        },
+        {
+          "beforeStart": 84,
+          "afterStart": 85,
+          "removedLines": [
+            "  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact regression addition');\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(restoreInputModeBytes(path, read(path))), row.sha256, path + ' exact regression addition');\n"
+          ]
+        },
+        {
+          "beforeStart": 89,
+          "afterStart": 90,
+          "removedLines": [
+            "    assert.equal(touchOpacityHash(path, row.previousSha256), row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(touchOpacityHash(path, row.previousSha256), inputModeHash(path, row.currentSha256));\n"
+          ]
+        },
+        {
+          "beforeStart": 93,
+          "afterStart": 94,
+          "removedLines": [
+            "  for (const path of ['src/game.ts', 'src/mobile-controls.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');\n"
+          ],
+          "insertedLines": [
+            "  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html', 'docs/stable-pages-manifest.json']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');\n",
+            "  const mobilePath = 'src/mobile-controls.ts', mobilePin = review.protectedProduction[mobilePath];\n",
+            "  assert.equal(touchOpacityHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Exact protected mobile source advances only through the new input-mode layer');\n",
+            "  assert.throws(() => touchOpacityHash(mobilePath, 'unchanged'));\n"
+          ]
+        },
+        {
+          "beforeStart": 105,
+          "afterStart": 109,
+          "removedLines": [
+            "  const current = read('src/mobile-controls.css'), original = restoreTouchOpacityBytes('src/mobile-controls.css', current);\n"
+          ],
+          "insertedLines": [
+            "  const raw = read('src/mobile-controls.css'), current = restoreInputModeBytes('src/mobile-controls.css', raw), original = restoreTouchOpacityBytes('src/mobile-controls.css', raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 131,
+          "afterStart": 135,
+          "removedLines": [
+            "  const menu = read('src/menu.css'), originalMenu = restoreTouchOpacityBytes('src/menu.css', menu);\n"
+          ],
+          "insertedLines": [
+            "  const rawMenu = read('src/menu.css'), menu = restoreInputModeBytes('src/menu.css', rawMenu), originalMenu = restoreTouchOpacityBytes('src/menu.css', rawMenu);\n"
+          ]
+        },
+        {
+          "beforeStart": 134,
+          "afterStart": 138,
+          "removedLines": [
+            "  const race = read('src/race-ui.css'), originalRace = restoreTouchOpacityBytes('src/race-ui.css', race);\n"
+          ],
+          "insertedLines": [
+            "  const rawRace = read('src/race-ui.css'), race = restoreInputModeBytes('src/race-ui.css', rawRace), originalRace = restoreTouchOpacityBytes('src/race-ui.css', rawRace);\n"
+          ]
+        },
+        {
+          "beforeStart": 160,
+          "afterStart": 164,
+          "removedLines": [
+            "  assert.deepEqual(touchOpacityPathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(touchOpacityPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...inputModePathsWithin(inventory)])]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/mobile-controls-reviewed-revisions.ts": {
+      "previousSha256": "4e66853e3349e407bd80272658c6670a7277e7137b59253276033c7c61a8f862",
+      "currentSha256": "b32ffc49bb90fae7e1ce6ee1494ec85975b161f227ef63c96149ed65be2674c6",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {inputModeSourcePaths} from './input-mode-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 59,
+          "removedLines": [
+            "  return [...previous, ...additions.map(([path]) => path)];\n"
+          ],
+          "insertedLines": [
+            "  return inputModeSourcePaths([...previous, ...additions.map(([path]) => path)]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/touch-opacity-reviewed-revisions.ts": {
+      "previousSha256": "9c267d5e2101922a48c78dd2681f75fc373ee1ad31db13e2e31dce4c3e5ac5f0",
+      "currentSha256": "51501ef61181328d2cd6482ffba02437abfec5296f7f22d5f60a97c651675aa2",
+      "scope": "Exact current-layer bridge preserving prior incoming identities, inverse bytes and all frozen proof records",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {inputModeHash, inputModePathsWithin, restoreInputModeBytes, inputModeAuditDependencies} from './input-mode-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 50,
+          "afterStart": 51,
+          "removedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return incoming;\n"
+          ],
+          "insertedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return inputModeHash(path, incoming);\n"
+          ]
+        },
+        {
+          "beforeStart": 53,
+          "afterStart": 54,
+          "removedLines": [
+            "  return row.currentSha256;\n"
+          ],
+          "insertedLines": [
+            "  return inputModeHash(path, row.currentSha256);\n"
+          ]
+        },
+        {
+          "beforeStart": 56,
+          "afterStart": 57,
+          "removedLines": [
+            "  return Object.keys(touchOpacityReview().changes).filter(path => Object.hasOwn(inventory, path));\n"
+          ],
+          "insertedLines": [
+            "  return [...new Set([...Object.keys(touchOpacityReview().changes).filter(path => Object.hasOwn(inventory, path)), ...inputModePathsWithin(inventory)])];\n"
+          ]
+        },
+        {
+          "beforeStart": 59,
+          "afterStart": 60,
+          "removedLines": [],
+          "insertedLines": [
+            "  current = restoreInputModeBytes(path, current);\n"
+          ]
+        },
+        {
+          "beforeStart": 75,
+          "afterStart": 77,
+          "removedLines": [
+            "    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal)];\n"
+          ],
+          "insertedLines": [
+            "    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...inputModeAuditDependencies()];\n"
+          ]
+        }
+      ]
+    },
+    "tests/mobile-controls.test.ts": {
+      "previousSha256": "528fb56edd622fbf529b501fdf9248804c002cba638cd30531ce8d970dcc71f5",
+      "currentSha256": "dd0418f8e5dee44f4c1b7652e040594f9c27b01745e009f7f7c6f552917d7974",
+      "scope": "Update input-mode environment fixtures and retain existing behavioral regressions",
+      "hunks": [
+        {
+          "beforeStart": 4,
+          "afterStart": 4,
+          "removedLines": [
+            "test('touch detection uses device capabilities, with explicit hybrid overrides', () => {\n",
+            "  assert.equal(resolveControlMode('auto', 5, true), 'touch');\n",
+            "  assert.equal(resolveControlMode('auto', 0, true), 'desktop');\n",
+            "  assert.equal(resolveControlMode('auto', 10, false), 'desktop');\n",
+            "  assert.equal(resolveControlMode('auto', 10, false, true), 'touch');\n",
+            "  assert.equal(resolveControlMode('desktop', 5, true, true), 'desktop');\n",
+            "  assert.equal(resolveControlMode('touch', 0, false), 'touch');\n"
+          ],
+          "insertedLines": [
+            "test('primary pointer detection prefers hybrid mouse and retains explicit overrides', () => {\n",
+            "  const phone = {touchPoints: 5, coarse: true, fine: false, hover: false, anyCoarse: true, pointerMedia: true};\n",
+            "  const hybrid = {...phone, coarse: false, fine: true, hover: true};\n",
+            "  assert.equal(resolveControlMode('auto', phone), 'touch');\n",
+            "  assert.equal(resolveControlMode('auto', {...phone, touchPoints: 0}), 'desktop');\n",
+            "  assert.equal(resolveControlMode('auto', hybrid), 'desktop');\n",
+            "  assert.equal(resolveControlMode('auto', hybrid, 'touch'), 'touch');\n",
+            "  assert.equal(resolveControlMode('desktop', phone, 'touch'), 'desktop');\n",
+            "  assert.equal(resolveControlMode('touch', hybrid), 'touch');\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 32,
+          "removedLines": [
+            "  const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: touchPoints}, matchMedia: () => media, localStorage: {getItem: (key: string) => storage.get(key), setItem: (key: string, value: string) => storage.set(key, value)}});\n"
+          ],
+          "insertedLines": [
+            "  const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: touchPoints}, matchMedia: (query: string) => query === '(pointer: coarse)' || query === '(any-pointer: coarse)' ? media : Object.assign(new EventTarget(), {matches: false}), localStorage: {getItem: (key: string) => storage.get(key), setItem: (key: string, value: string) => storage.set(key, value)}});\n"
+          ]
+        },
+        {
+          "beforeStart": 41,
+          "afterStart": 43,
+          "removedLines": [
+            "  f.fire(f.canvas, 'pointerdown', {pointerType: 'touch'});\n"
+          ],
+          "insertedLines": [
+            "  f.fire(f.doc, 'pointerdown', {pointerType: 'touch'});\n"
+          ]
+        },
+        {
+          "beforeStart": 51,
+          "afterStart": 53,
+          "removedLines": [
+            "  f.fire(f.canvas, 'pointerdown', {pointerType: 'touch'});\n"
+          ],
+          "insertedLines": [
+            "  f.fire(f.doc, 'pointerdown', {pointerType: 'touch'});\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-loading-ui.test.ts": {
+      "previousSha256": "5a8dfb6be5dcd8f469c7a322b893a5c23f5d38fbd266e6f237378fbca5ff07ee",
+      "currentSha256": "4e4040a3a6370bc572d8b30f472e357edef08b919453b3430df5d6ebf86d7eac",
+      "scope": "Update input-mode environment fixtures and retain existing behavioral regressions",
+      "hunks": [
+        {
+          "beforeStart": 200,
+          "afterStart": 200,
+          "removedLines": [
+            "    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: () => media, localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});\n"
+          ],
+          "insertedLines": [
+            "    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: (query: string) => query === '(pointer: coarse)' || query === '(any-pointer: coarse)' ? media : Object.assign(new EventTarget(), {matches: false}), localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});\n"
+          ]
+        },
+        {
+          "beforeStart": 214,
+          "afterStart": 214,
+          "removedLines": [
+            "    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); canvas.dispatchEvent(touch);\n"
+          ],
+          "insertedLines": [
+            "    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); f.doc.dispatchEvent(touch);\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-ui-layout.test.ts": {
+      "previousSha256": "f4e508aac6747e13aceca59ebbab157ee9e903f7df64c1be8073ba495b2efe68",
+      "currentSha256": "c2704b89e0d38217596b08629cc0be9b71701a5e99d47a5ac74eb1f842f490d2",
+      "scope": "Update input-mode environment fixtures and retain existing behavioral regressions",
+      "hunks": [
+        {
+          "beforeStart": 155,
+          "afterStart": 155,
+          "removedLines": [
+            "  assert.match(mobileCss, /body\\[data-input-mode='touch'\\] \\.pause-actions button\\{min-height:48px/);\n"
+          ],
+          "insertedLines": [
+            "  assert.match(mobileCss, /#pausePanel \\.pause-actions button\\{min-height:48px/);\n"
+          ]
+        }
+      ]
+    }
+  },
+  "additions": {
+    "src/control-mode.ts": {
+      "sha256": "9762db687f032f49feed57554261b61c20d3d5210a973dcb516750a6b616be0b",
+      "scope": "Shared pure input-mode resolution, persisted preference and settings synchronization"
+    },
+    "tests/control-mode.test.ts": {
+      "sha256": "a2f6a77c7c04b394cb2aab638af9e1b81612aeb3f795c1aba70cce2231e8a6fd",
+      "scope": "Independent input-mode detection/settings regression coverage"
+    },
+    "tests/control-settings-entries.test.ts": {
+      "sha256": "c296f3ddf894af1908217b187d8525f25a89be7261ce1c465c37d430a660e381",
+      "scope": "Independent input-mode detection/settings regression coverage"
+    }
+  },
+  "protectedProduction": {
+    "coast.html": "7d3413efd51376c90b33db6d514a0277a10ab4461429968db515bc1ba0aacb70",
+    "garage.html": "3c8cb04c8dedfa276a1fa287b1e233e87859e4982699971ca75b92f9a7cd5f29",
+    "index.html": "df0da639a96f89efe45cc7d65ce422c081b1b8cc2120a1372d12aa3cd0247f7b",
+    "package-lock.json": "2e1e60d95318ff59e3079ae4bb7b138884474c1789e96c6b35bef4882898fb6b",
+    "package.json": "a7abe5a5c5c7d9a756c50dd2af7a4b01fbb384d3cb1cf04c2b36909fee4621b6",
+    "src/airfield-scenery.ts": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+    "src/alpine-props.ts": "a37d3f0a3fe56818bc3f0f5e8ba274bae60512491a5fe1f86e1df09071f60cd3",
+    "src/asset-download.js": "1b960643d7cbdfcfa4c938679f7f9da89ba31c5665a84d386a7325aa3af4ed09",
+    "src/asset-validation.ts": "aa294b4d854423c84c5c5df615053b2c74e3f4b76c1214b60b0a2ece8fbbaa88",
+    "src/assets.ts": "f8ca6442bdb762ed896399f221bd34e1fdca4ff79533841abf9dcff82af0633a",
+    "src/caldera-scenery.ts": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+    "src/character-emblems.css": "eb645f9e0f6a9e0cdbeed46d5c037d26165539ddef46794db6d329f1cb7e9e9c",
+    "src/character-identity.js": "c5806dcb49a21e157ffcbd5d09df99c55c7cc52534583bdbc5778de9640f5527",
+    "src/character-preview-stage.ts": "1d3a339f7d30a7ffc1ac65cdd1718e936b895b3c5c301636ab702168898d074c",
+    "src/character-preview.ts": "c8d78dd2213de49cf96510ff00e54cfeea9c20bf957dc0d301db448dbd85a575",
+    "src/character-profiles.ts": "1d35323dab31a8f943209f7e98d107916441a95ba5d06ff82ce92ba09986573d",
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/coast-race-feedback.ts": "7c47a102876776ec90d6578adfeedb634b6a1968786f9ea7ccd58146d0986a1a",
+    "src/coast-race-rules.ts": "5393ca7d10b0532e753c7416dc79da37eb62fc8edb8fe7861cfa9b6faaea7639",
+    "src/desert-scenery.ts": "aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713",
+    "src/driver-roster.js": "45262c05d1583e73051ea743d74f0520afe40c5f7152f5a16b725aca08492e13",
+    "src/dynamic-pickups.ts": "50ad37f3abfb1bdf0db9e669b08b23e892574c9806c7cdd5f3b9f046cb71ff04",
+    "src/food-kart-payload.ts": "3f26bf7934d6f3e2bd6189065af40c47158870be3d72b26f86a50fdc2b738379",
+    "src/forest-scenery.ts": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+    "src/game-settings.ts": "cd2cef0d1531393e7290bff1766f2988a3f95d8fe0535fc086bb989d4bf50730",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/garden-scenery.ts": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
+    "src/generated/alpine-props.json": "72ad18f51a5e1808913d150844867060248c65769fc13f08dda7f9cd81a0f152",
+    "src/harvest-scenery.ts": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+    "src/item-models.ts": "0d63264651616c2e6408f733ae4032618d5b4e6f5232d060e9322d5498afe061",
+    "src/item-pickups.ts": "d068f11e624ee3a454051ae0ff7d80c8c5075d08b61d648c2697db57868b6d39",
+    "src/kart-assembly.ts": "a51bfb18bb0a320bb6b5262b2364bb2f16b649e65258becf09cb75c416019cbe",
+    "src/kart-build.ts": "1f14753cb41b290787b07a6bc70d9227e6de57611225400edb0e7ca2ab507927",
+    "src/kart-catalog.json": "8d67b16f77aeb8667823b604d61b3fd802a2f68ba23c775f3f9c5fcf226d0ba9",
+    "src/kart-driver.ts": "315a7d2296b9e64db411a1d796fbaaefcb96d12870403600b8da366266b4ebef",
+    "src/kart-garage-fixed.css": "97b7fd6fc68aba670471e742247ae78785c026d09825ab84dc9c69b0d43b031e",
+    "src/kart-garage-layout.ts": "e58a24ebd5e246d917160ca6bb52eb82c97d149ef9ff4c6983ee45cd5b654f53",
+    "src/kart-garage-motion.ts": "66a949b31d05dcc88ff3b5a5905e87dd5e4d603022d078b6af4a0e655f0f56ed",
+    "src/kart-garage-stage.ts": "c4c373eff1f8229ddc82db500141e836beb4155fee6b3a62d94b021944f257e1",
+    "src/kart-garage-stats.css": "d7a8d44644a163fb7faf6bb6d30e89876b632f394dd515c018fe842d89e01ebf",
+    "src/kart-garage-stats.ts": "4ce3e01a08456267c205a55c1a0f3db11810ec264061c9c8d64ca16df2d2ddd9",
+    "src/kart-garage.css": "f50f564d804309582acdd0b94e60b9d2507f3743355c85ed351cc0e4d995712a",
+    "src/kart-garage.ts": "0ab442b6939f0dc899f784bb3dcd60f6f5845447a1c15ce4dc053bcda5275619",
+    "src/kart-presets.ts": "36365b69d836fcdbbbce8b4c94ce1e0e8a039e394b70a243cfb947d3d09f02eb",
+    "src/kart-race.ts": "0c669a77b97ab8b118eb3b6dc4ac6bdcab8734042b21f466708dcf64372a93d5",
+    "src/kart-slot-icons.css": "b9a038eaf270b0b44ba59db749718f2cdf6574c0317e0fa3606d2ac2ba6aff09",
+    "src/kart-slot-icons.ts": "5e2866768d3ad71586b8c8e3b9916f9f9d61f45f9bc1d5a04988b4ce37696a89",
+    "src/kart-textures.ts": "26fb012e9b50aad4c8581ede69946199c9e3e8ac1f4b59e549f3a0654ef76e51",
+    "src/kart-thumbnails.ts": "a19881f5b57580c35e89c7a9adc41c15e0a11eb2f3176464e18c18309d14d894",
+    "src/kart-whole-cars.css": "2e3285a811f71823f3fa831057f6a502eaf5510b46390382b2c8de7553e8709e",
+    "src/kart-whole-cars.ts": "dbc30c559f4bcd6a4c07fb56604badf36205324fc3eda57950af731b73922ddc",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/map-picker.ts": "778c29e0e983ba66853a15d50e61f179da2a227ce34ad7c35c0b83dae658d24c",
+    "src/map-presentation.ts": "a137e260326de148141ca599c19c6d11c41598e1a6243a94cc86a7d8be8ffc4a",
+    "src/map-profiles.ts": "ca3c81e08883d36bbb2c73c8e17e8920e61c5e6ea23b26e0f3b7ace574b3a911",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+    "src/maps/desert.ts": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e",
+    "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/maps/snow.ts": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268",
+    "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+    "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+    "src/menu-backdrop.ts": "8b571532817cb0ed8b54ed7496a57ed27775f4654aad44e2070a2bf60b3b4ae0",
+    "src/menu-camera.ts": "be64fc33bac05a3c33e62a0763e80342b3cc810524027bcf0cd1b89a9bfc3474",
+    "src/menu-fixed.css": "9a3f7caa75f0f5e1d796d1479f8f8c8ab3ea34bec620a4c9cfc37aad2d9390ca",
+    "src/menu-state.ts": "7b0be5d8766b8ac28b8191fa7b5b94eb89c33d8c54aac55bb92049bd311c7ec5",
+    "src/mountain-scenery.ts": "1ee148604b6078d946b9c213994b0a3874e1089af60930d7194d3b8a30a0f5af",
+    "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/pickup-visual.ts": "ab77cbc6a2ea89835645706e7df4f05034e17c9071e1222df9eea251245a4106",
+    "src/playcanvas-planar-renderer.d.ts": "8ecf46ee903706a98a7c77c3b91aa9a699b363ae6470883eec1f2ceddd3ca327",
+    "src/quarry-scenery.ts": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/race-control-guide.ts": "57bedb35683e4ee5d2fe318f3d94e1e91d69ae74fbd6cf2350bf7d62f25cd1c5",
+    "src/race-controls.ts": "6930d2294f6ef8417418ced20e6893d52d6d4b7a1bbb957743e74352ab81ea51",
+    "src/race-frame-clock.ts": "466677232a59d77b85cebc13d12f3e265371cad8be8075f703378f9f88dc3d11",
+    "src/race-loading-camera.ts": "59941300de5a12d337589d3718a579738ddf85e7ac091d10f89b75ef590bf0dd",
+    "src/race-loading-ui.ts": "877cdd093e79611e7c6792cbb7d4c121c303293e77382e3cdf910c96e0673b86",
+    "src/race-options.ts": "47a8eb7ca331a1a43aa736383d1af8291210daef4fff2708ba4b70d2133f8026",
+    "src/race-shell.ts": "e6dd2e0039eef9ee54122211b27f80849bfefb44ad13648c6b8b51199b63d878",
+    "src/race-ui-layout.ts": "c03cc1870e26225f32cefff0883cde5ae0b581532f31f2c1022e59a1b41562af",
+    "src/race-ui.css": "e1d114af5d5703ea5a68d4fbd30979e3593d978ada3d336de78240be4c2020a7",
+    "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
+    "src/snow-scenery.ts": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+    "src/town-scenery.ts": "bbf08dadb171bd3c2d807204931a36b7f57e70a55317abe385d9cbe72b2e376b",
+    "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+    "src/ui-layout.css": "19fe7d95dc126a8d04cfb181c9baf4f02e29a61691d11c674e6046d4780694ab",
+    "src/ui-layout.ts": "ea7d42b5aa45b4721ceae6f88a412bc1a1f80c0664d089a50d7834fca2c29e4a",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/water-mount.ts": "bae8bb81628f4d884134c0471c8e437160884f016a8ee4b92400c89f608e61ff",
+    "src/water-race.ts": "40fa79727854751c07ba6df16804aef7e63631cfe6ba2382e7319cdfb4629323",
+    "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+    "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+    "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+    "src/waterpark-input.ts": "89bd126cd8e7cd9f6cd162cccc4ded66fbcbcd55e002910eeaa6a782679e12aa",
+    "src/waterpark-lifetime.ts": "c699b4ea2b15477ce0d03afb9940d6754fcd07c1a803877f5d707b720faff8e3",
+    "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+    "src/waterpark-motion.ts": "0e38f791fe7bd8c247900cf23e008da0f74aa19c102b8353fae29840a7ca4171",
+    "src/waterpark-performance-ui.ts": "6f6d0ef8ec13c2bbc7f0f943f77bd90801d9f7957083f288a5df2f822a31a930",
+    "src/waterpark-performance.ts": "f3f9507462dd217c9fcb447c716b702da464b6b6119d9609e72e6c4c8afa91b1",
+    "src/waterpark-play.ts": "beffd88ad637408adf17531c10225721ff7c5ceb0fa82962995424c40adb9c05",
+    "src/waterpark-preview.ts": "a94ffdf5e5039185229dcf422606db8de4e03e72bd058d52f54f0eec07e4ea7c",
+    "src/waterpark-reflection.ts": "9ea1ae30a34f1f9c2546ab7d814c209ea641065f3d92689e3bc34de33ac9dbbd",
+    "src/waterpark-refraction.ts": "01515de9f1d4f34261cda8b727dfe3fbc9bf52b3b37a4b9fdd5aa4a97aec35eb",
+    "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+    "src/waterpark-surface.ts": "2c1eaeaf00e625f13ce673cd032028c1650b60094aae6fd848ff1f55a0601c74",
+    "src/waterpark-wake.ts": "ff98c354d7e84bc4ac872042b9558177ef6ab9b7345e15c6575df5fbbd562cba",
+    "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c",
+    "src/workshop-scenery.ts": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+    "tsconfig.json": "4f7d69e87332755bd0af744837ac08a076e9c378c6ed35b3f9fbd0acc29faa51",
+    "vite.config.ts": "68557fa4a59eb093742a1e77cfd4782f39fc002c3d17dca4c29650e5865c3963",
+    "waterpark-study.html": "1a36b679e1e7b1d34c477004835b5a8eeec286c8f210d6d456c61cc69d47e5cd",
+    "waterpark.html": "f497f6a7c42ebc7683fa33be322684383f6e92e2d4149cd6151de04246fc38c5"
+  },
+  "protectedLegal": {
+    "LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "NOTICE": "ba428189057a93eee40f26dba396420acf7d2dd74cb324bbe57afd962455027e",
+    "MODEL-NOTICE.txt": "6d1317af26ca2aca6874f6eced71eed0d050ab63443b406c58859ee6bcbe83a6",
+    "FOOD-ASSET-NOTICE.txt": "d23c0068c201a6312d0320e053194f27061311ba3c0c5f7accabb3cf195deee3",
+    "ALPINE-PROP-NOTICE.txt": "e5d210a2edaf2e8e6f55439453ceec1356c8bc29f7701ffb3dbbbf80ce160b47",
+    "THIRD-PARTY-NOTICES.txt": "2d393e6fdcbbca9ccfdc8373db606a4164e043d6c70814814e2fadf457a6e92c",
+    "SOURCE.txt": "3d5f975aa0b6c801d84c3e67d03fc7de66937cebafd9eb00a52ac8512ea8efe0",
+    "public/source.html": "d24d3c888189c7a29d969330477e7bd7cadf099efc997d49f9f84b7e897376f5",
+    "scripts/package-source.mjs": "4e1d30db500b760255f155e1fe051934a9b9de5d59e2dd67f27be72bd2332236"
+  },
+  "protectedEvidence": {
+    ".github/workflows/pages-stable.yml": "1bb401c0047cc03af879ffa3499e4e8910cab42f7e0d5daa5f1740882ed61ad2",
+    ".github/workflows/pages.yml": "d0243e93f6e0d85f2497af3be351fac69ae035293ad7e091504c84e1c5c37405",
+    "docs/airfield-enrichment-qa-files.json": "5e9ccfd62c2ec5e89e1acd53eb9c4ca716ae5a712677358bec5226b5e63a100e",
+    "docs/scene-baselines/airfield-original/docs/airfield-preview-provenance.json.txt": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518",
+    "docs/scene-baselines/airfield-original/src/airfield-scenery.ts.txt": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-balance.test.ts.txt": "212f45c8fe59b90757bfc5f7316846efb09982252fefb1f88ea42aa7d10f7d96",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-camera.test.ts.txt": "629474b52cdbef3e92bee3763620cc092771abad36779d07e44bbb29687ce68a",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-npc.test.ts.txt": "bcc4d7c55da014cdd081b64909f723acf4afa16dc2d222db8cd140899b3d1dd9",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-routes.test.ts.txt": "6606bb2ef30b1e6230871b0cbf6b36ffdcb9efca22c5a225549c39789f8321f1",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay.test.ts.txt": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf",
+    "docs/scene-baselines/airfield-original/tests/airfield-independent-audit.test.ts.txt": "58ba282fe027000f3bad8e6da6ad92359e7a62b2c41065ebd3bb3ca63acab172",
+    "docs/scene-baselines/airfield-original/tests/airfield-menu.test.ts.txt": "d53773f40da6c2ebd85f04062629ca848487c3d8b48a0a9a8652b18268f2dca3",
+    "docs/scene-baselines/airfield-original/tests/airfield-preview-assets.test.ts.txt": "b827decc95b2c22088611154df19ba4b8d4d39e0d5fbdf55563f61de33cfc35a",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-cursor.test.ts.txt": "627e08139329c9384d40bae37a7fbf1524e4071b017c2761db1dc7551d55c56d",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-footprints.test.ts.txt": "a79e5ca58247fe7df291236973be9503adb4571f85c75785410cf4537a22ce5e",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-geometry.test.ts.txt": "f04a2a76f99e01b3ab9a981524daafab85829c638109c72f006ee108df143b2b",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-shared-tail.test.ts.txt": "48788897d9f83e1b5aa8a96c4017a6cc90c2a8d61beae87a1cde5bbc7dffe467",
+    "docs/scene-baselines/airfield-original/tests/airfield-scene.test.ts.txt": "63488923684386aff0dd1b99c660174d5bbbe23d22aa4a48617b5ddb59bf8f74",
+    "docs/scene-baselines/caldera-independent-audit.test.ts.txt": "ffcee55cbb54c691b52423ff3374bd8fb9ea72a8c29361437952cec1b07d838f",
+    "docs/scene-baselines/caldera-preview-assets.test.ts.txt": "81c4a34d745e5442f3d5109c5ba9527fa805650eec2f44d93c340c8c37200aad",
+    "docs/scene-baselines/caldera-scene.test.ts.txt": "30bfe1a397971c489577641057292f1e1eba3335a12ef1e999773c608ac05aac",
+    "docs/scene-baselines/caldera-scenery.ts.txt": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+    "docs/scene-baselines/desert-independent-audit.test.ts.txt": "147fd6a9856e7e7089974adb120c9ada3abc84d217112402a749ea1f853a18b2",
+    "docs/scene-baselines/desert-preview-assets.test.ts.txt": "8fc072762b4044a4ab02ce3e804a6e974e2ff62f65691f186bf1f05a54112d1b",
+    "docs/scene-baselines/desert-scene.test.ts.txt": "5814b5013582326625b0188bf10aa38efb37ce94285dcc2303b6708bad5afbc9",
+    "docs/scene-baselines/desert-scenery.ts.txt": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
+    "docs/scene-baselines/forest-scenery.ts.txt": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "docs/scene-baselines/garden-original/docs/garden-preview-provenance.json.txt": "642e61c95084b260f9cc7694222f35aa9a4d29c8fed75186c6e9dec1ed825c68",
+    "docs/scene-baselines/garden-original/src/garden-scenery.ts.txt": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-balance.test.ts.txt": "1d227ee9e141f013230ce9f06be829ace488441908496253960db58868033114",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-camera.test.ts.txt": "0db0297559cf7a58f025cee016f62cd758270f29ee1cec5087a8051b04644fc2",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-npc.test.ts.txt": "dc597e0de18d1ca94ee1e811b02aaf4ac8311d39cb865e12eac1e5c2bc3d8fa7",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-routes.test.ts.txt": "d70e7e20bf891ee6955b5ba7c655558a06e366d84db26a8a4339a20b9a859939",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay.test.ts.txt": "ddae0eeaa84bcc82939912de9338b160fb0043ea10a44b167fb6900b9ad16ac1",
+    "docs/scene-baselines/garden-original/tests/garden-independent-audit.test.ts.txt": "ea134890f2dec433c9a8087898129d43c4255557260a16565a0ab8dba8004cac",
+    "docs/scene-baselines/garden-original/tests/garden-menu.test.ts.txt": "c8c28866e6de61251525d6954dc97a6c01773d0ecedc75077ea719ffc8256513",
+    "docs/scene-baselines/garden-original/tests/garden-preview-assets.test.ts.txt": "7b3ef010233799d481af7ff95321388b7ec81307c28c65e58849861e8883c4c0",
+    "docs/scene-baselines/garden-original/tests/garden-route-cursor.test.ts.txt": "4d9272d273412e664e993694d706afe16e7e4ffe06f78f4a61b96717e5226cbe",
+    "docs/scene-baselines/garden-original/tests/garden-route-footprints.test.ts.txt": "11f41fcc90c56c67d69df3c1d31093face3a78c7dc59dbdc3a23e9af8a14d3db",
+    "docs/scene-baselines/garden-original/tests/garden-route-geometry.test.ts.txt": "01a9681e44baf860cb9943d966cd56d2df038163ac21c1162372c04f7e8ef71a",
+    "docs/scene-baselines/garden-original/tests/garden-route-shared-tail.test.ts.txt": "7a1e47e7d886fea46ce04efa67d6a47a6f5ce580f51c4543861d2651e50f9e96",
+    "docs/scene-baselines/garden-original/tests/garden-scene.test.ts.txt": "fc3583c7fde00be4d3faccf720d8c404e9c89eb21a69e8cb7f11963e6a6a88ee",
+    "docs/scene-baselines/harvest-independent-audit.test.ts.txt": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+    "docs/scene-baselines/harvest-preview-assets.test.ts.txt": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+    "docs/scene-baselines/harvest-scene.test.ts.txt": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+    "docs/scene-baselines/harvest-scenery.ts.txt": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+    "docs/scene-baselines/quarry-scenery.ts.txt": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "docs/scene-baselines/snow-independent-audit.test.ts.txt": "9b751caab44cff37f2c8ff53d8452782fceceb27d7a2a0fc573b0bdd24ce74fb",
+    "docs/scene-baselines/snow-preview-assets.test.ts.txt": "320817037fdd6c3584466e4130087ce32096cd1a65f6065d056bfa6487c23c08",
+    "docs/scene-baselines/snow-scene.test.ts.txt": "9440f7ea8e51bd5276ade3184db89f1746151349784032650dde3ff48caeb415",
+    "docs/scene-baselines/snow-scenery.ts.txt": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+    "docs/scene-baselines/workshop-scenery.ts.txt": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+    "docs/stable-pages-manifest.json": "5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add",
+    "scripts/compose-dev-pages.mjs": "be7b4f8041dcc5686abb81cdf5d5d5c209e70e516ff79f25abe4ed91bc3b382e",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/waterpark-play.ts": "beffd88ad637408adf17531c10225721ff7c5ceb0fa82962995424c40adb9c05",
+    "tests/fixtures/airfield-enrichment-assembly-recipes.json": "54e1fabebf84e9253cb8cb7f9cd7eb05624ad0c5dd895d49476fa449565aaaf1",
+    "tests/fixtures/airfield-enrichment-camera-extension-outputs.json": "35190795d6c5484eb723c63c7e346803ca9e2b8c5923a498180fbc9becc78cec",
+    "tests/fixtures/airfield-enrichment-camera-extension-plan.json": "edaf7659414757a19e5a4aac373cf1722103c0deaee2211b75b4ecb329546f2b",
+    "tests/fixtures/airfield-enrichment-camera-outputs.json": "596e883062ddd1683ebae3f3aedfcdae4bf04e7faf8100af15003674a5b39f67",
+    "tests/fixtures/airfield-enrichment-original-assemblies.json": "cb2a673122ad2e9656f9563b92b792c19d07839a904e89b1402ed0212f0f788a",
+    "tests/fixtures/airfield-enrichment-original-geometry.json": "264433eb8a734047aea058f6bcc92be4f0f03cda65db545e3036b6d5c25b7f30",
+    "tests/fixtures/airfield-enrichment-original-inventory.json": "803c61344abe2f97fb9acaaf8c5960f64036938fff7e1248d8263e1db332b6cf",
+    "tests/fixtures/airfield-enrichment-reviewed-changes.json": "b036ddf5cd27fdd7dcb18a38715ea45c7ef426101ebcac77009c0e2f7dd44324",
+    "tests/fixtures/airfield-enrichment-test-transformations.json": "ff6b826d27bbb358bb3bc7c524e28771812719b086cae5c3440ca19c1c07a16f",
+    "tests/fixtures/caldera-enrichment-assembly-recipes.json": "d05fd84a11a7df1b90cefa7164b6ae1f35fa1709a7993ed743a0ab358bd9af0d",
+    "tests/fixtures/caldera-enrichment-camera-windows.json": "b5f1c13854b9510d02e6485275fcbdedbb6ea2f7d931fc0e1601b200a267861b",
+    "tests/fixtures/caldera-enrichment-original-geometry.json": "9de28b035c62c3236eddc3f9200dbf777ac40feb798379faec87526f8a43bb70",
+    "tests/fixtures/caldera-enrichment-protected.json": "bfbe008f69d41fe2809f4611d87cd8b522d5508b36a21c385570a8801e555439",
+    "tests/fixtures/desert-enrichment-protected.json": "5413288d3cda5e312c2ab8b59f70bf2eb2425a1fff11e04c7b2adf78245fec40",
+    "tests/fixtures/forest-enrichment-protected.json": "a923f43ed41a116358ad8ef43c60e86cdbaff65d5c6c3db74a9f2fffd975d90c",
+    "tests/fixtures/garden-enrichment-assembly-recipes.json": "6bd6c91a43e4a32d499770bfd0e73ae38efdf48eaf2d61c49acad4288df7588d",
+    "tests/fixtures/garden-enrichment-camera-outputs.json": "8cdac054678a3f529619dcf0d93d45f6bc0ba592b063bbf2b118d99dc229c900",
+    "tests/fixtures/garden-enrichment-original-assemblies.json": "3f7ea78514e3ef91d3a0037bb39de7a0bfc22622c5a1338c4242a0cf985fa59e",
+    "tests/fixtures/garden-enrichment-original-geometry.json": "d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0",
+    "tests/fixtures/garden-enrichment-original-inventory.json": "ee38acf0339c017150d2ed99a70ebaf2bf4ea5555dd8beb3ea7a47647a1c26d4",
+    "tests/fixtures/garden-enrichment-reviewed-changes.json": "0bf147bda5bf2d63dbce87a5b5ad09e1dc24406c2d9fb39bc0c5573565a11813",
+    "tests/fixtures/geometry-runtime-portability.json": "46902badf0d40a040fe311f83e71397df5b7e1211d919b7e4bd3a3a7f1905a87",
+    "tests/fixtures/harvest-enrichment-protected.json": "cebc9293f79ee7f9b611018e6e3f2367bd4f0b917f2b9e67f70540c39a2061c0",
+    "tests/fixtures/mountain-first-pass-cylinder.json": "1428ccadd971c46ff540052ab10cff4d3317cfca32faa994db993abcbd5016cf",
+    "tests/fixtures/mountain-first-pass-unaffected.json": "59f4393016e781825ec611b5c746c92208f3acf70c8c73d873ddd555f127e7e1",
+    "tests/fixtures/mountain-native-control-baseline.json": "5446f2bcfd2d6bc14b28bfdc4c93ab0ab7883755678e598cb60d539619fffd63",
+    "tests/fixtures/mountain-source-baseline.json": "2d872b1677663b72ef8778fd35f82f9c0b94f5b1cbd20a8f49505cdc047f0faa",
+    "tests/fixtures/quarry-enrichment-preservation.json": "c78e47b89de3cb35974053f9e9acac40938cfb1a66acdd3e2c5bb3fc595f75fc",
+    "tests/fixtures/quarry-enrichment-source-inventory.json": "f28df6ea0c4d273c7fb87f12f8f7aea4c02aa14f60e708a1a745731f146ad828",
+    "tests/fixtures/reviewed-scene-revisions.json": "93c939d0e25ff6dc8bb63f724043f3d6689cc6c571b7c3d0cd14b5cb13930371",
+    "tests/fixtures/snow-enrichment-assembly-recipes.json": "46e499b8b34be81b24c55c11352c9903c319f65d23f09ad5c99dbfd1c2bb7863",
+    "tests/fixtures/snow-enrichment-camera-windows.json": "f56e3d7c265c08285fb87d587701ed4b68bc93d7333cdd13db6ee4d63011f45d",
+    "tests/fixtures/snow-enrichment-original-geometry.json": "b36d22a2608ae65811f9623a9a7f10405ac9f91acf774f756e6d21aa6bbca9e9",
+    "tests/fixtures/snow-enrichment-protected.json": "329a88bb6a45da852b20c3a5a4e7ac1160eded23f1f82b7a5ad85edaedafc2fa",
+    "tests/fixtures/town-enrichment-protected.json": "ec3984e4371ae09e0201bcc132f1f610a5a91914ca21064aee5e6e14553006b2",
+    "tests/fixtures/workshop-enrichment-protected.json": "55caa71500662aebd91ce7dd38350bf484d9b9373b46abce7e5ebde48bac6977",
+    "tests/helpers/airfield-enrichment-camera-frozen.json": "3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a",
+    "tests/helpers/authorized-portraits.json": "e05bf4cade8de3e1ae13b6db1e20c1c22a4ba38cf28b3e0b559cdb06cb7d6bf4",
+    "tests/helpers/authorized-runtime.json": "090df0e4fdad642acd48ad43b0ee3ae75ec1227ea1a8ba614fd380955491de36",
+    "tests/helpers/caldera-enrichment-camera-frozen.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+    "tests/helpers/desert-enrichment-camera-frozen.json": "37cf96efe90686822099b3d377c815cee49580e6cf368f94ea913236bd7cb480",
+    "tests/helpers/forest-enrichment-camera-frozen.json": "a77fbe5a89b66636ab98c7dcd4e51a6133da261937cd4c761d4f5a65a0c08bb0",
+    "tests/helpers/garden-enrichment-camera-frozen.json": "06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598",
+    "tests/helpers/loading-guide-transition.json": "17b48d3b06e78496ca2070f3cae971c41f284baeafb96df63f821d407adb7c74",
+    "tests/helpers/menu-presentation-transition.json": "65a635b8628717ef43f89779b8799fea5c874c1ee6d106ef273a5aa0a7352283",
+    "tests/helpers/mobile-controls-protected-evidence.json": "3a3ed1cd74f20597d622888ad399c16c7fc8b25f0655d2c03193f4ffa015a6e4",
+    "tests/helpers/mobile-controls-transition.json": "c102771cf3f33552d57697ad22394da6c1d3a05735be5446b93e620e5cf5aa34",
+    "tests/helpers/original-track.json": "98e7d15c057e4bc2dd16af1b61bdb79d542ff157e97c807d2d68bbe040bd816d",
+    "tests/helpers/quarry-enrichment-camera-frozen.json": "1071a19f60974b5d9f265203d96a0e8d088e2df96e68b73c6c2abfd877263ee8",
+    "tests/helpers/snow-enrichment-camera-frozen.json": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+    "tests/helpers/stable-pages-repin-transition.json": "0b406ff247642f2b0ad76fe5cc5c6da76f6a1573a7b6ffe25185d67df5e7b9e7",
+    "tests/helpers/touch-opacity-transition.json": "994d5865aa1f2b98192d8603e821829368166aab265e5e6554597c240630ec07",
+    "tests/helpers/town-enrichment-camera-extra-windows.json": "cf57988bc5fdfd75ddabdc3176fc5e10ed1c9a1b90ae7cdd6e5b7519258f8051",
+    "tests/helpers/town-enrichment-camera-frozen.json": "bff2d07d74d139131a9bebc65a2f467660e3b38aaef13d9dd13f08350e54f48b",
+    "tests/helpers/workshop-enrichment-camera-frozen.json": "b36e8b7a964940c07f31a5f91921e40b74aed84b85c40ba565a0575db6078c8b"
+  }
+}

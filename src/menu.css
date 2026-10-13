@@ -100,3 +100,8 @@ body[data-screen=maps] .masthead{height:76px;padding-top:18px;padding-bottom:18p
 /* Free-mode setup uses the existing settings and call-to-action visual language. */
 .flow-step{font-size:13px;letter-spacing:.04em;color:var(--muted);margin-top:24px}.vehicle-panel{text-align:center}.mount-symbol{font-size:100px;line-height:1.2;color:#9cdacb}.race-options-panel>#back-vehicle{margin-bottom:24px}.race-options-panel input[type=number]{font:inherit;width:160px;max-width:100%;padding:12px;border-radius:10px;border:1px solid #a3b7ad;background:#f7f3df;color:#173944}.race-options-panel .start-race,.vehicle-panel .start-race{margin-top:24px}.race-options-panel fieldset{min-width:0}
 .race-build-summary{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #ffffff20}.race-build-summary h2{font-size:16px;margin:0 0 14px}.race-build-summary dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}.race-build-summary dt{font-size:11px;color:var(--muted)}.race-build-summary dd{margin:4px 0 0;font-size:12px;overflow-wrap:anywhere}
+
+/* Control preference is a native, labelled setting with an ample hit target. */
+.control-mode-setting{border-top:0;padding-top:0}
+.control-mode-setting select{min-width:150px;min-height:44px;padding:9px 12px;flex-shrink:0;border:1px solid #ffffff40;border-radius:7px;background:#102d39;color:#eff5ed;font:600 13px system-ui;cursor:pointer;touch-action:manipulation}
+.control-mode-setting select:focus-visible{outline:3px solid var(--lime);outline-offset:5px}

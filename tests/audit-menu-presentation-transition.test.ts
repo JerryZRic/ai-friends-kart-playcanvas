@@ -125,7 +125,7 @@ test('Garden and Airfield preserve frozen camera plans/output matrices while acc
 test('both camera source-stability closures include the new pure module and full transition proof dependencies', () => {
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of menuPresentationAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
-    assert.equal(hashes['src/menu.ts'], review.changes['src/menu.ts'].currentSha256);
+    assert.equal(hashes['src/menu.ts'], mobileControlsHash('src/menu.ts', review.changes['src/menu.ts'].currentSha256));
     assert.equal(hashes['tests/free-mode-menu-dom.test.ts'], mobileControlsHash('tests/free-mode-menu-dom.test.ts', review.changes['tests/free-mode-menu-dom.test.ts'].currentSha256));
   }
 });

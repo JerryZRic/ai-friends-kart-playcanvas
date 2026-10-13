@@ -1,3 +1,4 @@
+import {inputModeHash, inputModePathsWithin, restoreInputModeBytes, inputModeAuditDependencies} from './input-mode-reviewed-revisions';
 /** Exact touch-paint and legal-shortcut presentation transition; historical proofs stay immutable. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -48,15 +49,16 @@ export function assertTouchOpacityReviewBytes(bytes: string): Review {
 export function touchOpacityReview() { return assertTouchOpacityReviewBytes(readFileSync(TOUCH_OPACITY_REVIEW_PATH, 'utf8')); }
 export function touchOpacityHash(path: string, incoming: unknown) {
   const review = touchOpacityReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return inputModeHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-touch-presentation incoming identity');
-  return row.currentSha256;
+  return inputModeHash(path, row.currentSha256);
 }
 export function touchOpacityPathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(touchOpacityReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(touchOpacityReview().changes).filter(path => Object.hasOwn(inventory, path)), ...inputModePathsWithin(inventory)])];
 }
 export function restoreTouchOpacityBytes(path: string, current: string) {
+  current = restoreInputModeBytes(path, current);
   const review = touchOpacityReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -73,5 +75,5 @@ export function restoreTouchOpacityBytes(path: string, current: string) {
 export function touchOpacityAuditDependencies() {
   const review = touchOpacityReview();
   return [TOUCH_OPACITY_REVIEW_PATH, 'tests/helpers/touch-opacity-reviewed-revisions.ts', 'tests/audit-touch-opacity-transition.test.ts',
-    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal)];
+    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...inputModeAuditDependencies()];
 }
