@@ -111,7 +111,7 @@ test('menu preference restores, saves, synchronizes, resets, and disposes across
   click(){if(!this.disabled)this.dispatchEvent(new Event('click'));}
  }
  const root=new Element(),shell=new Element(),win=Object.assign(new Target(),{localStorage:storage,scrollTo:()=>{}});
- const location={search:'?screen=settings&return=maps&map=waterpark&driver=glm&difficulty=hard&seed=77'};
+ const location={pathname:'/dev/index.html',search:'?screen=settings&return=maps&map=waterpark&driver=glm&difficulty=hard&seed=77'};
  const historyChanges:string[]=[];
  const history={pushState:(_state:unknown,_title:string,url:string)=>{historyChanges.push(url);location.search=new URL(url,'https://test.invalid/').search;},replaceState:(_state:unknown,_title:string,url:string)=>{location.search=new URL(url,'https://test.invalid/').search;}};
  const doc=Object.assign(new Target(),{defaultView:win,body:{dataset:{}},activeElement:null as Element|null,title:'',querySelector:()=>null,getElementById:(id:string)=>id==='menu'?root:id==='menu-ui'?shell:elements.find(el=>el.attrs.id===id),createElement:(tag:string)=>new Element(tag)});
@@ -121,7 +121,10 @@ test('menu preference restores, saves, synchronizes, resets, and disposes across
  const escape=()=>win.dispatchEvent(Object.assign(new Event('keydown'),{key:'Escape'}));
  try{
   for(const [name,value] of Object.entries({document:doc,window:win,location,history,localStorage:storage}))Object.defineProperty(g,name,{configurable:true,writable:true,value});
-  await import('../src/menu');
+  const bootNodes=new Map(['menu-boot','menu-boot-status','menu-boot-progress','menu-boot-detail','menu-boot-retry','menu-boot-continue'].map(id=>[id,new Element()]));
+  const lookup=doc.getElementById;doc.getElementById=(id:string)=>bootNodes.get(id)??lookup(id);
+  Object.assign(win,{setTimeout:()=>1,clearTimeout:()=>{}});
+  const {mountMenu}=await import('../src/menu');mountMenu();
   assert.equal(root.className,'screen-settings');assert.match(doc.title,/游戏设置/);
   assert.equal($('#menuControlMode').value,'touch','saved choice is restored before interaction');
   assert.match(root.innerHTML,/<label for="menuControlMode">操控方式<\/label>/);

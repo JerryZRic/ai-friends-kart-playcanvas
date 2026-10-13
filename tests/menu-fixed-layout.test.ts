@@ -11,22 +11,22 @@ test('setup pages keep their canonical frame and title has a scoped physical-pix
  for(const child of ['class="masthead"','id="menu"','id="menu-boot"','class="site-footer"'])assert.ok(html.indexOf(child)>frame,child);
  assert.match(html,/src\/title-menu.css/);
  assert.match(html,/src\/ui-layout.css/);assert.match(html,/src\/menu-fixed.css/);
- assert.match(menu,/mountUiLayout\(shell,\(\)=>\{disposeBackdrop\?\.resize\(\);disposeCharacter\?\.resize\(\);\}\)/);
- assert.match(menu,/__menuBoot\?\.releaseLayout\?\.\(\)/);
+ assert.match(menu,/mountUiLayout\(shell,layout=>\{/);assert.match(menu,/disposeBackdrop\?\.resize\(\);disposeCharacter\?\.resize\(\);/);
+ assert.match(menu,/mountMenuBoot\(document\)/);assert.match(menu,/menuLayout\.dispose\(\)/);
  assert.match(menu,/mountUiViewportNotice\(shell\)/);
 });
 
 test('setup composition keeps fixed proportions independently of title-menu styles',()=>{
  assert.doesNotMatch(css,/@media\s*\([^)]*(?:min|max)-(?:width|height)/);
  assert.doesNotMatch(css,/\d(?:s?v[wh]|dvh|lvh)\b/);
- assert.doesNotMatch(html,/\d(?:s?v[wh]|dvh|lvh)\b/);
+ const introFree=html.replace(/<style data-brand-intro-style>[\s\S]*?<\/style>/,'');assert.doesNotMatch(introFree,/\d(?:s?v[wh]|dvh|lvh)\b/,'only the separate startup brand overlay may use viewport units');
  assert.match(fixed,/\.title-actions\{[^}]*grid-template-columns:repeat\(4,/);
  assert.match(fixed,/\.character-grid\{[^}]*grid-template-columns:repeat\(3,/);
  assert.match(fixed,/\.quality-options\{[^}]*grid-template-columns:repeat\(3,/);
  assert.match(fixed,/\.race-options-panel\{[^}]*grid-template-columns:252px minmax\(0,1fr\)[^}]*height:470px[^}]*max-height:584px[^}]*overflow-y:auto/);
  assert.match(fixed,/\.race-options-panel \.start-race\{[^}]*grid-column:1\/-1;grid-row:4[^}]*height:56px/);
  assert.match(fixed,/\.screen-settings>\.settings-panel\{[^}]*height:584px[^}]*overflow-y:auto/);
- assert.match(menu,/class="settings-panel" tabindex="0" aria-label="画面设置与操作说明"/);
+ assert.match(menu,/class="settings-panel system-options-panel" tabindex="0" aria-label="画面设置与操作说明"/);
  assert.match(fixed,/#character-preview\{width:100%!important;height:100%!important\}/);
 });
 

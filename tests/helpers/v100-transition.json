@@ -2789,14 +2789,52 @@
         }
       ]
     },
-    "tests/free-mode-menu-dom.test.ts": {
-      "previousSha256": "dca42fe8471fd8a59fbbca256b060e1122c58b820ef6bba5a53ccec4838b93bb",
-      "currentSha256": "c4a34838be845ab75c2cfbc9cf1dad395321580ab48ea197e29819232303d9a1",
+    "tests/control-settings-entries.test.ts": {
+      "previousSha256": "c296f3ddf894af1908217b187d8525f25a89be7261ce1c465c37d430a660e381",
+      "currentSha256": "90a0706ecf99ad3fd90360bb6a9f5687e29397705b4c13fccee0de90f63d766a",
       "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
       "hunks": [
         {
+          "beforeStart": 113,
+          "afterStart": 113,
+          "removedLines": [
+            " const location={search:'?screen=settings&return=maps&map=waterpark&driver=glm&difficulty=hard&seed=77'};\n"
+          ],
+          "insertedLines": [
+            " const location={pathname:'/dev/index.html',search:'?screen=settings&return=maps&map=waterpark&driver=glm&difficulty=hard&seed=77'};\n"
+          ]
+        },
+        {
+          "beforeStart": 123,
+          "afterStart": 123,
+          "removedLines": [
+            "  await import('../src/menu');\n"
+          ],
+          "insertedLines": [
+            "  const bootNodes=new Map(['menu-boot','menu-boot-status','menu-boot-progress','menu-boot-detail','menu-boot-retry','menu-boot-continue'].map(id=>[id,new Element()]));\n",
+            "  const lookup=doc.getElementById;doc.getElementById=(id:string)=>bootNodes.get(id)??lookup(id);\n",
+            "  Object.assign(win,{setTimeout:()=>1,clearTimeout:()=>{}});\n",
+            "  const {mountMenu}=await import('../src/menu');mountMenu();\n"
+          ]
+        }
+      ]
+    },
+    "tests/free-mode-menu-dom.test.ts": {
+      "previousSha256": "dca42fe8471fd8a59fbbca256b060e1122c58b820ef6bba5a53ccec4838b93bb",
+      "currentSha256": "35241fe378bac053884fc0d98dbf085dd4e43b61426b1ac1797cd25f3f21f626",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 5,
+          "afterStart": 5,
+          "removedLines": [],
+          "insertedLines": [
+            "import {registerSceneNavigator} from '../src/music-ui';\n"
+          ]
+        },
+        {
           "beforeStart": 26,
-          "afterStart": 26,
+          "afterStart": 27,
           "removedLines": [],
           "insertedLines": [
             "  append(...children:Element[]){for(const child of children)this.appendChild(child);}\n"
@@ -2804,42 +2842,155 @@
         },
         {
           "beforeStart": 32,
-          "afterStart": 33,
+          "afterStart": 34,
           "removedLines": [
             " const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=['./index.html'];let historyIndex=0;\n"
           ],
           "insertedLines": [
-            " const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:'',origin:'https://test.invalid',get href(){return 'https://test.invalid/dev/index.html'+this.search;}};const urls:string[]=['./index.html'];let historyIndex=0;\n"
+            " const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={pathname:'/dev/index.html',search:'',origin:'https://test.invalid',get href(){return 'https://test.invalid/dev/index.html'+this.search;}};const urls:string[]=['./index.html'];let historyIndex=0;\n"
           ]
         },
         {
           "beforeStart": 35,
-          "afterStart": 36,
+          "afterStart": 37,
           "removedLines": [
-            " g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)};\n"
-          ],
-          "insertedLines": [
-            " g.document=Object.assign(new EventTarget(),{body:new Element(),createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)});\n"
-          ]
-        },
-        {
-          "beforeStart": 37,
-          "afterStart": 38,
-          "removedLines": [
+            " g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)};\n",
+            " let fallback:(()=>void)|undefined,firstBoot=true,failures=0;\n",
             " g.window=Object.assign(windowTarget,{location,scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.document.defaultView=g.window;g.location=location;g.history=history;\n"
           ],
           "insertedLines": [
-            " g.window=Object.assign(windowTarget,{location,history,scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.document.defaultView=g.window;g.location=location;g.history=history;\n"
+            " g.document=Object.assign(new EventTarget(),{body:new Element(),createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)});\n",
+            " const bootNodes=new Map(['menu-boot','menu-boot-status','menu-boot-progress','menu-boot-detail','menu-boot-retry','menu-boot-continue'].map(id=>[id,new Element()]));\n",
+            " const lookup=g.document.getElementById;g.document.getElementById=(id:string)=>bootNodes.get(id)??lookup(id);\n",
+            " const fallback=()=>bootNodes.get('menu-boot-continue')!.click();\n",
+            " g.window=Object.assign(windowTarget,{location,history,scrollTo:()=>{},setTimeout:()=>1,clearTimeout:()=>{}});g.document.defaultView=g.window;g.location=location;g.history=history;\n"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 44,
+          "removedLines": [],
+          "insertedLines": [
+            " let garageDestination:URL|undefined;\n",
+            " // The real SPA host owns route replacement. This menu-only fixture captures its handoff.\n",
+            " const releaseNavigator=registerSceneNavigator(g.document,(href:string)=>{garageDestination=new URL(href,location.href);return true;});\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 49,
+          "removedLines": [
+            "  await import('../src/menu');\n"
+          ],
+          "insertedLines": [
+            "  const {mountMenu}=await import('../src/menu');mountMenu();\n"
+          ]
+        },
+        {
+          "beforeStart": 46,
+          "afterStart": 53,
+          "removedLines": [
+            "  assert.equal(failures,1);\n"
+          ],
+          "insertedLines": [
+            "  assert.match(bootNodes.get('menu-boot-status')!.textContent,/无法初始化 3D/);assert.equal(bootNodes.get('menu-boot-continue')!.hidden,false);\n"
+          ]
+        },
+        {
+          "beforeStart": 50,
+          "afterStart": 57,
+          "removedLines": [
+            "  firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);\n"
+          ],
+          "insertedLines": [
+            "  fallback();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);\n"
+          ]
+        },
+        {
+          "beforeStart": 83,
+          "afterStart": 90,
+          "removedLines": [
+            "   key('Escape');key('Escape');$('[data-screen=\"exit\"]').click();assert.equal(root.className,'screen-exit');assert.match(root.innerHTML,/关闭此标签页/);$('[data-screen=\"main\"]').click();\n"
+          ],
+          "insertedLines": [
+            "   key('Escape');key('Escape');fallback();$('[data-screen=\"exit\"]').click();assert.equal(root.className,'screen-exit');assert.match(root.innerHTML,/关闭此标签页/);$('[data-screen=\"main\"]').click();fallback();\n"
           ]
         },
         {
           "beforeStart": 106,
-          "afterStart": 107,
+          "afterStart": 113,
           "removedLines": [
             "  $('#back-vehicle').click();assert.match((location as any).href,/garage.html\\?driver=glm.*difficulty=hard.*seed=12/);\n"
           ],
           "insertedLines": [
-            "  $('#back-vehicle').click();const garageRoute=new URL(location.href);assert.equal(garageRoute.pathname,'/dev/index.html');for(const [key,value] of Object.entries({garage:'1',driver:'glm',difficulty:'hard',seed:'12'}))assert.equal(garageRoute.searchParams.get(key),value);assert.equal(shell.hidden,true);history.back();assert.equal(shell.hidden,false);\n"
+            "  $('#back-vehicle').click();const garageRoute=garageDestination!;assert.equal(garageRoute.pathname,'/dev/garage.html');for(const [key,value] of Object.entries({driver:'glm',difficulty:'hard',seed:'12'}))assert.equal(garageRoute.searchParams.get(key),value);assert.equal(garageRoute.searchParams.get('kart'),snapshot);assert.equal(root.className,'screen-race-settings','menu view replacement belongs to the SPA host');\n"
+          ]
+        },
+        {
+          "beforeStart": 112,
+          "afterStart": 119,
+          "removedLines": [
+            "  location.search=homeTarget.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-main');$('[data-screen=\"maps\"]').click();assert.equal(new URLSearchParams(location.search).get('seed'),'77');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);\n"
+          ],
+          "insertedLines": [
+            "  location.search=homeTarget.search;windowTarget.dispatchEvent(new Event('popstate'));assert.equal(root.className,'screen-main');fallback();$('[data-screen=\"maps\"]').click();assert.equal(new URLSearchParams(location.search).get('seed'),'77');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);\n"
+          ]
+        },
+        {
+          "beforeStart": 120,
+          "afterStart": 127,
+          "removedLines": [
+            "  $('[data-screen=\"settings\"]').click();key('Escape');assert.equal(new URLSearchParams(location.search).get('map'),'mountain');$('#back-vehicle').click();assert.equal(new URL((location as any).href,'https://test.invalid').searchParams.get('map'),'mountain');\n"
+          ],
+          "insertedLines": [
+            "  $('[data-screen=\"settings\"]').click();key('Escape');assert.equal(new URLSearchParams(location.search).get('map'),'mountain');$('#back-vehicle').click();assert.equal(garageDestination!.pathname,'/dev/garage.html');assert.equal(garageDestination!.searchParams.get('map'),'mountain');\n"
+          ]
+        },
+        {
+          "beforeStart": 125,
+          "afterStart": 132,
+          "removedLines": [
+            " }finally{for(const[n,d]of saved){if(d)Object.defineProperty(g,n,d);else delete g[n];}}\n"
+          ],
+          "insertedLines": [
+            " }finally{releaseNavigator();for(const[n,d]of saved){if(d)Object.defineProperty(g,n,d);else delete g[n];}}\n"
+          ]
+        }
+      ]
+    },
+    "tests/free-mode-menu.test.ts": {
+      "previousSha256": "bd80e454f3b6bd93797d1e9fbc5d39f298c07aa95fe6b3a77250b50d9677c694",
+      "currentSha256": "e4135474ab300db9b35619fec65382110168a00eb200c035f39863368eeff89d",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 33,
+          "afterStart": 33,
+          "removedLines": [
+            "test('entry has no race bootstrap; all map entries are separate and settings are honest',async()=>{\n"
+          ],
+          "insertedLines": [
+            "test('entry uses the shared scene host; deep links and settings remain explicit',async()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 35,
+          "removedLines": [
+            " assert.match(index,/\\/src\\/menu.ts/);assert.doesNotMatch(index,/<canvas|src\\/game.ts|src\\/waterpark-play.ts/);assert.doesNotMatch(menu,/from ['\"]playcanvas|window.close|volume|AudioContext/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(index,/\\/src\\/spa.ts/);assert.doesNotMatch(index,/<canvas|src\\/game.ts|src\\/waterpark-play.ts/);assert.doesNotMatch(menu,/from ['\"]playcanvas|window.close|volume|AudioContext/);\n"
+          ]
+        },
+        {
+          "beforeStart": 37,
+          "afterStart": 37,
+          "removedLines": [
+            " assert.match(coast,/src\\/game.ts/);assert.match(vite,/coast: 'coast.html'/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(coast,/src\\/spa.ts/);const spa=await readFile('src/spa.ts','utf8');assert.match(spa,/mountMenu/);assert.match(spa,/import\\('\\.\\/game'\\)/);assert.match(vite,/coast: 'coast.html'/);\n"
           ]
         }
       ]
@@ -3059,6 +3210,45 @@
         }
       ]
     },
+    "tests/menu-fixed-layout.test.ts": {
+      "previousSha256": "8eb9b18be03f0e8477f2540921abcf452ce3c8eda417995d856a222f7568c2ca",
+      "currentSha256": "9cb5ef6e1a440f441faa8d6d64841bb5d85f0acfa8c18c1a13ef2bbdc7b6146f",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 13,
+          "afterStart": 13,
+          "removedLines": [
+            " assert.match(menu,/mountUiLayout\\(shell,\\(\\)=>\\{disposeBackdrop\\?\\.resize\\(\\);disposeCharacter\\?\\.resize\\(\\);\\}\\)/);\n",
+            " assert.match(menu,/__menuBoot\\?\\.releaseLayout\\?\\.\\(\\)/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(menu,/mountUiLayout\\(shell,layout=>\\{/);assert.match(menu,/disposeBackdrop\\?\\.resize\\(\\);disposeCharacter\\?\\.resize\\(\\);/);\n",
+            " assert.match(menu,/mountMenuBoot\\(document\\)/);assert.match(menu,/menuLayout\\.dispose\\(\\)/);\n"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 21,
+          "removedLines": [
+            " assert.doesNotMatch(html,/\\d(?:s?v[wh]|dvh|lvh)\\b/);\n"
+          ],
+          "insertedLines": [
+            " const introFree=html.replace(/<style data-brand-intro-style>[\\s\\S]*?<\\/style>/,'');assert.doesNotMatch(introFree,/\\d(?:s?v[wh]|dvh|lvh)\\b/,'only the separate startup brand overlay may use viewport units');\n"
+          ]
+        },
+        {
+          "beforeStart": 28,
+          "afterStart": 28,
+          "removedLines": [
+            " assert.match(menu,/class=\"settings-panel\" tabindex=\"0\" aria-label=\"画面设置与操作说明\"/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(menu,/class=\"settings-panel system-options-panel\" tabindex=\"0\" aria-label=\"画面设置与操作说明\"/);\n"
+          ]
+        }
+      ]
+    },
     "tests/music-integration.test.ts": {
       "previousSha256": "2511597fbd7c96c9a870a1ed91241657e4c5b7136ea72b6b58cb35182c977074",
       "currentSha256": "11b66b01bdc997197367b9049a7692e2c2855072fbf8085a3ff10c0fe16e3d9f",
@@ -3254,6 +3444,75 @@
         }
       ]
     },
+    "tests/title-menu.test.ts": {
+      "previousSha256": "b989938308fe69157c4fb270356c213cf2995938289cc8d29ad8c8b5304795f9",
+      "currentSha256": "c668abe06539335569c4d0cd74cf4f04b1a94c0ddc2a8b4664718227963f9271",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 16,
+          "afterStart": 16,
+          "removedLines": [
+            " assert.match(menu,/image\\.addEventListener\\('error',\\(\\)=>\\{image\\.hidden=true;/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(menu,/listen\\(image,'error',\\(\\)=>\\{image\\.hidden=true;/);\n"
+          ]
+        },
+        {
+          "beforeStart": 39,
+          "afterStart": 39,
+          "removedLines": [
+            " assert.match(css,/env\\(safe-area-inset-left\\)/);assert.match(css,/env\\(safe-area-inset-right\\)/);assert.match(css,/env\\(safe-area-inset-bottom\\)/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(css,/env\\(safe-area-inset-left,0px\\)/);assert.match(css,/env\\(safe-area-inset-right,0px\\)/);assert.match(css,/env\\(safe-area-inset-bottom\\)/);\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 44,
+          "removedLines": [
+            " assert.match(css,/width:min\\(100%,177\\.777778cqh\\);height:min\\(56\\.25cqw,100%\\)/);\n"
+          ],
+          "insertedLines": [
+            " assert.match(css,/\\.title-stage\\{[^}]*width:1600px;height:900px;transform:translate\\(-50%,-50%\\) scale\\(var\\(--title-scale,1\\)\\)/);\n",
+            " assert.match(menu,/Math\\.min\\(Math\\.max\\(1,layout\\.viewportWidth-left-right\\)\\/1600,Math\\.max\\(1,layout\\.viewportHeight-top-bottom\\)\\/900\\)/);\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 59,
+          "removedLines": [
+            "test('small landscape controls have an independent minimum target and portrait stays usable',()=>{\n",
+            " assert.match(css,/height:clamp\\(48px,9\\.3cqh,90px\\);min-height:48px/);\n",
+            " assert.match(css,/@media \\(max-width:600px\\) and \\(orientation:portrait\\)/);\n",
+            " assert.match(css,/grid-template-columns:repeat\\(2,minmax\\(0,1fr\\)\\)/);\n",
+            " assert.match(css,/@media \\(max-width:420px\\) and \\(orientation:landscape\\)/);\n",
+            " for(const [w,h,safe] of [[844,390,44],[568,320,0],[480,280,0],[320,200,0]]){\n",
+            "  const side=Math.max(w*.06,safe),gap=Math.max(8,Math.min(w*.013,22));\n",
+            "  const targetWidth=(w-2*side-3*gap)/4,targetHeight=Math.max(48,Math.min(h*.093,90));\n"
+          ],
+          "insertedLines": [
+            "test('uniform title plates retain separate physical minimum targets without rearranging portrait art',()=>{\n",
+            " assert.match(css,/height:83\\.7px;min-height:83\\.7px/);\n",
+            " assert.match(css,/\\.title-hit-area\\{[^}]*height:max\\(100%,calc\\(48px \\/ var\\(--title-scale,1\\)\\)\\)/);\n",
+            " assert.doesNotMatch(css,/@media \\([^)]*(?:max-width|orientation)/);\n",
+            " for(const [w,h,safe] of [[844,390,44],[568,320,0],[480,280,0],[320,200,0],[320,568,0]]){\n",
+            "  const scale=Math.min((w-2*safe)/1600,h/900);\n",
+            "  const targetWidth=((1600-2*96-3*20.8)/4)*scale,targetHeight=Math.max(83.7*scale,48);\n"
+          ]
+        },
+        {
+          "beforeStart": 67,
+          "afterStart": 67,
+          "removedLines": [],
+          "insertedLines": [
+            "  assert.ok(20.8*scale>0,'neighboring expanded vertical targets remain horizontally separated');\n"
+          ]
+        }
+      ]
+    },
     "tests/town-gameplay-routes.test.ts": {
       "previousSha256": "71035f6633df6cc8ee146f0f956ea88cb3eefdcaa8f9e9b04091ea29c4f3f516",
       "currentSha256": "9cfd969376ee71a5a8e42a0bdf8dabf4f5ead15fb73b3a785af99e1fbeb109fd",
@@ -3274,6 +3533,67 @@
             "  }\n",
             " }\n",
             "});\n"
+          ]
+        }
+      ]
+    },
+    "tests/ui-layout.test.ts": {
+      "previousSha256": "ea89e7acbeb4bc851b707df261157feb0360831e527cd850c8dab60875083d4a",
+      "currentSha256": "38ad9c7a3479fd2fbfd7e6560e71779764e85a1fd2332367e5b047cce495d321",
+      "scope": "Exact approved v1.0 feature, regression or release-documentation delta",
+      "hunks": [
+        {
+          "beforeStart": 112,
+          "afterStart": 112,
+          "removedLines": [
+            "test('garage boot recovery fits before the module is available and relinquishes resize ownership', async () => {\n"
+          ],
+          "insertedLines": [
+            "test('garage cold recovery covers failed startup and hands ownership to the shared SPA host', async () => {\n"
+          ]
+        },
+        {
+          "beforeStart": 114,
+          "afterStart": 114,
+          "removedLines": [],
+          "insertedLines": [
+            "  const {runInNewContext} = await import('node:vm');\n"
+          ]
+        },
+        {
+          "beforeStart": 116,
+          "afterStart": 117,
+          "removedLines": [
+            "  assert.match(html, /Math\\.min\\(w\\/1440,h\\/900\\)/);\n",
+            "  assert.match(html, /__garageBootLayout=\\{release:release\\}/);\n",
+            "  assert.match(code, /__garageBootLayout\\?\\.release\\(\\)/);\n"
+          ],
+          "insertedLines": [
+            "  assert.match(html, /data-cold-recovery hidden style=\"position:fixed;inset:0/);\n",
+            "  assert.match(html, /src=\"\\/src\\/spa.ts\"/);\n",
+            "  assert.match(code, /mountGarageLayout\\(root, \\(\\) => preview\\?\\.resize\\(\\)\\)/);\n",
+            "  assert.match(readFileSync('src/spa.ts','utf8'), /__releaseColdRecovery\\?\\.\\(\\)/);\n",
+            "  const script=html.match(/<script>([\\s\\S]*?)<\\/script>/)?.[1];assert.ok(script);\n",
+            "  for(const trigger of ['timeout','error','unhandledrejection','release'] as const){\n",
+            "    const panel={isConnected:true,hidden:true,style:{display:'none'}};let removed=false;\n",
+            "    const events=new Map<string,(event?:any)=>void>(),timers=new Map<number,()=>void>();\n",
+            "    const win:{}&{__releaseColdRecovery?:()=>void}={};\n",
+            "    runInNewContext(script,{\n",
+            "      window:win,document:{getElementById:(id:string)=>id==='startup-recovery'?panel:id==='brand-intro'?{remove:()=>{removed=true;}}:null},\n",
+            "      addEventListener:(name:string,fn:(event?:any)=>void)=>events.set(name,fn),\n",
+            "      removeEventListener:(name:string,fn:(event?:any)=>void)=>{assert.equal(events.get(name),fn);events.delete(name);},\n",
+            "      setTimeout:(fn:()=>void,delay:number)=>{assert.equal(delay,15000);timers.set(1,fn);return 1;},clearTimeout:(id:number)=>timers.delete(id),\n",
+            "    });\n",
+            "    assert.equal(panel.hidden,true);\n",
+            "    if(trigger==='timeout')timers.get(1)!();\n",
+            "    else if(trigger==='error'){\n",
+            "      events.get('error')!({target:{tagName:'IMG'}});assert.equal(panel.hidden,true,'image failure is not fatal startup failure');\n",
+            "      events.get('error')!({target:{tagName:'SCRIPT'}});\n",
+            "    }else if(trigger==='unhandledrejection')events.get(trigger)!();\n",
+            "    if(trigger!=='release'){assert.equal(panel.hidden,false);assert.equal(panel.style.display,'grid');assert.equal(removed,true);}\n",
+            "    win.__releaseColdRecovery!();assert.equal(timers.size,0);assert.equal(events.size,0);assert.equal(win.__releaseColdRecovery,undefined);\n",
+            "    if(trigger==='release'){assert.equal(panel.hidden,true);assert.equal(removed,false);}\n",
+            "  }\n"
           ]
         }
       ]
@@ -4054,7 +4374,6 @@
     "tests/coast-race-rules.test.ts": "46c4a5c3cda2692249bd5d2e6c6438d5b815151cd571415e59ba62b7009ee68c",
     "tests/coast-rendering.test.ts": "de2267c6c0ca7531267cd36388cbb7a657bb882190676212f89b80cd93a3f50d",
     "tests/control-mode.test.ts": "a2f6a77c7c04b394cb2aab638af9e1b81612aeb3f795c1aba70cce2231e8a6fd",
-    "tests/control-settings-entries.test.ts": "c296f3ddf894af1908217b187d8525f25a89be7261ce1c465c37d430a660e381",
     "tests/desert-enrichment-camera.test.ts": "a0958ce708dd2f4520d9ea6f4eab11c98e90297bb002731a274526d2813dbf9d",
     "tests/desert-enrichment-geometry.test.ts": "008b1e59a11cae9381bc248790d898ec109f50099984b8d10d34799dc23297ae",
     "tests/desert-enrichment-inventory.test.ts": "dc97608adc0074d15b97aa6b4595f98f6ea5faf83358712931b8d0eb0465279e",
@@ -4128,7 +4447,6 @@
     "tests/forest-route-shared-tail.test.ts": "5edb5539baac8772dd97f94385d28db4f127318121747aaaf25602954444aa96",
     "tests/forest-scene.test.ts": "7db79e1a8b64aadc56db0d83260766b556eec26559fb62f7f798f7aa3b2c5b3f",
     "tests/free-mode-flow.test.ts": "895ba77fe4b26f4208c730d581f4a6918894f0d2169ef3f5507a73521350d292",
-    "tests/free-mode-menu.test.ts": "bd80e454f3b6bd93797d1e9fbc5d39f298c07aa95fe6b3a77250b50d9677c694",
     "tests/gameplay-cancel.test.ts": "da6eb14a78bea9d1bc2c89abef82a162bf5620cb7f0b59edf0d51c76458a5b52",
     "tests/gameplay-saved-build.test.ts": "516b1cde9e0198d58b7196e042c9373f6bf680888183d7d4d49d942e7fef64ab",
     "tests/gameplay.test.ts": "4471f33f162cf605ffb271c28303c9abb8ddbbae6a09943375e949ea3d922dee",
@@ -4347,7 +4665,6 @@
     "tests/map-preview-assets.test.ts": "1491ff21d6f18e6fd82a7d7acc8aaf9b89f340ac8593ad8c5b98de87d8075434",
     "tests/map-preview-runtime-assets.test.ts": "637e9d1a5839b87e23a78ada32bb6991545d8597ff987622bf9f87e2e29feb15",
     "tests/menu-backdrop.test.ts": "1e745fcef158ed0d66c410dac67b042c3f9219f5d5e55d4a8021569f17ea1bc9",
-    "tests/menu-fixed-layout.test.ts": "8eb9b18be03f0e8477f2540921abcf452ce3c8eda417995d856a222f7568c2ca",
     "tests/migration.test.ts": "252193f3fad2a79dbd1a4128c04d7d9e31a1a03ade1392c2c4cfbee12abb51a8",
     "tests/mobile-controls.test.ts": "dd0418f8e5dee44f4c1b7652e040594f9c27b01745e009f7f7c6f552917d7974",
     "tests/model-fetch.test.mjs": "4794a76312bc81e19702f233e685ef1a388f8c3b669beba14d5ec7447a0992eb",
@@ -4407,7 +4724,6 @@
     "tests/snow-route-shared-tail.test.ts": "cc0bf0cc0667b04081cfd604bd8fe252d35748b2e3a89eb74c6ff28515496197",
     "tests/snow-scene.test.ts": "3f74f4e4452d3758031cb2f75a9c33264dbda0e7d21ea522a7e9ecaf999f0b15",
     "tests/stable-pages.test.mjs": "e687f07139c92043f3b3e1f1930b5b65fe696e717d95cbc90328a124f9d2140c",
-    "tests/title-menu.test.ts": "b989938308fe69157c4fb270356c213cf2995938289cc8d29ad8c8b5304795f9",
     "tests/touch-control-presentation.test.ts": "d63f02ea047acbac4e2d288aa6d7e4a4263c4243e4f1cb9a31963662e9004e29",
     "tests/town-driving-balance.test.ts": "ac3d0724bd0f2b7308e5a35de50bced43c399f7d1ce448edee4ea3cb59b410e2",
     "tests/town-enrichment-camera.test.ts": "ce0af82731060e8eba6ce483e471d2b3c3976aa257c05eb2b6e6fc7bfe4dce4d",
@@ -4422,7 +4738,6 @@
     "tests/town-runtime-audit.test.ts": "5d437a3c2d57d92235104c58c44954d5be1b213f7024f45a568cd60a8ddd5638",
     "tests/town-scene.test.ts": "e2bd584260b15863fd4b83850e60364e9a1984b84da269c679a0bd610402d8cd",
     "tests/town-shared-merge.test.ts": "55952609a6fe7acfc3ee91cf47fd4abd5184db4ab34ded38fbe49d34c328b98e",
-    "tests/ui-layout.test.ts": "ea89e7acbeb4bc851b707df261157feb0360831e527cd850c8dab60875083d4a",
     "tests/vehicle-controls.test.mjs": "e9511c52250510d2b5bc7d7a3e8444cf5af0665619039a25e93c09e255592f49",
     "tests/water-mount.test.ts": "36d35d881dd5740dc3856a69ade3a723fa46b0e06b2a41e4e5392a222ec67831",
     "tests/water-race.test.ts": "d1069301ead57c7478ced6152e760229a0ab5be59df14ec632adba4c882200e0",

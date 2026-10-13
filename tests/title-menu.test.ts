@@ -14,7 +14,7 @@ test('title keeps a real world canvas and overlays only independent decorative P
  assert.match(css,/\.title-logo\{[^}]*pointer-events:none/);
  assert.doesNotMatch(menu,/Live2D|Cubism|spine/i);
  assert.doesNotMatch(css,/animation\s*:/);
- assert.match(menu,/image\.addEventListener\('error',\(\)=>\{image\.hidden=true;/);
+ assert.match(menu,/listen\(image,'error',\(\)=>\{image\.hidden=true;/);
  assert.match(menu,/root\.querySelector\('\.title-logo'\)===image/,'late image completion cannot hide another screen title');
 });
 
@@ -37,12 +37,13 @@ test('main-only physical sizing leaves loading, settings, map and race code path
  assert.match(css,/body\[data-screen=main\] #menu-ui\{[^}]*transform:none/);
  assert.match(css,/body\[data-screen=main\] #menu-boot\{[^}]*width:min\(540px,calc\(100% - 40px\)\)/);
  assert.match(css,/body\[data-screen=main\] #menu-ui \.story-dialog\{[^}]*overflow:auto/);
- assert.match(css,/env\(safe-area-inset-left\)/);assert.match(css,/env\(safe-area-inset-right\)/);assert.match(css,/env\(safe-area-inset-bottom\)/);
+ assert.match(css,/env\(safe-area-inset-left,0px\)/);assert.match(css,/env\(safe-area-inset-right,0px\)/);assert.match(css,/env\(safe-area-inset-bottom\)/);
  assert.doesNotMatch(css,/#character-preview|raceHud|#raceLoading|\.screen-maps|\.screen-settings/);
 });
 
 test('declared contain formula preserves 16:9 art at desktop, landscape phones and ultrawide',()=>{
- assert.match(css,/width:min\(100%,177\.777778cqh\);height:min\(56\.25cqw,100%\)/);
+ assert.match(css,/\.title-stage\{[^}]*width:1600px;height:900px;transform:translate\(-50%,-50%\) scale\(var\(--title-scale,1\)\)/);
+ assert.match(menu,/Math\.min\(Math\.max\(1,layout\.viewportWidth-left-right\)\/1600,Math\.max\(1,layout\.viewportHeight-top-bottom\)\/900\)/);
  // Arithmetic contract for declared CSS, not a browser screenshot/paint test.
  for(const [w,h] of [[1600,900],[1920,1080],[2560,1080],[844,390],[932,430],[568,320],[320,568]]){
   const aw=Math.min(w,h*16/9),ah=Math.min(w*9/16,h),left=(w-aw)/2,top=(h-ah)/2;
@@ -56,14 +57,14 @@ test('declared contain formula preserves 16:9 art at desktop, landscape phones a
  }
 });
 
-test('small landscape controls have an independent minimum target and portrait stays usable',()=>{
- assert.match(css,/height:clamp\(48px,9\.3cqh,90px\);min-height:48px/);
- assert.match(css,/@media \(max-width:600px\) and \(orientation:portrait\)/);
- assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(css,/@media \(max-width:420px\) and \(orientation:landscape\)/);
- for(const [w,h,safe] of [[844,390,44],[568,320,0],[480,280,0],[320,200,0]]){
-  const side=Math.max(w*.06,safe),gap=Math.max(8,Math.min(w*.013,22));
-  const targetWidth=(w-2*side-3*gap)/4,targetHeight=Math.max(48,Math.min(h*.093,90));
+test('uniform title plates retain separate physical minimum targets without rearranging portrait art',()=>{
+ assert.match(css,/height:83\.7px;min-height:83\.7px/);
+ assert.match(css,/\.title-hit-area\{[^}]*height:max\(100%,calc\(48px \/ var\(--title-scale,1\)\)\)/);
+ assert.doesNotMatch(css,/@media \([^)]*(?:max-width|orientation)/);
+ for(const [w,h,safe] of [[844,390,44],[568,320,0],[480,280,0],[320,200,0],[320,568,0]]){
+  const scale=Math.min((w-2*safe)/1600,h/900);
+  const targetWidth=((1600-2*96-3*20.8)/4)*scale,targetHeight=Math.max(83.7*scale,48);
   assert.ok(targetWidth>=48,`${w} has four physical targets`);assert.ok(targetHeight>=48);
+  assert.ok(20.8*scale>0,'neighboring expanded vertical targets remain horizontally separated');
  }
 });

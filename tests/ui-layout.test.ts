@@ -110,12 +110,35 @@ test('compact hint state follows actual logical scale and restores on unmount', 
   handle.dispose(); assert.equal(f.attributes.has('data-ui-compact'),false);
 });
 
-test('garage boot recovery fits before the module is available and relinquishes resize ownership', async () => {
+test('garage cold recovery covers failed startup and hands ownership to the shared SPA host', async () => {
   const {readFileSync} = await import('node:fs');
+  const {runInNewContext} = await import('node:vm');
   const html = readFileSync('garage.html','utf8');
   const code = readFileSync('src/kart-garage.ts','utf8');
-  assert.match(html, /Math\.min\(w\/1440,h\/900\)/);
-  assert.match(html, /__garageBootLayout=\{release:release\}/);
-  assert.match(code, /__garageBootLayout\?\.release\(\)/);
+  assert.match(html, /data-cold-recovery hidden style="position:fixed;inset:0/);
+  assert.match(html, /src="\/src\/spa.ts"/);
+  assert.match(code, /mountGarageLayout\(root, \(\) => preview\?\.resize\(\)\)/);
+  assert.match(readFileSync('src/spa.ts','utf8'), /__releaseColdRecovery\?\.\(\)/);
+  const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script);
+  for(const trigger of ['timeout','error','unhandledrejection','release'] as const){
+    const panel={isConnected:true,hidden:true,style:{display:'none'}};let removed=false;
+    const events=new Map<string,(event?:any)=>void>(),timers=new Map<number,()=>void>();
+    const win:{}&{__releaseColdRecovery?:()=>void}={};
+    runInNewContext(script,{
+      window:win,document:{getElementById:(id:string)=>id==='startup-recovery'?panel:id==='brand-intro'?{remove:()=>{removed=true;}}:null},
+      addEventListener:(name:string,fn:(event?:any)=>void)=>events.set(name,fn),
+      removeEventListener:(name:string,fn:(event?:any)=>void)=>{assert.equal(events.get(name),fn);events.delete(name);},
+      setTimeout:(fn:()=>void,delay:number)=>{assert.equal(delay,15000);timers.set(1,fn);return 1;},clearTimeout:(id:number)=>timers.delete(id),
+    });
+    assert.equal(panel.hidden,true);
+    if(trigger==='timeout')timers.get(1)!();
+    else if(trigger==='error'){
+      events.get('error')!({target:{tagName:'IMG'}});assert.equal(panel.hidden,true,'image failure is not fatal startup failure');
+      events.get('error')!({target:{tagName:'SCRIPT'}});
+    }else if(trigger==='unhandledrejection')events.get(trigger)!();
+    if(trigger!=='release'){assert.equal(panel.hidden,false);assert.equal(panel.style.display,'grid');assert.equal(removed,true);}
+    win.__releaseColdRecovery!();assert.equal(timers.size,0);assert.equal(events.size,0);assert.equal(win.__releaseColdRecovery,undefined);
+    if(trigger==='release'){assert.equal(panel.hidden,true);assert.equal(removed,false);}
+  }
   assert.match(readFileSync('src/kart-garage-fixed.css','utf8'), /#kart-garage:has\(> \.garage-boot\) \{display: block\}/);
 });
