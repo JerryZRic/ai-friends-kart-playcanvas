@@ -1,3 +1,4 @@
+import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP,type BackgroundMusic} from './music-ui';
 import {touchHint} from './mobile-controls';
 import {characterDisplayName,characterEmblem} from './character-identity.js';
 import { itemImage, type ItemKind } from './item-models';
@@ -223,6 +224,7 @@ const ITEMS = Object.freeze({
 });
 
 export interface RaceShellOptions extends RaceSoundOptions {
+  music?: BackgroundMusic | null;
   map: MapId;
   driver: string;
   track?: RaceMapTrack;
@@ -238,8 +240,21 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     if (element) element.classList[value ? 'add' : 'remove']('hidden');
   };
   const sound = createRaceSound(options);
+  const music = options.music === undefined ? getDocumentMusic(document, options.map) : options.music;
+  music?.preloadRace();
+  const musicNavigation = bindMusicNavigation(document, music);
+  const pauseActions = document.querySelector?.<HTMLElement>('#pausePanel .pause-actions');
+  let disposeMusicSettings = () => {};
+  if (pauseActions && document.createElement) {
+    const musicPanel = document.createElement('div');
+    musicPanel.innerHTML = MUSIC_SETTINGS_MARKUP;
+    pauseActions.insertBefore(musicPanel, elements.resumeRace);
+    pauseActions.style.maxHeight = 'calc(100% - 32px)'; pauseActions.style.overflowY = 'auto';
+    disposeMusicSettings = bindMusicSettings(musicPanel, music);
+  }
   const minimap = options.track ? createRaceMinimap(document.getElementById('map') as HTMLCanvasElement | null, options.track) : null;
   let mapId = options.map, phase: 'menu' | 'running' | 'paused' | 'finished' = 'menu';
+  let raceMusicStarted = false;
   let toastRemaining = 0, shownItem: ItemKind | null | undefined, disposed = false;
   const portraits = new Map<ItemKind, string>();
   const focus = (element: HTMLElement | null) => element?.focus?.({ preventScroll: true });
@@ -263,6 +278,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
 
   function renderCountdown(seconds: number, waitingForFinish = false) {
     if (disposed || phase !== 'running') return;
+    if (seconds <= 0 && !raceMusicStarted) { raceMusicStarted = true; music?.setPhase('race', true); }
     text('count', seconds > 0 ? String(Math.ceil(seconds)) : waitingForFinish ? '冲线！等待其他选手…' : '');
     if (elements.count) elements.count.classList[waitingForFinish && seconds <= 0 ? 'add' : 'remove']('waiting');
   }
@@ -287,6 +303,8 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
 
   return {
     updateNavigation,
+    navigate: musicNavigation.navigate,
+    loading() { if (!disposed) music?.silence(); },
     updateHUD(snapshot: RaceHudSnapshot) {
       if (disposed) return;
       const laps = count(snapshot.laps, 3), racers = count(snapshot.racerCount, 6);
@@ -326,6 +344,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     start(countdown = 3) {
       if (disposed) return;
+      raceMusicStarted = false; music?.silence();
       phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.remove('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = false;
@@ -334,6 +353,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     setPaused(paused: boolean, countdown = 0) {
       if (disposed || (paused ? phase !== 'running' : phase !== 'paused')) return;
+      music?.setPhase(raceMusicStarted ? (paused ? 'paused' : 'race') : 'silent');
       if (paused) {
         phase = 'paused'; document.body.classList.add('race-paused'); text('count', '已暂停');
         elements.count?.classList.remove('waiting'); elements.count?.classList.add('paused');
@@ -348,6 +368,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     renderCountdown,
     showMenu() {
       if (disposed) return;
+      music?.silence();
       phase = 'menu'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
@@ -356,6 +377,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     },
     finish(snapshot: RaceFinishSnapshot) {
       if (disposed) return;
+      music?.setPhase('menu');
       phase = 'finished'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.add('finished');
       hidden('overlay', false); hidden('menu', false); hidden('results', false); text('count', '');
@@ -385,6 +407,6 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     tone(frequency = 500, duration = .1) { sound.tone(frequency, duration); },
     toggleSound() { if (!disposed) { sound.toggle(); updateSound(); sound.tone(); } return sound.muted; },
     get muted() { return sound.muted; },
-    dispose() { if (disposed) return; disposed = true; sound.dispose(); clearToast(); },
+    dispose() { if (disposed) return; disposed = true; disposeMusicSettings(); musicNavigation.dispose(); music?.dispose(); sound.dispose(); clearToast(); },
   };
 }

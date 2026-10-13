@@ -34,6 +34,6 @@ test('menu URLs sanitize hostile states and preserve selected setup on back',()=
 test('entry has no race bootstrap; all map entries are separate and settings are honest',async()=>{
  const index=await readFile('index.html','utf8'),menu=await readFile('src/menu.ts','utf8'),coast=await readFile('coast.html','utf8'),vite=await readFile('vite.config.ts','utf8');
  assert.match(index,/\/src\/menu.ts/);assert.doesNotMatch(index,/<canvas|src\/game.ts|src\/waterpark-play.ts/);assert.doesNotMatch(menu,/from ['"]playcanvas|window.close|volume|AudioContext/);
- assert.match(menu,/menu-backdrop/);assert.match(menu,/大肥鱼卡丁车/);assert.match(menu,/故事模式/);assert.match(menu,/开发中/);assert.match(menu,/popstate/);assert.match(menu,/暂未加入背景音乐/);assert.match(menu,/转向加速度/);assert.match(menu,/惯性与阻尼/);assert.match(menu,/操作说明/);
+ assert.match(menu,/menu-backdrop/);assert.match(menu,/大肥鱼卡丁车/);assert.match(menu,/故事模式/);assert.match(menu,/开发中/);assert.match(menu,/popstate/);assert.match(menu,/MUSIC_SETTINGS_MARKUP/);assert.match(menu,/转向加速度/);assert.match(menu,/惯性与阻尼/);assert.match(menu,/操作说明/);
  assert.match(coast,/src\/game.ts/);assert.match(vite,/coast: 'coast.html'/);
 });

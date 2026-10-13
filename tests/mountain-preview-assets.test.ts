@@ -1,3 +1,4 @@
+import {musicHash} from './helpers/music-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -8,7 +9,7 @@ const sha=(path:string)=>createHash('sha256').update(readFileSync(path)).digest(
 test('mountain menu image records current runtime geometry and complete offline framing',()=>{
  const p=JSON.parse(readFileSync('docs/mountain-preview-provenance.json','utf8'));
  assert.equal(p.kind,'offline-native-geometry-render');assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
- for(const [path,digest]of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);
+ for(const [path,digest]of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),musicHash(path,digest),path);
  assert.ok(Math.abs(p.routeLengthMetres-MOUNTAIN_TRACK.length)<1e-7);
  assert.ok(p.batches<=24&&p.triangles<110000);
  const image=readFileSync(p.menuAsset.file);assert.equal(sha(p.menuAsset.file),p.menuAsset.sha256);

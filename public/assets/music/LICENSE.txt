@@ -1,0 +1,50 @@
+AI Friends Kart original music permission
+大肥鱼卡丁车原创音乐许可
+
+Copyright © 2026 JerryZRic.
+Except as expressly permitted below, all rights are reserved.
+除下述明确许可外，保留所有权利。
+
+Covered music / 适用音乐
+- dfy_theme.mp3
+- dfy_bgm.mp3
+- dfy_fusion.mp3
+This permission covers these musical works and recordings, including
+adaptations, only to the extent of rights held by JerryZRic.
+本许可适用于上述音乐作品与录音及其改编，仅限 JerryZRic 所持有的权利。
+
+English
+You may use, reproduce, modify, and distribute the covered music, including
+adaptations, for non-commercial use as part of AI Friends Kart and forks of
+this game. Credit JerryZRic and retain this notice and license with distributed
+copies.
+
+Commercial use of the music, including its use in a commercial distribution
+of the game or a fork, requires JerryZRic's prior permission. This permission
+does not authorize use in unrelated projects or standalone distribution or
+sale of the music outside the game and its forks.
+
+Nothing here limits applicable statutory exceptions, limitations, or other
+uses that do not require permission. Only rights held by JerryZRic are granted;
+no independent verification of rights in any third-party material is asserted.
+
+This license covers only the music. The game's code and other assets retain
+their existing licenses; the code's AGPL-3.0-only terms are unchanged. This is
+a separate music permission, not an AGPL license with a non-commercial clause.
+
+中文
+你可以将适用音乐（包括其改编）作为《大肥鱼卡丁车》（AI Friends Kart）
+及本游戏 fork 的一部分，用于非商业用途，并使用、复制、修改和分发。
+分发时须署名 JerryZRic，并保留本声明及许可。
+
+音乐的商业使用（包括用于本游戏或其 fork 的商业分发）须事先取得
+JerryZRic 的同意。本许可不授权将音乐用于无关项目，也不授权脱离本游戏
+及其 fork 单独分发或销售音乐。
+
+本许可不限制适用法律规定的例外、限制，或其他无需许可的使用。所授予的
+权利仅限 JerryZRic 实际持有的权利；本声明不表示已独立核验任何第三方
+材料的权利情况。
+
+本许可仅适用于音乐。游戏代码及其他资产继续适用各自现有许可；代码的
+AGPL-3.0-only 条款保持不变。这是一份独立音乐许可，并非在 AGPL 中增加
+非商业条款。

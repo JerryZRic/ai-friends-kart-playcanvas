@@ -1,3 +1,4 @@
+import {MUSIC_REVIEW_PATH, musicHash, musicPathsWithin, restoreMusicBytes, musicAddedPaths} from './helpers/music-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
@@ -64,7 +65,7 @@ test('only the manifest and seven bounded audit bridges change, with exact compl
   assert.deepEqual(Object.keys(review.additions), [...STABLE_PAGES_V050_REPIN_TEST_ADDITIONS]);
   assert.deepEqual(Object.keys(review.changes).filter(path => !path.startsWith('tests/')), [stablePath], 'No runtime, workflow, legal or packaging changes');
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreStablePagesV050RepinBytes(path, current);
+    const raw = read(path), current = restoreMusicBytes(path, raw), previous = restoreStablePagesV050RepinBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path); assert.equal(sha(previous), row.previousSha256, path);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -72,20 +73,24 @@ test('only the manifest and seven bounded audit bridges change, with exact compl
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' complete exact forward reconstruction');
-    for (const invalid of [current + ' ', current.slice(1), previous]) {
+    for (const invalid of [raw + ' ', raw.slice(1), previous]) {
       assert.throws(() => restoreStablePagesV050RepinBytes(path, invalid), undefined, path + ' no altered-byte or historical-byte fallback');
     }
   }
-  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact new audit');
+  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(restoreMusicBytes(path, read(path))), row.sha256, path + ' exact new audit');
 });
 
 test('the v0.5.0 bridge only advances exact path and old-hash pairs and rejects all changed permission records', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(stablePagesV050RepinHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(stablePagesV050RepinHash(path, row.previousSha256), musicHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => stablePagesV050RepinHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) assert.equal(stablePagesV050RepinHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/menu.ts', 'src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', '.github/workflows/pages-stable.yml', 'scripts/package-source.mjs', 'public/source.html', 'docs/airfield-enrichment-qa-files.json']) {
+  for (const path of ['src/menu.ts', 'src/game.ts']) {
+    assert.throws(() => stablePagesV050RepinHash(path, 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
+    assert.throws(() => restoreStablePagesV050RepinBytes(path, 'unchanged'), undefined, 'Music successor requires exact current bytes');
+  }
+  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', '.github/workflows/pages-stable.yml', 'scripts/package-source.mjs', 'public/source.html', 'docs/airfield-enrichment-qa-files.json']) {
     assert.equal(stablePagesV050RepinHash(path, 'unchanged'), 'unchanged');
     assert.equal(restoreStablePagesV050RepinBytes(path, 'unchanged'), 'unchanged');
   }
@@ -111,7 +116,7 @@ test('the v0.5.0 bridge only advances exact path and old-hash pairs and rejects 
 
 test('all 988 baseline identities survive and every non-manifest JSON, production, legal and workflow file stays exact', () => {
   assert.equal(Object.keys(review.protectedFiles).length, 980);
-  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' byte-exact baseline file');
+  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), musicHash(path, hash), path + ' exact baseline or bounded music successor');
   for (const path of [
     '.github/workflows/pages-stable.yml', '.github/workflows/pages.yml',
     'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt',
@@ -120,13 +125,13 @@ test('all 988 baseline identities survive and every non-manifest JSON, productio
   ]) assert.ok(Object.hasOwn(review.protectedFiles, path), path + ' explicitly immutable');
   const baselinePaths = [...Object.keys(review.protectedFiles), ...Object.keys(review.changes)];
   assert.equal(new Set(baselinePaths).size, 988);
-  const addedPaths = [STABLE_PAGES_V050_REPIN_REVIEW_PATH, 'tests/helpers/stable-pages-v050-repin-reviewed-revisions.ts', ...Object.keys(review.additions)];
+  const addedPaths = [STABLE_PAGES_V050_REPIN_REVIEW_PATH, 'tests/helpers/stable-pages-v050-repin-reviewed-revisions.ts', ...Object.keys(review.additions), ...musicAddedPaths()];
   for (const dir of ['.github', 'docs', 'models', 'public', 'scripts', 'tests']) {
     assert.deepEqual(walk(dir).sort(), [...baselinePaths, ...addedPaths].filter(path => path.startsWith(dir + '/')).sort(), dir + ' exact complete file inventory');
   }
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/')).sort();
-  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH].sort(), 'Every existing JSON retained with exactly one new review');
+  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
   for (const path of baselineJson.filter(path => path !== stablePath)) assert.ok(Object.hasOwn(review.protectedFiles, path), path + ' historical JSON cannot change');
 });
 
@@ -170,8 +175,8 @@ test('every original protected-evidence manifest remains intact with exact prede
 
 test('both source-stability closures include every new proof and bounded bridge while original inventories stay immutable', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(stablePagesV050RepinPathsWithin(inventory), [stablePath]);
-  assert.deepEqual(stablePagesV050RepinPathsWithin({[stablePath]: 'old', ['./' + stablePath]: 'alias', 'src/game.ts': 'unchanged'}), [stablePath]);
+  assert.deepEqual(stablePagesV050RepinPathsWithin(inventory), [stablePath, ...musicPathsWithin(inventory)]);
+  assert.deepEqual(stablePagesV050RepinPathsWithin({[stablePath]: 'old', ['./' + stablePath]: 'alias', 'src/game.ts': 'unchanged'}), [stablePath, 'src/game.ts']);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of [...stablePagesV050RepinAuditDependencies(), ...staticMenuArtAuditDependencies()]) assert.equal(hashes[path], sha(readFileSync(path)), path + ' complete current closure');
     assert.equal(hashes[stablePath], review.changes[stablePath].currentSha256);

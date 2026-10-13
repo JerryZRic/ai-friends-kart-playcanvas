@@ -48,7 +48,8 @@ test('mobile overlay only accepts exact incoming pairs and rejects aliases, curr
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => mobileControlsHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(mobileControlsHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'src/vehicle-controls.js']) assert.equal(mobileControlsHash(path, 'unchanged'), 'unchanged');
+  assert.throws(() => mobileControlsHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
+  for (const path of ['src/race-camera.ts', 'src/land-camera.ts', 'src/vehicle-controls.js']) assert.equal(mobileControlsHash(path, 'unchanged'), 'unchanged');
   assert.throws(() => mobileControlsHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
   assert.throws(() => assertMobileControlsReviewBytes(read(MOBILE_CONTROLS_REVIEW_PATH) + ' '));
   for (const mutate of [

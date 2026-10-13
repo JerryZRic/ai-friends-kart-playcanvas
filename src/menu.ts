@@ -1,3 +1,4 @@
+import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import type {CharacterPreviewController} from './character-preview';
 import type {MenuBackdropController} from './menu-backdrop';
@@ -12,12 +13,14 @@ import {parseRaceOptions} from './race-options';
 import {loadGarageState,buildParts,KART_SLOTS,SLOT_LABELS} from './kart-build';
 declare global { interface Window { __menuBoot?: {releaseLayout?:()=>void;begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
 const root=document.getElementById('menu')!;
+const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music);
+let disposeMusicSettings:(()=>void)|undefined;
 let homeReady=false;
 let disposeControlPreference:(()=>void)|undefined;
 function revealHome(version:number, fallback=false){
  if(version!==renderVersion||state.screen!=='main')return;
  if(!fallback&&window.__menuBoot?.ready()===false)return;
- homeReady=true;
+ homeReady=true;music?.setPhase('menu');
  const nav=root.querySelector<HTMLElement>('.title-actions');
  if(nav){nav.hidden=false;nav.inert=false;nav.setAttribute('aria-hidden','false');}
  root.querySelectorAll<HTMLButtonElement>('.title-action').forEach(button=>{button.disabled=false;});
@@ -34,6 +37,7 @@ let layoutDisposed=false;
 function disposeMenuLayout(){
  if(layoutDisposed)return;
  layoutDisposed=true;renderVersion++;
+ disposeMusicSettings?.();musicNavigation.dispose();music?.dispose();
  menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
  disposeControlPreference?.();disposeControlPreference=undefined;
  disposeBackdrop=undefined;disposeCharacter=undefined;
@@ -78,9 +82,12 @@ function startCharacter(version:number){
 }
 function navigate(screen:MenuScreen,updates:Partial<typeof state>={}){state={...state,...updates,screen};history.pushState(null,'',`./index.html${menuQuery(state)}`);render();root.focus({preventScroll:true});window.scrollTo({top:0});}
 function screenLabel(screen:MenuScreen){return ({main:'主菜单',maps:'地图选择',characters:'角色选择',vehicles:'坐骑选择','race-settings':'比赛设置',settings:'游戏设置',exit:'休息页面'})[screen];}
-function vehicleBack(){if(resolveMap(state.map).vehicle==='kart')location.href=garageEntry(state.driver,state);else navigate('vehicles');}
+function vehicleBack(){if(resolveMap(state.map).vehicle==='kart')musicNavigation.navigate(garageEntry(state.driver,state));else navigate('vehicles');}
 function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){return `<div class="section-top"><button class="back text-button" ${vehicle?'id="back-vehicle"':`data-screen="${back}"`}>← 返回${vehicle?(resolveMap(state.map).vehicle==='kart'?'卡丁车 / 改装车库':'坐骑选择'):screenLabel(back)}</button><button class="text-button" data-screen="settings">游戏设置 ↗</button></div><div class="section-heading"><p class="eyebrow">FREE PLAY / 自由模式</p><h1>${title}</h1><p>${sub}</p></div>`;}
 function render(){
+ musicNavigation.cancel();
+ disposeMusicSettings?.();disposeMusicSettings=undefined;
+ if(state.screen!=='main')music?.setPhase(state.screen==='exit'?'silent':'menu');
  disposeControlPreference?.();disposeControlPreference=undefined;
  const retainedStage=state.screen==='characters'&&root.className==='screen-characters'&&disposeCharacter?root.querySelector('.character-stage'):null;
  disposeBackdrop?.();disposeBackdrop=undefined;
@@ -142,7 +149,7 @@ function render(){
   const vehicleSummary=selectedParts?`<section class="race-build-summary" aria-label="已选卡丁车"><h2>已选卡丁车</h2><dl>${KART_SLOTS.map(slot=>`<div><dt>${SLOT_LABELS[slot]}</dt><dd>${selectedParts[slot].name}</dd></div>`).join('')}</dl></section>`:'<section class="race-build-summary" aria-label="已选坐骑"><h2>已选坐骑</h2><p>鲸鱼坐骑 · 水面惯性与滑移</p></section>';
   root.innerHTML=top('比赛设置',`${resolveMap(state.map).label} · ${resolveCharacter(state.driver).label} · 第 4 / 4 步`,'characters',true)+`<section class="settings-panel race-options-panel">${vehicleSummary}<fieldset><legend>对手难度</legend><p>只改变 NPC 的驾驶水平；对手与玩家使用相同规则。</p><div class="quality-options">${[['easy','简单','轻松熟悉赛道'],['normal','普通','标准驾驶水平'],['hard','困难','更熟练的路线与操作']].map(([value,label,description])=>`<label><input type="radio" name="difficulty" value="${value}" ${state.difficulty===value?'checked':''}><span><strong>${label}</strong><small>${description}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="race-seed">比赛种子</label><p>相同种子可重现对手配置，范围 0–4294967295</p></div><input id="race-seed" type="number" min="0" max="4294967295" step="1" value="${state.seed}" inputmode="numeric"></div><p id="race-options-status" role="status" aria-live="polite">已选择${state.difficulty==='easy'?'简单':state.difficulty==='hard'?'困难':'普通'}难度</p><a class="primary start-race" id="start-race" href="${raceEntry(state.map,state.driver,state)}"><span>开始比赛</span><span>→</span></a><p class="fine-print">首次进入需要下载 3D 资源，请稍候</p></section>`;
  }
- if(state.screen==='settings')root.innerHTML=`<div class="section-top"><button class="text-button" data-screen="${state.returnTo}">← 返回${screenLabel(state.returnTo)}</button></div><div class="section-heading"><p class="eyebrow">MAKE IT YOURS</p><h1>游戏设置</h1><p>设置自动保存在此浏览器；比赛中也可在暂停菜单更改操控方式</p></div><section class="settings-panel" tabindex="0" aria-label="画面设置与操作说明"><div class="setting-row control-mode-setting"><div><label for="menuControlMode">操控方式</label><p id="menuControlModeHint">自动根据设备与实际操作识别，也可手动选择；比赛中可在暂停菜单更改</p></div><select id="menuControlMode" aria-describedby="menuControlModeHint">${CONTROL_MODE_OPTIONS}</select></div><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class="quality-options">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type="radio" name="quality" value="${q}" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="refraction">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type="checkbox" id="refraction" ${settings.refraction?'checked':''}></div><div class="setting-row muted-row"><div><strong>背景音乐</strong><p>暂未加入背景音乐，后续版本再见</p></div><span class="badge">待加入</span></div><section class="controls-guide" aria-label="操作说明"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class="settings-status" id="settings-status" role="status" aria-live="polite">设置已载入</p><button class="text-button" id="reset-settings">恢复默认设置</button></section>`;
+ if(state.screen==='settings')root.innerHTML=`<div class="section-top"><button class="text-button" data-screen="${state.returnTo}">← 返回${screenLabel(state.returnTo)}</button></div><div class="section-heading"><p class="eyebrow">MAKE IT YOURS</p><h1>游戏设置</h1><p>设置自动保存在此浏览器；比赛中也可在暂停菜单更改操控方式</p></div><section class="settings-panel" tabindex="0" aria-label="画面设置与操作说明"><div class="setting-row control-mode-setting"><div><label for="menuControlMode">操控方式</label><p id="menuControlModeHint">自动根据设备与实际操作识别，也可手动选择；比赛中可在暂停菜单更改</p></div><select id="menuControlMode" aria-describedby="menuControlModeHint">${CONTROL_MODE_OPTIONS}</select></div><fieldset><legend>画面质量</legend><p>流畅档关闭阴影并降低渲染分辨率；精细档提高阴影清晰度</p><div class="quality-options">${[['low','流畅','低分辨率 · 无阴影'],['balanced','均衡','标准分辨率 · 标准阴影'],['high','精细','标准分辨率 · 精细阴影']].map(([q,name,desc])=>`<label><input type="radio" name="quality" value="${q}" ${settings.quality===q?'checked':''}><span><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}</div></fieldset><div class="setting-row"><div><label for="refraction">水面折射</label><p>水上乐园的透水折射效果；关闭可减轻渲染负担</p></div><input type="checkbox" id="refraction" ${settings.refraction?'checked':''}></div><div class="setting-row">${MUSIC_SETTINGS_MARKUP}</div><section class="controls-guide" aria-label="操作说明"><h2>操作说明</h2><h3>所有赛道 · 统一操作</h3><p>W / ↑ 油门 · S / ↓ 刹车与倒车<br>A / D 或 ← / → 转向 · 空格 刹车<br>Shift 漂移 / 水上滑移蓄力 · E 使用道具<br>Z / C 切换视角 · 按住鼠标右键回看<br>单击赛道后移动鼠标环顾 · Q 视角回正<br>Esc 暂停并释放鼠标 · P 暂停或继续</p><p>海岸卡丁车抓地转向；水上坐骑保留惯性与阻尼。相同按键与界面，不同驾驶手感。</p><p>触屏：使用赛道画面中的转向、油门、刹车及道具按钮。菜单可用 Tab 切换焦点、Enter 确认、Esc 返回。</p></section><p class="settings-status" id="settings-status" role="status" aria-live="polite">设置已载入</p><button class="text-button" id="reset-settings">恢复默认设置</button></section>`;
  if(state.screen==='exit')root.innerHTML=`<section class="exit-panel"><p class="eyebrow">SEE YOU AT THE START LINE</p><div class="exit-symbol" aria-hidden="true">☀</div><h1>休息一下，<br>随时再出发。</h1><p>已返回休息页面，没有比赛在后台运行。<br>你可以关闭此标签页退出游戏。</p><button class="primary" data-screen="main">返回主菜单 →</button></section>`;
  refreshNavigationLinks();
  bind();
@@ -212,10 +219,11 @@ function bind(){
   });
  });
  root.querySelectorAll<HTMLElement>('[data-driver]').forEach(button=>button.addEventListener('click',()=>{if(state.driver===button.dataset.driver)return;state.driver=resolveCharacter(button.dataset.driver).id;history.replaceState(null,'',`./index.html${menuQuery(state)}`);render();root.querySelector<HTMLElement>(`[data-driver="${state.driver}"]`)?.focus({preventScroll:true});}));
+ disposeMusicSettings=bindMusicSettings(root,music);
  const status=(saved:boolean)=>{const node=document.getElementById('settings-status');if(node)node.textContent=saved?'已保存，下次进入赛道时生效':'此浏览器无法保存设置；重新进入赛道将使用默认值';};
  root.querySelectorAll<HTMLInputElement>('[name="quality"]').forEach(input=>input.addEventListener('change',()=>{settings={...settings,quality:input.value as Quality};status(saveGameSettings(settings));}));
  root.querySelector<HTMLInputElement>('#refraction')?.addEventListener('change',event=>{settings={...settings,refraction:(event.target as HTMLInputElement).checked};status(saveGameSettings(settings));});
- root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});
+ root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');music?.setVolume(.65);music?.setMuted(false);render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});
 }
 window.addEventListener('popstate',()=>{state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});});
 window.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if(root.querySelector('#story-dialog')){closeStory();return;}if(state.screen==='characters')navigate('maps');else if(state.screen==='vehicles')navigate('characters');else if(state.screen==='race-settings')vehicleBack();else if(state.screen==='settings')navigate(state.returnTo);else if(state.screen!=='main')navigate('main');});

@@ -10,7 +10,7 @@ An arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**, with
 
 **[Play the stable browser version](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Try the dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows downloads](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
-> The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
+> The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets (excluding music) use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
 ## v0.4.0 release
 
@@ -185,7 +185,9 @@ Automated checks cover engine-independent race/input logic, real PlayCanvas CPU/
 
 ## License and model rights
 
-**Code and original game assets:** AGPL-3.0-only, including the original UI, circuit, kart, props and editable sources. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain their MIT licenses.
+**Code and original game assets (excluding music):** AGPL-3.0-only, including the original UI, circuit, kart, props and editable sources. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). PlayCanvas and fflate retain their MIT licenses.
+
+**Original music (© 2026 JerryZRic):** [Separate music license](public/assets/music/LICENSE.txt). The three musical works and recordings, including adaptations, may be used, modified and distributed non-commercially with this game and its forks, with credit and retained notices. Commercial use requires JerryZRic’s prior permission. This does not license unrelated projects or standalone music distribution/sale. The code’s AGPL terms are unchanged.
 
 **Six characters, including driving models and standing portraits:** separate rights apply. The project owner identifies them as Tripo Free outputs with non-commercial restrictions; the exact redistribution terms have not been independently established. Inclusion here grants no new model license, Creative Commons license or commercial permission. AGPL does not relicense the characters. Before reuse or redistribution, establish the applicable rights and obtain any required permissions. See [MODEL-NOTICE.txt](MODEL-NOTICE.txt).
 

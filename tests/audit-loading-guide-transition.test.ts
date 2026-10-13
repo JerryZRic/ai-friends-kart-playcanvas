@@ -48,7 +48,8 @@ test('loading-guide overlay rejects wrong incoming pairs, aliases and modified r
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => loadingGuideHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(loadingGuideHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
+  assert.throws(() => loadingGuideHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
+  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = mobileControlsReview().additions[mobilePath].sha256;
   assert.equal(sha(restoreTouchOpacityBytes(mobilePath, read(mobilePath))), mobilePin, 'Exact formerly unchanged mobile source survives the input-mode inverse');
   assert.equal(loadingGuideHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Only the new exact input-mode pair advances this source');

@@ -1,3 +1,4 @@
+import {musicSourcePaths, musicHash} from './music-reviewed-revisions';
 import {stablePagesV050RepinHash, stablePagesV050RepinPathsWithin, restoreStablePagesV050RepinBytes, stablePagesV050RepinAuditDependencies} from './stable-pages-v050-repin-reviewed-revisions';
 /** Exact static-title art transition; published input, geometry and legal evidence remains immutable. */
 import assert from 'node:assert/strict';
@@ -67,14 +68,14 @@ export function staticMenuArtPathsWithin(inventory: Record<string, unknown>) {
 export function assertStaticMenuArtAddition(path: string, bytes: string | Buffer) {
   const review = staticMenuArtReview();
   assert.ok(Object.hasOwn(review.additions, path), path + ' explicit reviewed static-title addition');
-  assert.equal(staticMenuArtSha(bytes), review.additions[path].sha256, path + ' exact new dependency bytes');
+  assert.equal(staticMenuArtSha(bytes), musicHash(path, review.additions[path].sha256), path + ' exact new dependency bytes');
 }
 export function staticMenuArtSourcePaths(previous: string[]) {
   for (const path of STATIC_MENU_ART_SOURCE_ADDITIONS) {
     assert.ok(!previous.includes(path), path + ' must be an explicit new production input');
     assertStaticMenuArtAddition(path, readFileSync(path));
   }
-  return [...previous, ...STATIC_MENU_ART_SOURCE_ADDITIONS];
+  return musicSourcePaths([...previous, ...STATIC_MENU_ART_SOURCE_ADDITIONS]);
 }
 export function restoreStaticMenuArtBytes(path: string, current: string) {
   current = restoreStablePagesV050RepinBytes(path, current);

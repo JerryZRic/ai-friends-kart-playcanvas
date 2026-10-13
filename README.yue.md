@@ -10,7 +10,7 @@
 
 **[瀏覽器穩定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [網頁 / Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
-> 遊戲介面用簡體中文，品牌名就用英文。上面嘅語言連結只會切換說明文件。程式碼同原創資產採用 AGPL-3.0-only 授權；六個角色模型另外有非商業用途限制。詳情睇[授權同模型權利](#license-and-model-rights)。
+> 遊戲介面用簡體中文，品牌名就用英文。上面嘅語言連結只會切換說明文件。程式碼同原創資產（音樂除外）採用 AGPL-3.0-only 授權；六個角色模型另外有非商業用途限制。詳情睇[授權同模型權利](#license-and-model-rights)。
 
 ## v0.4.0 統一版本
 
@@ -163,7 +163,9 @@ npm run build
 
 ## 授權同模型權利
 
-**程式碼同原創遊戲資產：** 採用 AGPL-3.0-only 授權，包括原創介面、賽道、高卡車、場景物件同可編輯原始檔。詳情睇 [LICENSE](LICENSE)、[NOTICE](NOTICE) 同 [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。PlayCanvas 同 fflate 保留各自嘅 MIT 授權。
+**程式碼同原創遊戲資產（音樂除外）：** 採用 AGPL-3.0-only 授權，包括原創介面、賽道、高卡車、場景物件同可編輯原始檔。詳情睇 [LICENSE](LICENSE)、[NOTICE](NOTICE) 同 [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。PlayCanvas 同 fflate 保留各自嘅 MIT 授權。
+
+**原創音樂（© 2026 JerryZRic）：** 按[獨立音樂授權](public/assets/music/LICENSE.txt)，三首音樂作品、錄音同改編可以跟本遊戲同 fork 作非商業使用、修改同分發，要署名同保留聲明；商用前要取得 JerryZRic 同意。唔包含無關專案，亦唔授權脫離遊戲同 fork 單獨分發或賣音樂。程式碼嘅 AGPL 條款不變。
 
 **六個角色嘅駕駛同獨立站姿肖像模型：** 另外有獨立嘅權利條件。專案擁有者表示，呢啲模型係 Tripo Free 方案嘅產出，有非商業用途限制；確實嘅再分發條款仲未經獨立確認。模型收錄喺呢個專案，唔代表授予新嘅模型授權、Creative Commons 授權或者商業使用許可。AGPL 唔會幫角色模型重新授權。重用或者再分發之前，要先確認適用嘅權利條件，並取得所需許可。詳情睇 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
 

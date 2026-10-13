@@ -10,7 +10,7 @@
 
 **[브라우저 안정 버전](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [독립 dev 미리 보기](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [웹 / Windows 다운로드](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
-> 게임 UI는 중국어 간체이며 브랜드명은 영어로 표시됩니다. 위의 언어 링크는 문서 언어만 전환합니다. 코드와 자체 제작 에셋에는 AGPL-3.0-only가 적용되며, 캐릭터 모델 6종에는 별도의 비상업적 이용 제한이 있습니다. [라이선스 및 모델 권리](#license-and-model-rights)를 확인하세요.
+> 게임 UI는 중국어 간체이며 브랜드명은 영어로 표시됩니다. 위의 언어 링크는 문서 언어만 전환합니다. 코드와 자체 제작 에셋(음악 제외)에는 AGPL-3.0-only가 적용되며, 캐릭터 모델 6종에는 별도의 비상업적 이용 제한이 있습니다. [라이선스 및 모델 권리](#license-and-model-rights)를 확인하세요.
 
 ## v0.4.0 통합 릴리스
 
@@ -163,7 +163,9 @@ npm run build
 
 ## 라이선스 및 모델 권리
 
-**코드와 자체 제작 게임 에셋:** AGPL-3.0-only가 적용되며, 자체 제작 UI, 서킷, 카트, 소품, 편집 가능한 원본이 포함됩니다. [LICENSE](LICENSE), [NOTICE](NOTICE), [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)를 확인하세요. PlayCanvas와 fflate에는 기존 MIT 라이선스가 유지됩니다.
+**코드와 자체 제작 게임 에셋(음악 제외):** AGPL-3.0-only가 적용되며, 자체 제작 UI, 서킷, 카트, 소품, 편집 가능한 원본이 포함됩니다. [LICENSE](LICENSE), [NOTICE](NOTICE), [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)를 확인하세요. PlayCanvas와 fflate에는 기존 MIT 라이선스가 유지됩니다.
+
+**자체 제작 음악(© 2026 JerryZRic):** [별도 음악 라이선스](public/assets/music/LICENSE.txt)가 적용됩니다. 세 곡의 음악 저작물과 녹음 및 개작물은 이 게임과 fork의 일부로서 출처와 고지를 유지하는 비상업적 사용·수정·배포가 허용됩니다. 상업적 사용에는 JerryZRic의 사전 동의가 필요합니다. 관련 없는 프로젝트나 게임 및 fork와 별개인 음악 배포·판매는 허용되지 않습니다. 코드의 AGPL 조건은 변경되지 않습니다.
 
 **캐릭터 6종의 운전 모델과 별도 포트레이트:** 별도의 권리가 적용됩니다. 프로젝트 소유자는 이 모델들이 비상업적 이용 제한이 있는 Tripo Free 출력물이라고 밝히고 있으나, 정확한 재배포 조건은 독립적으로 확인되지 않았습니다. 이 저장소에 포함되었다고 해서 새로운 모델 라이선스, Creative Commons 라이선스 또는 상업적 이용 허가가 부여되는 것은 아닙니다. AGPL은 캐릭터의 라이선스를 변경하지 않습니다. 재사용하거나 재배포하기 전에 적용되는 권리를 확인하고 필요한 허가를 받으세요. [MODEL-NOTICE.txt](MODEL-NOTICE.txt)를 확인하세요.
 

@@ -1,3 +1,4 @@
+import {musicHash, musicAuditDependencies} from './music-reviewed-revisions';
 /** Serial CPU audit. Production camera outputs are subjects; the oracle reads
  * every rendered indexed triangle and never trusts obstacle metadata as proof. */
 import assert from 'node:assert/strict';
@@ -13,8 +14,8 @@ import {inspectQuarryBoom,quarryCameraOracleSentinels,quarryFaceKey,QUARRY_CAMER
 const [stage,run,ledger]=process.argv.slice(2),baseline=stage==='baseline',started=Date.now();assert.ok(['baseline','candidate'].includes(stage));
 const plan=JSON.parse(readFileSync('tests/helpers/quarry-enrichment-camera-frozen.json','utf8'));
 assert.equal(sha(readFileSync('docs/scene-baselines/quarry-scenery.ts.txt')),plan.baselineSourceSha256);
-for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),digest,'Frozen camera dependency changed: '+file);
-const sourceFiles=[...Object.keys(plan.dependencies),'src/quarry-scenery.ts','docs/scene-baselines/quarry-scenery.ts.txt','tests/quarry-gameplay-camera.test.ts','tests/quarry-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/quarry-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];
+for(const [file,digest]of Object.entries(plan.dependencies))assert.equal(sha(readFileSync(file)),musicHash(file,digest),'Frozen camera dependency changed: '+file);
+const sourceFiles=[...Object.keys(plan.dependencies),...musicAuditDependencies(),'src/quarry-scenery.ts','docs/scene-baselines/quarry-scenery.ts.txt','tests/quarry-gameplay-camera.test.ts','tests/quarry-enrichment-camera.test.ts',...['frozen.json','worker.ts','scene.ts','oracle.ts'].map(s=>'tests/helpers/quarry-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts'];
 const sources=Object.fromEntries(sourceFiles.map(f=>[f,sha(readFileSync(f))]));
 assert.match(readFileSync('src/game.ts','utf8'),/safeLandCamera\(cameraAnchor,cameraPosition,course.cameraObstacles\)[\s\S]*?1 - Math.exp\(-dt \* \(menu \? 1.8 : 8\)\)[\s\S]*?safeLandCamera\(cameraAnchor,camera.getPosition\(\),course.cameraObstacles\)/,'Production pre-safety, damping and post-safety order must remain unchanged');
 quarryCameraOracleSentinels();

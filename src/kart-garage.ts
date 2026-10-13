@@ -1,3 +1,4 @@
+import {getDocumentMusic,bindMusicNavigation} from './music-ui';
 import {resolveMap} from './map-profiles';
 import {wholeCars, wholeCarForBuild, filterWholeCars, needsWholeCarConfirmation, sameKartBuild, copyWholeCarUndo, type WholeCarUndo} from './kart-whole-cars';
 import {characterEmblem} from './character-identity.js';
@@ -395,7 +396,8 @@ export function mountKartGarage(root: HTMLElement) {
       if (current.totalBytes && current.totalBytes > 0) {bar.max = current.totalBytes; bar.value = current.receivedBytes;} else bar.removeAttribute('value');
     }
   }, mode === 'cars' ? candidate.build : state.activeBuild);
-  const pagehide = () => {events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
+  const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music);music?.setPhase('menu');
+  const pagehide = () => {musicNavigation.dispose();music?.dispose();events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
   const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
   window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);
   const dispose = () => {pagehide(); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow); mountedGarages.delete(root);};

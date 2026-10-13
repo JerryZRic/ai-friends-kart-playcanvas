@@ -1,3 +1,4 @@
+import {musicHash, musicAuditDependencies} from './music-reviewed-revisions';
 /** Serial worker: actual indexed scene faces are the independent oracle.
  * Static/moving camera math is production code, not an acceptance oracle. */
 import assert from 'node:assert/strict';
@@ -16,8 +17,8 @@ const frozenBytes=readFileSync(new URL('./town-enrichment-camera-frozen.json',im
 const frozen=JSON.parse(frozenBytes.toString());assert.equal(frozen.views.length,125);
 assert.equal(hash(readFileSync(new URL('./town-enrichment-camera-baseline-source.txt',import.meta.url))),frozen.sourceHashes['src/town-scenery.ts']);
 const dependencies=Object.keys(frozen.sourceHashes).filter(f=>f!=='src/town-scenery.ts');
-for(const file of dependencies)assert.equal(hash(readFileSync(file)),frozen.sourceHashes[file],`Frozen camera dependency changed: ${file}`);
-const source=readFileSync('src/town-scenery.ts','utf8'),sources=Object.fromEntries([...dependencies,...(baseline?[]:['src/town-scenery.ts']),...['worker.ts','scene.ts','frozen.json','baseline-source.txt','extra-windows.json'].map(s=>'tests/helpers/town-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts'].map(f=>[f,hash(readFileSync(f))]));
+for(const file of dependencies)assert.equal(hash(readFileSync(file)),musicHash(file,frozen.sourceHashes[file]),`Frozen camera dependency changed: ${file}`);
+const source=readFileSync('src/town-scenery.ts','utf8'),sources=Object.fromEntries([...dependencies,...musicAuditDependencies(),...(baseline?[]:['src/town-scenery.ts']),...['worker.ts','scene.ts','frozen.json','baseline-source.txt','extra-windows.json'].map(s=>'tests/helpers/town-enrichment-camera-'+s),'tests/helpers/emitted-scene-oracle.ts'].map(f=>[f,hash(readFileSync(f))]));
 // Verify the actual production smoothing expression and pre/post safety order.
 const game=readFileSync('src/game.ts','utf8');assert.match(game,/safeLandCamera\(cameraAnchor,cameraPosition,course.cameraObstacles\)[\s\S]*?1 - Math.exp\(-dt \* \(menu \? 1.8 : 8\)\)[\s\S]*?safeLandCamera\(cameraAnchor,camera.getPosition\(\),course.cameraObstacles\)/);
 // Independent oracle sentinels: neither endpoint-only nor fixed-step boom

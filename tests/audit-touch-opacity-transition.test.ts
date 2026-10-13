@@ -93,7 +93,8 @@ test('touch overlay rejects wrong incoming identities, aliases, modified evidenc
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => touchOpacityHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(touchOpacityHash(alias, row.previousSha256), row.previousSha256);
   }
-  for (const path of ['src/game.ts', 'src/race-controls.ts', 'src/race-camera.ts', 'public/source.html']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
+  assert.throws(() => touchOpacityHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
+  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'public/source.html']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = review.protectedProduction[mobilePath];
   assert.equal(touchOpacityHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Exact protected mobile source advances only through the new input-mode layer');
   assert.throws(() => touchOpacityHash(mobilePath, 'unchanged'));

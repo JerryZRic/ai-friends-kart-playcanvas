@@ -189,7 +189,7 @@ try {
   }
   function restart(){if(contextLost||mode==='menu'||mode==='transition'||busy)return;performancePanel.interrupt('restart');mode='finished';start();}
   function useItem(){if(mode==='riding')useWaterItem(race,race.racers[0]);}
-  function navigate(screen=''){clearWaterDynamicPickups(race);clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
+  function navigate(screen=''){clearWaterDynamicPickups(race);clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;shell.navigate(screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main);}
   function switchCamera(){if(contextLost||mode==='menu'||mode==='transition')return;view=(view+1)%2;controls.orbit.recenter(true);snapCamera=true;shell.toast(view?'高位追逐视角':'低位追逐视角');}
   $('start').addEventListener('click',start,{signal:events.signal});
   $('pause').addEventListener('click',pause,{signal:events.signal});

@@ -1,3 +1,4 @@
+import {getDocumentMusic} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
 import { getNpcPresets } from './kart-presets';
@@ -45,6 +46,8 @@ const profile=resolveMap(mapId);
 mountRaceHud({subtitle:profile.tag+' GRAND PRIX',canvasLabel:profile.label+' 真实 3D 卡丁车赛道'});
 const $ = (id: string): any => document.getElementById(id);
 const loadingUi=mountRaceLoadingUi(document,mapId);
+// Register gesture unlock before the first asynchronous course import.
+getDocumentMusic(document)?.preloadRace();
 // Paint shared recovery controls before fetching optional course chunks.
 const initialLinks=raceNavigation(mapId,getDriver(query.get('driver')||DEFAULT_DRIVER_ID).id);
 $('raceChangeMap').href=initialLinks.changeMap;
@@ -344,7 +347,7 @@ $('retryLoading').onclick=()=>{void boot();};
 function pause(){if(state==='running'||state==='countdown'){state='paused';clearInputs();mouseLook.release();shell.setPaused(true,countdown);updateLookHint();updateHUD();}else if(state==='paused'){frameClock.reset();state=countdown>0?'countdown':'running';shell.setPaused(false,countdown);updateLookHint()}}$('pause').onclick=pause;
 $('resumeRace').onclick=pause;
 $('restartRace').onclick=reset;
-function navigate(screen=''){dynamicPickups.finish();clearInputs();mouseLook.release();const urls=shell.updateNavigation(mapId,selectedDriverId)!;location.href=screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main;}
+function navigate(screen=''){dynamicPickups.finish();clearInputs();mouseLook.release();const urls=shell.updateNavigation(mapId,selectedDriverId)!;shell.navigate(screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main);}
 $('pauseMenu').onclick=()=>navigate();
 $('pauseChangeMap').onclick=()=>navigate('maps');
 $('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returning')return;view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};

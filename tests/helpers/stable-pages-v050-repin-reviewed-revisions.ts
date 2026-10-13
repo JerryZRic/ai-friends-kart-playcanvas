@@ -1,3 +1,4 @@
+import {musicHash, musicPathsWithin, restoreMusicBytes, musicAuditDependencies} from './music-reviewed-revisions';
 /** Exact stable-publication repin after v0.5.0; runtime and every historical proof stay immutable. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -88,15 +89,16 @@ export function assertStablePagesV050RepinReviewBytes(bytes: string): Review {
 export function stablePagesV050RepinReview() { return assertStablePagesV050RepinReviewBytes(readFileSync(STABLE_PAGES_V050_REPIN_REVIEW_PATH, 'utf8')); }
 export function stablePagesV050RepinHash(path: string, incoming: unknown) {
   const review = stablePagesV050RepinReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return musicHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-v0.5.0-repin incoming identity');
-  return row.currentSha256;
+  return musicHash(path, row.currentSha256);
 }
 export function stablePagesV050RepinPathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(stablePagesV050RepinReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(stablePagesV050RepinReview().changes).filter(path => Object.hasOwn(inventory, path)), ...musicPathsWithin(inventory)])];
 }
 export function restoreStablePagesV050RepinBytes(path: string, current: string) {
+  current = restoreMusicBytes(path, current);
   const review = stablePagesV050RepinReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -113,5 +115,5 @@ export function restoreStablePagesV050RepinBytes(path: string, current: string) 
 export function stablePagesV050RepinAuditDependencies() {
   const review = stablePagesV050RepinReview();
   return [STABLE_PAGES_V050_REPIN_REVIEW_PATH, 'tests/helpers/stable-pages-v050-repin-reviewed-revisions.ts',
-    ...Object.keys(review.changes), ...Object.keys(review.additions)];
+    ...Object.keys(review.changes), ...Object.keys(review.additions), ...musicAuditDependencies()];
 }
