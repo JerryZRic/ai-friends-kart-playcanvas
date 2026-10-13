@@ -1,0 +1,544 @@
+{
+  "schema": "loading-guide-transition-v1",
+  "baselineCommit": "80c72ea963196f415d0cccd6b4084d37e2c1ec8f",
+  "baselineTree": "a7f6defbe4fd7bd3b522822bc405c6f94c06d856",
+  "publicBaselineCommit": "6844110cb77bb5b71041786f1802217766a8f759",
+  "changes": {
+    "src/mobile-controls.css": {
+      "previousSha256": "4c8a4e3b470375d7c41e35c432aea3390542efcab7113e1a808452543a8d65d0",
+      "currentSha256": "15e044438c7d4627d73a23cb2a24d1f70b49bd0cd08ca55acfb5fd159a949225",
+      "scope": "Loading guide reflects effective touch or desktop input with existing mobile control semantics",
+      "hunks": [
+        {
+          "beforeStart": 94,
+          "afterStart": 94,
+          "removedLines": [
+            "/* Mode switches reveal exactly one loading guide, without changing its scale. */\n",
+            ".touch-control-guide{display:none}\n",
+            "body[data-input-mode='touch'] .touch-control-guide{display:block}\n",
+            "body[data-input-mode='touch'] .desktop-control-guide{display:none}\n"
+          ],
+          "insertedLines": [
+            "/* Loading mounts only the guide for the effective mode; shared HUD scale applies. */\n"
+          ]
+        }
+      ]
+    },
+    "src/race-control-guide.ts": {
+      "previousSha256": "787d67aa9ddc208563d082b4729da428450270484530ed66fa4d87e3ed2cb1e0",
+      "currentSha256": "57bedb35683e4ee5d2fe318f3d94e1e91d69ae74fbd6cf2350bf7d62f25cd1c5",
+      "scope": "Loading guide reflects effective touch or desktop input with existing mobile control semantics",
+      "hunks": [
+        {
+          "beforeStart": 28,
+          "afterStart": 28,
+          "removedLines": [
+            "export const RACE_CONTROL_GUIDE_MARKUP = `<section class=\"loading-controls desktop-control-guide\" aria-labelledby=\"loadingControlsTitle\">\n"
+          ],
+          "insertedLines": [
+            "const DESKTOP_GUIDE_CONTENT = `\n"
+          ]
+        },
+        {
+          "beforeStart": 41,
+          "afterStart": 41,
+          "removedLines": [
+            "</section><section class=\"loading-controls touch-control-guide\" aria-label=\"手机触控操作\">\n"
+          ],
+          "insertedLines": [
+            "`;\n",
+            "\n",
+            "const TOUCH_GUIDE_CONTENT = `\n"
+          ]
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 50,
+          "removedLines": [
+            "      <div class=\"loading-control-row\"><dt>刹车 / 漂移</dt><dd>独立刹车 · 漂移时配合转向</dd></div>\n"
+          ],
+          "insertedLines": [
+            "      <div class=\"loading-control-row\"><dt>刹车 / 漂移</dt><dd>独立刹车 · <span id=\"loadingDriftHelp\">手刹漂移</span>时配合转向</dd></div>\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 60,
+          "removedLines": [
+            "</section>`;\n"
+          ],
+          "insertedLines": [
+            "`;\n",
+            "\n",
+            "export type RaceGuideMode = 'touch' | 'desktop';\n",
+            "/** Exactly one guide is mounted. CSS never decides which instructions are true. */\n",
+            "export function raceControlGuideContent(mode: RaceGuideMode) {\n",
+            "  return mode === 'touch' ? TOUCH_GUIDE_CONTENT : DESKTOP_GUIDE_CONTENT;\n",
+            "}\n",
+            "export function raceControlGuideMarkup(mode: RaceGuideMode) {\n",
+            "  return `<section id=\"loadingControlsPanel\" class=\"loading-controls ${mode}-control-guide\" aria-label=\"${mode === 'touch' ? '手机触控操作' : '键鼠操作'}\">${raceControlGuideContent(mode)}</section>`;\n",
+            "}\n",
+            "export const RACE_CONTROL_GUIDE_MARKUP = raceControlGuideMarkup('desktop');\n"
+          ]
+        }
+      ]
+    },
+    "src/race-loading-ui.ts": {
+      "previousSha256": "e7b6041833baccdba2b55ed73e2b236604138db819002a4cab4e46e1ebeb9f63",
+      "currentSha256": "877cdd093e79611e7c6792cbb7d4c121c303293e77382e3cdf910c96e0673b86",
+      "scope": "Loading guide reflects effective touch or desktop input with existing mobile control semantics",
+      "hunks": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "removedLines": [
+            "import { RACE_CONTROL_GUIDE_MARKUP } from './race-control-guide';\n"
+          ],
+          "insertedLines": [
+            "import {raceControlGuideMarkup, raceControlGuideContent, type RaceGuideMode} from './race-control-guide';\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 17,
+          "removedLines": [
+            "export const RACE_LOADING_MARKUP = `<section class=\"race-loading-screen\" aria-label=\"赛前加载\">\n"
+          ],
+          "insertedLines": [
+            "export function raceLoadingMarkup(mode: RaceGuideMode) { return `<section class=\"race-loading-screen\" aria-label=\"赛前加载\">\n"
+          ]
+        },
+        {
+          "beforeStart": 20,
+          "afterStart": 20,
+          "removedLines": [
+            "  ${RACE_CONTROL_GUIDE_MARKUP}\n"
+          ],
+          "insertedLines": [
+            "  ${raceControlGuideMarkup(mode)}\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "removedLines": [
+            "</section>`;\n"
+          ],
+          "insertedLines": [
+            "</section>`; }\n",
+            "export const RACE_LOADING_MARKUP = raceLoadingMarkup('desktop');\n",
+            "const mounts = new WeakMap<Document, () => void>();\n",
+            "const effectiveGuideMode = (doc: Document): RaceGuideMode => doc.body?.dataset?.inputMode === 'touch' ? 'touch' : 'desktop';\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 38,
+          "removedLines": [
+            "  host.innerHTML = RACE_LOADING_MARKUP;\n"
+          ],
+          "insertedLines": [
+            "  mounts.get(doc)?.();\n",
+            "  let guideMode = effectiveGuideMode(doc), disposed = false;\n",
+            "  // Resolve the shared effective mode before inserting markup: no keyboard flash.\n",
+            "  host.innerHTML = raceLoadingMarkup(guideMode);\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 50,
+          "removedLines": [
+            "    const mobile = doc.body?.dataset?.inputMode === 'touch';\n"
+          ],
+          "insertedLines": [
+            "    if (disposed) return;\n",
+            "    const nextMode = effectiveGuideMode(doc);\n",
+            "    if (nextMode !== guideMode) {\n",
+            "      guideMode = nextMode;\n",
+            "      const panel = get('loadingControlsPanel');\n",
+            "      panel.innerHTML = raceControlGuideContent(guideMode);\n",
+            "      panel.setAttribute('class', `loading-controls ${guideMode}-control-guide`);\n",
+            "      panel.setAttribute('aria-label', guideMode === 'touch' ? '手机触控操作' : '键鼠操作');\n",
+            "    }\n",
+            "    get('loadingDriftHelp').textContent = water ? '水上滑移' : '手刹漂移';\n",
+            "    const mobile = guideMode === 'touch';\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 74,
+          "removedLines": [
+            "  let disposed = false;\n"
+          ],
+          "insertedLines": [
+            "  function dispose() {\n",
+            "    if (disposed) return;\n",
+            "    disposed = true;\n",
+            "    doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips);\n",
+            "    retryButton.disabled = true; continueButton.disabled = true;\n",
+            "    if (mounts.get(doc) === dispose) mounts.delete(doc);\n",
+            "  }\n",
+            "  mounts.set(doc, dispose);\n"
+          ]
+        },
+        {
+          "beforeStart": 76,
+          "afterStart": 99,
+          "removedLines": [
+            "    dispose() { disposed = true; doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips); retryButton.disabled = true; continueButton.disabled = true; },\n"
+          ],
+          "insertedLines": [
+            "    dispose,\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-mobile-controls-transition.test.ts": {
+      "previousSha256": "6ec7206df675a6d1c93071f77701a19aaa9bed585997f0e19ccb8acea996ddc5",
+      "currentSha256": "16d92ea104b393b468e1d692ede9a75e1647fc0323ea896c7e0a3513a02966ae",
+      "scope": "Exact loading-guide regression coverage and historical proof chaining",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes} from './helpers/loading-guide-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 27,
+          "afterStart": 28,
+          "removedLines": [
+            "    const current = read(path), original = restoreMobileControlsBytes(path, current);\n"
+          ],
+          "insertedLines": [
+            "    const raw = read(path), current = restoreLoadingGuideBytes(path, raw), original = restoreMobileControlsBytes(path, raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 35,
+          "afterStart": 36,
+          "removedLines": [
+            "    assert.throws(() => restoreMobileControlsBytes(path, current + ' '));\n"
+          ],
+          "insertedLines": [
+            "    assert.throws(() => restoreMobileControlsBytes(path, raw + ' '));\n"
+          ]
+        },
+        {
+          "beforeStart": 38,
+          "afterStart": 39,
+          "removedLines": [
+            "  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact new dependency');\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(restoreLoadingGuideBytes(path, read(path))), row.sha256, path + ' exact new dependency');\n"
+          ]
+        },
+        {
+          "beforeStart": 43,
+          "afterStart": 44,
+          "removedLines": [
+            "    assert.equal(mobileControlsHash(path, row.previousSha256), row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(mobileControlsHash(path, row.previousSha256), loadingGuideHash(path, row.currentSha256));\n"
+          ]
+        },
+        {
+          "beforeStart": 69,
+          "afterStart": 70,
+          "removedLines": [
+            "  assert.deepEqual(mobileControlsPathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(mobileControlsPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...loadingGuidePathsWithin(inventory)])]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/mobile-controls-reviewed-revisions.ts": {
+      "previousSha256": "9378559ed855738f1ad74bb463b4fb55622421bf83ddd4247c8c695977caaff9",
+      "currentSha256": "4e66853e3349e407bd80272658c6670a7277e7137b59253276033c7c61a8f862",
+      "scope": "Exact loading-guide regression coverage and historical proof chaining",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes, loadingGuideAuditDependencies} from './loading-guide-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 43,
+          "afterStart": 44,
+          "removedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return incoming;\n"
+          ],
+          "insertedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return loadingGuideHash(path, incoming);\n"
+          ]
+        },
+        {
+          "beforeStart": 46,
+          "afterStart": 47,
+          "removedLines": [
+            "  return row.currentSha256;\n"
+          ],
+          "insertedLines": [
+            "  return loadingGuideHash(path, row.currentSha256);\n"
+          ]
+        },
+        {
+          "beforeStart": 49,
+          "afterStart": 50,
+          "removedLines": [
+            "  return Object.keys(mobileControlsReview().changes).filter(path => Object.hasOwn(inventory, path));\n"
+          ],
+          "insertedLines": [
+            "  return [...new Set([...Object.keys(mobileControlsReview().changes).filter(path => Object.hasOwn(inventory, path)), ...loadingGuidePathsWithin(inventory)])];\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 56,
+          "removedLines": [
+            "    assert.equal(mobileControlsSha(readFileSync(path)), row.sha256, path + ' exact mobile-only addition');\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(mobileControlsSha(readFileSync(path)), loadingGuideHash(path, row.sha256), path + ' exact mobile-only addition');\n"
+          ]
+        },
+        {
+          "beforeStart": 60,
+          "afterStart": 61,
+          "removedLines": [],
+          "insertedLines": [
+            "  current = restoreLoadingGuideBytes(path, current);\n"
+          ]
+        },
+        {
+          "beforeStart": 75,
+          "afterStart": 77,
+          "removedLines": [
+            "  return [MOBILE_CONTROLS_REVIEW_PATH, 'tests/helpers/mobile-controls-reviewed-revisions.ts', 'tests/audit-mobile-controls-transition.test.ts', ...Object.keys(review.changes), ...Object.keys(review.additions)];\n"
+          ],
+          "insertedLines": [
+            "  return [MOBILE_CONTROLS_REVIEW_PATH, 'tests/helpers/mobile-controls-reviewed-revisions.ts', 'tests/audit-mobile-controls-transition.test.ts', ...Object.keys(review.changes), ...Object.keys(review.additions), ...loadingGuideAuditDependencies()];\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-control-guide.test.ts": {
+      "previousSha256": "30da7395b563e74f57767fc163a2f5515f9514af70771d69e4193ffd991cb809",
+      "currentSha256": "cf3918251750dd16cff618d4b74c13b3d74fc514000ba4f54e4fcb463b51e011",
+      "scope": "Exact loading-guide regression coverage and historical proof chaining",
+      "hunks": [
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "removedLines": [
+            "import {RACE_KEY_GUIDE, RACE_CONTROL_GUIDE_MARKUP} from '../src/race-control-guide';\n"
+          ],
+          "insertedLines": [
+            "import {RACE_KEY_GUIDE, RACE_CONTROL_GUIDE_MARKUP, raceControlGuideMarkup} from '../src/race-control-guide';\n"
+          ]
+        },
+        {
+          "beforeStart": 98,
+          "afterStart": 98,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "\n",
+            "test('mobile guide is a single virtual-button presentation with no keyboard-only prompts', () => {\n",
+            "  const mobile = raceControlGuideMarkup('touch');\n",
+            "  assert.match(mobile, /手机触控操作/);\n",
+            "  assert.match(mobile, /空白赛道区域拖动环顾/);\n",
+            "  assert.match(mobile, /同时按住油门、转向和漂移/);\n",
+            "  assert.doesNotMatch(mobile, /<kbd|鼠标|Shift|键鼠操作/);\n",
+            "  assert.equal((mobile.match(/id=\"loadingControlsPanel\"/g) || []).length, 1);\n",
+            "  assert.equal((mobile.match(/id=\"loadingDriftHelp\"/g) || []).length, 1);\n",
+            "  assert.doesNotMatch(RACE_CONTROL_GUIDE_MARKUP, /触屏驾驶|touch-control-guide/);\n",
+            "});\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-loading-ui.test.ts": {
+      "previousSha256": "6c44f04c6c8b87f75c2c4b9cc42776e644e67247f7caa6eb1d2112410a7a795d",
+      "currentSha256": "5a8dfb6be5dcd8f469c7a322b893a5c23f5d38fbd266e6f237378fbca5ff07ee",
+      "scope": "Exact loading-guide regression coverage and historical proof chaining",
+      "hunks": [
+        {
+          "beforeStart": 4,
+          "afterStart": 4,
+          "removedLines": [],
+          "insertedLines": [
+            "import {CONTROL_MODE_EVENT, mountMobileControls} from '../src/mobile-controls';\n",
+            "import {MAP_PROFILES} from '../src/map-profiles';\n"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 8,
+          "removedLines": [
+            "function fixture() {\n",
+            "  class Element {\n",
+            "    textContent = ''; hidden = false; disabled = false; value = 0;\n"
+          ],
+          "insertedLines": [
+            "function fixture(mode: 'touch' | 'desktop' = 'desktop') {\n",
+            "  const elements = new Map<string, Element>();\n",
+            "  class Element extends EventTarget {\n",
+            "    textContent = ''; hidden = false; disabled = false; value: any = 0;\n"
+          ]
+        },
+        {
+          "beforeStart": 10,
+          "afterStart": 13,
+          "removedLines": [],
+          "insertedLines": [
+            "    dataset: Record<string, string> = {};\n",
+            "    html = ''; removed = false;\n"
+          ]
+        },
+        {
+          "beforeStart": 12,
+          "afterStart": 17,
+          "removedLines": [],
+          "insertedLines": [
+            "    appendChild(element: Element) { return element; }\n",
+            "    remove() { this.removed = true; }\n",
+            "    set innerHTML(html: string) {\n",
+            "      this.html = html;\n",
+            "      for (const match of html.matchAll(/id=\"([^\"]+)\"/g)) elements.set(match[1], new Element());\n",
+            "      const panel = elements.get('loadingControlsPanel');\n",
+            "      if (html.includes('id=\"loadingControlsPanel\"') && panel) {\n",
+            "        const start = html.indexOf('>', html.indexOf('id=\"loadingControlsPanel\"')) + 1;\n",
+            "        const end = html.indexOf('\\n  <div class=\"loading-footer\">');\n",
+            "        panel.html = html.slice(start, end).replace(/<\\/section>\\s*$/, '');\n",
+            "      }\n",
+            "    }\n",
+            "    get innerHTML() { return this.html; }\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 31,
+          "removedLines": [
+            "  const elements = new Map<string, Element>();\n",
+            "  const host = { set innerHTML(html: string) {\n",
+            "    for (const match of html.matchAll(/id=\"([^\"]+)\"/g)) elements.set(match[1], new Element());\n",
+            "  } };\n",
+            "  const doc = { getElementById: (id: string) => id === 'raceLoading' ? host : elements.get(id) } as unknown as Document;\n",
+            "  return { doc, get: (id: string) => elements.get(id)! };\n"
+          ],
+          "insertedLines": [
+            "  const host = new Element(), body = new Element(); body.dataset.inputMode = mode;\n",
+            "  const doc = Object.assign(new EventTarget(), {body, defaultView: null as any, getElementById: (id: string) => id === 'raceLoading' ? host : elements.get(id)}) as unknown as Document;\n",
+            "  const changeMode = (next: 'touch' | 'desktop') => { body.dataset.inputMode = next; doc.dispatchEvent(new Event(CONTROL_MODE_EVENT)); };\n",
+            "  return {doc, host, body, elements, Element, changeMode, get: (id: string) => elements.get(id)!};\n"
+          ]
+        },
+        {
+          "beforeStart": 133,
+          "afterStart": 149,
+          "removedLines": [],
+          "insertedLines": [
+            "\n",
+            "\n",
+            "test('every course mounts only the effective mobile guide before the first loading paint', () => {\n",
+            "  for (const map of Object.keys(MAP_PROFILES) as Array<keyof typeof MAP_PROFILES>) {\n",
+            "    const f = fixture('touch'); const ui = mountRaceLoadingUi(f.doc, map);\n",
+            "    assert.match(f.host.innerHTML, /触屏驾驶/);\n",
+            "    assert.doesNotMatch(f.host.innerHTML, /desktop-control-guide|键鼠操作|<kbd/);\n",
+            "    for (const action of ['油门', '倒车', '刹车', '漂移', '道具', '滑动画面', '回看', '回正', '视角', '暂停']) assert.ok(f.host.innerHTML.includes(action), map + ': ' + action);\n",
+            "    assert.match(f.get('loadingTipStart').textContent, /油门.*左右转向/);\n",
+            "    assert.doesNotMatch(f.get('loadingTipStart').textContent + f.get('loadingTipRelease').textContent, /Shift|W|A \\/ D/);\n",
+            "    assert.equal(f.get('loadingDriftHelp').textContent, map === 'waterpark' ? '水上滑移' : '手刹漂移');\n",
+            "    ui.dispose();\n",
+            "  }\n",
+            "});\n",
+            "\n",
+            "test('mode changes replace only the guide and tips, keeping active download and recovery state intact', () => {\n",
+            "  const f = fixture('touch'), ui = mountRaceLoadingUi(f.doc, 'waterpark');\n",
+            "  ui.update({progress: .37, status: '资源下载中', busy: true});\n",
+            "  const progress = f.get('raceLoadingProgress'), retry = ui.retryButton;\n",
+            "  f.changeMode('desktop');\n",
+            "  assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);\n",
+            "  assert.match(f.get('loadingControlsPanel').innerHTML, />W<\\/kbd>/);\n",
+            "  assert.doesNotMatch(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);\n",
+            "  assert.match(f.get('loadingTipStart').textContent, /Shift/);\n",
+            "  f.changeMode('touch');\n",
+            "  assert.match(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);\n",
+            "  assert.doesNotMatch(f.get('loadingControlsPanel').innerHTML, /<kbd|键鼠操作/);\n",
+            "  assert.equal(f.get('loadingDriftHelp').textContent, '水上滑移');\n",
+            "  assert.equal(f.get('raceLoadingProgress'), progress); assert.equal(progress.value, .37);\n",
+            "  assert.equal(f.get('raceLoadingStatus').textContent, '资源下载中'); assert.equal(ui.retryButton, retry);\n",
+            "  assert.equal(ui.continueButton.hidden, true); assert.equal(ui.continueButton.disabled, true);\n",
+            "  ui.dispose(); const before = f.get('loadingControlsPanel').innerHTML;\n",
+            "  f.changeMode('desktop'); assert.equal(f.get('loadingControlsPanel').innerHTML, before, 'disposed listener cannot rewrite the guide');\n",
+            "});\n",
+            "\n",
+            "test('remount removes stale map listeners and old disposal cannot stop the new loading guide', () => {\n",
+            "  const f = fixture('desktop'), old = mountRaceLoadingUi(f.doc, 'coast');\n",
+            "  const current = mountRaceLoadingUi(f.doc, 'waterpark'); old.dispose();\n",
+            "  f.changeMode('touch');\n",
+            "  assert.equal(f.get('loadingDriftHelp').textContent, '水上滑移');\n",
+            "  assert.match(f.get('loadingTipRelease').textContent, /0\\.6 秒/);\n",
+            "  assert.doesNotMatch(f.get('loadingTipRelease').textContent, /变黄/);\n",
+            "  current.dispose();\n",
+            "});\n",
+            "\n",
+            "test('real shared mode controller drives loading guides through auto detection and saved/manual overrides', () => {\n",
+            "  for (const saved of ['auto', 'desktop', 'touch']) {\n",
+            "    const f = fixture();\n",
+            "    for (const id of ['mobileTouchControls', 'mobileControlModePanel', 'mobileControlMode']) f.elements.set(id, new f.Element());\n",
+            "    const media = Object.assign(new EventTarget(), {matches: true});\n",
+            "    const storage = new Map([['kart-control-mode', saved]]);\n",
+            "    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: () => media, localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});\n",
+            "    Object.defineProperty(f.doc, 'defaultView', {value: win});\n",
+            "    const canvas = new f.Element();\n",
+            "    const controller = mountMobileControls(f.doc, canvas as any)!;\n",
+            "    const ui = mountRaceLoadingUi(f.doc, 'coast');\n",
+            "    assert.equal(f.host.innerHTML.includes('触屏驾驶'), saved !== 'desktop');\n",
+            "    const selector = f.get('mobileControlMode');\n",
+            "    selector.value = 'desktop'; selector.dispatchEvent(new Event('change'));\n",
+            "    assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);\n",
+            "    selector.value = 'touch'; selector.dispatchEvent(new Event('change'));\n",
+            "    assert.match(f.get('loadingControlsPanel').innerHTML, /滑动画面/);\n",
+            "    selector.value = 'auto'; selector.dispatchEvent(new Event('change'));\n",
+            "    media.matches = false; media.dispatchEvent(new Event('change'));\n",
+            "    assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);\n",
+            "    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); canvas.dispatchEvent(touch);\n",
+            "    assert.match(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);\n",
+            "    ui.dispose(); controller.dispose();\n",
+            "  }\n",
+            "});\n"
+          ]
+        }
+      ]
+    },
+    "tests/race-ui-layout.test.ts": {
+      "previousSha256": "78398b0faccc1ecd68c19772efb710c7f6d49e95a0054d549978814b816d13d1",
+      "currentSha256": "f4e508aac6747e13aceca59ebbab157ee9e903f7df64c1be8073ba495b2efe68",
+      "scope": "Exact loading-guide regression coverage and historical proof chaining",
+      "hunks": [
+        {
+          "beforeStart": 157,
+          "afterStart": 157,
+          "removedLines": [
+            "  assert.match(mobileCss, /\\.touch-control-guide\\{display:none\\}/);\n",
+            "  assert.match(mobileCss, /body\\[data-input-mode='touch'\\] \\.desktop-control-guide\\{display:none\\}/);\n"
+          ],
+          "insertedLines": [
+            "  assert.doesNotMatch(mobileCss, /\\.(?:touch|desktop)-control-guide\\{display:/, 'loading mounts one actual-mode guide instead of hiding duplicate content');\n"
+          ]
+        }
+      ]
+    }
+  }
+}

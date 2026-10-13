@@ -1,3 +1,4 @@
+import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes} from './helpers/loading-guide-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -25,7 +26,7 @@ test('mobile input names the exact prior dev tree and bounded shared input-only 
 
 test('every mobile transition reconstructs every historical byte and a complete forward round trip', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), original = restoreMobileControlsBytes(path, current);
+    const raw = read(path), current = restoreLoadingGuideBytes(path, raw), original = restoreMobileControlsBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path); assert.equal(sha(original), row.previousSha256, path);
     const lines = original.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -33,15 +34,15 @@ test('every mobile transition reconstructs every historical byte and a complete 
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' exact forward reconstruction');
-    assert.throws(() => restoreMobileControlsBytes(path, current + ' '));
+    assert.throws(() => restoreMobileControlsBytes(path, raw + ' '));
     assert.throws(() => restoreMobileControlsBytes(path, original), undefined, path + ' no historical-byte fallback');
   }
-  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact new dependency');
+  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(restoreLoadingGuideBytes(path, read(path))), row.sha256, path + ' exact new dependency');
 });
 
 test('mobile overlay only accepts exact incoming pairs and rejects aliases, current fallback and record tampering', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(mobileControlsHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(mobileControlsHash(path, row.previousSha256), loadingGuideHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => mobileControlsHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(mobileControlsHash(alias, row.previousSha256), row.previousSha256);
   }
@@ -67,7 +68,7 @@ test('historical geometry, camera, source inventories and stable publication evi
 
 test('source additions and camera stability closures include the exact mobile modules and every proof dependency', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(mobileControlsPathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));
+  assert.deepEqual(mobileControlsPathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...loadingGuidePathsWithin(inventory)])]);
   const previous = Object.keys(inventory).filter(path => path.startsWith('src/'));
   assert.deepEqual(mobileControlsSourcePaths(previous), [...previous, ...MOBILE_CONTROLS_SOURCE_ADDITIONS]);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {

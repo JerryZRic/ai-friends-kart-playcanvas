@@ -92,10 +92,7 @@ body[data-input-mode='touch'] .ui-viewport-notice{display:none}
   .mobile-control-mode{top:calc(max(8px,env(safe-area-inset-top)) + 57px)}
 }
 
-/* Mode switches reveal exactly one loading guide, without changing its scale. */
-.touch-control-guide{display:none}
-body[data-input-mode='touch'] .touch-control-guide{display:block}
-body[data-input-mode='touch'] .desktop-control-guide{display:none}
+/* Loading mounts only the guide for the effective mode; shared HUD scale applies. */
 
 /* Keep the modal in the established race root but cancel its inherited scale.
    Targets and text are therefore physical pixels, even on a narrow phone. */

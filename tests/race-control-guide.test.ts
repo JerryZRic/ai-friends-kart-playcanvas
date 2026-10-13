@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {RACE_KEY_GUIDE, RACE_CONTROL_GUIDE_MARKUP} from '../src/race-control-guide';
+import {RACE_KEY_GUIDE, RACE_CONTROL_GUIDE_MARKUP, raceControlGuideMarkup} from '../src/race-control-guide';
 import {RACE_LOADING_MARKUP} from '../src/race-loading-ui';
 import {bindRaceControls, type RaceControlState} from '../src/race-controls';
 import {driveInput} from '../src/vehicle-controls.js';
@@ -95,4 +95,16 @@ test('mouse diagrams explain actual lock, drag fallback and held rear view witho
   assert.match(read('race-controls.ts'), /canMove: \(\) => !keys.RearView/);
   assert.doesNotMatch(RACE_CONTROL_GUIDE_MARKUP, /滚轮|缩放|wheel|zoom/i);
   assert.doesNotMatch(read('race-control-guide.ts'), /addEventListener|preventDefault|requestPointerLock\(/, 'guide is strictly presentation-only');
+});
+
+
+test('mobile guide is a single virtual-button presentation with no keyboard-only prompts', () => {
+  const mobile = raceControlGuideMarkup('touch');
+  assert.match(mobile, /手机触控操作/);
+  assert.match(mobile, /空白赛道区域拖动环顾/);
+  assert.match(mobile, /同时按住油门、转向和漂移/);
+  assert.doesNotMatch(mobile, /<kbd|鼠标|Shift|键鼠操作/);
+  assert.equal((mobile.match(/id="loadingControlsPanel"/g) || []).length, 1);
+  assert.equal((mobile.match(/id="loadingDriftHelp"/g) || []).length, 1);
+  assert.doesNotMatch(RACE_CONTROL_GUIDE_MARKUP, /触屏驾驶|touch-control-guide/);
 });

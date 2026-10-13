@@ -155,8 +155,7 @@ test('both race entries mount logical UI before WebGL and never responsive-resiz
   assert.match(mobileCss, /#mobileControlMode \{[^}]*min-height:44px/s);
   assert.match(mobileCss, /body\[data-input-mode='touch'\] \.pause-actions button\{min-height:48px/);
   assert.match(mobileCss, /transform:scale\(calc\(1 \/ var\(--ui-scale, 1\)\)\)/);
-  assert.match(mobileCss, /\.touch-control-guide\{display:none\}/);
-  assert.match(mobileCss, /body\[data-input-mode='touch'\] \.desktop-control-guide\{display:none\}/);
+  assert.doesNotMatch(mobileCss, /\.(?:touch|desktop)-control-guide\{display:/, 'loading mounts one actual-mode guide instead of hiding duplicate content');
   const hud = read('src/race-hud.ts');
   for (const key of ['ArrowLeft','ArrowRight','KeyW','KeyS','Space','ShiftLeft','RearView']) assert.ok(hud.includes('data-key="' + key + '"'));
   for (const action of ['camera','recenter','item','pause']) assert.ok(hud.includes('data-mobile-action="' + action + '"'));

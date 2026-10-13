@@ -2,21 +2,37 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { mountRaceLoadingUi, RACE_LOADING_MARKUP } from '../src/race-loading-ui';
+import {CONTROL_MODE_EVENT, mountMobileControls} from '../src/mobile-controls';
+import {MAP_PROFILES} from '../src/map-profiles';
 import { RACE_HUD_MARKUP } from '../src/race-hud';
 
-function fixture() {
-  class Element {
-    textContent = ''; hidden = false; disabled = false; value = 0;
+function fixture(mode: 'touch' | 'desktop' = 'desktop') {
+  const elements = new Map<string, Element>();
+  class Element extends EventTarget {
+    textContent = ''; hidden = false; disabled = false; value: any = 0;
     attributes: Record<string, string> = {};
+    dataset: Record<string, string> = {};
+    html = ''; removed = false;
     setAttribute(name: string, value: string) { this.attributes[name] = value; }
     removeAttribute(name: string) { delete this.attributes[name]; }
+    appendChild(element: Element) { return element; }
+    remove() { this.removed = true; }
+    set innerHTML(html: string) {
+      this.html = html;
+      for (const match of html.matchAll(/id="([^"]+)"/g)) elements.set(match[1], new Element());
+      const panel = elements.get('loadingControlsPanel');
+      if (html.includes('id="loadingControlsPanel"') && panel) {
+        const start = html.indexOf('>', html.indexOf('id="loadingControlsPanel"')) + 1;
+        const end = html.indexOf('\n  <div class="loading-footer">');
+        panel.html = html.slice(start, end).replace(/<\/section>\s*$/, '');
+      }
+    }
+    get innerHTML() { return this.html; }
   }
-  const elements = new Map<string, Element>();
-  const host = { set innerHTML(html: string) {
-    for (const match of html.matchAll(/id="([^"]+)"/g)) elements.set(match[1], new Element());
-  } };
-  const doc = { getElementById: (id: string) => id === 'raceLoading' ? host : elements.get(id) } as unknown as Document;
-  return { doc, get: (id: string) => elements.get(id)! };
+  const host = new Element(), body = new Element(); body.dataset.inputMode = mode;
+  const doc = Object.assign(new EventTarget(), {body, defaultView: null as any, getElementById: (id: string) => id === 'raceLoading' ? host : elements.get(id)}) as unknown as Document;
+  const changeMode = (next: 'touch' | 'desktop') => { body.dataset.inputMode = next; doc.dispatchEvent(new Event(CONTROL_MODE_EVENT)); };
+  return {doc, host, body, elements, Element, changeMode, get: (id: string) => elements.get(id)!};
 }
 
 test('shared loading mount varies only map identity and uses one complete keycap guide', () => {
@@ -130,4 +146,74 @@ test('tips and controls keep their logical footer flow through uniform viewport 
   assert.match(css, /\.loading-actions a,\.loading-actions a:visited\{[^}]*color:#f1f6ec/);
   assert.doesNotMatch(css, /@media[^{}]*(?:max|min)-(?:width|height)/);
   assert.match(css, /body\.menu:not\(\.finished\) \.race-loading-screen\{display:block\}/);
+});
+
+
+test('every course mounts only the effective mobile guide before the first loading paint', () => {
+  for (const map of Object.keys(MAP_PROFILES) as Array<keyof typeof MAP_PROFILES>) {
+    const f = fixture('touch'); const ui = mountRaceLoadingUi(f.doc, map);
+    assert.match(f.host.innerHTML, /触屏驾驶/);
+    assert.doesNotMatch(f.host.innerHTML, /desktop-control-guide|键鼠操作|<kbd/);
+    for (const action of ['油门', '倒车', '刹车', '漂移', '道具', '滑动画面', '回看', '回正', '视角', '暂停']) assert.ok(f.host.innerHTML.includes(action), map + ': ' + action);
+    assert.match(f.get('loadingTipStart').textContent, /油门.*左右转向/);
+    assert.doesNotMatch(f.get('loadingTipStart').textContent + f.get('loadingTipRelease').textContent, /Shift|W|A \/ D/);
+    assert.equal(f.get('loadingDriftHelp').textContent, map === 'waterpark' ? '水上滑移' : '手刹漂移');
+    ui.dispose();
+  }
+});
+
+test('mode changes replace only the guide and tips, keeping active download and recovery state intact', () => {
+  const f = fixture('touch'), ui = mountRaceLoadingUi(f.doc, 'waterpark');
+  ui.update({progress: .37, status: '资源下载中', busy: true});
+  const progress = f.get('raceLoadingProgress'), retry = ui.retryButton;
+  f.changeMode('desktop');
+  assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);
+  assert.match(f.get('loadingControlsPanel').innerHTML, />W<\/kbd>/);
+  assert.doesNotMatch(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);
+  assert.match(f.get('loadingTipStart').textContent, /Shift/);
+  f.changeMode('touch');
+  assert.match(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);
+  assert.doesNotMatch(f.get('loadingControlsPanel').innerHTML, /<kbd|键鼠操作/);
+  assert.equal(f.get('loadingDriftHelp').textContent, '水上滑移');
+  assert.equal(f.get('raceLoadingProgress'), progress); assert.equal(progress.value, .37);
+  assert.equal(f.get('raceLoadingStatus').textContent, '资源下载中'); assert.equal(ui.retryButton, retry);
+  assert.equal(ui.continueButton.hidden, true); assert.equal(ui.continueButton.disabled, true);
+  ui.dispose(); const before = f.get('loadingControlsPanel').innerHTML;
+  f.changeMode('desktop'); assert.equal(f.get('loadingControlsPanel').innerHTML, before, 'disposed listener cannot rewrite the guide');
+});
+
+test('remount removes stale map listeners and old disposal cannot stop the new loading guide', () => {
+  const f = fixture('desktop'), old = mountRaceLoadingUi(f.doc, 'coast');
+  const current = mountRaceLoadingUi(f.doc, 'waterpark'); old.dispose();
+  f.changeMode('touch');
+  assert.equal(f.get('loadingDriftHelp').textContent, '水上滑移');
+  assert.match(f.get('loadingTipRelease').textContent, /0\.6 秒/);
+  assert.doesNotMatch(f.get('loadingTipRelease').textContent, /变黄/);
+  current.dispose();
+});
+
+test('real shared mode controller drives loading guides through auto detection and saved/manual overrides', () => {
+  for (const saved of ['auto', 'desktop', 'touch']) {
+    const f = fixture();
+    for (const id of ['mobileTouchControls', 'mobileControlModePanel', 'mobileControlMode']) f.elements.set(id, new f.Element());
+    const media = Object.assign(new EventTarget(), {matches: true});
+    const storage = new Map([['kart-control-mode', saved]]);
+    const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: 5}, matchMedia: () => media, localStorage: {getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v)}});
+    Object.defineProperty(f.doc, 'defaultView', {value: win});
+    const canvas = new f.Element();
+    const controller = mountMobileControls(f.doc, canvas as any)!;
+    const ui = mountRaceLoadingUi(f.doc, 'coast');
+    assert.equal(f.host.innerHTML.includes('触屏驾驶'), saved !== 'desktop');
+    const selector = f.get('mobileControlMode');
+    selector.value = 'desktop'; selector.dispatchEvent(new Event('change'));
+    assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);
+    selector.value = 'touch'; selector.dispatchEvent(new Event('change'));
+    assert.match(f.get('loadingControlsPanel').innerHTML, /滑动画面/);
+    selector.value = 'auto'; selector.dispatchEvent(new Event('change'));
+    media.matches = false; media.dispatchEvent(new Event('change'));
+    assert.match(f.get('loadingControlsPanel').innerHTML, /键鼠操作/);
+    const touch = new Event('pointerdown'); Object.assign(touch, {pointerType: 'touch'}); canvas.dispatchEvent(touch);
+    assert.match(f.get('loadingControlsPanel').innerHTML, /触屏驾驶/);
+    ui.dispose(); controller.dispose();
+  }
 });

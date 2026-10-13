@@ -1,3 +1,4 @@
+import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes, loadingGuideAuditDependencies} from './loading-guide-reviewed-revisions';
 /** Exact additive mobile-input transition. Historical scene and publication evidence is never regenerated. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -41,23 +42,24 @@ export function assertMobileControlsReviewBytes(bytes: string): Review {
 export function mobileControlsReview() { return assertMobileControlsReviewBytes(readFileSync(MOBILE_CONTROLS_REVIEW_PATH, 'utf8')); }
 export function mobileControlsHash(path: string, incoming: unknown) {
   const review = mobileControlsReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return loadingGuideHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-mobile incoming identity');
-  return row.currentSha256;
+  return loadingGuideHash(path, row.currentSha256);
 }
 export function mobileControlsPathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(mobileControlsReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(mobileControlsReview().changes).filter(path => Object.hasOwn(inventory, path)), ...loadingGuidePathsWithin(inventory)])];
 }
 export function mobileControlsSourcePaths(previous: string[]) {
   const additions = Object.entries(mobileControlsReview().additions).filter(([path]) => path.startsWith('src/'));
   for (const [path, row] of additions) {
     assert.ok(!previous.includes(path), path + ' explicit new production input');
-    assert.equal(mobileControlsSha(readFileSync(path)), row.sha256, path + ' exact mobile-only addition');
+    assert.equal(mobileControlsSha(readFileSync(path)), loadingGuideHash(path, row.sha256), path + ' exact mobile-only addition');
   }
   return [...previous, ...additions.map(([path]) => path)];
 }
 export function restoreMobileControlsBytes(path: string, current: string) {
+  current = restoreLoadingGuideBytes(path, current);
   const review = mobileControlsReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -73,5 +75,5 @@ export function restoreMobileControlsBytes(path: string, current: string) {
 }
 export function mobileControlsAuditDependencies() {
   const review = mobileControlsReview();
-  return [MOBILE_CONTROLS_REVIEW_PATH, 'tests/helpers/mobile-controls-reviewed-revisions.ts', 'tests/audit-mobile-controls-transition.test.ts', ...Object.keys(review.changes), ...Object.keys(review.additions)];
+  return [MOBILE_CONTROLS_REVIEW_PATH, 'tests/helpers/mobile-controls-reviewed-revisions.ts', 'tests/audit-mobile-controls-transition.test.ts', ...Object.keys(review.changes), ...Object.keys(review.additions), ...loadingGuideAuditDependencies()];
 }

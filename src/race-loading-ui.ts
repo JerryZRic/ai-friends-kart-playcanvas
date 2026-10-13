@@ -1,6 +1,6 @@
 import {CONTROL_MODE_EVENT, touchHint} from './mobile-controls';
 import { resolveMap, type MapId } from './map-profiles';
-import { RACE_CONTROL_GUIDE_MARKUP } from './race-control-guide';
+import {raceControlGuideMarkup, raceControlGuideContent, type RaceGuideMode} from './race-control-guide';
 
 /** Presentation only: adapters supply real loading progress and short stage text. */
 export interface RaceLoadingSnapshot {
@@ -15,10 +15,10 @@ export interface RaceLoadingSnapshot {
   continueLabel?: string;
 }
 
-export const RACE_LOADING_MARKUP = `<section class="race-loading-screen" aria-label="赛前加载">
+export function raceLoadingMarkup(mode: RaceGuideMode) { return `<section class="race-loading-screen" aria-label="赛前加载">
   <header class="loading-map"><span class="loading-map-tag" id="loadingMapTag"></span><h1 id="loadingMapName"></h1><p>06 位选手 <span>·</span> 03 圈 <span>·</span> 自由竞速</p></header>
   <div class="loading-bottom">
-  ${RACE_CONTROL_GUIDE_MARKUP}
+  ${raceControlGuideMarkup(mode)}
   <div class="loading-footer">
     <aside class="loading-driving-tip" aria-labelledby="loadingTipTitle"><h2 id="loadingTipTitle"></h2><p id="loadingTipStart"></p><p id="loadingTipRelease"></p></aside>
     <section id="raceLoadingProgressGroup" aria-label="资源下载进度" aria-busy="true">
@@ -28,12 +28,18 @@ export const RACE_LOADING_MARKUP = `<section class="race-loading-screen" aria-la
     </section>
   </div>
   </div>
-</section>`;
+</section>`; }
+export const RACE_LOADING_MARKUP = raceLoadingMarkup('desktop');
+const mounts = new WeakMap<Document, () => void>();
+const effectiveGuideMode = (doc: Document): RaceGuideMode => doc.body?.dataset?.inputMode === 'touch' ? 'touch' : 'desktop';
 
 export function mountRaceLoadingUi(doc: Document, map: MapId) {
   const host = doc.getElementById('raceLoading');
   if (!host) throw new Error('Missing shared race loading mount');
-  host.innerHTML = RACE_LOADING_MARKUP;
+  mounts.get(doc)?.();
+  let guideMode = effectiveGuideMode(doc), disposed = false;
+  // Resolve the shared effective mode before inserting markup: no keyboard flash.
+  host.innerHTML = raceLoadingMarkup(guideMode);
   const get = <T extends HTMLElement = HTMLElement>(id: string) => doc.getElementById(id) as T;
   const profile = resolveMap(map);
   get('loadingMapName').textContent = profile.label;
@@ -42,7 +48,17 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
   const water = profile.id === 'waterpark';
   get('loadingTipTitle').textContent = water ? '水上滑移加速' : '漂移加速';
   function updateTips() {
-    const mobile = doc.body?.dataset?.inputMode === 'touch';
+    if (disposed) return;
+    const nextMode = effectiveGuideMode(doc);
+    if (nextMode !== guideMode) {
+      guideMode = nextMode;
+      const panel = get('loadingControlsPanel');
+      panel.innerHTML = raceControlGuideContent(guideMode);
+      panel.setAttribute('class', `loading-controls ${guideMode}-control-guide`);
+      panel.setAttribute('aria-label', guideMode === 'touch' ? '手机触控操作' : '键鼠操作');
+    }
+    get('loadingDriftHelp').textContent = water ? '水上滑移' : '手刹漂移';
+    const mobile = guideMode === 'touch';
     const start = '按住 W 提速，再按左 Shift + A / D 持续转向蓄力';
     const release = water
       ? '滑移超过 0.6 秒后，松开 Shift 加速；蓄力越满，加速越久'
@@ -56,7 +72,14 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
   const percent = get('raceLoadingPercent'), status = get('raceLoadingStatus'), group = get('raceLoadingProgressGroup');
   const retryButton = get<HTMLButtonElement>('raceLoadingRetry'), continueButton = get<HTMLButtonElement>('raceLoadingContinue');
   const exitLink = get<HTMLAnchorElement>('raceLoadingExit');
-  let disposed = false;
+  function dispose() {
+    if (disposed) return;
+    disposed = true;
+    doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips);
+    retryButton.disabled = true; continueButton.disabled = true;
+    if (mounts.get(doc) === dispose) mounts.delete(doc);
+  }
+  mounts.set(doc, dispose);
   return {
     retryButton,
     continueButton,
@@ -74,6 +97,6 @@ export function mountRaceLoadingUi(doc: Document, map: MapId) {
       continueButton.textContent = snapshot.continueLabel || '继续比赛';
       exitLink.hidden = !(snapshot.canExit ?? (snapshot.busy === false && !snapshot.canContinue));
     },
-    dispose() { disposed = true; doc.removeEventListener?.(CONTROL_MODE_EVENT, updateTips); retryButton.disabled = true; continueButton.disabled = true; },
+    dispose,
   };
 }
