@@ -1,0 +1,41 @@
+name: Validate release quality tier
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      quality:
+        description: Select stable only for an explicitly requested stable release certification
+        required: true
+        type: choice
+        options: [nonstable, stable]
+        default: nonstable
+      base_sha:
+        description: Optional exact comparison commit for nonstable targeted regression
+        required: false
+        type: string
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      # A version tag or GitHub's prerelease flag is never stable authorization.
+      - name: Certify an explicitly requested stable release
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' }}
+        run: npm run check && npm test && npm run build
+      - name: Check nonstable release modules by default
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.quality != 'stable' }}
+        env:
+          TARGETED_BASE_SHA: ${{ inputs.base_sha }}
+        run: npm run check && node scripts/test-targeted.mjs && npm run build
+      - run: npm run test:dist

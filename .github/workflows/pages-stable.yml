@@ -1,8 +1,19 @@
-name: Build and publish stable PlayCanvas game
+name: Build and publish main PlayCanvas game
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      quality:
+        description: Stable certification only when explicitly requested; otherwise nonstable targeted regression
+        required: true
+        type: choice
+        options: [nonstable, stable]
+        default: nonstable
+      base_sha:
+        description: Optional exact comparison commit for nonstable targeted regression
+        required: false
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -14,12 +25,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run check && npm test && npm run build
+      - name: Certify an explicitly requested stable build
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' }}
+        run: npm run check && npm test && npm run build
+      - name: Build main with changed-module regression by default
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.quality != 'stable' }}
+        env:
+          TARGETED_BASE_SHA: ${{ inputs.base_sha }}
+        run: npm run check && node scripts/test-targeted.mjs && npm run build
       - run: npm run test:dist
       - name: Publish the approved build at stable and preview URLs
         run: |

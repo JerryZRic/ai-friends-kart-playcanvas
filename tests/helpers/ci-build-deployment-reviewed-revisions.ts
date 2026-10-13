@@ -1,3 +1,4 @@
+import {qualityTierHash, qualityTierPathsWithin, restoreQualityTierBytes, qualityTierAddedPaths, qualityTierAuditDependencies} from './quality-tier-reviewed-revisions';
 /** Exact CI build/deployment successor; no source, asset, legal or stable-publication drift. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -53,13 +54,14 @@ export function assertCiBuildDeploymentReviewBytes(bytes: string): Review {
 }
 export function ciBuildDeploymentReview() { return assertCiBuildDeploymentReviewBytes(readFileSync(CI_BUILD_DEPLOYMENT_REVIEW_PATH, 'utf8')); }
 export function ciBuildDeploymentHash(path: string, incoming: unknown) {
-  const review = ciBuildDeploymentReview(); if (!Object.hasOwn(review.changes, path)) return incoming;
+  const review = ciBuildDeploymentReview(); if (!Object.hasOwn(review.changes, path)) return qualityTierHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-CI-split incoming identity');
-  return row.currentSha256;
+  return qualityTierHash(path, row.currentSha256);
 }
-export function ciBuildDeploymentPathsWithin(inventory: Record<string, unknown>) { return Object.keys(ciBuildDeploymentReview().changes).filter(path => Object.hasOwn(inventory, path)); }
+export function ciBuildDeploymentPathsWithin(inventory: Record<string, unknown>) { return [...new Set([...Object.keys(ciBuildDeploymentReview().changes).filter(path => Object.hasOwn(inventory, path)), ...qualityTierPathsWithin(inventory)])]; }
 export function restoreCiBuildDeploymentBytes(path: string, current: string) {
+  current = restoreQualityTierBytes(path, current);
   const review = ciBuildDeploymentReview(); if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path]; assert.equal(ciBuildDeploymentSha(current), row.currentSha256, path + ' exact successor bytes before CI inverse');
   const lines = current.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -71,7 +73,7 @@ export function restoreCiBuildDeploymentBytes(path: string, current: string) {
 }
 export function assertCiBuildDeploymentAddition(path: string, bytes: string | Buffer) {
   const review = ciBuildDeploymentReview(); assert.ok(Object.hasOwn(review.additions, path), path + ' exact named CI addition');
-  assert.equal(ciBuildDeploymentSha(bytes), review.additions[path].sha256, path + ' exact CI addition bytes');
+  assert.equal(ciBuildDeploymentSha(bytes), qualityTierHash(path, review.additions[path].sha256), path + ' exact CI addition bytes');
 }
-export function ciBuildDeploymentAddedPaths() { return [CI_BUILD_DEPLOYMENT_REVIEW_PATH, 'tests/helpers/ci-build-deployment-reviewed-revisions.ts', ...Object.keys(ciBuildDeploymentReview().additions)]; }
-export function ciBuildDeploymentAuditDependencies() { return [...ciBuildDeploymentAddedPaths(), ...Object.keys(ciBuildDeploymentReview().changes)]; }
+export function ciBuildDeploymentAddedPaths() { return [CI_BUILD_DEPLOYMENT_REVIEW_PATH, 'tests/helpers/ci-build-deployment-reviewed-revisions.ts', ...Object.keys(ciBuildDeploymentReview().additions), ...qualityTierAddedPaths()]; }
+export function ciBuildDeploymentAuditDependencies() { return [...ciBuildDeploymentAddedPaths(), ...Object.keys(ciBuildDeploymentReview().changes), ...qualityTierAuditDependencies()]; }

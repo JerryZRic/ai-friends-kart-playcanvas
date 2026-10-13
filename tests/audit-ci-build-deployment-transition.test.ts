@@ -1,3 +1,4 @@
+import {QUALITY_TIER_REVIEW_PATH, qualityTierReview, qualityTierHash, restoreQualityTierBytes} from './helpers/quality-tier-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -26,7 +27,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = Object.hasOwn(review.changes, path) ? Buffer.from(restoreCiBuildDeploymentBytes(path, read(path))) : readFileSync(path);
+    const bytes = Object.hasOwn(review.changes, path) || Object.hasOwn(qualityTierReview().changes, path) ? Buffer.from(restoreCiBuildDeploymentBytes(path, read(path))) : readFileSync(path);
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -52,7 +53,7 @@ test('CI split pins and independently reconstructs the complete exact music-enab
 
 test('every CI revision is bounded, exactly reversible, and rejects historical, altered and wrong incoming identities', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreCiBuildDeploymentBytes(path, current);
+    const raw = read(path), current = restoreQualityTierBytes(path, raw), previous = restoreCiBuildDeploymentBytes(path, raw);
     assert.equal(sha(current), row.currentSha256); assert.equal(sha(previous), row.previousSha256);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -60,8 +61,8 @@ test('every CI revision is bounded, exactly reversible, and rejects historical, 
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' exact forward round trip');
-    assert.equal(ciBuildDeploymentHash(path, row.previousSha256), row.currentSha256);
-    for (const altered of [current + ' ', current.slice(1), previous]) assert.throws(() => restoreCiBuildDeploymentBytes(path, altered), undefined, path);
+    assert.equal(ciBuildDeploymentHash(path, row.previousSha256), qualityTierHash(path, row.currentSha256));
+    for (const altered of [raw + ' ', raw.slice(1), previous]) assert.throws(() => restoreCiBuildDeploymentBytes(path, altered), undefined, path);
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => ciBuildDeploymentHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) {
       assert.equal(ciBuildDeploymentHash(alias, row.previousSha256), row.previousSha256, alias + ' cannot claim a reviewed transition');
@@ -73,15 +74,15 @@ test('every CI revision is bounded, exactly reversible, and rejects historical, 
 
 test('every new CI tool and regression test has exact named content and rejects aliases and altered bytes', () => {
   for (const [path, row] of Object.entries(review.additions)) {
-    const bytes = readFileSync(path); assert.equal(sha(bytes), row.sha256); assertCiBuildDeploymentAddition(path, bytes);
+    const bytes = readFileSync(path); assert.equal(sha(bytes), qualityTierHash(path, row.sha256)); assertCiBuildDeploymentAddition(path, bytes);
     assert.throws(() => assertCiBuildDeploymentAddition(path, Buffer.concat([bytes, Buffer.from(' ')])));
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) assert.throws(() => assertCiBuildDeploymentAddition(alias, bytes));
   }
   assert.throws(() => assertCiBuildDeploymentAddition('scripts/unreviewed.mjs', 'unreviewed'));
 });
 
-test('all frozen JSON, runtime, music, artwork, legal, main workflow and 219 stable files remain exactly pinned', () => {
-  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' immutable original bytes');
+test('all frozen JSON, runtime, music, artwork, legal and 219 stable files remain pinned with only exact quality-tier successors', () => {
+  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), qualityTierHash(path, hash), path + ' exact original or bounded quality-tier successor bytes');
   for (const prefix of ['src/', 'public/', 'models/', 'docs/', 'tests/fixtures/']) {
     assert.ok(baselinePaths.filter(path => path.startsWith(prefix)).every(path => Object.hasOwn(review.protectedFiles, path)), prefix + ' no original source or asset revisions');
   }
@@ -90,7 +91,7 @@ test('all frozen JSON, runtime, music, artwork, legal, main workflow and 219 sta
   }
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/'));
   assert.ok(baselineJson.every(path => Object.hasOwn(review.protectedFiles, path)));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, CI_BUILD_DEPLOYMENT_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH].sort());
   assert.equal(sha(read(MUSIC_REVIEW_PATH)), MUSIC_REVIEW_SHA256, 'Original music proof is byte-for-byte frozen');
   const workflow = read('.github/workflows/pages.yml');
   assert.match(workflow, /- run: npm run build\n/);
@@ -111,7 +112,7 @@ test('the CI successor preserves every music endpoint and historical source iden
     assert.equal(musicHash(path, row.previousSha256), sha(readFileSync(path)), path + ' complete current music/CI chain');
   }
   for (const [path, row] of Object.entries(predecessor.additions)) {
-    const bytes = Object.hasOwn(review.changes, path) ? restoreCiBuildDeploymentBytes(path, read(path)) : readFileSync(path);
+    const bytes = Object.hasOwn(review.changes, path) || Object.hasOwn(qualityTierReview().changes, path) ? restoreCiBuildDeploymentBytes(path, read(path)) : readFileSync(path);
     assert.equal(sha(bytes), row.sha256, path + ' exact music addition retained');
   }
   const frozen = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;

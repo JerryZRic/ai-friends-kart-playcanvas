@@ -33,9 +33,10 @@ test('deployment remains strictly gated with shared concurrency and exact main a
   assert.doesNotMatch(workflow, /continue-on-error|if:.*always\(|contents: write|actions: write|windows-latest/);
 });
 
-test('dev preview compiles without test gates while stable retains full certification', () => {
+test('dev preview compiles without test gates while explicit stable requests certify fully', () => {
   const stable = readFileSync('.github/workflows/pages-stable.yml', 'utf8');
-  assert.match(stable, /npm run check && npm test && npm run build/);
+  assert.match(stable, /if: \$\{\{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' \}\}\n        run: npm run check && npm test && npm run build/);
+  assert.match(stable, /default: nonstable/);
   assert.match(stable, /npm run test:dist/);
   const focused = readFileSync('scripts/test-dev-preview.mjs', 'utf8');
   for (const file of ['background-music', 'music-integration', 'free-mode-menu-dom', 'portrait-packaging', 'audit-ci-build-deployment-transition', 'ci-build-artifact', 'ci-stable-retry']) assert.ok(focused.includes(file), file);
