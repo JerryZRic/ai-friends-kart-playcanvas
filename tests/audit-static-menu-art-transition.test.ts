@@ -1,3 +1,4 @@
+import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
 import {CI_BUILD_DEPLOYMENT_REVIEW_PATH} from './helpers/ci-build-deployment-reviewed-revisions';
 import {MUSIC_REVIEW_PATH, musicHash} from './helpers/music-reviewed-revisions';
@@ -98,9 +99,11 @@ test('static-title overlay rejects wrong incoming identities, aliases and modifi
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => staticMenuArtHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(staticMenuArtHash(alias, row.previousSha256), row.previousSha256);
   }
+  assert.throws(() => staticMenuArtHash('src/mobile-controls.ts', 'unchanged'), undefined, 'V1.0 successor requires exact pre-feature identity');
+  assert.throws(() => restoreStaticMenuArtBytes('src/mobile-controls.ts', 'unchanged'), undefined, 'V1.0 successor requires exact candidate bytes');
   assert.throws(() => staticMenuArtHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
   assert.throws(() => restoreStaticMenuArtBytes('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact current bytes');
-  for (const path of ['src/race-controls.ts', 'src/mobile-controls.ts', 'src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
+  for (const path of ['src/race-controls.ts', 'src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
     assert.equal(staticMenuArtHash(path, 'unchanged'), 'unchanged'); assert.equal(restoreStaticMenuArtBytes(path, 'unchanged'), 'unchanged');
   }
   assert.throws(() => staticMenuArtHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
@@ -158,7 +161,7 @@ test('all frozen geometry, legal and historical proof bytes and all 216 stable p
   const historicalPaths = [...new Set([...Object.keys(review.protectedProduction), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)])];
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const historicalJson = historicalPaths.filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
+  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
   assert.deepEqual(walk('docs/scene-baselines').sort(), historicalPaths.filter(path => path.startsWith('docs/scene-baselines/')).sort(), 'Every archived source baseline remains present and immutable');
   const stableBytes = restoreStablePagesV050RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')), manifest = JSON.parse(stableBytes);
   assert.equal(sha(stableBytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');

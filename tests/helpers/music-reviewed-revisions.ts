@@ -1,3 +1,4 @@
+import {v100SourcePaths} from './v100-reviewed-revisions';
 import {ciBuildDeploymentHash, ciBuildDeploymentPathsWithin, restoreCiBuildDeploymentBytes, ciBuildDeploymentAddedPaths, ciBuildDeploymentAuditDependencies} from './ci-build-deployment-reviewed-revisions';
 /** Exact additive music transition; all earlier proof records and stable publication stay frozen. */
 import assert from 'node:assert/strict';
@@ -72,7 +73,7 @@ export function assertMusicAddition(path: string, bytes: string | Buffer) {
 }
 export function musicSourcePaths(previous: string[]) {
   for (const path of MUSIC_SOURCE_ADDITIONS) { assert.ok(!previous.includes(path), path + ' must be new'); assertMusicAddition(path, readFileSync(path)); }
-  return [...previous, ...MUSIC_SOURCE_ADDITIONS];
+  return v100SourcePaths([...previous, ...MUSIC_SOURCE_ADDITIONS]);
 }
 export function restoreMusicBytes(path: string, current: string) {
   current = restoreCiBuildDeploymentBytes(path, current);

@@ -1,3 +1,4 @@
+import {mountBuildVersion} from './build-version';
 import {mountBrandIntro} from './brand-intro';
 import {sceneForUrl,type SceneKind} from './scene-routes';
 import {getDocumentMusic,registerSceneNavigator} from './music-ui';
@@ -27,6 +28,7 @@ if(introOverlay)music?.setPresentationReady?.(false);
 // The overlay stays outside scene replacements while real resources load beneath it.
 document.body.append(sceneRoot);
 for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay)node.remove();
+mountBuildVersion(document);
 const intro=mountBrandIntro(document,window,()=>{sceneRoot.inert=false;music?.setPresentationReady?.(true);});
 const templates={menu:menuHtml,garage:garageHtml,land:landHtml,water:waterHtml};
 const css={menu:menuCss+uiCss+menuFixedCss+emblemCss+titleCss,garage:uiCss+garageCss+garageStatsCss+emblemCss+garageCarsCss,land:raceCss+emblemCss,water:raceCss+emblemCss};

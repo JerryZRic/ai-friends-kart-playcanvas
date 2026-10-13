@@ -1,3 +1,4 @@
+import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -29,7 +30,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = Object.hasOwn(review.changes, path) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : readFileSync(path);
+    const bytes = (Object.hasOwn(review.changes, path) || Object.hasOwn(v100Review().changes, path)) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : readFileSync(path);
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -56,7 +57,7 @@ test('quality tiers reconstruct the full exact compiled-preview dev baseline and
 
 test('each policy or audit bridge is exactly reversible and rejects altered bytes and wrong incoming identities', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreQualityTierBytes(path, current);
+    const raw = read(path), current = restoreV100Bytes(path, raw), previous = restoreQualityTierBytes(path, raw);
     assert.equal(sha(current), row.currentSha256); assert.equal(sha(previous), row.previousSha256);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -64,20 +65,20 @@ test('each policy or audit bridge is exactly reversible and rejects altered byte
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' complete exact forward reconstruction');
-    assert.equal(qualityTierHash(path, row.previousSha256), row.currentSha256);
-    for (const altered of [current + ' ', current.slice(1), previous]) assert.throws(() => restoreQualityTierBytes(path, altered), undefined, path);
+    assert.equal(qualityTierHash(path, row.previousSha256), v100Hash(path, row.currentSha256));
+    for (const altered of [raw + ' ', raw.slice(1), previous]) assert.throws(() => restoreQualityTierBytes(path, altered), undefined, path);
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => qualityTierHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) {
       assert.equal(qualityTierHash(alias, row.previousSha256), row.previousSha256, alias + ' cannot claim a reviewed successor');
       assert.equal(restoreQualityTierBytes(alias, 'unreviewed'), 'unreviewed', alias + ' cannot invoke an inverse');
     }
   }
-  assert.deepEqual(qualityTierPathsWithin({'.github/workflows/pages-stable.yml': 'old', './.github/workflows/pages-stable.yml': 'alias', '.github/workflows/pages.yml': 'unchanged', 'src/game.ts': 'unchanged'}), ['.github/workflows/pages-stable.yml']);
+  assert.deepEqual(qualityTierPathsWithin({'.github/workflows/pages-stable.yml': 'old', './.github/workflows/pages-stable.yml': 'alias', '.github/workflows/pages.yml': 'unchanged', 'src/game.ts': 'unchanged'}), ['.github/workflows/pages-stable.yml', 'src/game.ts']);
 });
 
 test('the new release workflow, selector, documentation and regression tools have exact named bytes', () => {
   for (const [path, row] of Object.entries(review.additions)) {
-    const bytes = readFileSync(path); assert.equal(sha(bytes), row.sha256); assertQualityTierAddition(path, bytes);
+    const bytes = readFileSync(path); assert.equal(sha(bytes), v100Hash(path, row.sha256)); assertQualityTierAddition(path, bytes);
     assert.throws(() => assertQualityTierAddition(path, Buffer.concat([bytes, Buffer.from(' ')])));
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')]) assert.throws(() => assertQualityTierAddition(alias, bytes));
   }
@@ -85,7 +86,7 @@ test('the new release workflow, selector, documentation and regression tools hav
 });
 
 test('all existing JSON, dev workflow, game bytes, assets, legal files and pinned stable publication remain immutable', () => {
-  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' immutable original bytes');
+  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), v100Hash(path, hash), path + ' exact original or v1.0 successor bytes');
   for (const prefix of ['src/', 'public/', 'models/', 'docs/', 'tests/fixtures/']) {
     assert.ok(baselinePaths.filter(path => path.startsWith(prefix)).every(path => Object.hasOwn(review.protectedFiles, path)), prefix + ' no existing runtime, asset or evidence revisions');
   }
@@ -93,7 +94,7 @@ test('all existing JSON, dev workflow, game bytes, assets, legal files and pinne
   const allOriginalJson = baselinePaths.filter(path => path.endsWith('.json'));
   assert.ok(allOriginalJson.every(path => Object.hasOwn(review.protectedFiles, path)), 'No prior proof, manifest or package JSON may change');
   const nestedJson = allOriginalJson.filter(path => path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort());
   assert.equal(sha(read(CI_BUILD_DEPLOYMENT_REVIEW_PATH)), CI_BUILD_DEPLOYMENT_REVIEW_SHA256, 'Previous CI proof stays byte-for-byte frozen');
   const workflow = read('.github/workflows/pages.yml');
   assert.match(workflow, /- run: npm run build\n/);

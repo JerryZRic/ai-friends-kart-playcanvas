@@ -1,3 +1,4 @@
+import {v100Hash, v100PathsWithin, restoreV100Bytes, v100AddedPaths, v100AuditDependencies} from './v100-reviewed-revisions';
 /** Exact quality-tier policy successor; runtime, publication evidence and prior JSON stay frozen. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -55,13 +56,14 @@ export function assertQualityTierReviewBytes(bytes: string): Review {
 }
 export function qualityTierReview() { return assertQualityTierReviewBytes(readFileSync(QUALITY_TIER_REVIEW_PATH, 'utf8')); }
 export function qualityTierHash(path: string, incoming: unknown) {
-  const review = qualityTierReview(); if (!Object.hasOwn(review.changes, path)) return incoming;
+  const review = qualityTierReview(); if (!Object.hasOwn(review.changes, path)) return v100Hash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-quality-tier incoming identity');
-  return row.currentSha256;
+  return v100Hash(path, row.currentSha256);
 }
-export function qualityTierPathsWithin(inventory: Record<string, unknown>) { return Object.keys(qualityTierReview().changes).filter(path => Object.hasOwn(inventory, path)); }
+export function qualityTierPathsWithin(inventory: Record<string, unknown>) { return [...new Set([...Object.keys(qualityTierReview().changes).filter(path => Object.hasOwn(inventory, path)), ...v100PathsWithin(inventory)])]; }
 export function restoreQualityTierBytes(path: string, current: string) {
+  current = restoreV100Bytes(path, current);
   const review = qualityTierReview(); if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path]; assert.equal(qualityTierSha(current), row.currentSha256, path + ' exact successor bytes before quality-tier inverse');
   const lines = current.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -73,7 +75,7 @@ export function restoreQualityTierBytes(path: string, current: string) {
 }
 export function assertQualityTierAddition(path: string, bytes: string | Buffer) {
   const review = qualityTierReview(); assert.ok(Object.hasOwn(review.additions, path), path + ' exact named quality-tier addition');
-  assert.equal(qualityTierSha(bytes), review.additions[path].sha256, path + ' exact quality-tier addition bytes');
+  assert.equal(qualityTierSha(bytes), v100Hash(path, review.additions[path].sha256), path + ' exact quality-tier addition bytes');
 }
-export function qualityTierAddedPaths() { return [QUALITY_TIER_REVIEW_PATH, 'tests/helpers/quality-tier-reviewed-revisions.ts', ...Object.keys(qualityTierReview().additions)]; }
-export function qualityTierAuditDependencies() { return [...qualityTierAddedPaths(), ...Object.keys(qualityTierReview().changes)]; }
+export function qualityTierAddedPaths() { return [QUALITY_TIER_REVIEW_PATH, 'tests/helpers/quality-tier-reviewed-revisions.ts', ...Object.keys(qualityTierReview().additions), ...v100AddedPaths()]; }
+export function qualityTierAuditDependencies() { return [...qualityTierAddedPaths(), ...Object.keys(qualityTierReview().changes), ...v100AuditDependencies()]; }

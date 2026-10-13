@@ -1,0 +1,30 @@
+name: Certify v1.0.0 release candidate
+on:
+  push:
+    branches: [release/v1.0.0-certification]
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:dist
+      - name: Preserve certified HTML and source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: v100-certified-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 30
