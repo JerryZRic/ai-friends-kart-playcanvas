@@ -1,0 +1,636 @@
+{
+  "schema": "static-menu-art-transition-v1",
+  "baselineCommit": "d0acc156e4902c2741ea7a1dc35966a7e82a4f34",
+  "baselineTree": "fd4a15d9c7a6255d3c2f3570d714133c4321fa2c",
+  "changes": {
+    "index.html": {
+      "previousSha256": "df0da639a96f89efe45cc7d65ce422c081b1b8cc2120a1372d12aa3cd0247f7b",
+      "currentSha256": "11146137ca9a5836da78e576546008f9a389255a13269f935f2f305f56c9f02d",
+      "scope": "Load the static title art stylesheet and prepare the main-menu document shell",
+      "hunks": [
+        {
+          "beforeStart": 1,
+          "afterStart": 1,
+          "removedLines": [
+            "<html lang=\"zh-CN\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"theme-color\" content=\"#0e242b\"><meta name=\"description\" content=\"AI Friends Kart 自由模式：六位伙伴，两种载具，海岸与水上乐园竞速。\"><title>大肥鱼卡丁车</title><link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230e242b'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E\"><link rel=\"stylesheet\" href=\"/src/menu.css\"><link rel=\"stylesheet\" href=\"/src/ui-layout.css\"><link rel=\"stylesheet\" href=\"/src/menu-fixed.css\"><style>\n"
+          ],
+          "insertedLines": [
+            "<html lang=\"zh-CN\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\"><meta name=\"theme-color\" content=\"#0e242b\"><meta name=\"description\" content=\"AI Friends Kart 自由模式：六位伙伴，两种载具，海岸与水上乐园竞速。\"><title>大肥鱼卡丁车</title><link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230e242b'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E\"><link rel=\"stylesheet\" href=\"/src/menu.css\"><link rel=\"stylesheet\" href=\"/src/ui-layout.css\"><link rel=\"stylesheet\" href=\"/src/menu-fixed.css\"><style>\n"
+          ]
+        },
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "removedLines": [
+            "</style><link rel=\"stylesheet\" href=\"/src/character-emblems.css\"></head>\n"
+          ],
+          "insertedLines": [
+            "</style><link rel=\"stylesheet\" href=\"/src/character-emblems.css\"><link rel=\"stylesheet\" href=\"/src/title-menu.css\"></head>\n"
+          ]
+        }
+      ]
+    },
+    "src/menu.ts": {
+      "previousSha256": "317cad32146a498d6dbc7334d2aa728353ed8d5bae43e5b8cd2b560b806868e1",
+      "currentSha256": "b7e0584ffa2337375e9ed7c2fa0fcd5cf95bbd2c578b35e365dda2e29f176741",
+      "scope": "Compose the static title and maid art over the existing live menu scene with independent accessible title actions",
+      "hunks": [
+        {
+          "beforeStart": 94,
+          "afterStart": 94,
+          "removedLines": [
+            " if(state.screen==='main')root.innerHTML=`<section class=\"title-screen\" aria-labelledby=\"game-title\"><div class=\"title-background\" aria-hidden=\"true\"><img class=\"title-fallback\" src=\"./map-previews/waterpark-overview.webp\" alt=\"\" hidden><canvas id=\"title-backdrop\" tabindex=\"-1\"></canvas><div id=\"title-curtain\"></div><div class=\"title-shade\"></div></div><h1 id=\"game-title\">大肥鱼卡丁车</h1><nav class=\"title-actions\" aria-label=\"游戏主菜单\" aria-hidden=\"true\" hidden inert><button class=\"title-action\" id=\"story-button\" disabled>故事模式</button><button class=\"title-action\" data-screen=\"maps\" disabled>自由模式</button><button class=\"title-action\" data-screen=\"settings\" disabled>设置</button><button class=\"title-action\" data-screen=\"exit\" disabled>退出</button></nav></section>`;\n"
+          ],
+          "insertedLines": [
+            " if(state.screen==='main')root.innerHTML=`<section class=\"title-screen\" aria-labelledby=\"game-title\"><div class=\"title-background\" aria-hidden=\"true\"><img class=\"title-fallback\" src=\"./map-previews/waterpark-overview.webp\" alt=\"\" hidden><canvas id=\"title-backdrop\" tabindex=\"-1\"></canvas><div id=\"title-curtain\"></div><div class=\"title-shade\"></div></div><div class=\"title-composition\" aria-hidden=\"true\"><img class=\"title-character\" src=\"./menu-art/whale-maid.png\" alt=\"\" draggable=\"false\" decoding=\"async\"><img class=\"title-logo\" src=\"./menu-art/title-logo.png\" alt=\"\" draggable=\"false\" decoding=\"async\"></div><h1 id=\"game-title\">大肥鱼卡丁车</h1><nav class=\"title-actions\" aria-label=\"游戏主菜单\" aria-hidden=\"true\" hidden inert><button class=\"title-action\" id=\"story-button\" disabled><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24\"/></svg><span>故事模式</span></button><button class=\"title-action\" data-screen=\"maps\" data-primary=\"true\" disabled><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><circle cx=\"16\" cy=\"16\" r=\"13\"/><circle cx=\"16\" cy=\"16\" r=\"4\"/><path d=\"M4 12h24M14 20l-3 8M18 20l3 8\"/></svg><span>自由模式</span></button><button class=\"title-action\" data-screen=\"settings\" disabled><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z\"/><circle cx=\"16\" cy=\"16\" r=\"5\"/></svg><span>设置</span></button><button class=\"title-action\" data-screen=\"exit\" disabled><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"M6 29V3h20v26M10 7l12-2v24l-12-3z\"/><path d=\"M17 17h1\"/></svg><span>退出</span></button></nav></section>`;\n"
+          ]
+        },
+        {
+          "beforeStart": 162,
+          "afterStart": 162,
+          "removedLines": [],
+          "insertedLines": [
+            " root.querySelectorAll<HTMLImageElement>('.title-character,.title-logo').forEach(image=>{\n",
+            "  const settle=()=>{if(image.naturalWidth>0){if(root.querySelector('.title-logo')===image&&image.classList.contains('title-logo'))root.classList.add('title-logo-ready');}else image.hidden=true;};\n",
+            "  image.addEventListener('load',settle,{once:true});image.addEventListener('error',()=>{image.hidden=true;},{once:true});\n",
+            "  if(image.complete)settle();\n",
+            " });\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-input-mode-transition.test.ts": {
+      "previousSha256": "85ef653d33d295075b7c98c876bad000b909f47500aeed0ca33b93157b350e86",
+      "currentSha256": "79272ff4511044732848ceffd9191cfbaa352b56b8ff2dae08535a347b891997",
+      "scope": "Retain every published input-mode endpoint through the exact static-title inverse and final identity chain",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {staticMenuArtHash, staticMenuArtPathsWithin, restoreStaticMenuArtBytes} from './helpers/static-menu-art-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 42,
+          "afterStart": 43,
+          "removedLines": [
+            "  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged production bytes');\n"
+          ],
+          "insertedLines": [
+            "  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(restoreStaticMenuArtBytes(path, read(path))), hash, path + ' exact input-mode production bytes');\n"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 59,
+          "removedLines": [
+            "    const current = read(path), previous = restoreInputModeBytes(path, current);\n"
+          ],
+          "insertedLines": [
+            "    const raw = read(path), current = restoreStaticMenuArtBytes(path, raw), previous = restoreInputModeBytes(path, raw);\n"
+          ]
+        },
+        {
+          "beforeStart": 66,
+          "afterStart": 67,
+          "removedLines": [
+            "    assert.throws(() => restoreInputModeBytes(path, current + ' '), undefined, path + ' modified current bytes rejected');\n"
+          ],
+          "insertedLines": [
+            "    assert.throws(() => restoreInputModeBytes(path, raw + ' '), undefined, path + ' modified current bytes rejected');\n"
+          ]
+        },
+        {
+          "beforeStart": 79,
+          "afterStart": 80,
+          "removedLines": [
+            "    assert.equal(inputModeHash(path, row.previousSha256), row.currentSha256);\n"
+          ],
+          "insertedLines": [
+            "    assert.equal(inputModeHash(path, row.previousSha256), staticMenuArtHash(path, row.currentSha256));\n"
+          ]
+        },
+        {
+          "beforeStart": 139,
+          "afterStart": 140,
+          "removedLines": [
+            "  assert.deepEqual(inputModePathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(inputModePathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...staticMenuArtPathsWithin(inventory)])]);\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/input-mode-reviewed-revisions.ts": {
+      "previousSha256": "7bd59e55527dd4bdfcf35b749564ea29a7021c99cf5ab3ba7baffc75b0876110",
+      "currentSha256": "5f6c97e4eb267276fb4a1cc011b114d147fb1d4254ecbf6c262ebb51e12bfd22",
+      "scope": "Extend historical identity, inverse, source inventory and stability closures through the strict static-title layer",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {staticMenuArtHash, staticMenuArtPathsWithin, staticMenuArtSourcePaths, restoreStaticMenuArtBytes, staticMenuArtAuditDependencies} from './static-menu-art-reviewed-revisions';\n"
+          ]
+        },
+        {
+          "beforeStart": 60,
+          "afterStart": 61,
+          "removedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return incoming;\n"
+          ],
+          "insertedLines": [
+            "  if (!Object.hasOwn(review.changes, path)) return staticMenuArtHash(path, incoming);\n"
+          ]
+        },
+        {
+          "beforeStart": 63,
+          "afterStart": 64,
+          "removedLines": [
+            "  return row.currentSha256;\n"
+          ],
+          "insertedLines": [
+            "  return staticMenuArtHash(path, row.currentSha256);\n"
+          ]
+        },
+        {
+          "beforeStart": 66,
+          "afterStart": 67,
+          "removedLines": [
+            "  return Object.keys(inputModeReview().changes).filter(path => Object.hasOwn(inventory, path));\n"
+          ],
+          "insertedLines": [
+            "  return [...new Set([...Object.keys(inputModeReview().changes).filter(path => Object.hasOwn(inventory, path)), ...staticMenuArtPathsWithin(inventory)])];\n"
+          ]
+        },
+        {
+          "beforeStart": 79,
+          "afterStart": 80,
+          "removedLines": [
+            "  return [...previous, ...INPUT_MODE_SOURCE_ADDITIONS];\n"
+          ],
+          "insertedLines": [
+            "  return staticMenuArtSourcePaths([...previous, ...INPUT_MODE_SOURCE_ADDITIONS]);\n"
+          ]
+        },
+        {
+          "beforeStart": 82,
+          "afterStart": 83,
+          "removedLines": [],
+          "insertedLines": [
+            "  current = restoreStaticMenuArtBytes(path, current);\n"
+          ]
+        },
+        {
+          "beforeStart": 98,
+          "afterStart": 100,
+          "removedLines": [
+            "    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)];\n"
+          ],
+          "insertedLines": [
+            "    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence), ...staticMenuArtAuditDependencies()];\n"
+          ]
+        }
+      ]
+    },
+    "tests/free-mode-menu-dom.test.ts": {
+      "previousSha256": "acefcef4f2d190bcb341f8ee2d3e62b62de96007daed90f0fab3fdfe190ad3ae",
+      "currentSha256": "7b0b8be4c27f3d3d010b123398d87672c00186d44d0f874059fedfdbaec0a280",
+      "scope": "Extend the DOM fixture with explicit image-event support and prove art failures cannot bypass the engine readiness gate while retaining navigation coverage",
+      "hunks": [
+        {
+          "beforeStart": 14,
+          "afterStart": 14,
+          "removedLines": [],
+          "insertedLines": [
+            "  naturalWidth=0;complete=false;\n",
+            "  classList={contains:(name:string)=>(this.attrs.class||this.className).split(' ').includes(name),add:(name:string)=>{this.className=[this.className,name].filter(Boolean).join(' ');}};\n"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 23,
+          "removedLines": [
+            "  querySelectorAll(selector:string){return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\\[([^=\\]]+)(?:=\"([^\"]*)\")?\\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}\n"
+          ],
+          "insertedLines": [
+            "  querySelectorAll(selector:string):Element[]{if(selector.includes(','))return selector.split(',').flatMap(part=>this.querySelectorAll(part)) as Element[];return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\\[([^=\\]]+)(?:=\"([^\"]*)\")?\\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}\n"
+          ]
+        },
+        {
+          "beforeStart": 44,
+          "afterStart": 46,
+          "removedLines": [
+            "  assert.equal(failures,1);firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);\n"
+          ],
+          "insertedLines": [
+            "  assert.equal(failures,1);\n",
+            "  const failedLogo=$('.title-logo'),failedCharacter=$('.title-character');\n",
+            "  failedLogo.dispatchEvent(new Event('error'));failedCharacter.dispatchEvent(new Event('error'));\n",
+            "  assert.equal(failedLogo.hidden,true);assert.equal(failedCharacter.hidden,true);assert.equal($('#story-button').disabled,true,'art failure cannot bypass engine preparation');\n",
+            "  firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);\n"
+          ]
+        }
+      ]
+    },
+    "tests/menu-fixed-layout.test.ts": {
+      "previousSha256": "9b424d93f051e0ae862c4708f2d0cc32080ed7946865e0c9811c23e885f920bc",
+      "currentSha256": "8eb9b18be03f0e8477f2540921abcf452ce3c8eda417995d856a222f7568c2ca",
+      "scope": "Retain fixed-frame checks for non-title menu screens and delegate the independently responsive main-title geometry to its new regression tests",
+      "hunks": [
+        {
+          "beforeStart": 7,
+          "afterStart": 7,
+          "removedLines": [
+            "test('the complete menu shell and recovery panel live in one canonical frame',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('setup pages keep their canonical frame and title has a scoped physical-pixel stylesheet',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 11,
+          "afterStart": 11,
+          "removedLines": [],
+          "insertedLines": [
+            " assert.match(html,/src\\/title-menu.css/);\n"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 18,
+          "removedLines": [
+            "test('menu composition has no viewport-specific reflow or display-sized fonts',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('setup composition keeps fixed proportions independently of title-menu styles',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 31,
+          "afterStart": 32,
+          "removedLines": [
+            "test('title, story, header/footer, and scrollable settings remain proportionate inside every fit',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('setup header/footer and scrollable settings remain proportionate inside every fit',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 33,
+          "afterStart": 34,
+          "removedLines": [
+            "  {name:'title actions',x:270,y:769,w:900,h:68},\n",
+            "  {name:'story dialog',x:510,y:300,w:420,h:300},\n"
+          ],
+          "insertedLines": []
+        }
+      ]
+    }
+  },
+  "additions": {
+    "src/title-menu.css": {
+      "sha256": "01225429b2e7b771bc860251599ba8a8fef31e2f82fef8b96930dfaacba4e38f",
+      "scope": "Style only the main title screen using proportion-preserving transparent art and independently sized accessible actions"
+    },
+    "public/menu-art/title-logo.png": {
+      "sha256": "15def3a47f7974c73c2433a0c496c417c1772ec9627558f976b3030b4807f4bf",
+      "scope": "Publish the reviewed transparent Chinese title artwork as an exact binary addition"
+    },
+    "public/menu-art/whale-maid.png": {
+      "sha256": "d950597be876ea928f4b577ec07bbdf20185673d3d7989a78311c33c09150c35",
+      "scope": "Publish the reviewed transparent maid-character artwork as an exact binary addition"
+    },
+    "tests/title-menu.test.ts": {
+      "sha256": "b989938308fe69157c4fb270356c213cf2995938289cc8d29ad8c8b5304795f9",
+      "scope": "Exercise title artwork composition, responsive action targets, accessibility and retained navigation regressions"
+    }
+  },
+  "protectedProduction": {
+    "coast.html": "7d3413efd51376c90b33db6d514a0277a10ab4461429968db515bc1ba0aacb70",
+    "garage.html": "3c8cb04c8dedfa276a1fa287b1e233e87859e4982699971ca75b92f9a7cd5f29",
+    "package-lock.json": "2e1e60d95318ff59e3079ae4bb7b138884474c1789e96c6b35bef4882898fb6b",
+    "package.json": "a7abe5a5c5c7d9a756c50dd2af7a4b01fbb384d3cb1cf04c2b36909fee4621b6",
+    "src/airfield-scenery.ts": "96a84ea580575661041811f3414ea193afffc0d3e5d88c95541a1910996c74db",
+    "src/alpine-props.ts": "a37d3f0a3fe56818bc3f0f5e8ba274bae60512491a5fe1f86e1df09071f60cd3",
+    "src/asset-download.js": "1b960643d7cbdfcfa4c938679f7f9da89ba31c5665a84d386a7325aa3af4ed09",
+    "src/asset-validation.ts": "aa294b4d854423c84c5c5df615053b2c74e3f4b76c1214b60b0a2ece8fbbaa88",
+    "src/assets.ts": "f8ca6442bdb762ed896399f221bd34e1fdca4ff79533841abf9dcff82af0633a",
+    "src/caldera-scenery.ts": "7f09829fa0db9b49b4f09ee432692eb4d0669cbad37fdc8a0675359c682d7116",
+    "src/character-emblems.css": "eb645f9e0f6a9e0cdbeed46d5c037d26165539ddef46794db6d329f1cb7e9e9c",
+    "src/character-identity.js": "c5806dcb49a21e157ffcbd5d09df99c55c7cc52534583bdbc5778de9640f5527",
+    "src/character-preview-stage.ts": "1d3a339f7d30a7ffc1ac65cdd1718e936b895b3c5c301636ab702168898d074c",
+    "src/character-preview.ts": "c8d78dd2213de49cf96510ff00e54cfeea9c20bf957dc0d301db448dbd85a575",
+    "src/character-profiles.ts": "1d35323dab31a8f943209f7e98d107916441a95ba5d06ff82ce92ba09986573d",
+    "src/closed-circuit.ts": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484",
+    "src/coast-race-feedback.ts": "7c47a102876776ec90d6578adfeedb634b6a1968786f9ea7ccd58146d0986a1a",
+    "src/coast-race-rules.ts": "5393ca7d10b0532e753c7416dc79da37eb62fc8edb8fe7861cfa9b6faaea7639",
+    "src/control-mode.ts": "9762db687f032f49feed57554261b61c20d3d5210a973dcb516750a6b616be0b",
+    "src/desert-scenery.ts": "aa2ad6819309066caa4a7acd74f3df55a037358c9c9f3c551a0d0bcbf5ccf713",
+    "src/driver-roster.js": "45262c05d1583e73051ea743d74f0520afe40c5f7152f5a16b725aca08492e13",
+    "src/dynamic-pickups.ts": "50ad37f3abfb1bdf0db9e669b08b23e892574c9806c7cdd5f3b9f046cb71ff04",
+    "src/food-kart-payload.ts": "3f26bf7934d6f3e2bd6189065af40c47158870be3d72b26f86a50fdc2b738379",
+    "src/forest-scenery.ts": "4ecc8445726214c8f8de5f5e38e1e46eff6e9119a85110b2cdf49ecd43f4215b",
+    "src/game-settings.ts": "cd2cef0d1531393e7290bff1766f2988a3f95d8fe0535fc086bb989d4bf50730",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/garden-scenery.ts": "d36896070a54b2aaeca915743d7dbfdab0f881edbef5f96a9200dc97cc95c326",
+    "src/generated/alpine-props.json": "72ad18f51a5e1808913d150844867060248c65769fc13f08dda7f9cd81a0f152",
+    "src/harvest-scenery.ts": "28adb973d69f9b49625e792cdb02f0d9f12c783a4d7e3da6ca3223c3ec8a3b59",
+    "src/item-models.ts": "0d63264651616c2e6408f733ae4032618d5b4e6f5232d060e9322d5498afe061",
+    "src/item-pickups.ts": "d068f11e624ee3a454051ae0ff7d80c8c5075d08b61d648c2697db57868b6d39",
+    "src/kart-assembly.ts": "a51bfb18bb0a320bb6b5262b2364bb2f16b649e65258becf09cb75c416019cbe",
+    "src/kart-build.ts": "1f14753cb41b290787b07a6bc70d9227e6de57611225400edb0e7ca2ab507927",
+    "src/kart-catalog.json": "8d67b16f77aeb8667823b604d61b3fd802a2f68ba23c775f3f9c5fcf226d0ba9",
+    "src/kart-driver.ts": "315a7d2296b9e64db411a1d796fbaaefcb96d12870403600b8da366266b4ebef",
+    "src/kart-garage-fixed.css": "97b7fd6fc68aba670471e742247ae78785c026d09825ab84dc9c69b0d43b031e",
+    "src/kart-garage-layout.ts": "e58a24ebd5e246d917160ca6bb52eb82c97d149ef9ff4c6983ee45cd5b654f53",
+    "src/kart-garage-motion.ts": "66a949b31d05dcc88ff3b5a5905e87dd5e4d603022d078b6af4a0e655f0f56ed",
+    "src/kart-garage-stage.ts": "c4c373eff1f8229ddc82db500141e836beb4155fee6b3a62d94b021944f257e1",
+    "src/kart-garage-stats.css": "d7a8d44644a163fb7faf6bb6d30e89876b632f394dd515c018fe842d89e01ebf",
+    "src/kart-garage-stats.ts": "4ce3e01a08456267c205a55c1a0f3db11810ec264061c9c8d64ca16df2d2ddd9",
+    "src/kart-garage.css": "f50f564d804309582acdd0b94e60b9d2507f3743355c85ed351cc0e4d995712a",
+    "src/kart-garage.ts": "0ab442b6939f0dc899f784bb3dcd60f6f5845447a1c15ce4dc053bcda5275619",
+    "src/kart-presets.ts": "36365b69d836fcdbbbce8b4c94ce1e0e8a039e394b70a243cfb947d3d09f02eb",
+    "src/kart-race.ts": "0c669a77b97ab8b118eb3b6dc4ac6bdcab8734042b21f466708dcf64372a93d5",
+    "src/kart-slot-icons.css": "b9a038eaf270b0b44ba59db749718f2cdf6574c0317e0fa3606d2ac2ba6aff09",
+    "src/kart-slot-icons.ts": "5e2866768d3ad71586b8c8e3b9916f9f9d61f45f9bc1d5a04988b4ce37696a89",
+    "src/kart-textures.ts": "26fb012e9b50aad4c8581ede69946199c9e3e8ac1f4b59e549f3a0654ef76e51",
+    "src/kart-thumbnails.ts": "a19881f5b57580c35e89c7a9adc41c15e0a11eb2f3176464e18c18309d14d894",
+    "src/kart-whole-cars.css": "2e3285a811f71823f3fa831057f6a502eaf5510b46390382b2c8de7553e8709e",
+    "src/kart-whole-cars.ts": "dbc30c559f4bcd6a4c07fb56604badf36205324fc3eda57950af731b73922ddc",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/land-course-pickups.ts": "87869b5b789e277bb3209f8cc3b939cb00dfb94c3281d3cc514aca4c468fcaf9",
+    "src/land-course.ts": "b207d44c062a06e07828f340b3c5d3edffdf5260984fd7108a3d86039bfd384f",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+    "src/land-mesh-builder.ts": "75d853d5f1512b35dfa3482a46a94ff078ced7b2e273453447ba8c79e992edea",
+    "src/land-race-route.ts": "e20ce23c4045bbf86bfa842be1a21ccd88f8288c762e5e077df3c1bd9e41603b",
+    "src/land-road-mesh.ts": "b9562a944011c939cc54fbc678b92a0e6059c4fd1e41a1d17f3b01934d16ccb2",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/land-scene.ts": "6cda865b58b6ac7fd2511d1c6a73f19af042759cf7b8e30e694d1faab56123c1",
+    "src/land-scenery.ts": "aa7d57cb4acfdcc16e53e0dcc8bc1a300d52276cd2161cae2e0de82fba9c1816",
+    "src/land-track.ts": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d",
+    "src/map-picker.ts": "778c29e0e983ba66853a15d50e61f179da2a227ce34ad7c35c0b83dae658d24c",
+    "src/map-presentation.ts": "a137e260326de148141ca599c19c6d11c41598e1a6243a94cc86a7d8be8ffc4a",
+    "src/map-profiles.ts": "ca3c81e08883d36bbb2c73c8e17e8920e61c5e6ea23b26e0f3b7ace574b3a911",
+    "src/maps/airfield.ts": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c",
+    "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+    "src/maps/desert.ts": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636",
+    "src/maps/forest.ts": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/maps/harvest.ts": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e",
+    "src/maps/mountain.ts": "fd6861588f95ae0aea3230c6239a6c7d17f061c50952508a18e3ff629a4ef442",
+    "src/maps/quarry.ts": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9",
+    "src/maps/snow.ts": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268",
+    "src/maps/town.ts": "bdd43a27e085cc767d00d0b35163703267f2e91ef06e31215f9d3a0f140510df",
+    "src/maps/workshop.ts": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806",
+    "src/menu-backdrop.ts": "8b571532817cb0ed8b54ed7496a57ed27775f4654aad44e2070a2bf60b3b4ae0",
+    "src/menu-camera.ts": "be64fc33bac05a3c33e62a0763e80342b3cc810524027bcf0cd1b89a9bfc3474",
+    "src/menu-fixed.css": "9a3f7caa75f0f5e1d796d1479f8f8c8ab3ea34bec620a4c9cfc37aad2d9390ca",
+    "src/menu-state.ts": "7b0be5d8766b8ac28b8191fa7b5b94eb89c33d8c54aac55bb92049bd311c7ec5",
+    "src/menu.css": "48cf797d0821e756ce9cf39c73fb2591f9b853850fc33c0e2cbbeb9b5cbc3187",
+    "src/mobile-controls.css": "34cc4db583449344ab0d1bd82fdf16f83dac4b811d1b72fde846e8c29e9e900d",
+    "src/mobile-controls.ts": "d6aef322c3c8459f89c439cb22588b5e5e3709be412d09bbc8bed3312da67aea",
+    "src/mountain-scenery.ts": "1ee148604b6078d946b9c213994b0a3874e1089af60930d7194d3b8a30a0f5af",
+    "src/mouse-look.js": "c3dfc24f7a740170feca55483a7fe8b119f3cca94c5a6d563293538e068a3611",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/npc-tactics.ts": "e00d3f332764823ecb379b6e08f9ca6b9fc3c6744e1010085487f0c2e864a00b",
+    "src/open-road.ts": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab",
+    "src/pickup-visual.ts": "ab77cbc6a2ea89835645706e7df4f05034e17c9071e1222df9eea251245a4106",
+    "src/playcanvas-planar-renderer.d.ts": "8ecf46ee903706a98a7c77c3b91aa9a699b363ae6470883eec1f2ceddd3ca327",
+    "src/quarry-scenery.ts": "f16b107b3898bd4390e9d6cfa812e2677e3a6106886771872bb3d1390223571d",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/race-control-guide.ts": "57bedb35683e4ee5d2fe318f3d94e1e91d69ae74fbd6cf2350bf7d62f25cd1c5",
+    "src/race-controls.ts": "6930d2294f6ef8417418ced20e6893d52d6d4b7a1bbb957743e74352ab81ea51",
+    "src/race-frame-clock.ts": "466677232a59d77b85cebc13d12f3e265371cad8be8075f703378f9f88dc3d11",
+    "src/race-hud.ts": "ce483db744c9028314d6135a88fffc5fd7ca1ef90d0d8895ccbbfcd7506466e6",
+    "src/race-loading-camera.ts": "59941300de5a12d337589d3718a579738ddf85e7ac091d10f89b75ef590bf0dd",
+    "src/race-loading-ui.ts": "877cdd093e79611e7c6792cbb7d4c121c303293e77382e3cdf910c96e0673b86",
+    "src/race-options.ts": "47a8eb7ca331a1a43aa736383d1af8291210daef4fff2708ba4b70d2133f8026",
+    "src/race-shell.ts": "e6dd2e0039eef9ee54122211b27f80849bfefb44ad13648c6b8b51199b63d878",
+    "src/race-ui-layout.ts": "c03cc1870e26225f32cefff0883cde5ae0b581532f31f2c1022e59a1b41562af",
+    "src/race-ui.css": "e1d114af5d5703ea5a68d4fbd30979e3593d978ada3d336de78240be4c2020a7",
+    "src/scene.ts": "96847c14244ecfe9c25480d036cd37d5456832c4cb030ceb0cf629fc88bb428d",
+    "src/snow-scenery.ts": "1557a21c49f17bdffcaf8c03eb326dbd73d7bde56356b39889e65632d7bd7cc9",
+    "src/town-scenery.ts": "bbf08dadb171bd3c2d807204931a36b7f57e70a55317abe385d9cbe72b2e376b",
+    "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+    "src/ui-layout.css": "19fe7d95dc126a8d04cfb181c9baf4f02e29a61691d11c674e6046d4780694ab",
+    "src/ui-layout.ts": "ea7d42b5aa45b4721ceae6f88a412bc1a1f80c0664d089a50d7834fca2c29e4a",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/water-mount.ts": "bae8bb81628f4d884134c0471c8e437160884f016a8ee4b92400c89f608e61ff",
+    "src/water-race.ts": "40fa79727854751c07ba6df16804aef7e63631cfe6ba2382e7319cdfb4629323",
+    "src/waterpark-bed.ts": "81b142884ac58a3d83bbfb6d4fd72d975fe773b34307f838da6e6082f64edc9b",
+    "src/waterpark-design.ts": "b21047bce25c395d5ba2ae27a928d4c1ca3ff4e84bc49016155124ff1ea1886a",
+    "src/waterpark-environment.ts": "ca664127feda6efd78adc2113357938220b9ed4bd3827c5101a5ba5a9cacd7ea",
+    "src/waterpark-input.ts": "89bd126cd8e7cd9f6cd162cccc4ded66fbcbcd55e002910eeaa6a782679e12aa",
+    "src/waterpark-lifetime.ts": "c699b4ea2b15477ce0d03afb9940d6754fcd07c1a803877f5d707b720faff8e3",
+    "src/waterpark-materials.ts": "fd574078ee2c4b57e765966ab29de46079632bf1a10d8964e3c9e0514b5fb6b4",
+    "src/waterpark-motion.ts": "0e38f791fe7bd8c247900cf23e008da0f74aa19c102b8353fae29840a7ca4171",
+    "src/waterpark-performance-ui.ts": "6f6d0ef8ec13c2bbc7f0f943f77bd90801d9f7957083f288a5df2f822a31a930",
+    "src/waterpark-performance.ts": "f3f9507462dd217c9fcb447c716b702da464b6b6119d9609e72e6c4c8afa91b1",
+    "src/waterpark-play.ts": "beffd88ad637408adf17531c10225721ff7c5ceb0fa82962995424c40adb9c05",
+    "src/waterpark-preview.ts": "a94ffdf5e5039185229dcf422606db8de4e03e72bd058d52f54f0eec07e4ea7c",
+    "src/waterpark-reflection.ts": "9ea1ae30a34f1f9c2546ab7d814c209ea641065f3d92689e3bc34de33ac9dbbd",
+    "src/waterpark-refraction.ts": "01515de9f1d4f34261cda8b727dfe3fbc9bf52b3b37a4b9fdd5aa4a97aec35eb",
+    "src/waterpark-scene.ts": "94c3f7ea1f4b5f27aef71c78c889016a6ffa1161c3f0d7861984ddac70d4ca41",
+    "src/waterpark-surface.ts": "2c1eaeaf00e625f13ce673cd032028c1650b60094aae6fd848ff1f55a0601c74",
+    "src/waterpark-wake.ts": "ff98c354d7e84bc4ac872042b9558177ef6ab9b7345e15c6575df5fbbd562cba",
+    "src/waterpark-water.ts": "1a9bde7f7f7c277edc07242a0ac420b2fe060a432321126ad480fdb73f01b65c",
+    "src/workshop-scenery.ts": "3462b19fdff0bb68e53eed8b510d924300855b10f9fafd7453a4f4dca85dad48",
+    "tsconfig.json": "4f7d69e87332755bd0af744837ac08a076e9c378c6ed35b3f9fbd0acc29faa51",
+    "vite.config.ts": "68557fa4a59eb093742a1e77cfd4782f39fc002c3d17dca4c29650e5865c3963",
+    "waterpark-study.html": "1a36b679e1e7b1d34c477004835b5a8eeec286c8f210d6d456c61cc69d47e5cd",
+    "waterpark.html": "f497f6a7c42ebc7683fa33be322684383f6e92e2d4149cd6151de04246fc38c5"
+  },
+  "protectedLegal": {
+    "LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "NOTICE": "ba428189057a93eee40f26dba396420acf7d2dd74cb324bbe57afd962455027e",
+    "MODEL-NOTICE.txt": "6d1317af26ca2aca6874f6eced71eed0d050ab63443b406c58859ee6bcbe83a6",
+    "FOOD-ASSET-NOTICE.txt": "d23c0068c201a6312d0320e053194f27061311ba3c0c5f7accabb3cf195deee3",
+    "ALPINE-PROP-NOTICE.txt": "e5d210a2edaf2e8e6f55439453ceec1356c8bc29f7701ffb3dbbbf80ce160b47",
+    "THIRD-PARTY-NOTICES.txt": "2d393e6fdcbbca9ccfdc8373db606a4164e043d6c70814814e2fadf457a6e92c",
+    "SOURCE.txt": "3d5f975aa0b6c801d84c3e67d03fc7de66937cebafd9eb00a52ac8512ea8efe0",
+    "public/source.html": "d24d3c888189c7a29d969330477e7bd7cadf099efc997d49f9f84b7e897376f5",
+    "scripts/package-source.mjs": "4e1d30db500b760255f155e1fe051934a9b9de5d59e2dd67f27be72bd2332236"
+  },
+  "protectedEvidence": {
+    ".github/workflows/pages-stable.yml": "1bb401c0047cc03af879ffa3499e4e8910cab42f7e0d5daa5f1740882ed61ad2",
+    ".github/workflows/pages.yml": "d0243e93f6e0d85f2497af3be351fac69ae035293ad7e091504c84e1c5c37405",
+    "docs/airfield-enrichment-adjacent-art-verification.json": "f2eed405c43bc98c59d9720ab5a489e6a8a79f27c6cbaf7914aa0bc39f054d43",
+    "docs/airfield-enrichment-cameras.json": "25c33544a5a725103d81dd28d5ef002addb48efd6b42f9351842c479b3f66341",
+    "docs/airfield-enrichment-final-art-verification.json": "60c81e0627c4e1059b98a3512e9c02e95387e2feb030e285f3f017b55b4929aa",
+    "docs/airfield-enrichment-final-views.json": "424759ca547c170eb0af91f1281a762d08cdfc7c5801022835e283999ff86046",
+    "docs/airfield-enrichment-preview-provenance.json": "066589fc50e0e5652c65cf02f47bd24c59b9dd61cf91649db6e501c7ea269ae3",
+    "docs/airfield-enrichment-qa-files.json": "5e9ccfd62c2ec5e89e1acd53eb9c4ca716ae5a712677358bec5226b5e63a100e",
+    "docs/airfield-preview-provenance.json": "bfecf37649380a08708c83369b04b94451ac643657aa6c881b2bcf776b08c7b4",
+    "docs/caldera-enrichment-cameras.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+    "docs/caldera-enrichment-final-views.json": "b7dc568d1947d2925c728417afe9ad03a1375a3093a250f7fc0fb3775d1c56fa",
+    "docs/caldera-enrichment-opening-witness-correction.json": "299b20a1105c6a1432fe236e8dc17a7a756e10739ec4451c460080589301f55a",
+    "docs/caldera-enrichment-preview-provenance.json": "b5fec3212dc94f11de9ce07acff48a61711415392d5ce730d11e2fbd4c1d3855",
+    "docs/caldera-enrichment-qa-files.json": "9fbe762dab6b5eb3f4df607bd0dd9f0bd972df9d652c548a6da9b4563c0ffead",
+    "docs/caldera-preview-provenance.json": "f538ef7f963899bbce44b6c773a69ef3f9b45cf47d0201181064782e118908d7",
+    "docs/character-emblems.json": "1fefa7768af72b63c250feb12bd0c3d95e7cd8c0109bc36d1b1afbf85909875f",
+    "docs/desert-enrichment-cameras.json": "91fcce98660780c4c1b7727b7d7b82c43fe36dcf2f580b58eb3d2fbb254b1ca0",
+    "docs/desert-enrichment-final-views.json": "eed2a2a13219b3deb105462b05ed266ed934d2cb36752f79a8bdbb9488ad848c",
+    "docs/desert-enrichment-preview-provenance.json": "03343b250a92980482fdf2be413664b522c0e8cae7050a44806cd53abc6dee75",
+    "docs/desert-preview-provenance.json": "5f49439ca583d7178934f9ed2e5817a7c95a43bc549fe03ad87d65f3bd6a53fc",
+    "docs/food-kart-asset-budget.json": "c257e7a67d311117e1e005c35b5702e3370ed510b2187d2e0061379fdce89779",
+    "docs/forest-enrichment-camera-audit.json": "643d46fd5a219c1c9931675039874622986a5a5490b8c4dc0eec2f0d576ff419",
+    "docs/forest-enrichment-cameras.json": "f6868522204c512e8a1f4fd1431d3445173eee82bc890949fdd26c3b5a0d1c76",
+    "docs/forest-enrichment-independent-audit.json": "f3e6e420648ce3d3c370680095d134452dc8221a5e3ac344fc8daaf294d8b81a",
+    "docs/forest-enrichment-preview-audit.json": "6127db96e4008a31c71cbf8e1d69b813c8c046e33f2b336578e2d1a8fd62583d",
+    "docs/forest-preview-provenance.json": "29a46e32a3f1580733336270b8e62e6d324acfe63a32cdbbfbaeae3c60769ae8",
+    "docs/garden-enrichment-cameras.json": "80bc5e169e28b7de3a3946f453883f89464d507d1f58207083f473bbd1a37760",
+    "docs/garden-enrichment-final-art-verification.json": "a86a81559017a0b0f1e8071cb1eca7ac465000936ec5e48730a186c284fa257b",
+    "docs/garden-enrichment-final-views.json": "b0cfa7b80c6e5eb31b9fcdc31a4d4f38c8e8393af678cc6f6d04d92541a06186",
+    "docs/garden-enrichment-opening-witness-correction.json": "e6075f26310e032c807574efc69293b024f0073c338806b9f0bbf968796978c5",
+    "docs/garden-enrichment-preview-provenance.json": "5e479cc2fa9fb710d9273761637de002fbba39645bf4af3def1e737160e74263",
+    "docs/garden-enrichment-qa-files.json": "443cb8e5e3c5e3333e6077d793647626a8ffdffae857758f2ccc07089b8778f4",
+    "docs/garden-preview-provenance.json": "137df9e38931405c0226f5d23d5a3c2ce9fe7280bea0950f3cd9f857295439a3",
+    "docs/harvest-enrichment-audit.json": "71538a459a24c8c22085c3b9f9da69928196a3acc083b052f48f4b6fa8e39ddf",
+    "docs/harvest-enrichment-cameras.json": "cdea7cfe125ea3766c06daded37802b75b8fffe60ea8cbddbced3ee304768828",
+    "docs/harvest-preview-provenance.json": "d12f55a3aa78efc60f3a0d8d289b4d339237c360a2554c9344c3dd3045cb351a",
+    "docs/legacy-preview-compatibility.json": "e8527442a8bf5e2296c30d627feb6d32d514ece65621050b313887c2a6ad3f79",
+    "docs/map-preview-provenance.json": "4744e6680e7fd82e8a5cdc39b11fa569c9b8f0f956cb6557fbfb44a151698300",
+    "docs/mountain-camera-benchmark.json": "858a5569d8a5a1f2994380fc00e937fd3e131a5082a30ab3eec740fdcfdd42b5",
+    "docs/mountain-preview-provenance.json": "f07f16bfbccd56fd6238386377f170a235875d2473cbe713d8addc3c8118d2e4",
+    "docs/portrait-models.json": "e05bf4cade8de3e1ae13b6db1e20c1c22a4ba38cf28b3e0b559cdb06cb7d6bf4",
+    "docs/qa/modular-driver-fit.json": "3776f7630790863d5f824ecfb3ffa4a2690b734a29416421ae9c4a5151c4978b",
+    "docs/qa/white-rice-driver-fit.json": "ae7e21b002ca6e489eafc4046817e7ae4bc22bc18196066507f49ec47eff0a46",
+    "docs/quarry-enrichment-camera-audit.json": "cac82e7aabceec5d36ddbd0f7f4be318100d8bbbb42c1885c30761e2f33d5c32",
+    "docs/quarry-enrichment-cameras.json": "21378134ff27f7d9b2a962e18c627d9c16bf0b90a382e8783442f9926891bbf8",
+    "docs/quarry-preview-provenance.json": "e3d66b41b60a46e023ff9185d8ea0dbb25b1095a7d154163ed9d127be15874b2",
+    "docs/runtime-models.json": "090df0e4fdad642acd48ad43b0ee3ae75ec1227ea1a8ba614fd380955491de36",
+    "docs/scene-baselines/airfield-original/docs/airfield-preview-provenance.json.txt": "0661e33e96cd058a7fc834afa0d7b32d2301ed79fc8fe0c5c571edffbbc64518",
+    "docs/scene-baselines/airfield-original/src/airfield-scenery.ts.txt": "a5414a810f061a5cb4da169f9c8f5577d377c2e76fb6c7aa6dca0eaf80f99cb2",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-balance.test.ts.txt": "212f45c8fe59b90757bfc5f7316846efb09982252fefb1f88ea42aa7d10f7d96",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-camera.test.ts.txt": "629474b52cdbef3e92bee3763620cc092771abad36779d07e44bbb29687ce68a",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-npc.test.ts.txt": "bcc4d7c55da014cdd081b64909f723acf4afa16dc2d222db8cd140899b3d1dd9",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay-routes.test.ts.txt": "6606bb2ef30b1e6230871b0cbf6b36ffdcb9efca22c5a225549c39789f8321f1",
+    "docs/scene-baselines/airfield-original/tests/airfield-gameplay.test.ts.txt": "5e4210d979b3c879208409b4ddcfab2fcf60cac4da681d14e419beb9858332cf",
+    "docs/scene-baselines/airfield-original/tests/airfield-independent-audit.test.ts.txt": "58ba282fe027000f3bad8e6da6ad92359e7a62b2c41065ebd3bb3ca63acab172",
+    "docs/scene-baselines/airfield-original/tests/airfield-menu.test.ts.txt": "d53773f40da6c2ebd85f04062629ca848487c3d8b48a0a9a8652b18268f2dca3",
+    "docs/scene-baselines/airfield-original/tests/airfield-preview-assets.test.ts.txt": "b827decc95b2c22088611154df19ba4b8d4d39e0d5fbdf55563f61de33cfc35a",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-cursor.test.ts.txt": "627e08139329c9384d40bae37a7fbf1524e4071b017c2761db1dc7551d55c56d",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-footprints.test.ts.txt": "a79e5ca58247fe7df291236973be9503adb4571f85c75785410cf4537a22ce5e",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-geometry.test.ts.txt": "f04a2a76f99e01b3ab9a981524daafab85829c638109c72f006ee108df143b2b",
+    "docs/scene-baselines/airfield-original/tests/airfield-route-shared-tail.test.ts.txt": "48788897d9f83e1b5aa8a96c4017a6cc90c2a8d61beae87a1cde5bbc7dffe467",
+    "docs/scene-baselines/airfield-original/tests/airfield-scene.test.ts.txt": "63488923684386aff0dd1b99c660174d5bbbe23d22aa4a48617b5ddb59bf8f74",
+    "docs/scene-baselines/caldera-independent-audit.test.ts.txt": "ffcee55cbb54c691b52423ff3374bd8fb9ea72a8c29361437952cec1b07d838f",
+    "docs/scene-baselines/caldera-preview-assets.test.ts.txt": "81c4a34d745e5442f3d5109c5ba9527fa805650eec2f44d93c340c8c37200aad",
+    "docs/scene-baselines/caldera-scene.test.ts.txt": "30bfe1a397971c489577641057292f1e1eba3335a12ef1e999773c608ac05aac",
+    "docs/scene-baselines/caldera-scenery.ts.txt": "ccbe4ea4c0b4a6334aad73e71640e42460ed3fe3884db45d4ea2730978e48de2",
+    "docs/scene-baselines/desert-independent-audit.test.ts.txt": "147fd6a9856e7e7089974adb120c9ada3abc84d217112402a749ea1f853a18b2",
+    "docs/scene-baselines/desert-preview-assets.test.ts.txt": "8fc072762b4044a4ab02ce3e804a6e974e2ff62f65691f186bf1f05a54112d1b",
+    "docs/scene-baselines/desert-scene.test.ts.txt": "5814b5013582326625b0188bf10aa38efb37ce94285dcc2303b6708bad5afbc9",
+    "docs/scene-baselines/desert-scenery.ts.txt": "ea35a4a1d40ea12ec0b74e1cc2276e78bc722d16ecdae154c2fa1f602f96672c",
+    "docs/scene-baselines/forest-scenery.ts.txt": "f41fdd4886d01f131cb3b4fdfda5ce36444a80545a45ec8ee20a6457082f8802",
+    "docs/scene-baselines/garden-original/docs/garden-preview-provenance.json.txt": "642e61c95084b260f9cc7694222f35aa9a4d29c8fed75186c6e9dec1ed825c68",
+    "docs/scene-baselines/garden-original/src/garden-scenery.ts.txt": "684f7d54d9318fbeac7c8c625772807e1d4b8f2c8c0718b01090d54d05605d40",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-balance.test.ts.txt": "1d227ee9e141f013230ce9f06be829ace488441908496253960db58868033114",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-camera.test.ts.txt": "0db0297559cf7a58f025cee016f62cd758270f29ee1cec5087a8051b04644fc2",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-npc.test.ts.txt": "dc597e0de18d1ca94ee1e811b02aaf4ac8311d39cb865e12eac1e5c2bc3d8fa7",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay-routes.test.ts.txt": "d70e7e20bf891ee6955b5ba7c655558a06e366d84db26a8a4339a20b9a859939",
+    "docs/scene-baselines/garden-original/tests/garden-gameplay.test.ts.txt": "ddae0eeaa84bcc82939912de9338b160fb0043ea10a44b167fb6900b9ad16ac1",
+    "docs/scene-baselines/garden-original/tests/garden-independent-audit.test.ts.txt": "ea134890f2dec433c9a8087898129d43c4255557260a16565a0ab8dba8004cac",
+    "docs/scene-baselines/garden-original/tests/garden-menu.test.ts.txt": "c8c28866e6de61251525d6954dc97a6c01773d0ecedc75077ea719ffc8256513",
+    "docs/scene-baselines/garden-original/tests/garden-preview-assets.test.ts.txt": "7b3ef010233799d481af7ff95321388b7ec81307c28c65e58849861e8883c4c0",
+    "docs/scene-baselines/garden-original/tests/garden-route-cursor.test.ts.txt": "4d9272d273412e664e993694d706afe16e7e4ffe06f78f4a61b96717e5226cbe",
+    "docs/scene-baselines/garden-original/tests/garden-route-footprints.test.ts.txt": "11f41fcc90c56c67d69df3c1d31093face3a78c7dc59dbdc3a23e9af8a14d3db",
+    "docs/scene-baselines/garden-original/tests/garden-route-geometry.test.ts.txt": "01a9681e44baf860cb9943d966cd56d2df038163ac21c1162372c04f7e8ef71a",
+    "docs/scene-baselines/garden-original/tests/garden-route-shared-tail.test.ts.txt": "7a1e47e7d886fea46ce04efa67d6a47a6f5ce580f51c4543861d2651e50f9e96",
+    "docs/scene-baselines/garden-original/tests/garden-scene.test.ts.txt": "fc3583c7fde00be4d3faccf720d8c404e9c89eb21a69e8cb7f11963e6a6a88ee",
+    "docs/scene-baselines/harvest-independent-audit.test.ts.txt": "98a16a778504debca317d2913fd37607ca880bd6e5262c55f6e7e05a735d0b9c",
+    "docs/scene-baselines/harvest-preview-assets.test.ts.txt": "d88f1af12f9e2799338e7ae8c75979c53ef0509e4ce4351d0e6e41668eb7bf4c",
+    "docs/scene-baselines/harvest-scene.test.ts.txt": "70296eb1f359c451aeb40d25fc2db31169cb7791b4b5b87b71310d03fff5c08d",
+    "docs/scene-baselines/harvest-scenery.ts.txt": "ea93d8ad6dca07bac38efc3934ff397bbde0ea93444982530319d56d79f1458a",
+    "docs/scene-baselines/quarry-scenery.ts.txt": "f0f1fdb666f1513c3f496dd733834f3a8df02ab072dc23021cfb176a28e9cb5c",
+    "docs/scene-baselines/snow-independent-audit.test.ts.txt": "9b751caab44cff37f2c8ff53d8452782fceceb27d7a2a0fc573b0bdd24ce74fb",
+    "docs/scene-baselines/snow-preview-assets.test.ts.txt": "320817037fdd6c3584466e4130087ce32096cd1a65f6065d056bfa6487c23c08",
+    "docs/scene-baselines/snow-scene.test.ts.txt": "9440f7ea8e51bd5276ade3184db89f1746151349784032650dde3ff48caeb415",
+    "docs/scene-baselines/snow-scenery.ts.txt": "a33aa52b70e3a234bacccdacbb24f9259c2e010780a4cc56979f0f16d9cf4486",
+    "docs/scene-baselines/workshop-scenery.ts.txt": "a9ffc11ffd00fa0faa5e74bc0c1a3a17b44aa097ebe46f1427f4bfc43d820874",
+    "docs/snow-enrichment-cameras.json": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+    "docs/snow-enrichment-final-views.json": "e984f219eabc6e96e6590256d7ae909d331c25d4704df4636e50a196c460bceb",
+    "docs/snow-enrichment-preview-provenance.json": "1bfe50ebd6e79514678c19e7dfd5240081ed4a0b24fb509820241849cb6d8b94",
+    "docs/snow-enrichment-qa-files.json": "259fc024f4b4ba6cb434f862a64d7a187d61c3129f9dc5305ecb35e8ae119069",
+    "docs/snow-preview-provenance.json": "f43feed5a9a1bac7ab106502018235f252101ff49e3a18a36ea0a0d76af3dd97",
+    "docs/stable-pages-manifest.json": "5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add",
+    "docs/town-enrichment-cameras.json": "dec89b28d9e028a1ad1487ca99c5576959930586b3b7d40b3645a9f24f2fdc4e",
+    "docs/town-preview-provenance.json": "8ac03960e61f175576352a595cd153246d5d4124c1a5298e224b5d6102bf268f",
+    "docs/white-rice-runtime-provenance.json": "d9ca5b7ade10ba973b864af065a8eb7e779116edbf0f2e11a451076f128eaed2",
+    "docs/workshop-enrichment-audit.json": "03cdc91bd5395168a8d4f8823ab77dcc6f96ce3653c488daee19d25d36468b7e",
+    "docs/workshop-enrichment-cameras.json": "0905233276abc0aa36f5ddbf52ba9eb02483ec6f3ec551b5a64dbad1e030d4f8",
+    "docs/workshop-enrichment-preview-audit.json": "b20f507af091c7aec5df4d6fa9293a3a65776fca734d816fe3bdd4ca133a11d3",
+    "docs/workshop-preview-provenance.json": "edb9a5a9c928923e00d79d4e4be7f45a7c7bc14e82b80a10d356a8a5deecaa5d",
+    "models/alpine-campsite/selected-manifest.json": "e7db38f65c13dd38e7fef8242c6053714fb255c5f5c7c9822d0c36cef976488e",
+    "models/model_metadata.json": "18c686f1a3519605b3fc01fe919c39d06a99c1e955c01898a1a3f22e9e87fe94",
+    "public/models/food-karts/manifest.json": "bf7eed7445ef0c177bada220bfaf3af6f3548f34dae9147c8145961ef3577ff0",
+    "public/models/food-karts/thumbnails.json": "3eee4970444c201a91f2222e5bff51ac7830d2baf7446a2871e8af61d9a38d02",
+    "scripts/compose-dev-pages.mjs": "be7b4f8041dcc5686abb81cdf5d5d5c209e70e516ff79f25abe4ed91bc3b382e",
+    "src/game.ts": "1f0ba9b0a1b3317bd2db6142fdc73c6876d0c824529b72eee82f22982dae6f97",
+    "src/land-camera.ts": "9d3c173d44b4485347586ad05b1fedc03d6c680a932b743040453a0577e791cf",
+    "src/race-camera.ts": "eed922cc832d749c15e5b965e058c9e9f812a67bf878842fd0eb6ed44d37055a",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/waterpark-play.ts": "beffd88ad637408adf17531c10225721ff7c5ceb0fa82962995424c40adb9c05",
+    "tests/fixtures/airfield-enrichment-assembly-recipes.json": "54e1fabebf84e9253cb8cb7f9cd7eb05624ad0c5dd895d49476fa449565aaaf1",
+    "tests/fixtures/airfield-enrichment-camera-extension-outputs.json": "35190795d6c5484eb723c63c7e346803ca9e2b8c5923a498180fbc9becc78cec",
+    "tests/fixtures/airfield-enrichment-camera-extension-plan.json": "edaf7659414757a19e5a4aac373cf1722103c0deaee2211b75b4ecb329546f2b",
+    "tests/fixtures/airfield-enrichment-camera-outputs.json": "596e883062ddd1683ebae3f3aedfcdae4bf04e7faf8100af15003674a5b39f67",
+    "tests/fixtures/airfield-enrichment-original-assemblies.json": "cb2a673122ad2e9656f9563b92b792c19d07839a904e89b1402ed0212f0f788a",
+    "tests/fixtures/airfield-enrichment-original-geometry.json": "264433eb8a734047aea058f6bcc92be4f0f03cda65db545e3036b6d5c25b7f30",
+    "tests/fixtures/airfield-enrichment-original-inventory.json": "803c61344abe2f97fb9acaaf8c5960f64036938fff7e1248d8263e1db332b6cf",
+    "tests/fixtures/airfield-enrichment-reviewed-changes.json": "b036ddf5cd27fdd7dcb18a38715ea45c7ef426101ebcac77009c0e2f7dd44324",
+    "tests/fixtures/airfield-enrichment-test-transformations.json": "ff6b826d27bbb358bb3bc7c524e28771812719b086cae5c3440ca19c1c07a16f",
+    "tests/fixtures/caldera-enrichment-assembly-recipes.json": "d05fd84a11a7df1b90cefa7164b6ae1f35fa1709a7993ed743a0ab358bd9af0d",
+    "tests/fixtures/caldera-enrichment-camera-windows.json": "b5f1c13854b9510d02e6485275fcbdedbb6ea2f7d931fc0e1601b200a267861b",
+    "tests/fixtures/caldera-enrichment-original-geometry.json": "9de28b035c62c3236eddc3f9200dbf777ac40feb798379faec87526f8a43bb70",
+    "tests/fixtures/caldera-enrichment-protected.json": "bfbe008f69d41fe2809f4611d87cd8b522d5508b36a21c385570a8801e555439",
+    "tests/fixtures/desert-enrichment-protected.json": "5413288d3cda5e312c2ab8b59f70bf2eb2425a1fff11e04c7b2adf78245fec40",
+    "tests/fixtures/forest-enrichment-protected.json": "a923f43ed41a116358ad8ef43c60e86cdbaff65d5c6c3db74a9f2fffd975d90c",
+    "tests/fixtures/garden-enrichment-assembly-recipes.json": "6bd6c91a43e4a32d499770bfd0e73ae38efdf48eaf2d61c49acad4288df7588d",
+    "tests/fixtures/garden-enrichment-camera-outputs.json": "8cdac054678a3f529619dcf0d93d45f6bc0ba592b063bbf2b118d99dc229c900",
+    "tests/fixtures/garden-enrichment-original-assemblies.json": "3f7ea78514e3ef91d3a0037bb39de7a0bfc22622c5a1338c4242a0cf985fa59e",
+    "tests/fixtures/garden-enrichment-original-geometry.json": "d9cfca121326440d1eedfc5ce202710a7428c390be647abd9980f676d3896be0",
+    "tests/fixtures/garden-enrichment-original-inventory.json": "ee38acf0339c017150d2ed99a70ebaf2bf4ea5555dd8beb3ea7a47647a1c26d4",
+    "tests/fixtures/garden-enrichment-reviewed-changes.json": "0bf147bda5bf2d63dbce87a5b5ad09e1dc24406c2d9fb39bc0c5573565a11813",
+    "tests/fixtures/geometry-runtime-portability.json": "46902badf0d40a040fe311f83e71397df5b7e1211d919b7e4bd3a3a7f1905a87",
+    "tests/fixtures/harvest-enrichment-protected.json": "cebc9293f79ee7f9b611018e6e3f2367bd4f0b917f2b9e67f70540c39a2061c0",
+    "tests/fixtures/mountain-first-pass-cylinder.json": "1428ccadd971c46ff540052ab10cff4d3317cfca32faa994db993abcbd5016cf",
+    "tests/fixtures/mountain-first-pass-unaffected.json": "59f4393016e781825ec611b5c746c92208f3acf70c8c73d873ddd555f127e7e1",
+    "tests/fixtures/mountain-native-control-baseline.json": "5446f2bcfd2d6bc14b28bfdc4c93ab0ab7883755678e598cb60d539619fffd63",
+    "tests/fixtures/mountain-source-baseline.json": "2d872b1677663b72ef8778fd35f82f9c0b94f5b1cbd20a8f49505cdc047f0faa",
+    "tests/fixtures/quarry-enrichment-preservation.json": "c78e47b89de3cb35974053f9e9acac40938cfb1a66acdd3e2c5bb3fc595f75fc",
+    "tests/fixtures/quarry-enrichment-source-inventory.json": "f28df6ea0c4d273c7fb87f12f8f7aea4c02aa14f60e708a1a745731f146ad828",
+    "tests/fixtures/reviewed-scene-revisions.json": "93c939d0e25ff6dc8bb63f724043f3d6689cc6c571b7c3d0cd14b5cb13930371",
+    "tests/fixtures/snow-enrichment-assembly-recipes.json": "46e499b8b34be81b24c55c11352c9903c319f65d23f09ad5c99dbfd1c2bb7863",
+    "tests/fixtures/snow-enrichment-camera-windows.json": "f56e3d7c265c08285fb87d587701ed4b68bc93d7333cdd13db6ee4d63011f45d",
+    "tests/fixtures/snow-enrichment-original-geometry.json": "b36d22a2608ae65811f9623a9a7f10405ac9f91acf774f756e6d21aa6bbca9e9",
+    "tests/fixtures/snow-enrichment-protected.json": "329a88bb6a45da852b20c3a5a4e7ac1160eded23f1f82b7a5ad85edaedafc2fa",
+    "tests/fixtures/town-enrichment-protected.json": "ec3984e4371ae09e0201bcc132f1f610a5a91914ca21064aee5e6e14553006b2",
+    "tests/fixtures/workshop-enrichment-protected.json": "55caa71500662aebd91ce7dd38350bf484d9b9373b46abce7e5ebde48bac6977",
+    "tests/helpers/airfield-enrichment-camera-frozen.json": "3e9b75eef6f98647fbc3813ce5248d0a6805b7668bdc46626e79f7e3959c333a",
+    "tests/helpers/authorized-portraits.json": "e05bf4cade8de3e1ae13b6db1e20c1c22a4ba38cf28b3e0b559cdb06cb7d6bf4",
+    "tests/helpers/authorized-runtime.json": "090df0e4fdad642acd48ad43b0ee3ae75ec1227ea1a8ba614fd380955491de36",
+    "tests/helpers/caldera-enrichment-camera-frozen.json": "08f0b40d04deadcf5748fc3d263c25bf3459505c83a1a6817a3d6dac9d8f91ed",
+    "tests/helpers/desert-enrichment-camera-frozen.json": "37cf96efe90686822099b3d377c815cee49580e6cf368f94ea913236bd7cb480",
+    "tests/helpers/forest-enrichment-camera-frozen.json": "a77fbe5a89b66636ab98c7dcd4e51a6133da261937cd4c761d4f5a65a0c08bb0",
+    "tests/helpers/garden-enrichment-camera-frozen.json": "06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598",
+    "tests/helpers/input-mode-transition.json": "fed720938f85546ad240223bb4c60b51c5f3058adf93cc8073e17eed57a2359e",
+    "tests/helpers/loading-guide-transition.json": "17b48d3b06e78496ca2070f3cae971c41f284baeafb96df63f821d407adb7c74",
+    "tests/helpers/menu-presentation-transition.json": "65a635b8628717ef43f89779b8799fea5c874c1ee6d106ef273a5aa0a7352283",
+    "tests/helpers/mobile-controls-protected-evidence.json": "3a3ed1cd74f20597d622888ad399c16c7fc8b25f0655d2c03193f4ffa015a6e4",
+    "tests/helpers/mobile-controls-transition.json": "c102771cf3f33552d57697ad22394da6c1d3a05735be5446b93e620e5cf5aa34",
+    "tests/helpers/original-track.json": "98e7d15c057e4bc2dd16af1b61bdb79d542ff157e97c807d2d68bbe040bd816d",
+    "tests/helpers/quarry-enrichment-camera-frozen.json": "1071a19f60974b5d9f265203d96a0e8d088e2df96e68b73c6c2abfd877263ee8",
+    "tests/helpers/snow-enrichment-camera-frozen.json": "c8b9d4c0b10697926a265de09843be090820e259246f3a9b6115bde01b56d9f4",
+    "tests/helpers/stable-pages-repin-transition.json": "0b406ff247642f2b0ad76fe5cc5c6da76f6a1573a7b6ffe25185d67df5e7b9e7",
+    "tests/helpers/touch-opacity-transition.json": "994d5865aa1f2b98192d8603e821829368166aab265e5e6554597c240630ec07",
+    "tests/helpers/town-enrichment-camera-extra-windows.json": "cf57988bc5fdfd75ddabdc3176fc5e10ed1c9a1b90ae7cdd6e5b7519258f8051",
+    "tests/helpers/town-enrichment-camera-frozen.json": "bff2d07d74d139131a9bebc65a2f467660e3b38aaef13d9dd13f08350e54f48b",
+    "tests/helpers/workshop-enrichment-camera-frozen.json": "b36e8b7a964940c07f31a5f91921e40b74aed84b85c40ba565a0575db6078c8b"
+  }
+}

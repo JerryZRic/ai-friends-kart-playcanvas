@@ -1,3 +1,4 @@
+import {staticMenuArtHash, staticMenuArtPathsWithin, restoreStaticMenuArtBytes} from './helpers/static-menu-art-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
@@ -40,7 +41,7 @@ test('input-mode transition pins the exact published dev baseline and bounded so
   const walk = (dir: string): string[] => readdirSync(dir, {withFileTypes: true}).flatMap(entry => entry.isDirectory() ? walk(dir + '/' + entry.name) : [dir + '/' + entry.name]);
   assert.deepEqual(productionSources(walk('src')), inputModeSourcePaths(previousSources()).sort(), 'Every current source is explicitly protected, changed or added');
   assert.ok(Object.keys(review.protectedProduction).length > 100);
-  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged production bytes');
+  for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(restoreStaticMenuArtBytes(path, read(path))), hash, path + ' exact input-mode production bytes');
 });
 
 test('input-mode inventory rejects unreviewed or duplicate source additions and accepts only exact temporary fixtures', () => {
@@ -56,7 +57,7 @@ test('input-mode inventory rejects unreviewed or duplicate source additions and 
 
 test('every input-mode revision reconstructs all baseline bytes and an exact forward round trip', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreInputModeBytes(path, current);
+    const raw = read(path), current = restoreStaticMenuArtBytes(path, raw), previous = restoreInputModeBytes(path, raw);
     assert.equal(sha(current), row.currentSha256, path); assert.equal(sha(previous), row.previousSha256, path);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -64,7 +65,7 @@ test('every input-mode revision reconstructs all baseline bytes and an exact for
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current, path + ' complete exact forward reconstruction');
-    assert.throws(() => restoreInputModeBytes(path, current + ' '), undefined, path + ' modified current bytes rejected');
+    assert.throws(() => restoreInputModeBytes(path, raw + ' '), undefined, path + ' modified current bytes rejected');
     assert.throws(() => restoreInputModeBytes(path, previous), undefined, path + ' no historical-byte fallback');
   }
   for (const [path, row] of Object.entries(review.additions)) {
@@ -77,7 +78,7 @@ test('every input-mode revision reconstructs all baseline bytes and an exact for
 
 test('input-mode overlay rejects incorrect incoming identities, aliases and any modified review permission', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    assert.equal(inputModeHash(path, row.previousSha256), row.currentSha256);
+    assert.equal(inputModeHash(path, row.previousSha256), staticMenuArtHash(path, row.currentSha256));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => inputModeHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(inputModeHash(alias, row.previousSha256), row.previousSha256);
   }
@@ -137,7 +138,7 @@ test('all frozen geometry, legal, publication and historical proof bytes remain 
 
 test('all new production, regression, audit and legal dependencies join both current stability closures', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(inputModePathsWithin(inventory), Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)));
+  assert.deepEqual(inputModePathsWithin(inventory), [...new Set([...Object.keys(review.changes).filter(path => Object.hasOwn(inventory, path)), ...staticMenuArtPathsWithin(inventory)])]);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of inputModeAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' explicit current input-mode audit closure');
     for (const path of touchOpacityAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' retained touch audit closure');

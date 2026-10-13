@@ -1,3 +1,4 @@
+import {staticMenuArtHash, staticMenuArtPathsWithin, staticMenuArtSourcePaths, restoreStaticMenuArtBytes, staticMenuArtAuditDependencies} from './static-menu-art-reviewed-revisions';
 /** Exact input-mode detection/settings transition; prior input, geometry and legal proofs stay immutable. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -58,13 +59,13 @@ export function assertInputModeReviewBytes(bytes: string): Review {
 export function inputModeReview() { return assertInputModeReviewBytes(readFileSync(INPUT_MODE_REVIEW_PATH, 'utf8')); }
 export function inputModeHash(path: string, incoming: unknown) {
   const review = inputModeReview();
-  if (!Object.hasOwn(review.changes, path)) return incoming;
+  if (!Object.hasOwn(review.changes, path)) return staticMenuArtHash(path, incoming);
   const row = review.changes[path];
   assert.equal(incoming, row.previousSha256, path + ' exact pre-input-mode incoming identity');
-  return row.currentSha256;
+  return staticMenuArtHash(path, row.currentSha256);
 }
 export function inputModePathsWithin(inventory: Record<string, unknown>) {
-  return Object.keys(inputModeReview().changes).filter(path => Object.hasOwn(inventory, path));
+  return [...new Set([...Object.keys(inputModeReview().changes).filter(path => Object.hasOwn(inventory, path)), ...staticMenuArtPathsWithin(inventory)])];
 }
 export function assertInputModeAddition(path: string, bytes: string | Buffer) {
   const review = inputModeReview();
@@ -77,9 +78,10 @@ export function inputModeSourcePaths(previous: string[]) {
     assert.ok(!previous.includes(path), path + ' must be an explicit new production input');
     assertInputModeAddition(path, readFileSync(path));
   }
-  return [...previous, ...INPUT_MODE_SOURCE_ADDITIONS];
+  return staticMenuArtSourcePaths([...previous, ...INPUT_MODE_SOURCE_ADDITIONS]);
 }
 export function restoreInputModeBytes(path: string, current: string) {
+  current = restoreStaticMenuArtBytes(path, current);
   const review = inputModeReview();
   if (!Object.hasOwn(review.changes, path)) return current;
   const row = review.changes[path];
@@ -96,5 +98,5 @@ export function restoreInputModeBytes(path: string, current: string) {
 export function inputModeAuditDependencies() {
   const review = inputModeReview();
   return [INPUT_MODE_REVIEW_PATH, 'tests/helpers/input-mode-reviewed-revisions.ts', 'tests/audit-input-mode-transition.test.ts',
-    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)];
+    ...Object.keys(review.changes), ...Object.keys(review.additions), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence), ...staticMenuArtAuditDependencies()];
 }

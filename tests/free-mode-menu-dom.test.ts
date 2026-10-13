@@ -12,6 +12,8 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
  const storage=new Map<string,string>(),elements:Element[]=[];
  let deny=false;
  class Element extends EventTarget{
+  naturalWidth=0;complete=false;
+  classList={contains:(name:string)=>(this.attrs.class||this.className).split(' ').includes(name),add:(name:string)=>{this.className=[this.className,name].filter(Boolean).join(' ');}};
   href='';hidden=false;inert=false;attrs:Record<string,string>={};dataset:Record<string,string>={};disabled=false;checked=false;value='';textContent='';className='';html='';id='';owned:Element[]=[];
   style={getPropertyValue:(_name:string)=>'',getPropertyPriority:(_name:string)=>'',setProperty:(_name:string,_value:string)=>{},removeProperty:(_name:string)=>{}};
   constructor(readonly tagName='DIV'){super();}
@@ -19,7 +21,7 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   removeAttribute(name:string){delete this.attrs[name];}
   set innerHTML(html:string){this.html=html;if(this===root)elements.length=0;this.owned=[];for(const m of html.matchAll(/<([a-z]+)\b([^>]*)>/g)){const el=new Element(m[1].toUpperCase());for(const a of m[2].matchAll(/([\w-]+)="([^"]*)"/g)){el.attrs[a[1]]=a[2];if(a[1].startsWith('data-'))el.dataset[a[1].slice(5)]=a[2];}el.disabled=/\bdisabled\b/.test(m[2]);el.checked=/\bchecked\b/.test(m[2]);el.value=el.attrs.value??'';elements.push(el);this.owned.push(el);}}
   get innerHTML(){return this.html;}
-  querySelectorAll(selector:string){return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\[([^=\]]+)(?:="([^"]*)")?\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}
+  querySelectorAll(selector:string):Element[]{if(selector.includes(','))return selector.split(',').flatMap(part=>this.querySelectorAll(part)) as Element[];return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\[([^=\]]+)(?:="([^"]*)")?\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}
   querySelector(selector:string){return this.querySelectorAll(selector)[0]??null;}
   setAttribute(name:string,value:string){this.attrs[name]=value;}
   appendChild(el:Element){elements.push(el);return el;}
@@ -42,7 +44,11 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   assert.equal(root.className,'screen-main');assert.equal(g.document.body.dataset.screen,'main');assert.equal(shell.attrs['data-fixed-layout'],'1440x900');
   assert.equal(elements.filter(e=>e.disabled).length,4,'all home buttons disabled until readiness or explicit fallback');assert.match(root.innerHTML,/aria-hidden="true" hidden inert/);
   $('[data-screen="maps"]').dispatchEvent(new Event('click'));$('#story-button').dispatchEvent(new Event('click'));assert.equal(root.className,'screen-main');assert.equal(root.querySelector('#story-dialog'),null,'synthetic early activation is also gated');
-  assert.equal(failures,1);firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);
+  assert.equal(failures,1);
+  const failedLogo=$('.title-logo'),failedCharacter=$('.title-character');
+  failedLogo.dispatchEvent(new Event('error'));failedCharacter.dispatchEvent(new Event('error'));
+  assert.equal(failedLogo.hidden,true);assert.equal(failedCharacter.hidden,true);assert.equal($('#story-button').disabled,true,'art failure cannot bypass engine preparation');
+  firstBoot=false;fallback?.();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);
   assert.equal(elements.filter(e=>e.tagName==='BUTTON').length,4);assert.equal(elements.filter(e=>e.disabled).length,0);assert.equal(root.innerHTML.replace(/<[^>]*>/g,''),'大肥鱼卡丁车故事模式自由模式设置退出');
   $('#story-button').click();assert.ok($('#story-dialog'));key('Escape');assert.equal(root.querySelector('#story-dialog'),null);assert.equal(g.document.activeElement.attrs.id,'story-button');
   $('#story-button').click();$('#close-story').click();assert.equal(root.querySelector('#story-dialog'),null);

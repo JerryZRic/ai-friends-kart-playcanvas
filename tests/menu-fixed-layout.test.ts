@@ -5,17 +5,18 @@ import {uiLayout} from '../src/ui-layout';
 const css=readFileSync('src/menu.css','utf8')+'\n'+readFileSync('src/menu-fixed.css','utf8');
 const fixed=readFileSync('src/menu-fixed.css','utf8'),html=readFileSync('index.html','utf8'),menu=readFileSync('src/menu.ts','utf8');
 
-test('the complete menu shell and recovery panel live in one canonical frame',()=>{
+test('setup pages keep their canonical frame and title has a scoped physical-pixel stylesheet',()=>{
  const frame=html.indexOf('id="menu-ui"');
  assert.match(html,/<div id="menu-ui" class="fixed-ui-root" data-fixed-layout="1440x900">/);
  for(const child of ['class="masthead"','id="menu"','id="menu-boot"','class="site-footer"'])assert.ok(html.indexOf(child)>frame,child);
+ assert.match(html,/src\/title-menu.css/);
  assert.match(html,/src\/ui-layout.css/);assert.match(html,/src\/menu-fixed.css/);
  assert.match(menu,/mountUiLayout\(shell,\(\)=>\{disposeBackdrop\?\.resize\(\);disposeCharacter\?\.resize\(\);\}\)/);
  assert.match(menu,/__menuBoot\?\.releaseLayout\?\.\(\)/);
  assert.match(menu,/mountUiViewportNotice\(shell\)/);
 });
 
-test('menu composition has no viewport-specific reflow or display-sized fonts',()=>{
+test('setup composition keeps fixed proportions independently of title-menu styles',()=>{
  assert.doesNotMatch(css,/@media\s*\([^)]*(?:min|max)-(?:width|height)/);
  assert.doesNotMatch(css,/\d(?:s?v[wh]|dvh|lvh)\b/);
  assert.doesNotMatch(html,/\d(?:s?v[wh]|dvh|lvh)\b/);
@@ -29,10 +30,8 @@ test('menu composition has no viewport-specific reflow or display-sized fonts',(
  assert.match(fixed,/#character-preview\{width:100%!important;height:100%!important\}/);
 });
 
-test('title, story, header/footer, and scrollable settings remain proportionate inside every fit',()=>{
+test('setup header/footer and scrollable settings remain proportionate inside every fit',()=>{
  const rectangles=[
-  {name:'title actions',x:270,y:769,w:900,h:68},
-  {name:'story dialog',x:510,y:300,w:420,h:300},
   {name:'header',x:0,y:0,w:1440,h:76},
   {name:'footer',x:72,y:848,w:1296,h:52},
   {name:'settings panel',x:72,y:244.8,w:900,h:584},
