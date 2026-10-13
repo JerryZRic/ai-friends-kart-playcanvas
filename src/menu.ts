@@ -1,3 +1,4 @@
+import {createMenuGarageHost} from './menu-garage-host';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import type {CharacterPreviewController} from './character-preview';
@@ -13,7 +14,8 @@ import {parseRaceOptions} from './race-options';
 import {loadGarageState,buildParts,KART_SLOTS,SLOT_LABELS} from './kart-build';
 declare global { interface Window { __menuBoot?: {releaseLayout?:()=>void;begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
 const root=document.getElementById('menu')!;
-const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music);
+let garageHost: ReturnType<typeof createMenuGarageHost> | undefined;
+const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music,href=>garageHost?.navigate(href)??false);
 let disposeMusicSettings:(()=>void)|undefined;
 let homeReady=false;
 let disposeControlPreference:(()=>void)|undefined;
@@ -46,7 +48,7 @@ let layoutDisposed=false;
 function disposeMenuLayout(){
  if(layoutDisposed)return;
  layoutDisposed=true;renderVersion++;
- disposeMusicSettings?.();musicNavigation.dispose();music?.dispose();
+ disposeMusicSettings?.();garageHost?.dispose();musicNavigation.dispose();music?.dispose();
  menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
  disposeControlPreference?.();disposeControlPreference=undefined;
  disposeBackdrop=undefined;disposeCharacter=undefined;
@@ -94,6 +96,7 @@ function screenLabel(screen:MenuScreen){return ({main:'主菜单',maps:'地图�
 function vehicleBack(){if(resolveMap(state.map).vehicle==='kart')musicNavigation.navigate(garageEntry(state.driver,state));else navigate('vehicles');}
 function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){return `<div class="section-top"><button class="back text-button" ${vehicle?'id="back-vehicle"':`data-screen="${back}"`}>← 返回${vehicle?(resolveMap(state.map).vehicle==='kart'?'卡丁车 / 改装车库':'坐骑选择'):screenLabel(back)}</button><button class="text-button" data-screen="settings">游戏设置 ↗</button></div><div class="section-heading"><p class="eyebrow">FREE PLAY / 自由模式</p><h1>${title}</h1><p>${sub}</p></div>`;}
 function render(){
+ shell.hidden=false;
  musicNavigation.cancel();
  disposeMusicSettings?.();disposeMusicSettings=undefined;
  if(state.screen!=='main')music?.setPhase(state.screen==='exit'?'silent':'menu');
@@ -234,6 +237,15 @@ function bind(){
  root.querySelector<HTMLInputElement>('#refraction')?.addEventListener('change',event=>{settings={...settings,refraction:(event.target as HTMLInputElement).checked};status(saveGameSettings(settings));});
  root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');music?.setVolume(.65);music?.setMuted(false);render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});
 }
-window.addEventListener('popstate',()=>{state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});});
-window.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if(root.querySelector('#story-dialog')){closeStory();return;}if(state.screen==='characters')navigate('maps');else if(state.screen==='vehicles')navigate('characters');else if(state.screen==='race-settings')vehicleBack();else if(state.screen==='settings')navigate(state.returnTo);else if(state.screen!=='main')navigate('main');});
-render();
+window.addEventListener('popstate',()=>{if(garageHost?.restore())return;state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});});
+window.addEventListener('keydown',event=>{if(garageHost?.active||event.key!=='Escape')return;if(root.querySelector('#story-dialog')){closeStory();return;}if(state.screen==='characters')navigate('maps');else if(state.screen==='vehicles')navigate('characters');else if(state.screen==='race-settings')vehicleBack();else if(state.screen==='settings')navigate(state.returnTo);else if(state.screen!=='main')navigate('main');});
+garageHost=createMenuGarageHost({document,window,music,depart:href=>musicNavigation.navigate(href),cancelDeparture:()=>musicNavigation.cancel(),
+ suspend(){
+  musicNavigation.cancel();renderVersion++;
+  disposeBackdrop?.();disposeBackdrop=undefined;disposeCharacter?.();disposeCharacter=undefined;
+  disposeMusicSettings?.();disposeMusicSettings=undefined;disposeControlPreference?.();disposeControlPreference=undefined;
+  window.__menuBoot?.dismiss();shell.hidden=true;document.title='改装车库 · 大肥鱼卡丁车';
+ },
+ resume(){state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});}
+});
+if(!garageHost.restore())render();

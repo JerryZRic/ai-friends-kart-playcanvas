@@ -24,18 +24,19 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   querySelectorAll(selector:string):Element[]{if(selector.includes(','))return selector.split(',').flatMap(part=>this.querySelectorAll(part)) as Element[];return elements.filter(el=>{if(selector.startsWith('#'))return (el.attrs.id||el.id)===selector.slice(1);if(selector.startsWith('.'))return (el.attrs.class||el.className).split(' ').includes(selector.slice(1));const m=selector.match(/^\[([^=\]]+)(?:="([^"]*)")?\]$/);return m&&m[1] in el.attrs&&(m[2]===undefined||el.attrs[m[1]]===m[2]);});}
   querySelector(selector:string){return this.querySelectorAll(selector)[0]??null;}
   setAttribute(name:string,value:string){this.attrs[name]=value;}
+  append(...children:Element[]){for(const child of children)this.appendChild(child);}
   appendChild(el:Element){elements.push(el);return el;}
   remove(){for(const el of [this,...this.owned]){const i=elements.indexOf(el);if(i>=0)elements.splice(i,1);}}
   focus(){g.document.activeElement=this;}
   click(){if(!this.disabled)this.dispatchEvent(new Event('click'));}
  }
  const headerGarage=new Element('A'),wordmark=new Element('A');
- const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:''};const urls:string[]=['./index.html'];let historyIndex=0;
+ const shell=new Element(),root=new Element(),windowTarget=new EventTarget(),location={search:'',origin:'https://test.invalid',get href(){return 'https://test.invalid/dev/index.html'+this.search;}};const urls:string[]=['./index.html'];let historyIndex=0;
  const restoreHistory=()=>{location.search=new URL(urls[historyIndex],'https://test.invalid/dev/').search;windowTarget.dispatchEvent(new Event('popstate'));};
  const history={pushState:(_a:unknown,_b:string,url:string)=>{urls.splice(historyIndex+1);urls.push(url);historyIndex++;location.search=new URL(url,'https://test.invalid/dev/').search;},replaceState:(_a:unknown,_b:string,url:string)=>{urls[historyIndex]=url;location.search=new URL(url,'https://test.invalid/dev/').search;},back:()=>{if(historyIndex>0){historyIndex--;restoreHistory();}},forward:()=>{if(historyIndex<urls.length-1){historyIndex++;restoreHistory();}}};
- g.document={body:{dataset:{}},createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)};
+ g.document=Object.assign(new EventTarget(),{body:new Element(),createElement:(tag:string)=>new Element(tag.toUpperCase()),title:'',activeElement:null,querySelector:(selector:string)=>selector==='.garage-header-link'?headerGarage:selector==='.wordmark'?wordmark:null,getElementById:(id:string)=>id==='menu-ui'?shell:id==='menu'?root:elements.find(e=>e.attrs.id===id)});
  let fallback:(()=>void)|undefined,firstBoot=true,failures=0;
- g.window=Object.assign(windowTarget,{location,scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.document.defaultView=g.window;g.location=location;g.history=history;
+ g.window=Object.assign(windowTarget,{location,history,scrollTo:()=>{},__menuBoot:{begin:(next:()=>void)=>{fallback=next;},stage:()=>{},ready:()=>true,dismiss:()=>{},fail:()=>{failures++;if(!firstBoot)fallback?.();}}});g.document.defaultView=g.window;g.location=location;g.history=history;
  Object.defineProperty(g,'localStorage',{configurable:true,value:{getItem:(k:string)=>{if(deny)throw Error();return storage.get(k)??null;},setItem:(k:string,v:string)=>{if(deny)throw Error();storage.set(k,v);}}});
  const $=(s:string)=>{const el=root.querySelector(s);assert.ok(el,s);return el;};
  const key=(key:string,target:EventTarget=windowTarget)=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key});target.dispatchEvent(event);return event;};
@@ -104,7 +105,7 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   const snapshot=new URLSearchParams(location.search).get('kart');assert.ok(snapshot,'direct setup snapshots default car even when storage is denied');
   assert.equal(new URL($('#start-race').attrs.href,'https://test.invalid').searchParams.get('kart'),snapshot);
   $('[data-screen="settings"]').click();key('Escape');assert.equal(root.className,'screen-race-settings');assert.equal(new URLSearchParams(location.search).get('kart'),snapshot);
-  $('#back-vehicle').click();assert.match((location as any).href,/garage.html\?driver=glm.*difficulty=hard.*seed=12/);
+  $('#back-vehicle').click();const garageRoute=new URL(location.href);assert.equal(garageRoute.pathname,'/dev/index.html');for(const [key,value] of Object.entries({garage:'1',driver:'glm',difficulty:'hard',seed:'12'}))assert.equal(garageRoute.searchParams.get(key),value);assert.equal(shell.hidden,true);history.back();assert.equal(shell.hidden,false);
   $('[value="easy"]').dispatchEvent(new Event('change'));$('[value="hard"]').dispatchEvent(new Event('change'));const newSeed=$('#race-seed');newSeed.value='77';newSeed.dispatchEvent(new Event('change'));
   const headerTarget=new URL(headerGarage.href,'https://test.invalid'),homeTarget=new URL(wordmark.href,'https://test.invalid');
   for(const target of [headerTarget,homeTarget]){assert.equal(target.searchParams.get('difficulty'),'hard');assert.equal(target.searchParams.get('seed'),'77');assert.equal(target.searchParams.get('driver'),'glm');assert.equal(target.searchParams.get('kart'),snapshot);}

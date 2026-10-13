@@ -1,8 +1,13 @@
 import {getDocumentMusic} from './music-ui';
-
-// Independent of the PlayCanvas/garage graph: resume the menu theme promptly.
-// The garage later obtains this same document-scoped controller.
-getDocumentMusic(document, undefined, true)?.setPhase('menu');
-
-// Dynamic import keeps Vite from merging the heavyweight graph into this entry.
-void import('./kart-garage');
+import {isMenuGarageFrame} from './garage-host-protocol';
+const embedded = isMenuGarageFrame();
+if (!embedded) getDocumentMusic(document, undefined, true)?.setPhase('menu');
+void import('./kart-garage').then(({mountKartGarage}) => {
+  if (embedded && !isMenuGarageFrame()) return; // Removed while the module loaded.
+  const root = document.getElementById('kart-garage'); if (!root) return;
+  const garage = mountKartGarage(root);
+  if (embedded) {
+    window.__disposeEmbeddedGarage = garage.dispose;
+    window.parent.postMessage({type:'kart-garage:ready'}, location.origin === 'null' ? '*' : location.origin);
+  }
+});

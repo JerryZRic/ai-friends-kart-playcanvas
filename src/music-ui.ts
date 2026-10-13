@@ -1,3 +1,4 @@
+import {isMenuGarageFrame,sendGarageNavigation} from './garage-host-protocol';
 import {createBackgroundMusic} from './background-music';
 
 export type BackgroundMusic = ReturnType<typeof createBackgroundMusic>;
@@ -8,7 +9,7 @@ export function raceMusicUrl(map?: string): string {
 }
 
 export function getDocumentMusic(document: Document, map?: string, preloadTheme = false): BackgroundMusic | null {
-  if (!document.defaultView || !document.addEventListener) return null;
+  if (!document.defaultView || !document.addEventListener || isMenuGarageFrame(document.defaultView)) return null;
   return createBackgroundMusic({document, window: document.defaultView, preloadTheme, raceUrl: raceMusicUrl(map)});
 }
 
@@ -34,7 +35,7 @@ export function bindMusicSettings(root: ParentNode, music: BackgroundMusic | nul
 }
 
 /** Latest navigation wins, including rapid alternate clicks and history changes. */
-export function bindMusicNavigation(document: Document, music: BackgroundMusic | null) {
+export function bindMusicNavigation(document: Document, music: BackgroundMusic | null, intercept?: (href: string) => boolean) {
   const window = document.defaultView;
   if (!window || !document.addEventListener) return {navigate: (href: string) => {if(window)window.location.href=href;}, cancel: () => {}, dispose: () => {}};
   let version = 0, disposed = false, pending = false;
@@ -44,6 +45,7 @@ export function bindMusicNavigation(document: Document, music: BackgroundMusic |
     if (pending) {pending = false; music?.setPhase(returnPhase);}
   };
   const navigate = (href: string) => {
+    if (intercept?.(href) || sendGarageNavigation(href, window)) return;
     const current = ++version;
     if (!pending) returnPhase = music?.getState().phase ?? 'silent';
     pending = true;
@@ -58,7 +60,7 @@ export function bindMusicNavigation(document: Document, music: BackgroundMusic |
     const anchor = (event.target as Element)?.closest?.('a[href]') as HTMLAnchorElement | null;
     if (!anchor || anchor.download || anchor.target && anchor.target !== '_self') return;
     const url = new URL(anchor.href, window.location.href);
-    if (url.origin !== window.location.origin || !/\/(?:index|garage|coast|waterpark)\.html$/.test(url.pathname)) return;
+    if (url.origin !== window.location.origin || !/\/(?:index|garage|coast|waterpark|source)\.html$/.test(url.pathname)) return;
     event.preventDefault(); navigate(anchor.href);
   };
   // Capture newer explicit UI actions before their handlers cancel an audio fade.

@@ -1,3 +1,4 @@
+import {sendGarageState} from './garage-host-protocol';
 import {getDocumentMusic,bindMusicNavigation} from './music-ui';
 import {resolveMap} from './map-profiles';
 import {wholeCars, wholeCarForBuild, filterWholeCars, needsWholeCarConfirmation, sameKartBuild, copyWholeCarUndo, type WholeCarUndo} from './kart-whole-cars';
@@ -325,7 +326,7 @@ export function mountKartGarage(root: HTMLElement) {
   function applyBuild(build: KartBuild, name = '自由混搭', description = '六槽自由搭配，主题没有额外加成') {
     activeTitle = name; activeDescription = description;
     compareBuild = {...state.activeBuild}; state = {...state, activeBuild: resolveBuild(build)};
-    replaceGarageBuildUrl(state.activeBuild, location, history);
+    replaceGarageBuildUrl(state.activeBuild, location, history);sendGarageState();
     $('#build-title').textContent = name; $('#build-title').title = name; $('#build-description').textContent = description; $('#garage-race').setAttribute('href', garageRaceEntry(driver.id, state.activeBuild, search));
     root.querySelectorAll<HTMLAnchorElement>('[data-garage-back]').forEach(link => {link.href = garageBackEntry(driver.id, state.activeBuild, search);});
     root.querySelectorAll<HTMLAnchorElement>('[data-garage-home]').forEach(link => {link.href = garageHomeEntry(driver.id, state.activeBuild, search);});
@@ -404,4 +405,4 @@ export function mountKartGarage(root: HTMLElement) {
   mountedGarages.set(root, dispose);
   return {get state() {return state;}, applyBuild, dispose};
 }
-if (typeof document !== 'undefined' && document.getElementById('kart-garage')) mountKartGarage(document.getElementById('kart-garage')!);
+
