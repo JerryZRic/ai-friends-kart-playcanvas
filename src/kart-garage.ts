@@ -1,4 +1,3 @@
-import {sendGarageState} from './garage-host-protocol';
 import {getDocumentMusic,bindMusicNavigation} from './music-ui';
 import {resolveMap} from './map-profiles';
 import {wholeCars, wholeCarForBuild, filterWholeCars, needsWholeCarConfirmation, sameKartBuild, copyWholeCarUndo, type WholeCarUndo} from './kart-whole-cars';
@@ -326,7 +325,7 @@ export function mountKartGarage(root: HTMLElement) {
   function applyBuild(build: KartBuild, name = '自由混搭', description = '六槽自由搭配，主题没有额外加成') {
     activeTitle = name; activeDescription = description;
     compareBuild = {...state.activeBuild}; state = {...state, activeBuild: resolveBuild(build)};
-    replaceGarageBuildUrl(state.activeBuild, location, history);sendGarageState();
+    replaceGarageBuildUrl(state.activeBuild, location, history);
     $('#build-title').textContent = name; $('#build-title').title = name; $('#build-description').textContent = description; $('#garage-race').setAttribute('href', garageRaceEntry(driver.id, state.activeBuild, search));
     root.querySelectorAll<HTMLAnchorElement>('[data-garage-back]').forEach(link => {link.href = garageBackEntry(driver.id, state.activeBuild, search);});
     root.querySelectorAll<HTMLAnchorElement>('[data-garage-home]').forEach(link => {link.href = garageHomeEntry(driver.id, state.activeBuild, search);});
@@ -398,7 +397,7 @@ export function mountKartGarage(root: HTMLElement) {
     }
   }, mode === 'cars' ? candidate.build : state.activeBuild);
   const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music);music?.setPhase('menu');
-  const pagehide = () => {musicNavigation.dispose();music?.dispose();events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
+  const pagehide = () => {musicNavigation.dispose();events.abort(); layout.dispose(); viewportNotice.dispose(); thumbnailAbort.abort();preview?.dispose(); preview = null;};
   const pageshow = (event: PageTransitionEvent) => {if (event.persisted) location.reload();};
   window.addEventListener('pagehide', pagehide, {once: true}); window.addEventListener('pageshow', pageshow);
   const dispose = () => {pagehide(); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow); mountedGarages.delete(root);};

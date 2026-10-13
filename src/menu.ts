@@ -1,4 +1,4 @@
-import {createMenuGarageHost} from './menu-garage-host';
+import {mountMenuBoot} from './menu-boot';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import type {CharacterPreviewController} from './character-preview';
@@ -12,16 +12,34 @@ import {CONTROL_MODE_OPTIONS,CONTROL_PREFERENCE_EVENT,bindControlPreferenceSelec
 import {parseMenuState,menuQuery,raceEntry,garageEntry,type MenuScreen} from './menu-state';
 import {parseRaceOptions} from './race-options';
 import {loadGarageState,buildParts,KART_SLOTS,SLOT_LABELS} from './kart-build';
-declare global { interface Window { __menuBoot?: {releaseLayout?:()=>void;begin:(fallback?:()=>void)=>void;stage:(step:number,text:string)=>void;ready:()=>boolean;dismiss:()=>void;fail:(message:string)=>void}; } }
-const root=document.getElementById('menu')!;
-let garageHost: ReturnType<typeof createMenuGarageHost> | undefined;
-const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music,href=>garageHost?.navigate(href)??false);
+export interface MenuController {dispose():void;}
+const mountedMenus=new WeakMap<Document,MenuController>();
+
+/** The application host inserts the menu shell before mounting this view. */
+export function mountMenu():MenuController {
+const root=document.getElementById('menu'),shell=document.getElementById('menu-ui');
+if(!root||!shell)throw new Error('The menu shell must be present before mountMenu()');
+mountedMenus.get(document)?.dispose();
+const boot=mountMenuBoot(document);
+const music=getDocumentMusic(document),musicNavigation=bindMusicNavigation(document,music);
+let disposed=false,renderListeners=new AbortController();
+const pendingPaints=new Set<()=>void>();
+type MenuElementEventMap=HTMLElementEventMap&{webglcontextlost:Event;webglcontextrestored:Event};
+function listen<K extends keyof MenuElementEventMap>(target:Element|null,type:K,handler:(event:MenuElementEventMap[K])=>void,options:AddEventListenerOptions={}){
+ target?.addEventListener(type,handler as EventListener,{...options,signal:renderListeners.signal});
+}
+function cancelPendingPaints(){for(const cancel of [...pendingPaints])cancel();}
+function waitForPaint(){return new Promise<void>(resolve=>{
+ let frame=0;
+ const finish=()=>{cancelAnimationFrame(frame);pendingPaints.delete(finish);resolve();};
+ pendingPaints.add(finish);frame=requestAnimationFrame(()=>{frame=requestAnimationFrame(finish);});
+});}
 let disposeMusicSettings:(()=>void)|undefined;
 let homeReady=false;
 let disposeControlPreference:(()=>void)|undefined;
 function revealHome(version:number, fallback=false){
  if(version!==renderVersion||state.screen!=='main')return;
- if(!fallback&&window.__menuBoot?.ready()===false)return;
+ if(!fallback&&boot.ready()===false)return;
  homeReady=true;music?.setPhase('menu');
  const nav=root.querySelector<HTMLElement>('.title-actions');
  if(nav){nav.hidden=false;nav.inert=false;nav.setAttribute('aria-hidden','false');}
@@ -31,8 +49,7 @@ function revealHome(version:number, fallback=false){
 
 let state=parseMenuState(location.search),settings=readGameSettings();
 let disposeBackdrop:MenuBackdropController|undefined,disposeCharacter:CharacterPreviewController|undefined,renderVersion=0;
-const shell=document.getElementById('menu-ui')!;
-window.__menuBoot?.releaseLayout?.();
+
 const menuLayout=mountUiLayout(shell,layout=>{
  const style=window.getComputedStyle?.(shell);
  const inset=(edge:string)=>Math.max(0,parseFloat(style?.getPropertyValue('--title-safe-'+edge)??'0')||0);
@@ -44,44 +61,46 @@ const menuLayout=mountUiLayout(shell,layout=>{
  disposeBackdrop?.resize();disposeCharacter?.resize();
 });
 const viewportNotice=mountUiViewportNotice(shell);
-let layoutDisposed=false;
-function disposeMenuLayout(){
- if(layoutDisposed)return;
- layoutDisposed=true;renderVersion++;
- disposeMusicSettings?.();garageHost?.dispose();musicNavigation.dispose();music?.dispose();
+function dispose(){
+ if(disposed)return;
+ disposed=true;renderVersion++;
+ cancelPendingPaints();renderListeners.abort();
+ disposeMusicSettings?.();disposeMusicSettings=undefined;musicNavigation.dispose();boot.dispose();
  menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
  disposeControlPreference?.();disposeControlPreference=undefined;
  disposeBackdrop=undefined;disposeCharacter=undefined;
  window.removeEventListener('pagehide',pageHide);window.removeEventListener('pageshow',pageShow);
+ window.removeEventListener('popstate',popState);window.removeEventListener('keydown',keyDown);
+ if(mountedMenus.get(document)===controller)mountedMenus.delete(document);
 }
-function pageHide(event:PageTransitionEvent){if(!event.persisted)disposeMenuLayout();}
+function pageHide(event:PageTransitionEvent){if(!event.persisted)dispose();}
 function pageShow(){menuLayout.update();}
 window.addEventListener('pagehide',pageHide);window.addEventListener('pageshow',pageShow);
-if(import.meta.hot)import.meta.hot.dispose(disposeMenuLayout);
 function closeStory(){root.querySelector('#story-dialog')?.remove();root.querySelector<HTMLElement>('#story-button')?.focus();}
 function startBackdrop(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#title-backdrop'),curtain=root.querySelector<HTMLElement>('#title-curtain');
  if(!canvas||!curtain)return;
  if(state.screen==='maps'){
   // Keep the route poster visible if WebGL is absent or temporarily loses its context.
-  canvas.addEventListener('webglcontextlost',()=>{canvas.dataset.previewFallback='true';});
-  canvas.addEventListener('webglcontextrestored',()=>{delete canvas.dataset.previewFallback;});
+  listen(canvas,'webglcontextlost',()=>{canvas.dataset.previewFallback='true';});
+  listen(canvas,'webglcontextrestored',()=>{delete canvas.dataset.previewFallback;});
  }
- if(typeof canvas.getContext!=='function'){canvas.dataset.backdropState='unavailable';if(state.screen==='main'){if(window.__menuBoot)window.__menuBoot.fail('此设备暂时无法初始化 3D 背景');else revealHome(version,true);}return;}
- if(state.screen==='main')window.__menuBoot?.stage(2,'菜单程序已就绪，正在载入 3D 引擎…');
+ if(typeof canvas.getContext!=='function'){canvas.dataset.backdropState='unavailable';if(state.screen==='main'){boot.fail('此设备暂时无法初始化 3D 背景');}return;}
+ if(state.screen==='main')boot.stage(2,'菜单程序已就绪，正在载入 3D 引擎…');
  void import('./menu-backdrop').then(async ({mountMenuBackdrop,prepareMenuWorld})=>{
   if(version!==renderVersion)return;
   if(state.screen==='maps')await prepareMenuWorld(state.map);
+  if(version!==renderVersion)return;
   // Let the loading shell paint even when the engine chunk is already cached.
-  await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+  await waitForPaint();
   if(version!==renderVersion||(state.screen!=='main'&&state.screen!=='maps')||(state.screen==='main'&&homeReady))return;
-  if(state.screen==='main')window.__menuBoot?.stage(2,'菜单程序已就绪，正在启动 3D 引擎…');
+  if(state.screen==='main')boot.stage(2,'菜单程序已就绪，正在启动 3D 引擎…');
   disposeBackdrop=mountMenuBackdrop(canvas,curtain,settings,state.screen==='maps'?{map:state.map,autoCycle:false,presentation:'map-preview'}:{presentation:'cover'},undefined,{
-   onStage:stage=>{if(version===renderVersion&&state.screen==='main')window.__menuBoot?.stage(stage==='scene'?3:4,stage==='scene'?'正在准备首页场景与材质…':'正在绘制首页画面…');},
+   onStage:stage=>{if(version===renderVersion&&state.screen==='main')boot.stage(stage==='scene'?3:4,stage==='scene'?'正在准备首页场景与材质…':'正在绘制首页画面…');},
    onReady:()=>revealHome(version),
-   onError:()=>{if(version===renderVersion&&state.screen==='main')window.__menuBoot?.fail('3D 背景暂时无法显示');},
+   onError:()=>{if(version===renderVersion&&state.screen==='main')boot.fail('3D 背景暂时无法显示');},
   });
- }).catch(error=>{if(version===renderVersion){canvas.dataset.backdropState='unavailable';if(state.screen==='main')window.__menuBoot?.fail('3D 引擎加载失败，请检查网络后重试');}console.error('Title background unavailable',error);});
+ }).catch(error=>{if(version===renderVersion){canvas.dataset.backdropState='unavailable';if(state.screen==='main')boot.fail('3D 引擎加载失败，请检查网络后重试');}console.error('Title background unavailable',error);});
 }
 function startCharacter(version:number){
  const canvas=root.querySelector<HTMLCanvasElement>('#character-preview'),status=root.querySelector<HTMLElement>('#character-preview-status');
@@ -91,11 +110,14 @@ function startCharacter(version:number){
   disposeCharacter=mountCharacterPreview(canvas,status,state.driver);
  }).catch(error=>{if(version===renderVersion)status.textContent='3D 预览暂时不可用';console.error('Character preview unavailable',error);});
 }
-function navigate(screen:MenuScreen,updates:Partial<typeof state>={}){state={...state,...updates,screen};history.pushState(null,'',`./index.html${menuQuery(state)}`);render();root.focus({preventScroll:true});window.scrollTo({top:0});}
+function navigate(screen:MenuScreen,updates:Partial<typeof state>={}){if(disposed)return;state={...state,...updates,screen};history.pushState(null,'',`./index.html${menuQuery(state)}`);render();root.focus({preventScroll:true});window.scrollTo({top:0});}
 function screenLabel(screen:MenuScreen){return ({main:'主菜单',maps:'地图选择',characters:'角色选择',vehicles:'坐骑选择','race-settings':'比赛设置',settings:'游戏设置',exit:'休息页面'})[screen];}
 function vehicleBack(){if(resolveMap(state.map).vehicle==='kart')musicNavigation.navigate(garageEntry(state.driver,state));else navigate('vehicles');}
 function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){return `<div class="section-top"><button class="back text-button" ${vehicle?'id="back-vehicle"':`data-screen="${back}"`}>← 返回${vehicle?(resolveMap(state.map).vehicle==='kart'?'卡丁车 / 改装车库':'坐骑选择'):screenLabel(back)}</button><button class="text-button" data-screen="settings">游戏设置 ↗</button></div><div class="section-heading"><p class="eyebrow">FREE PLAY / 自由模式</p><h1>${title}</h1><p>${sub}</p></div>`;}
 function render(){
+ if(disposed)return;
+ const version=++renderVersion;
+ cancelPendingPaints();renderListeners.abort();renderListeners=new AbortController();
  shell.hidden=false;
  musicNavigation.cancel();
  disposeMusicSettings?.();disposeMusicSettings=undefined;
@@ -104,10 +126,9 @@ function render(){
  const retainedStage=state.screen==='characters'&&root.className==='screen-characters'&&disposeCharacter?root.querySelector('.character-stage'):null;
  disposeBackdrop?.();disposeBackdrop=undefined;
  if(!retainedStage){disposeCharacter?.();disposeCharacter=undefined;}
- const version=++renderVersion;
  homeReady=false;
- if(state.screen==='main')window.__menuBoot?.begin(()=>{if(version!==renderVersion)return;disposeBackdrop?.();disposeBackdrop=undefined;revealHome(version,true);});
- else window.__menuBoot?.dismiss();
+ if(state.screen==='main')boot.begin(()=>{if(version!==renderVersion)return;disposeBackdrop?.();disposeBackdrop=undefined;revealHome(version,true);});
+ else boot.dismiss();
  if(document.body)document.body.dataset.screen=state.screen;
  document.title=`${screenLabel(state.screen)} · 大肥鱼卡丁车`;
  root.className=`screen-${state.screen}`;
@@ -181,7 +202,7 @@ function refreshNavigationLinks(){
 function bind(){
  root.querySelectorAll<HTMLImageElement>('.title-character,.title-logo').forEach(image=>{
   const settle=()=>{if(image.naturalWidth>0){if(root.querySelector('.title-logo')===image&&image.classList.contains('title-logo'))root.classList.add('title-logo-ready');}else image.hidden=true;};
-  image.addEventListener('load',settle,{once:true});image.addEventListener('error',()=>{image.hidden=true;},{once:true});
+  listen(image,'load',settle,{once:true});listen(image,'error',()=>{image.hidden=true;},{once:true});
   if(image.complete)settle();
  });
  const controlSelector=root.querySelector<HTMLSelectElement>('#menuControlMode');
@@ -194,32 +215,32 @@ function bind(){
   document.addEventListener?.(CONTROL_PREFERENCE_EVENT,preferenceChanged);
   disposeControlPreference=()=>{disposeSelector();document.removeEventListener?.(CONTROL_PREFERENCE_EVENT,preferenceChanged);};
  }
- root.querySelector('#back-vehicle')?.addEventListener('click',vehicleBack);
+ listen(root.querySelector('#back-vehicle'),'click',vehicleBack);
  const refreshRaceOptions=()=>{
   history.replaceState(null,'',`./index.html${menuQuery(state)}`);
   refreshNavigationLinks();
  };
- root.querySelectorAll<HTMLInputElement>('[name="difficulty"]').forEach(input=>input.addEventListener('change',()=>{
+ root.querySelectorAll<HTMLInputElement>('[name="difficulty"]').forEach(input=>listen(input,'change',()=>{
   state={...state,...parseRaceOptions(new URLSearchParams({difficulty:input.value,seed:String(state.seed)}).toString())};refreshRaceOptions();
   const status=root.querySelector<HTMLElement>('#race-options-status');if(status)status.textContent=`已选择${state.difficulty==='easy'?'简单':state.difficulty==='hard'?'困难':'普通'}难度`;
  }));
- root.querySelector<HTMLInputElement>('#race-seed')?.addEventListener('change',event=>{
+ listen(root.querySelector<HTMLInputElement>('#race-seed'),'change',event=>{
   const input=event.target as HTMLInputElement,raw=input.value;
   state={...state,...parseRaceOptions(new URLSearchParams({difficulty:state.difficulty,seed:raw}).toString())};input.value=String(state.seed);refreshRaceOptions();
   const status=root.querySelector<HTMLElement>('#race-options-status');if(status)status.textContent=raw===String(state.seed)?'比赛种子已更新':'无效种子已恢复为默认值';
  });
- root.querySelector('#confirm-map')?.addEventListener('click',()=>navigate('characters'));
- root.querySelector('#story-button')?.addEventListener('click',()=>{
+ listen(root.querySelector('#confirm-map'),'click',()=>navigate('characters'));
+ listen(root.querySelector('#story-button'),'click',()=>{
   if(!homeReady||root.querySelector('#story-dialog'))return;
   const dialog=document.createElement('section');dialog.id='story-dialog';dialog.className='story-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','story-heading');
   dialog.innerHTML='<h2 id="story-heading">故事模式开发中</h2><p>先来一场自由竞速吧</p><button id="close-story">返回</button>';
-  root.querySelector('.title-screen')!.appendChild(dialog);const close=dialog.querySelector<HTMLButtonElement>('#close-story')!;close.addEventListener('click',closeStory);close.focus();
-  dialog.addEventListener('keydown',event=>{if(event.key==='Tab'){event.preventDefault();close.focus();}});
+  root.querySelector('.title-screen')!.appendChild(dialog);const close=dialog.querySelector<HTMLButtonElement>('#close-story')!;listen(close,'click',closeStory);close.focus();
+  listen(dialog,'keydown',event=>{if(event.key==='Tab'){event.preventDefault();close.focus();}});
  });
- root.querySelectorAll<HTMLElement>('[data-screen]').forEach(button=>button.addEventListener('click',()=>{if(state.screen==='main'&&!homeReady)return;const target=button.dataset.screen as MenuScreen;navigate(target,target==='settings'?{returnTo:state.screen==='maps'||state.screen==='characters'||state.screen==='vehicles'||state.screen==='race-settings'?state.screen:'main'}:{});}));
+ root.querySelectorAll<HTMLElement>('[data-screen]').forEach(button=>listen(button,'click',()=>{if(state.screen==='main'&&!homeReady)return;const target=button.dataset.screen as MenuScreen;navigate(target,target==='settings'?{returnTo:state.screen==='maps'||state.screen==='characters'||state.screen==='vehicles'||state.screen==='race-settings'?state.screen:'main'}:{});}));
  root.querySelectorAll<HTMLElement>('[data-map]').forEach(button=>{
-  button.addEventListener('click',()=>selectMap(button.dataset.map as MapId));
-  button.addEventListener('keydown',event=>{
+  listen(button,'click',()=>selectMap(button.dataset.map as MapId));
+  listen(button,'keydown',event=>{
    const maps=MAP_MENU_ORDER,index=maps.indexOf(button.dataset.map as MapId);
    let next:number;
    if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%maps.length;
@@ -230,22 +251,29 @@ function bind(){
    event.preventDefault();selectMap(maps[next]);
   });
  });
- root.querySelectorAll<HTMLElement>('[data-driver]').forEach(button=>button.addEventListener('click',()=>{if(state.driver===button.dataset.driver)return;state.driver=resolveCharacter(button.dataset.driver).id;history.replaceState(null,'',`./index.html${menuQuery(state)}`);render();root.querySelector<HTMLElement>(`[data-driver="${state.driver}"]`)?.focus({preventScroll:true});}));
+ root.querySelectorAll<HTMLElement>('[data-driver]').forEach(button=>listen(button,'click',()=>{if(state.driver===button.dataset.driver)return;state.driver=resolveCharacter(button.dataset.driver).id;history.replaceState(null,'',`./index.html${menuQuery(state)}`);render();root.querySelector<HTMLElement>(`[data-driver="${state.driver}"]`)?.focus({preventScroll:true});}));
  disposeMusicSettings=bindMusicSettings(root,music);
  const status=(saved:boolean)=>{const node=document.getElementById('settings-status');if(node)node.textContent=saved?'已保存，下次进入赛道时生效':'此浏览器无法保存设置；重新进入赛道将使用默认值';};
- root.querySelectorAll<HTMLInputElement>('[name="quality"]').forEach(input=>input.addEventListener('change',()=>{settings={...settings,quality:input.value as Quality};status(saveGameSettings(settings));}));
- root.querySelector<HTMLInputElement>('#refraction')?.addEventListener('change',event=>{settings={...settings,refraction:(event.target as HTMLInputElement).checked};status(saveGameSettings(settings));});
- root.querySelector('#reset-settings')?.addEventListener('click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');music?.setVolume(.65);music?.setMuted(false);render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});
+ root.querySelectorAll<HTMLInputElement>('[name="quality"]').forEach(input=>listen(input,'change',()=>{settings={...settings,quality:input.value as Quality};status(saveGameSettings(settings));}));
+ listen(root.querySelector<HTMLInputElement>('#refraction'),'change',event=>{settings={...settings,refraction:(event.target as HTMLInputElement).checked};status(saveGameSettings(settings));});
+ listen(root.querySelector('#reset-settings'),'click',()=>{settings={version:1,quality:'balanced',refraction:true};const graphicsSaved=saveGameSettings(settings),controlSaved=setControlPreference(document,'auto');music?.setVolume(.65);music?.setMuted(false);render();status(graphicsSaved&&controlSaved);root.querySelector<HTMLElement>('#reset-settings')?.focus();});
 }
-window.addEventListener('popstate',()=>{if(garageHost?.restore())return;state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});});
-window.addEventListener('keydown',event=>{if(garageHost?.active||event.key!=='Escape')return;if(root.querySelector('#story-dialog')){closeStory();return;}if(state.screen==='characters')navigate('maps');else if(state.screen==='vehicles')navigate('characters');else if(state.screen==='race-settings')vehicleBack();else if(state.screen==='settings')navigate(state.returnTo);else if(state.screen!=='main')navigate('main');});
-garageHost=createMenuGarageHost({document,window,music,depart:href=>musicNavigation.navigate(href),cancelDeparture:()=>musicNavigation.cancel(),
- suspend(){
-  musicNavigation.cancel();renderVersion++;
-  disposeBackdrop?.();disposeBackdrop=undefined;disposeCharacter?.();disposeCharacter=undefined;
-  disposeMusicSettings?.();disposeMusicSettings=undefined;disposeControlPreference?.();disposeControlPreference=undefined;
-  window.__menuBoot?.dismiss();shell.hidden=true;document.title='改装车库 · 大肥鱼卡丁车';
- },
- resume(){state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});}
-});
-if(!garageHost.restore())render();
+function isMenuRoute(){return /\/(?:index\.html)?$/.test(location.pathname);}
+function popState(){
+ if(disposed||!isMenuRoute())return;
+ state=parseMenuState(location.search);settings=readGameSettings();render();root.focus({preventScroll:true});
+}
+function keyDown(event:KeyboardEvent){
+ if(disposed||!isMenuRoute()||event.key!=='Escape')return;
+ if(root.querySelector('#story-dialog')){closeStory();return;}
+ if(state.screen==='characters')navigate('maps');
+ else if(state.screen==='vehicles')navigate('characters');
+ else if(state.screen==='race-settings')vehicleBack();
+ else if(state.screen==='settings')navigate(state.returnTo);
+ else if(state.screen!=='main')navigate('main');
+}
+window.addEventListener('popstate',popState);window.addEventListener('keydown',keyDown);
+const controller={dispose};mountedMenus.set(document,controller);
+try{render();}catch(error){dispose();throw error;}
+return controller;
+}

@@ -1,6 +1,8 @@
 import * as pc from 'playcanvas';
 import {parseRaceOptions} from './race-options';
 import {mountRaceHud} from './race-hud';
+import {disposeRaceUiLayout} from './race-ui-layout';
+import {disposeMobileControls} from './mobile-controls';
 import {createRaceShell} from './race-shell';
 import {createRaceFrameClock} from './race-frame-clock';
 import {bindRaceControls} from './race-controls';
@@ -24,16 +26,51 @@ import {createWaterparkLifetime} from './waterpark-lifetime';
 import {loadBundledDrivers,type DriverAsset} from './assets';
 import {DRIVERS,getDriver} from './driver-roster.js';
 
+/** Start a fresh water race without replacing the owning document/audio. */
+export function mountWaterRace(): {dispose():void;ready:Promise<void>} {
+  let disposed=false,initialization:Promise<void>=Promise.resolve();
+  let reportStartupError:((error:unknown)=>void)|undefined;
+  const events=new AbortController(),cleanups:Array<()=>void>=[];
+  const defer=(cleanup:()=>void)=>cleanups.push(cleanup);
+  function dispose() {
+    if(disposed)return;
+    disposed=true;events.abort();
+    for(const cleanup of cleanups.splice(0).reverse()) {
+      try {cleanup();} catch(error) {console.error('Water race cleanup failed',error);}
+    }
+  }
+try {
+defer(()=>{disposeMobileControls(document);disposeRaceUiLayout(document);});
 mountRaceHud({subtitle:'SKY WATERPARK GRAND PRIX',canvasLabel:'晴空水上乐园 3D 赛道'});
-const $=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
+// Cache only this view's nodes; late asset callbacks never target a newer route.
+const elements=new Map([...document.querySelectorAll<HTMLElement>('[id]')].map(element=>[element.id,element]));
+const $=<T extends HTMLElement=HTMLElement>(id:string):T=>{
+  const element=elements.get(id)??(disposed?null:document.getElementById(id));
+  if(element)elements.set(id,element);
+  return element as T;
+};
 const canvas=$<HTMLCanvasElement>('game');
 const raceOptions=parseRaceOptions(globalThis.location?.search??'');
 const initialDriver=getDriver(new URLSearchParams(globalThis.location?.search??'').get('driver')).id;
 const shell=createRaceShell(document,canvas,{map:'waterpark',driver:initialDriver,track:{length:WATER_RACE_LENGTH,sample:sampleWaterpark}});
+defer(()=>shell.dispose());
 const loadingUi=mountRaceLoadingUi(document,'waterpark');
-let startupApp:pc.Application|undefined, cleanup:undefined|(()=>void);
-try {
-  const app=startupApp=new pc.Application(canvas,{graphicsDeviceOptions:{antialias:true,alpha:false,powerPreference:'high-performance'}});
+for(const element of document.querySelectorAll<HTMLElement>('[id]'))elements.set(element.id,element);
+defer(()=>loadingUi.dispose());
+reportStartupError=error=>{
+  const detail=(error instanceof Error?error.message:String(error)).slice(0,180);
+  const status=$('raceLoadingStatus');if(status)status.textContent='无法启动水上比赛：'+detail+'；请刷新重试';
+  loadingUi.retryButton.hidden=false;loadingUi.retryButton.disabled=false;loadingUi.retryButton.onclick=()=>location.reload();
+  loadingUi.exitLink.hidden=false;
+  $('load').textContent='无法启动水上比赛：'+detail+'。可刷新重试，详细信息见控制台。';
+};
+  const app=new pc.Application(canvas,{graphicsDeviceOptions:{antialias:true,alpha:false,powerPreference:'high-performance'}});
+  let closeApp=()=>app.destroy();
+  defer(()=>{
+    app.autoRender=false;app.renderNextFrame=false;app.off('update');
+    if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);
+    closeApp();
+  });
   // The shared clock bounds visible rendering stalls without inferring pause.
   // Browser visibility/focus and user controls handle real interruptions.
   app.maxDeltaTime=Infinity;
@@ -41,6 +78,7 @@ try {
   app.graphicsDevice.maxPixelRatio=Math.min(devicePixelRatio||1,quality.pixelRatioCap);
   app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW); app.setCanvasResolution(pc.RESOLUTION_AUTO);
   const world=createWaterparkScene(app,{race:true}),wake=createWaterparkWake(app,world.root,{race:true});
+  closeApp=()=>{wake.dispose();app.destroy();};
   world.reflection.exclude(wake.entity);
   world.reflection.setRefractionEnabled(settings.refraction);
   for(const light of world.root.findComponents('light') as pc.LightComponent[]){light.castShadows=quality.shadows;light.shadowResolution=quality.shadowResolution;}
@@ -52,11 +90,11 @@ try {
   let autostart=new URLSearchParams(globalThis.location?.search??'').get('autostart')==='1';
   const frameClock=createRaceFrameClock();
   const loadingCamera=createLoadingCamera({length:WATER_RACE_LENGTH,sample:sampleWaterpark});
+  defer(()=>loadingCamera.dispose());
   let mode:'menu'|'transition'|'riding'|'paused'|'finished'='menu',busy=false;
   let progress:number|null=0,loadingStatus='正在准备六位角色…',preparationError='';
   let focused=typeof document.hasFocus==='function'?document.hasFocus():true,suspended=false,contextLost=false;
   const foreground=()=>!contextLost&&!document.hidden&&!suspended&&focused&&(typeof document.hasFocus!=='function'||document.hasFocus());
-  const events=new AbortController();
   let controls:ReturnType<typeof bindRaceControls>,view=0,snapCamera=true,lastRearView=false;
   const npcMounts=new Map<string,ReturnType<typeof createWaterMount>>();
   const pickups:RacingPickup[]=[];
@@ -72,14 +110,17 @@ try {
   const effectMaterials=['#5de6ff','#ffc259','#e986ff'].map(hex=>{const material=new pc.StandardMaterial();material.diffuse=new pc.Color().fromString(hex);material.emissive=material.diffuse.clone();material.opacity=.72;material.blendType=pc.BLEND_NORMAL;material.depthWrite=false;material.cull=pc.CULLFACE_NONE;material.update();return material;});
   const effects=new Map(DRIVERS.map(d=>{const rings=effectMaterials.map((material,i)=>{const ring=new pc.Entity(`${d.id} ${['护盾','道具预警和加速','脉冲'][i]}`);ring.addComponent('render',{meshInstances:[new pc.MeshInstance(effectMesh,material)],castShadows:false});world.root.addChild(ring);world.reflection.exclude(ring);ring.enabled=false;return ring;});return [d.id,rings];}));
   world.root.once('destroy',()=>{effectMesh.destroy();for(const material of effectMaterials)material.destroy();});
-  const lifetime=createWaterparkLifetime(()=>{wake.dispose(); mount?.dispose();for(const npc of npcMounts.values())npc.dispose(); app.destroy();});
+  const lifetime=createWaterparkLifetime(()=>{wake.dispose();mount?.dispose();for(const npc of npcMounts.values())npc.dispose();npcMounts.clear();assets.clear();failures.clear();app.destroy();});
+  closeApp=()=>lifetime.close();
   const performancePanel=createPerformancePanel(canvas,()=>({
     quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:WATER_RACE_LENGTH,racerCount:6,profile:characterTuning(selected,'waterpark'),driver:selected,water:world.reflection.getSettings(),
   }),{getEnabled:()=>world.reflection.getSettings().requestedRefraction,setEnabled:enabled=>{world.reflection.setRefractionEnabled(enabled);saveGameSettings({...readGameSettings(),refraction:enabled});}},{mount:$('raceSettings'),scene:'waterpark-circuit-six-racers'});
+  defer(()=>performancePanel.dispose());
   const clearKeys=()=>{controls?.clear();race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;};
   const ready=()=>assets.size===DRIVERS.length&&!!mount&&!!mountedAsset&&mountedAsset===assets.get(selected)&&npcMounts.size===DRIVERS.length-1&&!preparationError;
 
   function updateLoading() {
+    if(disposed)return;
     if(contextLost){loadingUi.update({progress,status:'画面已中断，请刷新重试',busy:false,canRetry:false,canContinue:false});return;}
     loadingUi.update({progress:ready()?1:progress,status:mode==='transition'?'镜头返回起点…':loadingStatus,
       busy:busy||mode==='transition',canRetry:!busy&&mode!=='transition'&&(failures.size>0||!!preparationError),
@@ -87,6 +128,7 @@ try {
   }
 
   function updatePicker() {
+    if(disposed)return;
     for(const d of DRIVERS) {
       const b=$<HTMLButtonElement>('driver-'+d.id);
       b.disabled=busy||contextLost||mode==='transition'||mode==='paused'||mode==='riding';
@@ -106,7 +148,7 @@ try {
     updateLoading();
   }
   function select(id:string) {
-    if(lifetime.closed||contextLost||mode==='riding'||mode==='paused'||mode==='transition')return;
+    if(disposed||lifetime.closed||contextLost||mode==='riding'||mode==='paused'||mode==='transition')return;
     let next:ReturnType<typeof createWaterMount>|undefined;
     const nextNpcs=new Map<string,ReturnType<typeof createWaterMount>>();
     try {
@@ -136,12 +178,12 @@ try {
   }
   updatePicker();
   async function load() {
-    if(busy||lifetime.closed||contextLost||mode==='riding'||mode==='paused'||mode==='transition')return;
+    if(disposed||busy||lifetime.closed||contextLost||mode==='riding'||mode==='paused'||mode==='transition')return;
     busy=true;preparationError='';loadingStatus='正在加载角色模型…'; $('retry').classList.add('hidden'); updatePicker();
     await lifetime.run(async signal=>{
       try {
         const result=await loadBundledDrivers(app,{existing:assets,signal,onStatus:s=>{
-          if(lifetime.closed)return;
+          if(disposed||lifetime.closed)return;
           const total=s.totalBytes==null?'未知':(s.totalBytes/1048576).toFixed(1);
           $('load').textContent=`角色 ${s.loaded} / ${s.total} · ${(s.receivedBytes/1048576).toFixed(1)} / ${total} MiB · 下载后准备模型`;
           progress=Number.isFinite(s.totalBytes)&&s.totalBytes>0?Math.max(0,Math.min(1,s.receivedBytes/s.totalBytes)):null;
@@ -150,15 +192,15 @@ try {
           loadingStatus=`${preparing?'正在准备角色模型':waiting?'网络重试中':'正在下载角色模型'} · ${s.loaded} / ${s.total}`;
           updateLoading();
         }});
-        if(lifetime.closed||contextLost)return;
+        if(disposed||lifetime.closed||contextLost)return;
         for(const[id,a]of result.assets)assets.set(id,a);
         failures.clear(); for(const[id,error]of result.failures)failures.set(id,String(error));
         $('load').textContent=failures.size?`已就绪 ${assets.size}/6；失败：${[...failures.keys()].join('、')}`:'六位原有角色已就绪 · 非商业试玩';
         loadingStatus=failures.size?`角色已就绪 ${assets.size} / 6 · ${failures.size} 位加载失败`:'六位角色已就绪';
         $('retry').classList.toggle('hidden',!failures.size); select(selected);
       } catch(error) {
-        if(!lifetime.closed){preparationError=String(error);loadingStatus='角色准备失败，请重试';$('load').textContent='角色准备失败，可重试：'+String(error);$('retry').classList.remove('hidden');}
-      } finally {busy=false;if(!lifetime.closed){updatePicker();if(autostart&&!contextLost&&ready()){autostart=false;start();}}}
+        if(!disposed&&!lifetime.closed){preparationError=String(error);loadingStatus='角色准备失败，请重试';$('load').textContent='角色准备失败，可重试：'+String(error);$('retry').classList.remove('hidden');}
+      } finally {busy=false;if(!disposed&&!lifetime.closed){updatePicker();if(autostart&&!contextLost&&ready()){autostart=false;start();}}}
     });
   }
   $('retry').addEventListener('click',()=>void load(),{signal:events.signal});
@@ -169,7 +211,7 @@ try {
     snapCamera=true;mode='riding';shell.start(race.countdown);canvas.focus();updatePicker();
   }
   function start() {
-    if(lifetime.closed||contextLost||mode==='riding'||mode==='transition'||!ready()||busy)return;
+    if(disposed||lifetime.closed||contextLost||mode==='riding'||mode==='transition'||!ready()||busy)return;
     frameClock.reset();clearKeys(); controls.mouseLook.release();
     if(mode==='paused'){mode='riding';shell.setPaused(false,race.countdown);}
     else {
@@ -204,6 +246,7 @@ try {
   controls=bindRaceControls(canvas,{state:()=>mode==='riding'?'active':mode==='transition'?'loading':mode,pause,useItem,switchCamera,start,recenter:()=>shell.toast('视角回正'),status:status=>{
     $('lookHint').textContent=status==='locked'?'移动鼠标环顾 · Q 回正 · 右键回看 · Esc 暂停并释放鼠标':status==='drag'?'按住鼠标左键拖动环顾 · Q 回正 · Esc 暂停':'单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停';
   },onClear:()=>{race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;},signal:events.signal});
+  defer(()=>controls.dispose());
   canvas.addEventListener('webglcontextlost',event=>{
     event.preventDefault();contextLost=true;controls.release();frameClock.reset();
     $('count').textContent='画面已中断，请刷新';$('count').classList.add('paused');updatePicker();
@@ -214,18 +257,14 @@ try {
   window.addEventListener('pageshow',()=>{suspended=false;focused=typeof document.hasFocus==='function'?document.hasFocus():true;frameClock.reset();},{signal:events.signal});
   let lastAnnouncement='';
   const resize=()=>app.resizeCanvas(); window.addEventListener('resize',resize,{signal:events.signal});
-  cleanup=()=>{
-    clearWaterDynamicPickups(race);performancePanel.dispose();clearKeys();controls.dispose();shell.dispose();loadingUi.dispose();loadingCamera.dispose();events.abort(); app.autoRender=false; app.renderNextFrame=false;
-    // Abort HTTP work now, but preserve the app until an already-started GLB parse settles.
-    lifetime.close();
-  };
+  defer(()=>{clearWaterDynamicPickups(race);clearKeys();});
   window.addEventListener('pagehide',e=>{
     clearKeys();
     if(e.persisted){suspended=true;frameClock.reset();if(mode==='riding')pause();return;}
-    cleanup!();
+    dispose();
   },{signal:events.signal});
   app.on('update',(dt:number)=>{
-    if(lifetime.closed||contextLost)return;
+    if(disposed||lifetime.closed||contextLost)return;
     performancePanel.sample(performance.now(),mode==='riding'&&!busy&&race.countdown<=0&&race.racers[0].finishTime===null,race.countdown>0?'countdown':race.racers[0].finishTime!==null?'spectating':mode);
     const frame=frameClock.sample(dt,mode==='riding',race.countdown);
     const step=frame.dt; let steer=visualSteer;
@@ -294,10 +333,10 @@ try {
   });
   const initialPose=loadingCamera.step(0);
   world.camera.setPosition(initialPose.position.x,initialPose.position.y,initialPose.position.z);world.camera.lookAt(initialPose.look.x,initialPose.look.y,initialPose.look.z);world.camera.camera!.fov=initialPose.fov;
-  app.start(); void load();
+  app.start(); initialization=load();
+  void initialization.catch(error=>{if(!disposed)console.error('Water race loading failed',error);});
 } catch(error) {
-  const detail=(error instanceof Error?error.message:String(error)).slice(0,180);
-  loadingUi.update({progress:null,status:'无法启动水上比赛，请刷新重试',busy:false});
-  if(cleanup)cleanup(); else {shell.dispose();loadingUi.dispose();startupApp?.destroy();}
-  $('load').textContent='无法启动水上比赛：'+detail+'。可刷新重试，详细信息见控制台。'; console.error(error);
+  dispose();reportStartupError?.(error);console.error(error);
+}
+return {dispose,ready:initialization};
 }

@@ -1,20 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import vm from 'node:vm';
+import {mountMenuBoot} from '../src/menu-boot';
 const html=readFileSync('index.html','utf8');
 function boot(){
  class Node extends EventTarget {properties=new Map<string,string>();style={setProperty:(k:string,v:string)=>this.properties.set(k,v)};hidden=false;disabled=false;value=0;textContent='';attrs:Record<string,string>={};setAttribute(k:string,v:string){this.attrs[k]=v;}}
  const nodes=new Map([...html.matchAll(/id="(menu-boot[^"]*)"/g)].map(m=>[m[1],new Node()]));
  let id=0,reloads=0;const timers=new Map<number,()=>void>();
  nodes.set('menu-ui',new Node());
- const window=Object.assign(new EventTarget(),{innerWidth:390,innerHeight:844}) as EventTarget & {__menuBoot:any;innerWidth:number;innerHeight:number};const body={dataset:{} as Record<string,string>};
- vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)![1],{window,document:{body,getElementById:(id:string)=>nodes.get(id)},location:{reload:()=>reloads++},setTimeout:(f:()=>void,ms:number)=>{assert.equal(ms,30000);timers.set(++id,f);return id;},clearTimeout:(id:number)=>timers.delete(id)});
- return {api:window.__menuBoot,window,body,nodes,timers,reloads:()=>reloads,timeout:()=>{for(const f of [...timers.values()])f();}};
+ const window=Object.assign(new EventTarget(),{innerWidth:390,innerHeight:844,location:{reload:()=>reloads++},setTimeout:(f:()=>void,ms:number)=>{assert.equal(ms,30000);timers.set(++id,f);return id;},clearTimeout:(id:number)=>timers.delete(id)});
+ const body={dataset:{} as Record<string,string>};
+ const document={body,defaultView:window,getElementById:(id:string)=>nodes.get(id)} as unknown as Document;
+ const api=mountMenuBoot(document);
+ return {api,document,window,body,nodes,timers,reloads:()=>reloads,timeout:()=>{for(const f of [...timers.values()])f();}};
 }
 test('HTML-first shell has useful title and progress before the engine executes',()=>{
  assert.match(html,/<main[^>]*><section class="boot-cover"><h1>大肥鱼卡丁车/);
- assert.ok(html.indexOf('id="menu-boot"')<html.indexOf('src="/src/menu.ts"'));
+ assert.ok(html.indexOf('id="menu-boot"')<html.indexOf('src="/src/spa.ts"'));
  assert.match(html,/<style>[\s\S]*\[hidden\]\{display:none!important\}/);
  assert.match(html,/body\[data-menu-loading="true"\] \.title-actions\{display:none!important\}/);
  const b=boot();assert.equal(b.body.dataset.menuLoading,'true');assert.equal(b.timers.size,1);
@@ -40,11 +42,13 @@ test('module script network errors settle loading immediately',()=>{
  const b=boot();const error=new Event('error');Object.defineProperty(error,'target',{value:{tagName:'SCRIPT'}});b.window.dispatchEvent(error);assert.equal(b.nodes.get('menu-boot-retry')!.hidden,false);assert.equal(b.timers.size,0);
 });
 
-test('HTML-first recovery stays uniformly contained before any module succeeds',()=>{
- const b=boot(),props=b.nodes.get('menu-ui')!.properties;
- assert.equal(Number(props.get('--ui-scale')),390/1440);assert.equal(props.get('--ui-left'),'0px');
- assert.equal(parseFloat(props.get('--ui-top')!), (844-900*390/1440)/2);
- b.window.innerWidth=1920;b.window.innerHeight=1080;b.window.dispatchEvent(new Event('resize'));
- assert.equal(Number(props.get('--ui-scale')),1.2);assert.equal(props.get('--ui-left'),'96px');assert.equal(props.get('--ui-top'),'0px');
- b.api.releaseLayout();b.window.innerWidth=1000;b.window.dispatchEvent(new Event('resize'));assert.equal(Number(props.get('--ui-scale')),1.2,'shared controller can take sole ownership');
+test('disposing and remounting boot clears timers and obsolete recovery handlers',()=>{
+ const b=boot();let continued=0;b.api.begin(()=>continued++);b.api.fail('GPU unavailable');b.api.dispose();b.api.dispose();
+ assert.equal(b.timers.size,0);assert.equal(b.body.dataset.menuLoading,'false');assert.equal(b.api.ready(),false);
+ b.nodes.get('menu-boot-retry')!.dispatchEvent(new Event('click'));b.nodes.get('menu-boot-continue')!.dispatchEvent(new Event('click'));
+ assert.equal(b.reloads(),0);assert.equal(continued,0);
+ const replacement=mountMenuBoot(b.document);assert.equal(b.timers.size,1);
+ const newest=mountMenuBoot(b.document);assert.equal(replacement.ready(),false);assert.equal(b.timers.size,1);
+ newest.fail('network');b.nodes.get('menu-boot-retry')!.dispatchEvent(new Event('click'));assert.equal(b.reloads(),1,'only the current retry listener is active');
+ newest.dispose();b.window.dispatchEvent(new Event('unhandledrejection'));assert.equal(b.timers.size,0);assert.equal(b.nodes.get('menu-boot')!.hidden,true);
 });

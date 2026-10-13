@@ -283,3 +283,12 @@ test('menu preload buffers only theme without creating a context or starting pla
   assert.equal(h.audios[2].playCalls, 0); assert.equal(h.context.sources.length, 0);
   music.dispose();
 });
+
+test('single-document land and water races reuse media sources and theme position while changing race asset',()=>{
+ const h=harness();h.music.setPhase('menu');h.tick();h.audios[0].currentTime=42;
+ h.music.silence();h.music.setRaceUrl?.('./assets/music/dfy_fusion.mp3');h.music.setPhase('race');h.tick();
+ assert.equal(h.audios[1].src,'./assets/music/dfy_fusion.mp3');assert.equal(h.context.sources.length,2);assert.equal(h.audios.length,2);
+ h.music.setPhase('menu');h.tick();assert.equal(h.audios[0].currentTime,42);
+ h.music.silence();h.music.setRaceUrl?.('./assets/music/dfy_bgm.mp3');h.music.setPhase('race');h.tick();
+ assert.equal(h.audios[1].src,'./assets/music/dfy_bgm.mp3');assert.equal(h.context.sources.length,2);assert.ok(h.audios.every(audio=>audio.loop));h.music.dispose();
+});

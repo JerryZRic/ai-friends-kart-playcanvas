@@ -109,3 +109,8 @@ export function mountMobileControls(doc: Document, canvas: HTMLCanvasElement) {
   update();
   const mounted = {dispose}; mounts.set(doc, mounted); return mounted;
 }
+
+/** Release a race view without synthesizing a document-wide pagehide. */
+export function disposeMobileControls(doc: Document) {
+  mounts.get(doc)?.dispose();
+}

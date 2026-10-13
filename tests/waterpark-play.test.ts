@@ -73,13 +73,15 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
   };
   const sourceFiles=createInstrumentedSourceFiles();
   let destroyed=0;app.on('destroy',()=>destroyed++);
+  let mounted:{dispose():void;ready:Promise<void>}|undefined;
   try {
   let source=readFileSync('src/waterpark-play.ts','utf8');
   source=source.replace('loadBundledDrivers,type DriverAsset','loadBundledDrivers as unusedLoader,type DriverAsset');
   source=source.replace("const canvas=$<HTMLCanvasElement>('game');","const loadBundledDrivers=(globalThis as any).__waterparkLoad;\nconst canvas=$<HTMLCanvasElement>('game');");
   source=source.replace(/new pc\.Application\(canvas,.*?\);/,'(globalThis as any).__waterparkApp;');
-  source=source.replace('const events=new AbortController();','const events=new AbortController();\n(await import(\'node:events\')).setMaxListeners(100,events.signal);');
-  source=source.replace('app.start(); void load();','void load();');
+  source="import {setMaxListeners as setTestMaxListeners} from 'node:events';\n"+source;
+  source=source.replace('const events=new AbortController(),cleanups:Array<()=>void>=[];','const events=new AbortController(),cleanups:Array<()=>void>=[];\nsetTestMaxListeners(100,events.signal);');
+  source=source.replace('app.start();','// Manual NullGraphicsDevice stepping.\n');
   source=source.replace('const npcMounts=',"Object.defineProperty(globalThis,'__waterparkRace',{configurable:true,get:()=>race}); Object.defineProperty(globalThis,'__waterparkControls',{configurable:true,get:()=>({keys:controls.keys,orbit:controls.orbit,mouseLook:controls.mouseLook,view,mode,world,pickups})}); const npcMounts=");
   const copy=sourceFiles.write('waterpark-play-test',source);
   const emit=(target:EventTarget,type:string,data:any={})=>{const event=new Event(type,{cancelable:true});Object.assign(event,data);target.dispatchEvent(event);return event;};
@@ -97,14 +99,15 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
   const poolState=()=>dynamicPool().map(box=>({d:box.d,lateral:box.lateral,cool:box.cool,display:box.display,enabled:box.mesh.enabled}));
   const settle=async()=>{for(let i=0;i<30;i++)await new Promise(resolve=>setTimeout(resolve,1));};
   const snapshot=()=>{const result:number[]=[];for(const entity of app.root.findComponents('render') as pc.RenderComponent[]){result.push(...Array.from(entity.entity.getWorldTransform().data));}return result;};
-    await import(copy.url.href);
+    const entry=await import(copy.url.href);
+    mounted=entry.mountWaterRace();
     assert.equal(app.maxDeltaTime,Infinity,'engine must not silently clamp real frame delta to 0.1s');
     assert.equal(g.__waterparkControls.pickups.length,18);assert.equal(dynamicPool().length,4);dynamicPool().forEach(assertPickupHidden);
     step(1,0);dynamicPool().forEach(assertPickupHidden);
     if(scenario!=='full-race'){
       const state=()=>g.__waterparkControls,continueButton=element('raceLoadingContinue');
       if(scenario==='close-loading'){
-        emit(windowTarget,'pagehide',{persisted:false});assert.equal(signal.aborted,true);assert.equal(destroyed,0,'an in-flight parser retains its application');
+        mounted!.dispose();mounted!.dispose();assert.equal(signal.aborted,true);assert.equal(destroyed,0,'an in-flight parser retains its application');
         release();await settle();assert.equal(destroyed,1,'closing settles and disposes the pending loader exactly once');
         assert.equal(continueButton.disabled,true);assert.deepEqual(errors,[]);return;
       }
@@ -325,7 +328,7 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.deepEqual(errors,[]);
   } finally {
     try {
-    if(!destroyed)app.destroy();console.error=originalError;
+    mounted?.dispose();if(!destroyed)app.destroy();console.error=originalError;
     for(const[name,descriptor]of saved){if(descriptor)Object.defineProperty(g,name,descriptor);else delete g[name];}
     } finally {sourceFiles.cleanup();}
   }

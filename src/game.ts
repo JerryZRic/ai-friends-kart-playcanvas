@@ -24,6 +24,8 @@ import {chaseCamera} from './race-camera';
 import {createLoadingCamera} from './race-loading-camera';
 import {mountRaceLoadingUi} from './race-loading-ui';
 import {mountRaceHud} from './race-hud';
+import {disposeRaceUiLayout} from './race-ui-layout';
+import {disposeMobileControls} from './mobile-controls';
 import {createRaceShell,raceNavigation} from './race-shell';
 import {createPerformancePanel} from './waterpark-performance-ui';
 import { DRIVERS, DEFAULT_DRIVER_ID, getDriver, raceOrder } from './driver-roster.js';
@@ -39,15 +41,49 @@ import {stepLandSpeed,landSteeringGrip,landBankDrift,landLookAheadBend,landRailS
 import { clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
+/** Mount one race inside the current document. Importing this module is inert. */
+export function mountLandRace(): {dispose():void;ready:Promise<void>} {
+  let disposed=false;
+  const events=new AbortController(),cleanups:Array<()=>void>=[];
+  const defer=(cleanup:()=>void)=>cleanups.push(cleanup);
+  let reportStartupError:((error:unknown)=>void)|undefined;
+  function dispose() {
+    if(disposed)return;
+    disposed=true;events.abort();
+    for(const cleanup of cleanups.splice(0).reverse()) {
+      try {cleanup();} catch(error) {console.error('Land race cleanup failed',error);}
+    }
+  }
+  const ready=initialize();
+  // Callers may render immediately without awaiting asset initialization.
+  void ready.catch(error=>console.error('Land race initialization failed',error));
+  return {dispose,ready};
+  async function initialize() {
+    try {
 const query = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
 const requestedProfile=resolveMap(query.get('map'));
 const mapId=requestedProfile.vehicle==='kart'?requestedProfile.id:'coast';
 const profile=resolveMap(mapId);
+defer(()=>{disposeMobileControls(document);disposeRaceUiLayout(document);});
 mountRaceHud({subtitle:profile.tag+' GRAND PRIX',canvasLabel:profile.label+' 真实 3D 卡丁车赛道'});
-const $ = (id: string): any => document.getElementById(id);
 const loadingUi=mountRaceLoadingUi(document,mapId);
+defer(()=>loadingUi.dispose());
+// Retain this entry's elements so a late callback cannot write into a newer view.
+const elements=new Map([...document.querySelectorAll<HTMLElement>('[id]')].map(element=>[element.id,element]));
+const $ = (id: string): any => {
+  const element=elements.get(id)??(disposed?null:document.getElementById(id));
+  if(element)elements.set(id,element);
+  return element;
+};
+defer(()=>{for(const element of elements.values())element.onclick=null;});
+reportStartupError=error=>{
+  const detail=error instanceof Error?error.message:String(error);
+  const status=$('raceLoadingStatus');if(status)status.textContent='赛道启动失败：'+detail+'；请重试或返回地图选择';
+  loadingUi.retryButton.hidden=false;loadingUi.retryButton.disabled=false;loadingUi.retryButton.onclick=()=>location.reload();
+  loadingUi.exitLink.hidden=false;
+};
 // Register gesture unlock before the first asynchronous course import.
-getDocumentMusic(document)?.preloadRace();
+getDocumentMusic(document,mapId)?.preloadRace();
 // Paint shared recovery controls before fetching optional course chunks.
 const initialLinks=raceNavigation(mapId,getDriver(query.get('driver')||DEFAULT_DRIVER_ID).id);
 $('raceChangeMap').href=initialLinks.changeMap;
@@ -56,14 +92,17 @@ loadingUi.exitLink.href=initialLinks.changeMap;
 let course:Awaited<ReturnType<typeof loadLandCourse>>;
 try {course=await loadLandCourse(query.toString());}
 catch(error){
+  if(disposed)return;
   const detail=error instanceof Error?error.message:String(error);
   loadingUi.update({progress:null,status:'赛道载入或初始化失败：'+detail+'；请重试或返回地图选择',busy:false,canRetry:true,canExit:true});
   loadingUi.retryButton.onclick=()=>location.reload();
-  throw error;
+  return;
 }
+if(disposed)return;
 const {length:LENGTH,sample,halfWidthAt,placeKart}=course;
 const laneMargin=course.track ? .65 : .45;
 const loadingCamera=createLoadingCamera({length:LENGTH,sample});
+defer(()=>loadingCamera.dispose());
 let initialCameraReturn=true,loadingFocused=true,contextUnavailable=false;
 const loadingActive=()=>loadingFocused&&!contextUnavailable&&!document.hidden&&(typeof document.hasFocus!=='function'||document.hasFocus());
 const settings = readGameSettings(), quality = qualitySettings(settings.quality);
@@ -83,17 +122,24 @@ function updateRaceLinks(driverId:string){
 }
 updateRaceLinks(getDriver(query.get('driver') || DEFAULT_DRIVER_ID).id);
 
-let disposed = false, autoStartPending = query.get('autostart') === '1';
+let autoStartPending = query.get('autostart') === '1';
 const canvas = $('game') as HTMLCanvasElement;
 const shell=createRaceShell(document,canvas,{map:mapId,driver:getDriver(query.get('driver')||DEFAULT_DRIVER_ID).id,track:{length:LENGTH,sample,...(course.routes?{extraPaths:[{length:course.routes.alternates.alley.length,sample:course.routes.alternates.alley.sample}]}:{})}});
+defer(()=>shell.dispose());
 let app: pc.Application;
 try {
   app = new pc.Application(canvas, { graphicsDeviceOptions: { antialias: true, alpha: false, powerPreference: 'high-performance' } });
 } catch (error) {
   $('loading').textContent = '当前浏览器无法启用 WebGL，请开启硬件加速或换用新版浏览器';
   loadingUi.update({progress:null,status:$('loading').textContent,busy:false});
-  throw error;
+  return;
 }
+let closeApp=()=>app.destroy();
+defer(()=>{
+  app.autoRender=false;app.renderNextFrame=false;app.off('update');
+  if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);
+  closeApp();
+});
 app.maxDeltaTime = Infinity; // Preserve elapsed time; gameplay is substepped below.
 app.graphicsDevice.maxPixelRatio = Math.min(devicePixelRatio || 1, quality.pixelRatioCap);
 app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
@@ -101,16 +147,12 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 const world = course.createScene(app);
 const kartLoader = createKartAssemblyLoader(app);
 const kartTemplates = new Map<string, KartAssembly>();
-const lifetime = createRaceLifetime(()=>{
-  releaseRacers(); for (const assembly of kartTemplates.values()) assembly.dispose(); kartTemplates.clear();
-  void kartLoader.dispose().finally(()=>{
-    app.destroy();courseAssets.clear();bundledDrivers.clear();bundledFailures.clear();chassisAsset=null;botProgress.clear();playerProgress=null;
-  });
-});
+closeApp=()=>{void kartLoader.dispose().finally(()=>app.destroy());};
 for (const light of app.root.findComponents('light') as pc.LightComponent[]) {light.castShadows = quality.shadows;light.shadowResolution = quality.shadowResolution;}
 const { camera, boxes, shield: shieldMesh, flames, particles } = world;
 const dynamicPickups=createDynamicPickupDirector(boxes.filter(b=>b.dynamic),{length:LENGTH,sample,laneLimit:d=>Math.min(5.2,halfWidthAt(d)-1.1),...(routes?{eligibility:routes.eligible,racerPosition:r=>routes.sample(r.id,r.lateral).p,racerGap:(r,d)=>routes.gapToDistance(r.id,d),pickupPosition:routes.pickupPosition}:{})},{rng:()=>raceRng()});
 const performancePanel=createPerformancePanel(canvas,()=>({quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:LENGTH,racerCount:6,profile:racerTuning(selectedDriverId),driver:selectedDriverId}),undefined,{mount:$('raceSettings'),scene:mapId+'-circuit-six-racers'});
+defer(()=>performancePanel.dispose());
 const frameClock=createRaceFrameClock();
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
   charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null,
@@ -314,8 +356,9 @@ if(initialCameraReturn){
   return;
 }
 frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true;tone(500)}
-const canImport=()=>ready&&!loadingBusy&&(state==='menu'||state==='finished');
-const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModularDriverContract,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(ready){setupRacers();updateDriverUI();}}});
+const canImport=()=>!disposed&&ready&&!loadingBusy&&(state==='menu'||state==='finished');
+const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModularDriverContract,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(!disposed&&ready){setupRacers();updateDriverUI();}}});
+defer(()=>localDrivers.dispose());
 function updateDriverUI(){
   if (disposed) return;
   updateRaceLinks(selectedDriverId);
@@ -345,7 +388,7 @@ async function importDrivers(files,slotId=selectedDriverId){
 }
 for(const slot of DRIVERS)$('slot-'+slot.id).onclick=()=>selectDriver(slot.id);
 $('importButton').onclick=()=>{if(canImport()&&chassisAsset)$('driverFiles').click();};
-$('driverFiles').addEventListener('change',(event: any)=>{const files=Array.from(event.target.files||[]),slotId=selectedDriverId;event.target.value='';void importDrivers(files,slotId);});
+$('driverFiles').addEventListener('change',(event: any)=>{const files=Array.from(event.target.files||[]),slotId=selectedDriverId;event.target.value='';void importDrivers(files,slotId);},{signal:events.signal});
 $('clearDriver').onclick=()=>{if(localDrivers.clear(selectedDriverId)){importStatusVersion++;$('importStatus').textContent=bundledDrivers.has(selectedDriverId)?'该槽位已恢复默认角色':'该槽位恢复原创替身（默认模型加载失败）';}};
 $('start').onclick=reset;
 $('retryLoading').onclick=()=>{void boot();};
@@ -389,9 +432,10 @@ controls=bindRaceControls(canvas,{
   state:()=>state==='running'||state==='countdown'?'active':state==='paused'?'paused':state==='finished'?'finished':state==='loading'||state==='returning'?'loading':'menu',
   pause,useItem,switchCamera:()=>$('camera').click(),start:reset,
   recenter:()=>toast('视角回正'),status:status=>{lookStatus=status;updateLookHint()},
-  onClear:()=>{charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,
+  onClear:()=>{charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,signal:events.signal,
 });
 keys=controls.keys;mouseLook=controls.mouseLook;
+defer(()=>controls.dispose());
 function updateHUD(){
   const feedback=coastHudFeedback(playerCombatant(),bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions);
   const forkHint=routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?course.forkHint:null;
@@ -574,7 +618,9 @@ function getState() {
     drawCalls: stats.drawCalls?.total ?? stats.frame?.drawCalls ?? 0, triangles: stats.frame?.triangles ?? 0,
   };
 }
-window.neonKart = { getState, start: reset, pause, useItem, selectDriver, importDrivers, retryLoading: boot, clearDriver: () => localDrivers.clear(selectedDriverId) };
+const debugHandle = { getState, start: reset, pause, useItem, selectDriver, importDrivers, retryLoading: boot, clearDriver: () => localDrivers.clear(selectedDriverId) };
+window.neonKart = debugHandle;
+defer(()=>{if(window.neonKart===debugHandle)delete window.neonKart;});
 // Opt-in deterministic browser QA. It never changes production play unless explicitly invoked.
 let manual = false;
 if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
@@ -590,13 +636,13 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
     },
   };
 }
-addEventListener('blur',()=>{loadingFocused=false;});
-addEventListener('focus',()=>{loadingFocused=true;frameClock.reset();});
-addEventListener('pageshow',()=>{loadingFocused=true;frameClock.reset();});
-addEventListener('resize', () => { if(!disposed){app.resizeCanvas(); snapCamera = true;} });
+addEventListener('blur',()=>{loadingFocused=false;},{signal:events.signal});
+addEventListener('focus',()=>{loadingFocused=true;frameClock.reset();},{signal:events.signal});
+addEventListener('pageshow',()=>{loadingFocused=true;frameClock.reset();},{signal:events.signal});
+addEventListener('resize', () => { if(!disposed){app.resizeCanvas(); snapCamera = true;} },{signal:events.signal});
 canvas.addEventListener('webglcontextlost', event => {
   event.preventDefault(); contextUnavailable=true; release();renderLoadingUI(); $('count').textContent = '画面已中断，请刷新'; $('count').classList.add('paused');
-});
+},{signal:events.signal});
 function advanceFrame(delta:number){
   if(disposed||contextUnavailable)return;
   performancePanel.sample(performance.now(),state==='running',state);
@@ -613,15 +659,30 @@ loadingUi.retryButton.onclick=()=>void boot();
 loadingUi.continueButton.onclick=reset;
 const initialPose=loadingCamera.step(0);
 camera.setPosition(initialPose.position.x,initialPose.position.y,initialPose.position.z);camera.lookAt(initialPose.look.x,initialPose.look.y,initialPose.look.z);camera.camera!.fov=initialPose.fov;
-void boot();
-app.start();
-
+const lifetime = createRaceLifetime(()=>{
+  releaseRacers(); for (const assembly of kartTemplates.values()) assembly.dispose(); kartTemplates.clear();
+  void kartLoader.dispose().finally(()=>{
+    app.destroy();courseAssets.clear();bundledDrivers.clear();bundledFailures.clear();chassisAsset=null;botProgress.clear();playerProgress=null;
+  });
+});
+// Asset/parser lifetime owns WebGL destruction only once every closure exists.
+closeApp=()=>lifetime.close();
+defer(()=>{
+  dynamicPickups.finish();ready=false;state='leaving';importStatusVersion++;
+  if(loadingTimer)clearInterval(loadingTimer);loadingTimer=null;
+});
 addEventListener('pagehide',(event: PageTransitionEvent)=>{
   loadingFocused=false;release();
-  if(event.persisted)return; // BFCache restores the same paused session.
-  dynamicPickups.finish();disposed=true;ready=false;state='leaving';importStatusVersion++;
-  if(loadingTimer)clearInterval(loadingTimer);loadingTimer=null;
-  app.autoRender=false;app.renderNextFrame=false;
-  if(app.frameRequestId&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(app.frameRequestId);
-  loadingUi.dispose();loadingCamera.dispose();controls.dispose();shell.dispose();performancePanel.dispose();localDrivers.dispose();lifetime.close();
-});
+  if(!event.persisted)dispose(); // BFCache restores the same paused session.
+},{signal:events.signal});
+const bootPromise=boot();
+app.start();
+await bootPromise;
+
+    } catch(error) {
+      if(disposed)return;
+      dispose();reportStartupError?.(error);
+      throw error;
+    }
+  }
+}

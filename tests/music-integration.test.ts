@@ -63,7 +63,7 @@ test('menu ready gate, same-page screens, separate garage and both race exits wi
  assert.match(menu,/state.screen!=='main'.*state.screen==='exit'\?'silent':'menu'/);
  assert.match(menu,/disposeMusicSettings\?\.\(\)/);assert.match(menu,/bindMusicSettings\(root,music\)/);
  assert.doesNotMatch(menu,/暂未加入背景音乐/);
- assert.match(garage,/music\?\.setPhase\('menu'\)/);assert.match(garage,/musicNavigation\.dispose\(\);music\?\.dispose\(\)/);
+ assert.match(garage,/music\?\.setPhase\('menu'\)/);assert.match(garage,/musicNavigation\.dispose\(\);events\.abort\(\)/);assert.doesNotMatch(garage,/music\?\.dispose\(\)/);
  for(const source of [game,water])assert.match(source,/shell.navigate\(screen==='maps'\?urls.changeMap:screen==='characters'\?urls.changeCharacter:urls.main\)/);
  assert.ok(game.indexOf('getDocumentMusic(document)')<game.indexOf('await loadLandCourse'));
  assert.match(read('src/race-shell.ts'),/pauseActions.style.maxHeight = 'calc\(100% - 32px\)'/,'expanded pause menu remains scrollable');

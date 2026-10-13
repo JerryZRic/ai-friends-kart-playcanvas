@@ -1,4 +1,3 @@
-import {isMenuGarageFrame,sendGarageNavigation} from './garage-host-protocol';
 import {createBackgroundMusic} from './background-music';
 
 export type BackgroundMusic = ReturnType<typeof createBackgroundMusic>;
@@ -9,8 +8,10 @@ export function raceMusicUrl(map?: string): string {
 }
 
 export function getDocumentMusic(document: Document, map?: string, preloadTheme = false): BackgroundMusic | null {
-  if (!document.defaultView || !document.addEventListener || isMenuGarageFrame(document.defaultView)) return null;
-  return createBackgroundMusic({document, window: document.defaultView, preloadTheme, raceUrl: raceMusicUrl(map)});
+  if (!document.defaultView || !document.addEventListener) return null;
+  const music=createBackgroundMusic({document, window: document.defaultView, preloadTheme, raceUrl: raceMusicUrl(map)});
+  if(map!==undefined)music.setRaceUrl?.(raceMusicUrl(map));
+  return music;
 }
 
 export const MUSIC_SETTINGS_MARKUP = `<div data-music-settings style="display:grid;gap:8px;min-width:0"><label style="display:flex;align-items:center;gap:8px"><input data-music-enabled type="checkbox">背景音乐</label><label style="display:flex;align-items:center;gap:8px">音量 <input data-music-volume type="range" min="0" max="100" step="1" aria-label="背景音乐音量" style="min-width:60px;width:100%;flex:1"><output data-music-level style="min-width:3em"></output></label><small data-music-status role="status" aria-live="polite">音乐设置自动保存</small></div>`;
@@ -34,6 +35,11 @@ export function bindMusicSettings(root: ParentNode, music: BackgroundMusic | nul
   return () => {unsubscribe(); enabled.removeEventListener('change', change); volume.removeEventListener('input', input);};
 }
 
+const sceneNavigators = new WeakMap<Document,(href:string)=>boolean>();
+export function registerSceneNavigator(document:Document,navigate:(href:string)=>boolean){
+ sceneNavigators.set(document,navigate);return()=>{if(sceneNavigators.get(document)===navigate)sceneNavigators.delete(document);};
+}
+
 /** Latest navigation wins, including rapid alternate clicks and history changes. */
 export function bindMusicNavigation(document: Document, music: BackgroundMusic | null, intercept?: (href: string) => boolean) {
   const window = document.defaultView;
@@ -45,7 +51,7 @@ export function bindMusicNavigation(document: Document, music: BackgroundMusic |
     if (pending) {pending = false; music?.setPhase(returnPhase);}
   };
   const navigate = (href: string) => {
-    if (intercept?.(href) || sendGarageNavigation(href, window)) return;
+    if (intercept?.(href) || sceneNavigators.get(document)?.(href)) return;
     const current = ++version;
     if (!pending) returnPhase = music?.getState().phase ?? 'silent';
     pending = true;

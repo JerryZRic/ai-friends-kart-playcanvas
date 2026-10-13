@@ -25,6 +25,7 @@ export interface BackgroundMusic {
   setPhase(phase: MusicPhase, restartRace?: boolean): void;
   unlock(): void;
   preloadRace(): void;
+  setRaceUrl?(url: string): void;
   silence(): void;
   setVolume(volume: number): void;
   setMuted(muted: boolean): void;
@@ -62,11 +63,12 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       storage.setItem(SETTINGS_KEY, JSON.stringify({ volume, muted })); settingsSaved = true;
     } catch { settingsSaved = false; }
   };
+  let currentRaceUrl=options.raceUrl ?? './assets/music/dfy_bgm.mp3';
   const audioFactory = options.createAudio ?? ((url: string) => new Audio(url));
   const tracks: HTMLAudioElement[] = [];
   try {
     tracks.push(audioFactory(options.themeUrl ?? './assets/music/dfy_theme.mp3'));
-    tracks.push(audioFactory(options.raceUrl ?? './assets/music/dfy_bgm.mp3'));
+    tracks.push(audioFactory(currentRaceUrl));
   } catch {
     tracks.forEach(audio => { try { audio.pause(); audio.removeAttribute('src'); audio.load(); } catch { /* unavailable media backend */ } });
     // Audio is optional: even unavailable constructors must not stop loading/gameplay.
@@ -289,6 +291,12 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       generation++; cancelFade(); cancelTransition();
       tracks.forEach(audio => audio.pause());
       playing = false; applyGains(); emit();
+    },
+    setRaceUrl(url) {
+      if(disposed||currentRaceUrl===url)return;
+      currentRaceUrl=url;
+      generation++;race.pause();race.src=url;race.preload='metadata';racePreloaded=false;
+      try {race.load();}catch{/* Optional music never blocks a scene. */}
     },
     preloadRace() {
       if (disposed || racePreloaded) return;

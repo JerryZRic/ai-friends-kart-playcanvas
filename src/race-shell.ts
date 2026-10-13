@@ -407,6 +407,6 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     tone(frequency = 500, duration = .1) { sound.tone(frequency, duration); },
     toggleSound() { if (!disposed) { sound.toggle(); updateSound(); sound.tone(); } return sound.muted; },
     get muted() { return sound.muted; },
-    dispose() { if (disposed) return; disposed = true; disposeMusicSettings(); musicNavigation.dispose(); music?.dispose(); sound.dispose(); clearToast(); },
+    dispose() { if (disposed) return; disposed = true; disposeMusicSettings(); musicNavigation.dispose(); sound.dispose(); clearToast(); },
   };
 }

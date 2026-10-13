@@ -131,6 +131,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
     return { drivers, failures };
   };
   const sourceFiles=createInstrumentedSourceFiles(undefined,scenario.mountainAudit?process.env.MOUNTAIN_NATIVE_SOURCE_MANIFEST:undefined);
+  let mounted:{dispose():void;ready:Promise<void>}|undefined;
   try {
   let source = readFileSync('src/game.ts', 'utf8');
   source = source.replace('loadCourseAssets, loadBundledDrivers,', 'loadCourseAssets as unusedCourseLoader, loadBundledDrivers as unusedDriverLoader,');
@@ -170,14 +171,17 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
   const key = (kind, code) => events[kind]?.forEach(fn => fn({ code, repeat: false, preventDefault() {} }));
     if(scenario.mountain||forkMap){failFoodPart=false;failGLM=false;failPreparation=false;unblock!();}
     if(scenario.courseFailure){
-      await assert.rejects(import(copy.url.href),/Injected mountain chunk failure/);
+      const entry=await import(copy.url.href);mounted=entry.mountLandRace();await mounted.ready;
       assert.match(element('raceLoadingStatus').textContent,/赛道载入或初始化失败.*Injected mountain chunk failure/);
       assert.equal(element('raceLoadingRetry').disabled,false);assert.equal(element('raceLoadingRetry').hidden,false);
       assert.equal(element('raceLoadingExit').hidden,false);assert.match(element('raceLoadingExit').href,new RegExp('map='+(forkMap||'mountain')));
       if(scenario.garden||scenario.airfield){let reloads=0;const before=g.location.href;g.location.reload=()=>reloads++;element('raceLoadingRetry').click();assert.equal(reloads,1,'native retry invokes shared page reload');assert.equal(g.location.href,before,'retry preserves selected map and driver query');}
       assert.equal(element('loadingMapName').textContent,forkMap==='airfield'?'铜翼空港':forkMap==='garden'?'蔓穹花园':forkMap==='caldera'?'玄岩环冕':forkMap==='snow'?'霜环雪站':forkMap==='desert'?'星砂古驿':forkMap==='harvest'?'谷风麦垄回环':forkMap==='workshop'?'发条工坊回旋道':forkMap==='forest'?'杉影星台环线':'云岭盘山道');return;
     }
-    await import(copy.url.href);
+    const entry=await import(copy.url.href);mounted=entry.mountLandRace();
+    // Mount is synchronous; the selected course module remains dynamically loaded.
+    for(let i=0;i<1600&&!g.window.neonKart;i++)await new Promise(resolve=>setTimeout(resolve,5));
+    assert.ok(g.window.neonKart,'race bootstrap exposes its own debug handle');
     const game = g.window.neonKart, qa = game.debug;
     if(forkMap){
       const course=forkMap==='airfield'?(await import('../../src/maps/airfield')).AIRFIELD_COURSE:forkMap==='garden'?(await import('../../src/maps/garden')).GARDEN_COURSE:forkMap==='caldera'?(await import('../../src/maps/caldera')).CALDERA_COURSE:forkMap==='snow'?(await import('../../src/maps/snow')).SNOW_COURSE:forkMap==='desert'?(await import('../../src/maps/desert')).DESERT_COURSE:forkMap==='harvest'?(await import('../../src/maps/harvest')).HARVEST_COURSE:forkMap==='workshop'?(await import('../../src/maps/workshop')).WORKSHOP_COURSE:forkMap==='forest'?(await import('../../src/maps/forest')).FOREST_COURSE:forkMap==='quarry'?(await import('../../src/maps/quarry')).QUARRY_COURSE:(await import('../../src/maps/town')).TOWN_COURSE;
@@ -1399,6 +1403,7 @@ export async function runGameScenario(scenario:GameScenario,t:TestContext) {
 
   } finally {
     try {
+    mounted?.dispose();
     if(app.graphicsDevice){events.pagehide?.forEach(fn=>fn({persisted:false}));await settleAppDisposal();}
     clearFoodKartPayloadCache();if(previousStorage)Object.defineProperty(g,'localStorage',previousStorage);else delete g.localStorage;
     pc.guid.create=originalGuid;Math.random=originalRandom;g.location=previousLocation; console.error = originalConsoleError; globalThis.fetch = originalFetch; if(app.graphicsDevice)app.destroy();
