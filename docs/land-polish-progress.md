@@ -10,7 +10,9 @@ against each commit's Pages workflow. A01 and stable main/v1.0.0 remain unchange
 
 - 03 Town: complete in this revision. +7,872 triangles, 20 batches retained.
 
-04 Quarry, 05 Forest, 07 Harvest, 08 Desert, 09 Snow, 10 Caldera,
+- 05 Forest: complete in this revision. +5,536 triangles, 21 batches retained.
+
+04 Quarry, 07 Harvest, 08 Desert, 09 Snow, 10 Caldera,
 11 Garden and 12 Airfield are not yet included in this source checkpoint.
 
 Each map's specific notes record modeling changes, palette, budgets and checks.
