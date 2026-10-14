@@ -4,7 +4,8 @@ import * as pc from 'playcanvas';
 import { getNpcPresets } from './kart-presets';
 import { garageEntry } from './menu-state';
 import { parseRaceOptions } from './race-options';
-import { npcSkill, npcDriving, seededRandom } from './npc-difficulty';
+import { npcSkill, seededRandom } from './npc-difficulty';
+import {landCpuFinished,tickLandCpu,decideLandCpu,advanceLandCpu,collideLandCpu,type LandCpuActor,type LandCpuContext,type LandCpuFeedback} from './land-cpu';
 import { raceKartBuild, buildForRacer, createRaceKartTuning, kartRoadContext, kartBuildKey, stepRaceKartSpeed } from './kart-race';
 import { createKartAssemblyLoader, type KartAssembly, type KartAssemblyProgress } from './kart-assembly';
 import { createModularRacer, validateModularDriverContract } from './kart-driver';
@@ -15,7 +16,7 @@ import { createWaterparkLifetime as createRaceLifetime } from './waterpark-lifet
 import { createItemModel, itemImage, type ItemKind } from './item-models';
 import { advancePickup, resetPickup } from './item-pickups';
 import { createDynamicPickupDirector } from './dynamic-pickups';
-import { RULES, newBrain, tickBrain, tickEffects, chooseItem, activateItem, collectPickups, planLane, moveLane, nearbyGap, type Combatant, type Brain } from './npc-tactics';
+import { RULES, newBrain, activateItem, collectPickups, nearbyGap, type Combatant } from './npc-tactics';
 import { keyCode, driveInput, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
 import {createRaceFrameClock} from './race-frame-clock';
@@ -37,7 +38,7 @@ import {createLandRaceRoute} from './land-race-route';
 import {canonicalProgress} from './land-routes';
 import {resolveMap} from './map-profiles';
 import {createLapProgress,advanceLapProgress,type LandLapProgress} from './land-track';
-import {stepLandSpeed,landSteeringGrip,landBankDrift,landLookAheadBend,landRailScrape} from './land-driving';
+import {stepLandSpeed,landSteeringGrip,landBankDrift,landRailScrape} from './land-driving';
 import { clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
@@ -159,11 +160,13 @@ let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane 
   drifting = false, steerVis = 0, finishRank = 0, playerFinishedAt = Infinity, view = 0, muted = shell.muted, clock = 0;
 type RacerEntity = pc.Entity & { userData?: { driverId: string } };
 type BotFX = { shield: pc.Entity; flames: { mesh: pc.Entity; side: number }[]; inventory: Record<ItemKind, pc.Entity> };
-type Bot = Combatant & Brain & { phase: number; color: string; driving: boolean; cornerPace: number; aiBend: number; driftCharge: number; driftCooldown: number; aiDrifting: boolean; finishedAt: number | null; mesh: RacerEntity; fx: BotFX };
+type Bot = LandCpuActor & { color:string; mesh:RacerEntity; fx:BotFX };
 let playerProgress:LandLapProgress|null=null;
 const botProgress=new Map<string,LandLapProgress>();
 let bots: Bot[] = [], sparks: Spark[] = [], player: RacerEntity | null = null;
-const botFinished=(bot:Bot)=>routes?!!routes.get(bot.id)?.finished:bot.total>=LENGTH*3&&(!course.track||(botProgress.get(bot.id)?.laps??0)>=3);
+const cpuContext:LandCpuContext={length:LENGTH,track:course.track,sample,halfWidthAt,routes,progress:botProgress,skill,tuning:racerTuning};
+const cpuFeedback:LandCpuFeedback={useItem:useCombatItem,finished:b=>hideBotFX(b as Bot),railContact:(b,lateral)=>emit(actorSample(b.id,b.total,lateral).p)};
+const botFinished=(bot:Bot)=>landCpuFinished(bot,cpuContext);
 const actorSample=(id:string,total:number,lateral=0)=>routes?.states.has(id)?routes.sample(id,lateral):sample(total,lateral);
 const actorTrack=(id:string,total:number)=>routes?.states.has(id)?routes.view(id,total):course.track;
 const actorLimit=(id:string,total:number,margin=laneMargin,ahead=0)=>routes?.states.has(id)?routes.limit(id,ahead,margin):halfWidthAt(total+ahead)-margin;
@@ -401,7 +404,7 @@ $('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returnin
 $('sound').onclick=()=>{shell.toggleSound();muted=shell.muted;};
 function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, boost, shield, slow }; }
 function applyPlayerCombatant(r: Combatant) { held = r.held; boost = r.boost; shield = r.shield; slow = r.slow; }
-function useCombatItem(actor: Combatant, racers: Combatant[]) {
+function useCombatItem(actor: Combatant, racers: readonly Combatant[]) {
   const result = activateItem(actor, racers, LENGTH,routes?.interactions); if (!result) return;
   const bot = bots.find(b => b.id === actor.id);
   if (bot) { bot.uses++; bot.cooldown = RULES.cooldown; if (result.item === 'pulse') bot.pulseFlash = .65; }
@@ -465,48 +468,14 @@ if(routes){
 lane=clamp(lane,-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);if(course.track&&playerProgress){const progress=advanceLapProgress(course.track,playerProgress,pos,dt,lane);playerProgress=progress.state;if(!progress.accepted&&progress.reason!=='off-road'){pos=progress.state.distance;speed=0;}}
 playerFinishedAt=(routes?(routeFinish===undefined?null:elapsed-dt+dt*routeFinish):(!playerProgress||playerProgress.laps>=3?crossingTime(previous,pos,LENGTH*3,elapsed,dt):null))??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');shell.cue('lap')}
 const human=playerCombatant(), racers: Combatant[]=[human,...bots.filter(b=>!botFinished(b))];
-for(const b of bots){tickEffects(b,dt);tickBrain(b,dt);}
-for(const b of bots){
-  if(botFinished(b)){b.finishedAt??=elapsed-dt;b.held=null;b.boost=b.shield=b.slow=b.pulseFlash=0;hideBotFX(b);continue;}
-  if(routes)routes.npcChoice(b.id);
-  if(b.decisionIn<=0){
-    b.decisionIn=skill.decision+b.phase*.015;
-    // Read the same road geometry used by player physics; no rank-based pace.
-    const road=actorTrack(b.id,b.total),a=actorSample(b.id,b.total).t,z=routes?routes.sampleAhead(b.id,skill.lookAhead).t:sample(b.total+skill.lookAhead).t,bend=road?landLookAheadBend(road,b.total,skill.lookAhead):a.x*z.z-a.z*z.x; b.aiBend=bend;
-    const safeLane=Math.min(actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8,22));
-    b.targetLane=clamp(planLane(b,racers,boxes,LENGTH,b.phase,bend,skill,routes?.interactions),-safeLane,safeLane);
-    if(chooseItem(b,racers,LENGTH,bend,skill,routes?.interactions))useCombatItem(b,racers);
-  }
-}
+const cpuFrame={dt,elapsed};
+for(const b of bots)tickLandCpu(b,dt);
+for(const b of bots)decideLandCpu(b,racers,boxes,cpuContext,cpuFrame,cpuFeedback);
 applyPlayerCombatant(human);
+for(const b of bots)advanceLandCpu(b,cpuContext,cpuFrame,cpuFeedback);
 for(const b of bots){
   if(botFinished(b))continue;
-  const tuning=racerTuning(b.id,b.total,b.speed),road=actorTrack(b.id,b.total);
-  if(routes?.nearFork(b.id)){const selected=routes.npcChoice(b.id);b.targetLane=selected==='alley'?2.8:-2.8;}
-  b.driftCooldown=Math.max(0,b.driftCooldown-dt);
-  const control=npcDriving(b.speed,tuning.maxSpeed*(b.boost>0?RULES.boostFactor:1)*(b.slow>0?RULES.slowFactor:1),b.aiBend,skill,b.driftCharge,b.targetLane-b.lateral);
-  control.handbrake=control.drift=control.drift&&b.driftCooldown===0;
-  if(control.drift)b.driftCharge=Math.min(COAST_DRIFT.maxCharge,b.driftCharge+dt);
-  else {if(b.aiDrifting){if(!control.brake&&coastDriftReady(b.driftCharge))b.boost=Math.max(b.boost,coastDriftBoost(b.driftCharge));b.driftCooldown=2;}b.driftCharge=0;}
-  b.aiDrifting=control.drift;
-  if(b.driving)b.speed=stepLandSpeed(road,b.total,b.speed,control,dt,tuning,b.boost,b.slow,Math.abs(b.lateral)>actorLimit(b.id,b.total,.9));
-  if(routes){
-    const attempted=moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(road,b.total))+landBankDrift(road,b.total,b.speed,dt);
-    const rail=landRailScrape(b.speed,attempted,actorLimit(b.id,b.total,.8),dt);b.speed=rail.speed;if(rail.contact)emit(actorSample(b.id,b.total,rail.lateral).p);b.lateral=rail.lateral;
-    const selected=routes.npcChoice(b.id)==='alley'&&b.lateral>.35?'alley':'boulevard';const progress=routes.advance(b.id,b.speed*dt,dt,b.lateral,selected);b.total=progress.total;if(!progress.accepted)b.speed=0;if(progress.finishFraction!==undefined)b.finishedAt=elapsed-dt+dt*progress.finishFraction;
-    b.lateral=clamp(b.lateral,-actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8));routes.setLane(b.id,b.lateral);
-  }else{
-    // Identity adapter retains the established coast/mountain integration order.
-    const travel=b.speed*dt,before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);
-    if(course.track){const progress=advanceLapProgress(course.track,botProgress.get(b.id)!,b.total,dt,b.lateral);botProgress.set(b.id,progress.state);if(!progress.accepted&&progress.reason!=='off-road'){b.total=progress.state.distance;b.speed=0;}}
-    if(botFinished(b))b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);
-    b.lateral=clamp(moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(course.track,b.total)),-actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8));
-  }
-  if(botFinished(b)){b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b);continue;}
-}
-for(const b of bots){
-  if(botFinished(b))continue;
-  if(b.bump<=0&&b.shield<=0&&racers.some(r=>r.id!==b.id&&(routes?routes.collides(b,r):Math.abs(nearbyGap(b.total,r.total,LENGTH))<2.9&&Math.abs(b.lateral-r.lateral)<1.85))){b.slow=Math.max(b.slow,.55);b.bump=.8;}
+  collideLandCpu(b,racers,cpuContext);
   if((routes?routes.collides(playerCombatant(),b):Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85)&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);shell.cue('collision')}
 }
 human.total=pos;human.lateral=lane;

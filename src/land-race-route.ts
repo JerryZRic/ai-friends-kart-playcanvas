@@ -78,11 +78,16 @@ export function createLandRaceRoute(course:ForkCourse,seed:number) {
     return Number.isFinite(earliest)?earliest:null;
   };
   const collides=(a:Combatant,b:Combatant)=>{
-    const first=sampleCursor(course,cursor(a.id),a.lateral).p,second=sampleCursor(course,cursor(b.id),b.lateral).p;
-    if(first.distance(second)>3.4||Math.abs(first.y-second.y)>1.8)return false;
     const distance=gap(a,b);
-    // Alternate throats may overlap geometrically just before the legal merge.
-    return (distance!==null&&Math.abs(distance)<2.9&&Math.abs(a.lateral-b.lateral)<1.85)||distance===null&&first.distance(second)<2.2;
+    // Exact broad phase: a compatible route can only collide inside these
+    // already-authoritative longitudinal/lateral bounds. Avoid allocating two
+    // full road frames for distant cars; null cross-branch gaps still require
+    // the original physical overlap/deck check below.
+    if(distance!==null&&!(Math.abs(distance)<2.9&&Math.abs(a.lateral-b.lateral)<1.85))return false;
+    const first=sampleCursor(course,cursor(a.id),a.lateral).p,second=sampleCursor(course,cursor(b.id),b.lateral).p;
+    const physical=first.distance(second);
+    if(physical>3.4||Math.abs(first.y-second.y)>1.8)return false;
+    return distance!==null||physical<2.2;
   };
   /** Candidate and full reaction corridor must stay on common road, clear of
    * junction throats and both bridge decks. Conservative rejection is deliberate. */

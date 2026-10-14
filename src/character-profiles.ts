@@ -1,6 +1,6 @@
 import {resolveMap,type MapId} from './map-profiles';
 import {characterIdentity} from './character-identity.js';
-/** One authoritative, balanced roster shared by menu, player and opponents. */
+/** Authoritative land roster shared by menu, player and opponents. */
 export type CharacterId = 'whale'|'gemini'|'gpt'|'claude'|'grok'|'glm';
 export type CharacterProfile = {id:CharacterId;label:string;nickname:string;description:string;color:string;emblem:string;acceleration:number;topSpeed:number;steering:number};
 export const CHARACTER_PROFILES:readonly Readonly<CharacterProfile>[] = Object.freeze([
@@ -13,7 +13,16 @@ export const CHARACTER_PROFILES:readonly Readonly<CharacterProfile>[] = Object.f
 ].map(profile=>Object.freeze({...profile,...characterIdentity(profile.id)} as CharacterProfile)));
 export function resolveCharacter(id:unknown):Readonly<CharacterProfile>{return CHARACTER_PROFILES.find(profile=>profile.id===id)||CHARACTER_PROFILES[0];}
 export const MAP_BASELINES=Object.freeze({coast:Object.freeze({maxSpeed:42,acceleration:18,steering:7}),waterpark:Object.freeze({maxSpeed:22,acceleration:8.6,steering:11})});
-export function characterTuning(id:unknown,mapId:MapId){
- const profile=resolveCharacter(id),base=MAP_BASELINES[resolveMap(mapId).vehicle==='kart'?'coast':'waterpark'];
- return {maxSpeed:base.maxSpeed*profile.topSpeed,acceleration:base.acceleration*profile.acceleration,steering:base.steering*profile.steering,multipliers:{topSpeed:profile.topSpeed,acceleration:profile.acceleration,steering:profile.steering}};
+export type CharacterMultipliers=Pick<CharacterProfile,'acceleration'|'topSpeed'|'steering'>;
+/** This land-only balance pass must not silently change A01 living mounts. */
+export const WATER_CHARACTER_MULTIPLIERS:Readonly<Record<CharacterId,Readonly<CharacterMultipliers>>>=Object.freeze({
+ whale:Object.freeze({acceleration:1.06,topSpeed:.92,steering:1.02}),gemini:Object.freeze({acceleration:.92,topSpeed:1,steering:1.08}),
+ gpt:Object.freeze({acceleration:1,topSpeed:1,steering:1}),claude:Object.freeze({acceleration:1.08,topSpeed:.96,steering:.96}),
+ grok:Object.freeze({acceleration:.96,topSpeed:1.08,steering:.96}),glm:Object.freeze({acceleration:.94,topSpeed:1.04,steering:1.02}),
+});
+export function characterTuning(id:unknown,mapId:MapId,landOverride?:CharacterMultipliers){
+ const profile=resolveCharacter(id),land=resolveMap(mapId).vehicle==='kart',base=MAP_BASELINES[land?'coast':'waterpark'];
+ const values=land?(landOverride??profile):WATER_CHARACTER_MULTIPLIERS[profile.id];
+ if(![values.topSpeed,values.acceleration,values.steering].every(value=>Number.isFinite(value)&&value>0))throw new RangeError('Character tuning must be finite and positive');
+ return {maxSpeed:base.maxSpeed*values.topSpeed,acceleration:base.acceleration*values.acceleration,steering:base.steering*values.steering,multipliers:{topSpeed:values.topSpeed,acceleration:values.acceleration,steering:values.steering}};
 }

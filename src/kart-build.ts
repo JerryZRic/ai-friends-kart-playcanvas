@@ -1,5 +1,5 @@
 import catalogData from './kart-catalog.json';
-import { characterTuning } from './character-profiles';
+import { characterTuning, type CharacterMultipliers } from './character-profiles';
 
 /** Fresh-vehicle experiment. No currency, wear, charge consumption or theme bonuses. */
 export const KART_SLOTS = Object.freeze(['body', 'chassis', 'motor', 'transmission', 'battery', 'wheels'] as const);
@@ -140,6 +140,18 @@ export function buildStats(input: unknown = defaultBuild): KartBuildStats {
 }
 
 export type KartTrackContext = {speed?: number; grade?: number; curvature?: number};
+/** Map-neutral arcade corner support in existing metres/seconds: v²·curvature
+ * is the lateral load. Grip (parts × character steering) bounds that load.
+ * The released .62 reference pace remains a floor on very tight kinematic
+ * corners; straight gearing cannot raise this grip-limited floor. */
+export const LAND_CORNER_LATERAL_ACCELERATION=12;
+export function landCornerSpeed(straightSpeed:number,handling:number,curvature:number) {
+  const bend=Math.abs(finite(curvature));
+  if(bend<=1e-9)return straightSpeed;
+  const gripSpeed=Math.sqrt(Math.max(.01,handling))*Math.max(42*.62,Math.sqrt(LAND_CORNER_LATERAL_ACCELERATION/bend));
+  return Math.min(straightSpeed,gripSpeed);
+}
+
 /** Geometry input is explicit and map-neutral. grade=rise/run; curvature=yaw/m.
  * Shape-specific pace is deterministic, bounded, and independent of rank/player.
  * Flat straight acceleration retains the approved fresh index; grades blend in
@@ -154,22 +166,22 @@ function performanceFor(stats: KartBuildStats, machine: ReturnType<typeof mechan
   const gradeWeight = clamp(Math.abs(grade) * 5, 0, .5);
   const accelerationMultiplier = round(clamp(stats.accelerationMultiplier * (1 - gradeWeight) +
     currentRatio * gradeWeight, ...VEHICLE_CLAMPS.acceleration), 4);
-  const bend = clamp((curvature - .005) / .035, 0, 1);
-  // A genuine corner ceiling: at a tight bend grip, not long gearing, sets pace.
-  const tightCornerRatio = Math.min(1, .62 * Math.sqrt(stats.handlingMultiplier) / stats.speedMultiplier);
-  const cornerSpeedScale = round(clamp(1 - bend * (1 - tightCornerRatio), .5, 1), 4);
+  const cornerSpeedScale=landCornerSpeed(42*stats.speedMultiplier,stats.handlingMultiplier,curvature)/(42*stats.speedMultiplier);
   return Object.freeze({
     accelerationMultiplier, speedMultiplier: stats.speedMultiplier, handlingMultiplier: stats.handlingMultiplier,
-    cornerSpeedScale, gradeAcceleration: round(-9.81 * grade, 4),
+    cornerSpeedScale, curvature, gradeAcceleration: round(-9.81 * grade, 4),
     recoverySeconds: stats.recoverySeconds, rollThresholdG: stats.rollThresholdG,
   });
 }
 export type KartPerformance = ReturnType<typeof performanceFor>;
-function tuningFor(driver: unknown, map: 'coast' | 'waterpark', stats: KartBuildStats, performance?: KartPerformance) {
-  const base = characterTuning(driver, map);
+function tuningFor(driver: unknown, map: 'coast' | 'waterpark', stats: KartBuildStats, performance?: KartPerformance, characterOverride?:CharacterMultipliers) {
+  const base = characterTuning(driver, map, characterOverride);
   const multipliers: KartMultipliers = map === 'waterpark' ? Object.freeze({acceleration: 1, speed: 1, handling: 1}) :
     performance ? Object.freeze({acceleration: performance.accelerationMultiplier, speed: performance.speedMultiplier, handling: performance.handlingMultiplier}) : stats.multipliers;
-  const cornerScale = map === 'coast' ? performance?.cornerSpeedScale ?? 1 : 1;
+  // Character handling must contribute to the same corner ceiling as the
+  // equipment. Top-speed gearing cannot multiply a grip-limited tight corner.
+  const combinedSpeed=base.multipliers.topSpeed*multipliers.speed;
+  const cornerScale=map==='coast'&&performance?landCornerSpeed(42*combinedSpeed,base.multipliers.steering*multipliers.handling,performance.curvature)/(42*combinedSpeed):1;
   const combined = {topSpeed: base.multipliers.topSpeed * multipliers.speed * cornerScale,
     acceleration: base.multipliers.acceleration * multipliers.acceleration,
     steering: base.multipliers.steering * multipliers.handling};
@@ -183,7 +195,7 @@ function tuningFor(driver: unknown, map: 'coast' | 'waterpark', stats: KartBuild
 export type CompiledKartBuild = Readonly<{
   build: Readonly<KartBuild>; parts: Readonly<Record<KartSlot, KartPart>>; stats: KartBuildStats;
   performance(context?: KartTrackContext): KartPerformance;
-  tuning(driver: unknown, map: 'coast' | 'waterpark', context?: KartTrackContext): ReturnType<typeof tuningFor>;
+  tuning(driver: unknown, map: 'coast' | 'waterpark', context?: KartTrackContext, characterOverride?:CharacterMultipliers): ReturnType<typeof tuningFor>;
 }>;
 const compiledCache = new Map<string, CompiledKartBuild>();
 /** Compile once per selection/race. The snapshot cannot change under a racer,
@@ -196,8 +208,8 @@ export function compileKartBuild(input: unknown = defaultBuild): CompiledKartBui
   const compiled: CompiledKartBuild = Object.freeze({
     build: Object.freeze(build), parts: buildParts(build), stats,
     performance: (context: KartTrackContext = {}) => performanceFor(stats, machine, context),
-    tuning: (driver: unknown, map: 'coast' | 'waterpark', context?: KartTrackContext) =>
-      tuningFor(driver, map, stats, map === 'coast' && context ? performanceFor(stats, machine, context) : undefined),
+    tuning: (driver: unknown, map: 'coast' | 'waterpark', context?: KartTrackContext, characterOverride?:CharacterMultipliers) =>
+      tuningFor(driver, map, stats, map === 'coast' && context ? performanceFor(stats, machine, context) : undefined, characterOverride),
   });
   if (compiledCache.size >= 128) compiledCache.delete(compiledCache.keys().next().value!);
   compiledCache.set(key, compiled);

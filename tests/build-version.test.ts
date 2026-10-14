@@ -7,12 +7,12 @@ test('release identity matches package metadata and mounts once outside scene re
  const doc={getElementById:(id:string)=>nodes.find(n=>n.id===id),createElement:()=>({style:{},setAttribute(){}}),body:{append:(n:any)=>nodes.push(n)}} as unknown as Document;
  const first=mountBuildVersion(doc);
  assert.equal(mountBuildVersion(doc),first);assert.equal(nodes.length,1);
- assert.equal(first.textContent,'v1.0.1a');
+ assert.equal(first.textContent,'v1.0.1a-dev.cpu');
  assert.equal(first.style.pointerEvents,'none');
  assert.match(first.style.left,/safe-area-inset-left/);
  assert.match(first.style.bottom,/safe-area-inset-bottom/);
- assert.equal(GAME_VERSION,'1.0.1a');
- assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,'1.0.1-alpha.0');
+ assert.equal(GAME_VERSION,'1.0.1a-dev.cpu');
+ assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,'1.0.1-alpha.0+dev.cpu');
  const spa=readFileSync('src/spa.ts','utf8');
  assert.ok(spa.indexOf('mountBuildVersion(document)')>spa.indexOf('node.remove()'));
  assert.ok(!spa.includes('sceneRoot.append(mountBuildVersion'));

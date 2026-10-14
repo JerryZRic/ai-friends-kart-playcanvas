@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>六 CPU 平衡诊断 · AI Friends Kart</title>
+  </head>
+  <body>
+    <main class="lab-shell">
+      <header class="page-header">
+        <div><p class="eyebrow">AI FRIENDS KART · DEV LAB</p><h1>六 CPU 平衡诊断</h1></div>
+        <a class="back-link" href="./index.html">返回 dev 游戏 ↗</a>
+      </header>
+      <p class="scope-note"><strong>实验中，尚未通过独立平衡验证。</strong> 六个角色均由同一套 NPC 逻辑驾驶，使用游戏共享的陆地物理、路线和道具规则。此处是等价 CPU 对照实验，不代表真人操作、GPU 帧率或 3D 场景验证。单场结果不能证明整体平衡。</p>
+
+      <section class="panel" aria-labelledby="setup-heading">
+        <div class="section-heading"><h2 id="setup-heading">实验设置</h2><span class="subtle">固定步长 1/60 秒 · 三圈 · 模拟上限 600 秒</span></div>
+        <form id="race-form">
+          <fieldset id="race-settings" class="settings-grid">
+            <legend class="sr-only">比赛参数</legend>
+            <label class="map-setting">陆地地图<select id="map" name="map"></select></label>
+            <label>随机种子<input id="seed" name="seed" type="number" min="0" max="4294967295" step="1" value="20261014" required /></label>
+            <label>角色轮换<select id="rotation" name="rotation"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+            <label>CPU 难度<select id="difficulty" name="difficulty"><option value="easy">简单</option><option value="normal" selected>普通</option><option value="hard">困难</option></select></label>
+            <label>装备对照<select id="equipment" name="equipment"><option value="equal">相同装备</option><option value="mixed">混合预设</option></select></label>
+            <label>道具<select id="items" name="items"><option value="on">开启</option><option value="off">关闭</option></select></label>
+          </fieldset>
+          <p class="help-text">轮换 0–5 会交换角色与实验席位；相同地图、种子和参数可复现。轮换不改变六位角色各自的属性。</p>
+          <div class="toolbar">
+            <button id="start" class="primary" type="submit">运行一场</button>
+            <button id="pause" type="button" disabled>暂停</button>
+            <button id="reset" type="button">重置 / 取消</button>
+            <span class="toolbar-spacer"></span>
+            <button id="download-json" type="button" disabled>下载 JSON</button>
+            <button id="download-csv" type="button" disabled>下载 CSV</button>
+          </div>
+        </form>
+        <p id="status" class="status" role="status" aria-live="polite">选择参数后运行；页面只计算当前这一场比赛</p>
+      </section>
+
+      <section class="race-grid" aria-label="比赛实时诊断">
+        <div class="panel map-panel">
+          <div class="section-heading"><h2>赛道俯视图</h2><span id="course-label" class="subtle">尚未载入</span></div>
+          <canvas id="track-map" width="960" height="560" aria-label="赛道和六位 CPU 的位置示意图；实时名次也列在下方表格中"></canvas>
+          <p class="help-text">圆点数字是席位编号，与表格对应。仅绘制 X/Z 位置与路线，交叉处不表示同一高度。</p>
+        </div>
+        <div class="panel timing-panel">
+          <h2>当前比赛</h2>
+          <dl class="metrics"><div><dt>模拟时间</dt><dd id="elapsed">0.00<span> 秒</span></dd></div><div><dt>已完成</dt><dd id="finish-count">0<span> / 6</span></dd></div></dl>
+          <p id="result-note" class="result-note">等待开始</p>
+          <p class="help-text">按帧分批计算，主动让出主线程。这里的模拟时间不是等待时间；暂停和渲染频率不改变物理步长。切到后台会自动暂停。</p>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="standings-heading">
+        <div class="section-heading"><h2 id="standings-heading">实时名次</h2><span class="subtle">完成时间以模拟时钟计</span></div>
+        <div class="table-scroll"><table><thead><tr><th scope="col">名次</th><th scope="col">角色 / 席位</th><th scope="col">完成圈数</th><th scope="col">速度 m/s</th><th scope="col">完赛时间</th><th scope="col">拾取 / 使用</th><th scope="col">碰撞 / 护栏</th></tr></thead><tbody id="standings"><tr><td colspan="7" class="empty-state">运行后显示六位 CPU 的真实比赛数据</td></tr></tbody></table></div>
+        <p class="help-text">比赛结束后可下载六名车手的圈时、路线选择、装配和诊断计数。模拟超时的车手记为 DNF；不会补造完赛时间。</p>
+      </section>
+
+      <section class="panel" aria-labelledby="summary-heading">
+        <div class="section-heading"><h2 id="summary-heading">批量实验汇总</h2><button id="load-summary" type="button">读取随包报告</button></div>
+        <p id="summary-status" class="help-text" role="status">若当前预览包含批量汇总，可按需读取；本页不会生成批量统计</p>
+        <details id="summary-details" hidden><summary>查看报告 JSON</summary><pre id="summary-content"></pre></details>
+      </section>
+    </main>
+    <script type="module" src="/src/balance-lab.ts"></script>
+  </body>
+</html>

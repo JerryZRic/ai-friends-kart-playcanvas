@@ -41,7 +41,7 @@ function scanContent(path, bytes) {
   const text = bytes.toString('utf8');
   for (const pattern of privatePatterns) assert.ok(!pattern.test(text), `Private data pattern in ${path}: ${pattern.source}`);
 }
-const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
+const rootAllowlist = new Set(['.gitignore', 'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html','balance-lab.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.yue.md', 'README.ja.md', 'README.ko.md']);
 const allowedRoots = ['src/', 'tests/', 'scripts/', 'docs/', 'models/', '.github/', 'public/'];
 const expectedSource = [...rootAllowlist].filter(existsSync);
 for (const root of allowedRoots) for (const path of inventory(root)) {
@@ -77,7 +77,7 @@ check('source ZIP has safe exact members, current content and deterministic comp
 
 check('dist contains only runtime bundle/maps, approved public assets and legal/source files', () => {
   const publicFiles = inventory('public');
-  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
+  const allowed = new Set([...publicFiles, '.nojekyll', 'index.html','garage.html','coast.html','waterpark.html','waterpark-study.html','balance-lab.html', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt','ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'source.zip']);
   for (const path of files) {
     assert.ok(allowed.has(path) || /^assets\/[A-Za-z0-9_-]+-[A-Za-z0-9_-]+\.(?:js|css)(?:\.map)?$/.test(path), `Unexpected distribution path: ${path}`);
     if (path !== 'source.zip') scanContent(path, read('dist/' + path));
@@ -122,7 +122,7 @@ check('all twelve driver/portrait archives have exact compressed/decoded hashes 
 
 check('entry/source links and runtime assets resolve at root and nested Pages paths', () => {
   const html = read('dist/index.html').toString(), source = read('dist/source.html').toString();
-  const gamePages = ['index.html', 'coast.html', 'waterpark.html', 'waterpark-study.html', 'garage.html'].map(path => read('dist/' + path).toString());
+  const gamePages = ['index.html', 'coast.html', 'waterpark.html', 'waterpark-study.html', 'garage.html', 'balance-lab.html'].map(path => read('dist/' + path).toString());
   for (const page of gamePages.slice(0, 3)) assert.equal((page.match(/id="source-license"/g) || []).length, 1);
   assert.equal((html.match(/id="source-license"/g) || []).length, 1);
   assert.doesNotMatch(html, /<base\b/i);
