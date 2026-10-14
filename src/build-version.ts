@@ -1,5 +1,5 @@
 /** Release identity is persistent across every scene in this document. */
-export const GAME_VERSION = '1.0.0';
+export const GAME_VERSION = '1.0.1a';
 export function mountBuildVersion(doc: Document): HTMLElement {
  const existing=doc.getElementById('game-version');
  if(existing)return existing;

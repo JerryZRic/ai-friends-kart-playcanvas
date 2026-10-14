@@ -27,4 +27,4 @@ Existing exporter and Blender Cycles CPU renderer generated draft 12-sample view
 - quarry-overview-draft.png, 960 x 540
 - quarry-conveyor-detail-draft.png, 900 x 562
 
-These are approximate offline renderings, not gameplay screenshots or generated concept art. Source geometry, reusable GLB and baseline-comparison.json are in /workspace/scratch/7e8d826334ea/mtq-artifacts/quarry.
+These are approximate offline renderings, not gameplay screenshots or generated concept art. Source geometry, reusable GLB and baseline comparison were retained as offline review artifacts.

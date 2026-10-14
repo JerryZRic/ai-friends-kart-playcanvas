@@ -25,4 +25,4 @@ Existing exporter and Blender Cycles CPU renderer, draft 12-sample views, visual
 - town-overview-draft.png, 960 x 540
 - town-market-street-draft.png, 900 x 562
 
-These are approximate offline renderings of actual runtime geometry, not gameplay screenshots. Source data and reusable GLB are in /workspace/scratch/7e8d826334ea/mtq-artifacts/town alongside baseline-comparison.json.
+These are approximate offline renderings of actual runtime geometry, not gameplay screenshots. Source data, reusable GLB and baseline comparison were retained as offline review artifacts.

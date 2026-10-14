@@ -26,4 +26,4 @@ Existing export-land-preview.ts and render-land-preview.py generated actual new 
 - mountain-overview-draft.png, 960 x 540
 - mountain-chalet-roadside-draft.png, 800 x 500
 
-Local artifact directory: /workspace/scratch/7e8d826334ea/mtq-artifacts/mountain
+Offline review artifacts were used for this geometry inspection; local workspace paths are omitted from the release.

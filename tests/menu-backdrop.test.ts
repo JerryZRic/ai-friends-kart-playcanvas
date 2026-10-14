@@ -86,7 +86,7 @@ test('real PlayCanvas worlds release cameras, reflection layers and GPU textures
       assert.equal(app.root.findByName('Energy item box'), null);
       assert.equal(app.root.findByName('Drift spark'), null);
       assert.ok(app.root.findByName(map === 'coast' ? 'Circuit ribbon' : 'Turquoise flowing canal'));
-      const light = app.root.findByName(map === 'coast' ? 'Warm sunset key light' : 'Waterpark afternoon sun') as pc.Entity;
+      const light = app.root.findByName(map === 'coast' ? 'Warm coastal daylight' : 'Waterpark afternoon sun') as pc.Entity;
       assert.equal(light.light!.castShadows, pass !== 0);
       assert.equal(light.light!.numCascades, 1);
       world.destroy(); world.destroy();
