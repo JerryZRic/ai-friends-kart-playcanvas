@@ -70,7 +70,7 @@ test('menu ready gate, same-page screens, separate garage and both race exits wi
 });
 
 test('uploaded music bytes remain exact and have separate rights documentation',()=>{
- for(const [name,size,hash] of [['dfy_theme.mp3',4727040,'07fcbd78aaf0ea7e2f56c23dd3ee0b389baf84a1d4fabfc8f5c0288323fb151f'],['dfy_bgm.mp3',4195584,'6f0661e804024b47521facd96112ae59ecd9efdd37a33a7eec5593efd0592bf0'],['dfy_fusion.mp3',5968896,'5b06c0a3fcffafd09e7ad05012e2a22638b04763d629b53cf42b6c4dc47911e9']] as const){
+ for(const {name,size,sha256:hash} of JSON.parse(read('public/assets/music/inventory.json'))){
   const bytes=readFileSync('public/assets/music/'+name);assert.equal(bytes.length,size);assert.equal(createHash('sha256').update(bytes).digest('hex'),hash);
  }
  assert.match(read('public/assets/music/README.txt'),/AGPL source-code grant does not grant an additional license/);
@@ -94,9 +94,41 @@ test('newer Resume/Restart clicks cancel an exit before synchronous phase change
  nav.dispose();
 });
 
-test('waterpark alone selects fusion while every land course keeps its original race track',()=>{
- for(const map of Object.keys(MAP_PROFILES))assert.equal(raceMusicUrl(map),map==='waterpark'?'./assets/music/dfy_fusion.mp3':'./assets/music/dfy_bgm.mp3');
- assert.equal(raceMusicUrl(), './assets/music/dfy_bgm.mp3');assert.match(read('src/race-shell.ts'),/getDocumentMusic\(document, options.map\)/);
- const license=read('public/assets/music/LICENSE.txt');for(const name of ['dfy_theme.mp3','dfy_bgm.mp3','dfy_fusion.mp3'])assert.ok(license.includes(name));
+test('waterpark has a fixed track while every land course selects from all six tracks',()=>{
+ for(const map of Object.keys(MAP_PROFILES))assert.equal(raceMusicUrl(map,()=>0),map==='waterpark'?'./assets/music/dfy_water.mp3':'./assets/music/dfy01.mp3');
+ assert.equal(raceMusicUrl(undefined,()=>0), './assets/music/dfy01.mp3');assert.match(read('src/race-shell.ts'),/getDocumentMusic\(document, options.map\)/);
+ const license=read('public/assets/music/LICENSE.txt');for(const name of ['dfy_theme.mp3','dfy_water.mp3',...Array.from({length:6},(_,i)=>`dfy0${i+1}.mp3`)])assert.ok(license.includes(name));
  assert.match(license,/Copyright © 2026 JerryZRic/);assert.match(license,/musical works and recordings/);assert.match(license,/Commercial use/);assert.match(license,/prior permission/);assert.match(license,/statutory exceptions/);assert.match(license,/AGPL-3.0-only terms are unchanged/);
+});
+
+
+test('each new land race draws once; countdown, pause, resume and GO never redraw',()=>{
+ const originalRandom=Math.random;let draws=0;
+ Math.random=()=>((draws++ % 6)+.5)/6;
+ try {
+  for(const map of ['coast','waterpark'] as const){
+   const {music}=fakeMusic();const selected:string[]=[];let preloads=0;
+   music.setRaceUrl=url=>{selected.push(url);};music.preloadRace=()=>{preloads++;};
+   const elements=new Map<string,any>();
+   const el=(id:string)=>{if(!elements.has(id))elements.set(id,{textContent:'',innerHTML:'',style:{},dataset:{},classList:{add(){},remove(){}},setAttribute(){},focus(){}});return elements.get(id);};
+   const doc={body:el('body'),getElementById:el} as unknown as Document;
+   const shell=createRaceShell(doc,el('canvas'),{map,driver:'whale',music,audioFactory:()=>null});
+   assert.equal(preloads,0);assert.equal(selected.length,0);
+   const before=draws;
+   for(let i=0;i<6;i++){
+    shell.start(3);assert.equal(preloads,i+1);assert.equal(selected.length,i+1);
+    assert.equal(selected[i],map==='waterpark'?'./assets/music/dfy_water.mp3':`./assets/music/dfy0${i+1}.mp3`);
+    shell.renderCountdown(2);shell.setPaused(true,2);shell.setPaused(false,2);shell.renderCountdown(0);shell.renderCountdown(0);shell.setPaused(true);shell.setPaused(false);
+    assert.equal(selected.length,i+1,'resume and repeated GO preserve the selected source');
+   }
+   assert.equal(draws-before,map==='waterpark'?0:6);shell.dispose();
+  }
+ }finally {Math.random=originalRandom;}
+});
+
+test('all six land selection intervals and fixed water selection are exact',()=>{
+ for(const map of Object.keys(MAP_PROFILES))for(let i=0;i<6;i++){
+  assert.equal(raceMusicUrl(map,()=>i/6),map==='waterpark'?'./assets/music/dfy_water.mp3':`./assets/music/dfy0${i+1}.mp3`);
+ }
+ assert.equal(raceMusicUrl('coast',()=>.999999),'./assets/music/dfy06.mp3');
 });

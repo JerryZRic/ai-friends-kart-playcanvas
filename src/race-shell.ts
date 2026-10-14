@@ -1,5 +1,5 @@
 import {createRaceSound,type RaceSoundOptions,type RaceCue} from './race-sound';
-import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP,type BackgroundMusic} from './music-ui';
+import {raceMusicUrl,getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP,type BackgroundMusic} from './music-ui';
 import {touchHint} from './mobile-controls';
 import {characterDisplayName,characterEmblem} from './character-identity.js';
 import { itemImage, type ItemKind } from './item-models';
@@ -194,7 +194,6 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
   let disposeSoundSettings=()=>{};
 
   const music = options.music === undefined ? getDocumentMusic(document, options.map) : options.music;
-  music?.preloadRace();
   const musicNavigation = bindMusicNavigation(document, music);
   const pauseActions = document.querySelector?.<HTMLElement>('#pausePanel .pause-actions');
   let disposeMusicSettings = () => {};
@@ -308,6 +307,8 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     start(countdown = 3) {
       if (disposed) return;
       sound.stop();sound.unlock();lastCount=-1;driftStage=0;raceMusicStarted = false; music?.silence();
+      music?.setRaceUrl?.(raceMusicUrl(options.map));
+      music?.preloadRace();
       phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.remove('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = false;

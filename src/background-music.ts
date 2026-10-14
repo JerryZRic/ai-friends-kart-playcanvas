@@ -61,7 +61,7 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
       storage.setItem(SETTINGS_KEY, JSON.stringify({ volume, muted })); settingsSaved = true;
     } catch { settingsSaved = false; }
   };
-  let currentRaceUrl=options.raceUrl ?? './assets/music/dfy_bgm.mp3';
+  let currentRaceUrl=options.raceUrl ?? './assets/music/dfy01.mp3';
   const audioFactory = options.createAudio ?? ((url: string) => new Audio(url));
   const tracks: HTMLAudioElement[] = [];
   try {
@@ -87,6 +87,8 @@ export function createBackgroundMusic(options: BackgroundMusicOptions = {}): Bac
   }
   const [theme, race] = tracks;
   tracks.forEach(audio => { audio.loop = true; audio.preload = 'metadata'; audio.volume = 1; });
+  // Do not fetch a provisional race track while the user is still in menus.
+  race.preload = 'none';
   // Menu pages may buffer the theme while their heavier UI graph loads.
   if (options.preloadTheme) { theme.preload = 'auto'; try { theme.load(); } catch { /* optional */ } }
   // A cold document always starts new media at zero. Same-document scene hops

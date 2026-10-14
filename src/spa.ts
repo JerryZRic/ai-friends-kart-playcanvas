@@ -67,7 +67,6 @@ async function show(url:URL,push:boolean){
  try{
   if(next==='land'||next==='water'){
    await music?.fadeOut(500);if(token!==version||disposed)return;music?.silence();
-   music?.setRaceUrl?.(next==='water'?'./assets/music/dfy_fusion.mp3':'./assets/music/dfy_bgm.mp3');
   }else if(previous!==undefined){music?.setPhase('menu');}
   if(next==='menu'){
    const {mountMenu}=await import('./menu');if(token!==version||disposed)return;mountMarkup(next);active=mountMenu();
