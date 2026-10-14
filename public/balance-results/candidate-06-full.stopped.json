@@ -1,0 +1,17 @@
+{
+  "status": "stopped-training-screen-not-final",
+  "plannedRaces": 2304,
+  "completedRaces": 1032,
+  "fixedScreenBlocksPerMap": 12,
+  "fixedScreenRaces": 864,
+  "fixedScreenWinRates": {
+    "whale": 0.1076388888888889,
+    "gemini": 0.1712962962962963,
+    "gpt": 0.15625,
+    "claude": 0.18171296296296297,
+    "grok": 0.1886574074074074,
+    "glm": 0.19444444444444445
+  },
+  "reason": "Candidate06 fails development screen: Whale aggregate too low and Grok caldera dominance persists. Retain all completed rows; no holdout used.",
+  "jsonlSha256": "5738bb1f511cacc5aa3a5ca407ced82ae5d294d9242060bc54477fac3d2c428a"
+}

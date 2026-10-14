@@ -1,0 +1,50 @@
+{
+  "status": "prospective-combined-training-screen",
+  "createdUtc": "2026-10-14T13:30:00Z",
+  "anchor": "19",
+  "basis": "Completed fixed paired sensitivity20 matrix (4320 races); no partial outcomes used. Primary and mixed responses favor modest Grok speed reduction plus recovery increase, not a handling nerf.",
+  "changes": {
+    "whale": {
+      "acceleration": [
+        1.03,
+        1.1
+      ],
+      "topSpeed": [
+        0.96,
+        0.955
+      ]
+    },
+    "grok": {
+      "acceleration": [
+        0.79,
+        0.835
+      ],
+      "topSpeed": [
+        1.03,
+        1.025
+      ]
+    },
+    "glm": {
+      "acceleration": [
+        0.66,
+        0.7
+      ],
+      "topSpeed": [
+        1.025,
+        1.02
+      ]
+    }
+  },
+  "plannedPrimaryBlocksPerMap": 8,
+  "plannedMixedBlocksPerMap": 4,
+  "domains": [
+    "land-balance-training-v1",
+    "land-balance-mixed-training-v1"
+  ],
+  "screenRaces": 864,
+  "eligibleArchetypesAndSpans": true,
+  "knownExtrapolations": "Grok joint response is not assumed additive. GLM companion speed/launch changes and Whale speed compensation are unmeasured interactions. A Claude-lowest-speed alternative was considered but deferred because it requires a much larger unmeasured three-point speed reduction. All are globally applied roster coefficients; no map-specific bonuses.",
+  "decision": "Assess only after full fixed screen. If direction is promising, extend the same exact source/profile training cohort to32primary/8mixed blocks per map by running only missing blocks. Screening is not independent confirmation. Do not open holdout before full training review and source freeze.",
+  "holdoutOpened": false,
+  "statisticsThresholdsChanged": false
+}

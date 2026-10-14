@@ -1,0 +1,41 @@
+{
+  "status": "training-only",
+  "profile": {
+    "whale": {
+      "acceleration": 1.06,
+      "topSpeed": 0.955,
+      "steering": 1.065
+    },
+    "gemini": {
+      "acceleration": 0.65,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.18,
+      "topSpeed": 0.985,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.77,
+      "topSpeed": 1.035,
+      "steering": 0.995
+    },
+    "glm": {
+      "acceleration": 0.66,
+      "topSpeed": 1.028,
+      "steering": 1.05
+    }
+  },
+  "basis": "Complete17 primary2304/mixed576",
+  "reason": "17 eliminates other map concentrations (all maxima<32%) but Grok/caldera remains39.58%. Lower Grok straight speed .005 and restore recovery/handling through .02 acceleration/.005 steering. Preserve .08 speed span by lowering Whale speed .005, with .03 acceleration/.005 steering compensation. Break the old Claude/Grok handling tie under the prospectively amended main-archetype criterion; Grok remains below GPT handling. All other profiles unchanged. No formula/AI/geometry/item/statistical changes.",
+  "protocol": "trait-amendment-2026-10-14T11:13Z",
+  "plannedPrimaryBlocksPerMap": 32,
+  "plannedMixedBlocksPerMap": 8,
+  "holdoutOpened": false
+}

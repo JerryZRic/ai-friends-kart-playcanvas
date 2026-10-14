@@ -1,0 +1,502 @@
+{
+  "schema": 1,
+  "scope": "Copied final-evidence inputs; generated explanations and packaging audit are indexed separately. Original local directory names are intentionally not published.",
+  "hashSemantics": "Original hashes identify pre-publication bytes. Archive hashes identify published bytes. For gzip files original bytes equal decompressed archive bytes.",
+  "entries": [
+    {
+      "file": "candidate-21-full.csv.gz",
+      "originalBasename": "21-full.csv",
+      "originalBytes": 2760311,
+      "originalSha256": "ae9b3e3b8c2474901fdb9165b01154c96fabc99ee320ba56c9180e37d3d89183",
+      "archiveBytes": 907424,
+      "archiveSha256": "36864c6846ed5cec36fc822c1cedec0338cc8aeae7154bcf8b78b271bc2a8563",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-21-full.jsonl.gz",
+      "originalBasename": "21-full.jsonl",
+      "originalBytes": 9637545,
+      "originalSha256": "1061c063dd204be9c186fe4f04096e33a0d75de34d53c92e7117930d79243c41",
+      "archiveBytes": 1116404,
+      "archiveSha256": "c7fd0e631694637be8ba6578e438d11076fef75a145df3055237e78efb1b0772",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-21-full.manifest.json",
+      "originalBasename": "21-full.manifest.json",
+      "originalBytes": 16259,
+      "originalSha256": "0c95adf18720921cebcfd95e5147edcdc18a2968b189bce93b84f4d8c0ed4330",
+      "archiveBytes": 16259,
+      "archiveSha256": "0c95adf18720921cebcfd95e5147edcdc18a2968b189bce93b84f4d8c0ed4330",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-full.complete.json",
+      "originalBasename": "21-full.complete.json",
+      "originalBytes": 164,
+      "originalSha256": "dbd96a3e0fc511c78475ac235e7510a78866417b64f09f09ce05f7cc08cc0f17",
+      "archiveBytes": 164,
+      "archiveSha256": "dbd96a3e0fc511c78475ac235e7510a78866417b64f09f09ce05f7cc08cc0f17",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-mixed-full.csv.gz",
+      "originalBasename": "21-mixed-full.csv",
+      "originalBytes": 688718,
+      "originalSha256": "a1ad783619660c7c5db9aeb19d1ea59ade629769b9ed2ad71e10b4042c2274d1",
+      "archiveBytes": 228797,
+      "archiveSha256": "063ec418c0bdc60a4c68c8733bf4bff01d4188faf2f5da9a0b7365592b5263d2",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-21-mixed-full.jsonl.gz",
+      "originalBasename": "21-mixed-full.jsonl",
+      "originalBytes": 2409067,
+      "originalSha256": "cda41dfc66625f39b62f954ff42b7c3c28eb11bb04a0d351f0c7badf1797fb4c",
+      "archiveBytes": 285419,
+      "archiveSha256": "af5a912a135ac15e7a393618b2edfca1ceabd5094cb4b5843cb1e841b9d800fc",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-21-mixed-full.manifest.json",
+      "originalBasename": "21-mixed-full.manifest.json",
+      "originalBytes": 16263,
+      "originalSha256": "e3efdd9f0ebea39df98e4f80066672e4d664263c282c3257f3378ef01923b6f8",
+      "archiveBytes": 16263,
+      "archiveSha256": "e3efdd9f0ebea39df98e4f80066672e4d664263c282c3257f3378ef01923b6f8",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-mixed-full.complete.json",
+      "originalBasename": "21-mixed-full.complete.json",
+      "originalBytes": 160,
+      "originalSha256": "4c4f88cc05968b803c1d96fc32a638306c05ecdfe94f440f3f896029725a6292",
+      "archiveBytes": 160,
+      "archiveSha256": "4c4f88cc05968b803c1d96fc32a638306c05ecdfe94f440f3f896029725a6292",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-22-screen-primary.csv.gz",
+      "originalBasename": "22-primary.csv",
+      "originalBytes": 689160,
+      "originalSha256": "b9641d5681cd9a34d861abc87391c77e35e4432b08b07b3644459b1b77941c9e",
+      "archiveBytes": 227666,
+      "archiveSha256": "9a91006419ea6accde8b725d756424206b91dd32881f33f09bb0a37f20be4a11",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-22-screen-primary.jsonl.gz",
+      "originalBasename": "22-primary.jsonl",
+      "originalBytes": 2410542,
+      "originalSha256": "a0024941135a8928c4c865c10520248efe98fe12c98a869fac37a257936b9d37",
+      "archiveBytes": 279573,
+      "archiveSha256": "9dd9b4c1314e554a721405fefb5bfa79ed9eae14e38fc8e69a401467d52cce5e",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-22-screen-primary.manifest.json",
+      "originalBasename": "22-primary.manifest.json",
+      "originalBytes": 15691,
+      "originalSha256": "ee88a1d0177b2ef9435fcd21ae639546f3256c147cc4790eaf3b9898cec43f90",
+      "archiveBytes": 15691,
+      "archiveSha256": "ee88a1d0177b2ef9435fcd21ae639546f3256c147cc4790eaf3b9898cec43f90",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-22-screen-primary.complete.json",
+      "originalBasename": "22-primary.complete.json",
+      "originalBytes": 110,
+      "originalSha256": "9a97f1e2bff715dbfee6d857c07d0c2445bd0c7268ef967142dfdbbfd8997759",
+      "archiveBytes": 110,
+      "archiveSha256": "9a97f1e2bff715dbfee6d857c07d0c2445bd0c7268ef967142dfdbbfd8997759",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-22-screen-mixed.csv.gz",
+      "originalBasename": "22-mixed.csv",
+      "originalBytes": 344607,
+      "originalSha256": "6ceda38ef072824e038185bd66f837da1199122afafecd0c2c6525f9fbde2502",
+      "archiveBytes": 115095,
+      "archiveSha256": "21be49098e067d47b0814c8c65afdf95bc4d7ea3f77877458abc134f3a3f0efb",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-22-screen-mixed.jsonl.gz",
+      "originalBasename": "22-mixed.jsonl",
+      "originalBytes": 1204684,
+      "originalSha256": "843687197252847e42e04771265120be0e99a93ce8ff424b1ea4709f25c9c417",
+      "archiveBytes": 143571,
+      "archiveSha256": "71bfbcf1d21342cd0f79f9a4a970f4e846b6413322047f3114f1cb30ec4dbdf1",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "candidate-22-screen-mixed.manifest.json",
+      "originalBasename": "22-mixed.manifest.json",
+      "originalBytes": 15697,
+      "originalSha256": "252b95f042499bdbda59f827c1211ef6df776ed6733d8c88abd178e09f52a1f1",
+      "archiveBytes": 15697,
+      "archiveSha256": "252b95f042499bdbda59f827c1211ef6df776ed6733d8c88abd178e09f52a1f1",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-22-screen-mixed.complete.json",
+      "originalBasename": "22-mixed.complete.json",
+      "originalBytes": 115,
+      "originalSha256": "5cfda6e39e86685a41cd1b786fdfa718ab1653519d3f6026a554aba32085e3c4",
+      "archiveBytes": 115,
+      "archiveSha256": "5cfda6e39e86685a41cd1b786fdfa718ab1653519d3f6026a554aba32085e3c4",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/primary.csv.gz",
+      "originalBasename": "primary.csv",
+      "originalBytes": 11067898,
+      "originalSha256": "981f1742d948bf55e276864b8f2d2f069d17bc8c52287bbdbd5719f027c6d7fc",
+      "archiveBytes": 3621972,
+      "archiveSha256": "9b61d093722344b94ef4f3ea835a7cc8f8a6ea2df7776780af05551f8b45f6b2",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/primary.jsonl.gz",
+      "originalBasename": "primary.jsonl",
+      "originalBytes": 38555160,
+      "originalSha256": "6d06c7d8da4d55acc7da08c89c96544a7281c3ebb853baa5dea2608c4f73f548",
+      "archiveBytes": 4460424,
+      "archiveSha256": "39f53e107b3a50fe74bee75234babaeeee53082b6ddfb025edea6cbf56359919",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/primary.manifest.json",
+      "originalBasename": "primary.manifest.json",
+      "originalBytes": 15037,
+      "originalSha256": "f68c71044f896000b6556a149369949b6397ec780306eb108096d239748fbd8a",
+      "archiveBytes": 15037,
+      "archiveSha256": "f68c71044f896000b6556a149369949b6397ec780306eb108096d239748fbd8a",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/primary.complete.json",
+      "originalBasename": "primary.complete.json",
+      "originalBytes": 187,
+      "originalSha256": "2c9ccd62b752d27b317f9e46f6faca62a8da7d7934c2ab01764c1d0488ea70a7",
+      "archiveBytes": 187,
+      "archiveSha256": "2c9ccd62b752d27b317f9e46f6faca62a8da7d7934c2ab01764c1d0488ea70a7",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/mixed.csv.gz",
+      "originalBasename": "mixed.csv",
+      "originalBytes": 5529658,
+      "originalSha256": "ac07fdc2bd17caf82fbb31f3aaa61d609bc315b7850282d34a88247d304a6831",
+      "archiveBytes": 1825792,
+      "archiveSha256": "040dd7b1fe17e9f383b3b4114bdbdc91a50391ee24e1d1584ffcfab5960b4619",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/mixed.jsonl.gz",
+      "originalBasename": "mixed.jsonl",
+      "originalBytes": 19279017,
+      "originalSha256": "9412b6de20e7d55c3c0f76bc7193197af9644d2fd9af22c435ec781fed30282a",
+      "archiveBytes": 2281105,
+      "archiveSha256": "938f42d0b25a10b313fd6244233ec4a43f4ba145a7ca2be8b82cbeed9ca5c4f3",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/mixed.manifest.json",
+      "originalBasename": "mixed.manifest.json",
+      "originalBytes": 15042,
+      "originalSha256": "848bd147c543ab87dfd992c356f119effbbabf7c9cb16f969c1ea0ec9d1cc174",
+      "archiveBytes": 15042,
+      "archiveSha256": "848bd147c543ab87dfd992c356f119effbbabf7c9cb16f969c1ea0ec9d1cc174",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/mixed.complete.json",
+      "originalBasename": "mixed.complete.json",
+      "originalBytes": 112,
+      "originalSha256": "b4fed583b1ba82348911df47dbd1c1e442dda2301cbe362864e024c0d8db51ec",
+      "archiveBytes": 112,
+      "archiveSha256": "b4fed583b1ba82348911df47dbd1c1e442dda2301cbe362864e024c0d8db51ec",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-full.analysis.report.md",
+      "originalBasename": "21-full.analysis.report.md",
+      "originalBytes": 10404,
+      "originalSha256": "3efbeb0d5588755c80b02b5cfa5ab3175f072df8f9c374eb71c6887f28150031",
+      "archiveBytes": 10404,
+      "archiveSha256": "3efbeb0d5588755c80b02b5cfa5ab3175f072df8f9c374eb71c6887f28150031",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-22-screen.analysis.report.md",
+      "originalBasename": "22-screen.analysis.report.md",
+      "originalBytes": 10368,
+      "originalSha256": "b1141e8452586e90c53a8d9fb5dc86068d6544a55621df75c95d00ea6658696c",
+      "archiveBytes": 10368,
+      "archiveSha256": "b1141e8452586e90c53a8d9fb5dc86068d6544a55621df75c95d00ea6658696c",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-full.audit.json",
+      "originalBasename": "21-full.audit.json",
+      "originalBytes": 350340,
+      "originalSha256": "bf53147ef3bca405b603b4057879b4c8b72165671ebfe98efb084ed1e0ef3003",
+      "archiveBytes": 350286,
+      "archiveSha256": "4e5e0c3764b82f070a454c16cbf9be020bf7ce3b1813438abc9a43e2ddb20313",
+      "transformation": "private local paths replaced with archive-relative or repository-relative paths only"
+    },
+    {
+      "file": "candidate-22-screen.independent-audit.json",
+      "originalBasename": "22-screen.independent-audit.json",
+      "originalBytes": 238859,
+      "originalSha256": "ecad928f55f02c040a180d0361c61e3e44157e9ca88718b5756c64d75da9ad82",
+      "archiveBytes": 238833,
+      "archiveSha256": "cedef498c7fa985379027228345467176dfa47a0d0c61b7ce6b8ea72e3aa88b1",
+      "transformation": "private local paths replaced with archive-relative or repository-relative paths only"
+    },
+    {
+      "file": "candidates/22.json",
+      "originalBasename": "22.json",
+      "originalBytes": 515,
+      "originalSha256": "db2bdf944ee372afef0ceaadac4f7a49b096d1f8bf8b721ecf08876444ee496c",
+      "archiveBytes": 515,
+      "archiveSha256": "db2bdf944ee372afef0ceaadac4f7a49b096d1f8bf8b721ecf08876444ee496c",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidates/22-rationale.json",
+      "originalBasename": "22-rationale.json",
+      "originalBytes": 1820,
+      "originalSha256": "6d73c376d0ceb4bb706a0d1a9242306b80da174d4be45dcc8439f9be433c54f8",
+      "archiveBytes": 1820,
+      "archiveSha256": "6d73c376d0ceb4bb706a0d1a9242306b80da174d4be45dcc8439f9be433c54f8",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/official.report.md",
+      "originalBasename": "official.report.md",
+      "originalBytes": 9846,
+      "originalSha256": "4c47ea147f6912217192856ec041705a4d5131ed1c2bdaf0197241b45e8382a5",
+      "archiveBytes": 9846,
+      "archiveSha256": "4c47ea147f6912217192856ec041705a4d5131ed1c2bdaf0197241b45e8382a5",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/freeze.json",
+      "originalBasename": "freeze.json",
+      "originalBytes": 16440,
+      "originalSha256": "c11162eb90464b6068d07044bb9a974718fd0f69ce7606304b3181fe30d9fbed",
+      "archiveBytes": 16440,
+      "archiveSha256": "c11162eb90464b6068d07044bb9a974718fd0f69ce7606304b3181fe30d9fbed",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/freeze.sha256",
+      "originalBasename": "freeze.sha256",
+      "originalBytes": 65,
+      "originalSha256": "e7c3d1664d84b59d32b3718cd2b102fd1a6dce08ed82c24cb72919c07fa7efd9",
+      "archiveBytes": 65,
+      "archiveSha256": "e7c3d1664d84b59d32b3718cd2b102fd1a6dce08ed82c24cb72919c07fa7efd9",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/bake-record.json",
+      "originalBasename": "bake-record.json",
+      "originalBytes": 1174,
+      "originalSha256": "5e118b0f47f60d7d55ff7fe0934c74f36fbc46e4faaab125451625c7464bb693",
+      "archiveBytes": 1174,
+      "archiveSha256": "5e118b0f47f60d7d55ff7fe0934c74f36fbc46e4faaab125451625c7464bb693",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/baked-replay.audit.json",
+      "originalBasename": "baked-replay.audit.json",
+      "originalBytes": 6062,
+      "originalSha256": "82c9f63a2823373ce59d4da444b88dd032a70b3ae22f34927ca66d2462df318a",
+      "archiveBytes": 6062,
+      "archiveSha256": "82c9f63a2823373ce59d4da444b88dd032a70b3ae22f34927ca66d2462df318a",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/independent-audit.json",
+      "originalBasename": "independent-audit.json",
+      "originalBytes": 52081,
+      "originalSha256": "40a294997ebdb061db98c89c5fe0f3b4a3b001de6c0530088aa33101cddd99d7",
+      "archiveBytes": 52081,
+      "archiveSha256": "40a294997ebdb061db98c89c5fe0f3b4a3b001de6c0530088aa33101cddd99d7",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/independent-structural-audit.json",
+      "originalBasename": "independent-structural-audit.json",
+      "originalBytes": 12705,
+      "originalSha256": "923497174abb95c8d3fc86ca1d556d97c38c835111065a319c7d21900a0d744b",
+      "archiveBytes": 12705,
+      "archiveSha256": "923497174abb95c8d3fc86ca1d556d97c38c835111065a319c7d21900a0d744b",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/independent-resumption-audit.json",
+      "originalBasename": "independent-resumption-audit.json",
+      "originalBytes": 912,
+      "originalSha256": "3677aa4d9d8d9e86ba59d6938e4dfcb984234acfdab8477bdefeb8962f78e552",
+      "archiveBytes": 912,
+      "archiveSha256": "3677aa4d9d8d9e86ba59d6938e4dfcb984234acfdab8477bdefeb8962f78e552",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/independent-official-comparison.json",
+      "originalBasename": "independent-official-comparison.json",
+      "originalBytes": 678,
+      "originalSha256": "c59fbc842ebfe4af5355961d3fef9c111164ec0899b0339e7dea4077d5b6a9ad",
+      "archiveBytes": 678,
+      "archiveSha256": "c59fbc842ebfe4af5355961d3fef9c111164ec0899b0339e7dea4077d5b6a9ad",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/restart-20261014T1652.json",
+      "originalBasename": "restart-20261014T1652.json",
+      "originalBytes": 424,
+      "originalSha256": "ecd9b6cec49e77970edcff8d8db40f804bc672ce0e27f120321a428441a941e6",
+      "archiveBytes": 424,
+      "archiveSha256": "ecd9b6cec49e77970edcff8d8db40f804bc672ce0e27f120321a428441a941e6",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/resume-1791996769716.json",
+      "originalBasename": "resume-1791996769716.json",
+      "originalBytes": 306,
+      "originalSha256": "59e3505a7dfd95ca6b49330eb235e82b5ae2639bd672b6cdd96c47cbfe6fc571",
+      "archiveBytes": 306,
+      "archiveSha256": "59e3505a7dfd95ca6b49330eb235e82b5ae2639bd672b6cdd96c47cbfe6fc571",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/frozen-check.log",
+      "originalBasename": "frozen-check.log",
+      "originalBytes": 173,
+      "originalSha256": "c76025a44529b8cbeb821f7e756a9df2495bac257c84d930c7258d1ddd11bd8f",
+      "archiveBytes": 173,
+      "archiveSha256": "c76025a44529b8cbeb821f7e756a9df2495bac257c84d930c7258d1ddd11bd8f",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/frozen-focused.log",
+      "originalBasename": "frozen-focused.log",
+      "originalBytes": 12184,
+      "originalSha256": "9512b2c4662bead8a41407fedfac822cc8c8b67f51860ca3baadd939f8b84c4a",
+      "archiveBytes": 12145,
+      "archiveSha256": "671ad6b9a02fcc4473fc5ffec604383eddda02c0fc2857eb530de8993e089c8b",
+      "transformation": "private local paths replaced with archive-relative or repository-relative paths only"
+    },
+    {
+      "file": "holdout21/frozen-focused-rerun.log",
+      "originalBasename": "frozen-focused-rerun.log",
+      "originalBytes": 11196,
+      "originalSha256": "93634020a084711d8841c0965a9f61b03d3d9153790c784732bb1617d9feb386",
+      "archiveBytes": 11196,
+      "archiveSha256": "93634020a084711d8841c0965a9f61b03d3d9153790c784732bb1617d9feb386",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/pre-bake-character-profiles.ts",
+      "originalBasename": "pre-bake-character-profiles.ts",
+      "originalBytes": 3321,
+      "originalSha256": "88facd511fcac28abfd423e61d1c6408a112cafb7c03d8c354e20b8a0341826c",
+      "archiveBytes": 3321,
+      "archiveSha256": "88facd511fcac28abfd423e61d1c6408a112cafb7c03d8c354e20b8a0341826c",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "holdout21/primary.log.gz",
+      "originalBasename": "primary.log",
+      "originalBytes": 200189,
+      "originalSha256": "67f5bc53b0feb2ce76404cc801b166ef032a597005bfbfa45c04e67d07546dea",
+      "archiveBytes": 26626,
+      "archiveSha256": "f775582b7f240e7e81805515dd29e3a89e5e937cda2736beefa49431b7333d78",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/primary-resume.log.gz",
+      "originalBasename": "primary-resume.log",
+      "originalBytes": 35561,
+      "originalSha256": "a2a0953fc39bf47c4a9e4778634d6f8dccaec809d4bf1ee5ef4628c04504628f",
+      "archiveBytes": 5837,
+      "archiveSha256": "c3f0a9515f4e36f203d285e2bcad3d69d3870c6562b8c0496474d5fd521193e0",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/mixed.log.gz",
+      "originalBasename": "mixed.log",
+      "originalBytes": 94250,
+      "originalSha256": "f02566810f244cbda7623eb45b9bb595db62dc112701b7fe0cb4e0a6c4b2ee96",
+      "archiveBytes": 11961,
+      "archiveSha256": "1523d082ad1c5b86367db52ec26e0d4ebe618325e2ead5480a6c19bea51eddc4",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/baked-replay.log.gz",
+      "originalBasename": "baked-replay.log",
+      "originalBytes": 4271,
+      "originalSha256": "f37a97f18be74ddc00569fff473f17641a1091b3fab0b6830d6012e69e79819e",
+      "archiveBytes": 1392,
+      "archiveSha256": "a88fdce665ee5d019fb2ad66f1327c941336f6622e1c2c076dd50c0ce5b8f4ca",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/independent-audit.log.gz",
+      "originalBasename": "independent-audit.log",
+      "originalBytes": 1248,
+      "originalSha256": "da69968091ab431f8d59c88733ef36db9a5e459104ef63a3fdf9071ebebb39fa",
+      "archiveBytes": 507,
+      "archiveSha256": "8646d912c3182826518e73c848535c2f3032bb8fc31b34bd11fb191acb7a771c",
+      "transformation": "deterministic-gzip; decompressed bytes identical"
+    },
+    {
+      "file": "holdout21/official-analysis.log",
+      "originalBasename": "official-analysis.log",
+      "originalBytes": 301,
+      "originalSha256": "2310bd9f865408fbbf21b5df6b0c50263c8bbf34e7daee31ab2ae534cfce8086",
+      "archiveBytes": 275,
+      "archiveSha256": "3c6912c21303507dfeb697dc23f6e79c26a15b0a5e8cbc3e39ecf89e87886d64",
+      "transformation": "private local paths replaced with archive-relative or repository-relative paths only"
+    },
+    {
+      "file": "holdout21/kart-presets.corrected.test.ts",
+      "originalBasename": "kart-presets.test.ts",
+      "originalBytes": 3698,
+      "originalSha256": "bd47a0a8f4477159f845a549899faf2bac34f9979218571400efaa9bd4843429",
+      "archiveBytes": 3698,
+      "archiveSha256": "bd47a0a8f4477159f845a549899faf2bac34f9979218571400efaa9bd4843429",
+      "transformation": "byte-identical"
+    },
+    {
+      "file": "candidate-21-full.analysis.summary.json",
+      "originalBasename": "21-full.analysis.summary.json",
+      "originalBytes": 1126254,
+      "originalSha256": "16f9bd88deb170f02dc7109a2ce46ab8e7553843321cd7861bf2567353370b7e",
+      "archiveBytes": 1126206,
+      "archiveSha256": "04a541050e1d334670b6df3f127945ca4c1d3a5e549cf63688bd8c901f59da79",
+      "transformation": "source file locations and cohort display names replaced with archive-relative paths; source fileSha256 now identifies gzip bytes; contentSha256 and all outcomes unchanged"
+    },
+    {
+      "file": "candidate-22-screen.analysis.summary.json",
+      "originalBasename": "22-screen.analysis.summary.json",
+      "originalBytes": 1126176,
+      "originalSha256": "04bef2749759e224c4b124e62a93eef9cb7c0cc5e9dcbf29b763dcd48ecec704",
+      "archiveBytes": 1126156,
+      "archiveSha256": "48de4b3f62be9e33364db1ee1639eec6f1dc6375647c9b4763ebcd57a764f212",
+      "transformation": "source file locations and cohort display names replaced with archive-relative paths; source fileSha256 now identifies gzip bytes; contentSha256 and all outcomes unchanged"
+    },
+    {
+      "file": "holdout21/official.summary.json",
+      "originalBasename": "official.summary.json",
+      "originalBytes": 1121653,
+      "originalSha256": "98e2e187eefcc2ee9ca0e0b6666930186b33203e4e93aac72a8b78ec88692928",
+      "archiveBytes": 1121613,
+      "archiveSha256": "7c06cd8441fd6152ec17ec6debee60f14b25a1a748bfd2143a00f0e98e062a8b",
+      "transformation": "source file locations and cohort display names replaced with archive-relative paths; source fileSha256 now identifies gzip bytes; contentSha256 and all outcomes unchanged"
+    }
+  ]
+}

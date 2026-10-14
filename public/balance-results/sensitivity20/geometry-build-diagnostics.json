@@ -1,0 +1,976 @@
+{
+  "schema": 1,
+  "createdUtc": "2026-10-14T12:49:11.835Z",
+  "repository": "JerryZRic/ai-friends-kart-playcanvas",
+  "baselineCandidate": "19",
+  "baselineGrok": {
+    "acceleration": 0.79,
+    "topSpeed": 1.03,
+    "steering": 0.995
+  },
+  "method": {
+    "kind": "static actual-course formula exposure",
+    "sampling": "One sample per integer distance metre, from 0 through ceil(route length)-1; curvature from the production kartRoadContext sample(distance), sample(distance+7)",
+    "routes": "Each actual start + alternate + finish route is sampled separately with periodic wrapping; coast uses the production circuit directly",
+    "cap": "Production landCornerSpeed(42 * character topSpeed * build speed, character steering * build handling, curvature)",
+    "aggregation": "Distance-weighted mean of (changed cap / baseline cap - 1), expressed in percent. Grip-capped fraction compares baseline cap with its straight cap.",
+    "limitations": [
+      "No race, controller tick or speed integration was run",
+      "These are speed-ceiling exposures, not predicted win rates or race-time changes",
+      "Actual race-time weighting, branch choices, braking, drift, pickups, combat and grade-dependent acceleration can change realized effects",
+      "Build multipliers are the production buildStats output; acceleration is listed but not used by this cap-only diagnostic"
+    ]
+  },
+  "sourceHashes": {
+    "src/kart-build.ts": "4eb71d82b4085372a1526d243182a65058a372ef541f72518106c7f4111527f2",
+    "src/kart-race.ts": "0c669a77b97ab8b118eb3b6dc4ac6bdcab8734042b21f466708dcf64372a93d5",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1",
+    "src/land-cpu.ts": "1e40af95cc789dfcda4dcdcbc352e15aed4f09f5a165d65d30d34fd589aebc26",
+    "src/vehicle-controls.js": "e32cac803d14548940ac95ea558d83ed82a2f5339cd4d662ea80435f49afeda1",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/kart-presets.ts": "36365b69d836fcdbbbce8b4c94ce1e0e8a039e394b70a243cfb947d3d09f02eb",
+    "src/maps/caldera.ts": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85",
+    "src/maps/garden.ts": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022",
+    "src/track.ts": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e",
+    "docs/cpu-balance-protocol.md": "52aeae08aa9bd40dfc22f8de9f143635f23db3ba042741cf0aea1e62d309c76b"
+  },
+  "builds": [
+    {
+      "id": "default",
+      "build": {
+        "body": "kit028::01_BodyShell",
+        "chassis": "kit023::02_ChassisSuspension",
+        "motor": "kit033::04_Motor",
+        "transmission": "kit025::05_FinalDrive",
+        "battery": "kit019::06_Battery",
+        "wheels": "kit031::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 1,
+        "speed": 1,
+        "handling": 1
+      }
+    },
+    {
+      "id": "balanced",
+      "build": {
+        "body": "kit004::01_BodyShell",
+        "chassis": "kit005::02_ChassisSuspension",
+        "motor": "kit003::04_Motor",
+        "transmission": "kit001::05_FinalDrive",
+        "battery": "kit001::06_Battery",
+        "wheels": "kit001::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 1.0286,
+        "speed": 1,
+        "handling": 1
+      }
+    },
+    {
+      "id": "corner",
+      "build": {
+        "body": "kit005::01_BodyShell",
+        "chassis": "kit004::02_ChassisSuspension",
+        "motor": "kit004::04_Motor",
+        "transmission": "kit006::05_FinalDrive",
+        "battery": "kit003::06_Battery",
+        "wheels": "kit003::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 0.9513,
+        "speed": 0.8899,
+        "handling": 1.15
+      }
+    },
+    {
+      "id": "straight",
+      "build": {
+        "body": "kit002::01_BodyShell",
+        "chassis": "kit006::02_ChassisSuspension",
+        "motor": "kit001::04_Motor",
+        "transmission": "kit002::05_FinalDrive",
+        "battery": "kit004::06_Battery",
+        "wheels": "kit002::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 1.1235,
+        "speed": 1.1028,
+        "handling": 0.85
+      }
+    },
+    {
+      "id": "start-hill",
+      "build": {
+        "body": "kit001::01_BodyShell",
+        "chassis": "kit003::02_ChassisSuspension",
+        "motor": "kit005::04_Motor",
+        "transmission": "kit005::05_FinalDrive",
+        "battery": "kit001::06_Battery",
+        "wheels": "kit005::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 1.1825,
+        "speed": 0.88,
+        "handling": 1.0162
+      }
+    },
+    {
+      "id": "impact",
+      "build": {
+        "body": "kit006::01_BodyShell",
+        "chassis": "kit004::02_ChassisSuspension",
+        "motor": "kit003::04_Motor",
+        "transmission": "kit006::05_FinalDrive",
+        "battery": "kit003::06_Battery",
+        "wheels": "kit005::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 0.9662,
+        "speed": 0.9323,
+        "handling": 1.1179
+      }
+    },
+    {
+      "id": "mixed_corner",
+      "build": {
+        "body": "kit005::01_BodyShell",
+        "chassis": "kit016::02_ChassisSuspension",
+        "motor": "kit028::04_Motor",
+        "transmission": "kit042::05_FinalDrive",
+        "battery": "kit051::06_Battery",
+        "wheels": "kit009::03_WheelsTires"
+      },
+      "multipliers": {
+        "acceleration": 0.9274,
+        "speed": 0.8899,
+        "handling": 1.15
+      }
+    }
+  ],
+  "counterfactualProfiles": {
+    "handling_0_965": {
+      "acceleration": 0.79,
+      "topSpeed": 1.03,
+      "steering": 0.965
+    },
+    "speed_1_025": {
+      "acceleration": 0.79,
+      "topSpeed": 1.025,
+      "steering": 0.995
+    },
+    "speed_1_020": {
+      "acceleration": 0.79,
+      "topSpeed": 1.02,
+      "steering": 0.995
+    }
+  },
+  "geometry": [
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "default",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 63.51056081573197,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.9687885662749262,
+        "speed_1_025": -0.17768585024389869,
+        "speed_1_020": -0.3565801776928828
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "balanced",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 63.51056081573197,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.9687885662749262,
+        "speed_1_025": -0.17768585024389869,
+        "speed_1_020": -0.3565801776928828
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 50.76474872541879,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.7780407054970098,
+        "speed_1_025": -0.2393903055553405,
+        "speed_1_020": -0.4802900740824136
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "straight",
+      "baselineStraightCap": 47.707128,
+      "baselineGripCappedPercent": 71.01238164603059,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -1.0853127240871605,
+        "speed_1_025": -0.14095033768868154,
+        "speed_1_020": -0.28260923754299255
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "start-hill",
+      "baselineStraightCap": 38.068799999999996,
+      "baselineGripCappedPercent": 54.26074289876183,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.8369891898674262,
+        "speed_1_025": -0.22278376000861386,
+        "speed_1_020": -0.4471851046934173
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "impact",
+      "baselineStraightCap": 40.331298,
+      "baselineGripCappedPercent": 55.49890750182083,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.8562151158191209,
+        "speed_1_025": -0.21791059333527546,
+        "speed_1_020": -0.43881871279756024
+      }
+    },
+    {
+      "map": "coast",
+      "route": "main",
+      "lengthMetres": 1372.549164011638,
+      "sampleCount": 1373,
+      "build": "mixed_corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 50.76474872541879,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.7780407054970098,
+        "speed_1_025": -0.2393903055553405,
+        "speed_1_020": -0.4802900740824136
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "default",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 51.568844592100405,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.791870933181632,
+        "speed_1_025": -0.23585376508814768,
+        "speed_1_020": -0.4736521986423182
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "balanced",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 51.568844592100405,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.791870933181632,
+        "speed_1_025": -0.23585376508814768,
+        "speed_1_020": -0.4736521986423182
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 31.450719822812847,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.4872709696671544,
+        "speed_1_025": -0.3333472509818788,
+        "speed_1_020": -0.6681628876789838
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "straight",
+      "baselineStraightCap": 47.707128,
+      "baselineGripCappedPercent": 67.10963455149502,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -1.0265142636985214,
+        "speed_1_025": -0.16086110709091578,
+        "speed_1_020": -0.3233655488837529
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "start-hill",
+      "baselineStraightCap": 38.068799999999996,
+      "baselineGripCappedPercent": 35.400516795865634,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.5491564104072376,
+        "speed_1_025": -0.314257935223359,
+        "speed_1_020": -0.630744777727641
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "impact",
+      "baselineStraightCap": 40.331298,
+      "baselineGripCappedPercent": 36.36028054632706,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.5633067696046976,
+        "speed_1_025": -0.3100463535818147,
+        "speed_1_020": -0.6219963455381389
+      }
+    },
+    {
+      "map": "garden",
+      "route": "alley",
+      "lengthMetres": 2708.33645606369,
+      "sampleCount": 2709,
+      "build": "mixed_corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 31.450719822812847,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.4872709696671544,
+        "speed_1_025": -0.3333472509818788,
+        "speed_1_020": -0.6681628876789838
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "default",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 49.67391304347826,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.76516843209833,
+        "speed_1_025": -0.24505671127323303,
+        "speed_1_020": -0.4918941228112846
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "balanced",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 49.67391304347826,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.76516843209833,
+        "speed_1_025": -0.24505671127323303,
+        "speed_1_020": -0.4918941228112846
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 28.659420289855074,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.44488848256045943,
+        "speed_1_025": -0.34746993668104764,
+        "speed_1_020": -0.6964776988549183
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "straight",
+      "baselineStraightCap": 47.707128,
+      "baselineGripCappedPercent": 65.72463768115942,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -1.004528219000319,
+        "speed_1_025": -0.1678111046540656,
+        "speed_1_020": -0.33700216005275085
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "start-hill",
+      "baselineStraightCap": 38.068799999999996,
+      "baselineGripCappedPercent": 32.93478260869565,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.5108192770820066,
+        "speed_1_025": -0.3264156111583644,
+        "speed_1_020": -0.6551569698904411
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "impact",
+      "baselineStraightCap": 40.331298,
+      "baselineGripCappedPercent": 33.768115942028984,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.5263363321587496,
+        "speed_1_025": -0.3222817324523814,
+        "speed_1_020": -0.6466480157715675
+      }
+    },
+    {
+      "map": "garden",
+      "route": "boulevard",
+      "lengthMetres": 2759.095290638281,
+      "sampleCount": 2760,
+      "build": "mixed_corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 28.659420289855074,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.44488848256045943,
+        "speed_1_025": -0.34746993668104764,
+        "speed_1_020": -0.6964776988549183
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "default",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 25.945063910796843,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.4035795760430343,
+        "speed_1_025": -0.3606264045351097,
+        "speed_1_020": -0.7231203022184831
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "balanced",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 25.945063910796843,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.4035795760430343,
+        "speed_1_025": -0.3606264045351097,
+        "speed_1_020": -0.7231203022184831
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 15.556159912972532,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.24057498136812855,
+        "speed_1_025": -0.41077948673943904,
+        "speed_1_020": -0.8231654851512022
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "straight",
+      "baselineStraightCap": 47.707128,
+      "baselineGripCappedPercent": 45.14549904813707,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.6999427495312731,
+        "speed_1_025": -0.2682705001764835,
+        "speed_1_020": -0.54021510647744
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "start-hill",
+      "baselineStraightCap": 38.068799999999996,
+      "baselineGripCappedPercent": 18.13978787054664,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.27980679693016197,
+        "speed_1_025": -0.3978977623224394,
+        "speed_1_020": -0.7974802727831807
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "impact",
+      "baselineStraightCap": 40.331298,
+      "baselineGripCappedPercent": 18.43894479194996,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.28579963341041675,
+        "speed_1_025": -0.39614472662792355,
+        "speed_1_020": -0.7929152441183412
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "alley",
+      "lengthMetres": 3676.8377868026773,
+      "sampleCount": 3677,
+      "build": "mixed_corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 15.556159912972532,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.24057498136812855,
+        "speed_1_025": -0.41077948673943904,
+        "speed_1_020": -0.8231654851512022
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "default",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 24.73923508959615,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.38601771877535823,
+        "speed_1_025": -0.36633533159596393,
+        "speed_1_020": -0.7345094569586824
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "balanced",
+      "baselineStraightCap": 43.26,
+      "baselineGripCappedPercent": 24.73923508959615,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.38601771877535823,
+        "speed_1_025": -0.36633533159596393,
+        "speed_1_020": -0.7345094569586824
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 13.212088793795132,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.20592077810477363,
+        "speed_1_025": -0.4221971721463021,
+        "speed_1_020": -0.84619860755812
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "straight",
+      "baselineStraightCap": 47.707128,
+      "baselineGripCappedPercent": 44.45038780422573,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.6910709522946071,
+        "speed_1_025": -0.27111737104043304,
+        "speed_1_020": -0.5462432444452135
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "start-hill",
+      "baselineStraightCap": 38.068799999999996,
+      "baselineGripCappedPercent": 16.12730676651511,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.25045556418436504,
+        "speed_1_025": -0.40785973769042705,
+        "speed_1_020": -0.8175558986633972
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "impact",
+      "baselineStraightCap": 40.331298,
+      "baselineGripCappedPercent": 16.501738432736026,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.2580385875106039,
+        "speed_1_025": -0.4055540889142558,
+        "speed_1_020": -0.8120249865571302
+      }
+    },
+    {
+      "map": "caldera",
+      "route": "boulevard",
+      "lengthMetres": 3738.0152770642608,
+      "sampleCount": 3739,
+      "build": "mixed_corner",
+      "baselineStraightCap": 38.497074,
+      "baselineGripCappedPercent": 13.212088793795132,
+      "meanRelativeCapChangePercent": {
+        "handling_0_965": -0.20592077810477363,
+        "speed_1_025": -0.4221971721463021,
+        "speed_1_020": -0.84619860755812
+      }
+    }
+  ],
+  "actualGrokMixedWinsByBuild": [
+    {
+      "candidate": "16",
+      "source": "balance-results/candidate-16-mixed.jsonl",
+      "sha256": "a612b89382236a1c420e18f8924af5ec388583553ebdc533173924e3712c13ee",
+      "races": 576,
+      "byBuild": {
+        "impact": {
+          "starts": 96,
+          "wins": 13,
+          "rankSum": 247
+        },
+        "corner": {
+          "starts": 96,
+          "wins": 1,
+          "rankSum": 388
+        },
+        "balanced": {
+          "starts": 96,
+          "wins": 35,
+          "rankSum": 185
+        },
+        "start-hill": {
+          "starts": 96,
+          "wins": 0,
+          "rankSum": 486
+        },
+        "straight": {
+          "starts": 96,
+          "wins": 32,
+          "rankSum": 263
+        },
+        "mixed_corner": {
+          "starts": 96,
+          "wins": 4,
+          "rankSum": 398
+        }
+      }
+    },
+    {
+      "candidate": "17",
+      "source": "balance-results/candidate-17-mixed.jsonl",
+      "sha256": "0102b1eecd4bccfb1038c5384920ddb4c5d83ffd855bc38308332408c9c46ff9",
+      "races": 576,
+      "byBuild": {
+        "impact": {
+          "starts": 96,
+          "wins": 12,
+          "rankSum": 239
+        },
+        "corner": {
+          "starts": 96,
+          "wins": 1,
+          "rankSum": 368
+        },
+        "balanced": {
+          "starts": 96,
+          "wins": 35,
+          "rankSum": 188
+        },
+        "start-hill": {
+          "starts": 96,
+          "wins": 0,
+          "rankSum": 479
+        },
+        "straight": {
+          "starts": 96,
+          "wins": 28,
+          "rankSum": 285
+        },
+        "mixed_corner": {
+          "starts": 96,
+          "wins": 2,
+          "rankSum": 362
+        }
+      }
+    },
+    {
+      "candidate": "18",
+      "source": "balance-results/candidate-18-mixed.jsonl",
+      "sha256": "2a0ffe1d4aca5bef68bd2772af6a54746c81c75028472b4ef2731f75aec11293",
+      "races": 576,
+      "byBuild": {
+        "impact": {
+          "starts": 96,
+          "wins": 19,
+          "rankSum": 256
+        },
+        "corner": {
+          "starts": 96,
+          "wins": 2,
+          "rankSum": 372
+        },
+        "balanced": {
+          "starts": 96,
+          "wins": 29,
+          "rankSum": 204
+        },
+        "start-hill": {
+          "starts": 96,
+          "wins": 0,
+          "rankSum": 469
+        },
+        "straight": {
+          "starts": 96,
+          "wins": 31,
+          "rankSum": 265
+        },
+        "mixed_corner": {
+          "starts": 96,
+          "wins": 0,
+          "rankSum": 354
+        }
+      }
+    },
+    {
+      "candidate": "19",
+      "source": "balance-results/candidate-19-mixed.jsonl",
+      "sha256": "d5f54b08e18bca9b596456ecb6406e92ee31043f9c95cf3f25f96852bd8a6da8",
+      "races": 576,
+      "byBuild": {
+        "impact": {
+          "starts": 96,
+          "wins": 14,
+          "rankSum": 247
+        },
+        "corner": {
+          "starts": 96,
+          "wins": 1,
+          "rankSum": 377
+        },
+        "balanced": {
+          "starts": 96,
+          "wins": 31,
+          "rankSum": 199
+        },
+        "start-hill": {
+          "starts": 96,
+          "wins": 0,
+          "rankSum": 473
+        },
+        "straight": {
+          "starts": 96,
+          "wins": 27,
+          "rankSum": 270
+        },
+        "mixed_corner": {
+          "starts": 96,
+          "wins": 2,
+          "rankSum": 370
+        }
+      }
+    }
+  ],
+  "actualCandidate19PrimaryDiagnostics": [
+    {
+      "map": "coast",
+      "character": "whale",
+      "starts": 192,
+      "wins": 51,
+      "meanFinishSeconds": 135.95057262743333,
+      "meanDriftSeconds": 21.96692708333337,
+      "meanSlowSeconds": 24.39435763888871,
+      "meanCollisionCount": 11.838541666666666,
+      "meanPickups": 16.473958333333332,
+      "meanUses": 15.869791666666666,
+      "meanCenteredFinishSeconds": -1.0813977386248674
+    },
+    {
+      "map": "coast",
+      "character": "grok",
+      "starts": 192,
+      "wins": 22,
+      "meanFinishSeconds": 137.9624166479908,
+      "meanDriftSeconds": 19.9460069444446,
+      "meanSlowSeconds": 18.96822916666675,
+      "meanCollisionCount": 12.78125,
+      "meanPickups": 16.776041666666668,
+      "meanUses": 16.197916666666668,
+      "meanCenteredFinishSeconds": 0.9304462819326823
+    },
+    {
+      "map": "forest",
+      "character": "whale",
+      "starts": 192,
+      "wins": 47,
+      "meanFinishSeconds": 249.39690375850185,
+      "meanDriftSeconds": 16.86840277777804,
+      "meanSlowSeconds": 15.561805555555665,
+      "meanCollisionCount": 12.802083333333334,
+      "meanPickups": 8.114583333333334,
+      "meanUses": 7.729166666666667,
+      "meanCenteredFinishSeconds": -0.7591279990968615
+    },
+    {
+      "map": "forest",
+      "character": "grok",
+      "starts": 192,
+      "wins": 12,
+      "meanFinishSeconds": 251.10786018228725,
+      "meanDriftSeconds": 17.59973958333357,
+      "meanSlowSeconds": 13.33602430555571,
+      "meanCollisionCount": 15.15625,
+      "meanPickups": 6.90625,
+      "meanUses": 6.635416666666667,
+      "meanCenteredFinishSeconds": 0.951828424688851
+    },
+    {
+      "map": "garden",
+      "character": "whale",
+      "starts": 192,
+      "wins": 37,
+      "meanFinishSeconds": 239.53970782472337,
+      "meanDriftSeconds": 26.049826388888718,
+      "meanSlowSeconds": 15.833767361111237,
+      "meanCollisionCount": 13.375,
+      "meanPickups": 9.192708333333334,
+      "meanUses": 8.6875,
+      "meanCenteredFinishSeconds": -0.4460973223834131
+    },
+    {
+      "map": "garden",
+      "character": "grok",
+      "starts": 192,
+      "wins": 10,
+      "meanFinishSeconds": 241.41162795146522,
+      "meanDriftSeconds": 26.657118055555326,
+      "meanSlowSeconds": 14.091145833333487,
+      "meanCollisionCount": 14.510416666666666,
+      "meanPickups": 8.473958333333334,
+      "meanUses": 8.041666666666666,
+      "meanCenteredFinishSeconds": 1.4258228043586942
+    },
+    {
+      "map": "caldera",
+      "character": "whale",
+      "starts": 192,
+      "wins": 1,
+      "meanFinishSeconds": 298.97481009078234,
+      "meanDriftSeconds": 13.28958333333357,
+      "meanSlowSeconds": 12.253732638889021,
+      "meanCollisionCount": 13.65625,
+      "meanPickups": 8.53125,
+      "meanUses": 8.026041666666666,
+      "meanCenteredFinishSeconds": 3.3564844283791238
+    },
+    {
+      "map": "caldera",
+      "character": "grok",
+      "starts": 192,
+      "wins": 76,
+      "meanFinishSeconds": 293.1623806061705,
+      "meanDriftSeconds": 13.714670138889135,
+      "meanSlowSeconds": 17.964062500000008,
+      "meanCollisionCount": 14.390625,
+      "meanPickups": 9.645833333333334,
+      "meanUses": 9.119791666666666,
+      "meanCenteredFinishSeconds": -2.455945056232934
+    },
+    {
+      "map": "mountain",
+      "character": "whale",
+      "starts": 192,
+      "wins": 6,
+      "meanFinishSeconds": 297.7347280915433,
+      "meanDriftSeconds": 10.204687500000087,
+      "meanSlowSeconds": 20.048090277777806,
+      "meanCollisionCount": 15.104166666666666,
+      "meanPickups": 15.65625,
+      "meanUses": 15.0625,
+      "meanCenteredFinishSeconds": 2.3326364931790136
+    },
+    {
+      "map": "mountain",
+      "character": "grok",
+      "starts": 192,
+      "wins": 52,
+      "meanFinishSeconds": 293.96318139387205,
+      "meanDriftSeconds": 7.588888888888889,
+      "meanSlowSeconds": 22.49696180555542,
+      "meanCollisionCount": 17.760416666666668,
+      "meanPickups": 14.354166666666666,
+      "meanUses": 13.713541666666666,
+      "meanCenteredFinishSeconds": -1.4389102044922601
+    },
+    {
+      "map": "airfield",
+      "character": "whale",
+      "starts": 192,
+      "wins": 11,
+      "meanFinishSeconds": 255.53878821232283,
+      "meanDriftSeconds": 3.6518229166666614,
+      "meanSlowSeconds": 15.176388888889043,
+      "meanCollisionCount": 14.114583333333334,
+      "meanPickups": 9.286458333333334,
+      "meanUses": 8.994791666666666,
+      "meanCenteredFinishSeconds": 1.7223816927288216
+    },
+    {
+      "map": "airfield",
+      "character": "grok",
+      "starts": 192,
+      "wins": 36,
+      "meanFinishSeconds": 253.1726531885755,
+      "meanDriftSeconds": 3.52838541666666,
+      "meanSlowSeconds": 17.16519097222232,
+      "meanCollisionCount": 14.765625,
+      "meanPickups": 9.348958333333334,
+      "meanUses": 9.03125,
+      "meanCenteredFinishSeconds": -0.6437533310187652
+    }
+  ],
+  "actualPrimarySource": {
+    "path": "balance-results/candidate-19-full.jsonl",
+    "sha256": "6444e5471e1d3840b6517d99744686e575735d2dc62c4992f8b58421d36c6736"
+  }
+}

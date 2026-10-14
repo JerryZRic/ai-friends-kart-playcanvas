@@ -1,0 +1,42 @@
+{
+  "candidate": 21,
+  "bakedUtc": "2026-10-14T15:20:00Z",
+  "profile": {
+    "whale": {
+      "acceleration": 1.1,
+      "topSpeed": 0.955,
+      "steering": 1.065
+    },
+    "gemini": {
+      "acceleration": 0.65,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.18,
+      "topSpeed": 0.985,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.835,
+      "topSpeed": 1.025,
+      "steering": 0.995
+    },
+    "glm": {
+      "acceleration": 0.7,
+      "topSpeed": 1.02,
+      "steering": 1.05
+    }
+  },
+  "candidateFileSha256": "e2a40040a48e01a9465eaeb4c122afbde23921f92038c3649c100e99c4a19994",
+  "preBakeCharacterSourceSha256": "88facd511fcac28abfd423e61d1c6408a112cafb7c03d8c354e20b8a0341826c",
+  "bakedCharacterSourceSha256": "2ac87946624bcb4d21fb4330225c4dfb32c5268a219dd55475e1f0ca59ea2e07",
+  "waterSectionByteIdentical": true,
+  "holdoutOpened": false,
+  "rootDecision": "Run original untouched holdout as independent measurement; retain all original statistical criteria; no automatic retuning after seeing holdout."
+}

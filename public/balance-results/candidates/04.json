@@ -1,0 +1,1 @@
+{"whale":{"acceleration":1.35,"topSpeed":0.94,"steering":1.03},"gemini":{"acceleration":0.73,"topSpeed":1,"steering":1.08},"gpt":{"acceleration":1,"topSpeed":1,"steering":1},"claude":{"acceleration":1.40,"topSpeed":0.995,"steering":0.95},"grok":{"acceleration":0.99,"topSpeed":1.02,"steering":0.95},"glm":{"acceleration":0.82,"topSpeed":1.01,"steering":1.03}}

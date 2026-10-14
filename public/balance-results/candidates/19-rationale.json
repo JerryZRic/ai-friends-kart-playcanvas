@@ -1,0 +1,41 @@
+{
+  "status": "training-only",
+  "profile": {
+    "whale": {
+      "acceleration": 1.03,
+      "topSpeed": 0.96,
+      "steering": 1.065
+    },
+    "gemini": {
+      "acceleration": 0.65,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.18,
+      "topSpeed": 0.985,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.79,
+      "topSpeed": 1.03,
+      "steering": 0.995
+    },
+    "glm": {
+      "acceleration": 0.66,
+      "topSpeed": 1.025,
+      "steering": 1.05
+    }
+  },
+  "basis": "Completed17/18 primary2304 and mixed576 each",
+  "reason": "Prospectively allow meaningful .07 speed span rather than coupling both extrema at .08. Keep Whale topSpeed .96 with lower launch strength and modest handling gain relative17; reduce Grok straight cap to1.03 while retaining .995 handling and .79 acceleration. GLM1.025 remains a fast, more agile alternative below Grok top speed. Addresses observed17/18 Whale/Grok tradeoff without artificial map bonuses. All statistical targets unchanged.",
+  "protocol": "speed-span-amendment-2026-10-14T12:21Z",
+  "plannedPrimaryBlocksPerMap": 32,
+  "plannedMixedBlocksPerMap": 8,
+  "holdoutOpened": false
+}

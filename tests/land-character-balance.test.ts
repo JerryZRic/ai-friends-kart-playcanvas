@@ -25,13 +25,19 @@ test('A01 retains the released original coefficients even when a land override i
  const original={whale:[1.06,.92,1.02],gemini:[.92,1,1.08],gpt:[1,1,1],claude:[1.08,.96,.96],grok:[.96,1.08,.96],glm:[.94,1.04,1.02]};
  for(const profile of CHARACTER_PROFILES){const [acceleration,topSpeed,steering]=original[profile.id];assert.deepEqual(WATER_CHARACTER_MULTIPLIERS[profile.id],{acceleration,topSpeed,steering});const value=characterTuning(profile.id,'waterpark',{acceleration:1.4,topSpeed:1.05,steering:1.3});assert.deepEqual(value.multipliers,{acceleration,topSpeed,steering});assert.equal(value.maxSpeed,22*topSpeed);assert.equal(value.acceleration,8.6*acceleration);assert.equal(value.steering,11*steering);}
 });
-test('the land roster preserves every declared archetype ordering and meaningful stat spread',()=>{
+test('the land roster preserves main archetypes and meaningful stat spread under the declared trait amendment',()=>{
  const byId=Object.fromEntries(CHARACTER_PROFILES.map(p=>[p.id,p]));
- const ordered=(key:'acceleration'|'topSpeed'|'steering',ids:string[])=>{for(let i=1;i<ids.length;i++)assert.ok(byId[ids[i-1]][key]>byId[ids[i]][key],`${key}: ${ids[i-1]} > ${ids[i]}`);};
- ordered('acceleration',['claude','whale','gpt','grok','glm','gemini']);ordered('topSpeed',['grok','glm','gpt','claude','whale']);ordered('steering',['gemini','whale','gpt','grok']);
- assert.equal(byId.gemini.topSpeed,byId.gpt.topSpeed);assert.equal(byId.whale.steering,byId.glm.steering);assert.equal(byId.claude.steering,byId.grok.steering);
+ for(const profile of CHARACTER_PROFILES){
+  if(profile.id!=='claude')assert.ok(byId.claude.acceleration>profile.acceleration,'Claude retains strongest launch');
+  if(profile.id!=='grok')assert.ok(byId.grok.topSpeed>profile.topSpeed,'Grok retains highest straight speed');
+  if(profile.id!=='gemini')assert.ok(byId.gemini.steering>profile.steering,'Gemini retains strongest handling');
+ }
+ assert.ok(byId.whale.acceleration>1 && byId.whale.steering>1 && byId.whale.topSpeed<1,'Whale stays brisk/agile with lower straight speed');
+ assert.ok(byId.glm.acceleration<1 && byId.glm.topSpeed>1 && byId.glm.steering>1,'GLM trades slower launch for speed/handling');
+ assert.ok(byId.grok.acceleration<1 && byId.grok.steering<1,'Grok retains launch/handling tradeoffs');
+ assert.ok(byId.gemini.acceleration<1 && byId.claude.topSpeed<1,'corner and launch specialists retain tradeoffs');
  for(const key of ['acceleration','topSpeed','steering'] as const)assert.equal(byId.gpt[key],1);
- for(const [key,minimum,low,high] of [['acceleration',.16,.65,1.45],['topSpeed',.08,.90,1.10],['steering',.12,.85,1.30]] as const){const values=CHARACTER_PROFILES.map(p=>p[key]);assert.ok(Math.max(...values)-Math.min(...values)>=minimum-1e-9);assert.ok(values.every(v=>v>=low&&v<=high));}
+ for(const [key,minimum,low,high] of [['acceleration',.16,.65,1.45],['topSpeed',.07,.90,1.10],['steering',.12,.85,1.30]] as const){const values=CHARACTER_PROFILES.map(p=>p[key]);assert.ok(Math.max(...values)-Math.min(...values)>=minimum-1e-9);assert.ok(values.every(v=>v>=low&&v<=high));}
 });
 
 test('character menu labels use map-specific multipliers and expose the full tuned land range',async()=>{

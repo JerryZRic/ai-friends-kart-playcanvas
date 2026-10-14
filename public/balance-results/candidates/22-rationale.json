@@ -1,0 +1,44 @@
+{
+  "status": "prospective-bounded-training-screen",
+  "createdUtc": "2026-10-14T15:05:00Z",
+  "anchor": "21 full training",
+  "basis": "Candidate21 full2304primary/576mixed has near-balanced aggregates but primaryWhale-Coast37.50% andGrok-Caldera35.9375%; planning approximation at final block budget still leaves upper-bound risk. No holdout opened.",
+  "changes": {
+    "whale": {
+      "acceleration": [
+        1.1,
+        1.13
+      ],
+      "topSpeed": [
+        0.955,
+        0.952
+      ],
+      "steering": [
+        1.065,
+        1.058
+      ]
+    },
+    "grok": {
+      "acceleration": [
+        0.835,
+        0.845
+      ],
+      "topSpeed": [
+        1.025,
+        1.022
+      ]
+    }
+  },
+  "unchanged": "Gemini,GPT,Claude,GLM profiles; all source physics, AI, tracks, equipment and standard items",
+  "reason": "Whale handling reduction targets its corner concentration, with a bounded launch compensation. Grok gets a smaller speed-down/recovery-up step supported by completed sensitivity20. Whale speed also lowers .003 to preserve the declared .07 global speed span. Joint response is explicitly unmeasured, not assumed linear.",
+  "plannedPrimaryBlocksPerMap": 8,
+  "plannedMixedBlocksPerMap": 4,
+  "screenRaces": 864,
+  "domains": [
+    "land-balance-training-v1",
+    "land-balance-mixed-training-v1"
+  ],
+  "decision": "Compare only after complete fixed screen. Extend exact unchanged cohort to32primary/8mixed only if aggregate balance remains plausible and hotspot direction improves. If screen shows a clear damaging tradeoff, report to parent instead of starting an automatic series of large manual guesses. Freeze only after complete source-matched training review and focused checks; final holdout margins unchanged.",
+  "holdoutOpened": false,
+  "statisticsThresholdsChanged": false
+}

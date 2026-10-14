@@ -1,0 +1,17 @@
+{
+  "status": "stopped-training-screen-not-final",
+  "plannedRaces": 2304,
+  "completedRaces": 984,
+  "fixedScreenBlocksPerMap": 12,
+  "fixedScreenRaces": 864,
+  "fixedScreenWinRates": {
+    "whale": 0.14351851851851852,
+    "gemini": 0.19791666666666666,
+    "gpt": 0.16319444444444445,
+    "claude": 0.14467592592592593,
+    "grok": 0.16898148148148148,
+    "glm": 0.18171296296296297
+  },
+  "reason": "Candidate09 fixed screen remains caldera Grok dominated (41.67%) despite near aggregate target. Retain all rows; holdout unopened.",
+  "jsonlSha256": "a7245dd6c877fd432f0b5c660bb8de4c79958d4c1df583e08eae1eb3973e22b4"
+}

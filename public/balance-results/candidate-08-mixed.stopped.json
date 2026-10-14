@@ -1,0 +1,17 @@
+{
+  "status": "stopped-training-screen-not-final",
+  "plannedRaces": 576,
+  "completedRaces": 348,
+  "fixedScreenBlocksPerMap": 4,
+  "fixedScreenRaces": 288,
+  "fixedScreenWinRates": {
+    "whale": 0.1909722222222222,
+    "gemini": 0.14583333333333334,
+    "gpt": 0.1736111111111111,
+    "claude": 0.1909722222222222,
+    "grok": 0.11458333333333333,
+    "glm": 0.1840277777777778
+  },
+  "reason": "Candidate08 development screen reduces caldera Grok dominance, but Grok aggregate too low and coast Whale/garden Claude remain concentrated. Retain all completed rows; no holdout used.",
+  "jsonlSha256": "8e9ba8cf53449eb54609a613f67475870103425f53917e9ca46ef9f11a79aa9b"
+}

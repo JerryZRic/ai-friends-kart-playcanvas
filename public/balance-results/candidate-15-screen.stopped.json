@@ -1,0 +1,9 @@
+{
+  "status": "cancelled-before-planned-screen-protocol-amendment",
+  "plannedRaces": 864,
+  "completedRaces": 108,
+  "fixedScreenBlocksPerMap": 0,
+  "fixedScreenRaces": 0,
+  "reason": "Prospective clarification: preserve recognizable differentiated archetypes, not an artificial exact Whale/GLM handling tie. Cancelled without interpreting incomplete outcomes; all completed rows retained. No holdout opened.",
+  "jsonlSha256": "1e08de78e0514402383c8fb6b764a6692d90231c86160ab0e450ab732e62792b"
+}

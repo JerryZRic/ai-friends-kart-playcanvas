@@ -1,0 +1,36 @@
+{
+  "status": "planned-training-only",
+  "profile": {
+    "whale": {
+      "acceleration": 1.12,
+      "topSpeed": 0.95,
+      "steering": 1.08
+    },
+    "gemini": {
+      "acceleration": 0.65,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.22,
+      "topSpeed": 0.985,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.75,
+      "topSpeed": 1.03,
+      "steering": 0.99
+    },
+    "glm": {
+      "acceleration": 0.7,
+      "topSpeed": 1.005,
+      "steering": 1.08
+    }
+  },
+  "reason": "07 screen indicates increased handling restores Grok and Claude too strongly while GLM/GPT lose. Keep near-neutral low handling with a larger Grok recovery reduction, slightly reduce its straight cap, reduce Claude acceleration and straight cap, and restore Whale/GLM handling. Gemini acceleration remains at declared .65 lower bound, steering highest. No outcome bonuses, track, AI or formula changes."
+}

@@ -1,0 +1,40 @@
+{
+  "commit": "401f4772f0baf6b82d5e7fc0b03bafdcf05dcc74",
+  "browser": "cloud Chromium",
+  "coast": {
+    "seed": 20261014,
+    "rotation": 0,
+    "difficulty": "normal",
+    "equipment": "equal",
+    "items": true,
+    "completeJsonExactMatch": true
+  },
+  "town": {
+    "seed": 7,
+    "rotation": 5,
+    "difficulty": "hard",
+    "equipment": "mixed",
+    "items": false,
+    "completeJsonExactMatch": true,
+    "csvVerified": true
+  },
+  "mountainPause": {
+    "pausedSeconds": 2,
+    "unchangedAcrossSeparateObservations": true,
+    "resumedSeconds": 4.28
+  },
+  "controls": [
+    "12 map choices",
+    "reset/cancel",
+    "pause/resume",
+    "difficulty",
+    "loadout",
+    "items",
+    "rotation",
+    "seed",
+    "JSON download",
+    "CSV download",
+    "report notice"
+  ],
+  "visual": "Desktop layout inspected; 2D diagnostic rendering only. No WebGL or human-driving comfort certification."
+}

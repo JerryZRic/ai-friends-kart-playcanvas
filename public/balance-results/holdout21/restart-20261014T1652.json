@@ -1,0 +1,9 @@
+{
+  "checkedUtc": "2026-10-14T16:52:00Z",
+  "reason": "Former exec session unavailable; primary log stopped at8010races; no mixed manifest",
+  "savedRaces": 8010,
+  "completeBlocks": 1335,
+  "rawSha256": "71d9f19e5d20ee9b67a80992cbd4b2d613f32f4a9c266869c1432b08919617dc",
+  "sourceHashesMatchFreeze": true,
+  "next": "Resume only missing primary map/seed blocks, then original mixed cohort; no outcome analysis or tuning"
+}

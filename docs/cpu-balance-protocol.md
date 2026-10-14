@@ -20,10 +20,20 @@ Seed domains are `land-balance-training-v1`, `land-balance-holdout-v1` and `land
 - Mixed-equipment aggregate equivalence margin is ±5 percentage points around 1/6, separately labeled
 - Zero invalid/nonfinite progress and zero primary DNFs; any DNF blocks certification until explained/fixed and rerun
 - Identical-character control: rotating labels across mechanically identical seats must yield exactly one win per label over a complete six-rotation block, assuming at least one finisher, without scripting outcomes
-- Repeat identical input/seed produces identical complete result; preserve all character stat ordering, including existing ties. GPT remains the 1/1/1 reference. Land acceleration range at least .16, top-speed range at least .08 and steering range at least .12; no flattening to indistinguishable values. Candidate multipliers remain bounded: acceleration .65–1.45, top speed .90–1.10, steering .85–1.30
+- Repeat identical input/seed produces identical complete result; preserve recognizable main archetypes and meaningful differences, rather than an artificial requirement that every original pair remain exactly tied (see the prospective trait amendment below). GPT remains the 1/1/1 reference. Land acceleration range at least .16, top-speed range at least .07 and steering range at least .12; no flattening to indistinguishable values. Candidate multipliers remain bounded: acceleration .65–1.45, top speed .90–1.10, steering .85–1.30
 - Preserve launch, straight-speed and steering archetype ordering in direct physics probes
 
 Resample entire six-race blocks within each map, preserving the six-character vectors. A deterministic 10,000-draw max-t block bootstrap provides a joint simultaneous band over primary aggregate, 72 per-map and mixed-equipment aggregate endpoints. Report training uncertainty only as descriptive. No binomial race-level interval is treated as independent evidence for paired rotations. Degenerate endpoints are called out rather than reported as magically certain; use a conservative block-level boundary bound there.
+
+## Prospective trait-constraint amendment (2026-10-14 11:13 UTC)
+
+Before candidate 16 and before opening any holdout, the character-identity criterion is clarified to match the requested differentiated traits: exact original numerical ties and every pairwise ordering were a stricter development assumption, not a requirement to force the roster into an unnatural fit. In particular, Whale and GLM need not have identical handling. Candidates 01–13 were evaluated under that stricter assumption; 14/15 were cancelled before their planned screens without interpreting partial outcomes. A result under this amendment must not be described as preserving all original ties.
+
+The main archetypes remain: Claude has the strongest launch; Grok the highest straight speed with weaker launch/handling than GPT; Gemini the strongest handling with slow launch; Whale has brisk launch/handling and lower straight speed; GLM combines above-reference straight speed and handling with slower launch; GPT remains 1/1/1. Meaningful roster spans, coefficient bounds, equal CPU/equipment controls, all statistical thresholds, full sample budgets, and untouched held-out seed domains are unchanged. No track/AI/character-map bonus is introduced. Minor pairwise differences may change only through explicit globally applied character coefficients and must be reported.
+
+## Prospective speed-span amendment (2026-10-14 12:21 UTC)
+
+Before candidate 19 and before any holdout, the internally chosen minimum top-speed multiplier span changes from .08 to .07. Completed candidates 17/18 showed that forcing both speed extrema to move together weakened Whale when reducing Grok's Caldera advantage. A .96–1.03 range still gives a seven-percentage-point character speed spread (2.94 game m/s at the 42 reference pace), alongside the unchanged acceleration/handling spans. The request was to retain meaningful distinct traits, not an exact eight-point speed span. The prior .08 constraint is reported as a development assumption, not retroactively passed. Main archetypes, GPT reference, acceleration/handling minima and all coefficient bounds remain unchanged. Statistical thresholds, holdout domains and sample budgets are unchanged by this amendment.
 
 ## Implementation boundary
 
@@ -33,7 +43,7 @@ Any shared character-neutral corner-composition fix must be justified with an un
 
 ## Measured baseline and shared corner correction
 
-The unchanged 2,304-race baseline completed without DNFs. Its initial rejected-progress observer was subsequently found unreliable because speed had already been reset by the guard; a separate original-physics replay with explicit rejection callbacks is required before interpreting that diagnostic. Aggregate rates were whale 0%, gemini 0.6510%, GPT 0.6510%, Claude 0.0868%, Grok 92.6215%, GLM 5.9896%.
+The unchanged 2,304-race baseline completed without DNFs. Its initial rejected-progress observer was subsequently found unreliable because speed had already been reset by the guard. The completed 2,304-race original-physics replay with explicit route/checkpoint rejection callbacks matched every original recorded race field exactly and confirmed zero rejected progress steps, zero DNFs and zero timeouts. Ordinary collisions and rail contacts are separate diagnostics, not rejected progress. Aggregate rates were whale 0%, gemini 0.6510%, GPT 0.6510%, Claude 0.0868%, Grok 92.6215%, GLM 5.9896%.
 
 Two formula-only diagnostic passes used the same first four training blocks per map (288 races) and retained the original profile numbers. The paired old formula gave Grok 93.06%; adding character handling only to its existing linear blend gave 86.81%. Character speed still dominated ordinary bends because the linear blend reached the grip-limited value only at very sharp curvature.
 

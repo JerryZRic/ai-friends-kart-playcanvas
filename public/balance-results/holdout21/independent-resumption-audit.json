@@ -1,0 +1,32 @@
+{
+  "auditUtc": "2026-10-14T17:32:54.983243+00:00",
+  "retainedRaces": 8010,
+  "retainedBlocks": 1335,
+  "retainedPrefixSha256": "71d9f19e5d20ee9b67a80992cbd4b2d613f32f4a9c266869c1432b08919617dc",
+  "matchesRestartHash": true,
+  "appendedRaces": 1206,
+  "appendedBlocks": 201,
+  "duplicateRaces": 0,
+  "duplicateBlocks": 0,
+  "eachOldAndNewBlockHasSixRotations": true,
+  "resumeJournalMatches": true,
+  "primaryCompletedBeforeMixedStarted": true,
+  "finiteNumericProgressFields": 82944,
+  "completeMarkers": {
+    "primary": {
+      "races": 9216,
+      "blocks": 1536,
+      "completed": "2026-10-14T17:01:13.323Z",
+      "resumedAt": "2026-10-14T16:52:49.715Z",
+      "initialRaces": 8010,
+      "resumedWallSeconds": 503.608494559
+    },
+    "mixed": {
+      "races": 4608,
+      "blocks": 768,
+      "wallSeconds": 1847.71251413,
+      "completed": "2026-10-14T17:32:01.792Z"
+    }
+  },
+  "checks": "pass"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "paired-training-sensitivity-only",
+  "anchor": "19",
+  "changed": {
+    "character": "grok",
+    "stat": "acceleration",
+    "from": 0.79,
+    "to": 0.88
+  },
+  "plannedPrimaryBlocksPerMap": 8,
+  "plannedMixedBlocksPerMap": 4,
+  "domains": [
+    "land-balance-training-v1",
+    "land-balance-mixed-training-v1"
+  ],
+  "reason": "Prospective one-coordinate paired common-seed probe; compare only after the fixed four-probe matrix completes, then use global-stat responses to choose a combined roster. This is not independent validation.",
+  "holdoutOpened": false
+}

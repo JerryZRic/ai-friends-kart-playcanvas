@@ -1,0 +1,39 @@
+{
+  "status": "training-only",
+  "profile": {
+    "whale": {
+      "acceleration": 1.13,
+      "topSpeed": 0.955,
+      "steering": 1.06
+    },
+    "gemini": {
+      "acceleration": 0.65,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.18,
+      "topSpeed": 0.985,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.79,
+      "topSpeed": 1.035,
+      "steering": 0.99
+    },
+    "glm": {
+      "acceleration": 0.655,
+      "topSpeed": 1.025,
+      "steering": 1.06
+    }
+  },
+  "basis": "Complete candidate13 primary2304/mixed576",
+  "reason": "Controlled GLM corner-to-straight trade to contest caldera while reducing overall GLM strength. Preserve Whale/GLM handling tie, compensate Whale lower handling through acceleration, retain every archetype order and declared span. Variant14 also shifts speed extrema upward .005; variant15 retains13 extrema. Existing formula/AI/geometry/items unchanged.",
+  "fixedScreenBlocksPerMap": 12,
+  "holdoutOpened": false
+}

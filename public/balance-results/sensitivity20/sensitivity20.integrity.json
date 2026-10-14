@@ -1,0 +1,73 @@
+{
+  "status": "complete-training-only",
+  "races": 4320,
+  "dnfs": 0,
+  "timeouts": 0,
+  "invalidSteps": 0,
+  "noWinnerRaces": 0,
+  "holdoutOpened": false,
+  "allRotationBlocksComplete": true,
+  "csvRowsMatch": true,
+  "files": [
+    {
+      "prefix": "20a-primary",
+      "races": 576,
+      "jsonlSha256": "d39037c10375e92aca41fa30f25d19938488c3fff96fec320d2c3abd38f2b495",
+      "completeBlocks": 96
+    },
+    {
+      "prefix": "20a-mixed",
+      "races": 288,
+      "jsonlSha256": "699ea5a80446c132a6d6841e2ff70f6696f3d3365f736abc2b262366a8d8a11c",
+      "completeBlocks": 48
+    },
+    {
+      "prefix": "20b-primary",
+      "races": 576,
+      "jsonlSha256": "22a48f08a2c56a4c8cb49d2ef18c72192effc669a295d0167793b4895b417b51",
+      "completeBlocks": 96
+    },
+    {
+      "prefix": "20b-mixed",
+      "races": 288,
+      "jsonlSha256": "a49f103492c73ac18f4b4149dd8dc6a9502531175dc2a469b7db57a8aac9bb0b",
+      "completeBlocks": 48
+    },
+    {
+      "prefix": "20c-primary",
+      "races": 576,
+      "jsonlSha256": "bc64890c7aed1e42ef39dba82bfaa1f783207088b8c817e981d5e6333f0f4c87",
+      "completeBlocks": 96
+    },
+    {
+      "prefix": "20c-mixed",
+      "races": 288,
+      "jsonlSha256": "b587a38aef1de2484d672337e8e5f19b7e7bffd1a4a1cf36c8fac4fda65ee4f6",
+      "completeBlocks": 48
+    },
+    {
+      "prefix": "20d-primary",
+      "races": 576,
+      "jsonlSha256": "2e02eff5b5a093a571055092c228d3c3a313b0af0bbb47f2be78cafc59e688b7",
+      "completeBlocks": 96
+    },
+    {
+      "prefix": "20d-mixed",
+      "races": 288,
+      "jsonlSha256": "c9f0957e7a47d17d40984ad23f07f4740da0b4a6438ae670413c76ff34988396",
+      "completeBlocks": 48
+    },
+    {
+      "prefix": "20e-primary",
+      "races": 576,
+      "jsonlSha256": "0a4d74728e93a843d835cfa16e8f9f223de4c20464bee9b340f283dc595444bc",
+      "completeBlocks": 96
+    },
+    {
+      "prefix": "20e-mixed",
+      "races": 288,
+      "jsonlSha256": "15c67101b4f61bf254c4d9553570b3d212373cc3758da214cfd3a1c5a9138183",
+      "completeBlocks": 48
+    }
+  ]
+}

@@ -46,20 +46,27 @@ test('frozen catalog contains exactly 55 complete themes / 330 exact slot identi
   assert.equal(/libfile_|source_library|\/workspace\/|asset_evidence|manifest_reference/.test(payload), false);
 });
 
-test('baseline is mixed, fresh, and preserves every original character coefficient', () => {
+test('baseline is mixed, fresh, and composes the authoritative current land roster', () => {
   assert.equal(new Set(Object.values(buildParts(defaultBuild)).map(part => part.kitId)).size, 6);
   assert.deepEqual(buildStats(defaultBuild).multipliers, {acceleration: 1, speed: 1, handling: 1});
   assert.equal(buildStats(defaultBuild).massKg, 208);
+  for (const character of CHARACTER_PROFILES) {
+    const existing = characterTuning(character.id, 'coast'), actual = kartTuning(character.id, 'coast', defaultBuild);
+    assert.deepEqual(existing.multipliers, {acceleration: character.acceleration, topSpeed: character.topSpeed, steering: character.steering});
+    assert.equal(actual.maxSpeed, existing.maxSpeed); assert.equal(actual.acceleration, existing.acceleration); assert.equal(actual.steering, existing.steering);
+    assert.deepEqual(actual.multipliers, existing.multipliers);
+  }
+});
+
+test('water character tuning preserves every original character coefficient', () => {
   const expected = [
     ['whale', 1.06, .92, 1.02], ['gemini', .92, 1, 1.08], ['gpt', 1, 1, 1],
     ['claude', 1.08, .96, .96], ['grok', .96, 1.08, .96], ['glm', .94, 1.04, 1.02],
   ];
-  assert.deepEqual(CHARACTER_PROFILES.map(p => [p.id, p.acceleration, p.topSpeed, p.steering]), expected);
-  for (const character of CHARACTER_PROFILES) {
-    const existing = characterTuning(character.id, 'coast'), actual = kartTuning(character.id, 'coast', defaultBuild);
-    assert.equal(actual.maxSpeed, existing.maxSpeed); assert.equal(actual.acceleration, existing.acceleration); assert.equal(actual.steering, existing.steering);
-    assert.deepEqual(actual.multipliers, existing.multipliers);
-  }
+  assert.deepEqual(CHARACTER_PROFILES.map(character => {
+    const {acceleration, topSpeed, steering} = characterTuning(character.id, 'waterpark').multipliers;
+    return [character.id, acceleration, topSpeed, steering];
+  }), expected);
 });
 
 test('six mixed presets reproduce the frozen design multipliers and all SI estimates', () => {

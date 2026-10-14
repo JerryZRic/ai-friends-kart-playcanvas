@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "candidate": 21,
+  "cohorts": [
+    {
+      "cohort": "primary",
+      "fullRaces": 2304,
+      "reusedScreenRaces": 576,
+      "newTrainingRaces": 1728,
+      "screenRecordsExactlyPreserved": true,
+      "additionalIndependentHoldoutRaces": 0
+    },
+    {
+      "cohort": "mixed",
+      "fullRaces": 576,
+      "reusedScreenRaces": 288,
+      "newTrainingRaces": 288,
+      "screenRecordsExactlyPreserved": true,
+      "additionalIndependentHoldoutRaces": 0
+    }
+  ],
+  "distinctCandidate21TrainingRaces": 2880,
+  "screenRacesAlreadyIncludedInFullTraining": 864,
+  "independentHoldoutRaces": 13824,
+  "holdoutIndependentBlocks": 2304,
+  "candidate22Status": "rejected and stopped after completed fixed training screen; no extension or holdout tuning",
+  "candidate22ScreenRaces": 864,
+  "note": "Candidate22 and candidate21 training use paired training seeds. Training screens, extensions, candidate variants and baked replay checks do not add independent holdout evidence."
+}
