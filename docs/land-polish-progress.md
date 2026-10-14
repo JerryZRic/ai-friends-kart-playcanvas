@@ -18,7 +18,15 @@ main/v1.0.0 remain unchanged. Pages publication is verified per build commit.
 
 - 11 Garden: modeled detail and palette pass complete; +1,248 triangles, +0 material batches
 
-Not yet included: 12 Airfield.
+- 12 Airfield: modeled detail and palette pass complete; +2,076 triangles, +0 material batches
+
+All twelve land scenes now include this pass. Total additional geometry across
+the twelve separately loaded scenes is 35,168 triangles. Ten maps retain their
+material-batch count; Coast adds eight batches and Caldera one small batch.
+These counts are engineering budgets, not measured runtime draw calls or FPS.
+
+Final integrated TypeScript/build and 20 bounded polish sanity tests passed.
+Map-specific native road/camera checks are recorded in the per-map notes.
 
 Coast was playtested and its visual direction accepted. Each map retains its own
 theme. Specific notes record additions, budgets and checks. Offline previews use

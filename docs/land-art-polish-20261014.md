@@ -24,7 +24,7 @@ ornament. Inner corners remain low and open; distant scenery becomes lighter.
    conveyor supports, graded aggregate heaps and one crane silhouette.
 5. **Forest:** layered fresh greens, warm timber and small amber lamps; root
    shelves, lookout platforms, fern groups and a legible observatory landmark.
-6. **Workshop:** cream, copper and blue-grey; framed sheds, rivet bands and pipe
+6. **Workshop:** cream, copper and blue-grey; framed service workstations, rivet bands and pipe
    junctions, with large gears concentrated at one or two focal points.
 7. **Harvest:** golden crops, soft green fields and cream farm buildings; layered
    barn roofs, grain silos, grouped bales, windmill and boundary hedges.
@@ -39,8 +39,8 @@ ornament. Inner corners remain low and open; distant scenery becomes lighter.
 12. **Airfield:** pale structures, deep blue glazing and small amber markings;
     hangar ribs, layered tower crown, grouped ground-service carts and windsocks.
 
-Each subsequent map requires its own scene inspection and bounded change set;
-this list is a plan, not a claim that the remaining eleven maps have changed.
+Each map was inspected and implemented individually. The full twelve-map pass
+is now present in dev source; see [per-map completion and budgets](land-polish-progress.md).
 
 ## Coast sample budget and boundaries
 
