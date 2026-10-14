@@ -1,20 +1,18 @@
 # Land visual polish progress
 
-Implemented in dev source (October 14, 2026). Publication is verified separately
-against each commit's Pages workflow. A01 and stable main/v1.0.0 remain unchanged.
+Implemented in this dev source checkpoint (October 14, 2026). A01 and stable
+main/v1.0.0 remain unchanged. Pages publication is verified per build commit.
 
-- 01 Coast: complete; b761b518. +5,004 triangles, +8 opaque material batches.
-  The user playtested and accepted this visual direction.
-- 06 Workshop: complete; 322e9bb8. +1,992 triangles, 21 batches retained.
-- 02 Mountain: complete in this revision. +1,704 triangles, 24 batches retained.
+- 01 Coast: modeled detail and palette pass complete; +5,004 triangles, +8 material batches
+- 06 Workshop: modeled detail and palette pass complete; +1,992 triangles, +0 material batches
+- 02 Mountain: modeled detail and palette pass complete; +1,704 triangles, +0 material batches
+- 03 Town: modeled detail and palette pass complete; +7,872 triangles, +0 material batches
+- 05 Forest: modeled detail and palette pass complete; +5,536 triangles, +0 material batches
+- 09 Snow: modeled detail and palette pass complete; +1,636 triangles, +0 material batches
 
-- 03 Town: complete in this revision. +7,872 triangles, 20 batches retained.
+Not yet included: 04 Quarry, 07 Harvest, 08 Desert, 10 Caldera, 11 Garden, 12 Airfield.
 
-- 05 Forest: complete in this revision. +5,536 triangles, 21 batches retained.
-
-04 Quarry, 07 Harvest, 08 Desert, 09 Snow, 10 Caldera,
-11 Garden and 12 Airfield are not yet included in this source checkpoint.
-
-Each map's specific notes record modeling changes, palette, budgets and checks.
-Offline previews use actual runtime geometry with approximate material/light;
-they are not game screenshots or device-performance measurements.
+Coast was playtested and its visual direction accepted. Each map retains its own
+theme. Specific notes record additions, budgets and checks. Offline previews use
+actual source meshes with approximate material/light, not game screenshots or
+device-performance measurements. No full historical golden audit is claimed.
