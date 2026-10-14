@@ -1,4 +1,5 @@
 import * as pc from 'playcanvas';
+import {buildCoastScenery} from './coast-scenery';
 import { HALF, LENGTH, COAST_TURN_SIGNS, COAST_PICKUPS, halfWidthAt, isRoadsideClear, sample, scaled, degrees } from './track';
 import { instantiateRenderEntity, type DriverAsset } from './assets';
 import type { ItemDisplay } from './item-models';
@@ -106,19 +107,19 @@ export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 export function createCoastScene(app: pc.Application, options: { preview?: boolean } = {}) {
   const root = new pc.Entity('Sunset coast circuit');
   app.root.addChild(root);
-  app.scene.ambientLight = color('#adbdd2');
+  app.scene.ambientLight = color('#b8d9e8');
   app.scene.exposure = 1;
   app.scene.fog.type = pc.FOG_LINEAR;
-  app.scene.fog.color = color('#eabbb2');
+  app.scene.fog.color = color('#b6deec');
   app.scene.fog.start = 210;
   app.scene.fog.end = 650;
   const camera = new pc.Entity('Chase camera');
-  camera.addComponent('camera', { fov: 53, nearClip: .1, farClip: 1500, clearColor: color('#f9cdb5'), toneMapping: pc.TONEMAP_ACES, gammaCorrection: pc.GAMMA_SRGB });
+  camera.addComponent('camera', { fov: 53, nearClip: .1, farClip: 1500, clearColor: color('#bce4f2'), toneMapping: pc.TONEMAP_ACES, gammaCorrection: pc.GAMMA_SRGB });
   app.root.addChild(camera);
   camera.setPosition(30, 15, -150);
   camera.lookAt(0, 2, -140);
-  const sun = new pc.Entity('Warm sunset key light');
-  sun.addComponent('light', { type: 'directional', color: color('#ffe1b6'), intensity: 2, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .15, normalOffsetBias: .08, numCascades: 2 });
+  const sun = new pc.Entity('Warm coastal daylight');
+  sun.addComponent('light', { type: 'directional', color: color('#fff0d8'), intensity: 1.65, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .15, normalOffsetBias: .08, numCascades: 2 });
   sun.setEulerAngles(53, -39, 0);
   app.root.addChild(sun);
 
@@ -127,7 +128,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   const skyMaterial = new pc.ShaderMaterial({
     uniqueName: 'coast-gradient-sky', attributes: { aPosition: pc.SEMANTIC_POSITION },
     vertexGLSL: 'attribute vec3 aPosition; uniform mat4 matrix_model; uniform mat4 matrix_viewProjection; varying vec3 vPos; void main(){vPos=aPosition; gl_Position=matrix_viewProjection*matrix_model*vec4(aPosition,1.);}',
-    fragmentGLSL: ' varying vec3 vPos; void main(){float t=smoothstep(-.03,.7,normalize(vPos).y);gl_FragColor=vec4(mix(vec3(.976,.804,.71),vec3(.38,.463,.71),t),1.);}',
+    fragmentGLSL: ' varying vec3 vPos; void main(){float t=smoothstep(-.03,.7,normalize(vPos).y);gl_FragColor=vec4(mix(vec3(.76,.9,.95),vec3(.25,.59,.83),t),1.);}',
   });
   skyMaterial.cull = pc.CULLFACE_FRONT;
   skyMaterial.depthWrite = false;
@@ -138,13 +139,13 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   const oceanMaterial = new pc.ShaderMaterial({
     uniqueName: 'coast-water', attributes: { aPosition: pc.SEMANTIC_POSITION },
     vertexGLSL: `attribute vec3 aPosition;uniform mat4 matrix_model;uniform mat4 matrix_viewProjection;uniform mat4 matrix_view;uniform float time;varying vec3 wp;varying float depth;void main(){vec3 p=aPosition;p.y+=sin(p.x*.038+time*.4)*.18+cos(p.z*.045+time*.3)*.13;vec4 w=matrix_model*vec4(p,1.);wp=w.xyz;depth=-(matrix_view*w).z;gl_Position=matrix_viewProjection*w;}`,
-    fragmentGLSL: `varying vec3 wp;varying float depth;uniform float time;void main(){float a=sin(wp.x*.22+wp.z*.34+time*.9);float b=sin(wp.x*.13-wp.z*.17+time*.5);float glint=pow(max(0.,a*b),14.);vec3 col=mix(vec3(.08,.41,.5),vec3(.12,.61,.63),.5+.2*a);col+=vec3(.4,.5,.43)*glint*.45;col=mix(col,vec3(.918,.733,.698),smoothstep(140.,650.,depth));gl_FragColor=vec4(col,1.);}`,
+    fragmentGLSL: `varying vec3 wp;varying float depth;uniform float time;void main(){float a=sin(wp.x*.22+wp.z*.34+time*.9);float b=sin(wp.x*.13-wp.z*.17+time*.5);float glint=pow(max(0.,a*b),14.);vec3 col=mix(vec3(.06,.48,.60),vec3(.16,.70,.72),.5+.2*a);col+=vec3(.4,.5,.43)*glint*.45;col=mix(col,vec3(.714,.871,.925),smoothstep(140.,650.,depth));gl_FragColor=vec4(col,1.);}`,
   });
   oceanMaterial.cull = pc.CULLFACE_NONE;
   oceanMaterial.setParameter('time', 0);
   const ocean = meshEntity('Animated ocean', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(1050, 1050), widthSegments: 130, lengthSegments: 130 })), oceanMaterial, root);
   ocean.setPosition(0, -1.8, 0);
-  const sand = material('#edcca0'), grass = material('#bbd395');
+  const sand = material('#f2d9a4'), grass = material('#98c68b');
   function land(x: number, z: number, radius: number, sx: number, sz: number, heightOffset = 0) {
     for (const [r, y, h, m] of [[radius, -2, 4, sand], [radius * .94, -.4, 2, grass]] as const) {
       const entity = meshEntity('Island', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.CylinderGeometry({ radius: r, height: h, capSegments: 64 })), m, root);
@@ -159,7 +160,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const a = i / 17 * Math.PI * 2, r = 420 + Math.sin(i * 3) * 70;
     mountains.add(new pc.ConeGeometry({ baseRadius: 32 + i % 3 * 15, peakRadius: 0, height: 55 + i % 5 * 15, capSegments: 5 }), new pc.Vec3(Math.cos(a) * r, 8, Math.sin(a) * r), new pc.Vec3(1, 1, 1.4), i);
   }
-  mountains.entity(app, 'Distant mountains', material('#a2adc0'), root);
+  mountains.entity(app, 'Distant mountains', material('#a1c6d5'), root);
 
   // Nominal edge offsets preserve existing curb/rail thickness as the road widens.
   const edgeLane = (distance: number, nominal: number) => Math.sign(nominal) * (halfWidthAt(distance) + Math.abs(nominal) - HALF);
@@ -218,6 +219,13 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   posts.entity(app, 'Guardrail supports', material('#b5d3d9'), root, true);
   supports.entity(app, 'Elevated road piers', material('#93acaa'), root, true);
   grid.entity(app, 'Checkered starting line', material('#fffcde'), root);
+
+  // Same original batched scenery in the live race and menu. No new colliders,
+  // asset requests, moving parts, render targets or per-frame scenery updates.
+  for (const batch of buildCoastScenery(coastGroundHeightAt).batches) {
+    const builder = new MeshBuilder(); builder.positions = batch.positions; builder.indices = batch.indices;
+    if (builder.indices.length) builder.entity(app, batch.name, material(batch.color, {roughness: batch.roughness}), root, true);
+  }
 
   // The title screen shares the circuit, but never allocates gameplay pickups,
   // item-model caches, shields or particle pools. Render components own meshes;

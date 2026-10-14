@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
 import {circuit, LENGTH, HALF, halfWidthAt, laneLimitAt, shoulderAt, sample, isRoadsideClear, COAST_TURN_SIGNS, COAST_PICKUPS, COAST_SECTIONS} from '../src/track';
+import {buildCoastScenery} from '../src/coast-scenery';
 import {createCoastScene, coastGroundHeightAt, coastPalmPlacements, COAST_ISLANDS} from '../src/scene';
 
 const near = (a: number, b: number, tolerance = 1e-4) => assert.ok(Math.abs(a - b) <= tolerance, `${a} differs from ${b}`);
@@ -123,6 +124,8 @@ test('actual native coast road, kerbs, rails, markings and pickups follow the ne
     // Every hidden item variant is included, so the budget cannot hide allocations.
     const poolTriangles=world.boxes.filter(box=>box.dynamic).reduce((sum,box)=>sum+(box.mesh.findComponents('render') as pc.RenderComponent[]).reduce((n,render)=>n+render.meshInstances.reduce((m,instance)=>m+instance.mesh.primitive[0].count/3,0),0),0);
     assert.equal(poolTriangles,4*1264,'four shared pickup shells add exactly 5,056 triangles including all hidden variants');
-    assert.ok(totalTriangles <= 141356, `${totalTriangles} exceeds the exact existing scene plus four pickup shells budget`);
+    const sceneryTriangles=buildCoastScenery(coastGroundHeightAt).batches.reduce((n,b)=>n+b.indices.length/3,0);
+    assert.ok(sceneryTriangles<=6000,'coastal polish has a separate bounded scenery allowance');
+    assert.ok(totalTriangles-sceneryTriangles <= 141356, `${totalTriangles-sceneryTriangles} exceeds the unchanged road/gameplay and pickup shells budget`);
   } finally { app.destroy(); }
 });
