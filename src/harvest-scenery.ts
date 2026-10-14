@@ -50,28 +50,28 @@ const plots=[
 /** Original connected farming landscape. This source is shared by the runtime,
  * camera and offline renderer; every agricultural machine remains static. */
 export function buildHarvestSceneGeometry(course:SceneryForkCourse):HarvestSceneGeometry {
-  const ground=new Batch('Harvest connected contour earth','#82895a',1,'grass');
-  const soil=new Batch('Harvest dark cultivated soil and road support','#79623c',1,'stone');
+  const ground=new Batch('Harvest connected contour earth','#a5b773',1,'grass');
+  const soil=new Batch('Harvest dark cultivated soil and road support','#967449',1,'stone');
   const road=new Batch('Harvest packed ochre racing earth','#ad8250',.99,'asphalt');
   const paving=new Batch('Harvest pale yard pavers and coping','#d0bc86',.97,'stone');
-  const stone=new Batch('Harvest warm limestone foundations','#94856a',.98,'stone');
-  const paleStone=new Batch('Harvest limestone quoins and caps','#c6b892',.96,'stone');
-  const timber=new Batch('Harvest structural dark oak','#73523c',.94,'wood');
-  const boards=new Batch('Harvest barn warm boards','#a47445',.95,'wood');
-  const cutWood=new Batch('Harvest end grain and pale rails','#c3a16b',.93,'wood');
-  const roof=new Batch('Harvest muted clay roof tiles','#8c5739',.94,'stone');
+  const stone=new Batch('Harvest warm limestone foundations','#b49f77',.98,'stone');
+  const paleStone=new Batch('Harvest limestone quoins and caps','#e2d3a7',.96,'stone');
+  const timber=new Batch('Harvest structural dark oak','#957146',.94,'wood');
+  const boards=new Batch('Harvest barn warm boards','#c09556',.95,'wood');
+  const cutWood=new Batch('Harvest end grain and pale rails','#e5c583',.93,'wood');
+  const roof=new Batch('Harvest muted clay roof tiles','#b56c43',.94,'stone');
   const plaster=new Batch('Harvest lime plaster masonry','#ece2c7',.96,'stone');
   const iron=new Batch('Harvest dark forged iron','#57594e',.58,'none',.58);
   const metal=new Batch('Harvest galvanized silo bands','#a3aaa0',.57,'none',.56);
-  const grain=new Batch('Harvest ripe wheat rows','#d6af49',.96,'grass');
-  const straw=new Batch('Harvest pale straw ears and bales','#e4c77a',.97,'grass');
-  const stems=new Batch('Harvest dry crop stems','#887341',.98,'wood');
-  const leaves=new Batch('Harvest olive orchard leaves','#5e7444',.99,'grass');
-  const lightLeaves=new Batch('Harvest sunlit orchard leaves','#91a65e',.99,'grass');
-  const fruit=new Batch('Harvest fruit and terracotta','#bc643e',.93,'stone');
-  const canvas=new Batch('Harvest cream canopy and sail cloth','#ead8a5',.96,'wood');
+  const grain=new Batch('Harvest ripe wheat rows','#ebbe4e',.96,'grass');
+  const straw=new Batch('Harvest pale straw ears and bales','#f4d991',.97,'grass');
+  const stems=new Batch('Harvest dry crop stems','#a08b49',.98,'wood');
+  const leaves=new Batch('Harvest olive orchard leaves','#6f9647',.99,'grass');
+  const lightLeaves=new Batch('Harvest sunlit orchard leaves','#a4c562',.99,'grass');
+  const fruit=new Batch('Harvest fruit and terracotta','#c75d42',.93,'stone');
+  const canvas=new Batch('Harvest cream canopy and sail cloth','#fff0bd',.96,'wood');
   const dark=new Batch('Harvest recesses and warm joints','#473d2b',.98,'wood');
-  const rollingEarth=new Batch('Harvest rolling cultivated earth','#7a8853',1,'grass');
+  const rollingEarth=new Batch('Harvest rolling cultivated earth','#9caf62',1,'grass');
   const batches=[ground,soil,road,paving,stone,paleStone,timber,boards,cutWood,roof,plaster,iron,metal,grain,straw,stems,leaves,lightLeaves,fruit,canvas,dark,rollingEarth];
   const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
   const sourceFaces=sampleRoadFootprints(edges,1.65),roadIndex=new RoadFootprintIndex(sourceFaces);
@@ -480,6 +480,95 @@ export function buildHarvestSceneGeometry(course:SceneryForkCourse):HarvestScene
     face([0,1,2,3,4,5]);face([6,7,8,9,10,11]);for(let j=0;j<6;j++)face([j,(j+1)%6,(j+1)%6+6,j+6]);
     const component=bound('harvest-enrichment-'+id,leaves,start),cameraKind='harvest-enrichment-'+id+'-exact-triangles',piece:FarmPiece={...component,id:id+'/rooted-hedge',indexStart,indexEnd:leaves.indices.length,role:'terrain-rooted-hedgerow',supportOwner:['original-terrain']};
     enrichmentVegetation.push({id,kind:'connected-hedgerow-run',supportOwner:'original-terrain',pieces:[piece],rootContact:{pieceId:piece.id,footprint:foot.map(tuple),bottom,terrainLow:ext.low,terrainHigh:ext.high},position:[x,groundY(x,z),z],radius:Math.hypot(11,2.1),height:top-groundY(x,z),cameraKind});meshBlock(cameraKind,facesFor(leaves,start,component.vertexEnd));
+  }
+
+  // Append-only finish carpentry and farm utility props. These occupy the
+  // original five off-road terrace reservations, with no camera/physics edits.
+  // Existing material batches also provide the small barn-red painted accents.
+  const detailBox=(kind:string,b:Batch,p:pc.Vec3,size:pc.Vec3)=>box('harvest-polish-'+kind,b,p,size);
+  const detailBeam=(kind:string,b:Batch,a:pc.Vec3,c:pc.Vec3,w:number,d=w)=>beam('harvest-polish-'+kind,b,a,c,w,d);
+  const detailTube=(kind:string,b:Batch,path:pc.Vec3[],r:number[],sides=8,cap=true)=>tube('harvest-polish-'+kind,b,path,r,sides,cap,cap);
+  for(const plot of plots){
+    const base=foundations.find(f=>f.kind===plot.kind)!;
+    const at=local(vec(plot.x,base.top,plot.z));
+    const put=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>detailBox(kind,b,at(x,y,z),vec(w,h,d));
+    if(plot.kind==='amberwind-mill'){
+      // A working hand pump and low slatted trough nestle into one corner of
+      // the existing square apron, outside the circular tower plinth.
+      const x=12.85,z=12.1;
+      put('mill-pump-stone-foot',paleStone,x,.13,z,1.1,.26,1.1);
+      detailTube('mill-pump-barrel',iron,[at(x,.26,z),at(x,2.5,z)],[.27,.34],8);
+      detailTube('mill-pump-spout',metal,[at(x,1.94,z),at(x-.75,1.94,z),at(x-.75,1.66,z)],[.105,.105,.105],6);
+      detailBeam('mill-pump-handle',iron,at(x+.12,2.53,z),at(x+.85,2.05,z),.12);
+      put('mill-pump-grip',cutWood,x+.85,2.05,z,.16,.16,.65);
+      put('mill-water-trough-floor',boards,x-.70,.21,z-1.8,2.7,.42,1.25);
+      for(const dz of [-.62,.62])put('mill-water-trough-side',cutWood,x-.70,.64,z-1.8+dz,2.7,.86,.13);
+      for(const dx of [-1.32,1.32])put('mill-water-trough-end',cutWood,x-.70+dx,.64,z-1.8,.13,.86,1.25);
+      put('mill-trough-dark-recess',dark,x-.70,.77,z-1.8,2.42,.045,.96);
+      for(const dx of [-.82,.82])put('mill-trough-iron-binding',iron,x-.70+dx,.65,z-2.45,.08,.89,.035);
+    }else if(plot.kind==='stone-granary'){
+      for(const x of [-9,3]){
+        for(const side of [-1,1]){
+          const sx=x+side*1.57;
+          put('granary-red-shutter',fruit,sx,9,-8.78,.68,2.8,.18);
+          for(const y of [8.12,9.88])put('granary-shutter-hinge',iron,sx,y,-8.9,.55,.10,.10);
+        }
+        put('granary-window-sill',paleStone,x,7.66,-8.85,2.8,.23,.70);
+      }
+      // Clear X bracing reads on the open sliding door without filling its portal.
+      detailBeam('granary-door-cross-brace',cutWood,at(4.3,.65,-9.01),at(8.3,8.95,-9.01),.20,.14);
+      detailBeam('granary-door-cross-brace',cutWood,at(8.3,.65,-9.03),at(4.3,8.95,-9.03),.20,.14);
+      for(const [x,z] of [[-9,-9.5],[-6.5,-9.5],[-11,-7]]){
+        detailTube('granary-sack-tie',stems,[at(x,1.84,z),at(x,2.05,z)],[.21,.16],8);
+        detailTube('granary-sack-fold',canvas,[at(x,2.05,z),at(x,2.25,z)],[.16,.27],8);
+      }
+      for(const z of [-5,-2.8]){
+        detailBeam('granary-resting-tool-handle',cutWood,at(-13.3,.04,z),at(-12.8,3.6,z),.10);
+        detailBeam('granary-rake-head',iron,at(-13.32,.13,z-.45),at(-13.32,.13,z+.45),.10);
+        for(const dz of [-.36,-.12,.12,.36])put('granary-rake-tooth',iron,-13.30,.18,z+dz,.22,.065,.065);
+      }
+    }else if(plot.kind==='orchard-press'){
+      for(const z of [-8.58,8.58]){
+        put('press-red-painted-fascia',fruit,0,10.9,z,19.5,.25,.14);
+        for(const x of [-8.9,0,8.9])put('press-fascia-peg',cutWood,x,10.9,z-.08,.13,.13,.08);
+      }
+      // A harvest ladder leans against the outer post, entirely on its apron.
+      for(const z of [-1.2,.2])detailBeam('press-fruit-ladder-stile',cutWood,at(11.1,0,z),at(9.6,6.7,z),.17);
+      for(let i=0;i<8;i++){
+        const y=.55+i*.78,x=11.1-y/6.7*1.5;
+        detailBeam('press-fruit-ladder-rung',timber,at(x,y,-1.25),at(x,y,.25),.14);
+      }
+      for(const x of [-5,5])for(let j=0;j<10;j++){
+        const a=j/10*Math.PI*2,px=x+Math.cos(a)*2.37,pz=1+Math.sin(a)*2.37;
+        // Fine staves lie on the existing press basket rather than another shell.
+        detailTube('press-basket-stave-seam',cutWood,[at(px,1.07,pz),at(px,4.87,pz)],[.047,.047],4);
+      }
+    }else if(plot.kind==='field-silo-cluster'){
+      for(const x of [-10,-9,-8])put('silo-shed-red-door-batten',fruit,x,1.8,2.54,.12,3.4,.12);
+      put('silo-shed-door-header',cutWood,-9,3.70,2.50,3.1,.18,.24);
+      // A one-wheel barrow with a shallow open tray and two ground-resting legs.
+      const x=9.6,z=7.2;
+      detailTube('silo-barrow-wheel',iron,[at(x-.14,.49,z-1.17),at(x+.14,.49,z-1.17)],[.49,.49],10);
+      detailTube('silo-barrow-hub',metal,[at(x-.23,.49,z-1.17),at(x+.23,.49,z-1.17)],[.12,.12],8);
+      for(const side of [-1,1]){
+        detailBeam('silo-barrow-frame',timber,at(x+side*.40,.49,z-1.2),at(x+side*.76,1.46,z+2.65),.12);
+        detailBeam('silo-barrow-rest-leg',iron,at(x+side*.60,0,z+.7),at(x+side*.55,1.04,z+.6),.11);
+        put('silo-barrow-tray-side',boards,x+side*.74,1.25,z,.13,.57,2.0);
+      }
+      put('silo-barrow-tray-floor',boards,x,1.0,z,1.48,.15,2.0);
+      for(const dz of [-1,1])put('silo-barrow-tray-end',cutWood,x,1.25,z+dz,1.48,.57,.13);
+      for(const [dx,dz] of [[-.3,-.4],[.27,-.3],[.06,.35]])put('silo-barrow-feed-bag',canvas,x+dx,1.31,z+dz,.46,.48,.60);
+    }else if(plot.kind==='harvest-market'){
+      for(const [x,z,w,h] of [[-11,0,10,8],[0,2,10,9.3],[11,0,10,7.3]]){
+        // Alternating red cloth tabs and a small suspended produce scale give
+        // each already modeled market stall a more legible working frontage.
+        for(let i=0;i<5;i++)put('market-red-valance-tab',fruit,x-4+i*2,h-.25,z-5.035,.72,.67,.07);
+        detailBeam('market-scale-hanger',iron,at(x,h,z-4.57),at(x,h-2.0,z-4.57),.065);
+        const center=at(x,h-2.0,z-4.57);
+        detailTube('market-scale-pan',metal,[center.clone().add(vec(0,-.18,0)),center],[.22,.68],10);
+        for(const side of [-1,1])detailBeam('market-scale-pan-strap',iron,at(x,h-1.35,z-4.57),at(x+side*.58,h-2,z-4.57),.035);
+      }
+    }
   }
 
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}

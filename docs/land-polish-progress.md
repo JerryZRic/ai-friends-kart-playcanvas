@@ -9,8 +9,9 @@ main/v1.0.0 remain unchanged. Pages publication is verified per build commit.
 - 03 Town: modeled detail and palette pass complete; +7,872 triangles, +0 material batches
 - 05 Forest: modeled detail and palette pass complete; +5,536 triangles, +0 material batches
 - 09 Snow: modeled detail and palette pass complete; +1,636 triangles, +0 material batches
+- 07 Harvest: modeled detail and palette pass complete; +1,936 triangles, +0 material batches
 
-Not yet included: 04 Quarry, 07 Harvest, 08 Desert, 10 Caldera, 11 Garden, 12 Airfield.
+Not yet included: 04 Quarry, 08 Desert, 10 Caldera, 11 Garden, 12 Airfield.
 
 Coast was playtested and its visual direction accepted. Each map retains its own
 theme. Specific notes record additions, budgets and checks. Offline previews use
