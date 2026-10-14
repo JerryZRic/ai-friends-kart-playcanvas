@@ -17,7 +17,11 @@ test('Mountain enrichment preserves original road, shoulders, rails and marking 
   assert.deepEqual(scene.roadSamples,original.roadSamples);assert.deepEqual(scene.structures,original.structures);
 });
 test('enriched Mountain remains bounded and every emitted triangle has one component owner',()=>{
-  assert.ok(scene.budget.batches<=24);assert.ok(scene.budget.triangles<110000,JSON.stringify(scene.budget));assert.ok(scene.budget.vertices<190000,JSON.stringify(scene.budget));
+  const polishTriangles=scene.components.filter(c=>c.kind.startsWith('polish-mountain-')).reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0);
+  // Keep the original geometry's historical budget, with a separate small
+  // allowance for the explicitly scoped 2026 lookout furnishings.
+  assert.ok(scene.budget.batches<=24);assert.ok(scene.budget.triangles-polishTriangles<110000,JSON.stringify(scene.budget));
+  assert.ok(polishTriangles<=2000,`lookout polish triangles ${polishTriangles}`);assert.ok(scene.budget.vertices<190000,JSON.stringify(scene.budget));
   for(const b of scene.batches){
     assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));assert.equal(b.uvs.length,b.positions.length/3*2);
     const components=scene.components.filter(c=>c.batch===b.name).sort((a,b)=>a.indexStart-b.indexStart);let end=0;
