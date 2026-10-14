@@ -28,7 +28,7 @@ export interface CalderaSceneGeometry extends LandSceneGeometry {
  enrichmentAssemblies:{id:string;pieces:(CalderaComponent&{id:string;supportOwner:string[];supportIndexStart?:number;supportIndexEnd?:number})[];groundContacts:{pieceId:string;footprint:number[][];bottom:number;terrainLow:number;terrainHigh:number;bottomIndexStart:number;bottomIndexEnd:number;terrainPenetrationMetres:number}[]}[];
  budget:{batches:number;triangles:number;vertices:number};
 }
-export const CALDERA_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'basalt crown original cooled stone and dry ash',ambient:'#b5b0a3',sky:'#d8d0ba',fogStart:1150,fogEnd:2450,cameraName:'Basalt Crown chase camera',sunName:'Basalt Crown warm raking sunlight',sunColor:'#fff0d4',sunIntensity:1.65,sunEuler:[36,-38,0] as const});
+export const CALDERA_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'basalt crown original cooled stone and dry ash',ambient:'#d3d4e3',sky:'#e0e6f2',fogStart:1150,fogEnd:2450,cameraName:'Basalt Crown chase camera',sunName:'Basalt Crown warm raking sunlight',sunColor:'#fff0d4',sunIntensity:1.65,sunEuler:[36,-38,0] as const});
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
 const clamp=(x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
 const smooth=(x:number)=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
@@ -42,28 +42,29 @@ const yAt=(f:pc.Vec3[],x:number,z:number)=>{const[a,b,c]=f,den=(b.x-a.x)*(c.z-a.
 /** One original dry-land environment. Runtime physics remains source-owned.
  * Every camera obstacle and every audit face is emitted from these batches. */
 export function buildCalderaSceneGeometry(course:SceneryForkCourse):CalderaSceneGeometry {
- const basalt=new Batch('Caldera connected dark basalt rim','#454c50',1,'stone');
- const ash=new Batch('Caldera connected cooled ash terraces','#a89c83',1,'grass');
- const road=new Batch('Caldera exact dressed basalt road','#898c85',.97,'asphalt');
- const shoulder=new Batch('Caldera exact ground shoulder stitches','#8d8574',1,'stone');
- const foundationStone=new Batch('Caldera full footprint foundations','#67675e',1,'stone');
- const masonry=new Batch('Caldera viaduct dark masonry','#565956',.98,'stone');
- const voussoir=new Batch('Caldera light arch voussoirs','#979582',.97,'stone');
- const coping=new Batch('Caldera exposed pale coping and rails','#b9b39c',.94,'stone');
- const joints=new Batch('Caldera recessed joint faces','#343b3e',1,'stone');
- const walls=new Batch('Caldera warm archive wall stone','#8e8068',.98,'stone');
- const roof=new Batch('Caldera thick bearing slab roofs','#555e60',.98,'stone');
- const specimen=new Batch('Caldera original specimen strata','#a79a81',1,'stone');
- const bronze=new Batch('Caldera aged bronze hardware','#9a8250',.62,'none',.5);
- const timber=new Batch('Caldera dark specimen cradle timber','#65513a',.97,'wood');
- const reveal=new Batch('Caldera deep window reveals','#444b49',1,'stone');
- const trim=new Batch('Caldera archive inset trim','#b5a786',.95,'stone');
- const ochre=new Batch('Caldera connected ochre interbeds','#92734e',1,'stone');
- const tooth=new Batch('Caldera wind eroded window ribs','#667073',1,'stone');
- const inlay=new Batch('Caldera branch signs and inlays','#d4c6a5',.94,'stone');
- const groundcover=new Batch('Caldera sparse dry rooted groundcover','#867b56',1,'grass');
- const packing=new Batch('Caldera masonry joint packing','#6c685d',1,'stone');
- const batches=[basalt,ash,road,shoulder,foundationStone,masonry,voussoir,coping,joints,walls,roof,specimen,bronze,timber,reveal,trim,ochre,tooth,inlay,groundcover,packing];
+ const basalt=new Batch('Caldera connected dark basalt rim','#8c92aa',1,'stone');
+ const ash=new Batch('Caldera connected cooled ash terraces','#d4cfdf',1,'grass');
+ const road=new Batch('Caldera exact dressed basalt road','#a3b2c5',.97,'asphalt');
+ const shoulder=new Batch('Caldera exact ground shoulder stitches','#b9bdce',1,'stone');
+ const foundationStone=new Batch('Caldera full footprint foundations','#b4b7cc',1,'stone');
+ const masonry=new Batch('Caldera viaduct dark masonry','#929bb2',.98,'stone');
+ const voussoir=new Batch('Caldera light arch voussoirs','#dce1ed',.97,'stone');
+ const coping=new Batch('Caldera exposed pale coping and rails','#f0edf5',.94,'stone');
+ const joints=new Batch('Caldera recessed joint faces','#5b647d',1,'stone');
+ const walls=new Batch('Caldera warm archive wall stone','#d1cbdc',.98,'stone');
+ const roof=new Batch('Caldera thick bearing slab roofs','#7286a2',.98,'stone');
+ const specimen=new Batch('Caldera original specimen strata','#b8aec9',1,'stone');
+ const bronze=new Batch('Caldera aged bronze hardware','#94a4bc',.62,'none',.5);
+ const timber=new Batch('Caldera dark specimen cradle timber','#718296',.97,'wood');
+ const reveal=new Batch('Caldera deep window reveals','#4e6584',1,'stone');
+ const trim=new Batch('Caldera archive inset trim','#ece9f3',.95,'stone');
+ const ochre=new Batch('Caldera connected ochre interbeds','#aa99b8',1,'stone');
+ const tooth=new Batch('Caldera wind eroded window ribs','#a3abc2',1,'stone');
+ const inlay=new Batch('Caldera branch signs and inlays','#f5f0e8',.94,'stone');
+ const groundcover=new Batch('Caldera sparse dry rooted groundcover','#97a59b',1,'grass');
+ const packing=new Batch('Caldera masonry joint packing','#818ba4',1,'stone');
+ const ventOrange=new Batch('Caldera localized vent instrument heat indicators','#f3a065',.75,'none');
+ const batches=[ventOrange,basalt,ash,road,shoulder,foundationStone,masonry,voussoir,coping,joints,walls,roof,specimen,bronze,timber,reveal,trim,ochre,tooth,inlay,groundcover,packing];
  const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish],sourceFaces=sampleRoadFootprints(edges,1.65),roadIndex=new RoadFootprintIndex(sourceFaces),plots=CALDERA_LANDMARKS.plots;
  const [bridgeFrom,bridgeTo]=CALDERA_VIADUCT.upperPhysicalS,bridgeStations=CALDERA_VIADUCT.supportStations;
  // Unshrunk native bounds from all six assembled racers require 11.8331m.
@@ -375,6 +376,68 @@ export function buildCalderaSceneGeometry(course:SceneryForkCourse):CalderaScene
  };
  archiveWing('enrichment-archive-store-wing',-167,-602,29,13,9.0,Math.PI+.1,false);
  archiveWing('enrichment-archive-open-portico',-209,-624,23,12,6.4,.1,true);
+ // Dev polish: articulated stone strata and a tiny coherent vent-sampling
+ // station occupy the existing archive apron. Orange is reserved for its heat
+ // instruments, not spread over the terrain or the racing route.
+ const polishBox=(kind:string,b:Batch,at:ReturnType<typeof local>,yaw:number,x:number,y:number,z:number,w:number,h:number,d:number)=>own(box('caldera-polish-'+kind,b,at(x,y,z),vec(w,h,d),yaw,'detail'));
+ const polishPrism=(kind:string,b:Batch,at:ReturnType<typeof local>,x:number,z:number,r:number,bottom:number,top:number,sides=8)=>{
+  const poly=Array.from({length:sides},(_,i)=>at(x+Math.cos(i/sides*Math.PI*2)*r,0,z+Math.sin(i/sides*Math.PI*2)*r));
+  return own(solid('caldera-polish-'+kind,b,poly,at(0,bottom,0).y,at(0,top,0).y,'detail'));
+ };
+ {
+  const group=enrichmentAssemblies.find(a=>a.id==='enrichment-archive-open-portico')!;
+  const seat=group.pieces.find(p=>p.kind==='enrichment-archive-terrain-seat')!;
+  enrichmentAssembly=beginAssembly('caldera-polish-vent-sampling-station');
+  const yaw=.1,at=local(vec(-209,seat.max[1],-624),yaw);
+  const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+  for(const [x,h]of [[-9,10.4],[9,8.5]]){
+   const z=9;
+   // Four contiguous levels make a faceted cooling tower with a real crown.
+   polishPrism('vent-wide-foot',coping,at,x,z,1.5,0,.36);
+   polishPrism('vent-foot-riser',masonry,at,x,z,1.20,.36,.90);
+   polishPrism('vent-octagonal-shaft',roof,at,x,z,.79,.90,h-1.0);
+   for(const y of [1.2,2.6,4.0])polishPrism('vent-flange-collar',coping,at,x,z,1.03,y,y+.20);
+   polishPrism('vent-heat-throat',ventOrange,at,x,z,.83,h-1.0,h-.64);
+   for(const side of [-1,1])put('vent-crown-support',bronze,x+side*.58,h-.39,z,.13,.50,.13);
+   polishPrism('vent-umbrella-crown',coping,at,x,z,1.35,h-.14,h+.15);
+   polishPrism('vent-upper-crown',roof,at,x,z,.70,h+.15,h+.37);
+   put('vent-control-backplate',coping,x,2.0,z-1.1,1.3,1.8,.20);
+   put('vent-control-face',reveal,x,2.0,z-1.23,1.08,1.56,.10);
+   for(let i=0;i<3;i++)put('vent-meter-bar',i===0?ventOrange:inlay,x-.27+i*.27,2.23,z-1.30,.12,.72-i*.14,.05);
+   put('vent-valve-socket',bronze,x,1.55,z-1.36,.20,.22,.24);
+   for(const a of [0,Math.PI/2]){const dx=Math.cos(a)*.28,dy=Math.sin(a)*.28;own(beam('caldera-polish-vent-valve-cross',coping,at(x-dx,1.55-dy,z-1.48),at(x+dx,1.55+dy,z-1.48),.11,.11,'detail'));}
+  }
+  // Finite bearing blocks carry the instrument conduit, with visible daylight.
+  for(const x of [-5,0,5])put('conduit-foot',masonry,x,.40,9,1.0,.8,.9);
+  put('supported-conduit',bronze,0,.89,9,16.4,.22,.32);
+  for(const x of [-5,0,5])put('conduit-saddle',coping,x,.84,9,.22,.45,.6);
+  // Portico cornice, panel rhythm and under-roof brackets retain its open bays.
+  for(const z of [-6.94,6.94])put('portico-roof-fascia',coping,0,7.22,z,25.1,.46,.28);
+  for(const x of [-11.94,11.94])put('portico-roof-side-fascia',coping,x,7.22,0,.28,.46,13.6);
+  for(const x of [-10.8,-3.6,3.6,10.8])for(const z of [-5.45,5.45])put('portico-pier-cap',trim,x,5.17,z,1.45,.35,1.45);
+  finishAssembly();
+ }
+ {
+  const p=plots[2],seat=foundations.find(f=>f.kind===p.id)!;
+  enrichmentAssembly=beginAssembly('caldera-polish-archive-strata-detail');
+  const yaw=.48,at=local(vec(p.x,seat.top,p.z),yaw);
+  const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+  // Layered sample cores on the existing side apron. Off-centre octagonal
+  // tiers are separate visible ledges, not a recolor of one tall cuboid.
+  for(const [x,z]of [[-12.2,-2.6],[12.2,-2.6]]){
+   put('strata-display-foot',coping,x,.25,z,2.65,.5,2.6);
+   for(let i=0;i<4;i++)polishPrism('stepped-specimen-layer',i%2?tooth:specimen,at,x+(i%2)*.12,z,.98-i*.10,.5+i*.48,.98+i*.48,7);
+   put('specimen-label-stem',bronze,x,.70,z-1.4,.12,1.4,.12);
+   put('specimen-label-frame',coping,x,1.42,z-1.4,1.5,.65,.14);
+   put('specimen-label-face',reveal,x,1.43,z-1.49,1.25,.43,.07);
+  }
+  for(const [cx,cz,angle,height]of [[-9,3,-.23,7.1],[0,6,0,8.0],[9,3,.23,6.5]]){
+   const bay=local(at(cx,0,cz),yaw+angle);
+   for(const z of [-4.64,4.64])polishBox('archive-double-cornice',coping,bay,yaw+angle,0,height+.88,z,8.75,.24,.28);
+   for(const x of [-3.45,3.45])for(const y of [2.0,4.0])polishBox('archive-pier-joint-band',trim,bay,yaw+angle,x,y,-4.31,1.15,.14,.08);
+  }
+  finishAssembly();
+ }
  const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
  if(enrichmentTriangles>12000)throw Error('Caldera append-only enrichment triangle allowance exceeded');
 
