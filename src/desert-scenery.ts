@@ -40,27 +40,27 @@ const plots=[
 /** Original deterministic source geometry. The renderer, road audit and camera
  * all consume these same triangles. Nothing here changes vehicle physics. */
 export function buildDesertSceneGeometry(course:SceneryForkCourse):DesertSceneGeometry {
- const ground=new Batch('Desert connected sculpted dune terrain','#dfb975',1,'grass');
- const sandstone=new Batch('Desert wind rounded sandstone','#ac714c',.98,'stone');
- const strata=new Batch('Desert pale eroded strata','#cf9e67',.99,'stone');
+ const ground=new Batch('Desert connected sculpted dune terrain','#edc791',1,'grass');
+ const sandstone=new Batch('Desert wind rounded sandstone','#c28f6a',.98,'stone');
+ const strata=new Batch('Desert pale eroded strata','#e5bd92',.99,'stone');
  const supportStone=new Batch('Desert compact road support','#aa784a',1,'stone');
  const road=new Batch('Desert warm hardpan racing ribbon','#c99050',1,'asphalt');
  const paving=new Batch('Desert sandstone lane and visual coping','#d7b080',.98,'stone');
- const foundationStone=new Batch('Desert ruin foundation masonry','#b58c66',.98,'stone');
- const archStone=new Batch('Desert ochre arch voussoirs','#c09a72',.98,'stone');
- const paleStone=new Batch('Desert pale keystones and contact trim','#eddbb5',.97,'stone');
- const beaconStone=new Batch('Desert beacon cut limestone','#d8c495',.97,'stone');
- const bronze=new Batch('Desert original bronze dial','#9d7942',.52,'none',.58);
- const timber=new Batch('Desert dark structural timber','#714d33',.95,'wood');
- const boards=new Batch('Desert worn cart slats','#a07849',.96,'wood');
- const canvas=new Batch('Desert warm woven sail cloth','#e5ba62',.98,'wood');
- const paleCanvas=new Batch('Desert reinforced cream cloth','#f2dfaf',.98,'wood');
- const clay=new Batch('Desert fired terracotta','#bd704c',.97,'stone');
- const glaze=new Batch('Desert turquoise ceramic glaze','#2c7977',.38,'none',.1);
+ const foundationStone=new Batch('Desert ruin foundation masonry','#c9a581',.98,'stone');
+ const archStone=new Batch('Desert ochre arch voussoirs','#d2ae87',.98,'stone');
+ const paleStone=new Batch('Desert pale keystones and contact trim','#f5e3bd',.97,'stone');
+ const beaconStone=new Batch('Desert beacon cut limestone','#e7d4ad',.97,'stone');
+ const bronze=new Batch('Desert original bronze dial','#bc9656',.52,'none',.58);
+ const timber=new Batch('Desert dark structural timber','#916d45',.95,'wood');
+ const boards=new Batch('Desert worn cart slats','#c49c62',.96,'wood');
+ const canvas=new Batch('Desert warm woven sail cloth','#edc27b',.98,'wood');
+ const paleCanvas=new Batch('Desert reinforced cream cloth','#fff0cf',.98,'wood');
+ const clay=new Batch('Desert fired terracotta','#d38c64',.97,'stone');
+ const glaze=new Batch('Desert turquoise ceramic glaze','#42aaa2',.38,'none',.1);
  const rope=new Batch('Desert coarse bound rope','#735044',.98,'wood');
  const iron=new Batch('Desert dark iron fasteners','#4c4a43',.53,'none',.62);
- const dark=new Batch('Desert deep masonry and pottery recesses','#65513f',1,'stone');
- const dryRoot=new Batch('Desert dry roots and baskets','#9e8654',.99,'wood');
+ const dark=new Batch('Desert deep masonry and pottery recesses','#79614b',1,'stone');
+ const dryRoot=new Batch('Desert dry roots and baskets','#b7a06d',.99,'wood');
  const inlay=new Batch('Desert ivory wayfinding and relief','#f6e8bc',.92,'stone');
  const batches=[ground,sandstone,strata,supportStone,road,paving,foundationStone,archStone,paleStone,beaconStone,bronze,timber,boards,canvas,paleCanvas,clay,glaze,rope,iron,dark,dryRoot,inlay];
  const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
@@ -470,6 +470,101 @@ export function buildDesertSceneGeometry(course:SceneryForkCourse):DesertSceneGe
  bay('desert-enrichment-crescent-west-bay',-291,124,28,18,10.8,-.55,0);
  const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
  assertRuntimeAppendGeometry('Desert',batches,originalTriangleCount,enrichmentTriangles,16000);
+
+ // A separate append-only visual finish pass follows the frozen enrichment
+ // accounting above. It reuses existing materials and terrace support; neither
+ // old camera solids nor the historical component ownership is rewritten.
+ const polishTriangleStart=batches.reduce((n,b)=>n+b.indices.length/3,0);
+ const detailBox=(kind:string,b:Batch,p:pc.Vec3,size:pc.Vec3,yaw=0)=>box('desert-polish-'+kind,b,p,size,yaw,'detail');
+ const detailBeam=(kind:string,b:Batch,a:pc.Vec3,c:pc.Vec3,w:number,d=w)=>beam('desert-polish-'+kind,b,a,c,w,d,'detail');
+ const detailTube=(kind:string,b:Batch,path:pc.Vec3[],r:number[],sides=8,cap=true)=>tube('desert-polish-'+kind,b,path,r,sides,cap,cap,'detail');
+ const detailTurned=(kind:string,b:Batch,at:(x:number,y:number,z:number)=>pc.Vec3,profile:number[][],sides=12)=>turned('desert-polish-'+kind,b,at,profile,sides,'detail');
+ // The middle crescent bay was intentionally left open in the earlier pass.
+ // Its existing cloth now shades a low, genuinely hollow public court well.
+ const highBay=enrichmentAssemblies.find(a=>a.id==='desert-enrichment-crescent-high-bay')!;
+ const wellTop=highBay.pieces.find(p=>p.kind==='desert-enrichment-court-conforming-platform')!.max[1];
+ const wellAt=local(vec(-237,wellTop,79),.05);
+ detailTurned('well-hollow-masonry-curb',archStone,wellAt,[[0,2.18],[1.30,2.18],[1.46,1.62],[.30,1.62]],16);
+ for(let i=0;i<12;i++){
+   const a=i*Math.PI/6,p=wellAt(Math.cos(a)*1.91,1.48,Math.sin(a)*1.91);
+   detailBox('well-segmented-rim-stone',paleStone,p,vec(.96,.20,.48),.05+Math.PI/2-a);
+ }
+ // A small ceramic-toned water surface is recessed below the open lip.
+ detailTurned('well-recessed-water-surface',glaze,wellAt,[[.31,1.56],[.34,1.56]],16);
+ for(const side of [-1,1]){
+   detailBox('well-post-stone-shoe',paleStone,wellAt(side*2.56,.20,0),vec(.95,.40,.95),.05);
+   detailBox('well-winding-frame-post',timber,wellAt(side*2.56,2.25,0),vec(.34,4.10,.34),.05);
+   detailBeam('well-winding-frame-knee',boards,wellAt(side*2.56,3.3,0),wellAt(side*1.9,4.28,0),.18);
+ }
+ detailBox('well-seated-crossbar',boards,wellAt(0,4.35,0),vec(5.7,.25,.45),.05);
+ detailTube('well-static-winding-axle',timber,[wellAt(-2.83,3.82,0),wellAt(2.95,3.82,0)],[.21,.21],10);
+ for(const x of [-2.55,2.55])detailTube('well-axle-bearing',bronze,[wellAt(x-.12,3.82,0),wellAt(x+.12,3.82,0)],[.30,.30],10);
+ detailBeam('well-crank-arm',iron,wellAt(3.05,3.82,0),wellAt(3.05,3.25,0),.10);
+ detailTube('well-crank-grip',boards,[wellAt(3.05,3.25,0),wellAt(3.48,3.25,0)],[.13,.13],8);
+ detailTube('well-suspended-rope',rope,[wellAt(0,3.82,0),wellAt(0,2.06,0)],[.045,.045],6);
+ detailTurned('well-open-drawing-bucket',boards,local(wellAt(0,1.15,0),.05),[[0,.34],[.58,.43],[.58,.34],[.13,.25]],10);
+ for(const y of [1.26,1.66]){const r=.34+.09*(y-1.15)/.58+.007;detailTube('well-bucket-iron-binding',iron,[wellAt(0,y,0),wellAt(0,y+.06,0)],[r,r+.09*.06/.58],10,false);}
+ const bucketHandle=Array.from({length:9},(_,i)=>{const a=i/8*Math.PI;return wellAt(Math.cos(a)*.39,1.73+Math.sin(a)*.33,0);});
+ detailTube('well-bucket-arched-handle',iron,bucketHandle,bucketHandle.map(()=>.035),6);
+ // Two modest ceramic service jars rest on the existing low rear worktop.
+ for(const x of [-5,5]){
+   const at=local(wellAt(x,1.50,8.35),.05);
+   detailTurned('court-worktop-water-jar',x<0?clay:glaze,at,[[0,.45],[.35,.70],[1.15,.83],[1.82,.39],[1.92,.45],[1.92,.30],[1.55,.30]],10);
+   detailTube('court-jar-lip-trim',paleStone,[at(0,1.89,0),at(0,1.92,0)],[.439,.457],10,false);
+ }
+ for(const plot of plots){
+   if(plot.kind==='wind-carved-spire'){
+     // A few low, layered scree plates visually join the tall eroded landmark
+     // to its own apron. Full footprints are seated in actual terrain.
+     for(const [i,dx,dz] of [[0,-13.3,-9.2],[1,13.5,8.3],[2,12.2,-10.0],[3,-12.6,10.1]]){
+       const x=plot.x+dx,z=plot.z+dz,foot=rect(vec(x,0,z),3.4,2.5),ext=terrainExtrema(foot);
+       if(!roadIndex.clearAt(x,z,14))continue;
+       const at=local(vec(x,ext.low-.12,z),i*.5),h=ext.high-ext.low+.85;
+       loft('desert-polish-grounded-scree-base',sandstone,at,[{y:0,rx:1.65,rz:1.2},{y:h*.72,rx:1.50,rz:.95,x:.15},{y:h,rx:1.10,rz:.83,x:.28}],8,i,'detail');
+       loft('desert-polish-scree-pale-stratum',strata,at,[{y:h*.72,rx:1.52,rz:.97,x:.15},{y:h*.84,rx:1.30,rz:.91,x:.21}],8,i,'detail');
+     }
+     continue;
+   }
+   const base=foundations.find(f=>f.kind===plot.kind)!;
+   const at=local(vec(plot.x,base.top,plot.z));
+   const put=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>detailBox(kind,b,at(x,y,z),vec(w,h,d));
+   if(plot.kind==='caravan-sailcourt'){
+     for(const x of [-7,7]){
+       // Folded textiles lie on the free end of each existing table.
+       for(let k=0;k<4;k++)put('market-folded-textile',k%2?glaze:paleCanvas,x-2.98,2.69+k*.16,-6,.70,.15,1.8);
+       const cup=local(at(x,2.59,-6));
+       detailTurned('market-small-serving-cup',glaze,cup,[[0,.19],[.37,.27],[.37,.20],[.10,.13]],8);
+     }
+     for(const [x,z,w,d,h,yaw] of [[-8,-6.9,12,11,10.3,.10],[7.2,-6.5,12.2,10.2,12.9,-.12],[.1,8.1,16,9.4,9,.045]]){
+       const frameAt=local(at(x,0,z),yaw);
+       for(const offset of [-w*.31,0,w*.31]){
+         const y=h+.5*offset/w-.175;
+         detailTube('market-hanging-tile-cord',rope,[frameAt(offset,y,-d/2),frameAt(offset,y-.57,-d/2)],[.035,.035],5);
+         detailBox('market-turquoise-hanging-tile',glaze,frameAt(offset,y-.72,-d/2),vec(.42,.45,.10),yaw);
+         detailBox('market-tile-ivory-inset',inlay,frameAt(offset,y-.72,-d/2-.061),vec(.18,.18,.024),yaw);
+       }
+     }
+   }else if(plot.kind==='terracotta-kiln-court'){
+     put('potter-wheel-grounded-plinth',paleStone,10.9,.18,-9.5,2.8,.36,2.8);
+     detailTurned('potter-wheel-seated-column',timber,local(at(10.9,.36,-9.5)),[[0,.48],[1.00,.40]],10);
+     detailTurned('potter-wheel-round-turntable',boards,local(at(10.9,1.35,-9.5)),[[0,1.20],[.18,1.20]],16);
+     detailTurned('potter-wheel-unfired-bowl',clay,local(at(10.9,1.53,-9.5)),[[0,.24],[.50,.57],[.55,.56],[.55,.42],[.18,.20]],10);
+     for(const x of [6.4,7.6])for(const z of [-9.9,-8.9])put('potter-stool-grounded-leg',timber,x,.55,z,.17,1.1,.17);
+     for(let k=0;k<3;k++)put('potter-stool-slat-seat',boards,7,1.17,-9.94+k*.5,1.65,.17,.42);
+     for(const x of [8.7,10.2,11.7])put('kiln-shelf-turquoise-edge-tile',glaze,x,1.31,-6.16,1.32,.28,.12);
+   }else if(plot.kind==='saltstone-waystation'){
+     for(const x of [-6.65,-1.35,4.1]){
+       // Open lattice in the existing recessed niches; no additional wall.
+       for(const dx of [-.85,0,.85])put('waystation-turquoise-lattice-upright',glaze,x+dx,4.83,-4.74,.10,3.8,.11);
+       for(const y of [3.18,4.82,6.45])put('waystation-lattice-crossbar',boards,x,y,-4.75,2.55,.10,.12);
+       put('waystation-niche-upper-relief',glaze,x,8.40,-4.77,2.48,.26,.12);
+     }
+     for(let i=0;i<10;i++)put('waystation-frieze-inset',glaze,-8.65+i*1.9,10.75,-4.76,.72,.34,.10);
+     for(const z of [-10.3,-8.2,-6.1])put('waystation-porch-edge-brass-cap',bronze,9.05,8.6+(z+10.3)*.24,z,.50,.14,.36);
+   }
+ }
+ const polishTriangles=batches.reduce((n,b)=>n+b.indices.length/3,0)-polishTriangleStart;
+ assertRuntimeAppendGeometry('Desert visual polish',batches,polishTriangleStart,polishTriangles,4000);
 
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
