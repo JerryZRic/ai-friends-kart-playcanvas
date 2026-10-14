@@ -7,17 +7,98 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07151c;col
 #menu-boot p{margin:0 0 12px;line-height:1.5}#menu-boot progress{display:block;width:100%;height:12px;accent-color:#f4df9d}#menu-boot small{display:block;margin-top:10px;color:#d6e4df;line-height:1.5}#menu-boot button{font:inherit;color:#173944;background:#fff0c9;border:0;border-radius:8px;padding:10px 16px;margin:12px 4px 0;cursor:pointer}#menu-boot button:focus-visible{outline:3px solid white;outline-offset:3px}
 body[data-menu-loading="true"] .title-actions{display:none!important}
 </style><link rel="stylesheet" href="/src/character-emblems.css"><link rel="stylesheet" href="/src/title-menu.css"><link rel="preload" as="image" href="./brand/timewish.svg"><style data-brand-intro-style>
-#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover 2s linear forwards}
-#brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo 2s linear forwards}
-@keyframes timewish-cover{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
-@keyframes timewish-logo{0%{opacity:0}15%,80%{opacity:1}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}
+#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 7.5s linear forwards}
+#brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo-in 1s linear forwards}
+@keyframes timewish-cover-deadline{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes timewish-logo-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover-deadline .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}
 </style></head>
 <body data-screen="main" data-menu-loading="true"><div id="brand-intro" data-brand-intro role="img" aria-label="Timewish"><img src="./brand/timewish.svg" alt="" width="591" height="132" decoding="async" fetchpriority="high"></div><div id="menu-ui" class="fixed-ui-root" data-fixed-layout="1440x900"><div class="ambient" aria-hidden="true"></div><header class="masthead"><a class="wordmark" href="./index.html" aria-label="AI Friends Kart 主菜单">AI FRIENDS<span>KART<span class="brand-dot">.</span></span></a><a class="garage-header-link game-nav" href="./garage.html?driver=whale"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v11H3zM7 21V11h10v10M7 15h10M7 18h10"/></svg><span>改装车库</span></a><div class="build-label"><span class="live-dot"></span> CPU 实验版 · 平衡未验证</div></header><main id="menu" class="screen-main" tabindex="-1"><section class="boot-cover"><h1>大肥鱼卡丁车</h1></section></main>
 <section id="menu-boot" aria-label="首页加载" aria-busy="true"><p id="menu-boot-status" role="status" aria-live="polite">正在载入菜单程序…</p><progress id="menu-boot-progress" max="4" value="0" aria-label="首页准备阶段"></progress><small id="menu-boot-detail">准备阶段 1 / 4 · 首次打开可能需要稍候</small><div><button id="menu-boot-retry" hidden>重新加载</button><button id="menu-boot-continue" hidden>使用静态背景继续</button></div></section>
-<footer class="site-footer"><a href="./balance-report.html">候选 21 · 完整平衡尚未通过 ↗</a><a href="./balance-lab.html">六 CPU 诊断实验室 ↗</a><a href="./source.html">开源代码与模型许可 ↗</a><span>仅供非商业试玩</span></footer><noscript><style>#menu-boot{display:none}.no-script{position:fixed;left:0;right:0;bottom:90px;background:#173944}</style><p class="no-script">请开启 JavaScript 以选择地图和角色</p></noscript></div><aside id="startup-recovery" data-cold-recovery hidden style="position:fixed;inset:0;z-index:2147483646;display:none;place-content:center;gap:16px;background:#fff;color:#232334;text-align:center;font:18px system-ui"><p>游戏程序暂时未能载入，请检查网络后重试</p><button onclick="location.reload()" style="font:inherit;padding:12px">重新加载</button></aside><script>
+<footer class="site-footer"><a href="./balance-report.html">候选 21 · 完整平衡尚未通过 ↗</a><a href="./balance-lab.html">六 CPU 诊断实验室 ↗</a><a href="./source.html">开源代码与模型许可 ↗</a><span>仅供非商业试玩</span></footer><noscript><style>#menu-boot{display:none}.no-script{position:fixed;left:0;right:0;bottom:90px;background:#173944}</style><p class="no-script">请开启 JavaScript 以选择地图和角色</p></noscript></div><script data-brand-intro-bootstrap>
+/* Inlined into each cold entry by scripts/sync-brand-intro.mjs, before spa.ts.
+ * The clock belongs to this document, never to a lazy module or SPA scene. */
+(function () {
+  if (window.__timewishIntro) return;
+  var overlay = document.getElementById('brand-intro');
+  var startedAt = performance.now();
+  var reduced = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  var done = !overlay, readyAt = null, timer = 0, frame = 0;
+  var fadeStart = 0, fadeEnd = 0, fadeFrom = 1, slow = false;
+  var subscribers = new Set();
+  function elapsed() { return Math.max(0, performance.now() - startedAt); }
+  function clearWork() { clearTimeout(timer); cancelAnimationFrame(frame); timer = frame = 0; }
+  function finish() {
+    if (done) return;
+    done = true; clearWork();
+    document.removeEventListener('visibilitychange', update);
+    window.removeEventListener('pageshow', update);
+    window.removeEventListener('pagehide', pagehide);
+    overlay.remove();
+    document.querySelector('[data-brand-intro-style]')?.remove();
+    subscribers.forEach(function (callback) { callback(); });
+    subscribers.clear();
+  }
+  function opacityAt(now) { return fadeFrom * Math.max(0, Math.min(1, (fadeEnd - now) / (fadeEnd - fadeStart))); }
+  function update() {
+    if (done) return;
+    clearWork();
+    var now = elapsed();
+    // Wall-clock deadlines still apply while a tab is hidden or restored.
+    if (now >= (reduced ? 800 : 7500)) { finish(); return; }
+    if (!reduced) {
+      if (!fadeEnd) {
+        if (readyAt !== null && readyAt <= 6000 && now >= Math.max(3000, readyAt)) {
+          fadeStart = Math.max(3000, readyAt); fadeEnd = fadeStart + 500;
+        } else if (now >= 6000) {
+          fadeStart = 6000; fadeEnd = 7500; slow = true;
+        }
+      }
+      if (fadeEnd) {
+        var opacity = opacityAt(now);
+        if (slow && readyAt !== null) {
+          // Continue from the sampled opacity. Never restart a fade or extend
+          // its original deadline, including readiness in the final 150 ms.
+          var remaining = Math.min(fadeEnd - now, Math.max(150, opacity * 500));
+          fadeFrom = opacity; fadeStart = now; fadeEnd = now + remaining; slow = false;
+        }
+        if (now >= fadeEnd) { finish(); return; }
+        overlay.style.opacity = String(opacity);
+      }
+    }
+    overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 1000 ? 'fade-in' : 'hold';
+    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(3000, readyAt) : now < 1000 ? 1000 : 6000);
+    timer = setTimeout(update, Math.max(0, next - now));
+    if (fadeEnd && !document.hidden) frame = requestAnimationFrame(update);
+  }
+  function ready() {
+    if (done || readyAt !== null) return;
+    readyAt = elapsed(); update();
+  }
+  function pagehide(event) { if (!event.persisted) finish(); else clearWork(); }
+  window.__timewishIntro = {
+    startedAt: startedAt,
+    isPending: function () { return !done; },
+    ready: ready,
+    finish: finish,
+    subscribe: function (callback) {
+      if (done) callback(); else subscribers.add(callback);
+      return function () { subscribers.delete(callback); };
+    }
+  };
+  if (!done) {
+    // CSS is a bounded fallback if inline JavaScript is disabled. The runtime
+    // alone owns the overlay opacity once it starts; the logo only fades in.
+    overlay.style.animation = 'none';
+    document.addEventListener('visibilitychange', update);
+    window.addEventListener('pageshow', update);
+    window.addEventListener('pagehide', pagehide);
+    update();
+  }
+})();
+</script><aside id="startup-recovery" data-cold-recovery hidden style="position:fixed;inset:0;z-index:2147483646;display:none;place-content:center;gap:16px;background:#fff;color:#232334;text-align:center;font:18px system-ui"><p>游戏程序暂时未能载入，请检查网络后重试</p><button onclick="location.reload()" style="font:inherit;padding:12px">重新加载</button></aside><script>
 (function(){var panel=document.getElementById('startup-recovery'),timer;
-function fail(){if(!panel.isConnected)return;panel.hidden=false;panel.style.display='grid';var intro=document.getElementById('brand-intro');if(intro)intro.remove();}
+function fail(){if(!panel.isConnected)return;panel.hidden=false;panel.style.display='grid';window.__timewishIntro?.finish();var intro=document.getElementById('brand-intro');if(intro)intro.remove();}
 function error(event){if(event.target&&event.target.tagName==='SCRIPT')fail();}
 function release(){clearTimeout(timer);removeEventListener('error',error,true);removeEventListener('unhandledrejection',fail);delete window.__releaseColdRecovery;}
 window.__releaseColdRecovery=release;addEventListener('error',error,true);addEventListener('unhandledrejection',fail);timer=setTimeout(fail,15000);

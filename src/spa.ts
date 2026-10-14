@@ -1,5 +1,5 @@
 import {mountBuildVersion} from './build-version';
-import {mountBrandIntro} from './brand-intro';
+import {mountBrandIntro,readyBrandIntro,failBrandIntro,brandIntroPending} from './brand-intro';
 import {sceneForUrl,type SceneKind} from './scene-routes';
 import {getDocumentMusic,registerSceneNavigator} from './music-ui';
 import menuHtml from '../index.html?raw';
@@ -19,7 +19,8 @@ import raceCss from './race-ui.css?inline';
 type Scene = SceneKind;
 type Handle = {dispose():void};
 const directory=new URL('./',location.href);
-(window as Window & {__releaseColdRecovery?:()=>void}).__releaseColdRecovery?.();
+const coldRecovery=document.getElementById('startup-recovery');
+function releaseColdRecovery(){(window as Window & {__releaseColdRecovery?:()=>void}).__releaseColdRecovery?.();coldRecovery?.remove();}
 const music=getDocumentMusic(document,undefined,!/\/(?:coast|waterpark)\.html$/.test(location.pathname));
 const introOverlay=document.getElementById('brand-intro');
 const sceneRoot=document.createElement('div');sceneRoot.id='app-scene';sceneRoot.style.display='contents';
@@ -27,7 +28,7 @@ sceneRoot.inert=!!introOverlay;
 if(introOverlay)music?.setPresentationReady?.(false);
 // The overlay stays outside scene replacements while real resources load beneath it.
 document.body.append(sceneRoot);
-for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay)node.remove();
+for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay&&node!==coldRecovery)node.remove();
 mountBuildVersion(document);
 const intro=mountBrandIntro(document,window,()=>{sceneRoot.inert=false;music?.setPresentationReady?.(true);});
 const templates={menu:menuHtml,garage:garageHtml,land:landHtml,water:waterHtml};
@@ -77,7 +78,11 @@ async function show(url:URL,push:boolean){
   }else{
    const {mountWaterRace}=await import('./waterpark-play');if(token!==version||disposed)return;mountMarkup(next);active=mountWaterRace();
   }
- }catch(error){if(token!==version||disposed)return;active?.dispose();active=undefined;console.error('Scene unavailable',error);loading(url,error);}
+  // Each mounted scene now owns its real loader/retry UI. Until then the
+  // original cold-load watchdog stays available even if a lazy import stalls.
+  releaseColdRecovery();
+  if(next!=='menu'&&brandIntroPending(document))requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token===version&&!disposed)readyBrandIntro(document);}));
+ }catch(error){if(token!==version||disposed)return;active?.dispose();active=undefined;console.error('Scene unavailable',error);loading(url,error);releaseColdRecovery();failBrandIntro(document);}
 }
 function navigate(href:string):boolean{const url=new URL(href,location.href);if(!sceneFor(url))return false;void show(url,true);return true;}
 const releaseNavigator=registerSceneNavigator(document,navigate);
@@ -93,7 +98,7 @@ const pop=(event:PopStateEvent)=>{
  event.stopImmediatePropagation();void show(url,false);
 };
 document.addEventListener('click',click);window.addEventListener('popstate',pop);
-function dispose(){if(disposed)return;disposed=true;version++;active?.dispose();active=undefined;releaseNavigator();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
+function dispose(){if(disposed)return;disposed=true;version++;releaseColdRecovery();active?.dispose();active=undefined;releaseNavigator();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
 window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
 if(import.meta.hot)import.meta.hot.dispose(dispose);
 void show(new URL(location.href),false);
