@@ -1,3 +1,4 @@
+import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100PathsWithin, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
 import {CI_BUILD_DEPLOYMENT_REVIEW_PATH, ciBuildDeploymentHash, restoreCiBuildDeploymentBytes} from './helpers/ci-build-deployment-reviewed-revisions';
@@ -64,8 +65,8 @@ test('all frozen evidence stays byte exact and only exact CI workflow and compos
   for (const path of ['docs/stable-pages-manifest.json', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs', 'scripts/compose-dev-pages.mjs', '.github/workflows/pages.yml', '.github/workflows/pages-stable.yml', 'package.json', 'package-lock.json']) assert.ok(Object.hasOwn(review.protectedFiles, path), path);
   assert.ok(Object.keys(review.changes).every(path => !path.endsWith('.json') && !path.startsWith('.github/') && !path.startsWith('docs/') && !path.startsWith('scripts/')));
   const baselineJson = Object.keys(review.protectedFiles).filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort());
-  const stable = JSON.parse(read('docs/stable-pages-manifest.json'));
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort());
+  const stable = JSON.parse(restoreStablePagesV100RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')));
   assert.equal(stable.stableCommit, '16dd2d0540e300de6e85aa816e73ed94d4e796c0'); assert.equal(stable.files.length, 219);
   assert.equal(stable.files.reduce((sum: number, row: {bytes: number}) => sum + row.bytes, 0), 328819057);
 });

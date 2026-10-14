@@ -1,3 +1,4 @@
+import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
 import {CI_BUILD_DEPLOYMENT_REVIEW_PATH} from './helpers/ci-build-deployment-reviewed-revisions';
@@ -32,7 +33,7 @@ test('v0.5.0 repin identifies the exact approved main artifact and complete revi
   assert.equal(STABLE_PAGES_V050_REPIN_BASELINE_COMMIT, '16dd2d0540e300de6e85aa816e73ed94d4e796c0');
   assert.equal(STABLE_PAGES_V050_REPIN_BASELINE_TREE, 'e015babf38607c3fcd0742dd8666c43a3c86f8bc');
   assert.equal(sha(read(STABLE_PAGES_V050_REPIN_REVIEW_PATH)), STABLE_PAGES_V050_REPIN_REVIEW_SHA256);
-  const bytes = read(stablePath), manifest = validateManifest(JSON.parse(bytes));
+  const raw = read(stablePath), bytes = restoreStablePagesV100RepinBytes(stablePath, raw), manifest = validateManifest(JSON.parse(bytes));
   const {files, ...metadata} = manifest;
   assert.deepEqual(metadata, review.currentPublication);
   assert.equal(sha(bytes), review.changes[stablePath].currentSha256);
@@ -47,7 +48,7 @@ test('v0.5.0 repin identifies the exact approved main artifact and complete revi
   assert.deepEqual(files.find(row => row.path === 'source.zip'), {
     path: 'source.zip', bytes: 32559340, sha256: '322279609e56006279fd1c60e1f3cf518cc985dc2b3ca8358ee90bda49a7e4de',
   }, 'Exact corresponding-source archive from the independently rebuilt approved commit');
-  const previousBytes = restoreStablePagesV050RepinBytes(stablePath, bytes), previous = validateManifest(JSON.parse(previousBytes));
+  const previousBytes = restoreStablePagesV050RepinBytes(stablePath, raw), previous = validateManifest(JSON.parse(previousBytes));
   const {files: oldFiles, ...oldMetadata} = previous;
   assert.deepEqual(oldMetadata, review.previousPublication);
   assert.equal(sha(previousBytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');
@@ -57,10 +58,10 @@ test('v0.5.0 repin identifies the exact approved main artifact and complete revi
   assert.deepEqual(oldFiles.find(row => row.path === 'source.zip'), {
     path: 'source.zip', bytes: 29339231, sha256: '63a7166aff8da917915c34830e4b7db165a25b6312b5c3da2246b4ad0c2c2d78',
   });
-  const oldest = JSON.parse(restoreStablePagesRepinBytes(stablePath, bytes));
+  const oldest = JSON.parse(restoreStablePagesRepinBytes(stablePath, raw));
   assert.equal(oldest.stableCommit, '5f62027a3670056e5d7d366e9c149aa47c04953f');
   assert.equal(oldest.files.length, 138);
-  assert.equal(sha(restoreStablePagesRepinBytes(stablePath, bytes)), 'fcdbfe313018b83a1e1d85ba7af800438dbe43440557c4d5a5cc27c22ec00802');
+  assert.equal(sha(restoreStablePagesRepinBytes(stablePath, raw)), 'fcdbfe313018b83a1e1d85ba7af800438dbe43440557c4d5a5cc27c22ec00802');
 });
 
 test('only the manifest and seven bounded audit bridges change, with exact complete inverse and forward proofs', () => {
@@ -134,7 +135,7 @@ test('all 988 baseline identities survive and every non-manifest JSON, productio
   }
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/')).sort();
-  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
+  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
   for (const path of baselineJson.filter(path => path !== stablePath)) assert.ok(Object.hasOwn(review.protectedFiles, path), path + ' historical JSON cannot change');
 });
 
@@ -178,10 +179,10 @@ test('every original protected-evidence manifest remains intact with exact prede
 
 test('both source-stability closures include every new proof and bounded bridge while original inventories stay immutable', () => {
   const inventory = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;
-  assert.deepEqual(stablePagesV050RepinPathsWithin(inventory), [stablePath, ...musicPathsWithin(inventory)]);
+  assert.deepEqual(stablePagesV050RepinPathsWithin(inventory), [...new Set([stablePath, ...musicPathsWithin(inventory)])]);
   assert.deepEqual(stablePagesV050RepinPathsWithin({[stablePath]: 'old', ['./' + stablePath]: 'alias', 'src/game.ts': 'unchanged'}), [stablePath, 'src/game.ts']);
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of [...stablePagesV050RepinAuditDependencies(), ...staticMenuArtAuditDependencies()]) assert.equal(hashes[path], sha(readFileSync(path)), path + ' complete current closure');
-    assert.equal(hashes[stablePath], review.changes[stablePath].currentSha256);
+    assert.equal(hashes[stablePath], stablePagesV100RepinHash(stablePath, review.changes[stablePath].currentSha256));
   }
 });
