@@ -16,7 +16,9 @@ main/v1.0.0 remain unchanged. Pages publication is verified per build commit.
 
 - 08 Desert: modeled detail and palette pass complete; +2,840 triangles, +0 material batches
 
-Not yet included: 11 Garden, 12 Airfield.
+- 11 Garden: modeled detail and palette pass complete; +1,248 triangles, +0 material batches
+
+Not yet included: 12 Airfield.
 
 Coast was playtested and its visual direction accepted. Each map retains its own
 theme. Specific notes record additions, budgets and checks. Offline previews use
