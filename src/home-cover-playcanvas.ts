@@ -1,0 +1,93 @@
+import * as pc from 'playcanvas';
+import type {HomeCoverAdapter,HomeCoverRuntime} from './home-cover';
+import {WHALE_COVER_SIZE,COVER_MAX_FPS,createCoverGrid,deformCoverPoint,coverBlink} from './home-cover-deformation';
+
+async function readImage(url:string,signal:AbortSignal):Promise<HTMLImageElement>{
+ const response=await fetch(url,{signal});if(!response.ok)throw new Error(`Portrait texture ${response.status}`);
+ const blob=await response.blob();signal.throwIfAborted();
+ const objectUrl=URL.createObjectURL(blob),image=new Image();
+ try{image.src=objectUrl;await image.decode();signal.throwIfAborted();return image;}
+ finally{URL.revokeObjectURL(objectUrl);}
+}
+/** Custom 2D mesh animation in the project's existing PlayCanvas version, not Live2D/Cubism. */
+export const whaleCoverAdapter:HomeCoverAdapter={async mount(canvas,model,signal){
+ if(model!=='whale-mesh-v1')throw new Error('Unknown approved portrait');
+ const [portrait,eyelids]=await Promise.all([
+  readImage('./menu-art/whale-maid.png',signal),readImage('./menu-art/whale-maid-eyes-closed.png',signal),
+ ]);
+ if(portrait.naturalWidth!==1181||portrait.naturalHeight!==1331||eyelids.naturalWidth!==1181||eyelids.naturalHeight!==1332)throw new Error('Portrait canvas mismatch');
+ signal.throwIfAborted();
+ let app:pc.Application|undefined,frame=0,previous=0,time=0,paused=true,disposed=false;
+ const textures:pc.Texture[]=[],materials:pc.StandardMaterial[]=[];let mesh:pc.Mesh|undefined;const eyeMeshes:pc.Mesh[]=[];
+ let observer:ResizeObserver|undefined;
+ function dispose(){
+  if(disposed)return;disposed=true;if(frame)cancelAnimationFrame(frame);frame=0;observer?.disconnect();signal.removeEventListener('abort',dispose);
+  if(app){const old=app;app=undefined;const gl=old.graphicsDevice as pc.WebglGraphicsDevice;const lose=gl.gl?.getExtension('WEBGL_lose_context');
+   if(old.frameRequestId)cancelAnimationFrame(old.frameRequestId);old.frameRequestId=null;
+   old.root.destroy();mesh?.destroy();for(const eyeMesh of eyeMeshes)eyeMesh.destroy();for(const material of materials)material.destroy();for(const texture of textures)texture.destroy();old.destroy();lose?.loseContext();}
+  canvas.dataset.animationState='disposed';
+ }
+ try{
+  app=new pc.Application(canvas,{graphicsDeviceOptions:{alpha:true,antialias:false,powerPreference:'low-power',preserveDrawingBuffer:false}});
+  app.setCanvasFillMode(pc.FILLMODE_NONE);app.autoRender=false;
+  const camera=new pc.Entity('Portrait orthographic camera',app);
+  camera.addComponent('camera',{projection:pc.PROJECTION_ORTHOGRAPHIC,clearColor:new pc.Color(0,0,0,0),nearClip:.1,farClip:10,gammaCorrection:pc.GAMMA_SRGB,toneMapping:pc.TONEMAP_NONE});
+  app.root.addChild(camera);
+  const grid=createCoverGrid(),positions=new Float32Array(grid.points.length/2*3);
+  function updateMesh(){
+   for(let i=0;i<grid.points.length;i+=2){const [x,y]=deformCoverPoint(grid.points[i],grid.points[i+1],time),j=i/2*3;positions[j]=(x-WHALE_COVER_SIZE.width/2)/1000;positions[j+1]=-y/1000;positions[j+2]=0;}
+   mesh!.setPositions(positions);mesh!.update(pc.PRIMITIVE_TRIANGLES);
+  }
+  mesh=new pc.Mesh(app.graphicsDevice);mesh.clear(true,false);mesh.setUvs(0,grid.uvs);mesh.setIndices(grid.indices);updateMesh();
+  function addLayer(image:HTMLImageElement,z:number,geometry=mesh!,feather=false){
+   const texture=new pc.Texture(app!.graphicsDevice,{mipmaps:false,minFilter:pc.FILTER_LINEAR,magFilter:pc.FILTER_LINEAR,addressU:pc.ADDRESS_CLAMP_TO_EDGE,addressV:pc.ADDRESS_CLAMP_TO_EDGE});texture.setSource(image);textures.push(texture);
+   const material=new pc.StandardMaterial();material.useLighting=false;material.diffuse.set(0,0,0);material.emissive.set(1,1,1);material.emissiveMap=texture;material.opacityMap=texture;material.opacityMapChannel='a';material.opacityVertexColor=feather;material.opacityVertexColorChannel='a';material.blendType=pc.BLEND_NORMAL;material.depthWrite=false;material.cull=pc.CULLFACE_NONE;material.update();materials.push(material);
+   const entity=new pc.Entity('Portrait texture layer',app!);entity.setLocalPosition(0,0,z);entity.addComponent('render',{meshInstances:[new pc.MeshInstance(geometry,material)]});app!.root.addChild(entity);return material;
+  }
+  addLayer(portrait,0);
+  // Two local patches only. UV V uses the generated texture's 1332px height;
+  // source geometry stays on the approved 1331px canvas (no image rescale).
+  const eyes:pc.StandardMaterial[]=[];
+  for(const [left,top,right,bottom] of [[418,334,532,427],[548,279,662,376]]){
+   const p:number[]=[],uv:number[]=[],colors:number[]=[],indices:number[]=[],segments=16;
+   for(let row=0;row<=segments;row++)for(let col=0;col<=segments;col++){
+    const x=left+(right-left)*col/segments,y=top+(bottom-top)*row/segments;
+    p.push((x-1181/2)/1000,-y/1000,0);uv.push(x/1181,1-y/1332);
+    const feather=Math.min(1,(x-left)/7,(right-x)/7,(y-top)/7,(bottom-y)/7);
+    colors.push(1,1,1,Math.max(0,feather));
+   }
+   for(let row=0;row<segments;row++)for(let col=0;col<segments;col++){const i=row*(segments+1)+col;indices.push(i,i+segments+1,i+1,i+1,i+segments+1,i+segments+2);}
+   const geometry=new pc.Mesh(app.graphicsDevice);geometry.setPositions(p);geometry.setUvs(0,uv);geometry.setColors(colors);geometry.setIndices(indices);geometry.update();eyeMeshes.push(geometry);
+   const material=addLayer(eyelids,.001,geometry,true);material.opacity=0;material.update();eyes.push(material);
+  }
+  function resize(){
+   if(!app||disposed)return;
+   const rect=(canvas.parentElement??canvas).getBoundingClientRect();
+   const aspect=rect.width>0&&rect.height>0?rect.width/rect.height:480/576;
+   // At most ~0.7MP and 24fps beside the existing live menu scenery. CSS owns layout.
+   const ratio=Math.min(devicePixelRatio||1,1.5),width=Math.max(1,Math.min(768,Math.round((rect.width||480)*ratio))),height=Math.max(1,Math.round(width/aspect));
+   app.setCanvasResolution(pc.RESOLUTION_FIXED,width,height);canvas.style.width='100%';canvas.style.height='100%';
+   const viewHeight=Math.max(WHALE_COVER_SIZE.height,WHALE_COVER_SIZE.width/aspect)/1000;
+   camera.camera!.orthoHeight=viewHeight/2;camera.setPosition(0,-viewHeight/2,5);
+   app.render();
+  }
+  function draw(now:number){
+   frame=0;if(!app||disposed||paused)return;
+   if(previous&&now-previous<1000/COVER_MAX_FPS-.5){frame=requestAnimationFrame(draw);return;}
+   time+=previous?Math.min((now-previous)/1000,.1):0;previous=now;
+   try{updateMesh();for(const eye of eyes){eye.opacity=coverBlink(time)>.35?1:0;eye.update();}app.update(0);app.render();canvas.dataset.animationTime=time.toFixed(2);}
+   catch{canvas.dispatchEvent(new Event('webglcontextlost'));dispose();return;}
+   frame=requestAnimationFrame(draw);
+  }
+  const runtime:HomeCoverRuntime={resize,dispose,setPaused(value){
+   if(disposed)return;paused=value;canvas.dataset.animationState=value?'paused':'running';
+   if(value){if(frame)cancelAnimationFrame(frame);frame=0;previous=0;}else if(!frame)frame=requestAnimationFrame(draw);
+  }};
+  signal.addEventListener('abort',dispose,{once:true});
+  app.start();if(app.frameRequestId)cancelAnimationFrame(app.frameRequestId);app.frameRequestId=null;
+  resize();
+  observer=new ResizeObserver(resize);observer.observe(canvas.parentElement??canvas);
+  canvas.dataset.animationKind='playcanvas-custom-2d';canvas.dataset.meshVertices=String(positions.length/3);
+  return runtime;
+ }catch(error){dispose();throw error;}
+}};

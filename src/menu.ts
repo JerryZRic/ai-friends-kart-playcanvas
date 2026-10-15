@@ -1,6 +1,6 @@
 import {waitForHomeCover} from './home-cover-ready';
 import {getDocumentHomeCover} from './home-cover-registry';
-import {mountHomeCover,type HomeCoverController} from './home-cover';
+import {mountHomeCover,loadWhaleCoverAdapter,type HomeCoverController} from './home-cover';
 import {readyBrandIntro,brandIntroPending} from './brand-intro';
 import {mountMenuBoot} from './menu-boot';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
@@ -218,7 +218,7 @@ function refreshNavigationLinks(){
 }
 function bind(){
  const coverImage=root.querySelector<HTMLImageElement>('.title-character');
- if(coverImage)homeCoverController=mountHomeCover(coverImage,homeCover);
+ if(coverImage)homeCoverController=mountHomeCover(coverImage,homeCover,loadWhaleCoverAdapter);
  root.querySelectorAll<HTMLImageElement>('.title-logo').forEach(image=>{
   const settle=()=>{if(image.naturalWidth>0){if(root.querySelector('.title-logo')===image&&image.classList.contains('title-logo'))root.classList.add('title-logo-ready');}else image.hidden=true;};
   listen(image,'load',settle,{once:true});listen(image,'error',()=>{image.hidden=true;},{once:true});

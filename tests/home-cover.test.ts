@@ -33,7 +33,7 @@ test('no adapter import for pending/no-model covers; reduced motion delays genui
  const f=fixture();let imports=0,disposed=0;const pauses:boolean[]=[];
  const runtime:HomeCoverRuntime={setPaused:value=>pauses.push(value),resize(){},dispose(){disposed++;}};
  const loader=async()=>{imports++;return {mount:async()=>runtime};};
- mountHomeCover(f.image,FALLBACK_HOME_COVER,loader).dispose();assert.equal(imports,0);
+ mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:undefined},loader).dispose();assert.equal(imports,0);
  f.motion.matches=true;
  const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},loader);
  await flush();assert.equal(imports,0);
@@ -55,4 +55,29 @@ test('context loss returns to static and does not restart a failed model',async(
  const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>{imports++;return {mount:async()=>({setPaused(){},resize(){},dispose(){disposed++;}})};});
  await flush();assert.equal(f.image.hidden,true);f.canvas.dispatchEvent(new Event('webglcontextlost'));
  assert.equal(f.image.hidden,false);assert.equal(disposed,1);f.win.dispatchEvent(new Event('pageshow'));await flush();assert.equal(imports,1);control.dispose();
+});
+
+test('manual static switch prevents import, toggles static instantly, and survives pagehide/pageshow',async()=>{
+ const f=fixture();let imports=0,disposed=0;const pauses:boolean[]=[];
+ const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>{imports++;return {mount:async()=>({setPaused:value=>pauses.push(value),resize(){},dispose(){disposed++;}})};},{enabled:false});
+ await flush();assert.equal(imports,0);assert.equal(f.image.hidden,false);
+ control.setAnimationEnabled(true);await flush();assert.equal(imports,1);assert.equal(f.image.hidden,true);
+ control.setAnimationEnabled(false);await flush();assert.equal(f.image.hidden,false);assert.equal(f.canvas.hidden,true);assert.equal(pauses.at(-1),true);
+ control.setAnimationEnabled(true);await flush();assert.equal(f.image.hidden,true);
+ f.win.dispatchEvent(new Event('pagehide'));await flush();assert.equal(f.image.hidden,false);
+ f.win.dispatchEvent(new Event('pageshow'));await flush();assert.equal(f.image.hidden,true);assert.equal(imports,1);
+ control.dispose();assert.equal(disposed,1);
+});
+test('texture/mount failure and runtime pause exception leave the approved static original visible',async()=>{
+ const f=fixture();const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>({mount:async()=>{throw Error('texture missing');}}));
+ await flush();assert.equal(f.image.hidden,false);assert.equal(f.image.dataset.coverMode,'static');control.dispose();
+ const g=fixture();let disposed=0;const other=mountHomeCover(g.image,FALLBACK_HOME_COVER,async()=>({mount:async()=>({resize(){},dispose(){disposed++;},setPaused(){throw Error('GPU failure');}})}));
+ await flush();assert.equal(g.image.hidden,false);assert.equal(g.image.dataset.coverMode,'static');assert.equal(disposed,1);other.dispose();
+});
+test('a failed static fallback is never resurrected by late adapter failure or disposal',async()=>{
+ const f=fixture();let reject!:(reason:unknown)=>void;
+ const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>({mount:()=>new Promise((_,fail)=>reject=fail)}));
+ await flush();f.image.dispatchEvent(new Event('error'));assert.equal(f.image.hidden,true);
+ reject(Error('late texture failure'));await flush();assert.equal(f.image.hidden,true);
+ control.dispose();assert.equal(f.image.hidden,true);
 });
