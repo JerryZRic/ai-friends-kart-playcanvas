@@ -1,6 +1,6 @@
 import {COAST_DRIFT,coastDriftReady,coastDriftBoost} from './coast-race-feedback';
 import {npcDriving,type NpcSkill} from './npc-difficulty';
-import {RULES,tickEffects,tickBrain,planLane,chooseItem,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup} from './npc-tactics';
+import {RULES,tickEffects,tickBrain,planLane,chooseItem,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup,type PickupReachability} from './npc-tactics';
 import {advanceLapProgress,type LandTrack,type LandLapProgress} from './land-track';
 import {stepLandSpeed,landLookAheadBend,landSteeringGrip,landBankDrift,landRailScrape} from './land-driving';
 import type {createLandRaceRoute} from './land-race-route';
@@ -14,6 +14,8 @@ export type LandCpuActor = Combatant & Brain & {
 };
 export type LandCpuTuning = {maxSpeed:number;multipliers:{acceleration:number;steering:number}};
 export interface LandCpuContext {
+  /** Experimental pickup targeting only; normal races keep the legacy planner. */
+  pickupPlanning?:'legacy'|'execution-matched';
   length:number;
   track:LandTrack|null;
   sample:(distance:number,lateral?:number)=>{t:{x:number;y:number;z:number}};
@@ -31,6 +33,8 @@ export interface LandCpuFeedback {
   finished?:(actor:LandCpuActor)=>void;
   /** Observes existing progress guards; never changes integration or lap credit. */
   rejectedStep?:(actor:LandCpuActor,reason:string)=>void;
+  /** Read-only estimates for eligible boxes, before traffic filtering. */
+  pickupReachability?:(actor:LandCpuActor,box:RacingPickup,estimate:PickupReachability)=>void;
   railContact?:(actor:LandCpuActor,lateral:number)=>void;
 }
 const actorTrack=(b:LandCpuActor,c:LandCpuContext)=>c.routes?.states.has(b.id)?c.routes.view(b.id,b.total):c.track;
@@ -58,7 +62,12 @@ export function decideLandCpu(b:LandCpuActor,racers:readonly Combatant[],boxes:r
     b.decisionIn=skill.decision+b.phase*.015;
     const road=actorTrack(b,c),a=(routes?.states.has(b.id)?routes.sample(b.id,0):c.sample(b.total)).t,z=routes?routes.sampleAhead(b.id,skill.lookAhead).t:c.sample(b.total+skill.lookAhead).t,bend=road?landLookAheadBend(road,b.total,skill.lookAhead):a.x*z.z-a.z*z.x;b.aiBend=bend;
     const safeLane=Math.min(actorLimit(b,c,.8),actorLimit(b,c,.8,22));
-    b.targetLane=clamp(planLane(b,racers,boxes,c.length,b.phase,bend,skill,routes?.interactions),-safeLane,safeLane);
+    const pickupPlanning=c.pickupPlanning==='execution-matched'||feedback.pickupReachability?{
+      mode:c.pickupPlanning,
+      lateralMultiplier:c.tuning(b.id,b.total,b.speed).multipliers.steering*landSteeringGrip(road,b.total),
+      observe:feedback.pickupReachability?(box:RacingPickup,estimate:PickupReachability)=>feedback.pickupReachability!(b,box,estimate):undefined,
+    }:undefined;
+    b.targetLane=clamp(planLane(b,racers,boxes,c.length,b.phase,bend,skill,routes?.interactions,pickupPlanning),-safeLane,safeLane);
     if(chooseItem(b,racers,c.length,bend,skill,routes?.interactions)){
       if(feedback.useItem)feedback.useItem(b,racers);else activateLandCpuItem(b,racers,c);
     }

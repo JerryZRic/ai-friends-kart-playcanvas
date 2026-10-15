@@ -16,7 +16,7 @@ export function driveInput(keys) {
   };
 }
 const approach = (value, target, amount) => value < target ? Math.min(target, value + amount) : Math.max(target, value - amount);
-export function driveSpeed(speed, input, dt, limit) {
+export function driveSpeed(speed, input, dt, limit, forwardAcceleration = 1) {
   // Space only stops the kart. S first brakes, then reverses while held.
   if (input.brake || (input.throttle && input.reverse)) return approach(speed, 0, 38 * dt);
   if (input.reverse) {
@@ -26,7 +26,9 @@ export function driveSpeed(speed, input, dt, limit) {
   if (input.throttle) {
     if (speed < 0) return approach(speed, 0, 28 * dt);
     const target = limit * (input.handbrake ? .76 : 1);
-    return approach(speed, target, (speed > target ? 22 : 18) * dt);
+    // Build acceleration affects forward propulsion only, never braking toward
+    // the lower handbrake target. Keep dt as elapsed simulation time.
+    return approach(speed, target, (speed > target ? 22 : 18 * forwardAcceleration) * dt);
   }
   return approach(speed, 0, (input.handbrake ? 18 : 6) * dt);
 }

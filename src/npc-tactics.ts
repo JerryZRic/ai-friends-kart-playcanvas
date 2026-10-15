@@ -62,12 +62,35 @@ export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[
   const blocked = neighbors.some(({ r, gap }) => gap > 0 && gap < 24 && Math.abs(r.lateral - actor.lateral) < 2.3);
   return actor.boost <= 0 && actor.slow <= 0 && actor.speed > 12 && Math.abs(actor.lateral) < 5.3 && Math.abs(bend) < (skill?.boostBend ?? .3) && !blocked ? 'boost' : null;
 }
+/** Local estimate only: preserves the existing longitudinal-speed heuristic and
+ * 0.65 m allowance. It does not predict future grip, acceleration, bank drift,
+ * traffic, route choice or a successful pickup. */
+export function pickupReachability(actor: Combatant, box: RacingPickup, gap: number, lateralMultiplier = 1) {
+  const estimatedSpeed = Math.max(12, actor.speed * (actor.boost > 0 ? RULES.boostFactor : 1));
+  const lateralGap = Math.abs(box.lateral - actor.lateral);
+  const legacyBudget = RULES.lateralSpeed * gap / estimatedSpeed + .65;
+  const executionBudget = RULES.lateralSpeed * lateralMultiplier * gap / estimatedSpeed + .65;
+  return { gap, lateralGap, estimatedSpeed, lateralMultiplier, legacyBudget, executionBudget,
+    legacyReachable: lateralGap <= legacyBudget, executionReachable: lateralGap <= executionBudget };
+}
+export type PickupReachability = ReturnType<typeof pickupReachability>;
+export interface PickupPlanning {
+  /** Opt-in experiment; omission preserves all existing target choices. */
+  mode?: 'legacy' | 'execution-matched';
+  lateralMultiplier: number;
+  observe?: (box: RacingPickup, estimate: PickupReachability) => void;
+}
 /** Local, bounded lane planning. Does not inspect pickups beyond 48 m or reverse. */
-export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions) {
+export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions, pickupPlanning?: PickupPlanning) {
   let lane = skill ? npcLine(actor.total, phase, bend, skill) : Math.sin(actor.total / 90 + phase) * 2.6;
   if (!actor.held && Math.abs(bend) < .5) {
     const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled).map(box => ({ box, gap: routes?.pickupGap ? routeValue(routes.pickupGap(actor, box)) : forwardGap(actor.total, box.d, length) }))
-      .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2 && Math.abs(box.lateral - actor.lateral) <= RULES.lateralSpeed * gap / Math.max(12, actor.speed * (actor.boost > 0 ? RULES.boostFactor : 1)) + .65)
+      .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2)
+      .filter(({ box, gap }) => {
+        const estimate = pickupReachability(actor, box, gap, pickupPlanning?.lateralMultiplier ?? 1);
+        pickupPlanning?.observe?.(box, estimate);
+        return pickupPlanning?.mode === 'execution-matched' ? estimate.executionReachable : estimate.legacyReachable;
+      })
       .filter(({ box, gap }) => !racers.some(r => r.id !== actor.id && Math.abs(racerGap(actor, r, length, routes)) < Math.min(gap, 12) && Math.abs(r.lateral - box.lateral) < 1.8))
       .sort((a, b) => (a.gap + Math.abs(a.box.lateral - actor.lateral) * 4) - (b.gap + Math.abs(b.box.lateral - actor.lateral) * 4));
     if (candidates[0]) lane = candidates[0].box.lateral;

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "repository": "JerryZRic/ai-friends-kart-playcanvas",
+  "target": "dev",
+  "sourceBranch": "dev",
+  "baseline": {
+    "runId": 38701554455,
+    "artifactId": 11956162908,
+    "deploymentId": 7087032601,
+    "commit": "337d4546176bf117b750e20a9e445a7266b35927",
+    "branch": "feature/home-portraits-live2d",
+    "artifactDigest": "sha256:dd07e60448478c26c092c58457ba3ebecfe10ba910ff338f3f095d7055b98439"
+  },
+  "expectedRefs": {
+    "main": "b665343da013f5cfec0a0f45797adcd347f9607b",
+    "dev": "CURRENT",
+    "feature/home-portraits-live2d": "337d4546176bf117b750e20a9e445a7266b35927"
+  }
+}
