@@ -1,7 +1,7 @@
 {
-  "kind": "custom-2d-whale-animation-review",
-  "sourceCommit": "479d345ca3f6719df05195ceaf040c495ba78b21",
+  "kind": "weighted-cover-animation-diagnostics",
+  "sourceCommit": "f60e6b7dce1905906154777d1aceec77c7ddcdd1",
   "baselineRun": 38639517124,
   "baselineArtifact": 11930010985,
-  "purpose": "Publish approved PlayCanvas whale animation prototype and Chinese names while preserving portrait crop/readiness fixes and exact stable/dev bytes"
+  "purpose": "Publish requested weighted selection and safe animation-fallback diagnostics while preserving stable/dev bytes"
 }
