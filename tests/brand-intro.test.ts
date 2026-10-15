@@ -31,37 +31,37 @@ function harness(reduced=false){
  return {doc:doc as unknown as Document,win:win as unknown as Window,overlay,style,recovery,queued,runtime,execute,advance,jump,elapseWithoutEvents:(to:number)=>{now=to;},get now(){return now;},get opacity(){return Number(overlay.style.opacity);},get listeners(){return doc.count()+win.count();},runRecovery(){const script=read('index.html').match(/<script>\n(\(function\(\)\{var panel=[\s\S]*?)<\/script>/)![1];runInNewContext(script,context);}};
 }
 
-test('early readiness holds for A.75+B.75, then a single .75-second overlay fade',()=>{
- for(const readyAt of [0,749,750,1499,1500]){
-  const h=harness();h.advance(readyAt);readyBrandIntro(h.doc);h.advance(1500);
+test('early readiness holds for A.75+B1.25, then a single .5-second overlay fade',()=>{
+ for(const readyAt of [0,749,750,1999,2000]){
+  const h=harness();h.advance(readyAt);readyBrandIntro(h.doc);h.advance(2000);
   assert.equal(h.overlay.removed,false);assert.equal(h.opacity,1);assert.equal(h.overlay.dataset.introPhase,'fade-out');
-  h.jump(1875);assert.equal(h.opacity,.5);h.advance(2249);assert.equal(h.overlay.removed,false);h.advance(2250);assert.equal(h.overlay.removed,true);
+  h.jump(2250);assert.equal(h.opacity,.5);h.advance(2499);assert.equal(h.overlay.removed,false);h.advance(2500);assert.equal(h.overlay.removed,true);
   assert.equal(h.queued.size,0);assert.equal(h.listeners,0);
  }
 });
 
-test('readiness between B.75 and B1.5 starts fast fade immediately, including both boundaries',()=>{
- for(const readyAt of [1501,1900,2249,2250]){
+test('readiness between B1.25 and B2 starts fast fade immediately, including both boundaries',()=>{
+ for(const readyAt of [2001,2400,2749,2750]){
   const h=harness();h.advance(readyAt);h.runtime.ready();assert.equal(h.opacity,1);
-  h.jump(readyAt+375);assert.equal(h.opacity,.5);h.advance(readyAt+750);assert.equal(h.overlay.removed,true);
+  h.jump(readyAt+250);assert.equal(h.opacity,.5);h.advance(readyAt+500);assert.equal(h.overlay.removed,true);
  }
 });
 
-test('unready startup is bounded by A.75+B1.5+C1 and reveals the real loader',()=>{
- const h=harness();h.advance(2249);assert.equal(h.opacity,1);assert.equal(h.overlay.removed,false);
- h.advance(2250);assert.equal(h.overlay.dataset.introPhase,'fade-out');h.jump(2750);assert.equal(h.opacity,.5);
- h.advance(3249);assert.equal(h.overlay.removed,false);h.advance(3250);assert.equal(h.overlay.removed,true);assert.equal(h.queued.size,0);
+test('unready startup is bounded by A.75+B2+C.75 and reveals the real loader',()=>{
+ const h=harness();h.advance(2749);assert.equal(h.opacity,1);assert.equal(h.overlay.removed,false);
+ h.advance(2750);assert.equal(h.overlay.dataset.introPhase,'fade-out');h.jump(3125);assert.equal(h.opacity,.5);
+ h.advance(3499);assert.equal(h.overlay.removed,false);h.advance(3500);assert.equal(h.overlay.removed,true);assert.equal(h.queued.size,0);
 });
 
 test('late readiness preserves opacity and accelerates remaining slow fade without extending deadline',()=>{
- for(const [readyAt,opacity,end] of [[2251,999/1000,2251+(999/1000)*750],[2750,.5,3125],[3050,.2,3200],[3150,.1,3250]]){
+ for(const [readyAt,opacity,end] of [[2751,749/750,2751+(749/750)*500],[3125,.5,3375],[3350,.2,3500],[3400,2/15,3500]]){
   const h=harness();h.jump(readyAt);assert.ok(Math.abs(h.opacity-opacity)<1e-10);h.runtime.ready();assert.ok(Math.abs(h.opacity-opacity)<1e-10,'no reset or opacity jump');
   h.runtime.ready();h.advance(end-.01);assert.equal(h.overlay.removed,false);h.advance(end+.01);assert.equal(h.overlay.removed,true);
  }
 });
 
 test('throttled timers and hidden tabs use absolute deadlines, never replaying phases',()=>{
- const h=harness();(h.doc as any).hidden=true;h.jump(2750);assert.equal(h.opacity,.5);h.runtime.ready();h.jump(3125);assert.equal(h.overlay.removed,true);
+ const h=harness();(h.doc as any).hidden=true;h.jump(3125);assert.equal(h.opacity,.5);h.runtime.ready();h.jump(3375);assert.equal(h.overlay.removed,true);
  const delayed=harness();delayed.jump(8000);let finished=0;mountBrandIntro(delayed.doc,delayed.win,()=>finished++);assert.equal(finished,1);assert.equal(delayed.queued.size,0);
  const restored=harness();restored.advance(1500);restored.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));assert.equal(restored.queued.size,0);
  restored.elapseWithoutEvents(8000);restored.win.dispatchEvent(new Event('pageshow'));assert.equal(restored.overlay.removed,true);assert.equal(restored.queued.size,0);
@@ -76,9 +76,9 @@ test('reduced motion keeps a readable static logo for .8s with no fade or readin
 });
 
 test('a slow module or repeated bootstrap/mount cannot restart or recreate the document intro',()=>{
- const h=harness();h.advance(2250);const original=h.runtime;h.execute();assert.equal((h.win as any).__timewishIntro,original);
+ const h=harness();h.advance(2750);const original=h.runtime;h.execute();assert.equal((h.win as any).__timewishIntro,original);
  let first=0,second=0;const a=mountBrandIntro(h.doc,h.win,()=>first++),b=mountBrandIntro(h.doc,h.win,()=>second++);
- assert.equal(first+second,0);h.runtime.ready();h.advance(3000);assert.deepEqual([first,second],[1,1]);a.dispose();b.dispose();assert.deepEqual([first,second],[1,1]);
+ assert.equal(first+second,0);h.runtime.ready();h.advance(3250);assert.deepEqual([first,second],[1,1]);a.dispose();b.dispose();assert.deepEqual([first,second],[1,1]);
  h.execute();h.runtime.ready();let remount=0;mountBrandIntro(h.doc,h.win,()=>remount++);assert.equal(remount,1);assert.equal(h.queued.size,0);assert.equal(brandIntroPending(h.doc),false);
 });
 
@@ -91,13 +91,13 @@ test('disposal and non-persisted pagehide release interaction once and clean tim
 });
 
 test('errors expose retry UI immediately and a failed cold module never leaves the SPA root inert',()=>{
- for(const when of [100,2250,3000]){
+ for(const when of [100,2500,3300]){
   const h=harness();h.runRecovery();let inert=true;mountBrandIntro(h.doc,h.win,()=>{inert=false;});h.advance(when);
   const error=new Event('error');Object.defineProperty(error,'target',{value:{tagName:'SCRIPT'}});h.win.dispatchEvent(error);
   assert.equal(h.overlay.removed,true);assert.equal(inert,false);assert.equal(h.recovery.hidden,false);assert.equal(h.recovery.style.display,'grid');
   h.runtime.ready();assert.equal(h.recovery.hidden,false,'late readiness cannot dismiss recovery');
  }
- const h=harness();h.runRecovery();h.advance(3250);assert.equal(h.overlay.removed,true);assert.equal(h.recovery.hidden,true);h.advance(15000);assert.equal(h.recovery.hidden,false,'stalled initial module retains bounded error/retry watchdog');
+ const h=harness();h.runRecovery();h.advance(3500);assert.equal(h.overlay.removed,true);assert.equal(h.recovery.hidden,true);h.advance(15000);assert.equal(h.recovery.hidden,false,'stalled initial module retains bounded error/retry watchdog');
  const mounted=harness();let released=0;mountBrandIntro(mounted.doc,mounted.win,()=>released++);failBrandIntro(mounted.doc);failBrandIntro(mounted.doc);assert.equal(released,1);
 });
 
@@ -114,8 +114,8 @@ test('all cold entries embed the same early controller, bounded CSS fallback and
   assert.match(html,/height:auto/);assert.match(html,/prefers-reduced-motion/);assert.match(html,/window\.__timewishIntro\?\.finish\(\)/);
  }
  assert.match(css,/timewish-logo-in \.75s linear forwards/);assert.match(css,/@keyframes timewish-logo-in\{from\{opacity:0\}to\{opacity:1\}\}/);
- assert.match(css,/timewish-cover-deadline 3\.25s/);
- const holdPercent=Number(css.match(/0%,([\d.]+)%/)![1]);assert.ok(Math.abs(3250*holdPercent/100-2250)<1e-6,'CSS fallback retains A.75+B1.5 hold and C1 fade');
+ assert.match(css,/timewish-cover-deadline 3\.5s/);
+ const holdPercent=Number(css.match(/0%,([\d.]+)%/)![1]);assert.ok(Math.abs(3500*holdPercent/100-2750)<1e-6,'CSS fallback retains A.75+B2 hold and C.75 fade');
  const host=read('src/spa.ts');assert.match(host,/script,noscript,\[data-brand-intro\]/);assert.match(host,/sceneRoot\.replaceChildren/);
  assert.ok(host.indexOf('active=mountMenu()')<host.indexOf('  releaseColdRecovery();'),'keep recovery until a real scene owns loading');
  assert.match(host,/loading\(url,error\);releaseColdRecovery\(\);failBrandIntro\(document\)/);
