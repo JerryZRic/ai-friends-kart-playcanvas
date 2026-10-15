@@ -1,5 +1,6 @@
 /** Release identity is persistent across every scene in this document. */
-export const GAME_VERSION = '1.0.1a-dev.cpu';
+declare const __GAME_BUILD_VERSION__: string;
+export const GAME_VERSION = typeof __GAME_BUILD_VERSION__ === 'string' ? __GAME_BUILD_VERSION__ : '1.0.2a-dev.local';
 export function mountBuildVersion(doc: Document): HTMLElement {
  const existing=doc.getElementById('game-version');
  if(existing)return existing;
@@ -16,3 +17,4 @@ export function mountBuildVersion(doc: Document): HTMLElement {
  doc.body.append(label);
  return label;
 }
+

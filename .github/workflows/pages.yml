@@ -31,7 +31,11 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Test commit-derived version identity
+        run: node --import tsx --test tests/build-identity.test.ts tests/build-version.test.ts
       - run: npm run build
+        env:
+          DEV_BUILD_SHA: ${{ github.sha }}
       - name: Seal the compiled build and its exact run identity
         id: provenance
         run: node scripts/verified-build-artifact.mjs seal
@@ -114,3 +118,4 @@ jobs:
         run: node scripts/verify-pages-snapshot.mjs
       - id: deployment
         uses: actions/deploy-pages@v4
+

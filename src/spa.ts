@@ -1,3 +1,4 @@
+import {mountGameSurfaceGuards} from './game-surface-guards';
 import {mountBuildVersion} from './build-version';
 import {mountBrandIntro,readyBrandIntro,failBrandIntro,brandIntroPending} from './brand-intro';
 import {sceneForUrl,type SceneKind} from './scene-routes';
@@ -36,6 +37,7 @@ const css={menu:menuCss+uiCss+menuFixedCss+emblemCss+titleCss,garage:uiCss+garag
 const style=document.createElement('style');style.dataset.sceneStyles='true';
 for(const node of document.head.querySelectorAll('link[rel="stylesheet"],style:not([data-brand-intro-style])'))node.remove();
 document.head.append(style);
+const surfaceGuards=mountGameSurfaceGuards(document);
 let active:Handle|undefined,kind:Scene|undefined,version=0,disposed=false;
 const sceneFor=(url:URL)=>sceneForUrl(url,directory);
 
@@ -97,7 +99,7 @@ const pop=(event:PopStateEvent)=>{
  event.stopImmediatePropagation();void show(url,false);
 };
 document.addEventListener('click',click);window.addEventListener('popstate',pop);
-function dispose(){if(disposed)return;disposed=true;version++;releaseColdRecovery();active?.dispose();active=undefined;releaseNavigator();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
+function dispose(){if(disposed)return;disposed=true;version++;releaseColdRecovery();active?.dispose();active=undefined;releaseNavigator();surfaceGuards.dispose();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
 window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
 if(import.meta.hot)import.meta.hot.dispose(dispose);
 void show(new URL(location.href),false);
