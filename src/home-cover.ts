@@ -52,7 +52,7 @@ export function mountHomeCover(image:HTMLImageElement,cover:HomeCover,loadAdapte
    const mounted=await adapter.mount(canvas,cover.model,abort.signal);
    if(disposed||abort.signal.aborted){mounted.dispose();return;}
    runtime=mounted;runtime.resize();image.dataset.coverMode='custom-2d';await sync();
-  }catch{fail();}
+  }catch(error){image.dataset.coverError=error instanceof Error?error.message:String(error);console.warn('Custom 2D cover unavailable; approved static portrait retained.',error);fail();}
  }
  function visibility(){void sync().catch(fail);}
  function pagehide(){pageHidden=true;visibility();}
