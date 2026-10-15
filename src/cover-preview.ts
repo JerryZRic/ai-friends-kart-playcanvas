@@ -25,3 +25,22 @@ window.addEventListener('pagehide',event=>{if(!event.persisted)controller.dispos
 const animationToggle=document.querySelector<HTMLInputElement>('#preview-animation')!;
 animationToggle.checked=animationEnabled;animationToggle.disabled=!cover.model;
 animationToggle.addEventListener('change',()=>{controller.setAnimationEnabled(animationToggle.checked);const url=new URL(location.href);url.searchParams.set('motion',animationToggle.checked?'on':'off');history.replaceState(null,'',url);});
+
+// Preview-only status: no raw exception, stack trace or private URL is displayed.
+const animationStatus=document.querySelector<HTMLElement>('#preview-animation-status')!;
+const previewImage=root.querySelector<HTMLImageElement>('img.title-character')!;
+const previewMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+function updateAnimationStatus(){
+ const error=previewImage.dataset.coverError;
+ let label='静态模式';
+ if(cover.model&&animationToggle.checked&&!previewMotion.matches){
+  if(error)label=/webgl/i.test(error)?'静态回退：WebGL不可用':'静态回退：动效不可用';
+  else if(previewImage.dataset.coverMode==='custom-2d'&&root.querySelector<HTMLCanvasElement>('canvas.title-character')?.dataset.animationState==='running')label='动效运行';
+ }
+ if(animationStatus.textContent!==label)animationStatus.textContent=label;
+}
+const statusObserver=new MutationObserver(updateAnimationStatus);
+statusObserver.observe(previewImage.parentElement!,{subtree:true,attributes:true,attributeFilter:['data-cover-mode','data-cover-error','data-animation-state','hidden'],childList:true});
+animationToggle.addEventListener('change',updateAnimationStatus);
+previewMotion.addEventListener('change',updateAnimationStatus);updateAnimationStatus();
+window.addEventListener('pagehide',event=>{if(!event.persisted){statusObserver.disconnect();previewMotion.removeEventListener('change',updateAnimationStatus);}});
