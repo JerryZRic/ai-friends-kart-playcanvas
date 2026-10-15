@@ -27,13 +27,13 @@
     clearWork();
     var now = elapsed();
     // Wall-clock deadlines still apply while a tab is hidden or restored.
-    if (now >= (reduced ? 800 : 3750)) { finish(); return; }
+    if (now >= (reduced ? 800 : 3250)) { finish(); return; }
     if (!reduced) {
       if (!fadeEnd) {
-        if (readyAt !== null && readyAt <= 2750 && now >= Math.max(1750, readyAt)) {
-          fadeStart = Math.max(1750, readyAt); fadeEnd = fadeStart + 750;
-        } else if (now >= 2750) {
-          fadeStart = 2750; fadeEnd = 3750; slow = true;
+        if (readyAt !== null && readyAt <= 2250 && now >= Math.max(1500, readyAt)) {
+          fadeStart = Math.max(1500, readyAt); fadeEnd = fadeStart + 750;
+        } else if (now >= 2250) {
+          fadeStart = 2250; fadeEnd = 3250; slow = true;
         }
       }
       if (fadeEnd) {
@@ -49,7 +49,7 @@
       }
     }
     overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 750 ? 'fade-in' : 'hold';
-    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(1750, readyAt) : now < 750 ? 750 : 2750);
+    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(1500, readyAt) : now < 750 ? 750 : 2250);
     timer = setTimeout(update, Math.max(0, next - now));
     if (fadeEnd && !document.hidden) frame = requestAnimationFrame(update);
   }

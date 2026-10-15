@@ -9,9 +9,9 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23172936'/%3E%3Cpath d='M23 5 10 23h10l-3 12 14-20H21z' fill='%23d4ff57'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="/src/race-ui.css">
 <link rel="stylesheet" href="/src/character-emblems.css"><link rel="preload" as="image" href="./brand/timewish.svg"><style data-brand-intro-style>
-#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 3.75s linear forwards}
+#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 3.25s linear forwards}
 #brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo-in .75s linear forwards}
-@keyframes timewish-cover-deadline{0%,73.3333333333%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes timewish-cover-deadline{0%,69.2307692308%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
 @keyframes timewish-logo-in{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover-deadline .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}
 </style></head>
@@ -80,13 +80,13 @@
     clearWork();
     var now = elapsed();
     // Wall-clock deadlines still apply while a tab is hidden or restored.
-    if (now >= (reduced ? 800 : 3750)) { finish(); return; }
+    if (now >= (reduced ? 800 : 3250)) { finish(); return; }
     if (!reduced) {
       if (!fadeEnd) {
-        if (readyAt !== null && readyAt <= 2750 && now >= Math.max(1750, readyAt)) {
-          fadeStart = Math.max(1750, readyAt); fadeEnd = fadeStart + 750;
-        } else if (now >= 2750) {
-          fadeStart = 2750; fadeEnd = 3750; slow = true;
+        if (readyAt !== null && readyAt <= 2250 && now >= Math.max(1500, readyAt)) {
+          fadeStart = Math.max(1500, readyAt); fadeEnd = fadeStart + 750;
+        } else if (now >= 2250) {
+          fadeStart = 2250; fadeEnd = 3250; slow = true;
         }
       }
       if (fadeEnd) {
@@ -102,7 +102,7 @@
       }
     }
     overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 750 ? 'fade-in' : 'hold';
-    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(1750, readyAt) : now < 750 ? 750 : 2750);
+    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(1500, readyAt) : now < 750 ? 750 : 2250);
     timer = setTimeout(update, Math.max(0, next - now));
     if (fadeEnd && !document.hidden) frame = requestAnimationFrame(update);
   }
