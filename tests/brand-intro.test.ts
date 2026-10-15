@@ -40,28 +40,28 @@ test('early readiness holds for A1+B2, then a single .5-second overlay fade',()=
  }
 });
 
-test('readiness between B2 and B5 starts fast fade immediately, including both boundaries',()=>{
- for(const readyAt of [3001,4250,5999,6000]){
+test('readiness between B2 and B3 starts fast fade immediately, including both boundaries',()=>{
+ for(const readyAt of [3001,3500,3999,4000]){
   const h=harness();h.advance(readyAt);h.runtime.ready();assert.equal(h.opacity,1);
   h.jump(readyAt+250);assert.equal(h.opacity,.5);h.advance(readyAt+500);assert.equal(h.overlay.removed,true);
  }
 });
 
-test('unready startup is bounded by A1+B5+C1.5 and reveals the real loader',()=>{
- const h=harness();h.advance(5999);assert.equal(h.opacity,1);assert.equal(h.overlay.removed,false);
- h.advance(6000);assert.equal(h.overlay.dataset.introPhase,'fade-out');h.jump(6750);assert.equal(h.opacity,.5);
- h.advance(7499);assert.equal(h.overlay.removed,false);h.advance(7500);assert.equal(h.overlay.removed,true);assert.equal(h.queued.size,0);
+test('unready startup is bounded by A1+B3+C1.5 and reveals the real loader',()=>{
+ const h=harness();h.advance(3999);assert.equal(h.opacity,1);assert.equal(h.overlay.removed,false);
+ h.advance(4000);assert.equal(h.overlay.dataset.introPhase,'fade-out');h.jump(4750);assert.equal(h.opacity,.5);
+ h.advance(5499);assert.equal(h.overlay.removed,false);h.advance(5500);assert.equal(h.overlay.removed,true);assert.equal(h.queued.size,0);
 });
 
 test('late readiness preserves opacity and accelerates remaining slow fade without extending deadline',()=>{
- for(const [readyAt,opacity,end] of [[6001,1499/1500,6001+(1499/1500)*500],[6750,.5,7000],[7200,.2,7350],[7400,1/15,7500]]){
+ for(const [readyAt,opacity,end] of [[4001,1499/1500,4001+(1499/1500)*500],[4750,.5,5000],[5200,.2,5350],[5400,1/15,5500]]){
   const h=harness();h.jump(readyAt);assert.ok(Math.abs(h.opacity-opacity)<1e-10);h.runtime.ready();assert.ok(Math.abs(h.opacity-opacity)<1e-10,'no reset or opacity jump');
   h.runtime.ready();h.advance(end-.01);assert.equal(h.overlay.removed,false);h.advance(end+.01);assert.equal(h.overlay.removed,true);
  }
 });
 
 test('throttled timers and hidden tabs use absolute deadlines, never replaying phases',()=>{
- const h=harness();(h.doc as any).hidden=true;h.jump(6750);assert.equal(h.opacity,.5);h.runtime.ready();h.jump(7000);assert.equal(h.overlay.removed,true);
+ const h=harness();(h.doc as any).hidden=true;h.jump(4750);assert.equal(h.opacity,.5);h.runtime.ready();h.jump(5000);assert.equal(h.overlay.removed,true);
  const delayed=harness();delayed.jump(8000);let finished=0;mountBrandIntro(delayed.doc,delayed.win,()=>finished++);assert.equal(finished,1);assert.equal(delayed.queued.size,0);
  const restored=harness();restored.advance(1500);restored.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));assert.equal(restored.queued.size,0);
  restored.elapseWithoutEvents(8000);restored.win.dispatchEvent(new Event('pageshow'));assert.equal(restored.overlay.removed,true);assert.equal(restored.queued.size,0);
@@ -91,13 +91,13 @@ test('disposal and non-persisted pagehide release interaction once and clean tim
 });
 
 test('errors expose retry UI immediately and a failed cold module never leaves the SPA root inert',()=>{
- for(const when of [100,5000,6500]){
+ for(const when of [100,3500,4500]){
   const h=harness();h.runRecovery();let inert=true;mountBrandIntro(h.doc,h.win,()=>{inert=false;});h.advance(when);
   const error=new Event('error');Object.defineProperty(error,'target',{value:{tagName:'SCRIPT'}});h.win.dispatchEvent(error);
   assert.equal(h.overlay.removed,true);assert.equal(inert,false);assert.equal(h.recovery.hidden,false);assert.equal(h.recovery.style.display,'grid');
   h.runtime.ready();assert.equal(h.recovery.hidden,false,'late readiness cannot dismiss recovery');
  }
- const h=harness();h.runRecovery();h.advance(7500);assert.equal(h.overlay.removed,true);assert.equal(h.recovery.hidden,true);h.advance(15000);assert.equal(h.recovery.hidden,false,'stalled initial module retains bounded error/retry watchdog');
+ const h=harness();h.runRecovery();h.advance(5500);assert.equal(h.overlay.removed,true);assert.equal(h.recovery.hidden,true);h.advance(15000);assert.equal(h.recovery.hidden,false,'stalled initial module retains bounded error/retry watchdog');
  const mounted=harness();let released=0;mountBrandIntro(mounted.doc,mounted.win,()=>released++);failBrandIntro(mounted.doc);failBrandIntro(mounted.doc);assert.equal(released,1);
 });
 
@@ -114,7 +114,8 @@ test('all cold entries embed the same early controller, bounded CSS fallback and
   assert.match(html,/height:auto/);assert.match(html,/prefers-reduced-motion/);assert.match(html,/window\.__timewishIntro\?\.finish\(\)/);
  }
  assert.match(css,/timewish-logo-in 1s linear forwards/);assert.match(css,/@keyframes timewish-logo-in\{from\{opacity:0\}to\{opacity:1\}\}/);
- assert.match(css,/timewish-cover-deadline 7\.5s/);
+ assert.match(css,/timewish-cover-deadline 5\.5s/);
+ const holdPercent=Number(css.match(/0%,([\d.]+)%/)![1]);assert.ok(Math.abs(5500*holdPercent/100-4000)<1e-6,'CSS fallback retains A1+B3 hold and C1.5 fade');
  const host=read('src/spa.ts');assert.match(host,/script,noscript,\[data-brand-intro\]/);assert.match(host,/sceneRoot\.replaceChildren/);
  assert.ok(host.indexOf('active=mountMenu()')<host.indexOf('  releaseColdRecovery();'),'keep recovery until a real scene owns loading');
  assert.match(host,/loading\(url,error\);releaseColdRecovery\(\);failBrandIntro\(document\)/);

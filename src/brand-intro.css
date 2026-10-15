@@ -1,5 +1,5 @@
-#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 7.5s linear forwards}
+#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 5.5s linear forwards}
 #brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo-in 1s linear forwards}
-@keyframes timewish-cover-deadline{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes timewish-cover-deadline{0%,72.7272727273%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
 @keyframes timewish-logo-in{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover-deadline .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}

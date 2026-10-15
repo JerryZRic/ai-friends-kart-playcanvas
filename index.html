@@ -7,9 +7,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07151c;col
 #menu-boot p{margin:0 0 12px;line-height:1.5}#menu-boot progress{display:block;width:100%;height:12px;accent-color:#f4df9d}#menu-boot small{display:block;margin-top:10px;color:#d6e4df;line-height:1.5}#menu-boot button{font:inherit;color:#173944;background:#fff0c9;border:0;border-radius:8px;padding:10px 16px;margin:12px 4px 0;cursor:pointer}#menu-boot button:focus-visible{outline:3px solid white;outline-offset:3px}
 body[data-menu-loading="true"] .title-actions{display:none!important}
 </style><link rel="stylesheet" href="/src/character-emblems.css"><link rel="stylesheet" href="/src/title-menu.css"><link rel="preload" as="image" href="./brand/timewish.svg"><style data-brand-intro-style>
-#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 7.5s linear forwards}
+#brand-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;opacity:1;animation:timewish-cover-deadline 5.5s linear forwards}
 #brand-intro img{display:block;width:min(70vw,590.95px);height:auto;max-height:30vh;object-fit:contain;opacity:0;animation:timewish-logo-in 1s linear forwards}
-@keyframes timewish-cover-deadline{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes timewish-cover-deadline{0%,72.7272727273%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
 @keyframes timewish-logo-in{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#brand-intro{animation:timewish-cover-deadline .8s steps(1,end) forwards}#brand-intro img{opacity:1;animation:none}}
 </style></head>
@@ -45,13 +45,13 @@ body[data-menu-loading="true"] .title-actions{display:none!important}
     clearWork();
     var now = elapsed();
     // Wall-clock deadlines still apply while a tab is hidden or restored.
-    if (now >= (reduced ? 800 : 7500)) { finish(); return; }
+    if (now >= (reduced ? 800 : 5500)) { finish(); return; }
     if (!reduced) {
       if (!fadeEnd) {
-        if (readyAt !== null && readyAt <= 6000 && now >= Math.max(3000, readyAt)) {
+        if (readyAt !== null && readyAt <= 4000 && now >= Math.max(3000, readyAt)) {
           fadeStart = Math.max(3000, readyAt); fadeEnd = fadeStart + 500;
-        } else if (now >= 6000) {
-          fadeStart = 6000; fadeEnd = 7500; slow = true;
+        } else if (now >= 4000) {
+          fadeStart = 4000; fadeEnd = 5500; slow = true;
         }
       }
       if (fadeEnd) {
@@ -67,7 +67,7 @@ body[data-menu-loading="true"] .title-actions{display:none!important}
       }
     }
     overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 1000 ? 'fade-in' : 'hold';
-    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(3000, readyAt) : now < 1000 ? 1000 : 6000);
+    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(3000, readyAt) : now < 1000 ? 1000 : 4000);
     timer = setTimeout(update, Math.max(0, next - now));
     if (fadeEnd && !document.hidden) frame = requestAnimationFrame(update);
   }
