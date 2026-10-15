@@ -1,0 +1,111 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {HOME_COVERS,FALLBACK_HOME_COVER,chooseHomeCover,getDocumentHomeCover} from '../src/home-cover-registry';
+import {mountHomeCover,type HomeCoverRuntime} from '../src/home-cover';
+test('all six approved portraits participate, and unapproved entries are excluded',()=>{
+ assert.equal(HOME_COVERS.length,6);assert.equal(HOME_COVERS.filter(x=>x.approved).length,6);
+ for(const roll of [0,.2,.5,.9,1,NaN,-1])assert.equal(chooseHomeCover(HOME_COVERS.map(x=>({...x,approved:x.id==='deepseek'})),()=>roll).id,'deepseek');
+ assert.equal(chooseHomeCover([],()=>0),FALLBACK_HOME_COVER);
+ const ready=HOME_COVERS.map(x=>({...x,approved:true}));
+ assert.deepEqual([0,.4,.53,.66,.79,.92].map(roll=>chooseHomeCover(ready,()=>roll).id),ready.map(x=>x.id));
+});
+test('whale has fixed 35 percent and other eligible portraits share 65 percent',()=>{
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>0).id,'deepseek');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>.35-Number.EPSILON).id,'deepseek');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>.35).id,'gemini');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>1).id,'glm');
+ for(const roll of [NaN,Infinity,-Infinity,-1])assert.equal(chooseHomeCover(HOME_COVERS,()=>roll).id,'deepseek');
+ for(let n=1;n<=5;n++){
+  const eligible=HOME_COVERS.slice(0,n+1);
+  for(let i=0;i<n;i++)assert.equal(chooseHomeCover(eligible,()=>.35+(i+.5)*.65/n).id,eligible[i+1].id);
+ }
+ const pending=HOME_COVERS.map(x=>({...x,approved:x.id==='deepseek'||x.id==='glm'}));
+ assert.equal(chooseHomeCover(pending,()=>.35).id,'glm');
+ assert.equal(chooseHomeCover([...HOME_COVERS.slice(1),HOME_COVERS[0]],()=>0).id,'deepseek');
+});
+test('without eligible whale every other approved portrait is equally likely',()=>{
+ const others=HOME_COVERS.slice(1);
+ for(let i=0;i<others.length;i++)assert.equal(chooseHomeCover(others,()=>(i+.5)/others.length),others[i]);
+ const pendingWhale=HOME_COVERS.map(x=>({...x,approved:x.id!=='deepseek'}));
+ assert.equal(chooseHomeCover(pendingWhale,()=>0).id,'gemini');
+ assert.equal(chooseHomeCover(pendingWhale,()=>1).id,'glm');
+ assert.equal(chooseHomeCover(HOME_COVERS.map(x=>({...x,approved:false}))),FALLBACK_HOME_COVER);
+});
+test('one selection per document survives remount, without storage or driver selection',()=>{
+ const a={} as Document,b={} as Document;
+ assert.equal(getDocumentHomeCover(a),getDocumentHomeCover(a));
+ assert.equal(getDocumentHomeCover(b).approved,true);
+});
+function fixture(){
+ const motion=Object.assign(new EventTarget(),{matches:false});
+ const win=Object.assign(new EventTarget(),{matchMedia:()=>motion});
+ const doc=Object.assign(new EventTarget(),{defaultView:win,hidden:false,createElement:()=>canvas});
+ const canvas=Object.assign(new EventTarget(),{className:'',hidden:true,setAttribute(){},remove(){removed++;}});
+ let removed=0;
+ const image=Object.assign(new EventTarget(),{ownerDocument:doc,dataset:{} as Record<string,string>,hidden:false,src:'test.png',after(){}});
+ return {image:image as unknown as HTMLImageElement,doc,win,motion,canvas,removed:()=>removed};
+}
+const flush=()=>new Promise(resolve=>setTimeout(resolve,0));
+test('static load failure uses approved DeepSeek once, then hides broken fallback',()=>{
+ const f=fixture(),control=mountHomeCover(f.image,{id:'gpt',src:'test.png',approved:true});
+ f.image.dispatchEvent(new Event('error'));assert.equal(f.image.src,FALLBACK_HOME_COVER.src);assert.equal(f.image.hidden,false);
+ f.image.dispatchEvent(new Event('error'));assert.equal(f.image.hidden,true);control.dispose();control.dispose();
+});
+test('no adapter import for pending/no-model covers; reduced motion delays genuine adapter',async()=>{
+ const f=fixture();let imports=0,disposed=0;const pauses:boolean[]=[];
+ const runtime:HomeCoverRuntime={setPaused:value=>pauses.push(value),resize(){},dispose(){disposed++;}};
+ const loader=async()=>{imports++;return {mount:async()=>runtime};};
+ mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:undefined},loader).dispose();assert.equal(imports,0);
+ f.motion.matches=true;
+ const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},loader);
+ await flush();assert.equal(imports,0);
+ f.motion.matches=false;f.motion.dispatchEvent(new Event('change'));await flush();assert.equal(imports,1);assert.equal(f.image.hidden,true);
+ f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));await flush();assert.equal(f.image.hidden,false);assert.equal(pauses.at(-1),true);
+ f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));await flush();assert.equal(f.image.hidden,true);
+ control.dispose();control.dispose();assert.equal(disposed,1);assert.equal(f.removed(),1);
+});
+test('navigation during asynchronous mount disposes late runtime; errors preserve static fallback',async()=>{
+ const f=fixture();let resolve!:(value:HomeCoverRuntime)=>void,disposed=0;
+ const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>({mount:()=>new Promise(done=>resolve=done)}));
+ await flush();control.dispose();resolve({setPaused(){},resize(){},dispose(){disposed++;}});await flush();assert.equal(disposed,1);assert.equal(f.image.hidden,false);
+ const g=fixture();const failed=mountHomeCover(g.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>{throw Error('offline');});
+ await flush();assert.equal(g.image.hidden,false);assert.equal(g.image.dataset.coverMode,'static');failed.dispose();
+});
+
+test('context loss returns to static and does not restart a failed model',async()=>{
+ const f=fixture();let imports=0,disposed=0;
+ const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>{imports++;return {mount:async()=>({setPaused(){},resize(){},dispose(){disposed++;}})};});
+ await flush();assert.equal(f.image.hidden,true);f.canvas.dispatchEvent(new Event('webglcontextlost'));
+ assert.equal(f.image.hidden,false);assert.equal(disposed,1);f.win.dispatchEvent(new Event('pageshow'));await flush();assert.equal(imports,1);control.dispose();
+});
+
+test('manual static switch prevents import, toggles static instantly, and survives pagehide/pageshow',async()=>{
+ const f=fixture();let imports=0,disposed=0;const pauses:boolean[]=[];
+ const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>{imports++;return {mount:async()=>({setPaused:value=>pauses.push(value),resize(){},dispose(){disposed++;}})};},{enabled:false});
+ await flush();assert.equal(imports,0);assert.equal(f.image.hidden,false);
+ control.setAnimationEnabled(true);await flush();assert.equal(imports,1);assert.equal(f.image.hidden,true);
+ control.setAnimationEnabled(false);await flush();assert.equal(f.image.hidden,false);assert.equal(f.canvas.hidden,true);assert.equal(pauses.at(-1),true);
+ control.setAnimationEnabled(true);await flush();assert.equal(f.image.hidden,true);
+ f.win.dispatchEvent(new Event('pagehide'));await flush();assert.equal(f.image.hidden,false);
+ f.win.dispatchEvent(new Event('pageshow'));await flush();assert.equal(f.image.hidden,true);assert.equal(imports,1);
+ control.dispose();assert.equal(disposed,1);
+});
+test('texture/mount failure and runtime pause exception leave the approved static original visible',async()=>{
+ const f=fixture();const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>({mount:async()=>{throw Error('texture missing');}}));
+ await flush();assert.equal(f.image.hidden,false);assert.equal(f.image.dataset.coverMode,'static');control.dispose();
+ const g=fixture();let disposed=0;const other=mountHomeCover(g.image,FALLBACK_HOME_COVER,async()=>({mount:async()=>({resize(){},dispose(){disposed++;},setPaused(){throw Error('GPU failure');}})}));
+ await flush();assert.equal(g.image.hidden,false);assert.equal(g.image.dataset.coverMode,'static');assert.equal(disposed,1);other.dispose();
+});
+test('a failed static fallback is never resurrected by late adapter failure or disposal',async()=>{
+ const f=fixture();let reject!:(reason:unknown)=>void;
+ const control=mountHomeCover(f.image,FALLBACK_HOME_COVER,async()=>({mount:()=>new Promise((_,fail)=>reject=fail)}));
+ await flush();f.image.dispatchEvent(new Event('error'));assert.equal(f.image.hidden,true);
+ reject(Error('late texture failure'));await flush();assert.equal(f.image.hidden,true);
+ control.dispose();assert.equal(f.image.hidden,true);
+});
+
+test('animated canvas inherits the selected portrait framing without moving the fallback',async()=>{
+ const f=fixture();const styles:Record<string,string>={};Object.assign(f.canvas,{style:{setProperty:(name:string,value:string)=>styles[name]=value}});
+ const control=mountHomeCover(f.image,{id:'gpt',src:'gpt.webp',approved:true,model:'gpt-mesh-v1',framing:{scale:1.65,x:0,y:0}},async()=>({mount:async()=>({resize(){},setPaused(){},dispose(){}})}));
+ await flush();assert.equal(styles['--portrait-scale'],'1.65');assert.equal(styles['--portrait-x'],'0%');assert.equal(styles['--portrait-y'],'0%');control.dispose();
+});

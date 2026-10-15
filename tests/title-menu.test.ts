@@ -8,7 +8,9 @@ test('title keeps a real world canvas and overlays only independent decorative P
  assert.match(menu,/<canvas id="title-backdrop" tabindex="-1"><\/canvas>/);
  assert.match(menu,/mountMenuBackdrop\(canvas,curtain,settings/);
  assert.match(menu,/<div class="title-composition" aria-hidden="true">/);
- for(const name of ['whale-maid','title-logo'])assert.match(menu,new RegExp(`src="\\./menu-art/${name}\\.png"`));
+ assert.match(menu,/src="\$\{homeCover.src\}"/);
+ assert.match(read('src/home-cover-registry.ts'),/src:'\.\/menu-art\/whale-maid\.png',approved:true/);
+ assert.match(menu,/src="\.\/menu-art\/title-logo\.png"/);
  assert.match(css,/\.title-composition\{[^}]*pointer-events:none/);
  assert.match(css,/\.title-character\{[^}]*pointer-events:none/);
  assert.match(css,/\.title-logo\{[^}]*pointer-events:none/);
@@ -67,4 +69,10 @@ test('uniform title plates retain separate physical minimum targets without rear
   assert.ok(targetWidth>=48,`${w} has four physical targets`);assert.ok(targetHeight>=48);
   assert.ok(20.8*scale>0,'neighboring expanded vertical targets remain horizontally separated');
  }
+});
+
+// Full-body portraits are enlarged from the top to match the original face scale.
+// Preserve their shoulders/hair horizontally; crop only below the menu art baseline.
+test('portrait framing never hard-crops enlarged side silhouettes',()=>{
+ assert.match(css,/\.title-portrait-frame\{[^}]*overflow:visible;clip-path:inset\(0 -100% 0 -100%\)/);
 });
