@@ -29,6 +29,8 @@ export function mountHomeCover(image:HTMLImageElement,cover:HomeCover,loadAdapte
   else image.hidden=true;
  };
  image.addEventListener('error',onImageError);
+ // A cached failure can finish before the menu binds its listener.
+ if(image.complete&&image.naturalWidth===0)onImageError();
  function stopRuntime(){runtime?.dispose();runtime=undefined;canvas?.remove();canvas=undefined;image.hidden=false;image.dataset.coverMode='static';}
  function fail(){if(disposed)return;failed=true;abort.abort();stopRuntime();}
  async function sync(){

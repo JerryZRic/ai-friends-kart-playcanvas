@@ -49,3 +49,10 @@ test('navigation during asynchronous mount disposes late runtime; errors preserv
  const g=fixture();const failed=mountHomeCover(g.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>{throw Error('offline');});
  await flush();assert.equal(g.image.hidden,false);assert.equal(g.image.dataset.coverMode,'static');failed.dispose();
 });
+
+test('context loss returns to static and does not restart a failed model',async()=>{
+ const f=fixture();let imports=0,disposed=0;
+ const control=mountHomeCover(f.image,{...FALLBACK_HOME_COVER,model:'approved.model3.json'},async()=>{imports++;return {mount:async()=>({setPaused(){},resize(){},dispose(){disposed++;}})};});
+ await flush();assert.equal(f.image.hidden,true);f.canvas.dispatchEvent(new Event('webglcontextlost'));
+ assert.equal(f.image.hidden,false);assert.equal(disposed,1);f.win.dispatchEvent(new Event('pageshow'));await flush();assert.equal(imports,1);control.dispose();
+});
