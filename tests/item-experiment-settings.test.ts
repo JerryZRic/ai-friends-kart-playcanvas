@@ -18,32 +18,42 @@ test('stack experiment requires the dev preview path or explicit Vite developmen
   assert.equal(itemStackingExperimentAvailable({development: false, baseUrl: './', pathname: '/coast.html'}), false);
 });
 
-test('race options preserve exact default shape and require explicit available opt-in', () => {
-  for (const search of ['', '?itemStacking=0', '?itemStacking=true', '?itemStacking=2', '?itemStacking=']) {
-    assert.deepEqual(parseRaceOptions(search, true), DEFAULT_RACE_OPTIONS);
+test('dev stacking defaults on and only explicit zero opts out, while stable stays off', () => {
+  for (const search of ['', '?itemStacking=1', '?itemStacking=true', '?itemStacking=2', '?itemStacking=']) {
+    assert.deepEqual(parseRaceOptions(search, true), {...DEFAULT_RACE_OPTIONS, itemStacking: true});
   }
-  assert.deepEqual(parseRaceOptions('?itemStacking=1', false), DEFAULT_RACE_OPTIONS);
+  assert.deepEqual(parseRaceOptions('?itemStacking=0', true), {...DEFAULT_RACE_OPTIONS, itemStacking: false});
+  for (const search of ['', '?itemStacking=1', '?itemStacking=0']) {
+    assert.deepEqual(parseRaceOptions(search, false), DEFAULT_RACE_OPTIONS);
+  }
   assert.deepEqual(parseRaceOptions('?itemStacking=1'), DEFAULT_RACE_OPTIONS);
   assert.deepEqual(parseRaceOptions('?difficulty=hard&seed=42&itemStacking=1', true), {difficulty: 'hard', seed: 42, itemStacking: true});
   const setup = {difficulty: 'hard' as const, seed: 42, itemStacking: true};
   assert.equal(raceOptionsQuery(setup), '?difficulty=hard&seed=42&itemStacking=1');
   assert.deepEqual(parseRaceOptions(raceOptionsQuery(setup), true), setup);
-  assert.equal(raceOptionsQuery({...setup, itemStacking: false}), '?difficulty=hard&seed=42');
+  assert.equal(raceOptionsQuery({...setup, itemStacking: false}), '?difficulty=hard&seed=42&itemStacking=0');
+  assert.deepEqual(parseRaceOptions(raceOptionsQuery({...setup, itemStacking: false}), true), {...setup, itemStacking: false});
+  assert.equal(raceOptionsQuery({difficulty: 'hard', seed: 42}), '?difficulty=hard&seed=42');
   assert.deepEqual(parseRaceOptions(raceOptionsQuery(setup), false), {difficulty: 'hard', seed: 42});
 });
 
-test('opt-in survives dev race, menu and garage navigation, and cannot activate stable URLs', () => {
+test('dev default and explicit on or off survive race, menu and garage navigation', () => {
   const previous = globalThis.location;
   try {
     globalThis.location = {pathname: '/ai-friends-kart-playcanvas/dev/coast.html'} as Location;
-    const setup = parseMenuState('?map=coast&driver=gpt&difficulty=hard&seed=42&itemStacking=1');
-    assert.equal(setup.itemStacking, true);
-    for (const url of [menuQuery(setup), raceEntry('coast', 'gpt', setup), raceEntry('waterpark', 'gpt', setup), garageEntry('gpt', setup),
-      ...Object.values(raceNavigation('coast', 'gpt', '?difficulty=hard&seed=42&itemStacking=1'))]) {
-      assert.equal(new URLSearchParams(url.slice(url.indexOf('?'))).get('itemStacking'), '1', url);
+    for (const [flag, expected] of [['', '1'], ['&itemStacking=1', '1'], ['&itemStacking=0', '0']]) {
+      const search = '?map=coast&driver=gpt&difficulty=hard&seed=42' + flag;
+      const setup = parseMenuState(search);
+      assert.equal(setup.itemStacking, expected === '1');
+      for (const url of [menuQuery(setup), raceEntry('coast', 'gpt', setup), raceEntry('waterpark', 'gpt', setup), garageEntry('gpt', setup),
+        ...Object.values(raceNavigation('coast', 'gpt', search)), ...Object.values(raceNavigation('waterpark', 'gpt', search))]) {
+        const query = url.slice(url.indexOf('?'));
+        assert.equal(new URLSearchParams(query).get('itemStacking'), expected, url);
+        assert.equal(parseMenuState(query).itemStacking, expected === '1', url);
+      }
     }
     globalThis.location = {pathname: '/ai-friends-kart-playcanvas/coast.html'} as Location;
-    assert.equal(parseMenuState('?itemStacking=1').itemStacking, undefined);
+    for (const search of ['', '?itemStacking=1', '?itemStacking=0']) assert.equal(parseMenuState(search).itemStacking, undefined);
   } finally {
     if (previous === undefined) delete (globalThis as {location?: Location}).location; else globalThis.location = previous;
   }
@@ -56,7 +66,9 @@ test('applying a stack choice preserves race setup and only changes that flag pl
   for (const [key, value] of source.searchParams) assert.equal(enabled.searchParams.get(key), value);
   assert.equal(enabled.searchParams.get('itemStacking'), '1'); assert.equal(enabled.searchParams.get('autostart'), '1');
   const disabled = new URL(itemStackingRestartUrl(enabled.href, false));
-  assert.equal(disabled.searchParams.has('itemStacking'), false);
+  assert.equal(disabled.searchParams.get('itemStacking'), '0');
+  assert.equal(parseRaceOptions(disabled.search, true).itemStacking, false);
+  assert.equal(disabled.searchParams.get('autostart'), '1');
   assert.equal(disabled.searchParams.get('map'), 'snow'); assert.equal(disabled.searchParams.get('seed'), '42');
 });
 
@@ -85,15 +97,17 @@ test('dev pause setting is pending until explicit restart and cleans up its list
   assert.equal(panel.dataset.itemExperimentSettings, 'true'); assert.equal(f.parent.children[1], f.before);
   const [label, hint, apply] = panel.children, checkbox = label.children[0];
   assert.equal(label.children[1].textContent, ' 实验：三同类升级（下次比赛生效）');
-  assert.equal(checkbox.checked, false); assert.match(hint.textContent, /勾选不改变当前比赛/); assert.match(hint.textContent, /重新开始本场/);
-  assert.match(hint.textContent, /同槽普通 ×2 每次用 1/); assert.match(hint.textContent, /第三枚变高阶 1 次/); assert.match(hint.textContent, /满槽神秘箱不接收/);
+  assert.equal(checkbox.checked, true); assert.match(hint.textContent, /勾选不改变当前比赛/); assert.match(hint.textContent, /重新开始本场/);
+  assert.match(hint.textContent, /dev默认开启，可取消恢复双槽/);
+  assert.match(hint.textContent, /同槽普通 ×2 每次用 1/); assert.match(hint.textContent, /第三枚变 super 1 次/); assert.match(hint.textContent, /满槽神秘箱不接收/);
+  assert.match(hint.textContent, /super 后同类箱消耗但不强化、不填另一槽、不生成 Token/); assert.match(hint.textContent, /有空槽神秘箱照常抽取/);
   assert.equal(apply.textContent, '应用并重新开始');
-  checkbox.checked = true; checkbox.dispatchEvent(new Event('change'));
+  checkbox.checked = false; checkbox.dispatchEvent(new Event('change'));
   assert.equal(f.navigations.length, 0); assert.equal(f.location.searchParams.has('itemStacking'), false);
   apply.dispatchEvent(new Event('click'));
-  assert.equal(f.navigations.length, 1); assert.equal(new URL(f.navigations[0]).searchParams.get('itemStacking'), '1');
-  checkbox.checked = false; apply.dispatchEvent(new Event('click'));
-  assert.equal(new URL(f.navigations[1]).searchParams.has('itemStacking'), false);
+  assert.equal(f.navigations.length, 1); assert.equal(new URL(f.navigations[0]).searchParams.get('itemStacking'), '0');
+  checkbox.checked = true; apply.dispatchEvent(new Event('click'));
+  assert.equal(new URL(f.navigations[1]).searchParams.get('itemStacking'), '1');
   dispose(); assert.deepEqual(f.parent.children, [f.before]);
   apply.dispatchEvent(new Event('click')); assert.equal(f.navigations.length, 2, 'disposed shell cannot trigger a stale restart');
 });
@@ -101,6 +115,9 @@ test('dev pause setting is pending until explicit restart and cleans up its list
 test('stable pause settings hide experiment even with a forged query, while dev reflects active mode', () => {
   const stable = settingsFixture('https://example.test/game/coast.html?itemStacking=1');
   const dispose = stable.mount(); assert.deepEqual(stable.parent.children, [stable.before]); dispose();
-  const dev = settingsFixture('https://example.test/game/dev/waterpark.html?itemStacking=1');
-  dev.mount(); assert.equal(dev.parent.children[0].children[0].children[0].checked, true);
+  for (const [query, checked] of [['', true], ['?itemStacking=1', true], ['?itemStacking=0', false]] as const) {
+    const dev = settingsFixture('https://example.test/game/dev/waterpark.html' + query);
+    const disposeDev = dev.mount(); assert.equal(dev.parent.children[0].children[0].children[0].checked, checked);
+    disposeDev(); assert.deepEqual(dev.parent.children, [dev.before]);
+  }
 });

@@ -269,7 +269,7 @@ test('both maps keep E and R images, labels and disabled states independent with
 });
 
 
-test('opt-in stack labels update ordinary counts and one-use grade without reloading item models', () => {
+test('stack labels update ordinary counts and super grade on desktop and mobile without reloading item models', () => {
   for (const map of ['coast', 'waterpark'] as const) {
     const {shell, $, mobile} = fixture(map); shell.start();
     const stack = {...snapshot, itemStacking: true, heldSecond: 'pulse' as const, heldCount: 1, heldSecondCount: 2};
@@ -280,13 +280,15 @@ test('opt-in stack labels update ordinary counts and one-use grade without reloa
     assert.equal(mobile('item-secondary').querySelector('.mobile-item-label')!.textContent, 'R 脉冲×2');
     shell.updateHUD({...stack, heldCount: 2, heldSecondUpgraded: true});
     assert.match($('item').attrs['aria-label'], /普通 ×2$/);
-    assert.match($('item-secondary').attrs['aria-label'], /使用追踪脉冲 · 高阶·1次$/);
-    assert.equal($('item-secondary').querySelector('.itemCopy > span')!.textContent, '道具槽 R · 高阶·1次');
-    assert.equal(mobile('item-secondary').querySelector('.mobile-item-label')!.textContent, 'R 高阶·1次');
+    assert.match($('item-secondary').attrs['aria-label'], /使用追踪脉冲 · super$/);
+    assert.equal($('item-secondary').querySelector('.itemCopy > span')!.textContent, '道具槽 R · super');
+    assert.equal(mobile('item-secondary').querySelector('.mobile-item-label')!.textContent, 'R super');
     assert.equal($('itemHelpSecondary').textContent, '强脉冲 3 秒');
     shell.updateHUD({...stack, heldCount: 1, heldUpgraded: true});
-    assert.match($('item').attrs['aria-label'], /使用涡轮加速 · 高阶·1次$/);
+    assert.match($('item').attrs['aria-label'], /使用涡轮加速 · super$/);
     assert.equal($('itemHelp').textContent, '高阶加速 6.6 秒');
+    assert.equal($('item').querySelector('.itemCopy > span')!.textContent, '道具槽 E · super');
+    assert.equal(mobile('item').querySelector('.mobile-item-label')!.textContent, 'E super');
     assert.equal(mobile('item').attrs['aria-label'], $('item').attrs['aria-label']);
     assert.equal($('itemImage').srcWrites, 1); assert.equal($('itemImageSecondary').srcWrites, 1);
     assert.equal(mobile('item').querySelector('.mobile-item-image')!.srcWrites, 1);

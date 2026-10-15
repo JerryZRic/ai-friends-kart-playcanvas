@@ -44,3 +44,19 @@ test('land HUD preserves slowdown feedback for isolated experimental attack sour
  const a=actor('a',{held:null,pulseSlow:2,upgradedPulseSlow:1});
  assert.match(coastHudFeedback(a,[a],1000,0,id=>id).chargeLabel??'',/减速 2.0 秒/);
 });
+
+test('actual pickups progress x1 → x2 → super, then consume fourth box without another slot or upgrade',()=>{
+ for(const kind of ['boost','shield','pulse'] as const){
+  const a=actor('a',{held:null});const racer={actor:a,previous:0,previousLane:0};
+  for(let i=1;i<=3;i++){const b=box(kind);collectPickups([racer],[b],1000);assert.equal(b.cool,8);assert.equal(a.heldSecond,null);assert.equal(a.heldCount,i===2?2:1);assert.equal(!!a.heldUpgraded,i===3);}
+  const before=structuredClone(a),fourth=box(kind);collectPickups([racer],[fourth],1000);assert.deepEqual(a,before);assert.equal(fourth.cool,8);assert.equal(fourth.mesh.enabled,false);
+  collectPickups([racer],[fourth],1000);assert.deepEqual(a,before);
+ }
+});
+test('super same-kind mystery reward consumes one claim/draw without mutation; other kinds still enter R',()=>{
+ const a=actor('a',{held:'boost',heldUpgraded:true,heldCount:1});const racer={actor:a,previous:0,previousLane:0};let rolls=0;const m=box('mystery'),before=structuredClone(a);
+ collectPickups([racer],[m],1000,()=>{rolls++;return 0;});assert.equal(rolls,1);assert.equal(m.cool,8);assert.deepEqual(a,before);
+ collectPickups([racer],[m],1000,()=>{rolls++;return 0;});assert.equal(rolls,1);
+ const other=box('mystery');collectPickups([racer],[other],1000,()=>{rolls++;return .4;});assert.equal(a.heldSecond,'shield');assert.equal(rolls,2);
+ const full=box('mystery');collectPickups([racer],[full],1000,()=>{rolls++;return 0;});assert.equal(rolls,2);assert.equal(full.cool,0);
+});

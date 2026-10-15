@@ -33,7 +33,7 @@ export function slowTime(r:Combatant){return Math.max(r.slow,r.itemStacking?r.pu
 export function slowMultiplier(r:Combatant){return r.itemStacking&&(r.upgradedPulseSlow??0)>0?.45:RULES.slowFactor;}
 export function tickItemExperiment(r:Combatant,dt:number){if(r.itemStacking)for(const key of ['itemUseCooldown','pulseSlow','upgradedPulseSlow'] as const)r[key]=Math.max(0,(r[key]??0)-Math.max(0,dt));}
 export function clearItemExperiment(r:Combatant){if(r.itemStacking){r.itemUseCooldown=r.pulseSlow=r.upgradedPulseSlow=0;}}
-export function canReceivePickup(actor:Combatant,box:Pick<RacingPickup,'display'>){return box.display==='mystery'?!inventoryFull(actor):canStoreItem(actor,box.display);}
+export function canReceivePickup(actor:Combatant,box:Pick<RacingPickup,'display'>){return box.display==='mystery'?!inventoryFull(actor):canStoreItem(actor,box.display)||!!actor.itemStacking&&([0,1] as const).some(slot=>itemAt(actor,slot)===box.display&&itemUpgraded(actor,slot));}
 export function tickEffects(r: Combatant, dt: number) {
   tickItemExperiment(r,dt);
   for (const key of ['boost', 'shield', 'slow'] as const) r[key] = Math.max(0, r[key] - Math.max(0, dt));
@@ -103,7 +103,7 @@ export interface PickupPlanning {
 export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions, pickupPlanning?: PickupPlanning) {
   let lane = skill ? npcLine(actor.total, phase, bend, skill) : Math.sin(actor.total / 90 + phase) * 2.6;
   if ((!inventoryFull(actor)||actor.itemStacking) && Math.abs(bend) < .5) {
-    const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled && canReceivePickup(actor,b)).map(box => ({ box, gap: routes?.pickupGap ? routeValue(routes.pickupGap(actor, box)) : forwardGap(actor.total, box.d, length) }))
+    const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled && canReceivePickup(actor,b) && (b.display==='mystery'||canStoreItem(actor,b.display))).map(box => ({ box, gap: routes?.pickupGap ? routeValue(routes.pickupGap(actor, box)) : forwardGap(actor.total, box.d, length) }))
       .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2)
       .filter(({ box, gap }) => {
         const estimate = pickupReachability(actor, box, gap, pickupPlanning?.lateralMultiplier ?? 1);

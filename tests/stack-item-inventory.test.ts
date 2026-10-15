@@ -97,23 +97,18 @@ test('E wins when both fixed slots contain the same ordinary kind',()=>{
  assert.deepEqual([itemCount(inventory),itemCount(inventory,1)],[2,1]);
  assert.equal(storeItem(inventory,'boost'),0);
  assert.equal(itemUpgraded(inventory),true);
- assert.equal(storeItem(inventory,'boost'),1);
- assert.deepEqual([itemCount(inventory),itemCount(inventory,1)],[1,2]);
+ assert.equal(storeItem(inventory,'boost'),null);
+ assert.deepEqual([itemCount(inventory),itemCount(inventory,1)],[1,1]);
 });
 
-test('an upgrade never stacks: it reuses an empty slot then rejects without overwrite',()=>{
- const inventory=empty();
- for(let i=0;i<3;i++)assert.equal(storeItem(inventory,'boost'),0);
- const upgradedE={item:itemAt(inventory),count:itemCount(inventory),upgraded:itemUpgraded(inventory)};
- assert.equal(storeItem(inventory,'shield'),1);
+test('holding super rejects that kind even with an empty other slot; different kinds still fit',()=>{
+ const inventory=empty();for(let i=0;i<3;i++)storeItem(inventory,'boost');
  const before=structuredClone(inventory);
  assert.equal(canStoreItem(inventory,'boost'),false);assert.equal(storeItem(inventory,'boost'),null);
- assert.deepEqual(inventory,before);
- assert.equal(takeItem(inventory,1),'shield');
- for(let i=0;i<3;i++)assert.equal(storeItem(inventory,'boost'),1);
- assert.deepEqual(view(inventory)[0],upgradedE);
- assert.equal(canStoreItem(inventory,'boost'),false);assert.equal(storeItem(inventory,'boost'),null);
- assert.equal(sources(inventory),6);
+ assert.deepEqual(inventory,before);assert.equal(inventory.heldSecond,null);
+ assert.equal(storeItem(inventory,'shield'),1);
+ const odd:ItemInventory={held:'boost',heldCount:1,heldSecond:'boost',heldSecondUpgraded:true,itemStacking:true};
+ assert.equal(storeItem(odd,'boost'),null);assert.equal(odd.heldCount,1);
 });
 
 test('different kinds use E then R and a full incompatible pickup leaves both untouched',()=>{
@@ -255,7 +250,7 @@ test('all valid two-slot states conserve each kind across accepted/rejected pick
   const slots=[a,b];const inventory=make(a,b);const before=structuredClone(inventory);
   let expectedSlot=slots.findIndex(slot=>slot?.kind===kind&&slot.sources<3);
   if(expectedSlot<0)expectedSlot=slots.findIndex(slot=>slot===null);
-  const expected=expectedSlot<0?null:expectedSlot as ItemSlot;
+  const expected=slots.some(slot=>slot?.kind===kind&&slot.sources===3)||expectedSlot<0?null:expectedSlot as ItemSlot;
   assert.equal(canStoreItem(inventory,kind),expected!==null);
   assert.deepEqual(inventory,before,'eligibility must be read-only');
   assert.equal(storeItem(inventory,kind),expected);

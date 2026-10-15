@@ -25,7 +25,10 @@ export function itemCount(inventory:ItemInventory,slot:ItemSlot=0):number{
 export function inventoryFull(inventory:ItemInventory){return !!inventory.held&&(inventory.heldSecond===undefined||!!inventory.heldSecond);}
 export function inventoryHas(inventory:ItemInventory,kind:ItemKind){return inventory.held===kind||inventory.heldSecond===kind;}
 function storageSlot(inventory:ItemInventory,item:ItemKind):ItemSlot|null{
- if(inventory.itemStacking)for(const slot of [0,1] as const)if(itemAt(inventory,slot)===item&&!itemUpgraded(inventory,slot))return slot;
+ if(inventory.itemStacking){
+  if(([0,1] as const).some(slot=>itemAt(inventory,slot)===item&&itemUpgraded(inventory,slot)))return null;
+  for(const slot of [0,1] as const)if(itemAt(inventory,slot)===item)return slot;
+ }
  if(!inventory.held)return 0;
  if(inventory.heldSecond===null)return 1;
  return null;

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {garageRaceEntry, garageBackEntry, garageInitialBuild, garageCombinedStats, filterGarageParts} from '../src/kart-garage';
+import {garageRaceEntry, garageBackEntry, garageHomeEntry, garageInitialBuild, garageCombinedStats, filterGarageParts} from '../src/kart-garage';
 import {catalog, defaultBuild, KART_SLOTS, loadGarageState, saveGarageState, defaultGarageState, type KartBuild} from '../src/kart-build';
 import {kartPresets} from '../src/kart-presets';
 const parse = (path: string) => new URL(path, 'https://example.com/dev/');
@@ -120,16 +120,18 @@ test('garage home link retains driver, latest car and options after editing', as
 });
 
 
-test('garage preserves an explicit dev stack experiment without enabling it by default or on stable', () => {
+test('garage preserves dev default-on and explicit opt-out without enabling stable', () => {
   const previous = globalThis.location;
   try {
     for (const pathname of ['/dev/garage.html', '/ai-friends-kart-playcanvas/garage.html']) {
       globalThis.location = {pathname} as Location;
-      for (const entry of [garageRaceEntry, garageBackEntry]) {
+      for (const entry of [garageRaceEntry, garageBackEntry, garageHomeEntry]) {
         for (const flow of ['', '&flow=free']) {
           const search = '?map=snow&difficulty=hard&seed=42' + flow;
-          assert.equal(parse(entry('grok', mixed, search)).searchParams.has('itemStacking'), false);
-          assert.equal(parse(entry('grok', mixed, search + '&itemStacking=0')).searchParams.has('itemStacking'), false);
+          assert.equal(parse(entry('grok', mixed, search)).searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '1' : null);
+          const off = parse(entry('grok', mixed, search + '&itemStacking=0'));
+          assert.equal(off.searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '0' : null);
+          assert.equal(parse(entry('grok', mixed, off.search)).searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '0' : null, 'explicit opt-out survives repeated navigation');
           const url = parse(entry('grok', mixed, search + '&itemStacking=1'));
           assert.equal(url.searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '1' : null);
           assert.equal(url.searchParams.get('driver'), 'grok'); assert.equal(url.searchParams.get('map'), 'snow');

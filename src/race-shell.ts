@@ -343,7 +343,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
         const held = heldSlots[slot], button = elements[ids.button] as HTMLButtonElement | null;
         const upgraded = stacking && upgradedSlots[slot] === true;
         const amount = clamp(count(itemCounts[slot], 1), 1, 2);
-        const badge = stacking && held ? upgraded ? '高阶·1次' : `普通 ×${amount}` : '';
+        const badge = stacking && held ? upgraded ? 'super' : `普通 ×${amount}` : '';
         const shieldActive = stacking && held === 'shield' && (snapshot.shield ?? 0) > 0;
         const label = `${ids.key} 道具槽 · ${held ? ITEMS[held].action : '等待道具'}${badge ? ` · ${badge}` : ''}`;
         const disabled = !held || phase !== 'running' || snapshot.canUseItem === false || cooldown > 0 || shieldActive;
@@ -384,7 +384,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
             } else { image.removeAttribute('src'); image.alt = ''; }
           }
           if (symbol) symbol.hidden = !!held;
-          if (name) name.textContent = `${ids.key} ${held ? upgraded ? '高阶·1次' : ITEMS[held].shortName + (stacking ? `×${amount}` : '') : '道具'}`;
+          if (name) name.textContent = `${ids.key} ${held ? upgraded ? 'super' : ITEMS[held].shortName + (stacking ? `×${amount}` : '') : '道具'}`;
         }
       }
     },
