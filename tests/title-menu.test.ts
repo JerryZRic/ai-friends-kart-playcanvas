@@ -70,3 +70,9 @@ test('uniform title plates retain separate physical minimum targets without rear
   assert.ok(20.8*scale>0,'neighboring expanded vertical targets remain horizontally separated');
  }
 });
+
+// Full-body portraits are enlarged from the top to match the original face scale.
+// Preserve their shoulders/hair horizontally; crop only below the menu art baseline.
+test('portrait framing never hard-crops enlarged side silhouettes',()=>{
+ assert.match(css,/\.title-portrait-frame\{[^}]*overflow:visible;clip-path:inset\(0 -100% 0 -100%\)/);
+});

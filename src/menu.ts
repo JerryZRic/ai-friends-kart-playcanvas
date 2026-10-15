@@ -1,3 +1,4 @@
+import {waitForHomeCover} from './home-cover-ready';
 import {getDocumentHomeCover} from './home-cover-registry';
 import {mountHomeCover,type HomeCoverController} from './home-cover';
 import {readyBrandIntro,brandIntroPending} from './brand-intro';
@@ -50,8 +51,10 @@ function revealHome(version:number, fallback=false){
  if(nav){nav.hidden=false;nav.inert=false;nav.setAttribute('aria-hidden','false');}
  root.querySelectorAll<HTMLButtonElement>('.title-action').forEach(button=>{button.disabled=false;});
  if(fallback){const canvas=root.querySelector<HTMLElement>('#title-backdrop');if(canvas)canvas.hidden=true;const poster=root.querySelector<HTMLElement>('.title-fallback');if(poster)poster.hidden=false;root.querySelector<HTMLElement>('#story-button')?.focus();}
- // The backdrop callback follows a real painted frame, and the menu is now enabled.
- readyBrandIntro(document);
+ // The backdrop has painted; wait only for this document's selected portrait.
+ const signal=renderListeners.signal,image=root.querySelector<HTMLImageElement>('.title-character');
+ if(fallback||!brandIntroPending(document)||!image||image.hidden||image.complete&&image.naturalWidth>0)readyBrandIntro(document);
+ else void waitForHomeCover(image,signal).then(()=>{if(!disposed&&!signal.aborted&&version===renderVersion)readyBrandIntro(document);});
 }
 
 let state=parseMenuState(location.search),settings=readGameSettings();

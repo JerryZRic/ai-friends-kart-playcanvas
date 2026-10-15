@@ -1,0 +1,7 @@
+{
+  "kind": "cover-crop-readiness-fix",
+  "baseCommit": "f8da5b26e0b15537fe46d94e442029ba3716b297",
+  "baselineRun": 38639517124,
+  "baselineArtifact": 11930010985,
+  "purpose": "Remove lateral portrait clipping and bound selected-image readiness; preserve stable and dev bytes"
+}
