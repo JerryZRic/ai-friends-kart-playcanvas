@@ -20,7 +20,7 @@ import {createWaterparkWake} from './waterpark-wake';
 import {newWaterRace,advanceWaterRace,resetWaterPickups,clearWaterDynamicPickups,useWaterItem,waterStandings,waterTravelSpeed,WATER_LAPS,WATER_CHECKPOINTS} from './water-race';
 import {createPickupVisual} from './pickup-visual';
 import {DYNAMIC_PICKUP_CAPACITY} from './dynamic-pickups';
-import type {RacingPickup} from './npc-tactics';
+import {slowTime,type RacingPickup} from './npc-tactics';
 import {characterTuning} from './character-profiles';
 import {readGameSettings,saveGameSettings,qualitySettings} from './game-settings';
 import {createWaterparkLifetime} from './waterpark-lifetime';
@@ -276,12 +276,12 @@ reportStartupError=error=>{
     const pressed=(key:string)=>!!controls.keys[key];
     if(mode==='riding') {
       if(step>0&&race.countdown<=0&&!race.finished)consumeItemRequest();
-      const human=race.racers[0],before={pickups:human.pickups,bump:human.bump,slow:human.slow,shield:human.shield,slide:human.motion.slideBoost,bank:human.motion.bankHit};
+      const human=race.racers[0],before={pickups:human.pickups,bump:human.bump,slow:human.slow,pulseSlow:human.pulseSlow??0,upgradedPulseSlow:human.upgradedPulseSlow??0,shield:human.shield,slide:human.motion.slideBoost,bank:human.motion.bankHit};
       steer=(pressed('KeyA')||pressed('ArrowLeft')?1:0)-(pressed('KeyD')||pressed('ArrowRight')?1:0); visualSteer=steer;
       advanceWaterRace(race,{throttle:pressed('KeyW')||pressed('ArrowUp'),brake:pressed('Space'),reverse:pressed('KeyS')||pressed('ArrowDown'),drift:pressed('ShiftLeft')||pressed('ShiftRight'),steer},step,pickups);
       clock=race.elapsed;
       if(human.pickups>before.pickups)shell.cue('pickup');
-      if(human.slow>before.slow)shell.cue('hit');
+      if(human.slow>before.slow||(human.pulseSlow??0)>before.pulseSlow||(human.upgradedPulseSlow??0)>before.upgradedPulseSlow)shell.cue('hit');
       if(human.bump>before.bump||human.motion.bankHit&&!before.bank)shell.cue('collision');
       if(human.motion.slideBoost>before.slide)shell.cue('release');
       if(race.finished) {
@@ -309,12 +309,12 @@ reportStartupError=error=>{
     }
     for(const racer of race.racers){
       const pose=sampleWaterpark(racer.total,racer.lateral),rings=effects.get(racer.id)!;
-      rings[0].enabled=racer.shield>0;rings[1].enabled=racer.warning>0||racer.boost>0||racer.motion.slideBoost>0;rings[2].enabled=racer.pulseFlash>0||racer.slow>0;
+      rings[0].enabled=racer.shield>0;rings[1].enabled=racer.warning>0||racer.boost>0||racer.motion.slideBoost>0;rings[2].enabled=racer.pulseFlash>0||slowTime(racer)>0;
       rings.forEach((ring,i)=>{ring.setPosition(pose.p.x,.55+i*.22,pose.p.z);const size=i===2&&racer.pulseFlash>0?1+(1-racer.pulseFlash/.8)*6:i===1&&racer.warning>0?1.15+Math.sin(clock*24)*.15:1;ring.setLocalScale(size,1,size);});
     }
     const standings=waterStandings(race),player=race.racers[0];
     const travelSpeed=waterTravelSpeed(player);
-    shell.updateHUD({rank:standings.findIndex(r=>r.id===selected)+1,lap:Math.min(WATER_LAPS,1+Math.floor(player.checkpoint/WATER_CHECKPOINTS)),elapsed:race.elapsed,speed:travelSpeed,charge:motion.charge,chargeMax:WATER_HANDLING.slideMaxCharge,boost:Math.max(player.boost,motion.slideBoost),shield:player.shield,held:player.held,heldSecond:player.heldSecond,slideLabel:'左 Shift + A / D 水上滑移',canUseItem:mode==='riding'&&race.countdown<=0&&!motion.finished});
+    shell.updateHUD({rank:standings.findIndex(r=>r.id===selected)+1,lap:Math.min(WATER_LAPS,1+Math.floor(player.checkpoint/WATER_CHECKPOINTS)),elapsed:race.elapsed,speed:travelSpeed,charge:motion.charge,chargeMax:WATER_HANDLING.slideMaxCharge,boost:Math.max(player.boost,motion.slideBoost),shield:player.shield,held:player.held,heldSecond:player.heldSecond,itemStacking:player.itemStacking,heldCount:player.heldCount,heldSecondCount:player.heldSecondCount,heldUpgraded:player.heldUpgraded,heldSecondUpgraded:player.heldSecondUpgraded,itemUseCooldown:player.itemUseCooldown,slideLabel:'左 Shift + A / D 水上滑移',canUseItem:mode==='riding'&&race.countdown<=0&&!motion.finished});
     shell.drawMinimap(race.racers.map(r=>({total:r.total,color:getDriver(r.id).color,player:r.id===selected})));
     const announcement=race.announcements.at(-1)??'';if(announcement&&announcement!==lastAnnouncement){lastAnnouncement=announcement;shell.toast(announcement);}
     const s=sampleWaterpark(motion.distance,motion.lane);

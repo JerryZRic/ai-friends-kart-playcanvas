@@ -8,9 +8,9 @@ export type LandDrivingTrack = Pick<LandTrack,'sample'|'surfaceAt'>;
 /** Same inputs and force terms for player and NPC. Circuit support is kinematic:
  * distance + lateral, with gravity/rolling losses, not a free-body suspension. */
 export function stepLandSpeed(track:LandDrivingTrack|null,distance:number,speed:number,input:Parameters<typeof stepRaceKartSpeed>[1],dt:number,
-  tuning:Parameters<typeof stepRaceKartSpeed>[3],boost:number,slow:number,offroad=false) {
+  tuning:Parameters<typeof stepRaceKartSpeed>[3],boost:number,slow:number,offroad=false,slowFactor:number=RULES.slowFactor) {
   const launchSpeed=track&&input.throttle&&!input.reverse&&!input.brake&&speed<0&&speed>-.15?0:speed;
-  const driven=stepRaceKartSpeed(launchSpeed,input,dt,tuning,boost,slow,offroad);
+  const driven=stepRaceKartSpeed(launchSpeed,input,dt,tuning,boost,slow,offroad,slowFactor);
   if(!track)return driven;
   const surface=track.surfaceAt(distance),t=track.sample(distance).t;
   const gravity=-9.81*t.y;

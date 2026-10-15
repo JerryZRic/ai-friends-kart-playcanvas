@@ -38,7 +38,7 @@ export function kartRoadContext(distance: number, speed: number, sample: (distan
 /** Player and coast AI share the exact forward speed integrator and effect caps.
  * AI difficulty may choose inputs, never modify these physics parameters. */
 export function stepRaceKartSpeed(speed: number, input: {throttle?: boolean; brake?: boolean; reverse?: boolean; handbrake?: boolean}, dt: number,
- tuning: {maxSpeed:number;multipliers:{acceleration:number}}, boost: number, slow: number, offroad = false) {
- const limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1)*(slow>0?RULES.slowFactor:1)*(offroad?.58:1);
+ tuning: {maxSpeed:number;multipliers:{acceleration:number}}, boost: number, slow: number, offroad = false, slowFactor:number=RULES.slowFactor) {
+ const limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1)*(slow>0?slowFactor:1)*(offroad?.58:1);
  return driveSpeed(speed,input,dt,limit,tuning.multipliers.acceleration);
 }

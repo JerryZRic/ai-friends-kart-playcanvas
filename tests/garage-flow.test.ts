@@ -118,3 +118,27 @@ test('garage home link retains driver, latest car and options after editing', as
  assert.match(source,/data-garage-home href="\$\{garageHomeEntry/);
  assert.match(source,/\[data-garage-home\].*garageHomeEntry/);
 });
+
+
+test('garage preserves an explicit dev stack experiment without enabling it by default or on stable', () => {
+  const previous = globalThis.location;
+  try {
+    for (const pathname of ['/dev/garage.html', '/ai-friends-kart-playcanvas/garage.html']) {
+      globalThis.location = {pathname} as Location;
+      for (const entry of [garageRaceEntry, garageBackEntry]) {
+        for (const flow of ['', '&flow=free']) {
+          const search = '?map=snow&difficulty=hard&seed=42' + flow;
+          assert.equal(parse(entry('grok', mixed, search)).searchParams.has('itemStacking'), false);
+          assert.equal(parse(entry('grok', mixed, search + '&itemStacking=0')).searchParams.has('itemStacking'), false);
+          const url = parse(entry('grok', mixed, search + '&itemStacking=1'));
+          assert.equal(url.searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '1' : null);
+          assert.equal(url.searchParams.get('driver'), 'grok'); assert.equal(url.searchParams.get('map'), 'snow');
+          assert.equal(url.searchParams.get('difficulty'), 'hard'); assert.equal(url.searchParams.get('seed'), '42');
+          assert.deepEqual(JSON.parse(url.searchParams.get('kart')!), mixed);
+        }
+      }
+    }
+  } finally {
+    if (previous === undefined) delete (globalThis as {location?: Location}).location; else globalThis.location = previous;
+  }
+});

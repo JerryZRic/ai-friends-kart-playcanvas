@@ -10,6 +10,8 @@ function fixture(map: 'coast' | 'waterpark' = 'coast', audioFactory:()=>AudioCon
     textContent = ''; innerHTML = ''; style: Record<string, string> = {}; dataset: Record<string, string> = {};
     attrs: Record<string, string> = {}; classes = new Set<string>(); disabled = false; hidden = false;
     alt = ''; href = ''; srcWrites = 0; private source = '';
+    parts = new Map<string, FakeElement>();
+    querySelector(selector: string) { return this.parts.get(selector) ?? null; }
     classList = { add: (name: string) => { this.classes.add(name); }, remove: (name: string) => { this.classes.delete(name); } };
     setAttribute(name: string, value: string) { this.attrs[name] = value; }
     removeAttribute(name: string) { delete this.attrs[name]; if (name === 'src') this.source = ''; }
@@ -22,11 +24,21 @@ function fixture(map: 'coast' | 'waterpark' = 'coast', audioFactory:()=>AudioCon
     if (!elements.has(id)) elements.set(id, new FakeElement());
     return elements.get(id)!;
   };
-  const document = { getElementById: $, body: $('body') } as unknown as Document;
+  const mobileItems = new Map<string, FakeElement>();
+  for (const [id, action] of [['item', 'item'], ['item-secondary', 'item-secondary']]) {
+    $(id).parts.set('.itemCopy > span', new FakeElement());
+    const mobile = new FakeElement();
+    for (const selector of ['.mobile-item-image', '.mobile-item-symbol', '.mobile-item-label']) mobile.parts.set(selector, new FakeElement());
+    mobileItems.set(action, mobile);
+  }
+  const document = { getElementById: $, body: $('body'), querySelector: (selector: string) => {
+    const action = selector.match(/^\[data-mobile-action="([^"]+)"\]$/)?.[1];
+    return action ? mobileItems.get(action) ?? null : null;
+  } } as unknown as Document;
   const canvas = $('game') as unknown as HTMLCanvasElement;
   const storage = new Map<string, string>();
   const shell = createRaceShell(document, canvas, { map, driver: 'grok', storage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, value); } }, audioFactory });
-  return { shell, $, storage, get activeElement() { return activeElement; } };
+  return { shell, $, mobile: (action: string) => mobileItems.get(action)!, storage, get activeElement() { return activeElement; } };
 }
 
 const snapshot: RaceHudSnapshot = { rank: 2, lap: 1, elapsed: 69.9, speed: 20, charge: .7, boost: 0, shield: 0, held: 'boost' };
@@ -254,4 +266,80 @@ test('both maps keep E and R images, labels and disabled states independent with
     assert.equal($('item-secondary').dataset.held, 'empty', 'legacy snapshots clear R rather than retaining stale inventory');
     shell.dispose(); assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
   }
+});
+
+
+test('opt-in stack labels update ordinary counts and one-use grade without reloading item models', () => {
+  for (const map of ['coast', 'waterpark'] as const) {
+    const {shell, $, mobile} = fixture(map); shell.start();
+    const stack = {...snapshot, itemStacking: true, heldSecond: 'pulse' as const, heldCount: 1, heldSecondCount: 2};
+    shell.updateHUD(stack);
+    assert.equal($('item').querySelector('.itemCopy > span')!.textContent, '道具槽 E · 普通 ×1');
+    assert.equal($('item-secondary').querySelector('.itemCopy > span')!.textContent, '道具槽 R · 普通 ×2');
+    assert.equal(mobile('item').querySelector('.mobile-item-label')!.textContent, 'E 加速×1');
+    assert.equal(mobile('item-secondary').querySelector('.mobile-item-label')!.textContent, 'R 脉冲×2');
+    shell.updateHUD({...stack, heldCount: 2, heldSecondUpgraded: true});
+    assert.match($('item').attrs['aria-label'], /普通 ×2$/);
+    assert.match($('item-secondary').attrs['aria-label'], /使用追踪脉冲 · 高阶·1次$/);
+    assert.equal($('item-secondary').querySelector('.itemCopy > span')!.textContent, '道具槽 R · 高阶·1次');
+    assert.equal(mobile('item-secondary').querySelector('.mobile-item-label')!.textContent, 'R 高阶·1次');
+    assert.equal($('itemHelpSecondary').textContent, '强脉冲 3 秒');
+    shell.updateHUD({...stack, heldCount: 1, heldUpgraded: true});
+    assert.match($('item').attrs['aria-label'], /使用涡轮加速 · 高阶·1次$/);
+    assert.equal($('itemHelp').textContent, '高阶加速 6.6 秒');
+    assert.equal(mobile('item').attrs['aria-label'], $('item').attrs['aria-label']);
+    assert.equal($('itemImage').srcWrites, 1); assert.equal($('itemImageSecondary').srcWrites, 1);
+    assert.equal(mobile('item').querySelector('.mobile-item-image')!.srcWrites, 1);
+    shell.updateHUD({...stack, held: null, heldSecond: 'pulse', heldSecondCount: 1});
+    assert.equal($('item').querySelector('.itemCopy > span')!.textContent, '道具槽 E');
+    assert.equal(mobile('item').querySelector('.mobile-item-label')!.textContent, 'E 道具');
+    assert.match($('item-secondary').attrs['aria-label'], /普通 ×1$/);
+    assert.equal($('itemImageSecondary').srcWrites, 1, 'R retains its fixed identity after E empties');
+    shell.dispose();
+  }
+});
+
+test('experiment shares cooldown across both UI slots and blocks only an active shield slot', () => {
+  const {shell, $, mobile} = fixture(); shell.start();
+  const stack = {...snapshot, itemStacking: true, held: 'shield' as const, heldSecond: 'boost' as const, heldCount: 2};
+  shell.updateHUD({...stack, itemUseCooldown: 1.2});
+  for (const id of ['item', 'item-secondary']) {
+    assert.equal($(id).disabled, true); assert.equal(mobile(id).disabled, true);
+  }
+  assert.equal($('itemHelp').textContent, '共用冷却 1.2 秒');
+  shell.updateHUD({...stack, itemUseCooldown: .001});
+  assert.equal($('itemHelpSecondary').textContent, '共用冷却 0.1 秒');
+  shell.updateHUD({...stack, shield: 2, itemUseCooldown: 0});
+  assert.equal($('item').disabled, true); assert.equal(mobile('item').disabled, true);
+  assert.equal($('item-secondary').disabled, false); assert.equal(mobile('item-secondary').disabled, false);
+  assert.equal($('itemHelp').textContent, '护盾生效中 · 暂不可使用');
+  shell.updateHUD({...stack, held: 'boost', heldSecond: 'shield', shield: 2});
+  assert.equal($('item').disabled, false); assert.equal($('item-secondary').disabled, true);
+  shell.updateHUD({...stack, shield: 0, canUseItem: false});
+  assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
+  shell.updateHUD({...stack, heldUpgraded: true}); assert.equal($('item').disabled, false); assert.equal($('item-secondary').disabled, false);
+  assert.equal($('itemHelp').textContent, '高阶护盾 6 秒 · 净化脉冲');
+  shell.setPaused(true); assert.equal(mobile('item').disabled, true); assert.equal(mobile('item-secondary').disabled, true);
+  shell.setPaused(false); shell.updateHUD(stack); shell.finish(finish);
+  assert.equal(mobile('item').disabled, true); assert.equal(mobile('item-secondary').disabled, true);
+  shell.dispose();
+});
+
+test('default-off HUD ignores stack metadata and preserves legacy dual-slot behavior', () => {
+  const {shell, $, mobile} = fixture(); shell.start();
+  shell.updateHUD({...snapshot, held: 'shield', heldSecond: 'shield', heldCount: 2, heldSecondCount: 2,
+    heldUpgraded: true, heldSecondUpgraded: true, shield: 3, itemUseCooldown: 1.2});
+  assert.equal($('item').attrs['aria-label'], 'E 道具槽 · 使用能量护盾');
+  assert.equal($('item-secondary').attrs['aria-label'], 'R 道具槽 · 使用能量护盾');
+  assert.equal($('item').querySelector('.itemCopy > span')!.textContent, '道具槽 E');
+  assert.equal($('itemHelp').textContent, '点击这里或按 E 使用');
+  assert.equal(mobile('item').querySelector('.mobile-item-label')!.textContent, 'E 护盾');
+  assert.equal($('item').disabled, false); assert.equal($('item-secondary').disabled, false);
+  shell.updateHUD({...snapshot, itemStacking: true, heldCount: Infinity, heldSecond: 'pulse', heldSecondCount: 99});
+  assert.match($('item').attrs['aria-label'], /普通 ×1$/);
+  assert.match($('item-secondary').attrs['aria-label'], /普通 ×2$/);
+  shell.updateHUD(snapshot);
+  assert.equal($('item').attrs['aria-label'], 'E 道具槽 · 使用涡轮加速');
+  assert.equal($('item').querySelector('.itemCopy > span')!.textContent, '道具槽 E');
+  shell.dispose();
 });
