@@ -40,7 +40,9 @@ export const whaleCoverAdapter:HomeCoverAdapter={async mount(canvas,model,signal
   }
   mesh=new pc.Mesh(app.graphicsDevice);mesh.clear(true,false);mesh.setUvs(0,grid.uvs);mesh.setIndices(grid.indices);updateMesh();
   function addLayer(image:HTMLImageElement,z:number,geometry=mesh!,feather=false){
-   const texture=new pc.Texture(app!.graphicsDevice,{mipmaps:false,minFilter:pc.FILTER_LINEAR,magFilter:pc.FILTER_LINEAR,addressU:pc.ADDRESS_CLAMP_TO_EDGE,addressV:pc.ADDRESS_CLAMP_TO_EDGE});texture.setSource(image);textures.push(texture);
+   // HTML image rows start at the top; UVs use 1-y. PlayCanvas defaults flipY to false.
+   // Explicit upload flipping keeps both original art and local eye patches upright.
+   const texture=new pc.Texture(app!.graphicsDevice,{flipY:true,mipmaps:false,minFilter:pc.FILTER_LINEAR,magFilter:pc.FILTER_LINEAR,addressU:pc.ADDRESS_CLAMP_TO_EDGE,addressV:pc.ADDRESS_CLAMP_TO_EDGE});texture.setSource(image);textures.push(texture);
    const material=new pc.StandardMaterial();material.useLighting=false;material.diffuse.set(0,0,0);material.emissive.set(1,1,1);material.emissiveMap=texture;material.opacityMap=texture;material.opacityMapChannel='a';material.opacityVertexColor=feather;material.opacityVertexColorChannel='a';material.blendType=pc.BLEND_NORMAL;material.depthWrite=false;material.cull=pc.CULLFACE_NONE;material.update();materials.push(material);
    const entity=new pc.Entity('Portrait texture layer',app!);entity.setLocalPosition(0,0,z);entity.addComponent('render',{meshInstances:[new pc.MeshInstance(geometry,material)]});app!.root.addChild(entity);return material;
   }

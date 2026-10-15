@@ -17,3 +17,12 @@ test('blink is short, bounded, and leaves a long open-eye interval',()=>{
  assert.equal(coverBlink(0),0);assert.equal(coverBlink(3.55),1);assert.equal(coverBlink(3.8),0);
  for(let t=0;t<20;t+=.01)assert.ok(coverBlink(t)>=0&&coverBlink(t)<=1);
 });
+
+test('HTML texture upload and bottom-origin UVs share one explicit upright convention',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const adapter=readFileSync(new URL('../src/home-cover-playcanvas.ts',import.meta.url),'utf8');
+ assert.match(adapter,/new pc\.Texture\(app!\.graphicsDevice,\{flipY:true,/);
+ const grid=createCoverGrid();assert.deepEqual(grid.uvs.slice(0,2),[0,1]);assert.deepEqual(grid.uvs.slice(-2),[1,0]);
+ assert.match(adapter,/uv\.push\(x\/1181,1-y\/1332\)/);
+ assert.match(adapter,/addLayer\(portrait,0\)/);assert.match(adapter,/addLayer\(eyelids,\.001,geometry,true\)/);
+});
