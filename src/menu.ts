@@ -1,3 +1,5 @@
+import {getDocumentHomeCover} from './home-cover-registry';
+import {mountHomeCover,type HomeCoverController} from './home-cover';
 import {readyBrandIntro,brandIntroPending} from './brand-intro';
 import {mountMenuBoot} from './menu-boot';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
@@ -37,6 +39,8 @@ function waitForPaint(){return new Promise<void>(resolve=>{
 });}
 let disposeMusicSettings:(()=>void)|undefined;
 let homeReady=false;
+const homeCover=getDocumentHomeCover(document);
+let homeCoverController:HomeCoverController|undefined;
 let disposeControlPreference:(()=>void)|undefined;
 function revealHome(version:number, fallback=false){
  if(version!==renderVersion||state.screen!=='main')return;
@@ -67,6 +71,7 @@ const viewportNotice=mountUiViewportNotice(shell);
 function dispose(){
  if(disposed)return;
  disposed=true;renderVersion++;
+ homeCoverController?.dispose();homeCoverController=undefined;
  cancelPendingPaints();renderListeners.abort();
  disposeMusicSettings?.();disposeMusicSettings=undefined;musicNavigation.dispose();boot.dispose();
  menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
@@ -124,6 +129,7 @@ function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){retur
 function render(){
  if(disposed)return;
  const version=++renderVersion;
+ homeCoverController?.dispose();homeCoverController=undefined;
  cancelPendingPaints();renderListeners.abort();renderListeners=new AbortController();
  shell.hidden=false;
  musicNavigation.cancel();
@@ -140,7 +146,7 @@ function render(){
  if(document.body)document.body.dataset.screen=state.screen;
  document.title=`${screenLabel(state.screen)} · 大肥鱼卡丁车`;
  root.className=`screen-${state.screen}`;
- if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-stage"><div class="title-composition" aria-hidden="true"><img class="title-character" src="./menu-art/whale-maid.png" alt="" draggable="false" decoding="async"><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span><span class="title-hit-area" aria-hidden="true"></span></button></nav></div></section>`;
+ if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-stage"><div class="title-composition" aria-hidden="true"><img class="title-character" src="${homeCover.src}" alt="" draggable="false" decoding="async"><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span><span class="title-hit-area" aria-hidden="true"></span></button></nav></div></section>`;
  if(state.screen==='maps'){
   const selected=resolveMap(state.map);
   root.innerHTML=top('选择赛道','从海岸公路、云岭山道到晴空水道，下一站由你决定')+`
@@ -208,7 +214,9 @@ function refreshNavigationLinks(){
  root.querySelector<HTMLAnchorElement>('#start-race')?.setAttribute('href',raceEntry(state.map,state.driver,state));
 }
 function bind(){
- root.querySelectorAll<HTMLImageElement>('.title-character,.title-logo').forEach(image=>{
+ const coverImage=root.querySelector<HTMLImageElement>('.title-character');
+ if(coverImage)homeCoverController=mountHomeCover(coverImage,homeCover);
+ root.querySelectorAll<HTMLImageElement>('.title-logo').forEach(image=>{
   const settle=()=>{if(image.naturalWidth>0){if(root.querySelector('.title-logo')===image&&image.classList.contains('title-logo'))root.classList.add('title-logo-ready');}else image.hidden=true;};
   listen(image,'load',settle,{once:true});listen(image,'error',()=>{image.hidden=true;},{once:true});
   if(image.complete)settle();

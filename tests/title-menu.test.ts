@@ -8,7 +8,9 @@ test('title keeps a real world canvas and overlays only independent decorative P
  assert.match(menu,/<canvas id="title-backdrop" tabindex="-1"><\/canvas>/);
  assert.match(menu,/mountMenuBackdrop\(canvas,curtain,settings/);
  assert.match(menu,/<div class="title-composition" aria-hidden="true">/);
- for(const name of ['whale-maid','title-logo'])assert.match(menu,new RegExp(`src="\\./menu-art/${name}\\.png"`));
+ assert.match(menu,/src="\$\{homeCover.src\}"/);
+ assert.match(read('src/home-cover-registry.ts'),/src:'\.\/menu-art\/whale-maid\.png',approved:true/);
+ assert.match(menu,/src="\.\/menu-art\/title-logo\.png"/);
  assert.match(css,/\.title-composition\{[^}]*pointer-events:none/);
  assert.match(css,/\.title-character\{[^}]*pointer-events:none/);
  assert.match(css,/\.title-logo\{[^}]*pointer-events:none/);
