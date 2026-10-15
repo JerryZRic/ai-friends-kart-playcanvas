@@ -103,3 +103,9 @@ test('a failed static fallback is never resurrected by late adapter failure or d
  reject(Error('late texture failure'));await flush();assert.equal(f.image.hidden,true);
  control.dispose();assert.equal(f.image.hidden,true);
 });
+
+test('animated canvas inherits the selected portrait framing without moving the fallback',async()=>{
+ const f=fixture();const styles:Record<string,string>={};Object.assign(f.canvas,{style:{setProperty:(name:string,value:string)=>styles[name]=value}});
+ const control=mountHomeCover(f.image,{id:'gpt',src:'gpt.webp',approved:true,model:'gpt-mesh-v1',framing:{scale:1.65,x:0,y:0}},async()=>({mount:async()=>({resize(){},setPaused(){},dispose(){}})}));
+ await flush();assert.equal(styles['--portrait-scale'],'1.65');assert.equal(styles['--portrait-x'],'0%');assert.equal(styles['--portrait-y'],'0%');control.dispose();
+});

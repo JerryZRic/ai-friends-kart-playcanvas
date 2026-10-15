@@ -47,6 +47,7 @@ export function mountHomeCover(image:HTMLImageElement,cover:HomeCover,loadAdapte
    const adapter=await loadAdapter();
    if(disposed||abort.signal.aborted)return;
    canvas=doc.createElement('canvas');canvas.className='title-character title-character-animated';canvas.setAttribute('aria-hidden','true');canvas.hidden=true;
+   const f=cover.framing;canvas.style?.setProperty('--portrait-scale',String(f?.scale??1));canvas.style?.setProperty('--portrait-x',`${f?.x??0}%`);canvas.style?.setProperty('--portrait-y',`${f?.y??0}%`);
    image.after(canvas);
    canvas.addEventListener('webglcontextlost',fail,{signal:abort.signal});
    const mounted=await adapter.mount(canvas,cover.model,abort.signal);

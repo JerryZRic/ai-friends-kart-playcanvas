@@ -5,9 +5,11 @@ on:
     paths:
       - '.github/workflows/deploy-cover-preview.yml'
       - 'docs/cover-preview-publish.json'
+      - 'docs/pages-snapshot.json'
 permissions:
   contents: read
   actions: read
+  deployments: read
 concurrency:
   group: github-pages
   cancel-in-progress: false
@@ -22,43 +24,30 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Refuse changed baseline or obsolete feature input
-        run: node scripts/check-cover-pages-inputs.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
       - run: npm ci
       - name: Build only the approved cover visual preview
         run: npm run check && npm run build:cover-preview
       - name: Test preservation contract
-        run: node --test tests/cover-pages.test.mjs
-      - name: Retrieve the pinned successful Pages artifact
+        run: node --test tests/pages-snapshot.test.mjs
+      - name: Download the pinned successful complete Pages snapshot
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh api repos/${GITHUB_REPOSITORY}/actions/runs/38639517124 > baseline-run.json
-          node -e "const r=require('./baseline-run.json'); if(r.conclusion!=='success'||r.head_sha!=='4357252f2a356b46426419325e4fb3ff70b2f053'||r.head_branch!=='dev')process.exit(1)"
-          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11930010985/zip > baseline.zip
-          echo '628c05d2cc6a11b6da63390ebfbb138c7ef84e45c48341743792f3d7e8da6f0f  baseline.zip' | sha256sum -c -
-          unzip -p baseline.zip artifact.tar > baseline.tar
-          mkdir baseline
-          python3 - <<'PY'
-          import tarfile,pathlib
-          with tarfile.open('baseline.tar') as archive:
-              for member in archive.getmembers():
-                  path=pathlib.PurePosixPath(member.name)
-                  assert not path.is_absolute() and '..' not in path.parts, member.name
-                  assert member.isdir() or member.isfile(), member.name
-              archive.extractall('baseline',filter='data')
-          PY
-      - name: Add preview and prove every baseline file unchanged
-        run: node scripts/compose-cover-pages.mjs baseline dist-cover-preview dist-pages
+        run: python3 scripts/download-pages-snapshot.py
+      - name: Replace only cover and verify stable root and dev bytes unchanged
+        run: node scripts/compose-pages-snapshot.mjs baseline-pages dist-cover-preview dist-pages cover-preview
       - uses: actions/upload-artifact@v4
         with:
-          name: cover-preservation-report
-          path: cover-preservation-report.json
+          name: pages-preservation-report
+          path: pages-preservation-report.json
           retention-days: 30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-pages
+          retention-days: 30
   deploy:
     needs: compose
     runs-on: ubuntu-latest
@@ -66,6 +55,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      actions: read
+      deployments: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}cover-preview/
@@ -75,6 +66,8 @@ jobs:
         with:
           node-version: '22'
       - name: Recheck exact baseline and feature identity immediately before publishing
-        run: node scripts/check-cover-pages-inputs.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
       - id: deployment
         uses: actions/deploy-pages@v4
