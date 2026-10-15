@@ -1,7 +1,7 @@
 {
-  "kind": "weighted-cover-animation-diagnostics",
-  "sourceCommit": "f60e6b7dce1905906154777d1aceec77c7ddcdd1",
+  "kind": "cover-animation-observable-status",
+  "sourceCommit": "c676eac567327763c3dd0774770f4afd4a57d02a",
   "baselineRun": 38639517124,
   "baselineArtifact": 11930010985,
-  "purpose": "Publish requested weighted selection and safe animation-fallback diagnostics while preserving stable/dev bytes"
+  "purpose": "Expose running, static, and safe fallback status in the isolated preview without changing animation algorithms or baseline files"
 }
