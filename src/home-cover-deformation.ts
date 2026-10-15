@@ -12,13 +12,13 @@ export function deformCoverPoint(x:number,y:number,time:number,rig:CoverRig=WHAL
  const sway=rig.hair.reduce((sum,h)=>sum+bell(u,h.x,h.rx)*bell(v,h.y,h.ry)*Math.sin(time*h.rate+h.phase)*h.amplitude,0)*gain;
  return [x+chest*(u-b.x)*b.spread*breath+sway,y-chest*b.lift*breath+sway*.172];
 }
-/** A short held eyelid frame with soft transitions, every 4.9s. */
+/** A short held eyelid frame with soft transitions, every 3s. */
 export function coverBlink(time:number):number{
- const phase=(time+1.1)%4.9;
- if(phase<4.56||phase>4.82)return 0;
- if(phase<4.62)return (phase-4.56)/.06;
- if(phase<=4.73)return 1;
- return (4.82-phase)/.09;
+ const phase=(time+1.1)%3;
+ if(phase<2.66||phase>2.92)return 0;
+ if(phase<2.72)return (phase-2.66)/.06;
+ if(phase<=2.83)return 1;
+ return (2.92-phase)/.09;
 }
 export function createCoverGrid(columns=40,rows=46,size:{width:number;height:number}=WHALE_COVER_SIZE){
  const points:number[]=[],uvs:number[]=[],indices:number[]=[];

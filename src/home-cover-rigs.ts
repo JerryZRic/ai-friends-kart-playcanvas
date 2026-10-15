@@ -14,9 +14,9 @@ export const WHALE_RIG:CoverRig={
 };
 const soft=(id:string,breath:Partial<CoverRig['breath']>,hair:readonly CoverLobe[]):CoverRig=>({
  model:`${id}-mesh-v1`,src:`./menu-art/${id}-cover-v1.webp`,width:1024,height:1536,
- breath:{x:.5,y:.37,rx:.09,ry:.065,lift:1.3,spread:3,period:5.2,...breath},hair,
+ breath:{x:.5,y:.37,rx:.09,ry:.065,lift:2.6,spread:6,period:5.2,...breath},hair,
 });
-const lock=(x:number,y:number,rx:number,ry:number,phase=0):CoverLobe=>({x,y,rx,ry,phase,amplitude:2.6,rate:1.25});
+const lock=(x:number,y:number,rx:number,ry:number,phase=0):CoverLobe=>({x,y,rx,ry,phase,amplitude:5.2,rate:1.25});
 /** No invented eyelids: the five new portraits retain their approved open eyes. */
 export const COVER_RIGS:readonly CoverRig[]=[WHALE_RIG,
  soft('gemini',{},[lock(.17,.39,.11,.13),lock(.81,.39,.12,.15,.6)]),
@@ -25,6 +25,6 @@ export const COVER_RIGS:readonly CoverRig[]=[WHALE_RIG,
  // The staff occupies the left side. Keep it rigid; only the opposite outer hair moves.
  soft('grok',{x:.51,y:.35,rx:.075,ry:.065},[lock(.84,.43,.105,.15,.7)]),
  // Keep the book/hands below the collar and both boots fixed.
- soft('glm',{x:.50,y:.30,rx:.065,ry:.035,lift:.9},[lock(.18,.43,.11,.13),lock(.82,.43,.11,.15,.4)]),
+ soft('glm',{x:.50,y:.30,rx:.065,ry:.035,lift:1.8},[lock(.18,.43,.11,.13),lock(.82,.43,.11,.15,.4)]),
 ];
 export function getCoverRig(model:string):CoverRig|undefined{return COVER_RIGS.find(rig=>rig.model===model);}

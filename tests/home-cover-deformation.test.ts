@@ -14,7 +14,8 @@ test('approved face, framing corners and hem are pinned, while hair and chest de
  for(let t=0;t<8;t+=.2)for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1],[a,b]=deformCoverPoint(x,y,t);assert.ok(Math.abs(a-x)<3.5);assert.ok(Math.abs(b-y)<2);}
 });
 test('blink is short, bounded, and leaves a long open-eye interval',()=>{
- assert.equal(coverBlink(0),0);assert.equal(coverBlink(3.55),1);assert.equal(coverBlink(3.8),0);
+ assert.equal(coverBlink(0),0);assert.equal(coverBlink(1.65),1);assert.equal(coverBlink(1.9),0);assert.equal(coverBlink(4.65),1);
+ let starts=0,previous=0;for(let t=0;t<15;t+=.01){const value=coverBlink(t);if(value>0&&previous===0)starts++;previous=value;}assert.equal(starts,5);
  for(let t=0;t<20;t+=.01)assert.ok(coverBlink(t)>=0&&coverBlink(t)<=1);
 });
 
@@ -44,5 +45,11 @@ test('whale eyelid patches and neighboring mesh samples remain pinned to the sam
 test('authored staff and books stay fixed; local motion is bounded and continuous',async()=>{
  const {COVER_RIGS}=await import('../src/home-cover-rigs');
  for(const [model,u,v] of [['grok-mesh-v1',.28,.5],['claude-mesh-v1',.38,.35],['glm-mesh-v1',.5,.4]] as const){const rig=COVER_RIGS.find(r=>r.model===model)!;for(let t=0;t<6;t+=.1)assert.deepEqual(deformCoverPoint(u*rig.width,v*rig.height,t,rig),[u*rig.width,v*rig.height]);}
- for(const rig of COVER_RIGS){const grid=createCoverGrid(12,14,rig);for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1];let previous=[x,y];for(let t=0;t<6;t+=1/24){const current=deformCoverPoint(x,y,t,rig);assert.ok(Math.abs(current[0]-x)<3.5&&Math.abs(current[1]-y)<2);assert.ok(Math.hypot(current[0]-previous[0],current[1]-previous[1])<.7);previous=current;}}}
+ for(const rig of COVER_RIGS){const grid=createCoverGrid(12,14,rig);for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1];let previous=[x,y];for(let t=0;t<6;t+=1/24){const current=deformCoverPoint(x,y,t,rig);assert.ok(Math.abs(current[0]-x)<5.3&&Math.abs(current[1]-y)<2.7);assert.ok(Math.hypot(current[0]-previous[0],current[1]-previous[1])<1.1);previous=current;}}}
+});
+
+test('five full-body rigs use twice the initial local amplitude without changing the whale',async()=>{
+ const {COVER_RIGS,WHALE_RIG}=await import('../src/home-cover-rigs');
+ assert.equal(WHALE_RIG.breath.lift,1.8);assert.equal(WHALE_RIG.hair[0].amplitude,3.2);
+ for(const rig of COVER_RIGS.slice(1)){assert.equal(rig.breath.lift,rig.model==='glm-mesh-v1'?1.8:2.6);assert.equal(rig.breath.spread,6);for(const hair of rig.hair)assert.equal(hair.amplitude,5.2);}
 });
