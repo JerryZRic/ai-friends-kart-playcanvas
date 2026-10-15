@@ -17,9 +17,16 @@ export const FALLBACK_HOME_COVER=HOME_COVERS[0];
 export function chooseHomeCover(covers:readonly HomeCover[]=HOME_COVERS,random:()=>number=Math.random):HomeCover {
  const ready=covers.filter(cover=>cover.approved);
  if(!ready.length)return FALLBACK_HOME_COVER;
- const roll=random();
- const index=Number.isFinite(roll)?Math.min(ready.length-1,Math.max(0,Math.floor(roll*ready.length))):0;
- return ready[index];
+ const sample=random();
+ const roll=Number.isFinite(sample)?Math.min(1,Math.max(0,sample)):0;
+ const whale=ready.find(cover=>cover.id==='deepseek');
+ const others=ready.filter(cover=>cover.id!=='deepseek');
+ if(whale&&(!others.length||roll<0.35))return whale;
+ // Reserve 35% for the original portrait; divide the remainder by the
+ // current eligible count so adding approved characters needs no weight edits.
+ const pool=whale?others:ready;
+ const normalized=whale?(roll-0.35)/0.65:roll;
+ return pool[Math.min(pool.length-1,Math.floor(normalized*pool.length))];
 }
 const documentCovers=new WeakMap<Document,HomeCover>();
 /** SPA return and menu remount preserve selection; a new document rolls again. */

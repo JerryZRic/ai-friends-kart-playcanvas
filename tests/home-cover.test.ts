@@ -7,7 +7,29 @@ test('all six approved portraits participate, and unapproved entries are exclude
  for(const roll of [0,.2,.5,.9,1,NaN,-1])assert.equal(chooseHomeCover(HOME_COVERS.map(x=>({...x,approved:x.id==='deepseek'})),()=>roll).id,'deepseek');
  assert.equal(chooseHomeCover([],()=>0),FALLBACK_HOME_COVER);
  const ready=HOME_COVERS.map(x=>({...x,approved:true}));
- assert.deepEqual(ready.map((_,i)=>chooseHomeCover(ready,()=>i/6).id),ready.map(x=>x.id));
+ assert.deepEqual([0,.4,.53,.66,.79,.92].map(roll=>chooseHomeCover(ready,()=>roll).id),ready.map(x=>x.id));
+});
+test('whale has fixed 35 percent and other eligible portraits share 65 percent',()=>{
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>0).id,'deepseek');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>.35-Number.EPSILON).id,'deepseek');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>.35).id,'gemini');
+ assert.equal(chooseHomeCover(HOME_COVERS,()=>1).id,'glm');
+ for(const roll of [NaN,Infinity,-Infinity,-1])assert.equal(chooseHomeCover(HOME_COVERS,()=>roll).id,'deepseek');
+ for(let n=1;n<=5;n++){
+  const eligible=HOME_COVERS.slice(0,n+1);
+  for(let i=0;i<n;i++)assert.equal(chooseHomeCover(eligible,()=>.35+(i+.5)*.65/n).id,eligible[i+1].id);
+ }
+ const pending=HOME_COVERS.map(x=>({...x,approved:x.id==='deepseek'||x.id==='glm'}));
+ assert.equal(chooseHomeCover(pending,()=>.35).id,'glm');
+ assert.equal(chooseHomeCover([...HOME_COVERS.slice(1),HOME_COVERS[0]],()=>0).id,'deepseek');
+});
+test('without eligible whale every other approved portrait is equally likely',()=>{
+ const others=HOME_COVERS.slice(1);
+ for(let i=0;i<others.length;i++)assert.equal(chooseHomeCover(others,()=>(i+.5)/others.length),others[i]);
+ const pendingWhale=HOME_COVERS.map(x=>({...x,approved:x.id!=='deepseek'}));
+ assert.equal(chooseHomeCover(pendingWhale,()=>0).id,'gemini');
+ assert.equal(chooseHomeCover(pendingWhale,()=>1).id,'glm');
+ assert.equal(chooseHomeCover(HOME_COVERS.map(x=>({...x,approved:false}))),FALLBACK_HOME_COVER);
 });
 test('one selection per document survives remount, without storage or driver selection',()=>{
  const a={} as Document,b={} as Document;
