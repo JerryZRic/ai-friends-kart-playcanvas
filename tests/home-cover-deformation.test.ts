@@ -14,8 +14,8 @@ test('approved face, framing corners and hem are pinned, while hair and chest de
  for(let t=0;t<8;t+=.2)for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1],[a,b]=deformCoverPoint(x,y,t);assert.ok(Math.abs(a-x)<3.5);assert.ok(Math.abs(b-y)<2);}
 });
 test('blink is short, bounded, and leaves a long open-eye interval',()=>{
- assert.equal(coverBlink(0),0);assert.equal(coverBlink(1.65),1);assert.equal(coverBlink(1.9),0);assert.equal(coverBlink(4.65),1);
- let starts=0,previous=0;for(let t=0;t<15;t+=.01){const value=coverBlink(t);if(value>0&&previous===0)starts++;previous=value;}assert.equal(starts,5);
+ assert.equal(coverBlink(0),0);assert.equal(coverBlink(2.65),1);assert.equal(coverBlink(2.9),0);assert.equal(coverBlink(6.65),1);
+ let starts=0,previous=0;for(let t=0;t<20;t+=.01){const value=coverBlink(t);if(value>0&&previous===0)starts++;previous=value;}assert.equal(starts,5);
  for(let t=0;t<20;t+=.01)assert.ok(coverBlink(t)>=0&&coverBlink(t)<=1);
 });
 
@@ -35,7 +35,7 @@ test('all six source-sized rigs start neutral and keep face, framing and feet fi
   for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1];assert.deepEqual(deformCoverPoint(x,y,0,rig),[x,y]);}
   for(const t of [0,.25,.65,1,3,5])for(const [u,v] of [[0,0],[1,0],[0,1],[1,1],[.5,.2],[.5,.9]]){const x=u*rig.width,y=v*rig.height;assert.deepEqual(deformCoverPoint(x,y,t,rig),[x,y]);}
  }
- assert.equal(COVER_RIGS.filter(r=>r.blink).length,1);
+ assert.equal(COVER_RIGS.filter(r=>r.blink).length,6);
 });
 test('whale eyelid patches and neighboring mesh samples remain pinned to the same face pixels',async()=>{
  const {WHALE_RIG}=await import('../src/home-cover-rigs');
@@ -45,11 +45,28 @@ test('whale eyelid patches and neighboring mesh samples remain pinned to the sam
 test('authored staff and books stay fixed; local motion is bounded and continuous',async()=>{
  const {COVER_RIGS}=await import('../src/home-cover-rigs');
  for(const [model,u,v] of [['grok-mesh-v1',.28,.5],['claude-mesh-v1',.38,.35],['glm-mesh-v1',.5,.4]] as const){const rig=COVER_RIGS.find(r=>r.model===model)!;for(let t=0;t<6;t+=.1)assert.deepEqual(deformCoverPoint(u*rig.width,v*rig.height,t,rig),[u*rig.width,v*rig.height]);}
- for(const rig of COVER_RIGS){const grid=createCoverGrid(12,14,rig);for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1];let previous=[x,y];for(let t=0;t<6;t+=1/24){const current=deformCoverPoint(x,y,t,rig);assert.ok(Math.abs(current[0]-x)<5.3&&Math.abs(current[1]-y)<2.7);assert.ok(Math.hypot(current[0]-previous[0],current[1]-previous[1])<1.1);previous=current;}}}
+ for(const rig of COVER_RIGS){const grid=createCoverGrid(12,14,rig);for(let i=0;i<grid.points.length;i+=2){const x=grid.points[i],y=grid.points[i+1];let previous=[x,y];for(let t=0;t<6;t+=1/24){const current=deformCoverPoint(x,y,t,rig);assert.ok(Math.abs(current[0]-x)<7.9&&Math.abs(current[1]-y)<4);assert.ok(Math.hypot(current[0]-previous[0],current[1]-previous[1])<1.6);previous=current;}}}
 });
 
-test('five full-body rigs use twice the initial local amplitude without changing the whale',async()=>{
+test('five full-body rigs use three times the initial local amplitude without changing the whale',async()=>{
  const {COVER_RIGS,WHALE_RIG}=await import('../src/home-cover-rigs');
  assert.equal(WHALE_RIG.breath.lift,1.8);assert.equal(WHALE_RIG.hair[0].amplitude,3.2);
- for(const rig of COVER_RIGS.slice(1)){assert.equal(rig.breath.lift,rig.model==='glm-mesh-v1'?1.8:2.6);assert.equal(rig.breath.spread,6);for(const hair of rig.hair)assert.equal(hair.amplitude,5.2);}
+ for(const rig of COVER_RIGS.slice(1)){assert.equal(rig.breath.lift,rig.model==='glm-mesh-v1'?2.7:3.9);assert.equal(rig.breath.spread,9);for(const hair of rig.hair)assert.equal(hair.amplitude,7.8);}
+});
+
+test('per-character blink timing remains deterministic and registered patches reject unsafe motion',async()=>{
+ const {validateCoverBlink}=await import('../src/home-cover-deformation');
+ const {WHALE_RIG,COVER_RIGS}=await import('../src/home-cover-rigs');
+ for(const rig of COVER_RIGS)assert.doesNotThrow(()=>validateCoverBlink(rig));
+ const timing={period:5,offset:0,close:.06,hold:.11,open:.09};
+ assert.equal(coverBlink(4.75,timing),1);assert.equal(coverBlink(9.75,timing),1);assert.equal(coverBlink(0,timing),0);
+ const bad=structuredClone(WHALE_RIG);bad.blink!.patches=[[400,500,600,600],[548,279,662,376]];
+ assert.throws(()=>validateCoverBlink(bad),/overlaps moving mesh/);
+ bad.blink!.patches=[[0,0,2000,10],[548,279,662,376]];assert.throws(()=>validateCoverBlink(bad),/eye bounds/);
+ bad.blink=structuredClone(WHALE_RIG.blink);bad.blink!.timing={...timing,period:.1};assert.throws(()=>validateCoverBlink(bad),/timing/);
+});
+
+test('all registered eye patches and adjacent mesh samples stay rigid throughout movement',async()=>{
+ const {COVER_RIGS}=await import('../src/home-cover-rigs');
+ for(const rig of COVER_RIGS)for(const [l,t,r,b] of rig.blink!.patches)for(let x=l-rig.width/40;x<=r+rig.width/40;x+=10)for(let y=t-rig.height/46;y<=b+rig.height/46;y+=10)for(const time of [.2,1,2,4,6])assert.deepEqual(deformCoverPoint(x,y,time,rig),[x,y]);
 });

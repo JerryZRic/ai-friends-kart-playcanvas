@@ -1,6 +1,6 @@
 import * as pc from 'playcanvas';
 import type {HomeCoverAdapter,HomeCoverRuntime} from './home-cover';
-import {COVER_MAX_FPS,createCoverGrid,deformCoverPoint,coverBlink} from './home-cover-deformation';
+import {COVER_MAX_FPS,createCoverGrid,deformCoverPoint,coverBlink,validateCoverBlink} from './home-cover-deformation';
 import {getCoverRig} from './home-cover-rigs';
 
 async function readImage(url:string,signal:AbortSignal):Promise<HTMLImageElement>{
@@ -13,6 +13,7 @@ async function readImage(url:string,signal:AbortSignal):Promise<HTMLImageElement
 /** Custom 2D mesh animation in the project's existing PlayCanvas version, not Live2D/Cubism. */
 export const whaleCoverAdapter:HomeCoverAdapter={async mount(canvas,model,signal){
  const rig=getCoverRig(model);if(!rig)throw new Error('Unknown approved portrait');
+ validateCoverBlink(rig);
  const [portrait,eyelids]=await Promise.all([
   readImage(rig.src,signal),rig.blink?readImage(rig.blink.src,signal):Promise.resolve(undefined),
  ]);
@@ -80,7 +81,7 @@ export const whaleCoverAdapter:HomeCoverAdapter={async mount(canvas,model,signal
    frame=0;if(!app||disposed||paused)return;
    if(previous&&now-previous<1000/COVER_MAX_FPS-.5){frame=requestAnimationFrame(draw);return;}
    time+=previous?Math.min((now-previous)/1000,.1):0;previous=now;
-   try{updateMesh();const close=coverBlink(time)>.35;if(close!==eyesClosed){eyesClosed=close;for(const eye of eyes){eye.opacity=close?1:0;eye.update();}}app.update(0);app.render();canvas.dataset.animationTime=time.toFixed(2);}
+   try{updateMesh();const close=!!rig.blink&&coverBlink(time,rig.blink.timing)>.35;if(close!==eyesClosed){eyesClosed=close;for(const eye of eyes){eye.opacity=close?1:0;eye.update();}}app.update(0);app.render();canvas.dataset.animationTime=time.toFixed(2);}
    catch{canvas.dispatchEvent(new Event('webglcontextlost'));dispose();return;}
    frame=requestAnimationFrame(draw);
   }
