@@ -1,7 +1,7 @@
 {
-  "kind": "cover-animation-observable-status",
-  "sourceCommit": "c676eac567327763c3dd0774770f4afd4a57d02a",
+  "kind": "cover-animation-texture-orientation-fix",
+  "sourceCommit": "814256393364932569237ad6e0e22a2ff4713e02",
   "baselineRun": 38639517124,
   "baselineArtifact": 11930010985,
-  "purpose": "Expose running, static, and safe fallback status in the isolated preview without changing animation algorithms or baseline files"
+  "purpose": "Fix user-reported vertical texture inversion for portrait and eyelids together; preserve original artwork and stable/dev bytes"
 }
