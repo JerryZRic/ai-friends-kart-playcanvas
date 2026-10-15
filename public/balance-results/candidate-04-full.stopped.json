@@ -1,0 +1,10 @@
+{
+  "status": "stopped-training-candidate",
+  "plannedRaces": 2304,
+  "completedRacesRetained": 948,
+  "fixedScreenBlocksPerMap": 12,
+  "fixedScreenRaces": 864,
+  "reason": "Clear exploratory imbalance: Claude over target, Whale concentrated on coast; not a final or held-out result. All completed rows retained.",
+  "rawSha256": "c5a842d7546b2e7d7eb0f3c79257405b052aea2c5a5352ac7fdcf03587255082",
+  "stopped": "2026-10-14T08:12:26.090631+00:00"
+}

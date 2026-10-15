@@ -1,0 +1,47 @@
+[
+  {
+    "id": "gemini",
+    "source_sha256": "22a5997941596c453acac0e0def7aeaf1a216bf8977834815a216471639eb077",
+    "source_bytes": 2513822,
+    "runtime_bytes": 436178,
+    "runtime_sha256": "83ae90ba6aece96bc6cd3a9fb1dd85e9cb169498d4451628afc5415732b40fd6",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "gpt",
+    "source_sha256": "45df9f6c2149fd137f7f5451ffc9cf59731345d4fe984cbee57e38a2809dd1db",
+    "source_bytes": 2478821,
+    "runtime_bytes": 415414,
+    "runtime_sha256": "e3659d7aeb1a8f9d503d3f18702810954e37ccc480073c0c0867bf270ff81259",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "claude",
+    "source_sha256": "b3b0dc3ca0e4ee163ebe2cfc6ca0b753b556c91c44b25b67771f503aa720a5f2",
+    "source_bytes": 2634521,
+    "runtime_bytes": 444676,
+    "runtime_sha256": "6a07dc208533c159b5a9821b6f0ce33f696d07b6626108ee183b048b1b3ca9b7",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "grok",
+    "source_sha256": "00562758f1debe679608c2b909a0ffb91020c01e486351d42a33c28a20f7db25",
+    "source_bytes": 2621985,
+    "runtime_bytes": 442732,
+    "runtime_sha256": "b530359743206ac9f33d0f373e106964568523f5aca60bc12ac8cb027f7e9c15",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "glm",
+    "source_sha256": "87f5f3aa61d7d063bbb272830d63185d79ee7c95558b16d324c4cebb2d555b5d",
+    "source_bytes": 2383074,
+    "runtime_bytes": 377392,
+    "runtime_sha256": "bc454e6c0606d93990a0fcfca8f1af72e02121f83593cec2a642aae9f456624f",
+    "width": 1024,
+    "height": 1536
+  }
+]

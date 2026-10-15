@@ -67,10 +67,10 @@ test('every displayed driving alias activates its documented real input', () => 
 
 test('displayed action keys preserve camera, item, P, Esc and state-qualified Enter semantics', () => {
   const f = fixture();
-  for (const id of ['item', 'camera', 'recenter']) for (const code of codesFor(id)) {
+  for (const id of ['item', 'item-secondary', 'camera', 'recenter']) for (const code of codesFor(id)) {
     f.key('keydown', code); f.key('keyup', code);
   }
-  assert.deepEqual(f.calls, {camera: 2, item: 1, recenter: 1, start: 0});
+  assert.deepEqual(f.calls, {camera: 2, item: 2, recenter: 1, start: 0});
   f.key('keydown', codesFor('pause')[0]); assert.equal(f.state(), 'paused');
   f.key('keydown', codesFor('release')[0]); assert.equal(f.state(), 'paused', 'Esc never resumes');
   f.key('keydown', codesFor('pause')[0]); assert.equal(f.state(), 'active');
@@ -107,4 +107,14 @@ test('mobile guide is a single virtual-button presentation with no keyboard-only
   assert.equal((mobile.match(/id="loadingControlsPanel"/g) || []).length, 1);
   assert.equal((mobile.match(/id="loadingDriftHelp"/g) || []).length, 1);
   assert.doesNotMatch(RACE_CONTROL_GUIDE_MARKUP, /触屏驾驶|touch-control-guide/);
+});
+
+
+test('shared desktop and touch help describe fixed independent E and R slots', () => {
+  assert.deepEqual(codesFor('item'), ['KeyE']); assert.deepEqual(codesFor('item-secondary'), ['KeyR']);
+  for (const markup of [RACE_CONTROL_GUIDE_MARKUP, raceControlGuideMarkup('touch')]) {
+    assert.match(markup, /两格独立/); assert.match(markup, /使用后不换位/);
+    assert.match(markup, /E/); assert.match(markup, /R/);
+  }
+  assert.match(read('race-hud.ts'), /<b>E \/ R<\/b> 使用对应道具/);
 });

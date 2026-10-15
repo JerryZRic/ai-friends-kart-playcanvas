@@ -1,0 +1,47 @@
+{
+  "map": "harvest",
+  "baseline": "b761b518",
+  "before": {
+    "batches": 22,
+    "triangles": 114583,
+    "vertices": 183295
+  },
+  "after": {
+    "batches": 22,
+    "triangles": 116519,
+    "vertices": 186075
+  },
+  "addedTriangles": 1936,
+  "addedVertices": 2780,
+  "addedBatches": 0,
+  "addedComponents": 130,
+  "protectedHashes": {
+    "version": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "trackId": "ea6917ecbb4849a2a2ee2e4f520a634c1305053e15b74c1b6f2dd3035242fe3c",
+    "roadSamples": "2b4f173cb46056a0b83059139f87f7121e76ae967574ddaf37ed1d26a916b351",
+    "routeRoadSamples": "2b4f173cb46056a0b83059139f87f7121e76ae967574ddaf37ed1d26a916b351",
+    "roadFaces": "a3c4967f78ba87b2714e964e8a7a5adab4e6fe587331dc6347ad0f9cecde07fc",
+    "roadUndersideFaces": "c959ac597c42102a5136dd7a518bf99365db9d9a217fb0155cd52303f7633cbc",
+    "shoulderFaces": "98cd57c8082906a5fa4307b385851dc6cac05eb77d56c7ec376331af4ee32c80",
+    "props": "b24d0dbc4fa558d762827e62ecf4c01fe83f6a71aeb42fb1d73ead0d7b60cf55",
+    "structures": "2e090697ca55ea3cf87307aabb209f358c79285081977d8524684cbd2c5a6139",
+    "bounds": "cd4172f3ab5ffdde928057c986bcaa7a0d3491c28943e1c21c299cb2e3f85b63",
+    "cameraObstacles": "0ade947900bb6f9f0513014f3926298b172dbf9e9bd7e4afaab1649e26b7151d",
+    "landmarks": "06bbab16a016f2042195e3712a549365fb1a887c4157728c5dcc36cb16373b8e",
+    "foundations": "63fd92aa01a74a7824f0417ea431940a09fa1b56ac72be5798875f1894e4586f",
+    "groundedDetails": "7514ab997f470d46c4c244af1eee06d66bdfabc701a78ac25145a438c7b98623",
+    "railMembers": "50b625ef31fdab12401865a17204a4ccf77ab728998eb0ee16e23c1a71f0efa3",
+    "trees": "3f83183a78f9c73e43a597b7c383d73d244a3b9e62a66592dac3b7031134995e",
+    "cropRows": "406c7bb01672d272163b72ad5deb1e5ada11875f3ac3acb76c19725021afcde3",
+    "barn": "fe56ea4a6a06193463d20cfd914fb6b428fa3bf0cb5a23b2ea9106217c3b7e25",
+    "sails": "6b54d5e0c5894d18ff2a304a7c5864ee3ed2333a7b9e6b5f8b4fbd47acf5c0d8",
+    "sightlines": "bb6067d6cb85ea7a9154316a19661d6d310b98370f25c02726d62e1f97e7bfd5",
+    "enrichmentAssemblies": "831088cfd7052c9c9b9d2772c8dceae7d905f65b62e8394a344873162aaad183",
+    "enrichmentLandforms": "4ea664b82484097a01ed255e03e02289134616426653810168180c3e8be01339",
+    "enrichmentFieldBands": "9a176f0891eab95c8c58b44a89f140018b2c4a9ce2bb6e5d6a920b20340e1ba8",
+    "enrichmentVegetation": "05af161a6fa8c4bd0a1324d3a46e8ce0252b054676f5297727bc42e4ad18c4e7",
+    "enrichmentFoliageUnions": "dce0ddbfe1336d8079b0057f98e69514e12ab9f723aeab7839796b45a64e5d23",
+    "terrainGrid": "ebb07a4b3ea45045713ccd177e658483a46c28fd6a11b0fc0c518f40da4ccb9e"
+  },
+  "existingMeshPrefixes": "all identical"
+}

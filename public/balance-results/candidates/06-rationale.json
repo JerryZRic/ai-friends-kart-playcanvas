@@ -1,0 +1,37 @@
+{
+  "status": "training-only",
+  "reason": "Candidate05 aggregate near target but caldera Grok42.19%, gardenClaude36.46%, coastWhale35.94%. Reduce Grok straight cap and Claude acceleration; retain speed range by reducing Whale straight cap, compensate Whale/GLM handling with lower Gem/GLM acceleration to retain ordering. No map/AI changes.",
+  "prior": "05",
+  "profile": {
+    "whale": {
+      "acceleration": 1.22,
+      "topSpeed": 0.94,
+      "steering": 1.08
+    },
+    "gemini": {
+      "acceleration": 0.68,
+      "topSpeed": 1,
+      "steering": 1.1
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.32,
+      "topSpeed": 0.99,
+      "steering": 0.97
+    },
+    "grok": {
+      "acceleration": 0.99,
+      "topSpeed": 1.02,
+      "steering": 0.97
+    },
+    "glm": {
+      "acceleration": 0.73,
+      "topSpeed": 1.005,
+      "steering": 1.08
+    }
+  }
+}

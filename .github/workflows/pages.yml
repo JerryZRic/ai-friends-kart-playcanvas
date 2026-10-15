@@ -11,6 +11,8 @@ on:
         default: false
 permissions:
   contents: read
+  actions: read
+  deployments: read
 # Match main's manual workflow so stable and preview deployments cannot overlap.
 concurrency:
   group: github-pages
@@ -29,7 +31,11 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Test commit-derived version identity
+        run: node --import tsx --test tests/build-identity.test.ts tests/build-version.test.ts
       - run: npm run build
+        env:
+          DEV_BUILD_SHA: ${{ github.sha }}
       - name: Seal the compiled build and its exact run identity
         id: provenance
         run: node scripts/verified-build-artifact.mjs seal
@@ -50,6 +56,8 @@ jobs:
     permissions:
       contents: read
       pages: read
+      actions: read
+      deployments: read
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
@@ -65,37 +73,49 @@ jobs:
         env:
           EXPECTED_PROVENANCE_SHA256: ${{ needs.build.outputs.provenance-sha256 }}
         run: node scripts/verified-build-artifact.mjs verify
-      - name: Check the pinned stable branch has not advanced
-        run: |
-          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
-          actual=$(git ls-remote origin refs/heads/main | cut -f1)
-          test "$actual" = "$expected" || { echo 'Stable main advanced. Refresh the exact stable artifact manifest before preview publication.' >&2; exit 1; }
-      - name: Preserve the stable site and add the dev build
-        run: node scripts/compose-dev-pages.mjs compose verified-build/dist
+      - name: Test isolated replacement and stale-publication guards
+        run: node --test tests/pages-snapshot.test.mjs
+      - name: Check exact refs and latest successful Pages identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
+      - name: Download the pinned successful complete Pages snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/download-pages-snapshot.py
+      - name: Replace only dev and verify stable root and cover bytes unchanged
+        run: node scripts/compose-pages-snapshot.mjs baseline-pages verified-build/dist dist-pages dev
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pages-preservation-report
+          path: pages-preservation-report.json
+          retention-days: 30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-pages
+          retention-days: 30
   deploy:
     needs: [build, compose]
     permissions:
       contents: read
       pages: write
       id-token: write
+      actions: read
+      deployments: read
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}dev/
     steps:
       - uses: actions/checkout@v6
-      - name: Check stable identity immediately before deployment
-        run: |
-          expected=$(node -p "require('./docs/stable-pages-manifest.json').stableCommit")
-          actual=$(git ls-remote origin refs/heads/main | cut -f1)
-          test "$actual" = "$expected" || { echo 'Stable main advanced; refusing to replace the site.' >&2; exit 1; }
-      - name: Refuse an obsolete preview deployment
-        run: |
-          actual=$(git ls-remote origin refs/heads/dev | cut -f1)
-          test "$actual" = "$GITHUB_SHA" || { echo 'Dev advanced; refusing an obsolete preview deployment.' >&2; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refuse stale source refs or an obsolete published snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
       - id: deployment
         uses: actions/deploy-pages@v4
+

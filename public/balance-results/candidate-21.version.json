@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "version": "candidate-21-holdout",
+  "candidate": 21,
+  "channel": "dev-candidate-only",
+  "purpose": "Report metadata only; runtime/package versions remain frozen.",
+  "runtimeVersion": "1.0.1a-dev.cpu",
+  "packageVersion": "1.0.1-alpha.0+dev.cpu",
+  "frozenUtc": "2026-10-14T15:23:10.818910+00:00",
+  "freezeSha256": "c11162eb90464b6068d07044bb9a974718fd0f69ce7606304b3181fe30d9fbed",
+  "frozenInputCount": 148,
+  "statisticsStatus": "inconclusive",
+  "certificationStatus": "inconclusive",
+  "mapUpperBound": "inconclusive",
+  "report": "../balance-report.html",
+  "summary": "summary.json",
+  "expectedReportUrl": "https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/balance-report.html",
+  "deploymentNotAttestedByThisMetadata": true
+}

@@ -166,3 +166,14 @@ body.menu .game-ui{visibility:hidden}
 
 /* Dedicated track pages keep licensing in the main menu, never over the course. */
 #raceUi ~ #source-license{display:none}
+
+/* Fixed item identities: E stays left and R stays right, including empty slots. */
+.item-slots{display:grid;grid-template-columns:repeat(2,232px);gap:10px;pointer-events:none}
+.item-slots .item{width:232px;min-width:0;min-height:94px;gap:9px;padding:10px;align-items:center}
+#raceItemSlots .item>img{flex:none;width:52px;height:52px;margin:0;object-fit:contain;filter:drop-shadow(0 3px 7px #0007)}
+#raceItemSlots .item>img[hidden]{display:none}
+.item-slots .item strong{font-size:16px;line-height:1.7;white-space:nowrap}
+.item-slots .item span{font-size:10px;letter-spacing:0;line-height:1.5}
+.item-slots .itemCopy>span:first-child{color:var(--lime);font-weight:750;letter-spacing:1px}
+.item-slots .item:disabled{cursor:default;opacity:.6}
+.item-slots .item:focus-visible{outline:3px solid var(--lime);outline-offset:3px}

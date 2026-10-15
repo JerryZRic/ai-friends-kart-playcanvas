@@ -43,19 +43,25 @@ g.window=Object.assign(windowTarget,{location,history,innerWidth:1440,innerHeigh
 g.window.parent=g.window;g.document.defaultView=g.window;g.location=location;g.history=history;
 g.cancelAnimationFrame=()=>{};
 const $=(s:string)=>{const el=root.querySelector(s);assert.ok(el,s);return el;};
+let introReady=0;
+g.window.__timewishIntro={isPending:()=>false,finish:()=>{},ready:()=>{
+ assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);
+ assert.ok(root.querySelectorAll('.title-action').every(button=>!button.disabled),'readiness follows enabled controls');
+ assert.equal(bootNodes.get('menu-boot')!.hidden,true);introReady++;
+}};
 const music=getDocumentMusic(g.document)!;
 let controller:ReturnType<typeof mountMenu>|undefined,next:ReturnType<typeof mountMenu>|undefined;
 try{
 assert.equal(music.getState().phase,'silent');
 controller=mountMenu();assert.equal(root.className,'screen-main');assert.equal(music.getState().phase,'silent','first home boot is gated');
-assert.equal($('#story-button').disabled,true);bootNodes.get('menu-boot-continue')!.click();assert.equal(music.getState().phase,'menu');
+assert.equal($('#story-button').disabled,true);assert.equal(introReady,0,'failed backdrop does not report readiness');bootNodes.get('menu-boot-continue')!.click();assert.equal(music.getState().phase,'menu');assert.equal(introReady,1,'explicit usable static fallback reports readiness');
 $('[data-screen="maps"]').click();assert.equal(root.className,'screen-maps');
 const preview=$('#title-backdrop');preview.dispatchEvent(new Event('webglcontextlost'));assert.equal(preview.dataset.previewFallback,'true');preview.dispatchEvent(new Event('webglcontextrestored'));assert.equal(preview.dataset.previewFallback,undefined);
 const staleMap=$('[data-map="mountain"]');const staleConfirm=$('#confirm-map');const html=root.innerHTML;const savedUrl=location.search;
 controller.dispose();controller.dispose();assert.equal(music,getDocumentMusic(g.document),'menu disposal preserves document music');
 preview.dispatchEvent(new Event('webglcontextlost'));assert.equal(preview.dataset.previewFallback,undefined,'preview context handlers are disposed');
 staleMap.click();staleConfirm.click();windowTarget.dispatchEvent(new Event('popstate'));windowTarget.dispatchEvent(Object.assign(new Event('keydown'),{key:'Escape'}));
-assert.equal(root.innerHTML,html);assert.equal(location.search,savedUrl);assert.equal(timers.size,0);
+assert.equal(root.innerHTML,html);assert.equal(location.search,savedUrl);assert.equal(timers.size,0);assert.equal(introReady,1,'disposed handlers cannot report stale readiness');
 location.search='';controller=mountMenu();assert.equal(root.className,'screen-main');assert.equal(music.getState().phase,'menu','returning menu preserves theme while its new backdrop prepares');
 bootNodes.get('menu-boot-continue')!.click();const replacedButton=$('[data-screen="maps"]');
 next=mountMenu();const before=location.search;replacedButton.click();assert.equal(location.search,before,'remount also disposes the old menu controller');

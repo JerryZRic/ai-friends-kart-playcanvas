@@ -1,0 +1,18 @@
+{
+  "status": "paired-training-sensitivity-only-not-eligible-roster",
+  "anchor": "19",
+  "changed": {
+    "character": "grok",
+    "stat": "topSpeed",
+    "from": 1.03,
+    "to": 1.02
+  },
+  "plannedPrimaryBlocksPerMap": 8,
+  "plannedMixedBlocksPerMap": 4,
+  "domains": [
+    "land-balance-training-v1",
+    "land-balance-mixed-training-v1"
+  ],
+  "reason": "One-coordinate finite-difference probe of the speed axis after exact geometry and mixed-loadout diagnostics indicate launch-up/grip-down may target the wrong courses. This probe temporarily puts GLM above Grok speed and narrows speed span; it is intentionally ineligible for final promotion. A combined candidate must restore main archetypes and documented spans before full confirmation/holdout. Probe results are not final race-balance claims.",
+  "holdoutOpened": false
+}

@@ -1,3 +1,4 @@
+import {createItemRequests,type ItemSlot} from './item-inventory';
 import * as pc from 'playcanvas';
 import {parseRaceOptions} from './race-options';
 import {mountRaceHud} from './race-hud';
@@ -86,7 +87,8 @@ reportStartupError=error=>{
   // No placeholder character or empty mount ever enters the scene. A racer is
   // visible only after its actual, validated driver asset can be instantiated.
   let selected=initialDriver,mount:ReturnType<typeof createWaterMount>|undefined;
-  let mountedAsset:DriverAsset|undefined,race=newWaterRace(selected,raceOptions),clock=0,visualSteer=0;
+  const itemRequests=createItemRequests();
+  let mountedAsset:DriverAsset|undefined,race=newWaterRace(selected,raceOptions,2),clock=0,visualSteer=0;
   let autostart=new URLSearchParams(globalThis.location?.search??'').get('autostart')==='1';
   const frameClock=createRaceFrameClock();
   const loadingCamera=createLoadingCamera({length:WATER_RACE_LENGTH,sample:sampleWaterpark});
@@ -116,7 +118,7 @@ reportStartupError=error=>{
     quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:WATER_RACE_LENGTH,racerCount:6,profile:characterTuning(selected,'waterpark'),driver:selected,water:world.reflection.getSettings(),
   }),{getEnabled:()=>world.reflection.getSettings().requestedRefraction,setEnabled:enabled=>{world.reflection.setRefractionEnabled(enabled);saveGameSettings({...readGameSettings(),refraction:enabled});}},{mount:$('raceSettings'),scene:'waterpark-circuit-six-racers'});
   defer(()=>performancePanel.dispose());
-  const clearKeys=()=>{controls?.clear();race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;};
+  const clearKeys=()=>{itemRequests.clear();controls?.clear();race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;};
   const ready=()=>assets.size===DRIVERS.length&&!!mount&&!!mountedAsset&&mountedAsset===assets.get(selected)&&npcMounts.size===DRIVERS.length-1&&!preparationError;
 
   function updateLoading() {
@@ -153,7 +155,7 @@ reportStartupError=error=>{
     const nextNpcs=new Map<string,ReturnType<typeof createWaterMount>>();
     try {
       // Build the available real riders before replacing the last usable set.
-      const nextRace=newWaterRace(id,raceOptions),asset=assets.get(id);
+      const nextRace=newWaterRace(id,raceOptions,2),asset=assets.get(id);
       if(asset)next=createWaterMount(app,asset,{id,color:getDriver(id).color});
       for(const racer of nextRace.racers.slice(1)){
         const npcAsset=assets.get(racer.id);if(!npcAsset)continue;
@@ -216,7 +218,7 @@ reportStartupError=error=>{
     if(mode==='paused'){mode='riding';shell.setPaused(false,race.countdown);}
     else {
       const initial=mode==='menu';
-      race=newWaterRace(selected,raceOptions);resetWaterPickups(race,pickups);clock=0;visualSteer=0;lastAnnouncement='';controls.orbit.recenter(true);
+      race=newWaterRace(selected,raceOptions,2);resetWaterPickups(race,pickups);clock=0;visualSteer=0;lastAnnouncement='';controls.orbit.recenter(true);
       if(initial){
         const at=sampleWaterpark(race.racers[0].motion.distance,race.racers[0].motion.lane);
         mode='transition';loadingCamera.beginReturn({...chaseCamera({position:at.p,tangent:at.t,view,rearView:false,orbit:controls.orbit.step(0)}),fov:56});
@@ -230,7 +232,8 @@ reportStartupError=error=>{
     } else if(mode==='paused')start();
   }
   function restart(){if(contextLost||mode==='menu'||mode==='transition'||busy)return;performancePanel.interrupt('restart');mode='finished';start();}
-  function useItem(){if(mode==='riding'){const result=useWaterItem(race,race.racers[0]);if(result){shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');}}}
+  function useItem(slot:ItemSlot=0){if(mode==='riding'&&race.countdown<=0&&!race.finished)itemRequests.request(slot,race.racers[0]);}
+  function consumeItemRequest(){itemRequests.drain(race.racers[0],slot=>{const result=useWaterItem(race,race.racers[0],slot);if(!result)return false;shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');return true;});}
   function navigate(screen=''){clearWaterDynamicPickups(race);clearKeys();controls.mouseLook.release();const urls=shell.updateNavigation('waterpark',selected)!;shell.navigate(screen==='maps'?urls.changeMap:screen==='characters'?urls.changeCharacter:urls.main);}
   function switchCamera(){if(contextLost||mode==='menu'||mode==='transition')return;view=(view+1)%2;controls.orbit.recenter(true);snapCamera=true;shell.toast(view?'高位追逐视角':'低位追逐视角');}
   $('start').addEventListener('click',start,{signal:events.signal});
@@ -239,13 +242,14 @@ reportStartupError=error=>{
   $('restartRace').addEventListener('click',restart,{signal:events.signal});
   $('pauseMenu').addEventListener('click',()=>navigate(),{signal:events.signal});
   $('pauseChangeMap').addEventListener('click',()=>navigate('maps'),{signal:events.signal});
-  $('item').addEventListener('click',useItem,{signal:events.signal});
+  $('item').addEventListener('click',()=>useItem(0),{signal:events.signal});
+  $('item-secondary').addEventListener('click',()=>useItem(1),{signal:events.signal});
   $('camera').addEventListener('click',switchCamera,{signal:events.signal});
   $('sound').addEventListener('click',()=>shell.toggleSound(),{signal:events.signal});
   $('restart').addEventListener('click',restart,{signal:events.signal});
   controls=bindRaceControls(canvas,{state:()=>mode==='riding'?'active':mode==='transition'?'loading':mode,pause,useItem,switchCamera,start,recenter:()=>shell.toast('视角回正'),status:status=>{
     $('lookHint').textContent=status==='locked'?'移动鼠标环顾 · Q 回正 · 右键回看 · Esc 暂停并释放鼠标':status==='drag'?'按住鼠标左键拖动环顾 · Q 回正 · Esc 暂停':'单击赛道，移动鼠标环顾 · Q 回正 · Esc 暂停';
-  },onClear:()=>{race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;},signal:events.signal});
+  },onClear:()=>{itemRequests.clear();race.racers[0].motion.charge=0;race.racers[0].motion.drifting=false;},signal:events.signal});
   defer(()=>controls.dispose());
   canvas.addEventListener('webglcontextlost',event=>{
     event.preventDefault();contextLost=true;controls.release();frameClock.reset();
@@ -271,6 +275,7 @@ reportStartupError=error=>{
     shell.tick(step);
     const pressed=(key:string)=>!!controls.keys[key];
     if(mode==='riding') {
+      if(step>0&&race.countdown<=0&&!race.finished)consumeItemRequest();
       const human=race.racers[0],before={pickups:human.pickups,bump:human.bump,slow:human.slow,shield:human.shield,slide:human.motion.slideBoost,bank:human.motion.bankHit};
       steer=(pressed('KeyA')||pressed('ArrowLeft')?1:0)-(pressed('KeyD')||pressed('ArrowRight')?1:0); visualSteer=steer;
       advanceWaterRace(race,{throttle:pressed('KeyW')||pressed('ArrowUp'),brake:pressed('Space'),reverse:pressed('KeyS')||pressed('ArrowDown'),drift:pressed('ShiftLeft')||pressed('ShiftRight'),steer},step,pickups);
@@ -309,7 +314,7 @@ reportStartupError=error=>{
     }
     const standings=waterStandings(race),player=race.racers[0];
     const travelSpeed=waterTravelSpeed(player);
-    shell.updateHUD({rank:standings.findIndex(r=>r.id===selected)+1,lap:Math.min(WATER_LAPS,1+Math.floor(player.checkpoint/WATER_CHECKPOINTS)),elapsed:race.elapsed,speed:travelSpeed,charge:motion.charge,chargeMax:WATER_HANDLING.slideMaxCharge,boost:Math.max(player.boost,motion.slideBoost),shield:player.shield,held:player.held,slideLabel:'左 Shift + A / D 水上滑移',canUseItem:mode==='riding'&&race.countdown<=0&&!motion.finished});
+    shell.updateHUD({rank:standings.findIndex(r=>r.id===selected)+1,lap:Math.min(WATER_LAPS,1+Math.floor(player.checkpoint/WATER_CHECKPOINTS)),elapsed:race.elapsed,speed:travelSpeed,charge:motion.charge,chargeMax:WATER_HANDLING.slideMaxCharge,boost:Math.max(player.boost,motion.slideBoost),shield:player.shield,held:player.held,heldSecond:player.heldSecond,slideLabel:'左 Shift + A / D 水上滑移',canUseItem:mode==='riding'&&race.countdown<=0&&!motion.finished});
     shell.drawMinimap(race.racers.map(r=>({total:r.total,color:getDriver(r.id).color,player:r.id===selected})));
     const announcement=race.announcements.at(-1)??'';if(announcement&&announcement!==lastAnnouncement){lastAnnouncement=announcement;shell.toast(announcement);}
     const s=sampleWaterpark(motion.distance,motion.lane);

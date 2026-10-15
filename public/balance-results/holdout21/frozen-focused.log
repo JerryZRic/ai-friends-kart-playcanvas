@@ -1,0 +1,141 @@
+✔ identical-role rotating labels give 1/6 but degenerate intervals never claim certainty (21.953193ms)
+✔ extreme all-win character fails and retains bounded uncertainty for zero/one endpoints (10.906884ms)
+✔ correlated rotations are resampled as four blocks, not 24 independent races (9.456793ms)
+✔ incomplete blocks stay in diagnostics but are excluded from inference; missing map is not reweighted away (1.15858ms)
+✔ duplicate races, reused scenario seeds, bad role rotations and malformed progress are rejected (1.336193ms)
+✔ all-DNF races never invent a winner, and all starts remain in denominators (2.465641ms)
+✔ one joint family includes six primary, 72 map and six mixed endpoints with equal map weighting (21.512864ms)
+✔ aggregate weights maps equally even when completed block counts differ (2.315319ms)
+✔ manifest seed-domain mismatch is rejected rather than mislabeled holdout evidence (0.480389ms)
+✔ holdout certification rejects every nonempty runtime profile override despite matching source hashes (7.561595ms)
+✔ certification requires valid invalid-progress instrumentation in both cohorts; older reports remain readable (6.43388ms)
+✔ rejected-advance reasons are validated and aggregated by cohort, map, and character (3.951564ms)
+✔ legacy reason-free diagnostics remain readable and explicitly warn that observed zeros are unverified (2.340896ms)
+✔ frozen catalog contains exactly 55 complete themes / 330 exact slot identities (15.440678ms)
+✔ baseline is mixed, fresh, and composes the authoritative current land roster (1.458473ms)
+✔ water character tuning preserves every original character coefficient (0.187787ms)
+✔ six mixed presets reproduce the frozen design multipliers and all SI estimates (0.975691ms)
+✔ same-theme identity never changes performance: physical equivalents are identical (0.244741ms)
+✔ all 46,656 six-archetype combinations and 2,000 full-catalog mixes stay finite and bounded (1414.242847ms)
+✔ track strategy has distinct straight, launch and sharp-corner advantages (1.319569ms)
+✔ waterpark living mounts ignore every build and coast context (0.904055ms)
+✔ compiled race snapshots are immutable and reuse cached stats without changing after edits (5.016798ms)
+✔ invalid, misplaced and foreign part IDs cannot enter validated builds (0.386019ms)
+✔ garage round-trips active and named builds, with no external data or input aliasing (0.597172ms)
+✔ corrupt/unsupported JSON safely resets, and a corrupt entry never damages valid saved builds (0.658342ms)
+✔ saving is strict, bounded and atomic on invalid data or blocked browser storage (0.827962ms)
+✔ five independent fractional cells include exact 3.2 behavior and all endpoints (4.867477ms)
+✔ independent, documented game-unit ranges map linearly and clamp hostile values (0.464316ms)
+✔ rendering preserves fractional widths rather than rounding a 3.2 rating to four cells (1.071802ms)
+✔ candidate compares against equipped build; equipped compares against previous with non-color signs (1.606682ms)
+✔ inactive stability is neutral design metadata, with no meter, score, or benefit delta (0.389225ms)
+✔ numeric failures stay safe and unavailable; visible rounding never produces negative zero (0.958685ms)
+✔ caller-provided label is escaped in text and attributes without injecting markup (0.311149ms)
+✔ all characters, authored presets and 55 real full kits keep finite meaningful scores (49.988599ms)
+✔ CSS keeps true segment gaps and clipped fractional fill, including high-contrast fallback (0.456334ms)
+✔ five authored roles are freely editable authentic mixed builds, not power tiers (2.935875ms)
+✔ NPC recipe selection is reproducible, covers six characters and bounds archives (0.809526ms)
+✖ every preset composes existing character identity and shared clamps (2.850108ms)
+✔ saved cars remain six part IDs plus name independent of character selection (0.682037ms)
+✔ race URL snapshots override saved builds and are copied before use (2.082515ms)
+✔ invalid, foreign, partial, oversized and extra-key URL builds retain the valid saved selection (0.801354ms)
+✔ race reads the real versioned garage key and safely handles damaged browser storage (0.653985ms)
+✔ active build follows the selected player while every opponent uses its fixed curated six slots (3.234495ms)
+✔ compiled race tuning snapshots build selection and applies identical road conditions to player and NPC (3.207496ms)
+✔ road context uses signed rise/run and wrapped horizontal heading change per metre (0.591884ms)
+✔ land role overrides enter the SAME shared compiler, including tight-corner handling (1.201204ms)
+✔ character acceleration and steering produce differentiated real speed and lane integration (0.388163ms)
+✔ A01 retains the released original coefficients even when a land override is supplied (0.791018ms)
+✔ the land roster preserves main archetypes and meaningful stat spread under the declared trait amendment (0.270249ms)
+✔ character menu labels use map-specific multipliers and expose the full tuned land range (0.56883ms)
+✔ the CPU lab is a built and corresponding-source-packaged entry (0.307745ms)
+✔ collision broad phase exactly matches the published physical-first predicate on every fork map (314.938415ms)
+✔ shared CPU preserves pre-extraction state exactly on coast (204.362911ms)
+✔ shared CPU preserves pre-extraction state exactly on mountain (265.829115ms)
+✔ shared CPU preserves pre-extraction state exactly on town (231.246414ms)
+✔ shared CPU preserves pre-extraction state exactly on quarry (195.123208ms)
+✔ shared CPU preserves pre-extraction state exactly on forest (235.285578ms)
+✔ shared CPU preserves pre-extraction state exactly on workshop (202.784309ms)
+✔ shared CPU preserves pre-extraction state exactly on harvest (218.267038ms)
+✔ shared CPU preserves pre-extraction state exactly on desert (246.786694ms)
+✔ shared CPU preserves pre-extraction state exactly on snow (207.442273ms)
+✔ shared CPU preserves pre-extraction state exactly on caldera (198.521902ms)
+✔ shared CPU preserves pre-extraction state exactly on garden (200.822279ms)
+✔ shared CPU preserves pre-extraction state exactly on airfield (204.081706ms)
+✔ CPU feedback override activates items exactly once and seat IDs are tuning keys (0.634677ms)
+✔ normal human collision keeps its own speed and lane loss; CPU collision never inherits it (0.90756ms)
+✔ same seed and options exactly replay complete actual CPU results (2493.262461ms)
+✔ identical mechanics with rotated character labels give every label each winning seat exactly once (7534.226108ms)
+✔ scenario roles, phases, equipment and grid rotate independently of character identity (2.716982ms)
+✔ timeouts retain all DNFs without invented winner, and stopping is latched (2.91186ms)
+✔ items can be disabled only explicitly and seed domains do not overlap in the declared matrix (4.97724ms)
+✔ rejected progress is observed before speed reset on both route and checkpoint paths (27.014888ms)
+✔ shared land integrator preserves old coast behavior exactly (0.937374ms)
+✔ mountain slope force affects real speed and brakes hold on a slope (24.400739ms)
+✔ banked model orientation follows actual road normal with a height clearance (16.867064ms)
+✔ mountain launch and reverse recovery accumulate throttle at high refresh rates (28.98704ms)
+✔ canonical checkpoints reject reverse credit, wrap jumps, teleports and off-road shortcuts (2.936026ms)
+✔ seeded NPC-like constrained traversal keeps support finite and credits exactly twelve complete laps (294.634414ms)
+{"waterMediumCourse":[{"selected":"whale","seconds":139.23,"npcBankHits":0,"minNpcSpeed":15.05},{"selected":"gemini","seconds":132.91,"npcBankHits":0,"minNpcSpeed":15.36},{"selected":"gpt","seconds":129.85,"npcBankHits":0,"minNpcSpeed":14.9},{"selected":"claude","seconds":135.08,"npcBankHits":0,"minNpcSpeed":15.05},{"selected":"grok","seconds":125.21,"npcBankHits":0,"minNpcSpeed":14.45},{"selected":"glm","seconds":133.64,"npcBankHits":0,"minNpcSpeed":15.17}]}
+✔ six unique racers keep real three-lap results and deterministic replay (1151.352515ms)
+✔ race finish times and rank are identical at 30, 60 and 120 Hz (1408.061065ms)
+✔ countdown and effects use simulation time; invalid deltas and finished frames do nothing (330.719403ms)
+✔ reverse, seam oscillation and checkpoint skips cannot earn laps (0.461882ms)
+✔ inventory starts empty and player cannot create items during countdown or after finish (0.484435ms)
+✔ contact impulses are local, shield-aware and cannot use a finisher as an obstacle (0.305621ms)
+✔ player finish immediately freezes the whole race with truthful pending times (0.391518ms)
+✔ all six profiles drive actual player and NPC acceleration, caps and steering equally (1.152091ms)
+✔ actual race reverse remains signed under item/slide boost and slow, without checkpoint credit (0.352321ms)
+✔ release boost affects that same race tick and shares a single multiplier with an item (0.457425ms)
+✔ countdown suppresses reverse, slide charge and effects; fresh races reset every new field (0.868673ms)
+✔ player finish clips opponent progress and pickup clocks before later same-tick crossings (1.101637ms)
+✔ all selected drivers can finish immediately without waiting for unfinished opponents (0.390056ms)
+✔ throttle, water slide, brake and reverse replays stay deterministic at common frame rates (146.626372ms)
+✔ all six drivers complete the authored medium-complexity course while NPCs keep moving and collect real staggered pickups (1904.649555ms)
+✔ water race owns a serializable bounded dynamic pool through countdown, real spawning, restart and finish (29.24423ms)
+✔ dynamic water spawning and race simulation stay deterministic at 30, 60 and 120 Hz (389.086518ms)
+✔ all six water NPC characters collect actual dynamic spawns and deliberately use earned items (108.751424ms)
+✔ maps explicitly select independent vehicle identities and safe default (1.091522ms)
+✔ water sample completes once, remains stopped, and resets deterministically (2.971738ms)
+✔ water steering has inertia, brakes take priority and banks stay bounded (0.991614ms)
+✔ Space stops forward and reverse without ever becoming a reverse throttle (1.670146ms)
+✔ S brakes to zero before reverse, W brakes reverse before forward, and opposing pedals stop (3.634015ms)
+✔ reverse steering is signed and water keeps lateral inertia after the turn is released (0.292532ms)
+✔ a moving Shift turn charges a bounded water slide and releasing Shift earns boost (2.732615ms)
+✔ stationary, straight, low-speed, reverse, cancelled and banked slides cannot farm boost (0.29129ms)
+✔ all six character profiles retain their acceleration, forward/reverse caps and slide steering (2.179578ms)
+✔ zero and invalid motion deltas do not release a stored slide or advance effects (0.336737ms)
+✔ water bend current is gently bounded, points outside either turn and applies to reverse safely (0.521149ms)
+ℹ tests 107
+ℹ suites 0
+ℹ pass 106
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14410.740614
+
+✖ failing tests:
+
+test at tests/kart-presets.test.ts:1:1986
+✖ every preset composes existing character identity and shared clamps (2.850108ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 20.240000000000002
+  - 21.009999999999998
+  
+      at TestContext.<anonymous> (holdout21/kart-presets.corrected.test.ts:33:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 20.240000000000002,
+    expected: 21.009999999999998,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

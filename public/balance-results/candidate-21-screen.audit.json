@@ -1,0 +1,7142 @@
+{
+  "stage": "screen",
+  "candidate": 21,
+  "anchor": 19,
+  "status": "training-only",
+  "uncertainty": "Descriptive map-stratified paired six-rotation block standard errors, not simultaneous certification or independent confirmation. No holdout read.",
+  "cohorts": {
+    "primary": {
+      "checks": {
+        "expectedRaces": 576,
+        "actualRaces": 576,
+        "expectedBlocks": 96,
+        "actualBlocks": 96,
+        "completionAgrees": true,
+        "expectedMaps": true,
+        "completeBlockIndices": true,
+        "completeRotations": true,
+        "uniqueRaceKeys": true,
+        "pairedKeysEqual19": true,
+        "sourceHashesEqual19": true,
+        "profileEquals21Plan": true,
+        "sourceHashesMatchCurrent": true,
+        "dnfs": 0,
+        "timeouts": 0,
+        "incompleteRaces": 0,
+        "invalidSteps": 0,
+        "rejectedProgress": 0,
+        "controlIssues": []
+      },
+      "completion": {
+        "races": 576,
+        "blocks": 96,
+        "wallSeconds": 446.663508249,
+        "completed": "2026-10-14T13:37:43.412Z"
+      },
+      "manifestPath": "candidate-21-screen-primary.manifest.json",
+      "sourcePath": "candidate-21-screen-primary.jsonl.gz",
+      "rowsSha256": "393052a8b4488284897a575901d43a9c0937c86600afebcdada1ab045d3cd33f",
+      "profileCanonicalSha256": "ed05b81a9689430efdfdde67d171d875531fb34a43c20e0925f1283121c524d4",
+      "sourceHashesCanonicalSha256": "e5b6a9e562de832faa722e9fa33b46897267e4cbed741d98c7abff972c54d7af",
+      "candidate21": {
+        "aggregate": {
+          "whale": {
+            "wins": 93,
+            "winRate": 0.16145833333333334,
+            "blockStandardError": 0.01365439445287778,
+            "meanRank": 3.876736111111111,
+            "meanGapSeconds": 4.756782007019588
+          },
+          "gemini": {
+            "wins": 104,
+            "winRate": 0.18055555555555555,
+            "blockStandardError": 0.015416934789603227,
+            "meanRank": 3.357638888888889,
+            "meanGapSeconds": 3.955752917902837
+          },
+          "gpt": {
+            "wins": 92,
+            "winRate": 0.1597222222222222,
+            "blockStandardError": 0.01583033075122316,
+            "meanRank": 3.357638888888889,
+            "meanGapSeconds": 3.931437005816075
+          },
+          "claude": {
+            "wins": 96,
+            "winRate": 0.16666666666666666,
+            "blockStandardError": 0.01473139127471974,
+            "meanRank": 3.486111111111111,
+            "meanGapSeconds": 4.1807262797969615
+          },
+          "grok": {
+            "wins": 95,
+            "winRate": 0.16493055555555555,
+            "blockStandardError": 0.015206022872985447,
+            "meanRank": 3.5034722222222223,
+            "meanGapSeconds": 4.071726229080581
+          },
+          "glm": {
+            "wins": 96,
+            "winRate": 0.16666666666666666,
+            "blockStandardError": 0.016883305977299118,
+            "meanRank": 3.4184027777777777,
+            "meanGapSeconds": 3.855860011326003
+          }
+        },
+        "mapMetrics": {
+          "coast": {
+            "whale": {
+              "wins": 21,
+              "winRate": 0.4375,
+              "blockStandardError": 0.07674879141802159,
+              "meanRank": 2.3333333333333335,
+              "meanGapSeconds": 1.2326918826604054
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.8125,
+              "meanGapSeconds": 4.0098737466467105
+            },
+            "gpt": {
+              "wins": 2,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 3.9166666666666665,
+              "meanGapSeconds": 4.085956634583703
+            },
+            "claude": {
+              "wins": 15,
+              "winRate": 0.3125,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 2.7291666666666665,
+              "meanGapSeconds": 2.477819741704801
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 3.8541666666666665,
+              "meanGapSeconds": 4.014497749251672
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.354166666666667,
+              "meanGapSeconds": 4.4242192637223745
+            }
+          },
+          "mountain": {
+            "whale": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.916666666666667,
+              "meanGapSeconds": 8.325945408987936
+            },
+            "gemini": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 4.517154955140323
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 3.7708333333333335,
+              "meanGapSeconds": 5.972939502316233
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 4.166666666666667,
+              "meanGapSeconds": 6.577900703054176
+            },
+            "grok": {
+              "wins": 15,
+              "winRate": 0.3125,
+              "blockStandardError": 0.05839707401889459,
+              "meanRank": 2.4166666666666665,
+              "meanGapSeconds": 3.380216813766855
+            },
+            "glm": {
+              "wins": 16,
+              "winRate": 0.3333333333333333,
+              "blockStandardError": 0.09960238411119948,
+              "meanRank": 2.4375,
+              "meanGapSeconds": 2.898119973017186
+            }
+          },
+          "town": {
+            "whale": {
+              "wins": 14,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 2.9583333333333335,
+              "meanGapSeconds": 2.700237250079404
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.9166666666666665,
+              "meanGapSeconds": 4.298019596844446
+            },
+            "gpt": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.09316949906249124,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 3.569285173941648
+            },
+            "claude": {
+              "wins": 14,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.08768404680152521,
+              "meanRank": 2.5,
+              "meanGapSeconds": 2.392792912922452
+            },
+            "grok": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.416666666666667,
+              "meanGapSeconds": 4.932779458616285
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 3.9166666666666665,
+              "meanGapSeconds": 4.615890766122059
+            }
+          },
+          "quarry": {
+            "whale": {
+              "wins": 17,
+              "winRate": 0.35416666666666663,
+              "blockStandardError": 0.03776362363229024,
+              "meanRank": 2.6666666666666665,
+              "meanGapSeconds": 2.806524471431992
+            },
+            "gemini": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.03776362363229024,
+              "meanRank": 3.75,
+              "meanGapSeconds": 4.514608387666247
+            },
+            "gpt": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.3541666666666665,
+              "meanGapSeconds": 3.7713966465087747
+            },
+            "claude": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.05223193087733405,
+              "meanRank": 3.0416666666666665,
+              "meanGapSeconds": 3.509425120241456
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.104166666666667,
+              "meanGapSeconds": 5.068729951691835
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 4.083333333333333,
+              "meanGapSeconds": 4.943098603836005
+            }
+          },
+          "forest": {
+            "whale": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.05839707401889459,
+              "meanRank": 3.5625,
+              "meanGapSeconds": 3.9270015530940667
+            },
+            "gemini": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 3.125,
+              "meanGapSeconds": 3.455756087692702
+            },
+            "gpt": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.07042952122737638,
+              "meanRank": 2.8333333333333335,
+              "meanGapSeconds": 3.0595167774956296
+            },
+            "claude": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 3.7291205551570346
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.083333333333333,
+              "meanGapSeconds": 4.804731215808018
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.9791666666666665,
+              "meanGapSeconds": 4.471165534575923
+            }
+          },
+          "workshop": {
+            "whale": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.625,
+              "meanGapSeconds": 5.474538638922377
+            },
+            "gemini": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.07042952122737638,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 3.5389081595971166
+            },
+            "gpt": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.0686462059206595,
+              "meanRank": 3.0208333333333335,
+              "meanGapSeconds": 3.0078651263541847
+            },
+            "claude": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.08333333333333333,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 3.9158588719947183
+            },
+            "grok": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.3541666666666665,
+              "meanGapSeconds": 3.6828999340784794
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.0833333333333335,
+              "meanGapSeconds": 3.3540076531050365
+            }
+          },
+          "harvest": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 4.4375,
+              "meanGapSeconds": 5.934546585808883
+            },
+            "gemini": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.07344620642412539,
+              "meanRank": 3.6041666666666665,
+              "meanGapSeconds": 4.550038562734087
+            },
+            "gpt": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 4.440533351523292
+            },
+            "claude": {
+              "wins": 2,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.145833333333333,
+              "meanGapSeconds": 5.689794452486759
+            },
+            "grok": {
+              "wins": 15,
+              "winRate": 0.3125,
+              "blockStandardError": 0.06634969288573796,
+              "meanRank": 2.7291666666666665,
+              "meanGapSeconds": 3.493882597118778
+            },
+            "glm": {
+              "wins": 15,
+              "winRate": 0.3125,
+              "blockStandardError": 0.08589803386703458,
+              "meanRank": 2.625,
+              "meanGapSeconds": 2.6823720418107073
+            }
+          },
+          "desert": {
+            "whale": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 3.6458333333333335,
+              "meanGapSeconds": 4.017126780937466
+            },
+            "gemini": {
+              "wins": 16,
+              "winRate": 0.3333333333333333,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 2.8125,
+              "meanGapSeconds": 2.668014605837696
+            },
+            "gpt": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.3958333333333335,
+              "meanGapSeconds": 3.774235544162508
+            },
+            "claude": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.03776362363229024,
+              "meanRank": 3.8541666666666665,
+              "meanGapSeconds": 3.713695099269458
+            },
+            "grok": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 3.825506801455715
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5,
+              "meanGapSeconds": 3.7357779235610042
+            }
+          },
+          "snow": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 4.229166666666667,
+              "meanGapSeconds": 5.113387354769692
+            },
+            "gemini": {
+              "wins": 17,
+              "winRate": 0.35416666666666663,
+              "blockStandardError": 0.07344620642412539,
+              "meanRank": 2.5625,
+              "meanGapSeconds": 2.91921837057039
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 3.7083333333333335,
+              "meanGapSeconds": 4.503515337158453
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 3.7083333333333335,
+              "meanGapSeconds": 4.310446262245133
+            },
+            "grok": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.4791666666666665,
+              "meanGapSeconds": 4.478770709584605
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.3125,
+              "meanGapSeconds": 3.8877825969996906
+            }
+          },
+          "caldera": {
+            "whale": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 5.3125,
+              "meanGapSeconds": 7.9231662849042825
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 4.942613794289437
+            },
+            "gpt": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.05839707401889459,
+              "meanRank": 3,
+              "meanGapSeconds": 3.631649691355308
+            },
+            "claude": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 3.9791666666666665,
+              "meanGapSeconds": 5.515101927379667
+            },
+            "grok": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.11329087089687072,
+              "meanRank": 2.7291666666666665,
+              "meanGapSeconds": 2.9070934140809257
+            },
+            "glm": {
+              "wins": 19,
+              "winRate": 0.3958333333333333,
+              "blockStandardError": 0.09416245249735937,
+              "meanRank": 2.5625,
+              "meanGapSeconds": 2.969887035129298
+            }
+          },
+          "garden": {
+            "whale": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 2.9642021176934983
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.625,
+              "meanGapSeconds": 3.757484861825819
+            },
+            "gpt": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 3.1458333333333335,
+              "meanGapSeconds": 3.063306932043466
+            },
+            "claude": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 2.9166666666666665,
+              "meanGapSeconds": 2.8187740396390892
+            },
+            "grok": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 4,
+              "meanGapSeconds": 4.443243960261491
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.104166666666667,
+              "meanGapSeconds": 4.460210945968039
+            }
+          },
+          "airfield": {
+            "whale": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.625,
+              "meanGapSeconds": 6.662015754945051
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 3.0416666666666665,
+              "meanGapSeconds": 4.29734388598907
+            },
+            "gpt": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.3958333333333335,
+              "meanGapSeconds": 4.297043352349698
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 5.517985671468794
+            },
+            "grok": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 3.0833333333333335,
+              "meanGapSeconds": 3.828362143252315
+            },
+            "glm": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.05455447255899809,
+              "meanRank": 3.0625,
+              "meanGapSeconds": 3.827787798064714
+            }
+          }
+        },
+        "perMapMaxima": {
+          "coast": {
+            "winRate": 0.4375,
+            "characters": [
+              "whale"
+            ]
+          },
+          "mountain": {
+            "winRate": 0.3333333333333333,
+            "characters": [
+              "glm"
+            ]
+          },
+          "town": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "whale",
+              "claude"
+            ]
+          },
+          "quarry": {
+            "winRate": 0.35416666666666663,
+            "characters": [
+              "whale"
+            ]
+          },
+          "forest": {
+            "winRate": 0.25,
+            "characters": [
+              "gpt",
+              "claude"
+            ]
+          },
+          "workshop": {
+            "winRate": 0.25,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "harvest": {
+            "winRate": 0.3125,
+            "characters": [
+              "grok",
+              "glm"
+            ]
+          },
+          "desert": {
+            "winRate": 0.3333333333333333,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "snow": {
+            "winRate": 0.35416666666666663,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "caldera": {
+            "winRate": 0.3958333333333333,
+            "characters": [
+              "glm"
+            ]
+          },
+          "garden": {
+            "winRate": 0.25,
+            "characters": [
+              "whale"
+            ]
+          },
+          "airfield": {
+            "winRate": 0.25,
+            "characters": [
+              "glm"
+            ]
+          }
+        },
+        "allMapMaximum": 0.4375,
+        "aggregateMaxDeviation": 0.013888888888888895,
+        "aggregateRMSE": 0.006723929420498988,
+        "mapRMSE": 0.10045469542700994
+      },
+      "candidate19": {
+        "aggregate": {
+          "whale": {
+            "wins": 74,
+            "winRate": 0.1284722222222222,
+            "blockStandardError": 0.011478607604569577,
+            "meanRank": 3.873263888888889,
+            "meanGapSeconds": 4.872707042553173
+          },
+          "gemini": {
+            "wins": 110,
+            "winRate": 0.1909722222222222,
+            "blockStandardError": 0.014104233341381875,
+            "meanRank": 3.2899305555555554,
+            "meanGapSeconds": 3.8603958771327616
+          },
+          "gpt": {
+            "wins": 98,
+            "winRate": 0.1701388888888889,
+            "blockStandardError": 0.01652239975193102,
+            "meanRank": 3.3368055555555554,
+            "meanGapSeconds": 3.9413114415745376
+          },
+          "claude": {
+            "wins": 90,
+            "winRate": 0.15625,
+            "blockStandardError": 0.015332918170708067,
+            "meanRank": 3.546875,
+            "meanGapSeconds": 4.355188225366531
+          },
+          "grok": {
+            "wins": 99,
+            "winRate": 0.171875,
+            "blockStandardError": 0.01365439445287778,
+            "meanRank": 3.548611111111111,
+            "meanGapSeconds": 4.198492336867387
+          },
+          "glm": {
+            "wins": 105,
+            "winRate": 0.18229166666666666,
+            "blockStandardError": 0.016793806564712497,
+            "meanRank": 3.404513888888889,
+            "meanGapSeconds": 4.0294032180500094
+          }
+        },
+        "mapMetrics": {
+          "coast": {
+            "whale": {
+              "wins": 16,
+              "winRate": 0.3333333333333333,
+              "blockStandardError": 0.05455447255899809,
+              "meanRank": 2.7708333333333335,
+              "meanGapSeconds": 2.0039315789655574
+            },
+            "gemini": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.375,
+              "meanGapSeconds": 3.0793294459540284
+            },
+            "gpt": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.06634969288573796,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 3.3471351631876494
+            },
+            "claude": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 3.0208333333333335,
+              "meanGapSeconds": 2.9129935772764073
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.166666666666667,
+              "meanGapSeconds": 4.210646600226737
+            },
+            "glm": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.375,
+              "meanGapSeconds": 4.504805568332944
+            }
+          },
+          "mountain": {
+            "whale": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.875,
+              "meanGapSeconds": 7.347037320507347
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.05223193087733405,
+              "meanRank": 3.125,
+              "meanGapSeconds": 4.117189220687291
+            },
+            "gpt": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.06634969288573796,
+              "meanRank": 3.3125,
+              "meanGapSeconds": 4.8272099365506
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.083333333333333,
+              "meanGapSeconds": 5.888243502068728
+            },
+            "grok": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3,
+              "meanGapSeconds": 3.60653318423392
+            },
+            "glm": {
+              "wins": 15,
+              "winRate": 0.3125,
+              "blockStandardError": 0.09676052504171938,
+              "meanRank": 2.6041666666666665,
+              "meanGapSeconds": 3.1160650476354435
+            }
+          },
+          "town": {
+            "whale": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3,
+              "meanGapSeconds": 2.81963500637917
+            },
+            "gemini": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.6875,
+              "meanGapSeconds": 3.5182493884963075
+            },
+            "gpt": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 3.5,
+              "meanGapSeconds": 3.112185735805451
+            },
+            "claude": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 2.7708333333333335,
+              "meanGapSeconds": 2.2293185562286695
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 3.8541666666666665,
+              "meanGapSeconds": 3.797723350165248
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.0314970394174356,
+              "meanRank": 4.1875,
+              "meanGapSeconds": 3.9768839429835166
+            }
+          },
+          "quarry": {
+            "whale": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.0625,
+              "meanGapSeconds": 2.6339437906129564
+            },
+            "gemini": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.4375,
+              "meanGapSeconds": 3.9542318077196454
+            },
+            "gpt": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.07042952122737638,
+              "meanRank": 3.1458333333333335,
+              "meanGapSeconds": 3.4294232478207256
+            },
+            "claude": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.05455447255899809,
+              "meanRank": 3.4375,
+              "meanGapSeconds": 3.6870922781869986
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4,
+              "meanGapSeconds": 4.8488128695882375
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.9166666666666665,
+              "meanGapSeconds": 4.823362359812748
+            }
+          },
+          "forest": {
+            "whale": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.1666666666666665,
+              "meanGapSeconds": 3.067794471429952
+            },
+            "gemini": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.2291666666666665,
+              "meanGapSeconds": 3.4885951902267744
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 3.9617970598168646
+            },
+            "claude": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.07674879141802157,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 3.3321394135065687
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.229166666666667,
+              "meanGapSeconds": 4.965460568189898
+            },
+            "glm": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.05223193087733405,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 4.389129863402927
+            }
+          },
+          "workshop": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 4.333333333333333,
+              "meanGapSeconds": 5.833738463867157
+            },
+            "gemini": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 2.9583333333333335,
+              "meanGapSeconds": 3.303710280638732
+            },
+            "gpt": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.6041666666666665,
+              "meanGapSeconds": 4.25901954099299
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 3.8333333333333335,
+              "meanGapSeconds": 4.946783815549089
+            },
+            "grok": {
+              "wins": 14,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.0686462059206595,
+              "meanRank": 3.0625,
+              "meanGapSeconds": 2.918945736268235
+            },
+            "glm": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 3.6481573088357577
+            }
+          },
+          "harvest": {
+            "whale": {
+              "wins": 0,
+              "winRate": 0.0,
+              "blockStandardError": 0.0,
+              "meanRank": 4.541666666666667,
+              "meanGapSeconds": 6.198074071596959
+            },
+            "gemini": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.3125,
+              "meanGapSeconds": 4.056518919953558
+            },
+            "gpt": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 4.4241294754854055
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.6875,
+              "meanGapSeconds": 4.863248721630289
+            },
+            "grok": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.1041666666666665,
+              "meanGapSeconds": 3.952760387742554
+            },
+            "glm": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.07042952122737638,
+              "meanRank": 3.0208333333333335,
+              "meanGapSeconds": 3.79652702284336
+            }
+          },
+          "desert": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.75,
+              "meanGapSeconds": 3.9291457504263936
+            },
+            "gemini": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.1666666666666665,
+              "meanGapSeconds": 3.2685537343688753
+            },
+            "gpt": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 3.237823238435201
+            },
+            "claude": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.8333333333333335,
+              "meanGapSeconds": 4.121565189139141
+            },
+            "grok": {
+              "wins": 7,
+              "winRate": 0.14583333333333331,
+              "blockStandardError": 0.049174737029340186,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 3.372907425598029
+            },
+            "glm": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 3.5587329223681423
+            }
+          },
+          "snow": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 5.90803829200155
+            },
+            "gemini": {
+              "wins": 17,
+              "winRate": 0.3541666666666667,
+              "blockStandardError": 0.05839707401889459,
+              "meanRank": 2.8125,
+              "meanGapSeconds": 2.999814124121143
+            },
+            "gpt": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.05455447255899809,
+              "meanRank": 3.0625,
+              "meanGapSeconds": 3.8247690294901737
+            },
+            "claude": {
+              "wins": 3,
+              "winRate": 0.0625,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 4.083333333333333,
+              "meanGapSeconds": 5.985325210945477
+            },
+            "grok": {
+              "wins": 9,
+              "winRate": 0.1875,
+              "blockStandardError": 0.06634969288573796,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 5.539546692210746
+            },
+            "glm": {
+              "wins": 8,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0629940788348712,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 4.5208003870080615
+            }
+          },
+          "caldera": {
+            "whale": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.916666666666667,
+              "meanGapSeconds": 8.132627564504048
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 3.625,
+              "meanGapSeconds": 5.700832552450855
+            },
+            "gpt": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 5.098031571250753
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04454354031873739,
+              "meanRank": 3.7708333333333335,
+              "meanGapSeconds": 5.491196239264098
+            },
+            "grok": {
+              "wins": 19,
+              "winRate": 0.3958333333333333,
+              "blockStandardError": 0.07674879141802159,
+              "meanRank": 2.4583333333333335,
+              "meanGapSeconds": 3.1937279228963042
+            },
+            "glm": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.0625,
+              "meanRank": 2.8125,
+              "meanGapSeconds": 3.439433991187625
+            }
+          },
+          "garden": {
+            "whale": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.4375,
+              "meanGapSeconds": 4.190844062482992
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 4.847190839862315
+            },
+            "gpt": {
+              "wins": 10,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.060993754559283325,
+              "meanRank": 3.0625,
+              "meanGapSeconds": 3.3384315291694366
+            },
+            "claude": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.06249999999999999,
+              "meanRank": 2.75,
+              "meanGapSeconds": 3.0642015947315264
+            },
+            "grok": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.027277236279499045,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 5.423430683655135
+            },
+            "glm": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.043842023400762604,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 5.488056655247355
+            }
+          },
+          "airfield": {
+            "whale": {
+              "wins": 1,
+              "winRate": 0.020833333333333332,
+              "blockStandardError": 0.020833333333333332,
+              "meanRank": 4.583333333333333,
+              "meanGapSeconds": 6.407674137863989
+            },
+            "gemini": {
+              "wins": 12,
+              "winRate": 0.25,
+              "blockStandardError": 0.0445435403187374,
+              "meanRank": 3.0833333333333335,
+              "meanGapSeconds": 3.9905350211136152
+            },
+            "gpt": {
+              "wins": 11,
+              "winRate": 0.22916666666666666,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 3.5208333333333335,
+              "meanGapSeconds": 4.4357817708892044
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.125,
+              "blockStandardError": 0.05223193087733405,
+              "meanRank": 3.9583333333333335,
+              "meanGapSeconds": 5.740150605871375
+            },
+            "grok": {
+              "wins": 5,
+              "winRate": 0.10416666666666666,
+              "blockStandardError": 0.030496877279641656,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 4.5514126216336015
+            },
+            "glm": {
+              "wins": 13,
+              "winRate": 0.2708333333333333,
+              "blockStandardError": 0.05398320579528885,
+              "meanRank": 2.5625,
+              "meanGapSeconds": 3.0908835469422278
+            }
+          }
+        },
+        "perMapMaxima": {
+          "coast": {
+            "winRate": 0.3333333333333333,
+            "characters": [
+              "whale"
+            ]
+          },
+          "mountain": {
+            "winRate": 0.3125,
+            "characters": [
+              "glm"
+            ]
+          },
+          "town": {
+            "winRate": 0.2708333333333333,
+            "characters": [
+              "whale",
+              "claude"
+            ]
+          },
+          "quarry": {
+            "winRate": 0.25,
+            "characters": [
+              "gpt"
+            ]
+          },
+          "forest": {
+            "winRate": 0.22916666666666666,
+            "characters": [
+              "whale",
+              "claude"
+            ]
+          },
+          "workshop": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "grok"
+            ]
+          },
+          "harvest": {
+            "winRate": 0.25,
+            "characters": [
+              "grok",
+              "glm"
+            ]
+          },
+          "desert": {
+            "winRate": 0.25,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "snow": {
+            "winRate": 0.3541666666666667,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "caldera": {
+            "winRate": 0.3958333333333333,
+            "characters": [
+              "grok"
+            ]
+          },
+          "garden": {
+            "winRate": 0.22916666666666666,
+            "characters": [
+              "claude"
+            ]
+          },
+          "airfield": {
+            "winRate": 0.2708333333333333,
+            "characters": [
+              "glm"
+            ]
+          }
+        },
+        "allMapMaximum": 0.3958333333333333,
+        "aggregateMaxDeviation": 0.03819444444444445,
+        "aggregateRMSE": 0.020171788261496962,
+        "mapRMSE": 0.08575756274464214
+      },
+      "pairedComparison": {
+        "aggregate": {
+          "whale": {
+            "winRateDelta": 0.03298611111111111,
+            "pairedStandardError": 0.01724914290614095
+          },
+          "gemini": {
+            "winRateDelta": -0.010416666666666664,
+            "pairedStandardError": 0.021242671731511762
+          },
+          "gpt": {
+            "winRateDelta": -0.010416666666666668,
+            "pairedStandardError": 0.020791956265014573
+          },
+          "claude": {
+            "winRateDelta": 0.010416666666666666,
+            "pairedStandardError": 0.0191535065241149
+          },
+          "grok": {
+            "winRateDelta": -0.006944444444444445,
+            "pairedStandardError": 0.019751159466333875
+          },
+          "glm": {
+            "winRateDelta": -0.015625,
+            "pairedStandardError": 0.020781599125510142
+          }
+        },
+        "maps": {
+          "coast": {
+            "whale": {
+              "winRateDelta": 0.10416666666666667,
+              "pairedStandardError": 0.10416666666666666,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  5
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  3,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.0625,
+              "pairedStandardError": 0.05398320579528885,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.14583333333333331,
+              "pairedStandardError": 0.06634969288573796,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.0629940788348712,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  2
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.03776362363229024,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.027277236279499045,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          },
+          "mountain": {
+            "whale": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0314970394174356,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.04166666666666667,
+              "pairedStandardError": 0.08768404680152521,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.10416666666666667,
+              "pairedStandardError": 0.0625,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.04454354031873739,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.04166666666666666,
+              "pairedStandardError": 0.060993754559283325,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.020833333333333346,
+              "pairedStandardError": 0.12769903543407699,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  3
+                ],
+                [
+                  4,
+                  5
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  4,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            }
+          },
+          "town": {
+            "whale": {
+              "winRateDelta": 0.02083333333333334,
+              "pairedStandardError": 0.0858980338670346,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.08589803386703458,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.08873840188021173,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  4
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.02083333333333334,
+              "pairedStandardError": 0.10175786307904022,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.0625,
+              "pairedStandardError": 0.030496877279641656,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.03776362363229024,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          },
+          "quarry": {
+            "whale": {
+              "winRateDelta": 0.14583333333333334,
+              "pairedStandardError": 0.05839707401889459,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.04454354031873739,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.14583333333333334,
+              "pairedStandardError": 0.06634969288573796,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.04166666666666666,
+              "pairedStandardError": 0.07552724726458047,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.020833333333333332,
+              "pairedStandardError": 0.03776362363229024,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.0625,
+              "pairedStandardError": 0.043842023400762604,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "forest": {
+            "whale": {
+              "winRateDelta": -0.04166666666666666,
+              "pairedStandardError": 0.05223193087733406,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.04166666666666667,
+              "pairedStandardError": 0.060993754559283325,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.1875,
+              "pairedStandardError": 0.06634969288573796,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.020833333333333332,
+              "pairedStandardError": 0.07344620642412539,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  4,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.08183170883849714,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          },
+          "workshop": {
+            "whale": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.027277236279499045,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.02083333333333334,
+              "pairedStandardError": 0.06634969288573796,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.08873840188021173,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.08768404680152521,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  4,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.08333333333333334,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "harvest": {
+            "whale": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.027277236279499045,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.020833333333333325,
+              "pairedStandardError": 0.09676052504171938,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.0625,
+              "pairedStandardError": 0.05398320579528885,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.06250000000000001,
+              "pairedStandardError": 0.07674879141802159,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.08296047538551402,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  3,
+                  4
+                ]
+              ]
+            }
+          },
+          "desert": {
+            "whale": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.05839707401889459,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.08333333333333334,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.08183170883849714,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.02083333333333334,
+              "pairedStandardError": 0.07344620642412539,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.05223193087733405,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.04166666666666667,
+              "pairedStandardError": 0.07552724726458047,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          },
+          "snow": {
+            "whale": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.05455447255899809,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.10910894511799618,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  3,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.07715167498104594,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.030496877279641656,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.11758777538772863,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.04166666666666667,
+              "pairedStandardError": 0.07552724726458047,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "caldera": {
+            "whale": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.04454354031873739,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.020833333333333332,
+              "pairedStandardError": 0.07344620642412539,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.049174737029340186,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.125,
+              "blockWinCountPairs": [
+                [
+                  4,
+                  2
+                ],
+                [
+                  4,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  3,
+                  5
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.125,
+              "pairedStandardError": 0.060993754559283325,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  3,
+                  4
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            }
+          },
+          "garden": {
+            "whale": {
+              "winRateDelta": 0.04166666666666667,
+              "pairedStandardError": 0.08768404680152521,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.020833333333333332,
+              "pairedStandardError": 0.07991500941724733,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.02083333333333334,
+              "pairedStandardError": 0.0491747370293402,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.04454354031873739,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "airfield": {
+            "whale": {
+              "winRateDelta": 0.0625,
+              "pairedStandardError": 0.043842023400762604,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.060993754559283325,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -6.938893903907228e-18,
+              "pairedStandardError": 0.07042952122737638,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.020833333333333332,
+              "pairedStandardError": 0.03776362363229024,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.10416666666666666,
+              "pairedStandardError": 0.030496877279641656,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.020833333333333336,
+              "pairedStandardError": 0.07991500941724733,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "rowsSha256Scope": "decompressed JSONL bytes"
+    },
+    "mixed": {
+      "checks": {
+        "expectedRaces": 288,
+        "actualRaces": 288,
+        "expectedBlocks": 48,
+        "actualBlocks": 48,
+        "completionAgrees": true,
+        "expectedMaps": true,
+        "completeBlockIndices": true,
+        "completeRotations": true,
+        "uniqueRaceKeys": true,
+        "pairedKeysEqual19": true,
+        "sourceHashesEqual19": true,
+        "profileEquals21Plan": true,
+        "sourceHashesMatchCurrent": true,
+        "dnfs": 0,
+        "timeouts": 0,
+        "incompleteRaces": 0,
+        "invalidSteps": 0,
+        "rejectedProgress": 0,
+        "controlIssues": []
+      },
+      "completion": {
+        "races": 288,
+        "blocks": 48,
+        "wallSeconds": 217.098603703,
+        "completed": "2026-10-14T13:41:21.339Z"
+      },
+      "manifestPath": "candidate-21-screen-mixed.manifest.json",
+      "sourcePath": "candidate-21-screen-mixed.jsonl.gz",
+      "rowsSha256": "f4c1bc3836a4563009c1a10672032c814c8f6b634d4525bdd7b36f3e5890727f",
+      "profileCanonicalSha256": "ed05b81a9689430efdfdde67d171d875531fb34a43c20e0925f1283121c524d4",
+      "sourceHashesCanonicalSha256": "e5b6a9e562de832faa722e9fa33b46897267e4cbed741d98c7abff972c54d7af",
+      "candidate21": {
+        "aggregate": {
+          "whale": {
+            "wins": 49,
+            "winRate": 0.1701388888888889,
+            "blockStandardError": 0.018042195912175804,
+            "meanRank": 3.9027777777777777,
+            "meanGapSeconds": 12.03074129120318
+          },
+          "gemini": {
+            "wins": 50,
+            "winRate": 0.1736111111111111,
+            "blockStandardError": 0.0183732729935041,
+            "meanRank": 3.4166666666666665,
+            "meanGapSeconds": 8.941527094387
+          },
+          "gpt": {
+            "wins": 45,
+            "winRate": 0.15625,
+            "blockStandardError": 0.018912192868481704,
+            "meanRank": 3.423611111111111,
+            "meanGapSeconds": 9.303492901287262
+          },
+          "claude": {
+            "wins": 58,
+            "winRate": 0.2013888888888889,
+            "blockStandardError": 0.017010345435994292,
+            "meanRank": 3.5034722222222223,
+            "meanGapSeconds": 10.142373326270711
+          },
+          "grok": {
+            "wins": 45,
+            "winRate": 0.15625,
+            "blockStandardError": 0.018482314146610314,
+            "meanRank": 3.295138888888889,
+            "meanGapSeconds": 8.41416750363838
+          },
+          "glm": {
+            "wins": 41,
+            "winRate": 0.1423611111111111,
+            "blockStandardError": 0.01616231486547331,
+            "meanRank": 3.4583333333333335,
+            "meanGapSeconds": 8.674847608997526
+          }
+        },
+        "mapMetrics": {
+          "coast": {
+            "whale": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 2.5416666666666665,
+              "meanGapSeconds": 2.6766328701511566
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 4.693941472644256
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.125,
+              "meanRank": 3.625,
+              "meanGapSeconds": 4.66560138336471
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.5,
+              "meanGapSeconds": 4.556933732297529
+            },
+            "grok": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333333,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 4.811632613233519
+            },
+            "glm": {
+              "wins": 0,
+              "winRate": 0.0,
+              "blockStandardError": 0.0,
+              "meanRank": 4.416666666666667,
+              "meanGapSeconds": 6.15100144685593
+            }
+          },
+          "mountain": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.291666666666667,
+              "meanGapSeconds": 21.862760222935623
+            },
+            "gemini": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 14.702126650613657
+            },
+            "gpt": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.625,
+              "meanGapSeconds": 17.49366814254732
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 17.722683355315535
+            },
+            "grok": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 2.7916666666666665,
+              "meanGapSeconds": 13.194056620224083
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 13.918720545722513
+            }
+          },
+          "town": {
+            "whale": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.625,
+              "meanGapSeconds": 4.393865451728225
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.1075828707279838,
+              "meanRank": 3.25,
+              "meanGapSeconds": 4.235751625177578
+            },
+            "gpt": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.125,
+              "meanGapSeconds": 3.8273998384772328
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 4.080391339162148
+            },
+            "grok": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.08333333333333333,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 4.2885611355955335
+            },
+            "glm": {
+              "wins": 1,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4,
+              "meanGapSeconds": 4.828403257295435
+            }
+          },
+          "quarry": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.875,
+              "meanGapSeconds": 6.3357183856729185
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.125,
+              "meanGapSeconds": 5.396360687193925
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 6.1758410860423325
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.375,
+              "meanGapSeconds": 5.624927584661104
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 5.453294678391618
+            },
+            "glm": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.75,
+              "meanGapSeconds": 6.611448351168245
+            }
+          },
+          "forest": {
+            "whale": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 6.114340678225472
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 5.625139301980403
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 5.180789702765492
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5,
+              "meanGapSeconds": 5.5714059697943235
+            },
+            "grok": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 5.9435098481731385
+            },
+            "glm": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.25,
+              "meanGapSeconds": 4.565460891537089
+            }
+          },
+          "workshop": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 4.083333333333333,
+              "meanGapSeconds": 12.675644560127093
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5,
+              "meanGapSeconds": 10.407974647741652
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 9.82169626287664
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 11.36291756661175
+            },
+            "grok": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3,
+              "meanGapSeconds": 8.90393473938213
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 9.306548006315348
+            }
+          },
+          "harvest": {
+            "whale": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 13.997984649178157
+            },
+            "gemini": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.375,
+              "meanGapSeconds": 9.607694688188575
+            },
+            "gpt": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 9.004858048537644
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.10485881160098263,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 11.953971457795621
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.25,
+              "meanGapSeconds": 8.827052954219045
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 9.5225605949945
+            }
+          },
+          "desert": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.166666666666667,
+              "meanGapSeconds": 11.111402000203656
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.1075828707279838,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 7.0325000953515096
+            },
+            "gpt": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.08333333333333333,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 8.2305809663485
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 3.625,
+              "meanGapSeconds": 9.449550496493144
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 2.875,
+              "meanGapSeconds": 6.705716609523456
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 7.260568015945732
+            }
+          },
+          "snow": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 4.375,
+              "meanGapSeconds": 13.462956447832967
+            },
+            "gemini": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 8.120743501255797
+            },
+            "gpt": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 8.537650969406185
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 9.850457673128465
+            },
+            "grok": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 8.267789445449184
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.1666666666666665,
+              "meanGapSeconds": 7.79393633117899
+            }
+          },
+          "caldera": {
+            "whale": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.208333333333333,
+              "meanGapSeconds": 29.708488592056522
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 21.38849514354465
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 22.16379536662831
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.625,
+              "meanGapSeconds": 23.38305057642629
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.0833333333333335,
+              "meanGapSeconds": 17.536944576639744
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.25,
+              "meanGapSeconds": 19.024819878777706
+            }
+          },
+          "garden": {
+            "whale": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.10485881160098263,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 7.490647256512907
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 6.64540088626735
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 7.142678813584285
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 6.719835902213593
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.5,
+              "meanGapSeconds": 6.94414612680501
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.375,
+              "meanGapSeconds": 6.281183228154055
+            }
+          },
+          "airfield": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 14.538454379813459
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.375,
+              "meanGapSeconds": 9.442196432684662
+            },
+            "gpt": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 9.39735423486849
+            },
+            "claude": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 11.432354261349031
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 10.093370696024095
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.125,
+              "meanGapSeconds": 8.833520760024765
+            }
+          }
+        },
+        "perMapMaxima": {
+          "coast": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "whale"
+            ]
+          },
+          "mountain": {
+            "winRate": 0.25,
+            "characters": [
+              "grok",
+              "glm"
+            ]
+          },
+          "town": {
+            "winRate": 0.25,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "quarry": {
+            "winRate": 0.25,
+            "characters": [
+              "claude"
+            ]
+          },
+          "forest": {
+            "winRate": 0.20833333333333331,
+            "characters": [
+              "claude",
+              "glm"
+            ]
+          },
+          "workshop": {
+            "winRate": 0.25,
+            "characters": [
+              "whale"
+            ]
+          },
+          "harvest": {
+            "winRate": 0.20833333333333331,
+            "characters": [
+              "gpt",
+              "claude"
+            ]
+          },
+          "desert": {
+            "winRate": 0.25,
+            "characters": [
+              "gemini",
+              "claude"
+            ]
+          },
+          "snow": {
+            "winRate": 0.20833333333333331,
+            "characters": [
+              "gpt",
+              "grok"
+            ]
+          },
+          "caldera": {
+            "winRate": 0.20833333333333331,
+            "characters": [
+              "whale"
+            ]
+          },
+          "garden": {
+            "winRate": 0.25,
+            "characters": [
+              "claude"
+            ]
+          },
+          "airfield": {
+            "winRate": 0.25,
+            "characters": [
+              "gpt"
+            ]
+          }
+        },
+        "allMapMaximum": 0.29166666666666663,
+        "aggregateMaxDeviation": 0.03472222222222224,
+        "aggregateRMSE": 0.018590715745612284,
+        "mapRMSE": 0.0564169333655275
+      },
+      "candidate19": {
+        "aggregate": {
+          "whale": {
+            "wins": 56,
+            "winRate": 0.19444444444444445,
+            "blockStandardError": 0.016037507477489603,
+            "meanRank": 3.8125,
+            "meanGapSeconds": 11.664985076432105
+          },
+          "gemini": {
+            "wins": 54,
+            "winRate": 0.1875,
+            "blockStandardError": 0.016286165832720242,
+            "meanRank": 3.482638888888889,
+            "meanGapSeconds": 9.22552510891388
+          },
+          "gpt": {
+            "wins": 52,
+            "winRate": 0.18055555555555555,
+            "blockStandardError": 0.01901814435781827,
+            "meanRank": 3.451388888888889,
+            "meanGapSeconds": 9.181566416366643
+          },
+          "claude": {
+            "wins": 50,
+            "winRate": 0.1736111111111111,
+            "blockStandardError": 0.017704928866641614,
+            "meanRank": 3.513888888888889,
+            "meanGapSeconds": 10.038900500007943
+          },
+          "grok": {
+            "wins": 34,
+            "winRate": 0.11805555555555555,
+            "blockStandardError": 0.014175287863328577,
+            "meanRank": 3.4305555555555554,
+            "meanGapSeconds": 8.387588325285064
+          },
+          "glm": {
+            "wins": 42,
+            "winRate": 0.14583333333333334,
+            "blockStandardError": 0.013297598718838028,
+            "meanRank": 3.3090277777777777,
+            "meanGapSeconds": 8.568032813051513
+          }
+        },
+        "mapMetrics": {
+          "coast": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 2.7083333333333335,
+              "meanGapSeconds": 3.2545520558657173
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 4.11680284113023
+            },
+            "gpt": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.1075828707279838,
+              "meanRank": 3.25,
+              "meanGapSeconds": 3.7913116573047603
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.14433756729740643,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 2.9614618181121224
+            },
+            "grok": {
+              "wins": 1,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.9583333333333335,
+              "meanGapSeconds": 5.099561484932644
+            },
+            "glm": {
+              "wins": 0,
+              "winRate": 0.0,
+              "blockStandardError": 0.0,
+              "meanRank": 4.375,
+              "meanGapSeconds": 5.864303606468975
+            }
+          },
+          "mountain": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 4.208333333333333,
+              "meanGapSeconds": 21.80747585941284
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 14.113768702757696
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 15.024692794801412
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 17.141524025697635
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.09622504486493762,
+              "meanRank": 3.0416666666666665,
+              "meanGapSeconds": 12.04696443181423
+            },
+            "glm": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.0416666666666665,
+              "meanGapSeconds": 13.379156529094317
+            }
+          },
+          "town": {
+            "whale": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 3.496306991479814
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 4.070101872189415
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5,
+              "meanGapSeconds": 4.10327256976575
+            },
+            "claude": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 2.875,
+              "meanGapSeconds": 3.4044199911844566
+            },
+            "grok": {
+              "wins": 1,
+              "winRate": 0.041666666666666664,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.166666666666667,
+              "meanGapSeconds": 5.068366610938525
+            },
+            "glm": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 4.343082951178964
+            }
+          },
+          "quarry": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 7.125177483607675
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 6.879663569197199
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.25,
+              "meanGapSeconds": 6.77671974671119
+            },
+            "claude": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 6.875021737216908
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.625,
+              "meanGapSeconds": 6.701297428865952
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.75,
+              "meanGapSeconds": 7.536759439693351
+            }
+          },
+          "forest": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.75,
+              "meanGapSeconds": 7.233723771587627
+            },
+            "gemini": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.8333333333333335,
+              "meanGapSeconds": 6.659691421459333
+            },
+            "gpt": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 7.010044845515542
+            },
+            "claude": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.625,
+              "meanGapSeconds": 7.174353167993245
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 6.131385030160498
+            },
+            "glm": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3,
+              "meanGapSeconds": 5.75485040617135
+            }
+          },
+          "workshop": {
+            "whale": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.041666666666667,
+              "meanGapSeconds": 12.10999181835523
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 9.019947225651636
+            },
+            "gpt": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.5,
+              "meanGapSeconds": 8.001590263819418
+            },
+            "claude": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.5833333333333335,
+              "meanGapSeconds": 10.265584089720422
+            },
+            "grok": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.25,
+              "meanGapSeconds": 7.717405299954975
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.1666666666666665,
+              "meanGapSeconds": 7.3577049847067935
+            }
+          },
+          "harvest": {
+            "whale": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 4.291666666666667,
+              "meanGapSeconds": 14.769996962005054
+            },
+            "gemini": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 12.196973889796753
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 10.060257483783994
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 12.130529101096025
+            },
+            "grok": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.0416666666666665,
+              "meanGapSeconds": 8.209859956490062
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.125,
+              "meanGapSeconds": 9.868682987472582
+            }
+          },
+          "desert": {
+            "whale": {
+              "wins": 7,
+              "winRate": 0.29166666666666663,
+              "blockStandardError": 0.07978559231302818,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 9.831899738964877
+            },
+            "gemini": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.08333333333333334,
+              "meanRank": 3.25,
+              "meanGapSeconds": 7.457692602096306
+            },
+            "gpt": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.6666666666666665,
+              "meanGapSeconds": 8.6367393268503
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.625,
+              "meanGapSeconds": 9.98115644032814
+            },
+            "grok": {
+              "wins": 0,
+              "winRate": 0.0,
+              "blockStandardError": 0.0,
+              "meanRank": 3.7083333333333335,
+              "meanGapSeconds": 8.534344191165156
+            },
+            "glm": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 2.9583333333333335,
+              "meanGapSeconds": 7.818335798232319
+            }
+          },
+          "snow": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.875,
+              "meanGapSeconds": 10.693087264148273
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.5,
+              "meanGapSeconds": 8.675569979930708
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.09622504486493762,
+              "meanRank": 3.5,
+              "meanGapSeconds": 9.308665244260043
+            },
+            "claude": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 8.831421972500438
+            },
+            "grok": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.375,
+              "meanGapSeconds": 8.136610228335188
+            },
+            "glm": {
+              "wins": 2,
+              "winRate": 0.08333333333333333,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 3.2083333333333335,
+              "meanGapSeconds": 7.958254066096207
+            }
+          },
+          "caldera": {
+            "whale": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 4.125,
+              "meanGapSeconds": 27.45230798804238
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.5,
+              "meanGapSeconds": 21.622067624584833
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 20.650529414353716
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.7083333333333335,
+              "meanGapSeconds": 22.88558429978491
+            },
+            "grok": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 2.875,
+              "meanGapSeconds": 17.946554897323132
+            },
+            "glm": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.3333333333333335,
+              "meanGapSeconds": 18.734511331583402
+            }
+          },
+          "garden": {
+            "whale": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 4,
+              "meanGapSeconds": 7.130943778910988
+            },
+            "gemini": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.375,
+              "meanGapSeconds": 6.145036328635787
+            },
+            "gpt": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.4166666666666665,
+              "meanGapSeconds": 5.518852956559236
+            },
+            "claude": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.06804138174397717,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 6.418581629492764
+            },
+            "grok": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.2916666666666665,
+              "meanGapSeconds": 6.555488256437577
+            },
+            "glm": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 6.615121267004596
+            }
+          },
+          "airfield": {
+            "whale": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 4.125,
+              "meanGapSeconds": 15.074357204804775
+            },
+            "gemini": {
+              "wins": 5,
+              "winRate": 0.20833333333333331,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.4583333333333335,
+              "meanGapSeconds": 9.748985249536652
+            },
+            "gpt": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.5416666666666665,
+              "meanGapSeconds": 11.296120692674348
+            },
+            "claude": {
+              "wins": 3,
+              "winRate": 0.125,
+              "blockStandardError": 0.041666666666666664,
+              "meanRank": 3.7916666666666665,
+              "meanGapSeconds": 12.397167726968247
+            },
+            "grok": {
+              "wins": 4,
+              "winRate": 0.16666666666666666,
+              "blockStandardError": 0.0,
+              "meanRank": 3.375,
+              "meanGapSeconds": 8.50322208700282
+            },
+            "glm": {
+              "wins": 6,
+              "winRate": 0.25,
+              "blockStandardError": 0.04811252243246881,
+              "meanRank": 2.7083333333333335,
+              "meanGapSeconds": 7.585630388915302
+            }
+          }
+        },
+        "perMapMaxima": {
+          "coast": {
+            "winRate": 0.25,
+            "characters": [
+              "whale",
+              "gpt",
+              "claude"
+            ]
+          },
+          "mountain": {
+            "winRate": 0.25,
+            "characters": [
+              "gemini"
+            ]
+          },
+          "town": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "whale",
+              "claude"
+            ]
+          },
+          "quarry": {
+            "winRate": 0.25,
+            "characters": [
+              "whale"
+            ]
+          },
+          "forest": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "gpt",
+              "glm"
+            ]
+          },
+          "workshop": {
+            "winRate": 0.25,
+            "characters": [
+              "gpt"
+            ]
+          },
+          "harvest": {
+            "winRate": 0.25,
+            "characters": [
+              "claude"
+            ]
+          },
+          "desert": {
+            "winRate": 0.29166666666666663,
+            "characters": [
+              "whale"
+            ]
+          },
+          "snow": {
+            "winRate": 0.25,
+            "characters": [
+              "whale",
+              "claude"
+            ]
+          },
+          "caldera": {
+            "winRate": 0.20833333333333331,
+            "characters": [
+              "grok"
+            ]
+          },
+          "garden": {
+            "winRate": 0.25,
+            "characters": [
+              "whale"
+            ]
+          },
+          "airfield": {
+            "winRate": 0.25,
+            "characters": [
+              "glm"
+            ]
+          }
+        },
+        "allMapMaximum": 0.29166666666666663,
+        "aggregateMaxDeviation": 0.048611111111111105,
+        "aggregateRMSE": 0.026595197437676056,
+        "mapRMSE": 0.07081971546656646
+      },
+      "pairedComparison": {
+        "aggregate": {
+          "whale": {
+            "winRateDelta": -0.024305555555555552,
+            "pairedStandardError": 0.024139645387284966
+          },
+          "gemini": {
+            "winRateDelta": -0.013888888888888888,
+            "pairedStandardError": 0.020246360745990625
+          },
+          "gpt": {
+            "winRateDelta": -0.024305555555555556,
+            "pairedStandardError": 0.028137143011905598
+          },
+          "claude": {
+            "winRateDelta": 0.02777777777777778,
+            "pairedStandardError": 0.03013707538493411
+          },
+          "grok": {
+            "winRateDelta": 0.03819444444444444,
+            "pairedStandardError": 0.019743891330129607
+          },
+          "glm": {
+            "winRateDelta": -0.0034722222222222233,
+            "pairedStandardError": 0.02186856901353146
+          }
+        },
+        "maps": {
+          "coast": {
+            "whale": {
+              "winRateDelta": 0.04166666666666667,
+              "pairedStandardError": 0.10485881160098265,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.2191629699730486,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  0
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.19837301190396806,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  4,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.20833333333333331,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "mountain": {
+            "whale": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            }
+          },
+          "town": {
+            "whale": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.08333333333333334,
+              "pairedStandardError": 0.048112522432468816,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "quarry": {
+            "whale": {
+              "winRateDelta": -0.16666666666666666,
+              "pairedStandardError": 0.11785113019775792,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.16666666666666666,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.1075828707279838,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            }
+          },
+          "forest": {
+            "whale": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.1075828707279838,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.10485881160098263,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.07978559231302819,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.125,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.10485881160098263,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.08333333333333334,
+              "pairedStandardError": 0.10758287072798381,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  1
+                ]
+              ]
+            }
+          },
+          "workshop": {
+            "whale": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.1075828707279838,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "harvest": {
+            "whale": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.11785113019775792,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.04166666666666665,
+              "pairedStandardError": 0.14231876063832777,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "desert": {
+            "whale": {
+              "winRateDelta": -0.16666666666666666,
+              "pairedStandardError": 0.11785113019775792,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  0
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  3,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.10485881160098263,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.08333333333333334,
+              "pairedStandardError": 0.14433756729740643,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.16666666666666666,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.10485881160098263,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          },
+          "snow": {
+            "whale": {
+              "winRateDelta": -0.125,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.125,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          },
+          "caldera": {
+            "whale": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.0,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "garden": {
+            "whale": {
+              "winRateDelta": -0.04166666666666665,
+              "pairedStandardError": 0.125,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.07978559231302818,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.08333333333333334,
+              "pairedStandardError": 0.14433756729740643,
+              "blockWinCountPairs": [
+                [
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.09622504486493762,
+              "blockWinCountPairs": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": 0.0,
+              "pairedStandardError": 0.06804138174397717,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          },
+          "airfield": {
+            "whale": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gemini": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "gpt": {
+              "winRateDelta": 0.125,
+              "pairedStandardError": 0.125,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "claude": {
+              "winRateDelta": 0.08333333333333333,
+              "pairedStandardError": 0.04811252243246881,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "grok": {
+              "winRateDelta": -0.041666666666666664,
+              "pairedStandardError": 0.041666666666666664,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            },
+            "glm": {
+              "winRateDelta": -0.08333333333333333,
+              "pairedStandardError": 0.1075828707279838,
+              "blockWinCountPairs": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  2,
+                  1
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "rowsSha256Scope": "decompressed JSONL bytes"
+    }
+  },
+  "commonSourceHashes": true,
+  "commonProfile": true,
+  "sourceHashCount": 148
+}

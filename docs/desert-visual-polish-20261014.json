@@ -1,0 +1,41 @@
+{
+  "map": "desert",
+  "baseline": "b761b518",
+  "before": {
+    "batches": 22,
+    "triangles": 118490,
+    "vertices": 154180
+  },
+  "after": {
+    "batches": 22,
+    "triangles": 121330,
+    "vertices": 157344
+  },
+  "addedTriangles": 2840,
+  "addedVertices": 3164,
+  "addedBatches": 0,
+  "addedComponents": 128,
+  "protectedHashes": {
+    "version": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "trackId": "4bce4784720f82d9acd509e13dfd1182f3d7807db292193a4c1432201e9f136e",
+    "roadSamples": "30f3ad1b3045ec786cdcc08499af1a9d5ee4e5c4a361109c046160690268cab7",
+    "routeRoadSamples": "30f3ad1b3045ec786cdcc08499af1a9d5ee4e5c4a361109c046160690268cab7",
+    "roadFaces": "9dbc9643ed61d274087f5a51368829034883985219aad0b8c4b09c6e468051d3",
+    "roadUndersideFaces": "20a6ad52610b05df37973f4326d6a84ab141445300c4bbb2fb8e149af95b6533",
+    "shoulderFaces": "90e34db87025139f7f39694435e3ed749a7ca5c4c397fd2ed80622587fd76250",
+    "props": "f3b4ef5a055a070e5636bd313d3581191e389b0b82f7dc1798e1b1f6fc989f37",
+    "structures": "e17b392abc9ef936057224e3f9a55d3df05fe895cb6e8afb0356ea0d2725106e",
+    "bounds": "f3a67f34191b22b2ea60d250660439b58dcc63ae651117326dda3e683e8526d3",
+    "cameraObstacles": "206fb9654c4921b3af0958ba0226d7276135cfdcc4ba41afe59f8cc7e6e66bb8",
+    "landmarks": "973899c2a22aba5836a773821b1b2243e137a50c082a72e69341c48bb07cfacf",
+    "foundations": "c4d00a8f3df7094c219fff9a36e3a99788fcbd787d0689db6cbd2488acbdb609",
+    "groundedDetails": "377401e335cab39b131bebeec7b87070e14f16058b39fefa665ade1fac6b9520",
+    "railMembers": "7d689d58ac9ae877ef36aced46480179cf33d9c053e7c69eefa846db07cb591b",
+    "arches": "4091f946ea138d1aadd679e3382db11c4e3402e2f79d229cae03c63ca53cf4d8",
+    "sightlines": "030741cb4af175b8b12a620b544cbd01df6317fbaccddaa5f3caf82b31452dbd",
+    "landforms": "6789ef010c40d0d5eb2f2325a4d0d51b728b0917ba25c065e45edccfd1ac3997",
+    "terrainGrid": "e93fdb7bfd11d9ee75a2294254c5af708b707db373105e532ba8c3c11beaa46e",
+    "enrichmentAssemblies": "9ddb89e88fddd9b3dd865bddc0beb46314b4626f8b43e83c4fdabb136102410f"
+  },
+  "existingMeshPrefixes": "all identical"
+}

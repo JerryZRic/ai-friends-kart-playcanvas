@@ -1,5 +1,6 @@
+import {mountGameSurfaceGuards} from './game-surface-guards';
 import {mountBuildVersion} from './build-version';
-import {mountBrandIntro} from './brand-intro';
+import {mountBrandIntro,readyBrandIntro,failBrandIntro,brandIntroPending} from './brand-intro';
 import {sceneForUrl,type SceneKind} from './scene-routes';
 import {getDocumentMusic,registerSceneNavigator} from './music-ui';
 import menuHtml from '../index.html?raw';
@@ -19,7 +20,8 @@ import raceCss from './race-ui.css?inline';
 type Scene = SceneKind;
 type Handle = {dispose():void};
 const directory=new URL('./',location.href);
-(window as Window & {__releaseColdRecovery?:()=>void}).__releaseColdRecovery?.();
+const coldRecovery=document.getElementById('startup-recovery');
+function releaseColdRecovery(){(window as Window & {__releaseColdRecovery?:()=>void}).__releaseColdRecovery?.();coldRecovery?.remove();}
 const music=getDocumentMusic(document,undefined,!/\/(?:coast|waterpark)\.html$/.test(location.pathname));
 const introOverlay=document.getElementById('brand-intro');
 const sceneRoot=document.createElement('div');sceneRoot.id='app-scene';sceneRoot.style.display='contents';
@@ -27,7 +29,7 @@ sceneRoot.inert=!!introOverlay;
 if(introOverlay)music?.setPresentationReady?.(false);
 // The overlay stays outside scene replacements while real resources load beneath it.
 document.body.append(sceneRoot);
-for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay)node.remove();
+for(const node of [...document.body.childNodes])if(node!==sceneRoot&&node!==introOverlay&&node!==coldRecovery)node.remove();
 mountBuildVersion(document);
 const intro=mountBrandIntro(document,window,()=>{sceneRoot.inert=false;music?.setPresentationReady?.(true);});
 const templates={menu:menuHtml,garage:garageHtml,land:landHtml,water:waterHtml};
@@ -35,6 +37,7 @@ const css={menu:menuCss+uiCss+menuFixedCss+emblemCss+titleCss,garage:uiCss+garag
 const style=document.createElement('style');style.dataset.sceneStyles='true';
 for(const node of document.head.querySelectorAll('link[rel="stylesheet"],style:not([data-brand-intro-style])'))node.remove();
 document.head.append(style);
+const surfaceGuards=mountGameSurfaceGuards(document);
 let active:Handle|undefined,kind:Scene|undefined,version=0,disposed=false;
 const sceneFor=(url:URL)=>sceneForUrl(url,directory);
 
@@ -66,7 +69,6 @@ async function show(url:URL,push:boolean){
  try{
   if(next==='land'||next==='water'){
    await music?.fadeOut(500);if(token!==version||disposed)return;music?.silence();
-   music?.setRaceUrl?.(next==='water'?'./assets/music/dfy_fusion.mp3':'./assets/music/dfy_bgm.mp3');
   }else if(previous!==undefined){music?.setPhase('menu');}
   if(next==='menu'){
    const {mountMenu}=await import('./menu');if(token!==version||disposed)return;mountMarkup(next);active=mountMenu();
@@ -77,7 +79,11 @@ async function show(url:URL,push:boolean){
   }else{
    const {mountWaterRace}=await import('./waterpark-play');if(token!==version||disposed)return;mountMarkup(next);active=mountWaterRace();
   }
- }catch(error){if(token!==version||disposed)return;active?.dispose();active=undefined;console.error('Scene unavailable',error);loading(url,error);}
+  // Each mounted scene now owns its real loader/retry UI. Until then the
+  // original cold-load watchdog stays available even if a lazy import stalls.
+  releaseColdRecovery();
+  if(next!=='menu'&&brandIntroPending(document))requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token===version&&!disposed)readyBrandIntro(document);}));
+ }catch(error){if(token!==version||disposed)return;active?.dispose();active=undefined;console.error('Scene unavailable',error);loading(url,error);releaseColdRecovery();failBrandIntro(document);}
 }
 function navigate(href:string):boolean{const url=new URL(href,location.href);if(!sceneFor(url))return false;void show(url,true);return true;}
 const releaseNavigator=registerSceneNavigator(document,navigate);
@@ -93,7 +99,7 @@ const pop=(event:PopStateEvent)=>{
  event.stopImmediatePropagation();void show(url,false);
 };
 document.addEventListener('click',click);window.addEventListener('popstate',pop);
-function dispose(){if(disposed)return;disposed=true;version++;active?.dispose();active=undefined;releaseNavigator();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
+function dispose(){if(disposed)return;disposed=true;version++;releaseColdRecovery();active?.dispose();active=undefined;releaseNavigator();surfaceGuards.dispose();music?.dispose();intro.dispose();document.removeEventListener('click',click);window.removeEventListener('popstate',pop);}
 window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
 if(import.meta.hot)import.meta.hot.dispose(dispose);
 void show(new URL(location.href),false);

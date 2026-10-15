@@ -1,0 +1,11 @@
+{
+  "summary": "holdout21/official.summary.json",
+  "report": "holdout21/official.report.md",
+  "stage": "holdout",
+  "statisticsStatus": "inconclusive",
+  "certificationStatus": "inconclusive",
+  "races": 9216,
+  "completeBlocks": 1536,
+  "draws": 10000,
+  "warnings": []
+}

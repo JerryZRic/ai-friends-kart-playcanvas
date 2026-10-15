@@ -1,3 +1,4 @@
+import {failBrandIntro} from './brand-intro';
 export interface MenuBootController {
   begin(fallback?: () => void): void;
   stage(step: number, text: string): void;
@@ -31,6 +32,7 @@ export function mountMenuBoot(document: Document): MenuBootController {
     panel.setAttribute('aria-busy', 'false'); status.textContent = message;
     detail.textContent = '请检查网络后重试；若当前设备无法显示 3D，可使用静态背景进入菜单';
     bar.hidden = true; retry.hidden = false; proceed.hidden = !fallback;
+    failBrandIntro(document);
   }
   function begin(next?: () => void) {
     if (disposed) return;

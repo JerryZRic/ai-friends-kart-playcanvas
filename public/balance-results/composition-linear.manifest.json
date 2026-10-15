@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "baseCommit": "33988b49dee01547238c08df4684cce93fae9497",
+  "created": "2026-10-14T07:15:35.840Z",
+  "domain": "land-balance-training-v1",
+  "maps": [
+    "coast",
+    "mountain",
+    "town",
+    "quarry",
+    "forest",
+    "workshop",
+    "harvest",
+    "desert",
+    "snow",
+    "caldera",
+    "garden",
+    "airfield"
+  ],
+  "blocks": 4,
+  "rotations": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "options": {
+    "difficulty": "normal",
+    "equipment": "equal",
+    "items": true,
+    "timeoutSeconds": 600,
+    "identityControl": false
+  },
+  "sourceHashes": {
+    "src/character-profiles.ts": "88facd511fcac28abfd423e61d1c6408a112cafb7c03d8c354e20b8a0341826c",
+    "src/kart-build.ts": "4826b32121888bfedcdefeaf2e0a8ebd319ef6964c0c0aae3f28b3b1c38cf749",
+    "src/land-cpu.ts": "12d28e2b78cddbd48ce5898c3bc059d2f1dc5976fa3520a14500f7613bd8c8b9",
+    "src/land-cpu-simulation.ts": "86ac956a58f1ff929757560bec37afe93ba48074b2f35b2542c2e5451542437c",
+    "src/land-simulation-course.ts": "ed4009d2b754fad83f8b8d3f3e3fcd0e86ef4ec2c6317f5a9923a9c3cae5b5e3",
+    "src/npc-tactics.ts": "7d63d44a115b6b3ee02ec8d359e51a02dcba760295a1edfe55059dac9c603f2d",
+    "src/npc-difficulty.ts": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf",
+    "src/land-routes.ts": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde",
+    "src/land-race-route.ts": "760a0614c8f49c45e293d251e37b6e407ab9b970e6732f174cde13b6e122696d",
+    "src/dynamic-pickups.ts": "50ad37f3abfb1bdf0db9e669b08b23e892574c9806c7cdd5f3b9f046cb71ff04",
+    "src/land-driving.ts": "5295ae3be70e60a7c46690708af7163ba772324c40b7ebe916e3a4dc7f156af1"
+  },
+  "dt": 0.016666666666666666,
+  "laps": 3,
+  "plannedRaces": 288
+}

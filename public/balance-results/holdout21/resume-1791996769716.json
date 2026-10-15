@@ -1,0 +1,13 @@
+{
+  "resumedAt": "2026-10-14T16:52:49.715Z",
+  "reason": "Previous exec session unavailable; saved complete blocks verified before resumption",
+  "states": [
+    {
+      "name": "primary",
+      "initialRaces": 8010,
+      "plannedRaces": 9216
+    }
+  ],
+  "missingBlocks": 201,
+  "sourceVerified": true
+}

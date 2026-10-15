@@ -1,0 +1,39 @@
+{
+  "map": "forest",
+  "baseline": "b761b518",
+  "before": {
+    "batches": 21,
+    "triangles": 108772,
+    "vertices": 138214
+  },
+  "after": {
+    "batches": 21,
+    "triangles": 114308,
+    "vertices": 149208
+  },
+  "addedTriangles": 5536,
+  "addedVertices": 10994,
+  "addedBatches": 0,
+  "addedComponents": 352,
+  "protectedHashes": {
+    "roadSamples": "1b7895977fe7b2089b25fbb5843f6a393525e2a90f97944b7f631dcea37d579b",
+    "routeRoadSamples": "1b7895977fe7b2089b25fbb5843f6a393525e2a90f97944b7f631dcea37d579b",
+    "roadFaces": "a7692af3fbff7e8e367a72eced6c2479dc1338492c0fb325a0d9bb638c651e00",
+    "roadUndersideFaces": "6ef4ae0d266b36b7c2b41e7f5c6cb04582d1c42b20b0809db0a47463f9d5de9e",
+    "foundations": "e976da504d1250e3d28a5f9d501e3132c0679405dc614096d8b3f81a8a5e1fab",
+    "cameraObstacles": "6d7ad8e19e01ba20d2a78e7b5b13026bd4d2a8ee2092b6a1781660f7a1b72583",
+    "props": "d0d6e3655c1075a958c0f1f053b4af1ad6bddad9e739ec683800e4f748fbb74f",
+    "structures": "ad860f81a1a45fc843a8e64762e9b789d89b138d7477b90085e7085c67f826a6",
+    "landmarks": "77aa52c71b2775e3159de3047917715f3b7247f8d3853e792e66936784bdda5b",
+    "trees": "59b06740377f0e9c10997c3a2aa4f0c759a1c8413ce4b1fd396a6bdda14b8657",
+    "groundedDetails": "d88fe2a34948be21f1e658c04f22f28b6a9c67097777127a54864c7d64c501eb",
+    "sightlines": "0cae13dd6660e404f896d2f99eab83b20579eb7728e2459e5ffef303cdc05afe",
+    "trestleMembers": "123d1c407092f87505fdea9af05b5ad0258a99437e664a843a5c7613aa8c2c3a",
+    "dome": "9deb7ef284e08c558a122a3bd6dc0d8e648c4e383601aaabbeebf1e83cea612d",
+    "woodlandBeds": "908edf4ad76cbfe01101ba575ab0acd45b098af449104146bf043d87897fe0e3",
+    "woodlandBanks": "0609b25c8965193de716d90122eaa7d8565e4436024edb3b4e6f0e3cc992f95e",
+    "terrainGrid": "ed0c6f372a61dfaf96c8253d0a3bfd46f8284362f408d0d33224d9cca0732287",
+    "bounds": "c6016642c5333908e5101299510225ee651895a6c6eb6e50fa56bd0306000889"
+  },
+  "existingMeshPrefixes": "all identical"
+}

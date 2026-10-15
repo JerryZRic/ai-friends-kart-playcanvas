@@ -273,7 +273,7 @@ test('obsolete session playback positions are never read or replayed after a col
 test('menu preload buffers only theme without creating a context or starting playback', () => {
   const h = harness(); h.music.dispose();
   const music = createBackgroundMusic({...h.options, preloadTheme: true});
-  assert.equal(h.audios[2].preload, 'auto'); assert.equal(h.audios[3].preload, 'metadata');
+  assert.equal(h.audios[2].preload, 'auto'); assert.equal(h.audios[3].preload, 'none');
   assert.equal(h.audios[2].playCalls, 0); assert.equal(h.context.sources.length, 0);
   music.dispose();
 });

@@ -1,3 +1,4 @@
+import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,7 +31,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = (Object.hasOwn(review.changes, path) || Object.hasOwn(v100Review().changes, path)) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : readFileSync(path);
+    const bytes = (Object.hasOwn(review.changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : readFileSync(path);
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -94,13 +95,13 @@ test('all existing JSON, dev workflow, game bytes, assets, legal files and pinne
   const allOriginalJson = baselinePaths.filter(path => path.endsWith('.json'));
   assert.ok(allOriginalJson.every(path => Object.hasOwn(review.protectedFiles, path)), 'No prior proof, manifest or package JSON may change');
   const nestedJson = allOriginalJson.filter(path => path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort());
   assert.equal(sha(read(CI_BUILD_DEPLOYMENT_REVIEW_PATH)), CI_BUILD_DEPLOYMENT_REVIEW_SHA256, 'Previous CI proof stays byte-for-byte frozen');
   const workflow = read('.github/workflows/pages.yml');
   assert.match(workflow, /- run: npm run build\n/);
   assert.doesNotMatch(workflow, /npm test|test:dist|test-dev-preview|test-targeted/);
   assert.equal(JSON.parse(read('package.json')).scripts.build, 'npm run check && vite build && node scripts/package-source.mjs');
-  const stable = JSON.parse(read('docs/stable-pages-manifest.json'));
+  const stable = JSON.parse(restoreStablePagesV100RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')));
   assert.equal(stable.stableCommit, '16dd2d0540e300de6e85aa816e73ed94d4e796c0');
   assert.equal(stable.files.length, 219); assert.equal(new Set(stable.files.map((row: {path: string}) => row.path)).size, 219);
   assert.equal(stable.files.reduce((sum: number, row: {bytes: number}) => sum + row.bytes, 0), 328819057);

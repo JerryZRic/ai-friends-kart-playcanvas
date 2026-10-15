@@ -40,5 +40,5 @@ export function kartRoadContext(distance: number, speed: number, sample: (distan
 export function stepRaceKartSpeed(speed: number, input: {throttle?: boolean; brake?: boolean; reverse?: boolean; handbrake?: boolean}, dt: number,
  tuning: {maxSpeed:number;multipliers:{acceleration:number}}, boost: number, slow: number, offroad = false) {
  const limit=tuning.maxSpeed*(boost>0?RULES.boostFactor:1)*(slow>0?RULES.slowFactor:1)*(offroad?.58:1);
- return driveSpeed(speed,input,dt*(input.throttle&&!input.reverse&&!input.brake&&speed>=0&&speed<limit?tuning.multipliers.acceleration:1),limit);
+ return driveSpeed(speed,input,dt,limit,tuning.multipliers.acceleration);
 }

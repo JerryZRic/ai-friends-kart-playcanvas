@@ -57,11 +57,13 @@ test('coast uses seeded gameplay, actual loadout templates and no phase speed ha
  assert.match(source,/getNpcPresets\('coast',raceOptions.seed\)/);
  assert.match(source,/advancePickup\(box,dt,raceRng\)/);
  assert.match(source,/\],boxes,LENGTH,raceRng(?:,routes\?\.contact)?\)/);
- assert.match(source,/road=actorTrack\(b.id,b.total\)/);
- assert.match(source,/stepLandSpeed\(road,b.total,b.speed,control,/);
+ const cpuSource=readFileSync(new URL('../src/land-cpu.ts',import.meta.url),'utf8');
+ assert.match(source,/advanceLandCpu\(b,cpuContext,cpuFrame,cpuFeedback\)/);
+ assert.match(cpuSource,/road=actorTrack\(b,c\)/);
+ assert.match(cpuSource,/stepLandSpeed\(road,b.total,b.speed,control,/);
  assert.match(source,/const actorTrack=.*routes\.view\(id,total\):course.track;/);
  assert.match(readFileSync(new URL('../src/land-driving.ts',import.meta.url),'utf8'),/stepRaceKartSpeed\(launchSpeed,input,dt,tuning,boost,slow,offroad\)/);
- assert.doesNotMatch(source,/maxSpeed\*\(\.9\+b.phase/);
+ assert.doesNotMatch(source+cpuSource,/maxSpeed\*\(\.9\+b.phase/);
  assert.doesNotMatch(source,/mat\.emissive\.set/,'shared template materials stay immutable');
  const a=seededRandom(42),b=seededRandom(42),c=seededRandom(43);
  const aa=Array.from({length:30},a);assert.deepEqual(aa,Array.from({length:30},b));assert.notDeepEqual(aa,Array.from({length:30},c));

@@ -1,3 +1,4 @@
+import {clearInventory,inventoryFull,type ItemSlot} from './item-inventory';
 /** Deterministic fixed-step race rules. Rendering, wall time and loading cannot advance a race. */
 import { parseRaceOptions, type RaceOptions } from './race-options';
 import { npcSkill, npcDriving } from './npc-difficulty';
@@ -5,11 +6,11 @@ import { raceOrder } from './driver-roster.js';
 import { characterTuning } from './character-profiles';
 import { newWaterState, stepWaterMotion, WATER_HANDLING, type WaterInput, type WaterState } from './waterpark-motion';
 import { WATER_RACE_LENGTH, waterparkCurvature, sampleWaterparkLoop } from './waterpark-design';
-import { activateItem, collectPickups, chooseItem, newBrain, planLane, nearbyGap, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
+import { activateItem, collectPickups, chooseItemSlot, newBrain, planLane, nearbyGap, RULES, tickBrain, tickEffects, type Brain, type Combatant, type RacingPickup } from './npc-tactics';
 import { advancePickup, resetPickup } from './item-pickups';
 import { createDynamicPickupDirector } from './dynamic-pickups';
 export const WATER_LAPS=3, WATER_CHECKPOINTS=8, WATER_COUNTDOWN=3;
-export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number;driftCooldown:number;aiBend:number};
+export type WaterRacer=Combatant & Brain & {motion:WaterState;checkpoint:number;finishTime:number|null;phase:number;warning:number;warningSlot?:ItemSlot;driftCooldown:number;aiBend:number};
 export type WaterRace={racers:WaterRacer[];countdown:number;elapsed:number;finished:boolean;remainder:number;seed:number;options:RaceOptions;announcements:string[]};
 /** Actual signed travel speed shared by movement, HUD, wake and rider animation.
  * Item and slide boosts use one multiplier, and neither accelerates reverse. */
@@ -19,8 +20,10 @@ export function waterTravelSpeed(racer:WaterRacer){
  const speed=Math.max(-Math.min(11,max*WATER_HANDLING.reverseRatio),Math.min(max,racer.speed));
  return speed*(speed>0&&(racer.boost>0||racer.motion.slideBoost>0)?RULES.boostFactor:1)*(racer.slow>0?RULES.slowFactor:1);
 }
-export function newWaterRace(selected:string, options: RaceOptions = parseRaceOptions('')):WaterRace {
- return {racers:raceOrder(selected).map((d,i)=>({...newBrain(i,(i%3-1)*4),id:d.id,total:-5*Math.floor(i/3)||0,lateral:(i%3-1)*4,speed:0,held:null,boost:0,shield:0,slow:0,motion:{...newWaterState(),distance:-5*Math.floor(i/3)||0,lane:(i%3-1)*4},checkpoint:0,finishTime:null,phase:i,warning:0,driftCooldown:0,aiBend:0})),countdown:WATER_COUNTDOWN,elapsed:0,finished:false,remainder:0,seed:options.seed,options:{...options},announcements:[]};
+/** Explicit capacity keeps old replay fixtures single-slot; both browser player
+ * and five opponents enter the dual-slot prototype together with capacity 2. */
+export function newWaterRace(selected:string, options: RaceOptions = parseRaceOptions(''),itemCapacity:1|2=1):WaterRace {
+ return {racers:raceOrder(selected).map((d,i)=>({...newBrain(i,(i%3-1)*4),id:d.id,total:-5*Math.floor(i/3)||0,lateral:(i%3-1)*4,speed:0,held:null,...(itemCapacity===2?{heldSecond:null}:{}),boost:0,shield:0,slow:0,motion:{...newWaterState(),distance:-5*Math.floor(i/3)||0,lane:(i%3-1)*4},checkpoint:0,finishTime:null,phase:i,warning:0,driftCooldown:0,aiBend:0})),countdown:WATER_COUNTDOWN,elapsed:0,finished:false,remainder:0,seed:options.seed,options:{...options},announcements:[]};
 }
 export function raceRandom(r:WaterRace){r.seed=(Math.imul(r.seed,1664525)+1013904223)>>>0;return r.seed/4294967296;}
 /** Sequential forward gates, never lap-count from modulo distance. Reverse and
@@ -31,9 +34,9 @@ export function advanceWaterCheckpoints(r:Pick<WaterRacer,'checkpoint'>,previous
  while(r.checkpoint<WATER_LAPS*WATER_CHECKPOINTS){const gate=(r.checkpoint+1)*gap;if(previous>gate+1e-7||total<gate)break;r.checkpoint++;}
 }
 export function waterStandings(race:WaterRace){return [...race.racers].sort((a,b)=>a.finishTime!==null&&b.finishTime!==null?a.finishTime-b.finishTime||a.id.localeCompare(b.id):a.finishTime!==null?-1:b.finishTime!==null?1:b.total-a.total||a.id.localeCompare(b.id));}
-export function useWaterItem(race:WaterRace,racer:WaterRacer){
+export function useWaterItem(race:WaterRace,racer:WaterRacer,slot:ItemSlot=0){
  if(racer.finishTime!==null||race.countdown>0||race.finished)return;
- const result=activateItem(racer,race.racers.filter(r=>r.finishTime===null),WATER_RACE_LENGTH);
+ const result=activateItem(racer,race.racers.filter(r=>r.finishTime===null),WATER_RACE_LENGTH,undefined,slot);
  if(result){racer.uses++;racer.cooldown=RULES.cooldown;racer.pulseFlash=result.item==='pulse'?.8:0;race.announcements.push(`${racer.id} 使用${result.item==='boost'?'加速':result.item==='shield'?'护盾':'脉冲'}${result.target?` → ${result.target.id}${result.blocked?'（护盾抵挡）':''}`:''}`);if(race.announcements.length>4)race.announcements.shift();}
  return result;
 }
@@ -79,8 +82,8 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
    const drift=decision.drift&&racer.driftCooldown===0&&Math.abs(steer)>.03;
    if(racer.motion.drifting&&!drift)racer.driftCooldown=2;
    control={throttle:decision.throttle,brake:decision.brake,steer,drift};
-   if(wasWarning>0&&racer.warning===0){useWaterItem(race,racer);racer.warning=0;}
-   else if(racer.warning===0&&chooseItem(racer,active,WATER_RACE_LENGTH,bend,skill))racer.warning=.5;
+   if(wasWarning>0&&racer.warning===0){useWaterItem(race,racer,racer.warningSlot??0);racer.warning=0;racer.warningSlot=undefined;}
+   else if(racer.warning===0){const slot=chooseItemSlot(racer,active,WATER_RACE_LENGTH,bend,skill);if(slot!==null){racer.warning=.5;racer.warningSlot=slot;}}
   }
   const old=racer.total;
   const next=stepWaterMotion(racer.motion,control,dt,{...tuning,finishDistance:Infinity,curvature});
@@ -106,13 +109,13 @@ function tick(race:WaterRace,input:WaterInput,dt:number,boxes:readonly RacingPic
  if(race.finished){race.elapsed=player.finishTime!;clearWaterDynamicPickups(race);for(const racer of race.racers)stopWaterRacer(racer);}
  else dynamicDirectors.get(race)?.tick({dt,active:true,staticBoxes:boxes.filter(b=>!b.dynamic),racers:race.racers.map(r=>{
   const tuning=characterTuning(r.id,'waterpark');
-  return {id:r.id,total:r.total,lateral:r.lateral,travelSpeed:waterTravelSpeed(r),reactionSpeed:Math.abs(Math.min(tuning.maxSpeed,r.speed))*(r.speed>0?RULES.boostFactor:1),finishDistance:WATER_RACE_LENGTH*WATER_LAPS,maxSpeed:tuning.maxSpeed*RULES.boostFactor,acceleration:tuning.acceleration*RULES.boostFactor,held:r.held,finished:r.finishTime!==null};
+  return {id:r.id,total:r.total,lateral:r.lateral,travelSpeed:waterTravelSpeed(r),reactionSpeed:Math.abs(Math.min(tuning.maxSpeed,r.speed))*(r.speed>0?RULES.boostFactor:1),finishDistance:WATER_RACE_LENGTH*WATER_LAPS,maxSpeed:tuning.maxSpeed*RULES.boostFactor,acceleration:tuning.acceleration*RULES.boostFactor,held:inventoryFull(r)?r.held:null,finished:r.finishTime!==null};
  })});
 }
 /** End active feedback too, while retaining each rider's actual finish status. */
 function stopWaterRacer(racer:WaterRacer){
  racer.speed=racer.motion.speed=racer.motion.lateralSpeed=racer.motion.charge=racer.motion.slideBoost=0;
- racer.motion.drifting=false;racer.held=null;racer.boost=racer.shield=racer.slow=racer.warning=0;
+ racer.motion.drifting=false;clearInventory(racer);racer.warningSlot=undefined;racer.boost=racer.shield=racer.slow=racer.warning=0;
  racer.bump=racer.reaction=racer.cooldown=racer.decisionIn=racer.pulseFlash=0;
 }
 /** Accumulate ordinary deltas at 120Hz. The browser frame clock bounds long

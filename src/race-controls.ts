@@ -8,7 +8,8 @@ export type RaceControlsOptions = {
   state: () => RaceControlState;
   /** Toggle active/paused. Escape and interruption call this only while active. */
   pause: () => void;
-  useItem: () => void;
+  /** Fixed item slots: E / primary is 0, R / secondary is 1. */
+  useItem: (slot?: 0 | 1) => void;
   switchCamera: () => void;
   /** Feedback only: Q has already recentered the shared orbit. */
   recenter: () => void;
@@ -22,7 +23,7 @@ export type RaceControlsOptions = {
   signal?: AbortSignal;
 };
 
-const handledCodes = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyZ', 'KeyC', 'KeyP', 'KeyQ', 'Escape']);
+const handledCodes = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyR', 'KeyZ', 'KeyC', 'KeyP', 'KeyQ', 'Escape']);
 
 /** Keep text entry and native button/link activation working during a race. */
 export function isNativeRaceKey(target: EventTarget | null, code: string, state: RaceControlState) {
@@ -42,6 +43,9 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   const keys: Record<string, boolean> = {};
   const orbit = options.orbit ?? createOrbit();
   const keyboard = new Set<string>(), pointers = new Map<number, {code: string; target: HTMLElement}>();
+  // Unlike driving state, physical item holds survive clear/pause/blur. A held
+  // item key must be released before it can produce another press edge.
+  const itemKeysDown = new Set<string>();
   const removeListeners: Array<() => void> = [];
   const buttons = [...(options.buttons ?? doc.querySelectorAll<HTMLButtonElement>('[data-key]'))];
   let rearMouse = false, disposed = false;
@@ -75,10 +79,16 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   }
   on(win, 'keydown', (event: KeyboardEvent) => {
     const code = keyCode(event), state = options.state();
-    if (disposed || isNativeRaceKey(event.target, code, state)) return;
+    if (disposed) return;
+    const itemSlot = code === 'KeyE' ? 0 : code === 'KeyR' ? 1 : null;
+    const itemEdge = itemSlot !== null && !itemKeysDown.has(code);
+    // Track rejected/native presses too, so focusing the track or resuming a
+    // race cannot turn an already-held key into a fresh item use.
+    if (itemSlot !== null) itemKeysDown.add(code);
+    if (isNativeRaceKey(event.target, code, state)) return;
     if (handledCodes.has(code)) event.preventDefault();
     if (!event.repeat) {
-      if (code === 'KeyE') options.useItem();
+      if (itemSlot !== null && itemEdge && active()) options.useItem(itemSlot);
       if (code === 'KeyP' && (state === 'active' || state === 'paused')) {
         if (state === 'active') { clear(); mouseLook.release(); }
         options.pause();
@@ -92,6 +102,7 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   });
   on(win, 'keyup', (event: KeyboardEvent) => {
     const code = keyCode(event);
+    itemKeysDown.delete(code);
     if (!isNativeRaceKey(event.target, code, options.state()) && handledCodes.has(code)) event.preventDefault();
     // A key released over a newly focused control must still clear its source.
     keyboard.delete(code); sync(code);
@@ -126,10 +137,11 @@ export function bindRaceControls(canvas: HTMLCanvasElement, options: RaceControl
   for (const button of doc.querySelectorAll<HTMLButtonElement>('[data-mobile-action]')) {
     on(button, 'click', () => {
       const action = button.dataset.mobileAction;
-      if (!active()) return;
+      if (!active() || button.disabled) return;
       if (action === 'recenter') { orbit.recenter(); options.recenter(); }
       if (action === 'camera') options.switchCamera();
-      if (action === 'item') options.useItem();
+      if (action === 'item') options.useItem(0);
+      if (action === 'item-secondary') options.useItem(1);
       if (action === 'pause') { clear(); mouseLook.release(); options.pause(); }
     });
   }

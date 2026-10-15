@@ -8,15 +8,15 @@
 
 An arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**, with 12 land courses and one water course. Choose from six rigged character drivers and race against the other five, with drift boosts, items and freely orbiting chase cameras.
 
-**[Play the stable browser version](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Try the dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / Windows downloads](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
+**[Play the main browser version](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [Try the dev preview](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [HTML prerelease / historical Windows downloads](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets (excluding music) use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
-## v0.4.0 release
+## v1.0.2a prerelease
 
-This README describes the unified **v0.4.0** release line: 13 maps, six drivers, and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. The stable browser version and downloadable packages share this feature set; `/dev/` remains a separate preview for subsequent updates. See the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) for published assets, source revision, checksums and version-specific verification notes.
+**v1.0.2a is a prerelease for testing, distributed only as a standalone Web / HTML static-deployment ZIP. No new Windows package is included.** It retains 13 maps, six drivers and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. Published assets, source revision, checksums and verification notes are listed on the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases). The site root is the main publication; `/dev/` is the separate development preview.
 
-Free mode includes a cinematic 3D title screen, rotating map previews, selected-character 3D inspection, car selection, easy/normal/hard race setup and settings. Story mode remains a development notice. [Implementation notes and limits](docs/free-mode.md).
+Free mode includes a randomly selected animated cover featuring one of six characters, rotating map previews, selected-character 3D inspection, car selection, easy/normal/hard race setup and settings. The cover uses custom PlayCanvas 2D mesh animation, not Cubism: WHALE (大肥鱼) has a 35% selection chance and the other five share 65% equally. Story mode remains a development notice. [Implementation notes and limits](docs/free-mode.md).
 
 ### Map catalog
 
@@ -63,13 +63,14 @@ The catalog lists land courses **01–12**, followed by water course **A01**. Di
 
 ## Modular food garage
 
-Open the [stable garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html) or [dev garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html). Six independent assembly slots offer **55 food themes / 330 parts**, including 000 pure white rice, separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing only previews; applying replaces all six parts, with optional save-before-replace and undo. Selected mixed builds run on all 12 land courses; the six character attributes and water mounts remain intact. NPCs use authored mixed cars with the same part formulas. There is no same-theme bonus. Battery discharge, wear, repair and economy systems are not active. [Implementation and verification limits](docs/modular-garage.md).
+Open the [main garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html) or [dev garage](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html). Six independent assembly slots offer **55 food themes / 330 parts**, including 000 pure white rice, separate whole-car/free-customization views, real 3D previews, comparisons and saved builds. Whole-car browsing only previews; applying replaces all six parts, with optional save-before-replace and undo. Selected mixed builds run on all 12 land courses; the six character attributes and water mounts remain intact. NPCs use authored mixed cars with the same part formulas. There is no same-theme bonus. Battery discharge, wear, repair and economy systems are not active. [Implementation and verification limits](docs/modular-garage.md).
 
 ## Features
 
 - **Six selectable drivers:** WHALE, GEMINI, GPT, CLAUDE, GROK and GLM, with bundled rigged character models
 - **Three-lap races** against five AI opponents across the land and water catalog, with collisions, lap/rank tracking and a minimap
 - **Arcade driving:** manual throttle, braking, reverse, handbrake drift and drift boost
+- **Two fixed item slots:** pickups fill `E` first, then `R`; using one slot does not move the other item. Full inventory leaves the box unconsumed. NPCs have the same two-item capacity, and mobile controls have separate buttons for both slots.
 - **Three items:** turbo boost, energy shield and tracking pulse
 - **Visible pickups:** translucent boxes show original 3D items; 25% show a mystery question mark. Pickups vanish immediately and respawn after eight racing seconds. The HUD displays a shaded projection of the same 3D model. [Details](docs/item-pickups.md)
 - **Tactical NPCs:** rivals collect real boxes, steer toward safe pickups, and choose when to boost, defend or pulse another kart. Held 3D items and use effects show their intentions. [Rules](docs/npc-tactics.md)
@@ -87,22 +88,13 @@ No ChatGPT login, model-service account or runtime CDN is required. The game and
 
 ## Web / HTML package
 
-Choose `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip` from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify it against the accompanying SHA-256 checksums. Extract the full archive and serve the included game files over HTTP(S); opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together.
+Choose the [`ai-friends-kart-playcanvas-v1.0.2a-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/ai-friends-kart-playcanvas-v1.0.2a-html.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify its accompanying SHA-256 checksum. Extract the complete archive and serve it through nginx or another HTTP(S) static server. Opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together. Check the release verification notes for root/subdirectory deployment results; relative-path support is not a substitute for testing the published archive.
 
-## Windows package
+The main GitHub Pages site serves runtime files; download its corresponding source as [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/source.zip) from the [v1.0.2a prerelease](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.2a). The complete HTML ZIP still includes `source.zip` and all runtime assets. Historical offline balance reports and data remain under `/dev/`. v1.0.2a is tagged from the final merged `main` commit, not published directly from `dev`.
 
-**Windows 10/11, 64-bit, with a WebGL2-capable GPU.** Use the v0.4.0 package and its release notes. Packaging and automated checks do not establish real Windows GPU, performance or input-device compatibility.
+## Historical Windows package (v1.0.0)
 
-1. From the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases), download `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip` and verify it against the accompanying SHA-256 checksums.
-2. Extract the **entire ZIP** into a folder.
-3. Run **AI Friends Kart.exe**. Keep the adjacent DLLs, `resources` and `locales` folders together.
-4. Press **F11** to toggle fullscreen.
-
-The main-menu **Exit** button closes the Windows application. Returning from a race to the main menu stays within the game. In a browser, **Exit** opens the resting page; close the tab to leave. The desktop quit fix is retained; this release does not claim a new native Windows GPU playtest.
-
-All six characters are bundled for offline play. Node.js, installation and administrator privileges are not required. Do not disable Windows security protections to run the game.
-
-The archive includes `Game-Corresponding-Source.zip`, `Desktop-Source` with the desktop wrapper/build instructions, and license notices. Desktop packaging is supplied in that release; this repository's npm scripts build the web game.
+**v1.0.2a does not include a Windows build.** The [v1.0.0 release](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.0) remains the historical Windows download and does not include the new prerelease features. Follow that release’s filenames, checksums and instructions. It requires 64-bit Windows 10/11 and a WebGL2-capable GPU. Extract the entire ZIP, keep the DLLs, `resources` and `locales` folders together, and run **AI Friends Kart.exe**; **F11** toggles fullscreen. Do not disable Windows security protections. Packaging or automated checks do not establish native Windows GPU, performance or input compatibility.
 
 ## Controls
 
@@ -113,7 +105,7 @@ The archive includes `Game-Corresponding-Source.zip`, `Desktop-Source` with the 
 | `S` / `↓` | Brake, then reverse while held |
 | `Space` | Brake without reversing |
 | `Left Shift` + steering | Drift; release Shift for a charged drift boost |
-| `E` | Use the collected item |
+| `E` / `R` | Use the item in the corresponding fixed slot |
 | `Z` / `C` | Switch chase camera |
 | Hold right mouse button | Temporary rear view |
 | Click the track, then move the mouse | Orbit the camera |
@@ -121,7 +113,7 @@ The archive includes `Game-Corresponding-Source.zip`, `Desktop-Source` with the 
 | `Esc` | Pause and release the pointer |
 | `P` / pause button | Pause/resume |
 
-If pointer capture is unavailable, hold the left mouse button and drag to look around. Touch buttons provide throttle, steering, reverse, brake and drift; tap the item panel to use an item. Menu buttons support native keyboard operation.
+If pointer capture is unavailable, hold the left mouse button and drag to look around. Touch buttons provide throttle, steering, reverse, brake and drift, with separate `E` and `R` item buttons. Menu buttons support native keyboard operation. The mobile game area suppresses accidental text selection, image dragging, context menus and interfering gestures while preserving input fields and scrolling where needed. OS accessibility zoom cannot be guaranteed to be blocked. These changes have not been verified on physical phones.
 
 ## Development and build
 
@@ -144,9 +136,9 @@ npm run test:dist
 npm run preview
 ```
 
-Serve the complete **`dist/`** over HTTP(S); do not open `index.html` as `file://`. Relative paths support both a domain root and a repository subdirectory. Keep the license notices, `source.html` and `source.zip` alongside the game.
+Serve the complete **`dist/`** over HTTP(S); do not open `index.html` as `file://`. Relative-path deployment at a domain root or subdirectory must be checked against the actual release archive and its verification notes. Keep the license notices, `source.html` and `source.zip` alongside the game.
 
-A full clone includes six driving-model archives in `public/assets/drivers/` and six separate standing-portrait archives in `public/assets/portraits/`. The smaller deployed `source.zip` includes code, tests, both checksum manifests, build files and original editable assets but omits both sets of character archives. To restore them after extracting that source package:
+A full clone includes six driving-model archives in `public/assets/drivers/` and six separate standing-portrait archives in `public/assets/portraits/`. The smaller release `source.zip` includes code, tests, both checksum manifests, build files and original editable assets but omits both sets of character archives. To restore them after extracting that source package:
 
 ```sh
 npm ci
@@ -162,7 +154,9 @@ The fetch script uses fixed public paths under this isolated `/dev/` preview and
 
 ### GitHub Pages
 
-The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) checks, tests and builds the selected source before publication. The stable site is at the root URL and the independent preview is under `/dev/`. Follow the checked-out branch’s workflow triggers and publication options; a dev deployment must preserve the stable root. Release packages must use the same tagged source as the release they describe.
+Development builds append the first six characters of their actual commit hash to the version. Release tags are created from `main`; release packages must use that tagged source. A dev deployment must preserve the main site root.
+
+The [Build and publish PlayCanvas game workflow](.github/workflows/pages.yml) checks, tests and builds the selected source before publication. The main site is at the root URL and the independent preview is under `/dev/`. Follow the checked-out branch’s workflow triggers and publication options; a dev deployment must preserve the main root. Release packages must use the same tagged source as the release they describe.
 
 ### Project layout
 
@@ -180,6 +174,8 @@ Select a driver slot and import a compatible GLB, or multi-select filenames cont
 See [the rig and import contract](docs/local-import.md) for accepted models and validation rules.
 
 ## Verification
+
+Historical CPU candidate 21 results apply only to the single-slot baseline. They do not certify balance or fairness for the new dual-slot gameplay. Physical-phone QA has not been performed.
 
 Automated checks cover engine-independent race/input logic, real PlayCanvas CPU/null-device rig loading, mocked UI integration and static distribution checks. They do not establish GPU appearance, native pointer-lock behavior or performance. See [test coverage and limits](docs/MIGRATION-PARITY.md) and [the ocean shader regression notes](docs/WATER-REGRESSION.md).
 

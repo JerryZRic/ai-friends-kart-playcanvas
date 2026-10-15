@@ -16,6 +16,7 @@ export interface QuarrySceneGeometry extends LandSceneGeometry {
   extractionFootprints:{site:number;footprint:number[][];bottom:number;top:number}[];
   terrainGrid:{minX:number;minZ:number;dx:number;dz:number;columns:number;rows:number};
   trestleMembers:{kind:string;points:number[][];minimumRoadClearance:number}[];
+  polishDetails:{kind:string;batch:string;vertexStart:number;vertexEnd:number;triangles:number}[];
 }
 export const QUARRY_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({
   textureLabel:'redstrata quarry',ambient:'#b9a183',sky:'#e5caa0',fogStart:700,fogEnd:1400,
@@ -35,29 +36,31 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   const haul=new Batch('Quarry compacted haul road','#897963',.98,'asphalt');
   const shelf=new Batch('Quarry sawn pale shelf road','#dcc197',.97,'stone');
   const soffit=new Batch('Quarry deck underside and shadow cut','#594536',1,'stone');
-  const sandstone=new Batch('Quarry amber sandstone cut faces','#bb7848',1,'none');
-  const strata=new Batch('Quarry red oxide horizontal strata','#a65837',1,'stone');
-  const ground=new Batch('Quarry continuous dry working floor','#927c60',1,'none');
-  const timber=new Batch('Quarry dark structural timber','#4a3427',.98,'wood');
-  const sunWood=new Batch('Quarry sunlit timber edges','#96704b',.96,'wood');
-  const iron=new Batch('Quarry dark iron plates and bolts','#45413a',.64,'none',.45);
-  const belt=new Batch('Quarry charcoal conveyor belts','#302d27',.95,'none');
-  const ochre=new Batch('Quarry ochre route boards','#d6a747',.9,'wood');
+  const sandstone=new Batch('Quarry amber sandstone cut faces','#d4b88d',1,'none');
+  const strata=new Batch('Quarry red oxide horizontal strata','#b39471',1,'stone');
+  const ground=new Batch('Quarry continuous dry working floor','#baab91',1,'none');
+  const timber=new Batch('Quarry dark structural timber','#6e766e',.98,'wood');
+  const sunWood=new Batch('Quarry sunlit timber edges','#b3a68a',.96,'wood');
+  const iron=new Batch('Quarry dark iron plates and bolts','#5b788a',.64,'none',.45);
+  const belt=new Batch('Quarry charcoal conveyor belts','#434d53',.95,'none');
+  const ochre=new Batch('Quarry ochre route boards','#dcb854',.9,'wood');
   const ivory=new Batch('Quarry ivory wayfinding and race marks','#f0dfb6',.88);
-  const dust=new Batch('Quarry dry cut chips and dust facets','#c39d6f',1,'stone');
-  const pale=new Batch('Quarry freshly sawn sandstone edges','#d6b98c',1,'stone');
-  const darkStrata=new Batch('Quarry deep fractured oxide seams','#783f2c',1,'stone');
-  const greyWood=new Batch('Quarry silvered cassette sleepers','#82725e',1,'wood');
-  const rust=new Batch('Quarry weathered iron wheel rims','#926044',.83,'none',.32);
-  const footing=new Batch('Quarry solid footing foundations','#866143',1,'stone');
-  const orange=new Batch('Quarry kiln orange safety panels','#d6772f',.84);
-  const shadowDust=new Batch('Quarry crushed red gravel facets','#8f6745',1,'stone');
+  const dust=new Batch('Quarry dry cut chips and dust facets','#cdb999',1,'stone');
+  const pale=new Batch('Quarry freshly sawn sandstone edges','#e3ceaa',1,'stone');
+  const darkStrata=new Batch('Quarry deep fractured oxide seams','#877964',1,'stone');
+  const greyWood=new Batch('Quarry silvered cassette sleepers','#a5aaa1',1,'wood');
+  const rust=new Batch('Quarry weathered iron wheel rims','#8d9aa2',.83,'none',.32);
+  const footing=new Batch('Quarry solid footing foundations','#b09c80',1,'stone');
+  const orange=new Batch('Quarry kiln orange safety panels','#e4b54c',.84);
+  const shadowDust=new Batch('Quarry crushed red gravel facets','#a89c86',1,'stone');
   const batches=[haul,shelf,soffit,sandstone,strata,ground,timber,sunWood,iron,belt,ochre,ivory,dust,pale,darkStrata,greyWood,rust,footing,orange,shadowDust];
   const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
   const props:LandPropPlacement[]=[],roadSamples:QuarrySceneGeometry['roadSamples']=[],routeRoadSamples:QuarrySceneGeometry['routeRoadSamples']=[];
   const roadFaces:QuarrySceneGeometry['roadFaces']=[],roadUndersideFaces:QuarrySceneGeometry['roadUndersideFaces']=[],foundations:QuarrySceneGeometry['foundations']=[];
   const cameraObstacles:QuarrySceneGeometry['cameraObstacles']=[],landmarks:QuarrySceneGeometry['landmarks']=[],trestleMembers:QuarrySceneGeometry['trestleMembers']=[],structures:QuarrySceneGeometry['structures']=[];
   const extractionFootprints:QuarrySceneGeometry['extractionFootprints']=[],extractionTerraces:QuarrySceneGeometry['extractionTerraces']=[];
+  const polishDetails:QuarrySceneGeometry['polishDetails']=[];
+  const polishRecord=(kind:string,b:Batch,start:number,indexStart:number)=>{if(kind.startsWith('polish-quarry-'))polishDetails.push({kind,batch:b.name,vertexStart:start/3,vertexEnd:b.positions.length/3,triangles:(b.indices.length-indexStart)/3});};
   const sourceFaces=sampleRoadFootprints(edges),roadIndex=new RoadFootprintIndex(sourceFaces);
   const support=edges.flatMap(edge=>Array.from({length:Math.ceil(edge.length/2)+1},(_,i)=>{
     const s=edge.length*i/Math.ceil(edge.length/2),f=edge.sample(s),half=edge.halfWidthAt(s);
@@ -93,16 +96,16 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     if(min.every((n,i)=>n<max[i]))cameraObstacles.push({kind,min,max});
   };
   const box=(kind:string,batch:Batch,p:pc.Vec3,size:pc.Vec3,yaw=0,obstacle=true)=>{
-    const start=batch.positions.length;batch.box(p,size,yaw);if(obstacle)bound(kind,batch,start);
+    const start=batch.positions.length,indexStart=batch.indices.length;batch.box(p,size,yaw);if(obstacle)bound(kind,batch,start);polishRecord(kind,batch,start,indexStart);
   };
   // Proper three-dimensional rectangular beams, including inclined conveyors
   // and braces. Camera bounds come from their actual generated vertices.
   const beam=(kind:string,batch:Batch,a:pc.Vec3,b:pc.Vec3,width:number,depth=width,obstacle=true)=>{
     const y=b.clone().sub(a).normalize(),x=new pc.Vec3().cross(y,vec(0,1,0));if(x.length()<.01)x.set(1,0,0);else x.normalize();
     const z=new pc.Vec3().cross(x,y).normalize(),at=(p:pc.Vec3,i:number,j:number)=>p.clone().add(x.clone().mulScalar(i*width/2)).add(z.clone().mulScalar(j*depth/2));
-    const v=[at(a,-1,-1),at(a,1,-1),at(b,-1,-1),at(b,1,-1),at(a,-1,1),at(a,1,1),at(b,-1,1),at(b,1,1)],start=batch.positions.length;
+    const v=[at(a,-1,-1),at(a,1,-1),at(b,-1,-1),at(b,1,-1),at(a,-1,1),at(a,1,1),at(b,-1,1),at(b,1,1)],start=batch.positions.length,indexStart=batch.indices.length;
     for(const f of [[0,1,2,3],[5,4,7,6],[4,0,6,2],[1,5,3,7],[2,3,6,7],[4,5,0,1]])batch.quad(v[f[0]],v[f[1]],v[f[2]],v[f[3]]);
-    if(obstacle)bound(kind,batch,start);return v;
+    if(obstacle)bound(kind,batch,start);polishRecord(kind,batch,start,indexStart);return v;
   };
   const solid=(kind:string,batch:Batch,polygon:pc.Vec3[],bottom:number,top:number,obstacle=true,profile?:{top:pc.Vec3[];shift:(p:pc.Vec3)=>number;bottomFlat?:boolean})=>{
     const start=batch.positions.length,indexStart=batch.indices.length,upper=profile?.top??polygon,shift=profile?.shift??(()=>0);
@@ -342,6 +345,18 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
       for(let i=0;i<14;i++){const x=(i%5-2)*2.4,z=(Math.floor(i/5)-1)*2.3;put('hopper-stone-load',i%3?pale:sandstone,x,13.7+noise(i)*.45,z,1.8,.8,1.7);}
       for(let i=0;i<15;i++)put('hopper-service-ladder',iron,9.6,i*.82+.5,0,.2,.16,1.4);
       strut('hopper-ladder-rail',iron,[9.6,0,-.8],[9.6,12.2,-.8],.13);strut('hopper-ladder-rail',iron,[9.6,0,.8],[9.6,12.2,.8],.13);
+      // A segmented ground-level drive/control group makes the hopper read as
+      // working equipment. Everything bears on the unchanged industrial pad.
+      put('polish-quarry-hopper-drive-foot',footing,-9.1,.16,2.8,2.8,.32,4.2);
+      put('polish-quarry-hopper-drive-body',iron,-9.1,1.0,2.8,2.0,1.38,3.1);
+      for(const z of [1.65,2.25,2.85,3.45,3.95])put('polish-quarry-drive-cooling-fin',rust,-9.1,1.10,z,2.16,1.2,.12);
+      put('polish-quarry-drive-yellow-end-guard',orange,-9.1,1.05,4.45,2.22,1.44,.24);
+      put('polish-quarry-control-pedestal',iron,5.9,.90,-8.5,1.65,1.8,1.25);
+      put('polish-quarry-control-inset-panel',belt,5.9,1.25,-9.13,1.33,.82,.06);
+      for(const x of [5.55,6.25])put('polish-quarry-control-switch',orange,x,1.3,-9.18,.16,.20,.12);
+      for(const y of [.35,.61])put('polish-quarry-cabinet-vent',rust,5.9,y,-9.15,1.2,.09,.09);
+      for(const x of [-5.8,5.8])put('polish-quarry-hopper-rim-corner-plate',iron,x,14.94,-5.8,1.8,.22,.83);
+
     }else if(plot.kind==='stepped-cut-face'){
       const heights=[8.4,16.2,24],widths=[37,29,19],depths=[20,13,7];
       for(let step=0;step<3;step++){
@@ -402,6 +417,21 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
       put('conveyor-transfer-housing',orange,0,13.4,12.5,5.5,2.2,3.8);
       strut('conveyor-transfer-chute',rust,[-4.6,13.7,12],[4.6,11.4,9],2.5,.36);
       put('conveyor-switch-cabinet',iron,8,.95,-14,1.3,1.9,1.1);
+      // Visible drive housings, bearings and ribs stay below the existing belt
+      // silhouette. Small yellow shields are accents, not a solid safety wall.
+      for(const beltNo of [0,1]){
+        const x=beltNo?4.6:-4.6,z=beltNo?15:12,y=beltNo?16.6:12.3;
+        put('polish-quarry-conveyor-bearing-block',rust,x+2.05,y-.22,z,.68,1.0,1.14);
+        put('polish-quarry-conveyor-drive-motor',iron,x+2.8,y-.30,z,1.3,.96,1.86);
+        for(const dz of [-.58,0,.58])put('polish-quarry-conveyor-motor-rib',rust,x+2.8,y-.30,z+dz,1.4,1.06,.12);
+        put('polish-quarry-conveyor-yellow-guard',orange,x+3.51,y-.30,z,.14,1.22,2.04);
+        strut('polish-quarry-motor-seat-bracket',iron,[x+1.9,y-.84,z],[x+3.5,y-.84,z],.18,1.5);
+      }
+      put('polish-quarry-transfer-inspection-cover',iron,0,14.57,12.5,3.4,.14,2.4);
+      for(const x of [-1.3,1.3])put('polish-quarry-transfer-cover-hinge',rust,x,14.67,12.5,.22,.12,.9);
+      for(const y of [.44,.7, .96])put('polish-quarry-switchboard-vent',rust,8,y,-14.57,.9,.10,.07);
+      put('polish-quarry-switchboard-indicator',orange,8,1.53,-14.58,.52,.22,.09);
+
     }else if(plot.kind==='stone-cassette-yard'){
       for(let row=0;row<3;row++)for(let col=0;col<4;col++){
         const x=-8.2+col*5.4,z=-5.2+row*5.1,h=1.4+((row+col)%3)*.65;
@@ -521,6 +551,17 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
       for(const side of [-1,1])put('service-shelter-stock-sleeper',greyWood,x+side*1.2,.24,2,.45,.48,3.6);
       for(let layer=0;layer<3;layer++)put('service-shelter-stone-stock',layer===1?sandstone:pale,x,.48+.75*(layer+.5),2,3.3,.75,3.1);
     }
+    // Three sheltered aggregate sample bins occupy the shallow rear strip.
+    // The front loading bays, service apron and their sightlines remain open.
+    for(const [bin,x]of [-5,0,5].entries()){
+      put('polish-quarry-aggregate-bin-floor',iron,x,.09,4.8,3.3,.18,1.7);
+      for(const side of [-1,1])put('polish-quarry-aggregate-bin-end',iron,x+side*1.61,.63,4.8,.12,1.12,1.7);
+      put('polish-quarry-aggregate-bin-back',iron,x,.63,5.61,3.3,1.12,.12);
+      put('polish-quarry-aggregate-bin-low-front',greyWood,x,.30,3.98,3.3,.42,.12);
+      for(let chip=0;chip<5;chip++)put('polish-quarry-sorted-aggregate',bin===1?shadowDust:bin===2?sandstone:pale,x+(chip%3-1)*.93,.18+(chip%2?.5:.32)/2,4.55+Math.floor(chip/3)*.6,.82,chip%2?.5:.32,.56);
+      put('polish-quarry-aggregate-grade-badge',orange,x,.36,3.90,.8,.24,.06);
+      for(let stripe=0;stripe<=bin;stripe++)put('polish-quarry-aggregate-grade-mark',belt,x-.22+stripe*.22,.36,3.86,.08,.14,.035);
+    }
     record(plot.label,p,r);
     // Preserve the reviewed empty loading apron after setting this shelter back.
     // This is a placement reservation only, never a solid mesh or camera blocker.
@@ -586,5 +627,5 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
   for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}
   return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,roadUndersideFaces,foundations,cameraObstacles,landmarks,trestleMembers,
-    extractionFootprints,extractionTerraces,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
+    extractionFootprints,extractionTerraces,polishDetails,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
 }

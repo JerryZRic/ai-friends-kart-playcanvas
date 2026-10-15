@@ -1,3 +1,4 @@
+import {stablePagesV100RepinHash, stablePagesV100RepinPathsWithin, restoreStablePagesV100RepinBytes, stablePagesV100RepinAddedPaths, stablePagesV100RepinAuditDependencies} from './stable-pages-v100-repin-reviewed-revisions';
 /** Exact v1.0 successor. Historical fixtures and every prior proof remain frozen. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -49,12 +50,13 @@ export function assertV100ReviewBytes(bytes: string): Review {
 }
 export function v100Review() { return assertV100ReviewBytes(readFileSync(V100_REVIEW_PATH, 'utf8')); }
 export function v100Hash(path: string, incoming: unknown) {
-  const row = v100Review().changes[path]; if (!row) return incoming;
+  const row = v100Review().changes[path]; if (!row) return stablePagesV100RepinHash(path, incoming);
   assert.equal(incoming, row.previousSha256, path + ' exact pre-v1.0 incoming identity');
-  return row.currentSha256;
+  return stablePagesV100RepinHash(path, row.currentSha256);
 }
-export function v100PathsWithin(inventory: Record<string, unknown>) { return Object.keys(v100Review().changes).filter(path => Object.hasOwn(inventory, path)); }
+export function v100PathsWithin(inventory: Record<string, unknown>) { return [...new Set([...Object.keys(v100Review().changes).filter(path => Object.hasOwn(inventory, path)), ...stablePagesV100RepinPathsWithin(inventory)])]; }
 export function restoreV100Bytes(path: string, current: string) {
+  current = restoreStablePagesV100RepinBytes(path, current);
   const row = v100Review().changes[path]; if (!row) return current;
   assert.equal(v100Sha(current), row.currentSha256, path + ' exact candidate bytes before v1.0 inverse');
   const lines = current.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -73,5 +75,5 @@ export function v100SourcePaths(previous: string[]) {
   }
   return [...previous, ...additions.map(([path]) => path)];
 }
-export function v100AddedPaths() { return [V100_REVIEW_PATH, 'tests/helpers/v100-reviewed-revisions.ts', ...Object.keys(v100Review().additions)]; }
-export function v100AuditDependencies() { return [...v100AddedPaths(), ...Object.keys(v100Review().changes)]; }
+export function v100AddedPaths() { return [V100_REVIEW_PATH, 'tests/helpers/v100-reviewed-revisions.ts', ...Object.keys(v100Review().additions), ...stablePagesV100RepinAddedPaths()]; }
+export function v100AuditDependencies() { return [...v100AddedPaths(), ...Object.keys(v100Review().changes), ...stablePagesV100RepinAuditDependencies()]; }

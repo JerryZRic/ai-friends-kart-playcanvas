@@ -1,3 +1,7 @@
+import {waitForHomeCover} from './home-cover-ready';
+import {getDocumentHomeCover} from './home-cover-registry';
+import {mountHomeCover,loadWhaleCoverAdapter,type HomeCoverController} from './home-cover';
+import {readyBrandIntro,brandIntroPending} from './brand-intro';
 import {mountMenuBoot} from './menu-boot';
 import {getDocumentMusic,bindMusicNavigation,bindMusicSettings,MUSIC_SETTINGS_MARKUP} from './music-ui';
 import {characterEmblem} from './character-identity.js';
@@ -36,6 +40,8 @@ function waitForPaint(){return new Promise<void>(resolve=>{
 });}
 let disposeMusicSettings:(()=>void)|undefined;
 let homeReady=false;
+const homeCover=getDocumentHomeCover(document);
+let homeCoverController:HomeCoverController|undefined;
 let disposeControlPreference:(()=>void)|undefined;
 function revealHome(version:number, fallback=false){
  if(version!==renderVersion||state.screen!=='main')return;
@@ -45,6 +51,10 @@ function revealHome(version:number, fallback=false){
  if(nav){nav.hidden=false;nav.inert=false;nav.setAttribute('aria-hidden','false');}
  root.querySelectorAll<HTMLButtonElement>('.title-action').forEach(button=>{button.disabled=false;});
  if(fallback){const canvas=root.querySelector<HTMLElement>('#title-backdrop');if(canvas)canvas.hidden=true;const poster=root.querySelector<HTMLElement>('.title-fallback');if(poster)poster.hidden=false;root.querySelector<HTMLElement>('#story-button')?.focus();}
+ // The backdrop has painted; wait only for this document's selected portrait.
+ const signal=renderListeners.signal,image=root.querySelector<HTMLImageElement>('.title-character');
+ if(fallback||!brandIntroPending(document)||!image||image.hidden||image.complete&&image.naturalWidth>0)readyBrandIntro(document);
+ else void waitForHomeCover(image,signal).then(()=>{if(!disposed&&!signal.aborted&&version===renderVersion)readyBrandIntro(document);});
 }
 
 let state=parseMenuState(location.search),settings=readGameSettings();
@@ -64,6 +74,7 @@ const viewportNotice=mountUiViewportNotice(shell);
 function dispose(){
  if(disposed)return;
  disposed=true;renderVersion++;
+ homeCoverController?.dispose();homeCoverController=undefined;
  cancelPendingPaints();renderListeners.abort();
  disposeMusicSettings?.();disposeMusicSettings=undefined;musicNavigation.dispose();boot.dispose();
  menuLayout.dispose();viewportNotice.dispose();disposeBackdrop?.();disposeCharacter?.();
@@ -121,6 +132,7 @@ function top(title:string,sub:string,back:MenuScreen='main',vehicle=false){retur
 function render(){
  if(disposed)return;
  const version=++renderVersion;
+ homeCoverController?.dispose();homeCoverController=undefined;
  cancelPendingPaints();renderListeners.abort();renderListeners=new AbortController();
  shell.hidden=false;
  musicNavigation.cancel();
@@ -133,10 +145,11 @@ function render(){
  homeReady=false;
  if(state.screen==='main')boot.begin(()=>{if(version!==renderVersion)return;disposeBackdrop?.();disposeBackdrop=undefined;revealHome(version,true);});
  else boot.dismiss();
+ if(state.screen!=='main'&&brandIntroPending(document))void waitForPaint().then(()=>{if(!disposed&&version===renderVersion)readyBrandIntro(document);});
  if(document.body)document.body.dataset.screen=state.screen;
  document.title=`${screenLabel(state.screen)} · 大肥鱼卡丁车`;
  root.className=`screen-${state.screen}`;
- if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-stage"><div class="title-composition" aria-hidden="true"><img class="title-character" src="./menu-art/whale-maid.png" alt="" draggable="false" decoding="async"><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span><span class="title-hit-area" aria-hidden="true"></span></button></nav></div></section>`;
+ if(state.screen==='main')root.innerHTML=`<section class="title-screen" aria-labelledby="game-title"><div class="title-background" aria-hidden="true"><img class="title-fallback" src="./map-previews/waterpark-overview.webp" alt="" hidden><canvas id="title-backdrop" tabindex="-1"></canvas><div id="title-curtain"></div><div class="title-shade"></div></div><div class="title-stage"><div class="title-composition" aria-hidden="true"><div class="title-portrait-frame"><img class="title-character" src="${homeCover.src}" alt="" draggable="false" decoding="async"></div><img class="title-logo" src="./menu-art/title-logo.png" alt="" draggable="false" decoding="async"></div><h1 id="game-title">大肥鱼卡丁车</h1><nav class="title-actions" aria-label="游戏主菜单" aria-hidden="true" hidden inert><button class="title-action" id="story-button" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 5 8-3 10 4 8-3v24l-8 3-10-4-8 3zM11 3v23M21 6v24"/></svg><span>故事模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="maps" data-primary="true" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="4"/><path d="M4 12h24M14 20l-3 8M18 20l3 8"/></svg><span>自由模式</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="settings" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 8 0 1 5 5 3 5 1v8l-5 1-5 5-1 5h-8l-1-5-5-5-5-1v-8l5-1 5-3z"/><circle cx="16" cy="16" r="5"/></svg><span>设置</span><span class="title-hit-area" aria-hidden="true"></span></button><button class="title-action" data-screen="exit" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 29V3h20v26M10 7l12-2v24l-12-3z"/><path d="M17 17h1"/></svg><span>退出</span><span class="title-hit-area" aria-hidden="true"></span></button></nav></div></section>`;
  if(state.screen==='maps'){
   const selected=resolveMap(state.map);
   root.innerHTML=top('选择赛道','从海岸公路、云岭山道到晴空水道，下一站由你决定')+`
@@ -172,8 +185,8 @@ function render(){
  }
  if(state.screen==='characters'){
  const map=resolveMap(state.map),selected=resolveCharacter(state.driver),t=characterTuning(selected.id,state.map);
- const stats=[['加速能力',selected.acceleration,t.acceleration,'m/s²'],['最高速度',selected.topSpeed,t.maxSpeed,'m/s'],[state.map==='waterpark'?'转向加速度':'转向横移能力',selected.steering,t.steering,state.map==='waterpark'?'m/s²':'m/s']];
- root.innerHTML=top('选一位出发伙伴',`${map.label} · ${map.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}　/　六名选手，同场竞速`,'maps')+`<div class="character-layout"><div class="character-roster"><div class="character-stage"><canvas id="character-preview" tabindex="0" aria-label="${selected.label} 3D 形象，可拖动旋转"></canvas><p id="character-preview-status" role="status" aria-live="polite">正在载入 ${selected.label} 的 3D 形象…</p></div><div class="character-grid" role="group" aria-label="选择参赛角色">${CHARACTER_PROFILES.map(c=>`<button class="character-card" style="--character:${c.color}" data-driver="${c.id}" aria-pressed="${c.id===selected.id}"><span class="character-symbol" aria-hidden="true">${characterEmblem(c.id)}</span><span class="character-name">${c.label}</span><span class="character-role">${c.nickname}</span><span class="selected-mark" aria-hidden="true">${c.id===selected.id?'✓':'+'}</span></button>`).join('')}<p class="roster-note">拖动上方角色旋转查看 · 方向键也可旋转</p></div></div><aside class="profile-panel" aria-label="已选角色属性" style="--character:${selected.color}"><p class="eyebrow">YOUR DRIVER / 已选伙伴</p><h2>${selected.label}</h2><p class="profile-role">${selected.nickname}</p><p class="profile-description">${selected.description}</p><div class="stats">${stats.map(([label,mult,value,unit])=>`<div class="stat"><div><span>${label}</span><strong>${Number(value).toFixed(2)} <small>${unit}</small></strong></div><meter min="0.85" max="1.15" value="${mult}" aria-label="${label}，标准值的 ${Math.round(Number(mult)*100)}%"></meter><span class="stat-percent">标准值 × ${Number(mult).toFixed(2)}</span></div>`).join('')}</div><p class="stats-note">${state.map==='waterpark'?'加速是阻力修正前的推进加速度；极速是基础速度上限。转向是横向加速度，实际横移受惯性与阻尼影响。':'基础参数，不含道具、漂移与地形修正。转向是正常极速下的横移速度，不是转弯角度。'}玩家与对手使用相同角色系数。</p><p class="flow-step">02 / 04 · 下一步：${resolveMap(state.map).vehicle==='kart'?'选择卡丁车与改装':'确认水上坐骑'}</p>${resolveMap(state.map).vehicle==='kart'?`<a class="primary start-race" id="choose-vehicle" href="${garageEntry(selected.id,state)}"><span>选择卡丁车 / 改装车库</span><span>→</span></a>`:`<button class="primary start-race" id="choose-vehicle" data-screen="vehicles"><span>选择水上坐骑</span><span>→</span></button>`}<p class="fine-print">角色与车辆独立选择，可随时返回调整</p></aside></div>`;
+ const stats=[['加速能力',t.multipliers.acceleration,t.acceleration,'m/s²'],['最高速度',t.multipliers.topSpeed,t.maxSpeed,'m/s'],[state.map==='waterpark'?'转向加速度':'转向横移能力',t.multipliers.steering,t.steering,state.map==='waterpark'?'m/s²':'m/s']];
+ root.innerHTML=top('选一位出发伙伴',`${map.label} · ${map.vehicle==='kart'?'卡丁车':'鲸鱼坐骑'}　/　六名选手，同场竞速`,'maps')+`<div class="character-layout"><div class="character-roster"><div class="character-stage"><canvas id="character-preview" tabindex="0" aria-label="${selected.label} 3D 形象，可拖动旋转"></canvas><p id="character-preview-status" role="status" aria-live="polite">正在载入 ${selected.label} 的 3D 形象…</p></div><div class="character-grid" role="group" aria-label="选择参赛角色">${CHARACTER_PROFILES.map(c=>`<button class="character-card" style="--character:${c.color}" data-driver="${c.id}" aria-pressed="${c.id===selected.id}"><span class="character-symbol" aria-hidden="true">${characterEmblem(c.id)}</span><span class="character-name">${c.label}</span><span class="character-role">${c.nickname}</span><span class="selected-mark" aria-hidden="true">${c.id===selected.id?'✓':'+'}</span></button>`).join('')}<p class="roster-note">拖动上方角色旋转查看 · 方向键也可旋转</p></div></div><aside class="profile-panel" aria-label="已选角色属性" style="--character:${selected.color}"><p class="eyebrow">YOUR DRIVER / 已选伙伴</p><h2>${selected.label}</h2><p class="profile-role">${selected.nickname}</p><p class="profile-description">${selected.description}</p><div class="stats">${stats.map(([label,mult,value,unit])=>`<div class="stat"><div><span>${label}</span><strong>${Number(value).toFixed(2)} <small>${unit}</small></strong></div><meter min="${state.map==='waterpark'?.85:.65}" max="${state.map==='waterpark'?1.15:1.45}" value="${mult}" aria-label="${label}，标准值的 ${Math.round(Number(mult)*100)}%"></meter><span class="stat-percent">标准值 × ${Number(mult).toFixed(2)}</span></div>`).join('')}</div><p class="stats-note">${state.map==='waterpark'?'加速是阻力修正前的推进加速度；极速是基础速度上限。转向是横向加速度，实际横移受惯性与阻尼影响。':'基础参数，不含道具、漂移与地形修正。转向是正常极速下的横移速度，不是转弯角度。'}玩家与对手使用相同角色系数。</p><p class="flow-step">02 / 04 · 下一步：${resolveMap(state.map).vehicle==='kart'?'选择卡丁车与改装':'确认水上坐骑'}</p>${resolveMap(state.map).vehicle==='kart'?`<a class="primary start-race" id="choose-vehicle" href="${garageEntry(selected.id,state)}"><span>选择卡丁车 / 改装车库</span><span>→</span></a>`:`<button class="primary start-race" id="choose-vehicle" data-screen="vehicles"><span>选择水上坐骑</span><span>→</span></button>`}<p class="fine-print">角色与车辆独立选择，可随时返回调整</p></aside></div>`;
  }
  if(state.screen==='vehicles'&&resolveMap(state.map).vehicle==='kart'){root.innerHTML=top('选择卡丁车',`${resolveMap(state.map).label} · 第 3 / 4 步`,'characters')+`<section class="settings-panel"><h2>卡丁车 / 改装车库</h2><p>选择整车预设，再自由调整六个零件。</p><a class="primary start-race" href="${garageEntry(state.driver,state)}">进入车库 →</a></section>`;}
  if(state.screen==='vehicles'&&state.map==='waterpark'){
@@ -204,7 +217,9 @@ function refreshNavigationLinks(){
  root.querySelector<HTMLAnchorElement>('#start-race')?.setAttribute('href',raceEntry(state.map,state.driver,state));
 }
 function bind(){
- root.querySelectorAll<HTMLImageElement>('.title-character,.title-logo').forEach(image=>{
+ const coverImage=root.querySelector<HTMLImageElement>('.title-character');
+ if(coverImage)homeCoverController=mountHomeCover(coverImage,homeCover,loadWhaleCoverAdapter);
+ root.querySelectorAll<HTMLImageElement>('.title-logo').forEach(image=>{
   const settle=()=>{if(image.naturalWidth>0){if(root.querySelector('.title-logo')===image&&image.classList.contains('title-logo'))root.classList.add('title-logo-ready');}else image.hidden=true;};
   listen(image,'load',settle,{once:true});listen(image,'error',()=>{image.hidden=true;},{once:true});
   if(image.complete)settle();

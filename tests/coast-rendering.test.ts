@@ -18,8 +18,8 @@ test('coast uses the requested main light and exposure', () => {
   const {app} = coast();
   try {
     assert.equal(app.scene.exposure, 1);
-    const sun = app.root.findByName('Warm sunset key light') as pc.Entity;
-    assert.equal(sun.light!.intensity, 2);
+    const sun = app.root.findByName('Warm coastal daylight') as pc.Entity;
+    assert.equal(sun.light!.intensity, 1.65);
   } finally { app.destroy(); }
 });
 

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "dfy01.mp3",
+    "size": 4800000,
+    "sha256": "c0a2709ac36eb568dbc833ee9298c8aaccb0cc4acaaa96d3cbc623cbeb2ce9fa",
+    "duration": 150.0,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy02.mp3",
+    "size": 6660096,
+    "sha256": "4c80e8aeff796a4bf91e7fedc654fe5ffac1cee89eac125428d1d58985850613",
+    "duration": 208.128,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy03.mp3",
+    "size": 4406784,
+    "sha256": "14171bf819a29ebc8a9a537d39d1f324d8033f52e3cf6baad62799b7daa6278a",
+    "duration": 137.712,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy04.mp3",
+    "size": 5638656,
+    "sha256": "b73ec3184a02dad5c2079599f0df6070c28e4150d317d5ad572a3f869bac21b8",
+    "duration": 176.208,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy05.mp3",
+    "size": 4623360,
+    "sha256": "5ac9c7978ad26d9e2b554332e103e43bb52b0e6638dad1222392e61d20528af8",
+    "duration": 144.48,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy06.mp3",
+    "size": 4195584,
+    "sha256": "6f0661e804024b47521facd96112ae59ecd9efdd37a33a7eec5593efd0592bf0",
+    "duration": 131.112,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy_theme.mp3",
+    "size": 4727040,
+    "sha256": "07fcbd78aaf0ea7e2f56c23dd3ee0b389baf84a1d4fabfc8f5c0288323fb151f",
+    "duration": 147.72,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy_water.mp3",
+    "size": 5968896,
+    "sha256": "5b06c0a3fcffafd09e7ad05012e2a22638b04763d629b53cf42b6c4dc47911e9",
+    "duration": 186.528,
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 2,
+        "bit_rate": "256000"
+      }
+    ]
+  }
+]

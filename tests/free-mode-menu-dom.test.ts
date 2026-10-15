@@ -54,6 +54,8 @@ test('menu repeated select/back/settings/exit, history and blocked storage work 
   assert.match(bootNodes.get('menu-boot-status')!.textContent,/无法初始化 3D/);assert.equal(bootNodes.get('menu-boot-continue')!.hidden,false);
   const failedLogo=$('.title-logo'),failedCharacter=$('.title-character');
   failedLogo.dispatchEvent(new Event('error'));failedCharacter.dispatchEvent(new Event('error'));
+  // A new portrait retries the approved whale once; only its failed fallback is hidden.
+  if(!failedCharacter.hidden){assert.equal(failedCharacter.dataset.coverId,'deepseek');assert.equal((failedCharacter as any).src,'./menu-art/whale-maid.png');failedCharacter.dispatchEvent(new Event('error'));}
   assert.equal(failedLogo.hidden,true);assert.equal(failedCharacter.hidden,true);assert.equal($('#story-button').disabled,true,'art failure cannot bypass engine preparation');
   fallback();assert.equal($('.title-actions').hidden,false);assert.equal($('.title-actions').inert,false);assert.equal($('.title-actions').attrs['aria-hidden'],'false');assert.equal($('#title-backdrop').hidden,true);
   assert.equal(elements.filter(e=>e.tagName==='BUTTON').length,4);assert.equal(elements.filter(e=>e.disabled).length,0);assert.equal(root.innerHTML.replace(/<[^>]*>/g,''),'大肥鱼卡丁车故事模式自由模式设置退出');

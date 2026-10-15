@@ -1,0 +1,13 @@
+{
+  "races": 2304,
+  "racerStarts": 13824,
+  "maps": 12,
+  "exactOriginalFieldReplay": true,
+  "dnf": 0,
+  "timeouts": 0,
+  "invalidSteps": 0,
+  "rejectionReasons": {},
+  "originalJsonlSha256": "a45cb28127638c44d53de7738cef7e705b00ba5eb2cb9e8d82be1b838e37e3fd",
+  "correctedJsonlSha256": "8b6fd214c00019fd327524d789b9a0518e117d04f40520c87a700481d6d28ad1",
+  "semantics": "Explicit callback for rejected route/checkpoint attempted movements, separate from ordinary vehicle collision or rail contacts. Initial heuristic was blind after speed reset; corrected replay observes guards directly."
+}

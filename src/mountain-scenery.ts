@@ -57,26 +57,26 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
   const roughAsphalt=new LandMeshBatch('Weathered aggregate tarmac','#62696b',1,'asphalt');
   const underpassStone=new LandMeshBatch('Underpass dressed stone roadway','#92958d',.98,'none');
   const shoulder=new LandMeshBatch('Crushed limestone shoulders','#aaa68f',.99,'stone');
-  const stone=new MountainBatch('Stratified granite and retaining masonry','#89958f',.98,'stone');
-  const lightStone=new MountainBatch('Weathered limestone strata','#bdbaa2',.98,'stone');
-  const darkStone=new MountainBatch('Slate ledges and viaduct soffits','#596b72',.98,'stone');
-  const turf=new MountainBatch('Alpine terrace meadow','#88a86c',1,'grass');
-  const valley=new MountainBatch('Forest valley floor','#63855c',1,'grass');
-  const distant=new MountainBatch('Distant blue mountain ridges','#879ba3',1,'none');
-  const cliff=new MountainBatch('Connected muted granite slopes','#7f8f85',1,'none');
-  const paleCliff=new MountainBatch('Local pale exposed mineral beds','#a5af99',1,'none');
-  const snow=new MountainBatch('High ridge limestone snow patches','#d3ddd2',.97);
+  const stone=new MountainBatch('Stratified granite and retaining masonry','#a8b5ae',.98,'stone');
+  const lightStone=new MountainBatch('Weathered limestone strata','#ddd8ba',.98,'stone');
+  const darkStone=new MountainBatch('Slate ledges and viaduct soffits','#738c98',.98,'stone');
+  const turf=new MountainBatch('Alpine terrace meadow','#a3bf76',1,'grass');
+  const valley=new MountainBatch('Forest valley floor','#7f9d69',1,'grass');
+  const distant=new MountainBatch('Distant blue mountain ridges','#9abacb',1,'none');
+  const cliff=new MountainBatch('Connected muted granite slopes','#9da99b',1,'none');
+  const paleCliff=new MountainBatch('Local pale exposed mineral beds','#c7ccb0',1,'none');
+  const snow=new MountainBatch('High ridge limestone snow patches','#e5e8d9',.97);
   const rail=new LandMeshBatch('Galvanized double guardrail','#bdc8c9',.46,'none',.65);
   const white=new LandMeshBatch('Ivory road markings','#f1ebce',.81);
   const yellow=new LandMeshBatch('Amber edge reflectors','#e8ab4d',.67);
   const red=new LandMeshBatch('Oxblood safety kerbs and roof','#a5624c',.96);
-  const wood=new MountainBatch('Lookout cedar timber','#92704e',.96,'wood');
-  const bark=new MountainBatch('Spruce trunks and fence timber','#594f3c',.99,'wood');
-  const pine=new MountainBatch('Spruce shaded boughs','#2c5249',1);
-  const pineTips=new MountainBatch('Spruce fresh alpine tips','#50755a',1);
-  const glass=new MountainBatch('Chalet amber windows','#d2b87b',.38,'none',.1);
-  const gold=new MountainBatch('Golden rowan crown accents','#edbd48',1);
-  const coral=new MountainBatch('Autumn copper shrub and landmark accents','#c87c46',1);
+  const wood=new MountainBatch('Lookout cedar timber','#b18a5e',.96,'wood');
+  const bark=new MountainBatch('Spruce trunks and fence timber','#71604b',.99,'wood');
+  const pine=new MountainBatch('Spruce shaded boughs','#397360',1);
+  const pineTips=new MountainBatch('Spruce fresh alpine tips','#76a574',1);
+  const glass=new MountainBatch('Chalet amber windows','#ecd39b',.38,'none',.1);
+  const gold=new MountainBatch('Golden rowan crown accents','#f2c662',1);
+  const coral=new MountainBatch('Autumn copper shrub and landmark accents','#df985e',1);
   const batches:LandMeshBatch[]=[asphalt,roughAsphalt,underpassStone,shoulder,stone,lightStone,darkStone,turf,valley,distant,snow,rail,white,yellow,red,wood,bark,pine,pineTips,glass,cliff,paleCliff,gold,coral];
   const props:LandPropPlacement[]=[],structures:LandSceneGeometry['structures']=[],roadSamples:LandSceneGeometry['roadSamples']=[];
   const components:MountainComponent[]=[],cameraObstacles:MountainSceneGeometry['cameraObstacles']=[],foundations:MountainSceneGeometry['foundations']=[],contacts:MountainSceneGeometry['contacts']=[],groundedDetails:MountainSceneGeometry['groundedDetails']=[],assemblies:MountainSceneGeometry['assemblies']=[];
@@ -595,6 +595,50 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
     }
     assemblies.push({id:assembly,components:Array.from({length:components.length-first},(_,i)=>first+i),closed:false});assembly=undefined;props.push({kind:'advance-bend-chevron',x:p.x,y:terrainHeight(p.x,p.z),z:p.z,radius:2.1});
   }
+  // 2026 land polish: concentrate inhabited detail on the existing founded
+  // lookout. All additions stay inside its original apron/building envelope;
+  // the road, terrain, historic components and camera implementation are intact.
+  assembly='polish-mountain-lookout';const polishFirst=components.length;
+  for(const z of [-5.07,3.07])for(const x of [-6.7,-3,.7]){
+    for(const side of [-1,1]){
+      const shutter=put('polish-mountain-louvered-shutter',pine,x+side*1.48,4.05,z,.43,1.68,.16,'detail');
+      contact('polish-shutter-wall-seat',shutter,upper,at(x+side*1.48,4.05,z));
+      for(const y of [3.49,3.77,4.05,4.33,4.61])put('polish-mountain-shutter-louver',pineTips,x+side*1.48,y,z+(z>0?.09:-.09),.43,.09,.09,'detail');
+    }
+    put('polish-mountain-window-crossbar',wood,x,4.05,z,2.19,.09,.19,'detail');
+    put('polish-mountain-window-mullion',wood,x,4.05,z,.09,1.49,.19,'detail');
+  }
+  // Broad, shallow courses give the asymmetrical roof a crafted tile rhythm.
+  // Closed prisms overlap the existing solid roof by 2 cm instead of floating.
+  for(const [left,right]of [[-9.12,-4.2],[-4.0,3.12]])for(let course=0;course<5;course++){
+    const x0=left+(right-left)*course/5,x1=x0+(right-left)*.11;
+    prism('polish-mountain-roof-tile-course',coral,[[x0,roofHeight(x0)-.02],[x1,roofHeight(x1)-.02],[x1,roofHeight(x1)+.07],[x0,roofHeight(x0)+.07]],-5.91,5.96);
+  }
+  for(const x of [-6.6,-3,.6]){
+    const trough=put('polish-mountain-balcony-flower-trough',wood,x,3.08,5.78,2.2,.42,.54,'detail');
+    put('polish-mountain-trough-earth',bark,x,3.29,5.78,1.98,.06,.40,'detail');
+    for(const side of [-1,1])put('polish-mountain-trough-iron-bracket',darkStone,x+side*.78,2.97,5.59,.12,.55,.35,'detail');
+    for(let flower=0;flower<5;flower++){
+      const q=at(x-.83+flower*.415,3.31,5.78);
+      closedCone('polish-mountain-planter-leaves',pineTips,q,.28,.37,flower,6);
+      closedCone('polish-mountain-amber-meadow-flowers',flower%2?coral:gold,q.clone().add(vec(0,.22,0)),.18,.22,flower+.4,6);
+    }
+    contact('polish-flower-box-balcony-bearing',trough,balusters[Math.round((x+6.6)/1.8)],at(x,3.08,5.57));
+  }
+  // One public viewing scope under the open canopy. A broad limestone shoe,
+  // stem, swivel and stepped optical barrel read as a real piece of furniture.
+  const scopeFoot=put('polish-mountain-telescope-stone-foot',lightStone,8.4,.76,.3,1.18,.22,1.18,'support');
+  contact('polish-scope-landing-seat',scopeFoot,canopyDeck,at(8.4,.66,.3));
+  put('polish-mountain-telescope-stem',darkStone,8.4,1.49,.3,.25,1.3,.25,'detail');
+  put('polish-mountain-telescope-swivel',yellow,8.4,2.14,.3,.52,.32,.50,'detail');
+  beam('polish-mountain-telescope-barrel',darkStone,at(8.4,2.24,-.28),at(8.4,2.65,1.03),.48,.48,'detail');
+  beam('polish-mountain-telescope-lens-hood',wood,at(8.4,2.59,.88),at(8.4,2.70,1.24),.63,.63,'detail');
+  beam('polish-mountain-telescope-blue-lens',glass,at(8.4,2.695,1.225),at(8.4,2.712,1.28),.49,.49,'detail');
+  // A seated limestone specimen bench occupies the back of the same landing.
+  for(const x of [5.3,8.1])put('polish-mountain-geology-bench-leg',stone,x,.99,-3.3,.62,.66,.66,'support');
+  put('polish-mountain-geology-bench-seat',lightStone,6.7,1.38,-3.3,3.7,.23,1.08,'detail');
+  for(const [x,h]of [[5.6,.42],[6.7,.68],[7.7,.48]])closedCone('polish-mountain-geology-display',x===6.7?lightStone:darkStone,at(x,1.48,-3.3),.38,h,x,5);
+  assemblies.push({id:assembly,components:Array.from({length:components.length-polishFirst},(_,i)=>polishFirst+i),closed:false});assembly=undefined;
   // One immutable triangle array uses the existing camera helper's spatial
   // index once per query. It preserves every emitted face, winding and open
   // gap; its bounds are metadata, never a filled world-sized collision box.

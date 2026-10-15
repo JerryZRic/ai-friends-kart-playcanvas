@@ -24,15 +24,21 @@ import {mountMobileControls} from '../src/mobile-controls';
 function mountFixture(saved = 'auto', touchPoints = 5, coarseMatches = true) {
   class Node extends EventTarget {
     value = ''; removed = false; dataset: Record<string, string> = {};
+    children: Node[] = []; disabled = false; innerHTML = ''; type = ''; className = ''; attrs: Record<string, string> = {};
+    setAttribute(name: string, value: string) { this.attrs[name] = value; }
+    querySelector(selector: string): Node | null {
+      const action = selector.match(/data-mobile-action="([^"]+)"/)?.[1];
+      return this.children.find(node => action && node.dataset.mobileAction === action) ?? null;
+    }
     remove() { this.removed = true; }
-    appendChild(node: Node) { return node; }
+    appendChild(node: Node) { this.children.push(node); return node; }
   }
   const nodes = new Map(['mobileTouchControls', 'mobileControlModePanel', 'mobileControlMode'].map(id => [id, new Node()]));
   const canvas = new Node(), media = Object.assign(new EventTarget(), {matches: coarseMatches});
   const storage = new Map([['kart-control-mode', saved]]);
   const win = Object.assign(new EventTarget(), {navigator: {maxTouchPoints: touchPoints}, matchMedia: (query: string) => query === '(pointer: coarse)' || query === '(any-pointer: coarse)' ? media : Object.assign(new EventTarget(), {matches: false}), localStorage: {getItem: (key: string) => storage.get(key), setItem: (key: string, value: string) => storage.set(key, value)}});
   const body = new Node();
-  const doc = Object.assign(new EventTarget(), {body, defaultView: win, getElementById: (id: string) => nodes.get(id)});
+  const doc = Object.assign(new EventTarget(), {body, defaultView: win, getElementById: (id: string) => nodes.get(id), createElement: () => new Node()});
   const fire = (target: EventTarget, name: string, values = {}) => { const event = new Event(name); Object.assign(event, values); target.dispatchEvent(event); };
   return {doc, win, body, canvas, media, storage, nodes, fire, selector: nodes.get('mobileControlMode')!};
 }
@@ -72,4 +78,28 @@ test('storage denial and headless consumers are safe', () => {
   assert.equal(f.body.dataset.inputMode, 'touch');
   f.selector.value = 'desktop'; f.fire(f.selector, 'change'); assert.equal(f.body.dataset.inputMode, 'desktop');
   mounted.dispose();
+});
+
+
+test('mobile mount adds one fixed R button and keeps independent item icon and key labels', () => {
+  const f = mountFixture(), panel = f.nodes.get('mobileTouchControls')!;
+  const primary = f.doc.createElement(); primary.dataset.mobileAction = 'item'; panel.appendChild(primary);
+  const mounted = mountMobileControls(f.doc as any, f.canvas as any)!;
+  const secondary = panel.querySelector('[data-mobile-action="item-secondary"]')!;
+  assert.ok(secondary); assert.equal(primary.dataset.itemSlot, '0'); assert.equal(secondary.dataset.itemSlot, '1');
+  assert.equal(primary.disabled, true); assert.equal(secondary.disabled, true);
+  for (const [button, key] of [[primary, 'E'], [secondary, 'R']] as const) {
+    assert.match(button.innerHTML, /class="mobile-item-image"[^>]+hidden/);
+    assert.match(button.innerHTML, new RegExp(`class="mobile-item-label">${key} 道具`));
+    assert.equal(button.attrs['aria-label'], `${key} 道具槽 · 等待道具`);
+  }
+  mounted.dispose();
+  const remounted = mountMobileControls(f.doc as any, f.canvas as any)!;
+  assert.equal(panel.children.filter(node => node.dataset.mobileAction === 'item-secondary').length, 1);
+  remounted.dispose();
+});
+
+test('touch hints preserve separate E and R identities while removing keyboard-only use wording', () => {
+  assert.equal(touchHint('点击这里或按 E 使用'), '点击 E 道具使用');
+  assert.equal(touchHint('点击这里或按 R 使用'), '点击 R 道具使用');
 });

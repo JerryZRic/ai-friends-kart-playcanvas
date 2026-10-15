@@ -23,6 +23,7 @@ export interface TownSceneGeometry extends LandSceneGeometry {
   foundations: {kind:string;top:number;bottom:number;footprint:number[][];masonryVertexStart:number;pavingVertexStart:number}[];
   cameraObstacles: TownCameraObstacle[];
   landmarks: {kind: string; label: string; position: number[]}[];
+  polishDetails:{kind:string;batch:string;vertexStart:number;vertexEnd:number;triangles:number}[];
 }
 export const TOWN_SCENE_THEME: Readonly<LandSceneTheme> = Object.freeze({
   textureLabel: 'lantern town', ambient: '#d8c9ad', sky: '#ecdac3', fogStart: 440, fogEnd: 1200,
@@ -63,23 +64,23 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
   const cobble=new Batch('Lantern Alley pale cobbled road','#b8ab91',.96,'asphalt');
   const boulevard=new Batch('Tram Boulevard dark paved road','#66675e',.98,'asphalt');
   const common=new Batch('Market and civic warm stone road','#a19a87',.98,'asphalt');
-  const paving=new Batch('Cream sidewalk coping and civic columns','#e4d2b0',.96,'stone');
-  const masonry=new Batch('Ochre terrace retaining masonry','#b19b78',1,'stone');
-  const dark=new Batch('Street bridge soffit and shadowed masonry','#777261',1,'stone');
-  const ground=new Batch('Town garden earth and distant terraces','#998b68',1,'grass');
-  const cream=new Batch('Ivory plaster facades','#e5d4b3',.97,'none');
-  const peach=new Batch('Warm apricot plaster facades','#cd9c79',.97,'none');
-  const rose=new Batch('Dusty rose plaster facades','#b8887c',.97,'none');
-  const roof=new Batch('Terracotta tiled roofs and chimney caps','#a75e47',.97,'none');
-  const wood=new Batch('Timber shop beams eaves and market counters','#684b35',.94,'wood');
-  const teal=new Batch('Teal shutters doors balcony rails and tram','#34736c',.7,'wood');
-  const glass=new Batch('Deep blue shop windows and clock faces','#354c51',.3,'none',.15);
-  const brass=new Batch('Copper lantern frames and tram trim','#ba8b50',.46,'none',.58);
+  const paving=new Batch('Cream sidewalk coping and civic columns','#f0dfbd',.96,'stone');
+  const masonry=new Batch('Ochre terrace retaining masonry','#c6ae87',1,'stone');
+  const dark=new Batch('Street bridge soffit and shadowed masonry','#858d89',1,'stone');
+  const ground=new Batch('Town garden earth and distant terraces','#a9b283',1,'grass');
+  const cream=new Batch('Ivory plaster facades','#f3e3be',.97,'none');
+  const peach=new Batch('Warm apricot plaster facades','#e5b48b',.97,'none');
+  const rose=new Batch('Dusty rose plaster facades','#d9aaa0',.97,'none');
+  const roof=new Batch('Terracotta tiled roofs and chimney caps','#cf7856',.97,'none');
+  const wood=new Batch('Timber shop beams eaves and market counters','#87644a',.94,'wood');
+  const teal=new Batch('Teal shutters doors balcony rails and tram','#3c9692',.7,'wood');
+  const glass=new Batch('Deep blue shop windows and clock faces','#416779',.3,'none',.15);
+  const brass=new Batch('Copper lantern frames and tram trim','#d9ae6d',.46,'none',.58);
   const glow=new Batch('Warm lantern panes and clock hands','#ffe3a0',.43);
-  const plum=new Batch('Plum market awnings','#965b72',.96,'wood');
+  const plum=new Batch('Plum market awnings','#b97e95',.96,'wood');
   const linen=new Batch('Ivory market canopy stripes and race markings','#f4dfae',.96);
-  const foliage=new Batch('Citrus tree rounded foliage','#547a46',1,'grass');
-  const fruit=new Batch('Orange fruit and market produce','#e9a439',.83);
+  const foliage=new Batch('Citrus tree rounded foliage','#75a368',1,'grass');
+  const fruit=new Batch('Orange fruit and market produce','#f3b947',.83);
   const batches=[cobble,boulevard,common,paving,masonry,dark,ground,cream,peach,rose,roof,wood,teal,glass,brass,glow,plum,linen,foliage,fruit];
   // Town-local metre UVs distinguish small masonry courses from calm plaster.
   // This touches material coordinates only; every protected position/index stays exact.
@@ -97,6 +98,11 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
   }
   const edges=edgesOf(course),props:LandPropPlacement[]=[],cameraObstacles:TownCameraObstacle[]=[],landmarks:TownSceneGeometry['landmarks']=[];
   const roadFaces:TownSceneGeometry['roadFaces']=[],foundations:TownSceneGeometry['foundations']=[];
+  const polishDetails:TownSceneGeometry['polishDetails']=[];
+  const polishBox=(kind:string,b:Batch,p:pc.Vec3,size:pc.Vec3,yaw:number)=>{
+    const vertexStart=b.positions.length/3,indexStart=b.indices.length;b.box(p,size,yaw);
+    polishDetails.push({kind,batch:b.name,vertexStart,vertexEnd:b.positions.length/3,triangles:(b.indices.length-indexStart)/3});
+  };
   const roadSamples:LandSceneGeometry['roadSamples']=[],routeRoadSamples:TownSceneGeometry['routeRoadSamples']=[],structures:LandSceneGeometry['structures']=[];
   const support=edges.flatMap(edge=>Array.from({length:Math.ceil(edge.length/2)+1},(_,i)=>{
     const s=edge.length*i/Math.ceil(edge.length/2),f=edge.sample(s),half=edge.halfWidthAt(s);
@@ -303,6 +309,21 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
         for(const x of [-width*.32,width*.32])put(wood,x,2.5,z+side*.70,.20,1.1,.20);
       }
     }
+    // Add a readable street-facing relief hierarchy inside the existing house
+    // reservation. No new street clutter or changes to the recessed shop bays.
+    const polishFront=frontSide*(depth/2+.12),detail=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(kind,b,at(x,y,z),vec(w,h,d),yaw);
+    detail('limestone-entry-lintel',paving,0,2.79,polishFront,2.17,.24,.28);
+    for(const x of [-.95,.95])detail('limestone-entry-jamb',paving,x,1.35,polishFront,.20,2.7,.28);
+    detail('layered-eave-cornice',paving,0,height-.42,polishFront,width+.18,.20,.31);
+    for(const x of [-width*.36,width*.36])detail('carved-eave-corbel',wood,x,height-.66,polishFront+frontSide*.04,.25,.35,.36);
+    // A few more articulated facades form focal buildings within each row.
+    // Louvers and sill brackets remain on the wall, never beyond the balcony.
+    if(seed%4===0)for(const y of (height<6?[2.35]:[3.8,6.8].filter(y=>y<height-1)))for(const x of [-width*.29,width*.29]){
+      for(const q of [-1,1]){
+        detail('supported-window-sill',paving,x+q*.48,y-1.09,polishFront,.22,.26,.40);
+        for(const dy of [-.48,.48])detail('teal-shutter-louver',teal,x+q*.92,y+dy,polishFront+frontSide*.06,.46,.14,.12);
+      }
+    }
     const radius=Math.hypot(Math.max(width/2+.8,padWidth/2),depth/2+1.6);record('terrace-house',p,radius,roofY+1.3);
   }
   // Give prominent landmarks first choice of clear plots; later architecture
@@ -355,6 +376,14 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     groundPad('striped-market-stall',p,yaw,5.2,3.3);put(wood,0,.65,0,4.5,1.3,2.7);for(const x of [-2.1,2.1])for(const z of [-1.15,1.15])put(wood,x,1.8,z,.14,3.6,.14);
     for(let strip=0;strip<6;strip++){const x=-2.6+strip*.87;(strip%2?linen:plum).quad(at(x,3.45,-1.6),at(x+.87,3.45,-1.6),at(x,3.0,1.7),at(x+.87,3.0,1.7));}
     for(let j=0;j<7;j++)ellipsoid(j%3?fruit:foliage,at(-1.7+j*.55,1.5,.2),vec(.26,.25,.35),6,3);
+    // Paired open produce crates explain the market group at human scale.
+    // They bear directly on the counter and reuse its already protected volume.
+    for(const x of [-1.10,1.10]){
+      const detail=(kind:string,b:Batch,dx:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(kind,b,at(x+dx,y,z),vec(w,h,d),yaw);
+      detail('market-crate-floor',wood,0,1.34,.14,1.95,.08,1.26);
+      for(const z of [-.49,.77])detail('market-crate-slat',wood,0,1.49,z,2.03,.28,.10);
+      for(const dx of [-.975,.975])detail('market-crate-end',wood,dx,1.49,.14,.10,.28,1.26);
+    }
     put(plum,0,2.84,1.68,5.25,.34,.10);record('striped-market-stall',p,3.5,3.7);
   }
   for(let i=0;i<16;i++){
@@ -529,5 +558,5 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
   for(let i=0;i<cobble.uvs.length;i++)cobble.uvs[i]*=7;
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
   for(const batch of used)for(let i=0;i<batch.positions.length;i++){const a=i%3;min[a]=Math.min(min[a],batch.positions[i]);max[a]=Math.max(max[a],batch.positions[i]);}
-  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,foundations,cameraObstacles,landmarks,bounds:{min,max}};
+  return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,foundations,cameraObstacles,landmarks,polishDetails,bounds:{min,max}};
 }

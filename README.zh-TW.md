@@ -8,15 +8,15 @@
 
 以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，包含 12 張陸地地圖與 1 張水上地圖。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具與可自由環繞的追蹤鏡頭。
 
-**[瀏覽器穩定版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [網頁 / Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
+**[瀏覽器 main 版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [HTML 測試版 / 歷史 Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > 遊戲介面採簡體中文，品牌名稱使用英文。上方語言連結僅切換說明文件。程式碼與原創資產（音樂除外）採 AGPL-3.0-only 授權；六個角色模型另受非商業使用限制。詳見[授權與模型權利](#license-and-model-rights)。
 
-## v0.4.0 統一版本
+## v1.0.2a 預發佈測試版
 
-本文說明 **v0.4.0** 的統一功能：13 張地圖、六名車手，以及包含 55 個主題 / 330 件零件的六槽食物車庫。11 張新增陸地地圖均包含場景豐富化成果。瀏覽器穩定版與下載套件採用相同功能，`/dev/` 保留為後續更新的獨立預覽。已發佈檔案、原始碼提交、校驗值及各版本的實際驗證情況以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。
+**v1.0.2a 是供測試的 prerelease，僅提供獨立 Web / HTML 靜態部署 ZIP，不提供新的 Windows 套件。** 保留 13 張地圖、六名車手，以及 55 個主題 / 330 件零件的六槽食物車庫；11 張新增陸地地圖均包含場景豐富化成果。已發佈檔案、原始碼提交、校驗值與驗證說明以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。網站根目錄是 main 發佈入口，`/dev/` 是獨立開發預覽。
 
-自由模式包含動態 3D 封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。
+自由模式包含六角色隨機動態封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。封面使用自訂 PlayCanvas 2D 網格動畫，並非 Cubism；大肥魚（WHALE）的出現機率為 35%，其餘五位均分 65%。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。
 
 ### 地圖目錄
 
@@ -39,13 +39,14 @@
 
 ## 六槽食物車庫
 
-開啟[穩定版車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[dev 車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)。**55 個食物主題 / 330 件零件**包含 000 純白飯，支援整車選擇、六槽自由改裝、真實 3D 預覽、參數比較與方案儲存。瀏覽整車只做預覽，套用才替換六件，並支援替換前儲存與復原。所選裝配可用於全部 12 張陸地賽道，六位角色屬性與水上坐騎維持不變。NPC 使用相同零件公式的預設混搭車，沒有同主題加成。電量消耗、耐久損耗、修理及經濟系統尚未啟用。[實作與驗證範圍](docs/modular-garage.md)。
+開啟[main 版車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/garage.html)或[dev 車庫](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/garage.html)。**55 個食物主題 / 330 件零件**包含 000 純白飯，支援整車選擇、六槽自由改裝、真實 3D 預覽、參數比較與方案儲存。瀏覽整車只做預覽，套用才替換六件，並支援替換前儲存與復原。所選裝配可用於全部 12 張陸地賽道，六位角色屬性與水上坐騎維持不變。NPC 使用相同零件公式的預設混搭車，沒有同主題加成。電量消耗、耐久損耗、修理及經濟系統尚未啟用。[實作與驗證範圍](docs/modular-garage.md)。
 
 ## 遊戲特色
 
 - **六位可選車手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，隨附已綁定骨架的角色模型
 - **三圈比賽：** 在陸地與水上地圖和五位 AI 對手競速，包含碰撞、圈數與名次追蹤，以及迷你地圖
 - **街機風格駕駛：** 手動油門、煞車、倒車、手煞車漂移與漂移加速
+- **固定雙道具槽：** 拾取時先填 `E`，再填 `R`；使用後另一槽不會移位。滿倉時不會消耗道具箱。NPC 同樣最多攜帶兩個道具，手機端提供兩個獨立道具按鈕。
 - **三種道具：** 渦輪加速、能量護盾與追蹤脈衝
 - **可視道具箱：** 半透明箱內展示原創 3D 道具，25% 為問號隨機箱；拾取後立即消失，比賽運行八秒後刷新。HUD 顯示由同一模型投影產生的道具圖片。[說明](docs/item-pickups.md)
 - **道具 NPC：** 對手會爭搶真實道具箱、安全調整路線，並擇機加速、開盾或脈衝攻擊玩家及其他 NPC；頭頂道具與使用特效清晰可見。[說明](docs/npc-tactics.md)
@@ -63,22 +64,13 @@
 
 ## 網頁 / HTML 下載套件
 
-從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 `AI-Friends-Kart-Web-HTML-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。完整解壓縮後，以 HTTP(S) 提供遊戲檔案；不支援以 `file://` 直接開啟 `index.html`。請保留全部資產、授權聲明與對應原始碼檔案。
+從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 [`ai-friends-kart-playcanvas-v1.0.2a-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/ai-friends-kart-playcanvas-v1.0.2a-html.zip)，並核對隨附的 SHA-256 校驗值。完整解壓縮後，透過 nginx 或其他 HTTP(S) 靜態伺服器部署；不支援以 `file://` 直接開啟 `index.html`。保留全部資產、授權聲明與對應原始碼檔案。根目錄與子目錄部署的驗證結果以發行說明為準，相對路徑設計不能取代對實際發行套件的驗證。
 
-## Windows 下載套件
+正式 GitHub Pages 網站提供執行時檔案；對應原始碼請從 [v1.0.2a 預發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.2a)下載獨立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 與全部執行時資源。歷史離線平衡報告及資料保留於 `/dev/`。v1.0.2a 從最終合併後的 `main` 提交建立 tag，不直接從 `dev` 發佈。
 
-**需要 64 位元 Windows 10/11，以及支援 WebGL2 的 GPU。** 請使用 v0.4.0 套件並閱讀對應發行說明。封裝成功及自動化檢查不代表已驗證真實 Windows GPU、效能或輸入裝置相容性。
+## 歷史 Windows 套件（v1.0.0）
 
-1. 從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)下載 `AI-Friends-Kart-Windows-x64-v0.4.0-20261012.zip`，並核對隨附的 SHA-256 校驗值。
-2. 將**整個 ZIP** 解壓縮至一個資料夾。
-3. 執行 **AI Friends Kart.exe**。請保留旁邊的 DLL 檔案及 `resources`、`locales` 資料夾，勿將它們分開。
-4. 按 **F11** 切換全螢幕。
-
-主選單的**退出**按鈕會關閉 Windows 應用程式；從比賽返回主選單仍是遊戲內導覽。瀏覽器中的**退出**會開啟休息頁面，關閉分頁即可離開。保留既有桌面退出修正，不據此宣稱本版本已完成新的原生 Windows GPU 實機試玩。
-
-六個角色均已隨附，可離線遊玩。不需要 Node.js、安裝程序或系統管理員權限。請勿為了執行遊戲而停用 Windows 安全防護。
-
-壓縮檔包含 `Game-Corresponding-Source.zip`、內含桌面封裝程式與建置說明的 `Desktop-Source`，以及授權聲明。桌面封裝內容由該發行版本提供；本儲存庫的 npm 指令用於建置網頁版遊戲。
+**v1.0.2a 不提供 Windows 建置。** [v1.0.0 發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.0)保留歷史 Windows 下載，不包含本次預發佈的新功能。檔名、校驗值與操作說明以該版本為準。需要 64 位元 Windows 10/11 與支援 WebGL2 的 GPU。完整解壓縮 ZIP，將 DLL、`resources` 和 `locales` 資料夾保留在一起，執行 **AI Friends Kart.exe**；按 **F11** 切換全螢幕。請勿停用 Windows 安全防護。封裝與自動化檢查成功，不代表已驗證原生 Windows GPU、效能或輸入裝置相容性。
 
 ## 操作方式
 
@@ -89,7 +81,7 @@
 | `S` / `↓` | 煞車；持續按住則倒車 |
 | `Space` | 煞車但不倒車 |
 | `Left Shift` + 轉向 | 漂移；放開 Shift 觸發蓄力漂移加速 |
-| `E` | 使用取得的道具 |
+| `E` / `R` | 使用對應固定槽位中的道具 |
 | `Z` / `C` | 切換追蹤鏡頭 |
 | 按住滑鼠右鍵 | 暫時後視 |
 | 點擊賽道，再移動滑鼠 | 環繞鏡頭 |
@@ -97,7 +89,7 @@
 | `Esc` | 暫停並釋放滑鼠游標 |
 | `P` / 暫停按鈕 | 暫停／繼續 |
 
-若無法鎖定滑鼠游標，可按住滑鼠左鍵拖曳來環顧四周。觸控按鈕提供油門、轉向、倒車、煞車與漂移；點一下道具面板即可使用道具。選單按鈕支援原生鍵盤操作。
+若無法鎖定滑鼠游標，可按住左鍵拖曳來環顧四周。觸控按鈕提供油門、轉向、倒車、煞車與漂移，並有獨立的 `E`、`R` 道具按鈕。選單按鈕支援原生鍵盤操作。手機遊戲區域抑制誤選文字、拖曳圖片、右鍵選單與干擾手勢，同時保留必要的輸入欄位操作與捲動。無法保證攔截所有系統輔助縮放；這些改動尚未經過實際手機 QA。
 
 ## 開發與建置
 
@@ -120,9 +112,9 @@ npm run test:dist
 npm run preview
 ```
 
-請透過 HTTP(S) 提供完整的 **`dist/`** 目錄，不要以 `file://` 直接開啟 `index.html`。相對路徑同時支援網域根目錄與儲存庫子目錄。請將授權聲明、`source.html` 和 `source.zip` 與遊戲一併保留。
+請透過 HTTP(S) 提供完整的 **`dist/`** 目錄，不要以 `file://` 直接開啟 `index.html`。相對路徑在網域根目錄與子目錄下的部署，需依實際發行套件與發行驗證說明確認。請將授權聲明、`source.html` 和 `source.zip` 與遊戲一併保留。
 
-完整複製儲存庫時，會包含 `public/assets/drivers/` 中的六個駕駛模型壓縮檔，以及 `public/assets/portraits/` 中的六個獨立站姿肖像壓縮檔。部署時提供的精簡版 `source.zip` 包含程式碼、測試、兩份校驗清單、建置檔案與原創可編輯資產，但不含這兩組角色壓縮檔。解壓縮後，可用以下方式還原：
+完整複製儲存庫時，會包含 `public/assets/drivers/` 中的六個駕駛模型壓縮檔，以及 `public/assets/portraits/` 中的六個獨立站姿肖像壓縮檔。Release 提供的精簡版 `source.zip` 包含程式碼、測試、兩份校驗清單、建置檔案與原創可編輯資產，但不含這兩組角色壓縮檔。解壓縮後，可用以下方式還原：
 
 ```sh
 npm ci
@@ -138,7 +130,9 @@ npm run build
 
 ### GitHub Pages
 
-[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會在發佈前檢查、測試及建置所選原始碼。穩定版位於網站根目錄，獨立預覽位於 `/dev/`。請依目前分支的工作流程觸發條件與發佈選項操作；dev 部署必須保留穩定版根目錄。發行套件必須使用對應版本標籤的相同原始碼。
+開發版版本號附加實際 commit 雜湊值的前六碼。發行版本從 `main` 建立 tag，套件必須使用該標籤對應的原始碼；dev 部署必須保留 main 網站根目錄。
+
+[Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會在發佈前檢查、測試及建置所選原始碼。main 版位於網站根目錄，獨立預覽位於 `/dev/`。請依目前分支的工作流程觸發條件與發佈選項操作；dev 部署必須保留main 根目錄。發行套件必須使用對應版本標籤的相同原始碼。
 
 ### 專案結構
 
@@ -156,6 +150,8 @@ npm run build
 支援的模型與驗證規則詳見[骨架與匯入規格](docs/local-import.md)。
 
 ## 驗證
+
+歷史 CPU 候選 21 的結果僅適用於單道具槽 baseline，不能視為新雙槽玩法平衡或公平性的認證。尚未進行實際手機 QA。
 
 自動化檢查涵蓋不依賴引擎的比賽／輸入邏輯、真實 PlayCanvas CPU／null-device 骨架載入、模擬介面整合，以及靜態發佈檔案檢查。這些檢查無法證實 GPU 畫面效果、原生滑鼠鎖定行為或效能。詳見[測試涵蓋範圍與限制](docs/MIGRATION-PARITY.md)及[海洋著色器回歸測試說明](docs/WATER-REGRESSION.md)。
 

@@ -146,7 +146,13 @@ Actual gameplay acceleration, HUD-converted speed and steering each use a declar
 fixed independent scale mapped to 0–5 separated segments. Fractional segments are
 filled proportionally (3.2 means three full cells and 20% of the fourth), with actual
 units and signed current/candidate changes alongside. The zero-segment lower bound
-is not zero performance. Stability remains a neutral design estimate, explicitly
+is not zero performance. The fixed ranges are acceleration **9–32 game units/s²**,
+speed **120–190 km/h (HUD)** and steering **5.5–9.5 game steering units**. The expanded
+acceleration display accommodates the land-balance coefficients combined with the
+0.8–1.2 part clamp; the steering ceiling also covers a 1.12 character coefficient
+combined with the 1.15 part clamp (9.016 game steering units). These display scales
+never feed back into vehicle tuning.
+Stability remains a neutral design estimate, explicitly
 inactive; battery/wear metadata cannot masquerade as a gameplay benefit.
 
 The real PlayCanvas scene has an opaque cream/mint workshop, a detailed workbench,

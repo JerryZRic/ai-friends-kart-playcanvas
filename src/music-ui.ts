@@ -3,14 +3,16 @@ import {createBackgroundMusic} from './background-music';
 export type BackgroundMusic = ReturnType<typeof createBackgroundMusic>;
 
 /** Each full HTML page has one owner; audio never joins a required resource gate. */
-export function raceMusicUrl(map?: string): string {
-  return map === 'waterpark' ? './assets/music/dfy_fusion.mp3' : './assets/music/dfy_bgm.mp3';
+export const LAND_RACE_MUSIC = Object.freeze(Array.from({length: 6}, (_, i) => `./assets/music/dfy0${i + 1}.mp3`));
+/** Called once by the race shell at each new start/restart, never on resume. */
+export function raceMusicUrl(map?: string, random: () => number = Math.random): string {
+  if (map === 'waterpark') return './assets/music/dfy_water.mp3';
+  return LAND_RACE_MUSIC[Math.floor(random() * LAND_RACE_MUSIC.length)];
 }
 
 export function getDocumentMusic(document: Document, map?: string, preloadTheme = false): BackgroundMusic | null {
   if (!document.defaultView || !document.addEventListener) return null;
-  const music=createBackgroundMusic({document, window: document.defaultView, preloadTheme, raceUrl: raceMusicUrl(map)});
-  if(map!==undefined)music.setRaceUrl?.(raceMusicUrl(map));
+  const music=createBackgroundMusic({document, window: document.defaultView, preloadTheme});
   return music;
 }
 

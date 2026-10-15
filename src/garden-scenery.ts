@@ -28,7 +28,7 @@ export interface GardenSceneGeometry extends LandSceneGeometry {
  enrichmentAssemblies:any[];
  budget:{batches:number;triangles:number;vertices:number};
 }
-export const GARDEN_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Verdant Canopy garden stone leaf and laminated timber',ambient:'#c4d9b5',sky:'#e4efd5',fogStart:1050,fogEnd:2250,cameraName:'Verdant Canopy chase camera',sunName:'Verdant Canopy warm morning sunlight',sunColor:'#fff2d5',sunIntensity:1.6,sunEuler:[43,-36,0] as const});
+export const GARDEN_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Verdant Canopy garden stone leaf and laminated timber',ambient:'#d9e8c6',sky:'#edf5dc',fogStart:1050,fogEnd:2250,cameraName:'Verdant Canopy chase camera',sunName:'Verdant Canopy warm morning sunlight',sunColor:'#fff2d5',sunIntensity:1.6,sunEuler:[43,-36,0] as const});
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
 const clamp=(x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
 const smooth=(x:number)=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
@@ -40,27 +40,27 @@ const yAt=(f:pc.Vec3[],x:number,z:number)=>{const[a,b,c]=f,den=(b.x-a.x)*(c.z-a.
 /** Source-authored static botanical garden. All geometry and camera triangles
  * share these exact buffers; no downloaded art, new physics or shaders. */
 export function buildGardenSceneGeometry(course:SceneryForkCourse):GardenSceneGeometry {
- const meadow=new Batch('Garden connected sunlit meadow','#95af6a',1,'grass');
- const fern=new Batch('Garden connected deep fern terraces','#638e67',1,'grass');
- const soil=new Batch('Garden planted rich soil','#695438',1,'stone');
- const road=new Batch('Garden warm dressed garden paving','#c1b99b',.96,'asphalt');
- const shoulder=new Batch('Garden graded gravel shoulder stitches','#b6a989',1,'stone');
- const foundationStone=new Batch('Garden whole footprint limestone foundations','#a39576',1,'stone');
- const planterStone=new Batch('Garden pale limestone planter rims','#ddd0a6',.94,'stone');
- const timber=new Batch('Garden opaque honey laminated timber','#ba8b50',.9,'wood');
- const darkTimber=new Batch('Garden opaque umber truss webs','#86633d',.98,'wood');
- const bronze=new Batch('Garden quiet bronze bearing hardware','#a08640',.6,'none',.45);
- const leaf=new Batch('Garden emerald modeled leaf surfaces','#37795d',.8,'grass');
- const newLeaf=new Batch('Garden lime new modeled leaf surfaces','#a4b755',.85,'grass');
- const underside=new Batch('Garden teal modeled leaf underside','#4b8073',.92,'grass');
- const ivory=new Batch('Garden warm ivory petal solids','#eee0a8',.85,'none');
- const blush=new Batch('Garden muted coral petal solids','#d9947b',.83,'none');
- const amber=new Batch('Garden amber petal and seed heart','#d7b757',.78,'none');
- const stem=new Batch('Garden continuous green stems and midribs','#557845',.95,'wood');
- const labelWood=new Batch('Garden specimen board and bench oak','#9c7851',.95,'wood');
- const inlay=new Batch('Garden ivory inset route glyphs','#f3e7ba',.91,'stone');
- const seedShell=new Batch('Garden seed section chestnut shell','#906141',.94,'wood');
- const seedFlesh=new Batch('Garden seed section warm heartwood','#d2af74',.93,'wood');
+ const meadow=new Batch('Garden connected sunlit meadow','#afd285',1,'grass');
+ const fern=new Batch('Garden connected deep fern terraces','#7cac79',1,'grass');
+ const soil=new Batch('Garden planted rich soil','#806a52',1,'stone');
+ const road=new Batch('Garden warm dressed garden paving','#e4d7b9',.96,'asphalt');
+ const shoulder=new Batch('Garden graded gravel shoulder stitches','#d6cbad',1,'stone');
+ const foundationStone=new Batch('Garden whole footprint limestone foundations','#c7bd9e',1,'stone');
+ const planterStone=new Batch('Garden pale limestone planter rims','#f6edcf',.94,'stone');
+ const timber=new Batch('Garden opaque honey laminated timber','#e0c897',.9,'wood');
+ const darkTimber=new Batch('Garden opaque umber truss webs','#a08b63',.98,'wood');
+ const bronze=new Batch('Garden quiet bronze bearing hardware','#b5a472',.6,'none',.45);
+ const leaf=new Batch('Garden emerald modeled leaf surfaces','#418768',.8,'grass');
+ const newLeaf=new Batch('Garden lime new modeled leaf surfaces','#bfd178',.85,'grass');
+ const underside=new Batch('Garden teal modeled leaf underside','#709b80',.92,'grass');
+ const ivory=new Batch('Garden warm ivory petal solids','#f5d7df',.85,'none');
+ const blush=new Batch('Garden muted coral petal solids','#eaa8c1',.83,'none');
+ const amber=new Batch('Garden amber petal and seed heart','#eacb99',.78,'none');
+ const stem=new Batch('Garden continuous green stems and midribs','#668b55',.95,'wood');
+ const labelWood=new Batch('Garden specimen board and bench oak','#bfa47b',.95,'wood');
+ const inlay=new Batch('Garden ivory inset route glyphs','#fff4da',.91,'stone');
+ const seedShell=new Batch('Garden seed section chestnut shell','#a67d60',.94,'wood');
+ const seedFlesh=new Batch('Garden seed section warm heartwood','#e4c798',.93,'wood');
  const batches=[meadow,fern,soil,road,shoulder,foundationStone,planterStone,timber,darkTimber,bronze,leaf,newLeaf,underside,ivory,blush,amber,stem,labelWood,inlay,seedShell,seedFlesh];
  const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish],sourceFaces=sampleRoadFootprints(edges,1.65),roadIndex=new RoadFootprintIndex(sourceFaces),plots=GARDEN_LANDMARKS.plots;
  const props:LandPropPlacement[]=[],roadSamples:GardenSceneGeometry['roadSamples']=[],routeRoadSamples:GardenSceneGeometry['routeRoadSamples']=[],roadFaces:Face[]=[],roadUndersideFaces:Face[]=[],shoulderFaces:Face[]=[];
@@ -331,6 +331,42 @@ export function buildGardenSceneGeometry(course:SceneryForkCourse):GardenSceneGe
   plantedBed('garden-enrichment-return-high',course.commonFinish,400,34,11,3.5,.55,3,6.2);
  });
 
+ // Dev polish uses the existing two nursery pergolas, retaining their open
+ // bays. Repeated cream edge profiles and rose planters give the court a
+ // coherent garden identity without adding a generic field of small props.
+ composition('garden-polish-nursery-fascia-and-rose-planters',()=>{
+  for(const [wing,s,offset,width,height]of [[0,789,-41,15,7.2],[1,810,-43,17,9.0]]){
+   const {p,yaw}=site(course.commonStart,s,offset),baseY=groundY(p.x,p.z)+.35,at=local(vec(p.x,baseY,p.z),yaw);
+   const put=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>box('garden-polish-'+kind,b,at(x,y,z),vec(w,h,d),yaw,'detail');
+   for(const z of [-6.68,6.68])put('nursery-cream-fascia',planterStone,0,height+.13*z+.23,z,width+1.7,.32,.20);
+   for(const side of [-1,1])beam('garden-polish-sloping-side-fascia',planterStone,at(side*(width/2+.70),height+.13*(-6.6)+.23,-6.6),at(side*(width/2+.70),height+.13*6.6+.23,6.6),.22,.32,'detail');
+   for(const z of [-4.8,-1.6,1.6,4.8])put('nursery-roof-raised-seam',inlay,0,height+.13*z+.54,z,width+1.2,.12,.16);
+   for(const x of [-width/2+1,width/2-1])for(const z of [-4.6,4.6]){
+    const footAt=at(x,0,z),shoe=foundations.find(f=>f.kind==='garden-enrichment-nursery-wing-'+wing+'-column-foot-'+x+'-'+z)!;
+    put('nursery-column-base-collar',planterStone,x,shoe.top-baseY+.49,z,1.55,.16,1.55);
+    put('nursery-column-capital',planterStone,x,height+.13*z-.96,z,1.22,.32,1.22);
+    const inward=x<0?1:-1;
+    beam('garden-polish-open-knee-brace',darkTimber,at(x,height+.13*z-2.0,z),at(x+inward*1.35,height+.13*z-.84,z),.18,.22,'detail');
+   }
+   // New planter feet use the full emitted terrain footprint, not one height
+   // sample. They are outside the old literal open-bay witness volume.
+   const q=at(0,0,-8.3),f=foundation('garden-polish-rose-planter-foot-'+wing,rect(q,4.8,2.1,yaw),.16),pa=local(vec(q.x,f.top,q.z),yaw);
+   const pot=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>box('garden-polish-'+kind,b,pa(x,y,z),vec(w,h,d),yaw,'detail');
+   pot('planter-stepped-foot',planterStone,0,.15,0,4.7,.30,2.0);
+   pot('planter-body',planterStone,0,.70,0,4.3,.80,1.7);
+   pot('planter-soil',soil,0,1.12,0,4.1,.14,1.5);
+   for(const z of [-.83,.83])pot('planter-rim',inlay,0,1.19,z,4.6,.24,.24);
+   for(const x of [-2.17,2.17])pot('planter-rim',inlay,x,1.19,0,.24,.24,1.42);
+   for(const [i,x]of [-1.35,0,1.35].entries()){
+    const h=2.35+(i%2)*.30;
+    beam('garden-polish-rose-stem',stem,pa(x,1.15,0),pa(x,h,0),.12,.12,'detail');
+    for(const side of [-1,1])beam('garden-polish-rose-leaf',leaf,pa(x,1.72,0),pa(x+side*.42,1.95,side*.23),.16,.32,'detail');
+    loft('garden-polish-layered-rose-cup',blush,[{p:pa(x,h-.15,0),rx:.20,rz:.20},{p:pa(x,h+.10,0),rx:.52,rz:.52},{p:pa(x,h+.39,0),rx:.34,rz:.34}],6,'detail');
+    loft('garden-polish-rose-inner-bud',ivory,[{p:pa(x,h+.20,0),rx:.24,rz:.24},{p:pa(x,h+.51,0),rx:.15,rz:.15}],6,'detail');
+   }
+  }
+ });
+
  // Each target is a centroid of emitted hero triangles, never a guessed icon.
  for(const sight of sightlines){const seed=[...sight.target];let best=Infinity;for(const c of components.filter(c=>c.landmark===sight.targetId))for(const face of facesFor(c)){const p=[0,1,2].map(k=>(face[0][k]+face[1][k]+face[2][k])/3),d=p.reduce((n,v,k)=>n+(v-seed[k])**2,0);if(d<best){best=d;sight.target=p;}}}
  // Every non-road source face is represented exactly once: the separately
@@ -343,6 +379,6 @@ export function buildGardenSceneGeometry(course:SceneryForkCourse):GardenSceneGe
  for(const group of enrichmentAssemblies)meshBlock(group.id+'-exact-triangles',group.pieces.flatMap((piece:any)=>piece.componentIndices.flatMap((i:number)=>facesFor(components[i]))));
  const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const k=i%3;min[k]=Math.min(min[k],b.positions[i]);max[k]=Math.max(max[k],b.positions[i]);}
  const budget={batches:used.length,triangles:used.reduce((n,b)=>n+b.indices.length/3,0),vertices:used.reduce((n,b)=>n+b.positions.length/3,0)};
- if(budget.batches!==21||budget.triangles>=120000||budget.triangles-108557>10000||budget.vertices>=200000)throw new Error('Garden emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
+ if(budget.batches!==21||budget.triangles>=120000||budget.triangles-108557>12000||budget.vertices>=200000)throw new Error('Garden emitted geometry budget exceeded: '+JSON.stringify({budget,batches:used.map(b=>[b.name,b.indices.length/3,b.positions.length/3])}));
  return{version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,roadFaces,roadUndersideFaces,shoulderFaces,props,structures:[{kind:'gallery',from:arbor.from,to:arbor.to,overheadClearance:22.95}],bounds:{min,max},cameraObstacles,components,landmarks,foundations,groundedDetails,railMembers,wheelContacts:[],structuralContacts,sightlines,landforms,terrainGrid,terrainVertices,terrainTriangles,terrainExposure,terrainPartitions,arbor,assemblies,budget,enrichmentAssemblies};
 }

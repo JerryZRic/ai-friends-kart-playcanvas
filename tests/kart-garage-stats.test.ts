@@ -54,7 +54,7 @@ test('independent, documented game-unit ranges map linearly and clamp hostile va
 });
 
 test('rendering preserves fractional widths rather than rounding a 3.2 rating to four cells', () => {
-  const current = {...standard, acceleration: 19.68};
+  const current = {...standard, acceleration: 23.72}; // 9 + (32 - 9) × 3.2 / 5
   const html = render(current);
   assert.deepEqual(fills(html).slice(0, 5), [100, 100, 100, 20, 0]);
   assert.match(html, /aria-valuenow="3.2"/);
@@ -62,7 +62,7 @@ test('rendering preserves fractional widths rather than rounding a 3.2 rating to
   assert.equal((html.match(/role="meter"/g) || []).length, 3);
   assert.equal((html.match(/class="garage-stat-segment" aria-hidden="true"/g) || []).length, 15);
   assert.match(html, /aria-valuemin="0" aria-valuemax="5"/);
-  assert.match(html, /加速 12–24、极速 120–190、操控 5.5–9/);
+  assert.match(html, /加速 9–32、极速 120–190、操控 5\.5–9\.5/);
   assert.match(html, /0 格为标尺下限，不代表零性能/);
 });
 
@@ -122,7 +122,7 @@ test('all characters, authored presets and 55 real full kits keep finite meaning
     assert.equal(fills(html).length, 15); assert.ok(fills(html).every(fill => fill >= 0 && fill <= 100));
     assert.doesNotMatch(html, /NaN|Infinity/);
   }
-  near(garageStatScore('acceleration', combined('gpt', defaultBuild).acceleration), 2.5);
+  near(garageStatScore('acceleration', combined('gpt', defaultBuild).acceleration), 45 / 23); // (18 - 9) / (32 - 9) × 5
   const [balanced, corner, straight, hill] = kartPresets.map(preset => combined('gpt', preset.build));
   assert.ok(garageStatScore('handling', corner.handling) > garageStatScore('handling', balanced.handling));
   assert.ok(garageStatScore('speed', straight.speed) > garageStatScore('speed', balanced.speed));

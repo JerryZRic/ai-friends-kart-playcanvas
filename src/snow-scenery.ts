@@ -27,7 +27,7 @@ export interface SnowSceneGeometry extends LandSceneGeometry {
  enrichmentAssemblies:{id:string;pieces:(Component&{id:string;supportOwner:string[];supportIndexStart?:number;supportIndexEnd?:number})[];groundContacts:{pieceId:string;footprint:number[][];bottom:number;terrainLow:number;terrainHigh:number;bottomIndexStart:number;bottomIndexEnd:number;terrainPenetrationMetres:number}[]}[];
  budget:{batches:number;triangles:number;vertices:number};
 }
-export const SNOW_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'frostloop original snow slate and depot textures',ambient:'#bccfda',sky:'#c3d9e4',fogStart:980,fogEnd:2200,cameraName:'Frostloop Depot chase camera',sunName:'Frostloop low winter sun',sunColor:'#fff0d5',sunIntensity:1.55,sunEuler:[39,-32,0] as const});
+export const SNOW_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'frostloop original snow slate and depot textures',ambient:'#d1e6f2',sky:'#d9effa',fogStart:980,fogEnd:2200,cameraName:'Frostloop Depot chase camera',sunName:'Frostloop low winter sun',sunColor:'#fff0d5',sunIntensity:1.55,sunEuler:[39,-32,0] as const});
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
 const clamp=(x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
 const smooth=(x:number)=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
@@ -44,29 +44,29 @@ const plots=[
 /** Original static LAND geometry. Every mesh, footing and camera blocker derives
  * from these sources; no terrain or building changes the shared driving model. */
 export function buildSnowSceneGeometry(course:SceneryForkCourse):SnowSceneGeometry {
- const ground=new Batch('Snow connected wind sculpted terrain','#dbe9ed',1,'grass');
- const slate=new Batch('Snow connected blue slate ribs','#4c697d',.98,'stone');
- const snowShade=new Batch('Snow compressed leeside strata','#a9c4d0',1,'stone');
- const supportStone=new Batch('Snow exact road shoulder and support','#afcbd5',1,'stone');
- const road=new Batch('Snow packed racing ribbon','#bdced3',1,'asphalt');
- const paving=new Batch('Snow service paving and edge stones','#7a939b',.98,'stone');
- const foundationStone=new Batch('Snow foundation and platform stone','#859ba4',.99,'stone');
- const paleStone=new Batch('Snow warm pale station masonry','#d4cfb8',.98,'stone');
- const darkStone=new Batch('Snow recessed masonry and mortar','#677d86',.98,'stone');
- const teal=new Batch('Snow teal structural painted timber','#496d73',.95,'wood');
- const timber=new Batch('Snow aged structural timber','#785a40',.97,'wood');
- const boards=new Batch('Snow worn cart and bench boards','#a38157',.97,'wood');
- const roofSlate=new Batch('Snow thick slate roof planes','#405b70',.96,'stone');
- const roofSnow=new Batch('Snow seated roof caps','#e4eff0',1,'grass');
- const bronze=new Batch('Snow clock and signal bronze','#b99757',.48,'none',.64);
- const glass=new Batch('Snow recessed cool window glass','#668c9b',.32,'none',.1);
+ const ground=new Batch('Snow connected wind sculpted terrain','#f0f8fc',1,'grass');
+ const slate=new Batch('Snow connected blue slate ribs','#81a9bf',.98,'stone');
+ const snowShade=new Batch('Snow compressed leeside strata','#badbea',1,'stone');
+ const supportStone=new Batch('Snow exact road shoulder and support','#c6e4ee',1,'stone');
+ const road=new Batch('Snow packed racing ribbon','#bed7e2',1,'asphalt');
+ const paving=new Batch('Snow service paving and edge stones','#89afc2',.98,'stone');
+ const foundationStone=new Batch('Snow foundation and platform stone','#a4c8d8',.99,'stone');
+ const paleStone=new Batch('Snow warm pale station masonry','#f5f0df',.98,'stone');
+ const darkStone=new Batch('Snow recessed masonry and mortar','#789cb0',.98,'stone');
+ const teal=new Batch('Snow teal structural painted timber','#4989a6',.95,'wood');
+ const timber=new Batch('Snow aged structural timber','#8e7160',.97,'wood');
+ const boards=new Batch('Snow worn cart and bench boards','#c5a57e',.97,'wood');
+ const roofSlate=new Batch('Snow thick slate roof planes','#557f9a',.96,'stone');
+ const roofSnow=new Batch('Snow seated roof caps','#ffffff',1,'grass');
+ const bronze=new Batch('Snow clock and signal bronze','#d4ac67',.48,'none',.64);
+ const glass=new Batch('Snow recessed cool window glass','#70bfdc',.32,'none',.1);
  const steel=new Batch('Snow static rails axles and ironwork','#67747a',.50,'none',.68);
- const oxide=new Batch('Snow oxide plow steel','#805b4d',.76,'none',.46);
+ const oxide=new Batch('Snow oxide plow steel','#d77654',.76,'none',.46);
  const rubber=new Batch('Snow dark wheel treads','#303e45',.91,'asphalt');
- const evergreen=new Batch('Snow sparse rooted fir boughs','#426a68',.97,'grass');
+ const evergreen=new Batch('Snow sparse rooted fir boughs','#5a9b9c',.97,'grass');
  const inlay=new Batch('Snow route marker ivory relief','#eee3c4',.93,'stone');
- const burlap=new Batch('Snow tied yard cargo','#ae9673',1,'wood');
- const warm=new Batch('Snow warm window and signal inserts','#e7ba77',.54,'none');
+ const burlap=new Batch('Snow tied yard cargo','#d6c4a5',1,'wood');
+ const warm=new Batch('Snow warm window and signal inserts','#ffd497',.54,'none');
  const batches=[ground,slate,snowShade,supportStone,road,paving,foundationStone,paleStone,darkStone,teal,timber,boards,roofSlate,roofSnow,bronze,glass,steel,oxide,rubber,evergreen,inlay,burlap,warm];
  const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
  const sourceFaces=sampleRoadFootprints(edges,1.65),roadIndex=new RoadFootprintIndex(sourceFaces);
@@ -534,6 +534,74 @@ export function buildSnowSceneGeometry(course:SceneryForkCourse):SnowSceneGeomet
   for(const x of [-7,5]){const base=own(box('snow-enrichment-yard-stock-bearer',timber,at(x,.45,0),vec(3.5,.9,7),yaw)!,[slab.part.id]);const b=oxide,start=b.positions.length/3,ii=b.indices.length,xs=[-3.5,-1.75,0,1.75,3.5],front=(xx:number,y:number,side:number)=>at(x+1.05-.13*xx*xx-side*.30,y,xx);for(let i=0;i<xs.length-1;i++){const a=xs[i],c=xs[i+1];for(const side of [0,1])b.quad(front(a,.9,side),front(c,.9,side),front(a,3.9,side),front(c,3.9,side));b.quad(front(a,.9,0),front(c,.9,0),front(a,.9,1),front(c,.9,1));b.quad(front(a,3.9,0),front(c,3.9,0),front(a,3.9,1),front(c,3.9,1));}for(const xx of [xs[0],xs.at(-1)!])b.quad(front(xx,.9,0),front(xx,.9,1),front(xx,3.9,0),front(xx,3.9,1));own(closedPart('snow-enrichment-yard-curved-plow-blade-stock',b,start,'structure',ii),[base.id]);}
   finishAssembly();
  };yard();
+ // Dev visual polish: small reusable pieces sit on surveyed existing building
+ // foundations. All original surfaces, road geometry and gameplay remain intact.
+ // The snowy blue palette leaves warm color only on depot utility equipment.
+ const polishBox=(kind:string,b:Batch,at:ReturnType<typeof local>,yaw:number,x:number,y:number,z:number,w:number,h:number,d:number)=>own(box('snow-polish-'+kind,b,at(x,y,z),vec(w,h,d),yaw,'detail')!);
+ const polishBeam=(kind:string,b:Batch,a:pc.Vec3,c:pc.Vec3,w:number,d=w)=>{beam('snow-polish-'+kind,b,a,c,w,d,'detail');return ownLast([]);};
+ const lodgeTrim=(plotIndex:number,yaw:number,w:number,d:number,eave:number,rise:number,ridge:number)=>{
+  const p=plots[plotIndex],seat=foundations.find(f=>f.kind===p.kind)!;
+  assembly=beginAssembly('snow-polish-'+p.kind+'-roof-and-utilities');
+  const at=local(vec(p.x,seat.top,p.z),yaw),put=(k:string,b:Batch,x:number,y:number,z:number,ww:number,hh:number,dd:number)=>polishBox(k,b,at,yaw,x,y,z,ww,hh,dd);
+  // Paired fascia follows the actual unequal gable instead of a painted stripe.
+  for(const z of [-d/2-.06,d/2+.06])for(const side of [-1,1])polishBeam('gable-ice-fascia',inlay,at(side*w/2,eave+.18,z),at(ridge,eave+rise+.18,z),.28,.36);
+  for(const side of [-1,1]){
+   put('eave-snow-lip',roofSnow,side*w/2,eave+.62,0,.38,.24,d+.4);
+   put('eave-drip-edge',teal,side*w/2,eave-.03,0,.20,.22,d+.35);
+   for(let i=0;i<5;i++)put('eave-bracket',teal,side*(w/2-.6),eave-.33,-d/2+1.5+i*(d-3)/4,1.2,.20,.22);
+  }
+  // A terraced vent collar and hood read as utility modeling on the back roof.
+  const cx=w*.24,cz=d*.22,roofY=eave+rise*(1-(cx-ridge)/(w/2-ridge));
+  put('chimney-plinth',paleStone,cx,roofY+.55,cz,1.9,1.1,1.8);
+  put('chimney-stack',paleStone,cx,roofY+1.55,cz,1.2,1.8,1.1);
+  put('chimney-collar',teal,cx,roofY+2.12,cz,1.52,.25,1.42);
+  for(const side of [-1,1])put('chimney-hood-leg',steel,cx+side*.5,roofY+2.48,cz,.12,.5,.85);
+  put('chimney-hood',roofSlate,cx,roofY+2.79,cz,2.05,.18,1.85);
+  put('chimney-snow-cap',roofSnow,cx,roofY+2.97,cz,2.12,.2,1.92);
+  // Low facade sill rails and separate shutter battens keep real apertures open.
+  for(const x of [-w*.31,w*.31]){
+   put('window-planter-seat',teal,x,2.36,-d/2+.76,3.1,.3,.8);
+   put('window-planter-snow',roofSnow,x,2.6,-d/2+.76,2.9,.18,.64);
+   for(const xx of [-1.62,1.62])put('window-shutter',teal,x+xx,4.5,-d/2+.76,.43,3.4,.22);
+  }
+  finishAssembly();
+ };
+ lodgeTrim(0,.20,20,14,8.2,4.2,-1.6);
+ lodgeTrim(2,Math.PI/2,38,23,8.2,3.9,-2);
+ // A coordinated rescue-sled and grit-service group belongs on the existing
+ // open annex platform, never along the racing ribbon or camera sweep.
+ {
+  const parent=enrichmentAssemblies.find(a=>a.id==='snow-enrichment-station-near-annex')!;
+  const platform=parent.pieces.find(p=>p.kind==='snow-enrichment-platform-ground-seat')!;
+  const yaw=Math.PI/2,at=local(vec(432.1,platform.max[1],-584),yaw);
+  assembly=beginAssembly('snow-polish-annex-rescue-platform');
+  const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+  for(const x of [-10.4,10.4]){
+   put('service-locker-foot',teal,x,.14,0,2.5,.28,1.7);
+   put('rescue-locker-body',oxide,x,1.48,0,2.3,2.4,1.5);
+   put('rescue-locker-top',roofSnow,x,2.79,0,2.58,.22,1.78);
+   put('locker-door',inlay,x,1.50,-.77,1.95,2.05,.10);
+   put('locker-cross-vertical',oxide,x,1.68,-.835,.25,1.1,.04);
+   put('locker-cross-horizontal',oxide,x,1.68,-.835,1.10,.25,.04);
+   for(const sign of [-1,1])put('locker-hinge',steel,x-sign*.83,1.50+sign*.65,-.84,.14,.25,.12);
+  }
+  for(const x of [-6,6]){
+   for(const side of [-1,1]){
+    const path=[at(x+side*.72,.12,-1.15),at(x+side*.72,.12,1.2),at(x+side*.72,.30,1.68),at(x+side*.72,.64,1.85)];
+    own(tube('snow-polish-sled-curled-runner',teal,path,path.map(()=>.11),8,true,true,'detail')!);
+    for(const z of [-.8,.8])put('sled-runner-deck-bearing',steel,x+side*.72,.31,z,.16,.26,.18);
+   }
+   for(let i=0;i<5;i++)put('sled-deck-slat',boards,x-.8+i*.4,.48,.18,.34,.16,2.55);
+   put('sled-rescue-pack',oxide,x,.87,0,1.12,.62,1.45);
+   for(const z of [-.47,.47])put('sled-pack-strap',inlay,x,.89,z,1.15,.66,.10);
+  }
+  // Slatted bench and low snow shovel rack at platform rear, four open gaps.
+  for(const x of [-1.45,1.45])put('bench-foot',teal,x,.42,2.3,.18,.84,.75);
+  for(const z of [2.0,2.3,2.6])put('bench-slat',boards,0,.89,z,3.5,.14,.25);
+  for(const x of [-1.45,1.45])put('bench-back-post',teal,x,1.12,2.68,.13,1.4,.13);
+  for(const y of [1.35,1.65])put('bench-back-slat',boards,0,y,2.68,3.5,.20,.15);
+  finishAssembly();
+ }
  const enrichmentTriangles=enrichmentAssemblies.reduce((n,a)=>n+a.pieces.reduce((m,p)=>m+(p.indexEnd-p.indexStart)/3,0),0);
  assertRuntimeAppendGeometry('Snow',batches,originalTriangleCount,enrichmentTriangles,12000);
 

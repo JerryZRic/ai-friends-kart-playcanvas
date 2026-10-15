@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {kartPresets,getNpcPresets,NPC_THEME_BUDGET} from '../src/kart-presets';
 import {buildStats,buildParts,KART_SLOTS,validateBuild,kartTuning,VEHICLE_CLAMPS,defaultGarageState,saveGarageState,loadGarageState} from '../src/kart-build';
-import {CHARACTER_PROFILES} from '../src/character-profiles';
+import {CHARACTER_PROFILES,WATER_CHARACTER_MULTIPLIERS} from '../src/character-profiles';
 
 test('five authored roles are freely editable authentic mixed builds, not power tiers',()=>{
  assert.deepEqual(kartPresets.map(p=>p.id),['balanced','corner','straight','start-hill','impact']);
@@ -30,7 +30,10 @@ test('every preset composes existing character identity and shared clamps',()=>{
   assert.equal(t.acceleration,18*c.acceleration*t.buildMultipliers.acceleration);
   assert.equal(t.steering,7*c.steering*t.buildMultipliers.handling);
   for(const [name,range] of Object.entries(VEHICLE_CLAMPS))assert.ok(t.buildMultipliers[name]>=range[0]&&t.buildMultipliers[name]<=range[1]);
-  assert.equal(kartTuning(c.id,'waterpark',p.build).maxSpeed,22*c.topSpeed);
+  const water=kartTuning(c.id,'waterpark',p.build),released=WATER_CHARACTER_MULTIPLIERS[c.id];
+  assert.equal(water.maxSpeed,22*released.topSpeed);
+  assert.equal(water.acceleration,8.6*released.acceleration);
+  assert.equal(water.steering,11*released.steering);
  }
 });
 test('saved cars remain six part IDs plus name independent of character selection',()=>{

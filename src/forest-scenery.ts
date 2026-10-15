@@ -37,27 +37,27 @@ const local=(p:pc.Vec3,yaw:number)=>{const c=Math.cos(yaw),s=Math.sin(yaw);retur
 /** Original cedar ridge, working observatory and open canopy viaduct. The
  * renderer and offline exporter consume these identical, source-derived meshes. */
 export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGeometry {
-  const moss=new Batch('Forest connected moss ridge terrain','#50634e',1,'grass');
-  const earth=new Batch('Forest exposed connected earth cuts','#66544a',1,'stone');
-  const shale=new Batch('Forest fractured slate outcrops','#747b79',.98,'stone');
+  const moss=new Batch('Forest connected moss ridge terrain','#78a65d',1,'grass');
+  const earth=new Batch('Forest exposed connected earth cuts','#a08258',1,'stone');
+  const shale=new Batch('Forest fractured slate outcrops','#a1ae98',.98,'stone');
   const road=new Batch('Forest packed cedar needle road','#8d8773',.98,'asphalt');
   const service=new Batch('Forest observatory service stone','#a9a899',.96,'stone');
   const coping=new Batch('Forest pale road coping and foundation caps','#c0bd9f',.95,'stone');
-  const roots=new Batch('Forest dark root collars and soffits','#4b3b32',1,'wood');
-  const bark=new Batch('Forest fissured cedar bark','#766154',1,'wood');
-  const needles=new Batch('Forest shaded cedar bough fans','#1e4540',.99,'grass');
-  const litNeedles=new Batch('Forest sunlit cedar bough fans','#4f7560',.98,'grass');
-  const blueNeedles=new Batch('Forest blue cedar bough fans','#345b58',.99,'grass');
-  const timber=new Batch('Forest laminated viaduct and ranger timber','#8b765e',.94,'wood');
+  const roots=new Batch('Forest dark root collars and soffits','#64513b',1,'wood');
+  const bark=new Batch('Forest fissured cedar bark','#95774f',1,'wood');
+  const needles=new Batch('Forest shaded cedar bough fans','#347b55',.99,'grass');
+  const litNeedles=new Batch('Forest sunlit cedar bough fans','#86bb66',.98,'grass');
+  const blueNeedles=new Batch('Forest blue cedar bough fans','#4c9b7c',.99,'grass');
+  const timber=new Batch('Forest laminated viaduct and ranger timber','#bd995f',.94,'wood');
   const iron=new Batch('Forest dark structural iron','#4c5e5c',.64,'none',.63);
-  const cutWood=new Batch('Forest warm cut timber ends','#b39c74',.94,'wood');
-  const masonry=new Batch('Forest observatory foundation masonry','#b5b09d',.95,'stone');
-  const copper=new Batch('Forest oxidized copper dome and shutters','#649887',.63,'none',.58);
-  const brass=new Batch('Forest weathered brass instruments','#b29a59',.43,'none',.76);
+  const cutWood=new Batch('Forest warm cut timber ends','#e0c28b',.94,'wood');
+  const masonry=new Batch('Forest observatory foundation masonry','#cfcaac',.95,'stone');
+  const copper=new Batch('Forest oxidized copper dome and shutters','#72b49c',.63,'none',.58);
+  const brass=new Batch('Forest weathered brass instruments','#d1b266',.43,'none',.76);
   const glass=new Batch('Forest recessed opaque instrument glass','#445b68',.26,'none',.12);
-  const fern=new Batch('Forest low fern frond clusters','#759365',.99,'grass');
-  const cream=new Batch('Forest ivory survey signs and race marks','#ddd6b1',.87);
-  const signal=new Batch('Forest amber route and shutter signals','#d59256',.8);
+  const fern=new Batch('Forest low fern frond clusters','#a0ca73',.99,'grass');
+  const cream=new Batch('Forest ivory survey signs and race marks','#f2e5b7',.87);
+  const signal=new Batch('Forest amber route and shutter signals','#edac48',.8);
   const batches=[moss,earth,shale,road,service,coping,roots,bark,needles,litNeedles,blueNeedles,timber,iron,cutWood,masonry,copper,brass,glass,fern,cream,signal];
   const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
   const sourceFaces=sampleRoadFootprints(edges),roadIndex=new RoadFootprintIndex(sourceFaces);
@@ -505,6 +505,91 @@ export function buildForestSceneGeometry(course:SceneryForkCourse):ForestSceneGe
   woodlandBed('woodland-bed-bowl-middle',-277,82,24,48,0);
   woodlandBed('woodland-bed-fork-near',-147,377,36,24,.3);
   woodlandBed('woodland-bed-fork-middle',-154,480,38,28,0);
+  // October visual pass: append-only detail in the already reserved landmark
+  // terraces and cedar root groups. Existing indices and camera solids stay
+  // untouched; every piece reuses an existing material batch.
+  const detailBox=(kind:string,b:Batch,p:pc.Vec3,size:pc.Vec3,yaw=0)=>box('forest-polish-'+kind,b,p,size,yaw,false);
+  const detailBeam=(kind:string,b:Batch,a:pc.Vec3,c:pc.Vec3,w:number,d=w)=>beam('forest-polish-'+kind,b,a,c,w,d,false);
+  const detailTube=(kind:string,b:Batch,path:pc.Vec3[],r:number[],sides=8,cap=true)=>tube('forest-polish-'+kind,b,path,r,sides,cap,cap,false);
+  const fronds=(p:pc.Vec3,yaw:number,scale=1)=>{
+    const at=local(p,yaw),start=fern.positions.length/3;
+    // Each frond has a raised midrib and three paired pointed leaflets rather
+    // than a single billboard. Plant bases are sunk into their actual support.
+    for(let j=0;j<5;j++){
+      const a=j*Math.PI*2/5,reach=(.80+(j%2)*.18)*scale;
+      const q=(r:number,y:number,side=0)=>at(Math.cos(a)*r-Math.sin(a)*side,y,Math.sin(a)*r+Math.cos(a)*side);
+      for(let k=0;k<3;k++){
+        const r=(.18+k*.20)*reach,h=(.34+Math.sin(k*.9)*.16)*scale;
+        fern.tri(q(r-.10*scale,h-.08*scale),q(r+.24*scale,h+.04*scale),q(r+.12*scale,h-.035*scale,.23*scale));
+        fern.tri(q(r-.10*scale,h-.08*scale),q(r+.12*scale,h-.035*scale,-.23*scale),q(r+.24*scale,h+.04*scale));
+      }
+      fern.tri(q(.55*reach,.45*scale),q(reach,.18*scale),q(.63*reach,.38*scale,.10*scale));
+      detailBeam('fern-midrib',litNeedles,q(0,-.04*scale),q(.58*reach,.42*scale),.045*scale);
+    }
+    bound('forest-polish-layered-fern-leaflets',fern,start,false);
+  };
+  for(const plot of plotData.filter(p=>p.w)){
+    const base=foundations.find(p=>p.kind===plot.kind)!;
+    const at=local(vec(plot.x,base.top,plot.z),plot.yaw);
+    const put=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>detailBox(kind,b,at(x,y,z),vec(w,h,d),plot.yaw);
+    if(plot.kind==='abandoned-observatory'){
+      // Broken-up facade courses give the cylindrical wall readable scale.
+      for(const y of [3.0,9.9])detailTube('observatory-stone-course',coping,[at(0,y,0),at(0,y+.16,0)],[11.24,11.24],24,false);
+      for(let i=0;i<9;i++){
+        const a=i/9*Math.PI*2,c=at(Math.cos(a)*11.30,7.3,Math.sin(a)*11.30),window=local(c,plot.yaw-a);
+        for(const x of [-.73,.73])detailBox('observatory-window-jamb',cutWood,window(x,0,0),vec(.12,2.65,.17),plot.yaw-a);
+        for(const y of [-1.32,1.32])detailBox('observatory-window-architrave',cutWood,window(0,y,0),vec(1.58,.13,.19),plot.yaw-a);
+        detailBox('observatory-window-mullion',brass,window(0,0,-.005),vec(.055,2.4,.18),plot.yaw-a);
+      }
+      for(const z of [-10,10]){
+        put('observatory-planter-base',timber,14.7,.20,z,2.5,.40,2.5);
+        for(const x of [13.50,15.90])put('observatory-planter-side',cutWood,x,.62,z,.16,.84,2.5);
+        for(const dz of [-1.17,1.17])put('observatory-planter-end',cutWood,14.7,.62,z+dz,2.25,.84,.16);
+        put('observatory-planter-soil',earth,14.7,.75,z,2.16,.24,2.16);
+        fronds(at(14.7,.87,z),plot.yaw,1.05);
+      }
+    }else if(plot.kind==='canopy-viaduct-lookout'){
+      for(let i=0;i<11;i++)put('lookout-deck-board',cutWood,-4.05+i*.81,10.80,0,.74,.045,8.6);
+      for(const side of [-1,1])for(const q of [-3,-1.5,0,1.5,3]){
+        put('lookout-railing-spindle',timber,side*4.3,11.20,q,.115,.95,.115);
+        // The staircase landing keeps its open entrance.
+        if(!(side===1&&q<-2))put('lookout-end-spindle',timber,q,11.20,side*4.3,.115,.95,.115);
+      }
+      for(const x of [-1.6,1.6])put('lookout-bench-foot',roots,x,11.08,3.2,.23,.51,.64);
+      for(const z of [2.93,3.24,3.55])put('lookout-bench-seat',cutWood,0,11.39,z,3.8,.12,.27);
+      for(const x of [-1.65,1.65])put('lookout-bench-back-post',timber,x,11.79,3.52,.12,.82,.12);
+      put('lookout-bench-back',cutWood,0,12.01,3.52,3.8,.28,.10);
+    }else if(plot.kind==='old-forestry-station'){
+      for(const x of [-9.5,-8.4,-7.3,-6.2,.2,1.3,2.4,3.5])put('station-board-batten',cutWood,x,2.9,-5.04,.10,5.8,.13);
+      for(const x of [-8,2]){
+        for(const side of [-1,1])put('station-window-frame',cutWood,x+side*1.13,3.8,-5.13,.13,2.04,.17);
+        for(const y of [2.8,4.8])put('station-window-lintel',cutWood,x,y,-5.13,2.4,.15,.20);
+        put('station-window-sill',cutWood,x,2.76,-5.30,2.5,.14,.50);
+      }
+      // A compact sawbench and a slatted tool crate occupy the existing apron.
+      for(const x of [5.1,8.5])for(const z of [-6.4,-5.35])detailBeam('station-sawbench-leg',timber,at(x,0,z),at(x,1.30,-5.88),.20);
+      put('station-sawbench-top',cutWood,6.8,1.41,-5.88,4.1,.22,1.4);
+      put('station-sawbench-brace',roots,6.8,.57,-5.88,3.4,.15,.15);
+      detailTube('station-cut-billet',bark,[at(5.2,1.91,-5.88),at(8.15,1.91,-5.88)],[.38,.38],8,false);
+      detailTube('station-billet-end',cutWood,[at(8.15,1.91,-5.88),at(8.18,1.91,-5.88)],[.38,.38],8,true);
+      for(const x of [-9.6,-8.2])for(const z of [-7.1,-5.9])put('station-crate-corner',timber,x,.56,z,.12,1.12,.12);
+      for(let k=0;k<3;k++)for(const z of [-7.1,-5.9])put('station-crate-slat',cutWood,-8.9,.22+k*.32,z,1.52,.24,.10);
+      for(let k=0;k<3;k++)for(const x of [-9.6,-8.2])put('station-crate-end',cutWood,x,.22+k*.32,-6.5,.10,.24,1.2);
+      put('station-crate-floor',timber,-8.9,.10,-6.5,1.4,.20,1.2);
+    }
+  }
+  // Deliberate small understory bouquets sit beside ten existing tree groups,
+  // never as another repeated roadside obstacle or a disconnected terrain pad.
+  for(const plan of cedarPlans.filter(p=>p.kind.startsWith('near-route')).slice(0,10)){
+    for(const [dx,dz,size] of [[2.5,1.8,1.35],[-2.2,2.3,1.0],[1.0,-2.8,.85]]){
+      const x=plan.p.x+dx,z=plan.p.z+dz;
+      if(!clearAt(vec(x,0,z),size+1,12))continue;
+      fronds(vec(x,terrainMeshY(x,z)-.05,z),plan.seed*.11,size);
+    }
+    const x=plan.p.x-1.6,z=plan.p.z-2.6,y=terrainMeshY(x,z);
+    detailTube('amber-mushroom-stem',cream,[vec(x,y-.08,z),vec(x,y+.39,z)],[.075,.06],6,true);
+    detailTube('amber-mushroom-cap',signal,[vec(x,y+.36,z),vec(x,y+.47,z),vec(x,y+.54,z)],[.39,.26,.055],8,true);
+  }
   const used=batches.filter(b=>b.indices.length),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const b of used)for(let i=0;i<b.positions.length;i++){const j=i%3;min[j]=Math.min(min[j],b.positions[i]);max[j]=Math.max(max[j],b.positions[i]);}
   return {version:1,trackId:course.id,batches:used,roadSamples,routeRoadSamples,props,structures,roadFaces,roadUndersideFaces,foundations,cameraObstacles,components,landmarks,trestleMembers,trees,groundedDetails,sightlines,dome,woodlandBanks,woodlandBeds,terrainGrid:{minX,minZ,dx,dz,columns:nx+1,rows:nz+1},bounds:{min,max}};
 }

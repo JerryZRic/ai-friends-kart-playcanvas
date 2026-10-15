@@ -29,7 +29,7 @@ export interface AirfieldSceneGeometry extends LandSceneGeometry {
  budget:{batches:number;triangles:number;vertices:number};
  enrichmentAssemblies:any[];
 }
-export const AIRFIELD_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Copperwing Airfield concrete dry upland and opaque aircraft skins',ambient:'#d1c7a9',sky:'#d7e5e4',fogStart:1250,fogEnd:2650,cameraName:'Copperwing Airfield chase camera',sunName:'Copperwing Airfield warm late afternoon sunlight',sunColor:'#ffedc7',sunIntensity:1.55,sunEuler:[38,-29,0] as const});
+export const AIRFIELD_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({textureLabel:'original Copperwing Airfield concrete dry upland and opaque aircraft skins',ambient:'#d7e4ef',sky:'#e6f0f7',fogStart:1250,fogEnd:2650,cameraName:'Copperwing Airfield chase camera',sunName:'Copperwing Airfield warm late afternoon sunlight',sunColor:'#fff5e5',sunIntensity:1.55,sunEuler:[38,-29,0] as const});
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
 const clamp=(x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
 const smooth=(x:number)=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
@@ -41,26 +41,26 @@ const yAt=(f:pc.Vec3[],x:number,z:number)=>{const[a,b,c]=f,den=(b.x-a.x)*(c.z-a.
 /** Source-authored static aviation museum. All geometry and camera triangles
  * share these exact buffers; no downloaded art, new physics or shaders. */
 export function buildAirfieldSceneGeometry(course:SceneryForkCourse):AirfieldSceneGeometry {
- const ochre=new Batch('Airfield connected dry ochre uplands','#b8a66e',1,'grass');
- const sage=new Batch('Airfield connected muted sage banks','#8e9c78',1,'grass');
- const clay=new Batch('Airfield connected warm clay contours','#a9805c',1,'stone');
- const road=new Batch('Airfield charcoal runway and taxiway','#626564',.97,'asphalt');
- const shoulder=new Batch('Airfield full-width gravel shoulder stitches','#b5aa89',1,'stone');
- const foundationStone=new Batch('Airfield whole footprint warm concrete','#b6ad92',1,'stone');
- const paleStone=new Batch('Airfield pale limestone edge and plaques','#d9c8a1',.96,'stone');
- const steel=new Batch('Airfield opaque blue steel structure','#527782',.65,'none',.45);
- const darkSteel=new Batch('Airfield dark steel joints and webs','#455b62',.7,'none',.5);
- const copper=new Batch('Airfield muted copper dimensional panels','#b37d55',.6,'none',.45);
- const cream=new Batch('Airfield cream closed fuselage skins','#e6d6ab',.72,'none',.22);
- const teal=new Batch('Airfield cool teal closed wing skins','#679394',.66,'none',.35);
- const underside=new Batch('Airfield shaded blue wing undersides','#526b73',.79,'none',.28);
- const tire=new Batch('Airfield dark rubber closed tread','#343b3c',.95,'asphalt');
- const hubMetal=new Batch('Airfield pale alloy hubs and bearing shoes','#b9b9a9',.5,'none',.6);
- const brass=new Batch('Airfield warm brass spars and rib edges','#bb9c58',.6,'none',.42);
- const coral=new Batch('Airfield muted terracotta tower fins','#b7795b',.8,'none',.2);
- const signFace=new Batch('Airfield deep teal museum signs','#41616b',.8,'none');
- const inlay=new Batch('Airfield original ivory runway markings','#eee2b8',.94,'stone');
- const grass=new Batch('Airfield sparse grounded dry grass','#a3a46f',1,'grass');
+ const ochre=new Batch('Airfield connected dry ochre uplands','#d3dfd1',1,'grass');
+ const sage=new Batch('Airfield connected muted sage banks','#adc6b2',1,'grass');
+ const clay=new Batch('Airfield connected warm clay contours','#c4cecf',1,'stone');
+ const road=new Batch('Airfield charcoal runway and taxiway','#8298ad',.97,'asphalt');
+ const shoulder=new Batch('Airfield full-width gravel shoulder stitches','#c7d3dd',1,'stone');
+ const foundationStone=new Batch('Airfield whole footprint warm concrete','#dbe2e7',1,'stone');
+ const paleStone=new Batch('Airfield pale limestone edge and plaques','#f2f3ee',.96,'stone');
+ const steel=new Batch('Airfield opaque blue steel structure','#50789f',.65,'none',.45);
+ const darkSteel=new Batch('Airfield dark steel joints and webs','#3b5575',.7,'none',.5);
+ const copper=new Batch('Airfield muted copper dimensional panels','#c3d2df',.6,'none',.45);
+ const cream=new Batch('Airfield cream closed fuselage skins','#fafbf7',.72,'none',.22);
+ const teal=new Batch('Airfield cool teal closed wing skins','#94bfdb',.66,'none',.35);
+ const underside=new Batch('Airfield shaded blue wing undersides','#698bae',.79,'none',.28);
+ const tire=new Batch('Airfield dark rubber closed tread','#354451',.95,'asphalt');
+ const hubMetal=new Batch('Airfield pale alloy hubs and bearing shoes','#d3e2ed',.5,'none',.6);
+ const brass=new Batch('Airfield warm brass spars and rib edges','#e6bb67',.6,'none',.42);
+ const coral=new Batch('Airfield muted terracotta tower fins','#e9f0f5',.8,'none',.2);
+ const signFace=new Batch('Airfield deep teal museum signs','#315575',.8,'none');
+ const inlay=new Batch('Airfield original ivory runway markings','#fff7dd',.94,'stone');
+ const grass=new Batch('Airfield sparse grounded dry grass','#b5c9a8',1,'grass');
  const batches=[ochre,sage,clay,road,shoulder,foundationStone,paleStone,steel,darkSteel,copper,cream,teal,underside,tire,hubMetal,brass,coral,signFace,inlay,grass];
  const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish],sourceFaces=sampleRoadFootprints(edges,1.65),roadIndex=new RoadFootprintIndex(sourceFaces),plots=AIRFIELD_LANDMARKS.plots;
  const props:LandPropPlacement[]=[],roadSamples:AirfieldSceneGeometry['roadSamples']=[],routeRoadSamples:AirfieldSceneGeometry['routeRoadSamples']=[],roadFaces:Face[]=[],roadUndersideFaces:Face[]=[],shoulderFaces:Face[]=[];
@@ -354,6 +354,89 @@ export function buildAirfieldSceneGeometry(course:SceneryForkCourse):AirfieldSce
   foundation('airfield-enrichment-return-long-terrace',rect(at(-16,0,-11),26,7,yaw),1.25);
   foundation('airfield-enrichment-return-short-terrace',rect(at(16,0,-10),22,8,yaw),1.6);
  });
+ // Dev polish reuses the museum airfield's open service architecture. New
+ // detail is grouped on existing pads or one complete off-road service pad.
+ const polishBox=(kind:string,b:Batch,at:ReturnType<typeof local>,yaw:number,x:number,y:number,z:number,w:number,h:number,d:number)=>box('airfield-polish-'+kind,b,at(x,y,z),vec(w,h,d),yaw,'detail');
+ composition('airfield-polish-runway-terminal-framing',()=>{
+  const {p,yaw}=serviceSite(course.commonStart,280,-38),frame=local(p,yaw);
+  for(const [name,cx,cz,width,depth,height]of [['airfield-enrichment-runway-low-wing',-13.8,2,18,14,5.7],['airfield-enrichment-runway-high-workshop',10,0,24,18,8.6]]as const){
+   const origin=frame(cx,0,cz),pad=foundations.find(f=>f.kind===name+'-complete-working-pad')!,at=local(vec(origin.x,pad.top,origin.z),yaw);
+   const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+   for(const z of [-depth/2+.12,depth/2+.68])put('terminal-white-fascia',cream,0,height+.1*z+.24,z,width+1.8,.40,.23);
+   for(const side of [-1,1])beam('airfield-polish-terminal-sloping-edge',cream,at(side*(width/2+.78),height+.1*(-depth/2+.12)+.24,-depth/2+.12),at(side*(width/2+.78),height+.1*(depth/2+.6)+.24,depth/2+.6),.23,.40,'detail');
+   for(const z of [-depth*.32,0,depth*.32])put('terminal-roof-rib',hubMetal,0,height+.1*z+.49,z,width+1.5,.14,.18);
+   for(const x of [-width/2+1,0,width/2-1]){
+    put('terminal-column-capital',hubMetal,x,height+.1*(-depth/2+1)-.85,-depth/2+1,1.12,.30,1.12);
+    put('terminal-column-foot-collar',cream,x,.52,-depth/2+1,1.25,.20,1.25);
+   }
+   if(name.endsWith('low-wing')){
+    // Recessed deep-blue panels attach to the existing solid rear service band.
+    // The front bays and their original witness volumes stay geometrically open.
+    for(const x of [-6,-2,2,6]){
+     put('terminal-window-frame',cream,x,4.14,depth/2+.77,3.5,1.30,.12);
+     put('terminal-blue-window',signFace,x,4.14,depth/2+.85,3.12,.98,.07);
+     put('terminal-window-mullion',hubMetal,x,4.14,depth/2+.91,.10,1.08,.08);
+    }
+   }
+  }
+ });
+ composition('airfield-polish-control-deck-crown',()=>{
+  const p=plots[1],pad=foundations.find(f=>f.kind===p.id+'-continuous-apron')!,yaw=.18,at=local(vec(p.x,pad.top,p.z),yaw);
+  const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+  // Compact control pavilion bears on the existing deck. It occupies only a
+  // small part of the upper platform and leaves the stairs/outer view walk open.
+  const cx=2,cz=-3,base=11.54;
+  put('control-pavilion-sill',cream,cx,base+.17,cz,5.6,.34,4.5);
+  for(const x of [-2.4,2.4])for(const z of [-1.85,1.85])put('control-pavilion-upright',cream,cx+x,base+2.16,cz+z,.22,3.64,.22);
+  for(const z of [-1.85,1.85]){
+   put('control-pavilion-lintel',cream,cx,base+4.07,cz+z,5.12,.22,.25);
+   put('control-blue-glass',signFace,cx,base+2.13,cz+z,4.57,3.36,.09);
+   for(const x of [-.8,.8])put('control-glass-mullion',hubMetal,cx+x,base+2.13,cz+z-.08,.10,3.40,.14);
+  }
+  for(const x of [-2.4,2.4]){put('control-side-glass',signFace,cx+x,base+2.13,cz,.09,3.36,3.42);put('control-side-lintel',cream,cx+x,base+4.07,cz,.25,.22,3.52);}
+  put('control-crown-roof',cream,cx,base+4.38,cz,6.15,.40,4.98);
+  put('control-crown-rim',steel,cx,base+4.61,cz,5.9,.10,4.73);
+  put('beacon-pedestal',hubMetal,cx,base+4.97,cz,1.15,.62,1.15);
+  put('beacon-amber-lens',brass,cx,base+5.48,cz,.66,.40,.66);
+  put('beacon-weather-cap',cream,cx,base+5.76,cz,.98,.15,.98);
+ });
+ composition('airfield-polish-ground-service-train',()=>{
+  const {p,yaw}=serviceSite(course.commonStart,280,-38),frame=local(p,yaw),q=frame(-13,0,17);
+  const pad=foundation('airfield-polish-ground-service-pad',rect(q,21,9,yaw),.18),at=local(vec(q.x,pad.top,q.z),yaw);
+  const put=(k:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(k,b,at,yaw,x,y,z,w,h,d);
+  const wheel=(x:number,z:number,r:number)=>{
+   ringLoft('airfield-polish-service-wheel',tire,[-.16,.16].map(d=>Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return at(x+Math.cos(a)*r,r+Math.sin(a)*r,z+d);}))); 
+   ringLoft('airfield-polish-service-wheel-hub',hubMetal,[-.185,.185].map(d=>Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return at(x+Math.cos(a)*r*.47,r+Math.sin(a)*r*.47,z+d);}))); 
+  };
+  for(const cx of [-5.1,.5]){
+   for(const x of [-1.55,1.55])for(const side of [-1,1])wheel(cx+x,side*1.25,.46);
+   put('luggage-cart-chassis',steel,cx,1.08,0,4.3,.32,2.25);
+   put('luggage-cart-deck',hubMetal,cx,1.30,0,4.4,.13,2.36);
+   for(const side of [-1,1]){
+    for(const x of [-1.98,1.98])put('cart-rail-post',steel,cx+x,1.85,side*1.1,.12,1.1,.12);
+    put('cart-open-side-rail',cream,cx,2.35,side*1.1,4.1,.14,.15);
+   }
+   for(const [i,x]of [-1.12,1.05].entries()){
+    put('luggage-case',i?teal:cream,cx+x,1.91,0,1.65,1.10,1.62);
+    for(const z of [-.48,.48])put('luggage-case-strap',steel,cx+x,1.93,z,1.69,1.14,.10);
+    put('luggage-case-handle',brass,cx+x,2.54,0,.55,.16,.14);
+   }
+   put('cart-drawbar',steel,cx+2.6,1.0,0,1.3,.16,.20);
+  }
+  // Short low tow tractor, with modeled fenders and a separate blue cab.
+  const cx=6.6;
+  for(const x of [-1.1,1.1])for(const side of [-1,1])wheel(cx+x,side*1.04,.58);
+  put('tow-tractor-chassis',steel,cx,1.15,0,3.6,.28,1.9);
+  put('tow-tractor-body',cream,cx,1.72,0,3.25,.86,1.76);
+  for(const side of [-1,1])put('tow-tractor-fender',cream,cx,1.58,side*1.07,3.38,.18,.38);
+  put('tow-tractor-cab-glass',signFace,cx+.6,2.70,0,1.30,1.1,1.55);
+  for(const x of [.0,1.2])for(const side of [-1,1])put('tow-cab-pillar',cream,cx+x,2.68,side*.82,.13,1.3,.13);
+  put('tow-cab-roof',cream,cx+.6,3.40,0,1.8,.22,1.96);
+  put('tow-tractor-amber-beacon',brass,cx+.6,3.69,0,.28,.36,.28);
+  for(const side of [-1,1])put('tow-tractor-headlight',inlay,cx+1.67,1.80,side*.58,.10,.24,.32);
+  put('tow-tractor-bumper',steel,cx+1.78,1.22,0,.22,.34,2.04);
+ });
+
  // Reveal targets are actual emitted triangle centroids.
  for(const sight of sightlines){const seed=[...sight.target];let best=Infinity;for(const c of components.filter(c=>c.landmark===sight.targetId))for(const face of facesFor(c)){const p=[0,1,2].map(k=>(face[0][k]+face[1][k]+face[2][k])/3),d=p.reduce((n,v,k)=>n+(v-seed[k])**2,0);if(d<best){best=d;sight.target=p;}}}
  // Exact non-road triangle provenance preserves roof slots, engine openings,

@@ -1,3 +1,4 @@
+import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH, qualityTierReview, qualityTierHash, restoreQualityTierBytes} from './helpers/quality-tier-reviewed-revisions';
 import test from 'node:test';
@@ -28,7 +29,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = Object.hasOwn(review.changes, path) || (Object.hasOwn(qualityTierReview().changes, path) || Object.hasOwn(v100Review().changes, path)) ? Buffer.from(restoreCiBuildDeploymentBytes(path, read(path))) : readFileSync(path);
+    const bytes = Object.hasOwn(review.changes, path) || (Object.hasOwn(qualityTierReview().changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? Buffer.from(restoreCiBuildDeploymentBytes(path, read(path))) : readFileSync(path);
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -92,13 +93,13 @@ test('all frozen JSON, runtime, music, artwork, legal and 219 stable files remai
   }
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/'));
   assert.ok(baselineJson.every(path => Object.hasOwn(review.protectedFiles, path)));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort());
   assert.equal(sha(read(MUSIC_REVIEW_PATH)), MUSIC_REVIEW_SHA256, 'Original music proof is byte-for-byte frozen');
   const workflow = read('.github/workflows/pages.yml');
   assert.match(workflow, /- run: npm run build\n/);
   assert.doesNotMatch(workflow, /npm test|test:dist|test-dev-preview/);
   assert.equal(JSON.parse(read('package.json')).scripts.build, 'npm run check && vite build && node scripts/package-source.mjs', 'Dev compiles and packages source without test gates');
-  const stable = JSON.parse(read('docs/stable-pages-manifest.json'));
+  const stable = JSON.parse(restoreStablePagesV100RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')));
   assert.equal(stable.stableCommit, '16dd2d0540e300de6e85aa816e73ed94d4e796c0');
   assert.equal(stable.files.length, 219); assert.equal(new Set(stable.files.map((row: {path: string}) => row.path)).size, 219);
   assert.equal(stable.files.reduce((sum: number, row: {bytes: number}) => sum + row.bytes, 0), 328819057);
@@ -113,7 +114,7 @@ test('the CI successor preserves every music endpoint and historical source iden
     assert.equal(musicHash(path, row.previousSha256), sha(readFileSync(path)), path + ' complete current music/CI chain');
   }
   for (const [path, row] of Object.entries(predecessor.additions)) {
-    const bytes = Object.hasOwn(review.changes, path) || (Object.hasOwn(qualityTierReview().changes, path) || Object.hasOwn(v100Review().changes, path)) ? restoreCiBuildDeploymentBytes(path, read(path)) : readFileSync(path);
+    const bytes = Object.hasOwn(review.changes, path) || (Object.hasOwn(qualityTierReview().changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? restoreCiBuildDeploymentBytes(path, read(path)) : readFileSync(path);
     assert.equal(sha(bytes), row.sha256, path + ' exact music addition retained');
   }
   const frozen = JSON.parse(read('tests/fixtures/airfield-enrichment-original-inventory.json')).sourceInventory;

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.2a",
+  "expectedParentSha": "b665343da013f5cfec0a0f45797adcd347f9607b",
+  "target": "html",
+  "prerelease": true,
+  "latest": false,
+  "expectedDevParentSha": "09c29711d79571848d7b8aa2f902c4c142cae8bc"
+}

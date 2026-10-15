@@ -1,71 +1,135 @@
-name: Build and publish main PlayCanvas game
+name: Publish exact main root while preserving previews
 on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      quality:
-        description: Stable certification only when explicitly requested; otherwise nonstable targeted regression
-        required: true
-        type: choice
-        options: [nonstable, stable]
-        default: nonstable
-      base_sha:
-        description: Optional exact comparison commit for nonstable targeted regression
-        required: false
-        type: string
 permissions:
   contents: read
+  actions: read
+  deployments: read
+# All site writers serialize; the release workflow is independent and publishes first.
 concurrency:
   group: github-pages
   cancel-in-progress: false
 jobs:
   build:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == 'JerryZRic/ai-friends-kart-playcanvas' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+      deployments: read
+      pages: read
+    outputs:
+      source-sha256: ${{ steps.public-source.outputs.sha256 }}
+      source-bytes: ${{ steps.public-source.outputs.bytes }}
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          ref: ${{ github.sha }}
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci
-      - name: Certify an explicitly requested stable build
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' }}
-        run: npm run check && npm test && npm run build
-      - name: Build main with changed-module regression by default
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.quality != 'stable' }}
+      - name: Refuse stale main, preview refs or baseline before building
         env:
-          TARGETED_BASE_SHA: ${{ inputs.base_sha }}
-        run: npm run check && node scripts/test-targeted.mjs && npm run build
-      - run: npm run test:dist
-      - name: Publish the approved build at stable and preview URLs
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
+      - run: npm ci
+      - name: Run focused changed-feature regressions
+        run: >-
+          node --import tsx --test --test-concurrency=2
+          tests/game-surface-guards.test.ts
+          tests/build-version.test.ts
+          tests/build-identity.test.ts
+          tests/dual-item-inventory.test.ts
+          tests/dual-item-hud-mount.test.ts
+          tests/home-cover.test.ts
+          tests/home-cover-ready.test.ts
+          tests/home-cover-deformation.test.ts
+          tests/control-mode.test.ts
+          tests/race-controls.test.ts
+          tests/race-shell.test.ts
+          tests/race-frame-clock.test.ts
+          tests/race-hud.test.ts
+          tests/gameplay-cancel.test.ts
+      - name: Exercise root preservation, migration and publication guards
+        run: node --test tests/pages-snapshot.test.mjs tests/pages-root.test.mjs
+      - name: Build complete release-labelled game and corresponding source
+        env:
+          GAME_BUILD_CHANNEL: release
+          DEV_BUILD_SHA: ${{ github.sha }}
+        run: npm run build
+      - name: Require the public exact-commit release and matching source asset first
+        id: public-source
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir dist-pages
-          cp -a dist/. dist-pages/
-          mkdir dist-pages/dev
-          cp -a dist/. dist-pages/dev/
+          python3 scripts/html-release.py wait-public --source-file dist/source.zip > public-release-proof.json
+          python3 - <<'PY'
+          import json, os
+          proof=json.load(open('public-release-proof.json'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              output.write(f"sha256={proof['sourceSha256']}\nbytes={proof['sourceBytes']}\n")
+          PY
+      - name: Recheck refs and latest successful publication after release becomes public
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
+      - name: Download the digest-pinned complete published site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/download-pages-snapshot.py
+      - name: Prepare only the approved Pages root migration without editing full dist
+        run: node scripts/prepare-pages-root.mjs dist baseline-pages dist-root public-release-proof.json
+      - name: Replace root only, retain exact dev and cover bytes, require site below 1GB
+        run: node scripts/compose-pages-snapshot.mjs baseline-pages dist-root dist-pages root
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-pages-preservation-proof
+          path: |
+            pages-preservation-report.json
+            pages-root-preparation-report.json
+            public-release-proof.json
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-pages
+          retention-days: 30
   deploy:
     needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
+      actions: read
+      deployments: read
       pages: write
       id-token: write
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
-      - name: Refuse an obsolete stable deployment
-        run: |
-          actual=$(git ls-remote origin refs/heads/main | cut -f1)
-          test "$actual" = "$GITHUB_SHA"
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Recheck exact refs and unchanged published baseline immediately before deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages-snapshot.mjs
+      - name: Recheck public source availability, tag and verified asset digest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SOURCE_SHA256: ${{ needs.build.outputs.source-sha256 }}
+          EXPECTED_SOURCE_BYTES: ${{ needs.build.outputs.source-bytes }}
+        run: python3 scripts/html-release.py check-public
       - id: deployment
         uses: actions/deploy-pages@v4

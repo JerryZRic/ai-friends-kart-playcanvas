@@ -1,0 +1,36 @@
+{
+  "status": "training-only",
+  "profile": {
+    "whale": {
+      "acceleration": 1.16,
+      "topSpeed": 0.955,
+      "steering": 1.06
+    },
+    "gemini": {
+      "acceleration": 0.69,
+      "topSpeed": 1,
+      "steering": 1.11
+    },
+    "gpt": {
+      "acceleration": 1,
+      "topSpeed": 1,
+      "steering": 1
+    },
+    "claude": {
+      "acceleration": 1.25,
+      "topSpeed": 0.99,
+      "steering": 0.99
+    },
+    "grok": {
+      "acceleration": 0.85,
+      "topSpeed": 1.035,
+      "steering": 0.99
+    },
+    "glm": {
+      "acceleration": 0.75,
+      "topSpeed": 1.005,
+      "steering": 1.06
+    }
+  },
+  "reason": "06 fixed12-block screen worsened Whale aggregate and caldera Grok dominance. Shift Whale advantage toward straights by raising top speed and reducing acceleration/handling; Grok top speed rises slightly to preserve .08 span, offset with lower acceleration and closer-to-neutral handling. Claude recovery reduced and handling raised. Existing acceleration also scales drift deceleration, so response is measured rather than presumed monotonic. No AI/geometry changes."
+}

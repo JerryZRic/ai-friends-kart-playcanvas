@@ -1,6 +1,6 @@
 # Original theme and race music
 
-The project owner supplied the three original MP3 recordings under
+The project owner supplied the eight original MP3 recordings under
 `public/assets/music/`. Their exact uploaded bytes and metadata are retained;
 see the adjacent README for durations and checksums and
 [the separate music license](../public/assets/music/LICENSE.txt) for the
@@ -23,8 +23,11 @@ No CDN, MIDI SDK, transcoding, or required-model loading gate is involved.
   and its camera return are silent. Race audio preloads independently without
   playback. Music is optional and never blocks play.
 - The countdown retains its existing sound effects; BGM starts at GO, when
-  driving actually begins: dfy_bgm.mp3 on all 12 land courses, and
-  dfy_fusion.mp3 only on waterpark (A01). Pausing an active race ducks BGM to
+  driving actually begins: one uniformly random dfy01–dfy06.mp3 on any land
+  course, and dfy_water.mp3 only on waterpark (A01). Each new race/restart
+  selects once; an immediate repeat is possible. Only that selected track
+  preloads, beginning at countdown. Pause/resume retains the track and position.
+  Pausing an active race ducks BGM to
   30% of the selected music volume; continuing restores that volume.
 - Completed standings: race BGM fades out and theme fades in on the same page.
   This happens when the game presents its final result, not merely when the

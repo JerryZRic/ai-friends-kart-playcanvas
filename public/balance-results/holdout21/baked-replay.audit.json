@@ -1,0 +1,206 @@
+{
+  "candidate": 21,
+  "completedUtc": "2026-10-14T15:21:32.737Z",
+  "replays": 24,
+  "cohorts": [
+    "primary",
+    "mixed"
+  ],
+  "maps": 12,
+  "runtimeOverridesUsed": false,
+  "comparison": "Every result field exactly matches the saved candidate21 training race, after removing runner-added block index. These deterministic replays are verification, not independent data.",
+  "evidence": [
+    {
+      "cohort": "primary",
+      "map": "coast",
+      "seed": 2764838878,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "99ba6411c747a894e75fe445df00f22956a35cd2741abe82a33a4997e01a138d"
+    },
+    {
+      "cohort": "primary",
+      "map": "mountain",
+      "seed": 439622855,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "2ac2ca6f4ffa0431cd6a9cfa8cc0c405305d49f6c400a69a4dc28f059f62ecfb"
+    },
+    {
+      "cohort": "primary",
+      "map": "town",
+      "seed": 4066062716,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "d4c4f007f3fd40205243617ee6da71f4985c72eb4d5ebf4f791d152ca43c364e"
+    },
+    {
+      "cohort": "primary",
+      "map": "quarry",
+      "seed": 2620862700,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "c4f94cf4d22eff2502adab2b220c2ff9eeafb6bd4f5cbd43e0bb98fd2eec3e8a"
+    },
+    {
+      "cohort": "primary",
+      "map": "forest",
+      "seed": 95648837,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "46628fc31c8b74499ef6da4d82fd0522639955d2b634a577df996a09c22cb0f2"
+    },
+    {
+      "cohort": "primary",
+      "map": "workshop",
+      "seed": 427676557,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "e95f60c85a1d74b159df38a1c1051e3162bf08d62ba2acf2367713569a78f95b"
+    },
+    {
+      "cohort": "primary",
+      "map": "harvest",
+      "seed": 2655227605,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "33ae77664b3628d6a1aca53847f3d39caeff9d9a5e161a0d11f2f287c2c3718a"
+    },
+    {
+      "cohort": "primary",
+      "map": "desert",
+      "seed": 3814212125,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "ba9e06e08ea288bbd2c1af1b319ebba6730f2dd2523fbc4a0886e286bc7bd98e"
+    },
+    {
+      "cohort": "primary",
+      "map": "snow",
+      "seed": 2846001587,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "6b179e084904131ec8a5957e54bf65e2e8a33e9b31e846a8cdbab677219ec008"
+    },
+    {
+      "cohort": "primary",
+      "map": "caldera",
+      "seed": 646287998,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "6e009c48f5ada267f2694c4a6537688eca1235597de65eb133c3c7010ec33ee9"
+    },
+    {
+      "cohort": "primary",
+      "map": "garden",
+      "seed": 469782721,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "a2a60b9250a7b24a34a46b37f0c80e37fdff931b792418c78bc9ec0e6f38af68"
+    },
+    {
+      "cohort": "primary",
+      "map": "airfield",
+      "seed": 3229588932,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "ea71e7640bacccb91e843a956320b638b35343e1a946878660f5c19b2571d942"
+    },
+    {
+      "cohort": "mixed",
+      "map": "coast",
+      "seed": 3689356360,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "50595314757b0b2c2c042314dd4f8aeab2f49bd6403e67fc2186c2268f8faa3b"
+    },
+    {
+      "cohort": "mixed",
+      "map": "mountain",
+      "seed": 2715118869,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "f7d79e53dc83df1aa0df2388de1fb9925a10f0d4e3e7b0d2ccf80e3c0143b7e8"
+    },
+    {
+      "cohort": "mixed",
+      "map": "town",
+      "seed": 2748514690,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "e195a026737d45a98c59ccf8ae19725ec3b13aa3d5080d7c4d9a0e3b7f80fead"
+    },
+    {
+      "cohort": "mixed",
+      "map": "quarry",
+      "seed": 3557322318,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "60ec1428409fb8adb6c2e8bbc90b54d65de1a544f30331c1ea1fb94d90824758"
+    },
+    {
+      "cohort": "mixed",
+      "map": "forest",
+      "seed": 1233145623,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "d13220fc8ee6a714350f361eb79efa1f59573cf431f334ed1cb420de0f8f9d86"
+    },
+    {
+      "cohort": "mixed",
+      "map": "workshop",
+      "seed": 2149294135,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "d2e525a7564776d040fffb82206ec69dc8e0abc0e0da5fa12eca83731dc159fc"
+    },
+    {
+      "cohort": "mixed",
+      "map": "harvest",
+      "seed": 535386911,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "55e92799199d0cdab25d4e147f95f01fc88f429ea9f00a050cfdf5f945fb3168"
+    },
+    {
+      "cohort": "mixed",
+      "map": "desert",
+      "seed": 2890123279,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "84f1d05ff749d3f7bd871f874c6cd2d51ab8f698651c2888c09d8e3513e58d0c"
+    },
+    {
+      "cohort": "mixed",
+      "map": "snow",
+      "seed": 1398843869,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "3b933ec1488db326a69c6bd337cb38ddc46ca7e40a6a89a4228b5eb6eff0ba1c"
+    },
+    {
+      "cohort": "mixed",
+      "map": "caldera",
+      "seed": 1089387756,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "d592a3163ceff9e7e963252aae76707562f887b63f885b6262bd0e34b65d9c20"
+    },
+    {
+      "cohort": "mixed",
+      "map": "garden",
+      "seed": 4056265095,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "3dce2fa6e63e869a66833fa961b4d58e07931508acd2f42bddcc67e6c39e3b40"
+    },
+    {
+      "cohort": "mixed",
+      "map": "airfield",
+      "seed": 2429809918,
+      "rotation": 0,
+      "allRecordedFieldsExact": true,
+      "resultSha256": "4fb86a32b6ee31cd8416a9634f76a026b5050eb7b11dd7afc3f14e3f54f8ddd4"
+    }
+  ]
+}

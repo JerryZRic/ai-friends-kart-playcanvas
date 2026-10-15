@@ -1,0 +1,17 @@
+{
+  "status": "stopped-training-screen-not-final",
+  "plannedRaces": 2304,
+  "completedRaces": 936,
+  "fixedScreenBlocksPerMap": 12,
+  "fixedScreenRaces": 864,
+  "fixedScreenWinRates": {
+    "whale": 0.14699074074074073,
+    "gemini": 0.20023148148148148,
+    "gpt": 0.11342592592592593,
+    "claude": 0.2222222222222222,
+    "grok": 0.19791666666666666,
+    "glm": 0.11921296296296297
+  },
+  "reason": "Candidate07 fails development screen: Grok/Claude/Gemini too strong relative to GPT/GLM, caldera Grok dominance persists. Retain all completed rows; no holdout used.",
+  "jsonlSha256": "3f081b4ca25583de11edf77e26139718000cb83ce3da44bb7f3c50dc7ced5803"
+}

@@ -10,9 +10,9 @@ export const GARAGE_STAT_KEYS: readonly GarageActiveStat[] = Object.freeze(['acc
  * Values are game acceleration, HUD-converted game speed, and steering coefficient,
  * respectively. SI design estimates must not be passed as these gameplay values. */
 export const GARAGE_STAT_SCALES = Object.freeze({
-  acceleration: Object.freeze({label: '加速', min: 12, max: 24, unit: '游戏单位/s²', digits: 2}),
+  acceleration: Object.freeze({label: '加速', min: 9, max: 32, unit: '游戏单位/s²', digits: 2}),
   speed: Object.freeze({label: '极速', min: 120, max: 190, unit: 'km/h（HUD）', digits: 1}),
-  handling: Object.freeze({label: '操控', min: 5.5, max: 9, unit: '游戏转向系数', digits: 2}),
+  handling: Object.freeze({label: '操控', min: 5.5, max: 9.5, unit: '游戏转向系数', digits: 2}),
 });
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));

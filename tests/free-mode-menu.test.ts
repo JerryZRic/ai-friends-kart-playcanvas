@@ -1,17 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {CHARACTER_PROFILES,resolveCharacter,characterTuning,MAP_BASELINES} from '../src/character-profiles';
+import {CHARACTER_PROFILES,resolveCharacter,characterTuning,MAP_BASELINES,WATER_CHARACTER_MULTIPLIERS} from '../src/character-profiles';
 import {DEFAULT_SETTINGS,SETTINGS_KEY,readGameSettings,saveGameSettings,sanitizeSettings,qualitySettings} from '../src/game-settings';
 import {parseMenuState,menuQuery,raceEntry} from '../src/menu-state';
 import {MAP_PROFILES} from '../src/map-profiles';
-test('six bounded balanced profiles have distinct tradeoffs; nobody dominates another',()=>{
+test('six bounded land profiles retain tradeoffs with independent axis budgets; water remains released',()=>{
  assert.deepEqual(CHARACTER_PROFILES.map(p=>p.id),['whale','gemini','gpt','claude','grok','glm']);
  const axes=['topSpeed','acceleration','steering'] as const;
- for(const p of CHARACTER_PROFILES){assert.ok(Object.isFrozen(p));assert.ok(Math.abs(axes.reduce((sum,k)=>sum+p[k],0)-3)<1e-9);for(const k of axes)assert.ok(p[k]>=.9&&p[k]<=1.1);
+ const bounds={topSpeed:[.9,1.1],acceleration:[.65,1.45],steering:[.85,1.3]} as const;
+ for(const p of CHARACTER_PROFILES){assert.ok(Object.isFrozen(p));for(const k of axes)assert.ok(p[k]>=bounds[k][0]&&p[k]<=bounds[k][1]);
  for(const q of CHARACTER_PROFILES.filter(q=>q!==p))assert.ok(axes.some(k=>p[k]<q[k])&&axes.some(k=>p[k]>q[k]));}
  assert.equal(resolveCharacter('invalid').id,'whale');
- for(const map of ['coast','waterpark'] as const)for(const p of CHARACTER_PROFILES){const t=characterTuning(p.id,map);assert.equal(t.maxSpeed,MAP_BASELINES[map].maxSpeed*p.topSpeed);assert.equal(t.acceleration,MAP_BASELINES[map].acceleration*p.acceleration);assert.equal(t.steering,MAP_BASELINES[map].steering*p.steering);}
+ for(const map of ['coast','waterpark'] as const)for(const p of CHARACTER_PROFILES){const t=characterTuning(p.id,map),multipliers=map==='coast'?p:WATER_CHARACTER_MULTIPLIERS[p.id];assert.equal(t.maxSpeed,MAP_BASELINES[map].maxSpeed*multipliers.topSpeed);assert.equal(t.acceleration,MAP_BASELINES[map].acceleration*multipliers.acceleration);assert.equal(t.steering,MAP_BASELINES[map].steering*multipliers.steering);}
 });
 test('settings survive reload and reject corrupt values, unknown versions, missing or blocked storage',()=>{
  const values=new Map<string,string>();const storage={getItem:(k:string)=>values.get(k)??null,setItem:(k:string,v:string)=>{values.set(k,v);}};

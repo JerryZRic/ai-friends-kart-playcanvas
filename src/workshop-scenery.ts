@@ -33,7 +33,7 @@ export interface WorkshopSceneGeometry extends LandSceneGeometry {
   budget:{batches:number;triangles:number;vertices:number};
 }
 export const WORKSHOP_SCENE_THEME:Readonly<LandSceneTheme>=Object.freeze({
-  textureLabel:'clockwind handmade maple',ambient:'#d2c0a2',sky:'#ded5bd',fogStart:850,fogEnd:1800,
+  textureLabel:'clockwind handmade maple',ambient:'#c9dbe2',sky:'#c4e1ec',fogStart:850,fogEnd:1800,
   cameraName:'Clockwind workshop chase camera',sunName:'Clockwind high window key',sunColor:'#fff0ce',sunIntensity:1.65,sunEuler:[47,-31,0] as const,
 });
 const vec=(x:number,y:number,z:number)=>new pc.Vec3(x,y,z),tuple=(p:pc.Vec3)=>[p.x,p.y,p.z];
@@ -51,27 +51,27 @@ const plotData=[
 /** Original static workshop construction. Every road, shelf and deck derives
  * from physical edge coordinates. No nearest-XZ elevated terrain is used. */
 export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSceneGeometry {
-  const floor=new Batch('Workshop joined maple room floor','#94734d',.97,'wood');
-  const seam=new Batch('Workshop dark joints and contact trim','#493a2b',.96,'wood');
-  const maple=new Batch('Workshop continuous maple worktops','#b98345',.86,'wood');
-  const endgrain=new Batch('Workshop cut wood edges and fascia','#d4aa6a',.91,'wood');
-  const road=new Batch('Workshop pale sealed maple road','#dabd7e',.87,'none');
-  const inlay=new Batch('Workshop cabinet road inlay','#8eab90',.89,'none');
-  const soffit=new Batch('Workshop open deck undersides','#705034',.97,'wood');
-  const rail=new Batch('Workshop forest green safety rails','#285b4a',.78,'none',.22);
-  const steel=new Batch('Workshop brushed steel tools','#a6b2ad',.48,'none',.7);
-  const copper=new Batch('Workshop copper gears and arms','#b86e3d',.43,'none',.72);
-  const brass=new Batch('Workshop brass rims and graduations','#d1a959',.42,'none',.75);
-  const ivory=new Batch('Workshop ivory dial and sign faces','#f2e6c9',.78);
-  const ink=new Batch('Workshop inked scale and dial marks','#302820',.88);
-  const green=new Batch('Workshop recessed cabinet green','#224f45',.84,'wood');
+  const floor=new Batch('Workshop joined maple room floor','#b29876',.97,'wood');
+  const seam=new Batch('Workshop dark joints and contact trim','#625549',.96,'wood');
+  const maple=new Batch('Workshop continuous maple worktops','#c59a62',.86,'wood');
+  const endgrain=new Batch('Workshop cut wood edges and fascia','#ead0a0',.91,'wood');
+  const road=new Batch('Workshop pale sealed maple road','#e5d2a6',.87,'none');
+  const inlay=new Batch('Workshop cabinet road inlay','#93b9b9',.89,'none');
+  const soffit=new Batch('Workshop open deck undersides','#84644f',.97,'wood');
+  const rail=new Batch('Workshop forest green safety rails','#376f7c',.78,'none',.22);
+  const steel=new Batch('Workshop brushed steel tools','#b9cbd0',.48,'none',.7);
+  const copper=new Batch('Workshop copper gears and arms','#c6895f',.43,'none',.72);
+  const brass=new Batch('Workshop brass rims and graduations','#ddba6e',.42,'none',.75);
+  const ivory=new Batch('Workshop ivory dial and sign faces','#fff0d2',.78);
+  const ink=new Batch('Workshop inked scale and dial marks','#334957',.88);
+  const green=new Batch('Workshop recessed cabinet green','#387b88',.84,'wood');
   const leather=new Batch('Workshop vise leather jaw pads','#8b4737',.98,'stone');
-  const toolDark=new Batch('Workshop dark iron tools and brackets','#40514b',.57,'none',.62);
+  const toolDark=new Batch('Workshop dark iron tools and brackets','#425e6b',.57,'none',.62);
   const amber=new Batch('Workshop warm recessed diffuser','#edb967',.6);
-  const pegboard=new Batch('Workshop perforated tool backing','#b7a17a',.94,'wood');
-  const lightWood=new Batch('Workshop turned wood spindles','#d9b67c',.85,'wood');
-  const hardware=new Batch('Workshop dark fasteners and threads','#665749',.52,'none',.65);
-  const wall=new Batch('Workshop sage room skirting','#718574',.94,'wood');
+  const pegboard=new Batch('Workshop perforated tool backing','#cfbb96',.94,'wood');
+  const lightWood=new Batch('Workshop turned wood spindles','#e4c592',.85,'wood');
+  const hardware=new Batch('Workshop dark fasteners and threads','#62717a',.52,'none',.65);
+  const wall=new Batch('Workshop sage room skirting','#9dbec3',.94,'wood');
   const batches=[floor,seam,maple,endgrain,road,inlay,soffit,rail,steel,copper,brass,ivory,ink,green,leather,toolDark,amber,pegboard,lightWood,hardware,wall];
   const edges=[course.commonStart,course.alternates.alley,course.alternates.boulevard,course.commonFinish];
   const sourceFaces=sampleRoadFootprints(edges,2),roadIndex=new RoadFootprintIndex(sourceFaces);
@@ -296,6 +296,10 @@ export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSce
       newBox(a,'window-mullion-'+i,'structural central mullion',endgrain,vec(x,72,190),vec(3.8,80,4.5),a.id+'/dado-cap-'+i);
       newBox(a,'window-transom-'+i,'upper window division',endgrain,vec(x,89,190.7),vec(w-1,2.8,3.2),a.id+'/window-mullion-'+i);
       for(const side of [-1,1])newBox(a,'opaque-pane-'+i+'-'+side,'opaque ivory high-window panel',ivory,vec(x+side*w/4,72,192.0),vec((w-2)/2,77.5,.8),a.id+'/window-head-'+i);
+      // Layered cream cornice and blue-grey inner reveal give the broad window
+      // rhythm a clean daylight edge, without another material or texture.
+      newBox(a,'polish-cornice-'+i,'stepped cream lintel cap',ivory,vec(x,117.4,188.5),vec(w+5,.8,9.2),a.id+'/window-head-'+i);
+      newBox(a,'polish-lintel-inset-'+i,'blue-grey shallow lintel reveal',toolDark,vec(x,111.7,184.25),vec(w-4,1.4,.45),a.id+'/window-head-'+i);
       // Large recessed rectangles read as painted joinery, not tiny décor.
       for(const side of [-1,1])newBox(a,'dado-inset-'+i+'-'+side,'recessed sage panel',green,vec(x+side*w*.24,15,187.82),vec(w*.43,21,.5),base,true);
     }
@@ -312,6 +316,8 @@ export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSce
       newBox(a,'window-mullion-'+i,'return window central mullion',endgrain,vec(-473,63,z),vec(4.5,70,3.8),base);
       newBox(a,'window-transom-'+i,'return window upper division',endgrain,vec(-473.7,78,z),vec(3.2,2.8,d-1),a.id+'/window-mullion-'+i);
       for(const side of [-1,1])newBox(a,'opaque-pane-'+i+'-'+side,'opaque ivory return-window panel',ivory,vec(-475,63.5,z+side*d/4),vec(1,66.5,(d-2)/2),a.id+'/window-head-'+i);
+      newBox(a,'polish-cornice-'+i,'return stepped cream lintel cap',ivory,vec(-472,103,z),vec(9.2,1,d+5),a.id+'/window-head-'+i);
+      newBox(a,'polish-lintel-inset-'+i,'return blue-grey shallow lintel reveal',toolDark,vec(-467.75,97.7,z),vec(.45,1.4,d-4),a.id+'/window-head-'+i);
       for(const side of [-1,1])newBox(a,'dado-inset-'+i+'-'+side,'recessed painted return panel',green,vec(-471.82,14,z+side*d*.24),vec(.5,19,d*.43),base,true);
     }
   });
@@ -330,6 +336,19 @@ export function buildWorkshopSceneGeometry(course:SceneryForkCourse):WorkshopSce
         const body=newBox(a,'case-'+i,'painted parts box',green,vec(cx,top+h/2,z+d*.12),vec(ww,h,d*.5),worktop,true);
         newBox(a,'case-front-'+i,'broad removable parts-tray front',wall,vec(cx,top+h*.51,z-d*.135),vec(ww-2,h-1,1.3),body,true);
         newBox(a,'case-pull-'+i,'large brass tray pull',brass,vec(cx,top+h*.5,z-d*.135-.75),vec(ww*.35,.7,.6),a.id+'/case-front-'+i);
+        // A divided repair tray sits on each existing parts box. Its raised rim,
+        // broad compartments and two supported brass stock pieces read at speed.
+        const ty=top+h, tz=z+d*.12, tw=ww*.8, td=d*.36;
+        const tray=newBox(a,'polish-tray-bed-'+i,'cream repair tray base',ivory,vec(cx,ty+.3,tz),vec(tw,.6,td),body);
+        for(const side of [-1,1]){
+          newBox(a,'polish-tray-end-'+i+'-'+side,'blue repair tray end lip',green,vec(cx+side*(tw/2-.3),ty+1,tz),vec(.6,1.4,td),tray,true);
+          newBox(a,'polish-tray-side-'+i+'-'+side,'blue repair tray side lip',green,vec(cx,ty+1,tz+side*(td/2-.3)),vec(tw-1.2,1.4,.6),tray,true);
+        }
+        newBox(a,'polish-tray-divider-'+i,'shallow compartment divider',endgrain,vec(cx,ty+.95,tz),vec(.4,1.3,td-.9),tray);
+        for(const side of [-1,1])newBox(a,'polish-stock-'+i+'-'+side,'supported clockmaker brass stock',brass,vec(cx+side*tw*.23,ty+1.05,tz),vec(tw*.22,.9,td*.52),tray);
+        newBox(a,'polish-label-frame-'+i,'ivory cabinet label frame',ivory,vec(cx,top+h*.78,z-d*.135-.78),vec(ww*.34,1.4,.3),a.id+'/case-front-'+i);
+        newBox(a,'polish-label-inset-'+i,'recessed blue cabinet label',toolDark,vec(cx,top+h*.78,z-d*.135-.965),vec(ww*.27,.83,.12),a.id+'/polish-label-frame-'+i);
+
       }
       // Two unpainted planing blanks lie directly on the actual tabletop.
       for(let i=0;i<2;i++)newBox(a,'maple-blank-'+i,'large supported cut timber',lightWood,vec(x+(i?1:-1)*w*.22,top+1,z-d*.29),vec(w*.36,2.2,d*.19),worktop);

@@ -1,10 +1,12 @@
+import {createItemRequests,inventoryFull,inventoryHas,type ItemSlot} from './item-inventory';
 import {getDocumentMusic} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
 import { getNpcPresets } from './kart-presets';
 import { garageEntry } from './menu-state';
 import { parseRaceOptions } from './race-options';
-import { npcSkill, npcDriving, seededRandom } from './npc-difficulty';
+import { npcSkill, seededRandom } from './npc-difficulty';
+import {landCpuFinished,tickLandCpu,decideLandCpu,advanceLandCpu,collideLandCpu,type LandCpuActor,type LandCpuContext,type LandCpuFeedback} from './land-cpu';
 import { raceKartBuild, buildForRacer, createRaceKartTuning, kartRoadContext, kartBuildKey, stepRaceKartSpeed } from './kart-race';
 import { createKartAssemblyLoader, type KartAssembly, type KartAssemblyProgress } from './kart-assembly';
 import { createModularRacer, validateModularDriverContract } from './kart-driver';
@@ -15,7 +17,7 @@ import { createWaterparkLifetime as createRaceLifetime } from './waterpark-lifet
 import { createItemModel, itemImage, type ItemKind } from './item-models';
 import { advancePickup, resetPickup } from './item-pickups';
 import { createDynamicPickupDirector } from './dynamic-pickups';
-import { RULES, newBrain, tickBrain, tickEffects, chooseItem, activateItem, collectPickups, planLane, moveLane, nearbyGap, type Combatant, type Brain } from './npc-tactics';
+import { RULES, newBrain, activateItem, collectPickups, nearbyGap, type Combatant } from './npc-tactics';
 import { keyCode, driveInput, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
 import {createRaceFrameClock} from './race-frame-clock';
@@ -37,7 +39,7 @@ import {createLandRaceRoute} from './land-race-route';
 import {canonicalProgress} from './land-routes';
 import {resolveMap} from './map-profiles';
 import {createLapProgress,advanceLapProgress,type LandLapProgress} from './land-track';
-import {stepLandSpeed,landSteeringGrip,landBankDrift,landLookAheadBend,landRailScrape} from './land-driving';
+import {stepLandSpeed,landSteeringGrip,landBankDrift,landRailScrape} from './land-driving';
 import { clamp, damp, scaled, degrees, UP } from './track';
 
 declare global { interface Window { neonKart: any; webkitAudioContext?: typeof AudioContext; } }
@@ -154,16 +156,19 @@ const dynamicPickups=createDynamicPickupDirector(boxes.filter(b=>b.dynamic),{len
 const performancePanel=createPerformancePanel(canvas,()=>({quality:settings.quality,pixelRatioCap:quality.pixelRatioCap,loopLength:LENGTH,racerCount:6,profile:racerTuning(selectedDriverId),driver:selectedDriverId}),undefined,{mount:$('raceSettings'),scene:mapId+'-circuit-six-racers'});
 defer(()=>performancePanel.dispose());
 const frameClock=createRaceFrameClock();
+const itemRequests=createItemRequests();
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
-  charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null,
+  charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null, heldSecond: ItemKind | null = null,
   drifting = false, steerVis = 0, finishRank = 0, playerFinishedAt = Infinity, view = 0, muted = shell.muted, clock = 0;
 type RacerEntity = pc.Entity & { userData?: { driverId: string } };
 type BotFX = { shield: pc.Entity; flames: { mesh: pc.Entity; side: number }[]; inventory: Record<ItemKind, pc.Entity> };
-type Bot = Combatant & Brain & { phase: number; color: string; driving: boolean; cornerPace: number; aiBend: number; driftCharge: number; driftCooldown: number; aiDrifting: boolean; finishedAt: number | null; mesh: RacerEntity; fx: BotFX };
+type Bot = LandCpuActor & { color:string; mesh:RacerEntity; fx:BotFX };
 let playerProgress:LandLapProgress|null=null;
 const botProgress=new Map<string,LandLapProgress>();
 let bots: Bot[] = [], sparks: Spark[] = [], player: RacerEntity | null = null;
-const botFinished=(bot:Bot)=>routes?!!routes.get(bot.id)?.finished:bot.total>=LENGTH*3&&(!course.track||(botProgress.get(bot.id)?.laps??0)>=3);
+const cpuContext:LandCpuContext={length:LENGTH,track:course.track,sample,halfWidthAt,routes,progress:botProgress,skill,tuning:racerTuning};
+const cpuFeedback:LandCpuFeedback={useItem:useCombatItem,finished:b=>hideBotFX(b as Bot),railContact:(b,lateral)=>emit(actorSample(b.id,b.total,lateral).p)};
+const botFinished=(bot:Bot)=>landCpuFinished(bot,cpuContext);
 const actorSample=(id:string,total:number,lateral=0)=>routes?.states.has(id)?routes.sample(id,lateral):sample(total,lateral);
 const actorTrack=(id:string,total:number)=>routes?.states.has(id)?routes.view(id,total):course.track;
 const actorLimit=(id:string,total:number,margin=laneMargin,ahead=0)=>routes?.states.has(id)?routes.limit(id,ahead,margin):halfWidthAt(total+ahead)-margin;
@@ -339,7 +344,7 @@ function setupRacers(){
   releaseRacers(); const order=raceOrder(selectedDriverId);
   try {
     player=racerFor(order[0]);
-    for (const [i,slot] of order.slice(1).entries()) bots.push({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()});
+    for (const [i,slot] of order.slice(1).entries()) bots.push({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,heldSecond:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()});
     routes?.reset();routes?.init(selectedDriverId,pos,lane);for(const b of bots)routes?.init(b.id,b.total,b.lateral);
     playerProgress=course.track&&!routes?createLapProgress(course.track,pos):null;botProgress.clear();
     if(course.track&&!routes)for(const bot of bots)botProgress.set(bot.id,createLapProgress(course.track,bot.total));
@@ -354,7 +359,7 @@ if(initialCameraReturn){
   loadingUi.update({progress:1,status:'模型已就绪 · 镜头返回起点',busy:true,canRetry:false,canContinue:false});
   return;
 }
-frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true}
+frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=heldSecond=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true}
 const canImport=()=>!disposed&&ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModularDriverContract,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(!disposed&&ready){setupRacers();updateDriverUI();}}});
 defer(()=>localDrivers.dispose());
@@ -399,10 +404,10 @@ $('pauseMenu').onclick=()=>navigate();
 $('pauseChangeMap').onclick=()=>navigate('maps');
 $('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returning')return;view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{shell.toggleSound();muted=shell.muted;};
-function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, boost, shield, slow }; }
-function applyPlayerCombatant(r: Combatant) { held = r.held; boost = r.boost; shield = r.shield; slow = r.slow; }
-function useCombatItem(actor: Combatant, racers: Combatant[]) {
-  const result = activateItem(actor, racers, LENGTH,routes?.interactions); if (!result) return;
+function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, heldSecond, boost, shield, slow }; }
+function applyPlayerCombatant(r: Combatant) { held = r.held; heldSecond = r.heldSecond??null; boost = r.boost; shield = r.shield; slow = r.slow; }
+function useCombatItem(actor: Combatant, racers: readonly Combatant[],slot:ItemSlot=0) {
+  const result = activateItem(actor, racers, LENGTH,routes?.interactions,slot); if (!result) return;
   const bot = bots.find(b => b.id === actor.id);
   if (bot) { bot.uses++; bot.cooldown = RULES.cooldown; if (result.item === 'pulse') bot.pulseFlash = .65; }
   const sourceMesh = bot?.mesh || player;
@@ -416,12 +421,17 @@ function useCombatItem(actor: Combatant, racers: Combatant[]) {
     shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');
   } else if (result.target?.id === selectedDriverId) { toast(result.blocked ? '护盾挡住了对手的脉冲！' : '被对手脉冲击中 · 短暂减速'); shell.cue(result.blocked?'block':'hit'); }
 }
-function useItem() {
-  if (state !== 'running' || !held) return;
-  const human = playerCombatant(); useCombatItem(human, [human, ...bots.filter(b=>!botFinished(b))]); applyPlayerCombatant(human); updateHUD();
+function useItem(slot:ItemSlot=0) {
+  if (state === 'running') itemRequests.request(slot,playerCombatant());
 }
-$('item').onclick=useItem;
-function clearInputs(){if(controls)controls.clear();else for(let k in keys)keys[k]=false;charge=0;drifting=false;}
+function consumeItemRequest(){
+  const human=playerCombatant();
+  itemRequests.drain(human,slot=>{useCombatItem(human,[human,...bots.filter(b=>!botFinished(b))],slot);return true;});
+  applyPlayerCombatant(human);
+}
+$('item').onclick=()=>useItem(0);
+$('item-secondary').onclick=()=>useItem(1);
+function clearInputs(){itemRequests.clear();if(controls)controls.clear();else for(let k in keys)keys[k]=false;charge=0;drifting=false;}
 function release(){controls?.release();}
 let lookStatus='free';
 function updateLookHint(){
@@ -431,7 +441,7 @@ controls=bindRaceControls(canvas,{
   state:()=>state==='running'||state==='countdown'?'active':state==='paused'?'paused':state==='finished'?'finished':state==='loading'||state==='returning'?'loading':'menu',
   pause,useItem,switchCamera:()=>$('camera').click(),start:reset,
   recenter:()=>toast('视角回正'),status:status=>{lookStatus=status;updateLookHint()},
-  onClear:()=>{charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,signal:events.signal,
+  onClear:()=>{itemRequests.clear();charge=0;drifting=false;},orbit,window:globalThis as unknown as Window,signal:events.signal,
 });
 keys=controls.keys;mouseLook=controls.mouseLook;
 defer(()=>controls.dispose());
@@ -439,18 +449,20 @@ function updateHUD(){
   const feedback=coastHudFeedback(playerCombatant(),bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions);
   const forkHint=routes?.states.has(selectedDriverId)&&routes.nearFork(selectedDriverId)?course.forkHint:null;
   shell.updateHUD({...feedback,
+    itemHelpSecond:coastHudFeedback({...playerCombatant(),held:heldSecond},bots.filter(b=>!botFinished(b)),LENGTH,charge,id=>getDriver(id).label,routes?.interactions).itemHelp?.replace(/\bE\b/g,'R'),
     // chargeLabel takes precedence over slideLabel in the shared HUD. Feed the
     // actual visible field so every fork presents its own route names.
     chargeLabel:forkHint??feedback.chargeLabel,
     rank:finishRank||rank(),lap:routes?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos,LENGTH),
-    elapsed,speed,charge,boost,shield,held,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
+    elapsed,speed,charge,boost,shield,held,heldSecond,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
 }
-function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI()}
+function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=heldSecond=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=b.heldSecond=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI()}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
   sparks.push({ p: p.clone(), v: new pc.Vec3((Math.random() - .5) * 4, 1 + Math.random() * 2, (Math.random() - .5) * 4), t: type === 'pulse' ? .8 : .45, max: .65 });
 }
 function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
+consumeItemRequest();
 elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,priorRoute:routes?.get(b.id),onPickup:()=>{b.pickups++;b.reaction=skill.reaction+b.phase*.025}}));for(const box of boxes)if(!box.dynamic)advancePickup(box,dt,raceRng);const tuning=racerTuning(selectedDriverId,pos,speed),input=driveInput(keys),steer=input.steer;let now=actorSample(selectedDriverId,pos),next=routes?routes.sampleAhead(selectedDriverId,7):sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
 let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(COAST_DRIFT.maxCharge,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(coastDriftReady(charge)&&!input.brake&&!input.reverse){boost=Math.max(boost,coastDriftBoost(charge));toast('漂移加速！');shell.cue('release')}charge=0}drifting=wantDrift;
 const playerTrack=actorTrack(selectedDriverId,pos);speed=stepLandSpeed(playerTrack,pos,speed,input,dt,tuning,boost,Math.max(hit,slow),Math.abs(lane)>actorLimit(selectedDriverId,pos,.9));lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering*landSteeringGrip(playerTrack,pos)+curvature*speed*dt*.43+landBankDrift(playerTrack,pos,speed,dt);const rail=landRailScrape(speed,lane,actorLimit(selectedDriverId,pos),dt);if(routes){speed=rail.speed;if(rail.contact){emit(actorSample(selectedDriverId,pos,rail.lateral).p);}}lane=rail.lateral;steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
@@ -465,60 +477,26 @@ if(routes){
 lane=clamp(lane,-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);if(course.track&&playerProgress){const progress=advanceLapProgress(course.track,playerProgress,pos,dt,lane);playerProgress=progress.state;if(!progress.accepted&&progress.reason!=='off-road'){pos=progress.state.distance;speed=0;}}
 playerFinishedAt=(routes?(routeFinish===undefined?null:elapsed-dt+dt*routeFinish):(!playerProgress||playerProgress.laps>=3?crossingTime(previous,pos,LENGTH*3,elapsed,dt):null))??playerFinishedAt;if(pos>previous&&previous>=0&&Math.floor(previous/LENGTH)<Math.floor(pos/LENGTH)&&pos<LENGTH*3){toast('第 '+(Math.floor(pos/LENGTH)+1)+' 圈！');shell.cue('lap')}
 const human=playerCombatant(), racers: Combatant[]=[human,...bots.filter(b=>!botFinished(b))];
-for(const b of bots){tickEffects(b,dt);tickBrain(b,dt);}
-for(const b of bots){
-  if(botFinished(b)){b.finishedAt??=elapsed-dt;b.held=null;b.boost=b.shield=b.slow=b.pulseFlash=0;hideBotFX(b);continue;}
-  if(routes)routes.npcChoice(b.id);
-  if(b.decisionIn<=0){
-    b.decisionIn=skill.decision+b.phase*.015;
-    // Read the same road geometry used by player physics; no rank-based pace.
-    const road=actorTrack(b.id,b.total),a=actorSample(b.id,b.total).t,z=routes?routes.sampleAhead(b.id,skill.lookAhead).t:sample(b.total+skill.lookAhead).t,bend=road?landLookAheadBend(road,b.total,skill.lookAhead):a.x*z.z-a.z*z.x; b.aiBend=bend;
-    const safeLane=Math.min(actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8,22));
-    b.targetLane=clamp(planLane(b,racers,boxes,LENGTH,b.phase,bend,skill,routes?.interactions),-safeLane,safeLane);
-    if(chooseItem(b,racers,LENGTH,bend,skill,routes?.interactions))useCombatItem(b,racers);
-  }
-}
+const cpuFrame={dt,elapsed};
+for(const b of bots)tickLandCpu(b,dt);
+for(const b of bots)decideLandCpu(b,racers,boxes,cpuContext,cpuFrame,cpuFeedback);
 applyPlayerCombatant(human);
+for(const b of bots)advanceLandCpu(b,cpuContext,cpuFrame,cpuFeedback);
 for(const b of bots){
   if(botFinished(b))continue;
-  const tuning=racerTuning(b.id,b.total,b.speed),road=actorTrack(b.id,b.total);
-  if(routes?.nearFork(b.id)){const selected=routes.npcChoice(b.id);b.targetLane=selected==='alley'?2.8:-2.8;}
-  b.driftCooldown=Math.max(0,b.driftCooldown-dt);
-  const control=npcDriving(b.speed,tuning.maxSpeed*(b.boost>0?RULES.boostFactor:1)*(b.slow>0?RULES.slowFactor:1),b.aiBend,skill,b.driftCharge,b.targetLane-b.lateral);
-  control.handbrake=control.drift=control.drift&&b.driftCooldown===0;
-  if(control.drift)b.driftCharge=Math.min(COAST_DRIFT.maxCharge,b.driftCharge+dt);
-  else {if(b.aiDrifting){if(!control.brake&&coastDriftReady(b.driftCharge))b.boost=Math.max(b.boost,coastDriftBoost(b.driftCharge));b.driftCooldown=2;}b.driftCharge=0;}
-  b.aiDrifting=control.drift;
-  if(b.driving)b.speed=stepLandSpeed(road,b.total,b.speed,control,dt,tuning,b.boost,b.slow,Math.abs(b.lateral)>actorLimit(b.id,b.total,.9));
-  if(routes){
-    const attempted=moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(road,b.total))+landBankDrift(road,b.total,b.speed,dt);
-    const rail=landRailScrape(b.speed,attempted,actorLimit(b.id,b.total,.8),dt);b.speed=rail.speed;if(rail.contact)emit(actorSample(b.id,b.total,rail.lateral).p);b.lateral=rail.lateral;
-    const selected=routes.npcChoice(b.id)==='alley'&&b.lateral>.35?'alley':'boulevard';const progress=routes.advance(b.id,b.speed*dt,dt,b.lateral,selected);b.total=progress.total;if(!progress.accepted)b.speed=0;if(progress.finishFraction!==undefined)b.finishedAt=elapsed-dt+dt*progress.finishFraction;
-    b.lateral=clamp(b.lateral,-actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8));routes.setLane(b.id,b.lateral);
-  }else{
-    // Identity adapter retains the established coast/mountain integration order.
-    const travel=b.speed*dt,before=b.total;b.total=Math.min(LENGTH*3,b.total+travel);
-    if(course.track){const progress=advanceLapProgress(course.track,botProgress.get(b.id)!,b.total,dt,b.lateral);botProgress.set(b.id,progress.state);if(!progress.accepted&&progress.reason!=='off-road'){b.total=progress.state.distance;b.speed=0;}}
-    if(botFinished(b))b.finishedAt=elapsed-dt+dt*(LENGTH*3-before)/Math.max(travel,1e-9);
-    b.lateral=clamp(moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(course.track,b.total)),-actorLimit(b.id,b.total,.8),actorLimit(b.id,b.total,.8));
-  }
-  if(botFinished(b)){b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b);continue;}
-}
-for(const b of bots){
-  if(botFinished(b))continue;
-  if(b.bump<=0&&b.shield<=0&&racers.some(r=>r.id!==b.id&&(routes?routes.collides(b,r):Math.abs(nearbyGap(b.total,r.total,LENGTH))<2.9&&Math.abs(b.lateral-r.lateral)<1.85))){b.slow=Math.max(b.slow,.55);b.bump=.8;}
+  collideLandCpu(b,racers,cpuContext);
   if((routes?routes.collides(playerCombatant(),b):Math.abs(nearbyGap(pos,b.total,LENGTH))<2.9&&Math.abs(b.lateral-lane)<1.85)&&hit<=0&&shield<=0){hit=.55;speed*=.77;lane=clamp(lane+(lane>b.lateral?.55:-.55),-actorLimit(selectedDriverId,pos),actorLimit(selectedDriverId,pos));routes?.setLane(selectedDriverId,lane);shell.cue('collision')}
 }
 human.total=pos;human.lateral=lane;
-collectPickups([{actor:human,previous,previousLane,onPickup:()=>{shell.cue('pickup');toast('获得道具 · E 使用')}},...botPrevious.filter(r=>!botFinished(r.actor))],boxes,LENGTH,raceRng,routes?.contact);
+collectPickups([{actor:human,previous,previousLane,onPickup:()=>{shell.cue('pickup');toast('获得道具 · E / R 使用对应槽')}},...botPrevious.filter(r=>!botFinished(r.actor))],boxes,LENGTH,raceRng,routes?.contact);
 applyPlayerCombatant(human);
 if(Number.isFinite(playerFinishedAt)){
   const fraction=dt>0?clamp((playerFinishedAt-(elapsed-dt))/dt,0,1):1;
   for(const prior of botPrevious){const b=prior.actor;if(b.finishedAt===null||b.finishedAt>playerFinishedAt){const effectiveFraction=b.finishedAt!==null?clamp((playerFinishedAt-(elapsed-dt))/(b.finishedAt-(elapsed-dt)),0,1):fraction;if(routes&&prior.priorRoute){const progress=routes.truncateFrame(b.id,prior.priorRoute,dt,fraction);b.lateral=progress.cursor.lateral;b.total=canonicalProgress(routes.course,progress.cursor);}else b.total=prior.previous+(b.total-prior.previous)*effectiveFraction;if(b.finishedAt!==null){b.total=Math.min(b.total,LENGTH*3-1e-8);b.finishedAt=null;}}}
   finish();
 }else{
- const snapshots=[{...playerCombatant(),travelSpeed:speed,reactionSpeed:Math.abs(speed),finished:false},...bots.map(b=>({id:b.id,total:b.total,lateral:b.lateral,held:b.held,travelSpeed:b.speed,reactionSpeed:Math.abs(b.speed),finished:botFinished(b)}))].map(r=>{
-  const tuning=racerTuning(r.id);return {...r,finishDistance:LENGTH*3,maxSpeed:tuning.maxSpeed*RULES.boostFactor*(course.track?1.06:1),acceleration:tuning.acceleration*RULES.boostFactor+(course.track?2:0)};
+ const snapshots=[{...playerCombatant(),travelSpeed:speed,reactionSpeed:Math.abs(speed),finished:false},...bots.map(b=>({id:b.id,total:b.total,lateral:b.lateral,held:b.held,heldSecond:b.heldSecond,travelSpeed:b.speed,reactionSpeed:Math.abs(b.speed),finished:botFinished(b)}))].map(r=>{
+  const tuning=racerTuning(r.id);return {...r,held:inventoryFull(r)?r.held:null,finishDistance:LENGTH*3,maxSpeed:tuning.maxSpeed*RULES.boostFactor*(course.track?1.06:1),acceleration:tuning.acceleration*RULES.boostFactor+(course.track?2:0)};
  });
  for(const box of dynamicPickups.tick({dt,active:true,racers:snapshots,staticBoxes:boxes.filter(b=>!b.dynamic)})){
   const item=box as typeof boxes[number],p=sample(box.d,box.lateral).p;item.base=p.y+1.25;item.mesh.setPosition(p.x,item.base,p.z);
@@ -558,7 +536,7 @@ function draw(dt: number) {
       const visible=(state==='running'||state==='paused')&&!botFinished(b);
       b.fx.shield.enabled=visible&&b.shield>0;b.fx.shield.setPosition(b.mesh.getPosition().clone().add(new pc.Vec3(0,1.2,0)));
       for(const flame of b.fx.flames){flame.mesh.enabled=visible&&b.boost>0;const p=scaled(scaled(frame.p.clone(),frame.t,-2.2),frame.n,flame.side*.54);p.y+=.55;flame.mesh.setPosition(p);flame.mesh.setRotation(new pc.Quat().setFromDirections(UP,frame.t.clone().mulScalar(-1)));flame.mesh.setLocalScale(1,.95+.2*Math.sin(elapsed*24+b.phase),1);}
-      for(const [kind,model] of Object.entries(b.fx.inventory)){model.enabled=visible&&(b.held===kind||(kind==='pulse'&&b.pulseFlash>0));model.setPosition(b.mesh.getPosition().clone().add(new pc.Vec3(0,3.4,0)));model.setEulerAngles(0,degrees(elapsed*1.8),0);const size=kind==='pulse'&&b.pulseFlash>0?1.1+(.65-b.pulseFlash)*2:.55;model.setLocalScale(size,size,size);}
+      for(const [kind,model] of Object.entries(b.fx.inventory)){model.enabled=visible&&(inventoryHas(b,kind as ItemKind)||(kind==='pulse'&&b.pulseFlash>0));model.setPosition(b.mesh.getPosition().clone().add(new pc.Vec3(0,3.4,0)));model.setEulerAngles(0,degrees(elapsed*1.8),0);const size=kind==='pulse'&&b.pulseFlash>0?1.1+(.65-b.pulseFlash)*2:.55;model.setLocalScale(size,size,size);}
     });
     const menu = state === 'menu' || state === 'finished';
     let cameraPosition: pc.Vec3, look: pc.Vec3;
@@ -606,8 +584,8 @@ function draw(dt: number) {
 function getState() {
   const stats = app.stats as any;
   return {
-    engine: 'PlayCanvas', map:mapId, validatedLaps:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).laps:playerProgress?.laps??null, checkpoints:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).nextGate:playerProgress?.passedCheckpoints??null, route:routes?.states.has(selectedDriverId)?routes.cursor(selectedDriverId):null, state, pos, lane, speed, elapsed, charge, boost, shield, slow, held, drifting, steerVis,
-    bots: bots.map(({id,total,lateral,speed,held,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt})=>({id,total,lateral,speed,held,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt,route:routes?.cursor(id)})),
+    engine: 'PlayCanvas', map:mapId, validatedLaps:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).laps:playerProgress?.laps??null, checkpoints:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).nextGate:playerProgress?.passedCheckpoints??null, route:routes?.states.has(selectedDriverId)?routes.cursor(selectedDriverId):null, state, pos, lane, speed, elapsed, charge, boost, shield, slow, held, heldSecond, drifting, steerVis,
+    bots: bots.map(({id,total,lateral,speed,held,heldSecond,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt})=>({id,total,lateral,speed,held,heldSecond,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt,route:routes?.cursor(id)})),
     lap: routes?.states.has(selectedDriverId)?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos, LENGTH), length: LENGTH, rank: finishRank || rank(), camera: view,
     muted, mouseLook: { ...orbit.get(), ...mouseLook.get() }, modelsLoaded: ready, allDriversLoaded: bundledDrivers.size === 6,
     bundledLoaded: [...bundledDrivers.keys()], bundledFailures: [...bundledFailures.keys()],
@@ -630,7 +608,7 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('qa')) {
     freeze: (value = true) => { manual = value; },
     step: (seconds: number) => { for (let i = 0; i < Math.ceil(seconds * 60); i++) { const dt = 1 / 60; clock += dt; if (ready) update(dt); draw(dt); } },
     set: (values: Record<string, any>) => {
-      ({ pos = pos, lane = lane, speed = speed, held = held, boost = boost, state = state, ready = ready, steerVis = steerVis, charge = charge, drifting = drifting, shield = shield, countdown = countdown, elapsed = elapsed, hit = hit, slow = slow } = values);
+      ({ pos = pos, lane = lane, speed = speed, held = held, heldSecond = heldSecond, boost = boost, state = state, ready = ready, steerVis = steerVis, charge = charge, drifting = drifting, shield = shield, countdown = countdown, elapsed = elapsed, hit = hit, slow = slow } = values);
       if (values.noBots) { for (const b of bots) { releaseBotFX(b); releaseActor(b.mesh); } bots = []; }
     },
   };

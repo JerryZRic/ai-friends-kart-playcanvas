@@ -1,0 +1,18 @@
+{
+  "auditUtc": "2026-10-14T17:33:13.641045+00:00",
+  "comparedEndpoints": 84,
+  "maxAbsoluteEndpointErrors": {
+    "estimate": 2.7755575615628914e-17,
+    "standardError": 4.336808689942018e-19,
+    "lower": 2.7755575615628914e-17,
+    "upper": 2.7755575615628914e-17,
+    "weightsSquared": 0.0
+  },
+  "criticalValueAbsoluteError": 0.0,
+  "acceptanceStatusesMatch": true,
+  "countsAndPerCharacterWinRankDiagnosticsMatch": true,
+  "officialEligibilityIssues": [],
+  "checks": "pass",
+  "officialSummarySha256": "98e2e187eefcc2ee9ca0e0b6666930186b33203e4e93aac72a8b78ec88692928",
+  "independentSummarySha256": "40a294997ebdb061db98c89c5fe0f3b4a3b001de6c0530088aa33101cddd99d7"
+}

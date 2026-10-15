@@ -1,0 +1,114 @@
+name: Publish requested HTML prerelease
+on:
+  push:
+    branches: [main]
+    paths: [docs/html-release-request.json]
+permissions:
+  contents: read
+  actions: read
+# Independent of github-pages: publish first; Pages verifies the public source asset before linking it.
+concurrency:
+  group: html-prerelease
+  cancel-in-progress: false
+jobs:
+  package:
+    if: ${{ github.repository == 'JerryZRic/ai-friends-kart-playcanvas' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Validate the exact one-shot request and its merge parents
+        run: python3 scripts/html-release.py validate-request
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Run focused prerelease regressions
+        run: >-
+          node --import tsx --test --test-concurrency=2
+          tests/game-surface-guards.test.ts
+          tests/build-version.test.ts
+          tests/build-identity.test.ts
+          tests/dual-item-inventory.test.ts
+          tests/dual-item-hud-mount.test.ts
+          tests/home-cover.test.ts
+          tests/home-cover-ready.test.ts
+          tests/home-cover-deformation.test.ts
+          tests/control-mode.test.ts
+          tests/race-controls.test.ts
+          tests/race-shell.test.ts
+          tests/race-frame-clock.test.ts
+          tests/race-hud.test.ts
+          tests/gameplay-cancel.test.ts
+      - name: Exercise packaging and request failure guards
+        run: python3 tests/test_html_release.py -v
+      - name: Build the release-labelled HTML bundle
+        env:
+          GAME_BUILD_CHANNEL: release
+          DEV_BUILD_SHA: ${{ github.sha }}
+        run: npm run build
+      - name: Verify legal/assets/source/relative links, package and read back every ZIP member
+        run: python3 scripts/html-release.py package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: html-release-${{ github.sha }}
+          path: release-html/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: html-release-${{ github.sha }}
+          path: release-html
+      - name: Reverify the request and downloaded archive
+        run: |
+          python3 scripts/html-release.py validate-request
+          python3 scripts/html-release.py verify
+      - name: Create a new draft only; never replace a tag or release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/html-release.py preflight
+          cat > release-notes.txt <<'NOTES'
+          HTML-only prerelease v1.0.2a from the explicitly requested main merge.
+
+          Download ai-friends-kart-playcanvas-v1.0.2a-html.zip and verify SHA256SUMS.
+          Extract its contents directly into an nginx/static HTTP root or a subdirectory. Open index.html through HTTP(S), not file://. All runtime assets use relative paths.
+
+          The archive includes source.zip, source.html, LICENSE, NOTICE, SOURCE.txt, and the separate music/model/food/prop notices. The identical corresponding-source ZIP is also available as the standalone source.zip release asset. Character models retain their separate noncommercial restrictions; their runtime files remain outside source.zip. Music retains its separate license.
+
+          This prerelease uses focused changed-feature checks and archive checks, not full stable certification. No Windows package is included. Pages publication is separately gated on this release and preserves the isolated dev preview and cover.
+          NOTES
+          printf '\nExact source commit: %s\n' "$GITHUB_SHA" >> release-notes.txt
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/v1.0.2a -f sha="$GITHUB_SHA"
+          gh release create v1.0.2a release-html/* \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --verify-tag \
+            --title 'v1.0.2a HTML prerelease' --notes-file release-notes.txt \
+            --draft --prerelease --latest=false
+      - name: Verify uploaded assets and exact tag before making the prerelease public
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/html-release.py verify-draft
+          python3 scripts/html-release.py check-refs
+          gh release edit v1.0.2a --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
+          python3 scripts/html-release.py verify-published

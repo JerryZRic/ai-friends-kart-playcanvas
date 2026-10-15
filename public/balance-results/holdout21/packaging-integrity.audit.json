@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "pass",
+  "scope": "All original 257 entries and all newly copied/generated artifacts preceding this audit; this audit itself is covered by artifact-index.json.",
+  "preservedExistingArtifacts": 257,
+  "oldIndexOriginalSha256": "ddbf7a4c9768524540326be3335f39a4fd1a233e8830b7d5f994f7cb1605df36",
+  "originalInputsUnmodified": 55,
+  "frozenSourcesVerified": 148,
+  "freezeSha256": "c11162eb90464b6068d07044bb9a974718fd0f69ce7606304b3181fe30d9fbed",
+  "rawGzipFilesVerifiedByteExact": 17,
+  "gzipMtime": 0,
+  "privatePathFindings": [],
+  "credentialMarkerFindings": [],
+  "emailFindings": [],
+  "scanCounts": {
+    "files": 317,
+    "archiveBytes": 63989437,
+    "decompressedBytes": 313505342,
+    "csvRacerRowsIncludingHistoricalAndReusedCopies": 332316,
+    "jsonlRacesIncludingHistoricalAndReusedCopies": 55386
+  },
+  "classification": {
+    "aggregate": "pass",
+    "mapGuardrail": "inconclusive",
+    "overallCertification": "inconclusive"
+  },
+  "trainingScreenRecordsNotDoubleCounted": true,
+  "tests": {
+    "initial": {
+      "tests": 107,
+      "pass": 106,
+      "fail": 1
+    },
+    "correctedBeforeFreeze": {
+      "tests": 107,
+      "pass": 107,
+      "fail": 0
+    }
+  }
+}

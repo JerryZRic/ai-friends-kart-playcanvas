@@ -1,6 +1,6 @@
 {
   "name": "ai-friends-kart-playcanvas",
-  "version": "1.0.0",
+  "version": "1.0.2-alpha.0",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -13,7 +13,9 @@
     "models:fetch": "node scripts/fetch-runtime-models.mjs",
     "test:dist": "node --expose-gc scripts/verify-dist.mjs",
     "food:fetch": "node scripts/fetch-food-karts.mjs",
-    "food:verify": "node scripts/verify-food-kart-assets.mjs"
+    "food:verify": "node scripts/verify-food-kart-assets.mjs",
+    "balance": "node --import tsx scripts/balance-runner.ts",
+    "balance:analyze": "node --import tsx scripts/analyze-balance.ts"
   },
   "dependencies": {
     "fflate": "0.8.3",
