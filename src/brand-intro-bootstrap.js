@@ -27,13 +27,13 @@
     clearWork();
     var now = elapsed();
     // Wall-clock deadlines still apply while a tab is hidden or restored.
-    if (now >= (reduced ? 800 : 5500)) { finish(); return; }
+    if (now >= (reduced ? 800 : 3750)) { finish(); return; }
     if (!reduced) {
       if (!fadeEnd) {
-        if (readyAt !== null && readyAt <= 4000 && now >= Math.max(3000, readyAt)) {
-          fadeStart = Math.max(3000, readyAt); fadeEnd = fadeStart + 500;
-        } else if (now >= 4000) {
-          fadeStart = 4000; fadeEnd = 5500; slow = true;
+        if (readyAt !== null && readyAt <= 2750 && now >= Math.max(1750, readyAt)) {
+          fadeStart = Math.max(1750, readyAt); fadeEnd = fadeStart + 750;
+        } else if (now >= 2750) {
+          fadeStart = 2750; fadeEnd = 3750; slow = true;
         }
       }
       if (fadeEnd) {
@@ -41,15 +41,15 @@
         if (slow && readyAt !== null) {
           // Continue from the sampled opacity. Never restart a fade or extend
           // its original deadline, including readiness in the final 150 ms.
-          var remaining = Math.min(fadeEnd - now, Math.max(150, opacity * 500));
+          var remaining = Math.min(fadeEnd - now, Math.max(150, opacity * 750));
           fadeFrom = opacity; fadeStart = now; fadeEnd = now + remaining; slow = false;
         }
         if (now >= fadeEnd) { finish(); return; }
         overlay.style.opacity = String(opacity);
       }
     }
-    overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 1000 ? 'fade-in' : 'hold';
-    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(3000, readyAt) : now < 1000 ? 1000 : 4000);
+    overlay.dataset.introPhase = reduced ? 'static' : fadeEnd ? 'fade-out' : now < 750 ? 'fade-in' : 'hold';
+    var next = reduced ? 800 : fadeEnd || (readyAt !== null ? Math.max(1750, readyAt) : now < 750 ? 750 : 2750);
     timer = setTimeout(update, Math.max(0, next - now));
     if (fadeEnd && !document.hidden) frame = requestAnimationFrame(update);
   }
