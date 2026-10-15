@@ -21,11 +21,13 @@ export function mountHomeCover(image:HTMLImageElement,cover:HomeCover,loadAdapte
  let disposed=false,failed=false,loading=false,pageHidden=false,runtime:HomeCoverRuntime|undefined,canvas:HTMLCanvasElement|undefined;
  let fallback=cover.id===FALLBACK_HOME_COVER.id;
  const motion=win?.matchMedia?.('(prefers-reduced-motion: reduce)');
+ const setFraming=(entry:HomeCover)=>{const f=entry.framing;image.style?.setProperty('--portrait-scale',String(f?.scale??1));image.style?.setProperty('--portrait-x',`${f?.x??0}%`);image.style?.setProperty('--portrait-y',`${f?.y??0}%`);};
+ setFraming(cover);
  image.dataset.coverId=cover.id;
  image.dataset.coverMode='static';
  const onImageError=()=>{
   if(disposed)return;
-  if(!fallback){fallback=true;image.src=FALLBACK_HOME_COVER.src;image.dataset.coverId=FALLBACK_HOME_COVER.id;}
+  if(!fallback){fallback=true;image.src=FALLBACK_HOME_COVER.src;setFraming(FALLBACK_HOME_COVER);image.dataset.coverId=FALLBACK_HOME_COVER.id;}
   else image.hidden=true;
  };
  image.addEventListener('error',onImageError);

@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {HOME_COVERS,FALLBACK_HOME_COVER,chooseHomeCover,getDocumentHomeCover} from '../src/home-cover-registry';
 import {mountHomeCover,type HomeCoverRuntime} from '../src/home-cover';
-test('only approved shipped art participates; all five pending portraits stay disabled',()=>{
- assert.equal(HOME_COVERS.length,6);assert.equal(HOME_COVERS.filter(x=>x.approved).length,1);
- for(const roll of [0,.2,.5,.9,1,NaN,-1])assert.equal(chooseHomeCover(HOME_COVERS,()=>roll).id,'deepseek');
+test('all six approved portraits participate, and unapproved entries are excluded',()=>{
+ assert.equal(HOME_COVERS.length,6);assert.equal(HOME_COVERS.filter(x=>x.approved).length,6);
+ for(const roll of [0,.2,.5,.9,1,NaN,-1])assert.equal(chooseHomeCover(HOME_COVERS.map(x=>({...x,approved:x.id==='deepseek'})),()=>roll).id,'deepseek');
  assert.equal(chooseHomeCover([],()=>0),FALLBACK_HOME_COVER);
  const ready=HOME_COVERS.map(x=>({...x,approved:true}));
  assert.deepEqual(ready.map((_,i)=>chooseHomeCover(ready,()=>i/6).id),ready.map(x=>x.id));

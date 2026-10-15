@@ -9,7 +9,8 @@ body[data-screen=main] #menu-ui .title-background{z-index:-1;background:linear-g
 body[data-screen=main] #menu-ui .title-shade{background:linear-gradient(180deg,#14397312,transparent 35%,transparent 72%,#09305665)}
 .title-stage{position:absolute;left:var(--title-center-x,50%);top:var(--title-center-y,50%);width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--title-scale,1));transform-origin:center;pointer-events:none}
 .title-composition{position:absolute;inset:0;width:1600px;height:900px;pointer-events:none;user-select:none;overflow:hidden}
-.title-character{position:absolute;left:64%;top:26%;width:30%;height:64%;object-fit:contain;object-position:top center;pointer-events:none;filter:drop-shadow(0 3px 2px #14315c33)}
+.title-portrait-frame{position:absolute;left:64%;top:26%;width:30%;height:64%;overflow:hidden;pointer-events:none}
+.title-character{position:absolute;inset:0;width:100%;height:100%;transform:translate(var(--portrait-x,0%),var(--portrait-y,0%)) scale(var(--portrait-scale,1));transform-origin:top center;object-fit:contain;object-position:top center;pointer-events:none;filter:drop-shadow(0 3px 2px #14315c33)}
 .title-logo{position:absolute;left:25%;top:2%;width:46%;height:24%;object-fit:contain;pointer-events:none}
 body[data-screen=main] #menu-ui #game-title{position:absolute;left:12%;right:12%;top:27px;font-size:98px;pointer-events:none}
 body[data-screen=main] #menu-ui .title-logo-ready #game-title{width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

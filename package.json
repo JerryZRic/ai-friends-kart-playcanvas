@@ -15,7 +15,8 @@
     "food:fetch": "node scripts/fetch-food-karts.mjs",
     "food:verify": "node scripts/verify-food-kart-assets.mjs",
     "balance": "node --import tsx scripts/balance-runner.ts",
-    "balance:analyze": "node --import tsx scripts/analyze-balance.ts"
+    "balance:analyze": "node --import tsx scripts/analyze-balance.ts",
+    "build:cover-preview": "node scripts/build-cover-preview.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",
