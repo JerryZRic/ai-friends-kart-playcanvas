@@ -3,7 +3,8 @@ export {resolveControlMode, type ControlMode} from './control-mode';
 export const CONTROL_MODE_EVENT = 'racecontrolmodechange';
 export function touchHint(text: string) {
   return text.replace(/左 Shift \+ A \/ D|Shift \+ A \/ D/g, '漂移 + 左右转向')
-    .replace(/左 Shift|Shift/g, '漂移').replace(/按住 W 油门/g, '按住油门').replace(/按住 W/g, '按住油门').replace(/按 E|E 使用/g, '点击道具');
+    .replace(/左 Shift|Shift/g, '漂移').replace(/按住 W 油门/g, '按住油门').replace(/按住 W/g, '按住油门').replace(/(?:点击这里或)?按 ([ER]) 使用/g, '点击 $1 道具使用')
+    .replace(/按 ([ER])|([ER]) 使用/g, (_match, pressed, used) => `点击 ${pressed || used} 道具`);
 }
 const mounts = new WeakMap<Document, {dispose(): void}>();
 /** Physical-size touch targets sit outside the proportional HUD transform. */
@@ -18,6 +19,23 @@ export function mountMobileControls(doc: Document, canvas: HTMLCanvasElement) {
   const toolbar = doc.getElementById('raceSystemTools');
   const toggle = doc.getElementById('mobileControlModeToggle');
   const popover = doc.getElementById('mobileControlModePopover');
+  // The second fixed item slot is shared by both track templates. Mount before
+  // bindRaceControls snapshots the mobile action buttons.
+  const primaryItem = panel.querySelector?.<HTMLButtonElement>('[data-mobile-action="item"]');
+  if (primaryItem && doc.createElement) {
+    primaryItem.disabled = true;
+    primaryItem.dataset.itemSlot = '0';
+    primaryItem.setAttribute('aria-label', 'E 道具槽 · 等待道具');
+    primaryItem.innerHTML = '<img class="mobile-item-image" width="28" height="28" alt="" hidden><span class="mobile-item-symbol" aria-hidden="true">◇</span><span class="mobile-item-label">E 道具</span>';
+    if (!panel.querySelector('[data-mobile-action="item-secondary"]')) {
+      const secondaryItem = doc.createElement('button');
+      secondaryItem.type = 'button'; secondaryItem.className = 'mobile-item mobile-item-secondary';
+      secondaryItem.dataset.mobileAction = 'item-secondary'; secondaryItem.dataset.itemSlot = '1';
+      secondaryItem.disabled = true; secondaryItem.setAttribute('aria-label', 'R 道具槽 · 等待道具');
+      secondaryItem.innerHTML = '<img class="mobile-item-image" width="28" height="28" alt="" hidden><span class="mobile-item-symbol" aria-hidden="true">◇</span><span class="mobile-item-label">R 道具</span>';
+      panel.appendChild(secondaryItem);
+    }
+  }
   doc.body.appendChild(panel); doc.body.appendChild(toolbar ?? modePanel);
   function closePopover() { if (popover) popover.hidden = true; toggle?.setAttribute('aria-expanded', 'false'); }
   function togglePopover() {

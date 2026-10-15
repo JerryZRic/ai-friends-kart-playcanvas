@@ -59,7 +59,7 @@ test('both maps receive identical signed-speed, rank, timer and cached item HUD'
     assert.equal($('timer').textContent, '1:09'); assert.equal($('speed').textContent, '72');
     assert.equal($('charge').style.width, '50%'); assert.match($('chargeLabel').textContent, /释放漂移加速/);
     assert.equal($('itemImage').src, itemImage('boost')); assert.equal($('itemImage').alt, '涡轮加速模型');
-    assert.equal($('item').dataset.held, 'boost'); assert.equal($('item').attrs['aria-label'], '使用涡轮加速');
+    assert.equal($('item').dataset.held, 'boost'); assert.equal($('item').attrs['aria-label'], 'E 道具槽 · 使用涡轮加速');
     shell.updateHUD({ ...snapshot, speed: -2 });
     assert.equal($('speed').textContent, 'R 7'); assert.equal($('itemImage').srcWrites, 1, 'same held item does not reset image decoding every frame');
     shell.updateHUD({ ...snapshot, held: 'shield', boost: 2, charge: 5 });
@@ -222,4 +222,36 @@ test('both maps sound each countdown edge once and do not replay on pause/resume
   audio.currentTime=11;shell.renderCountdown(1);assert.equal(starts,3);
   audio.currentTime=12;shell.renderCountdown(0);shell.renderCountdown(0);assert.equal(starts,5,'GO uses two bright notes exactly once');shell.dispose();
  }
+});
+
+
+test('both maps keep E and R images, labels and disabled states independent without compacting gaps', () => {
+  for (const map of ['coast', 'waterpark'] as const) {
+    const {shell, $} = fixture(map); shell.start();
+    shell.updateHUD({...snapshot, held: 'boost', heldSecond: 'shield'});
+    assert.equal($('itemImage').src, itemImage('boost')); assert.equal($('itemImageSecondary').src, itemImage('shield'));
+    assert.equal($('item').disabled, false); assert.equal($('item-secondary').disabled, false);
+    assert.equal($('item-secondary').attrs['aria-label'], 'R 道具槽 · 使用能量护盾');
+    assert.equal($('itemHelp').textContent, '点击这里或按 E 使用');
+    assert.equal($('itemHelpSecondary').textContent, '点击这里或按 R 使用');
+    shell.updateHUD({...snapshot, held: null, heldSecond: 'shield'});
+    assert.equal($('item').dataset.held, 'empty'); assert.equal($('item').disabled, true);
+    assert.equal($('item-secondary').dataset.held, 'shield'); assert.equal($('item-secondary').disabled, false);
+    assert.equal($('itemImageSecondary').srcWrites, 1, 'consuming E never changes or reloads R');
+    shell.updateHUD({...snapshot, held: 'pulse', heldSecond: null});
+    assert.equal($('item').dataset.held, 'pulse'); assert.equal($('item-secondary').disabled, true);
+    assert.equal($('itemImageSecondary').hidden, true); assert.equal($('itemImageSecondary').src, '');
+    shell.updateHUD({...snapshot, held: 'boost', heldSecond: 'boost', itemHelpSecond: 'R 加速 3.3 秒'});
+    assert.equal($('itemImage').src, $('itemImageSecondary').src, 'duplicate item types are valid independent slots');
+    assert.equal($('itemHelpSecondary').textContent, 'R 加速 3.3 秒');
+    shell.updateHUD({...snapshot, heldSecond: 'pulse', canUseItem: false});
+    assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
+    shell.updateHUD({...snapshot, heldSecond: 'pulse'});
+    shell.setPaused(true); assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
+    shell.setPaused(false); shell.updateHUD({...snapshot, heldSecond: 'pulse'});
+    shell.finish(finish); assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
+    shell.start(); shell.updateHUD(snapshot);
+    assert.equal($('item-secondary').dataset.held, 'empty', 'legacy snapshots clear R rather than retaining stale inventory');
+    shell.dispose(); assert.equal($('item').disabled, true); assert.equal($('item-secondary').disabled, true);
+  }
 });

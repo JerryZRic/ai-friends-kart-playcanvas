@@ -9,6 +9,7 @@ class BrowserTarget extends EventTarget {
   screen = {orientation: new EventTarget()};
   visualViewport = new EventTarget();
   hidden = false;
+  disabled = false;
   pointerLockElement: BrowserTarget | null = null;
   requestPointerLock?: () => void | Promise<void>;
   constructor(public tagName = '') { super(); }
@@ -30,16 +31,16 @@ function fixture({lock = 'missing', signal}: {lock?: 'missing' | 'pending' | 're
   const doc = new BrowserTarget(), win = new BrowserTarget(), canvas = new BrowserTarget('CANVAS');
   const throttle = new BrowserTarget('BUTTON'), brake = new BrowserTarget('BUTTON'), rear = new BrowserTarget('BUTTON');
   throttle.dataset.key = 'KeyW'; brake.dataset.key = 'Space'; rear.dataset.key = 'RearView';
-  const actions = ['camera', 'recenter', 'item', 'pause'].map(action => { const button = new BrowserTarget('BUTTON'); button.dataset.mobileAction = action; return button; });
+  const actions = ['camera', 'recenter', 'item', 'pause', 'item-secondary'].map(action => { const button = new BrowserTarget('BUTTON'); button.dataset.mobileAction = action; return button; });
   doc.querySelectorAll = () => actions as any;
   let state: RaceControlState = 'active';
-  const calls = {pause: 0, item: 0, camera: 0, recenter: 0, start: 0, clear: 0, lock: 0, status: [] as string[]};
+  const calls = {pause: 0, item: 0, itemSlots: [] as Array<0 | 1>, camera: 0, recenter: 0, start: 0, clear: 0, lock: 0, status: [] as string[]};
   if (lock !== 'missing') canvas.requestPointerLock = () => { calls.lock++; if (lock === 'reject') return Promise.reject(new Error('Denied')); };
   const controls = bindRaceControls(canvas as any, {
     document: doc as any, window: win as any, buttons: [throttle, brake, rear] as any, signal,
     state: () => state,
     pause: () => { calls.pause++; state = state === 'paused' ? 'active' : 'paused'; },
-    useItem: () => { if (state === 'active') calls.item++; },
+    useItem: (slot = 0) => { calls.item++; calls.itemSlots.push(slot); },
     switchCamera: () => { calls.camera++; }, recenter: () => { calls.recenter++; },
     start: () => { calls.start++; state = 'active'; },
     onClear: () => { calls.clear++; }, status: value => { calls.status.push(value); },
@@ -78,7 +79,7 @@ test('native forms retain their keys and focused buttons retain Space and Enter'
   const f = fixture();
   for (const tag of ['INPUT', 'SELECT', 'TEXTAREA', 'EDITABLE']) {
     const target = new BrowserTarget(tag);
-    for (const code of ['KeyW', 'ArrowDown', 'Space', 'Escape', 'KeyP', 'KeyE']) assert.equal(f.key('keydown', code, {target}).defaultPrevented, false);
+    for (const code of ['KeyW', 'ArrowDown', 'Space', 'Escape', 'KeyP', 'KeyE', 'KeyR']) assert.equal(f.key('keydown', code, {target}).defaultPrevented, false);
   }
   assert.equal(f.calls.pause, 0); assert.equal(f.calls.item, 0); assert.equal(f.controls.keys.KeyW, undefined);
   const button = new BrowserTarget('BUTTON');
@@ -275,4 +276,74 @@ test('browser resize and orientation changes release held sources without pausin
     assert.equal(f.controls.orbit.get().targetYaw, 0);
   }
   f.controls.dispose();
+});
+
+
+test('E and R have independent press edges, including duplicate non-repeat keydown and keyboard fallback', () => {
+  const f = fixture();
+  f.key('keydown', 'KeyR'); f.key('keydown', 'KeyR'); f.key('keydown', 'KeyR', {repeat: true});
+  f.key('keydown', 'KeyE'); f.key('keydown', 'KeyE'); f.key('keydown', 'KeyE', {repeat: true});
+  assert.deepEqual(f.calls.itemSlots, [1, 0], 'controls report actual edges; simulation decides same-frame priority');
+  f.key('keyup', 'KeyR'); f.key('keydown', '', {key: 'r'});
+  assert.deepEqual(f.calls.itemSlots, [1, 0, 1]);
+  f.key('keydown', 'KeyW'); f.key('keydown', 'KeyD'); f.key('keydown', 'ShiftLeft');
+  assert.deepEqual(driveInput(f.controls.keys), {steer: 1, throttle: true, reverse: false, brake: false, handbrake: true, rearView: false});
+  f.controls.dispose();
+});
+
+test('inactive or native item presses cannot arm delayed uses on resume or focus changes', () => {
+  for (const code of ['KeyE', 'KeyR']) {
+    for (const state of ['paused', 'menu', 'finished', 'loading'] as RaceControlState[]) {
+      const f = fixture(); f.setState(state);
+      f.key('keydown', code); assert.equal(f.calls.item, 0, state);
+      f.setState('active'); f.key('keydown', code); f.key('keydown', code, {repeat: true});
+      assert.equal(f.calls.item, 0, 'rejected hold stays rejected after resume');
+      f.key('keyup', code, {target: new BrowserTarget('INPUT')}); f.key('keydown', code);
+      assert.equal(f.calls.item, 1); f.controls.dispose();
+    }
+    const f = fixture(), input = new BrowserTarget('INPUT');
+    assert.equal(f.key('keydown', code, {target: input}).defaultPrevented, false);
+    f.key('keydown', code); assert.equal(f.calls.item, 0, 'native text input hold cannot leak into the race');
+    f.key('keyup', code, {target: input}); f.key('keydown', code); assert.equal(f.calls.item, 1);
+    f.controls.dispose();
+  }
+});
+
+test('pause, blur, page hiding, reset and mode changes require keyup before reusing a held item', () => {
+  for (const interrupt of ['clear', 'pause', 'blur', 'visibilitychange', 'pagehide', 'racecontrolmodechange', 'resize']) {
+    const f = fixture();
+    f.key('keydown', 'KeyE'); f.key('keydown', 'KeyR'); assert.deepEqual(f.calls.itemSlots, [0, 1]);
+    const clearBefore = f.calls.clear;
+    if (interrupt === 'clear') f.controls.clear();
+    else if (interrupt === 'pause') f.key('keydown', 'KeyP');
+    else if (interrupt === 'visibilitychange') { f.doc.hidden = true; fire(f.doc, interrupt); }
+    else fire(interrupt === 'racecontrolmodechange' ? f.doc : f.win, interrupt);
+    assert.ok(f.calls.clear > clearBefore, interrupt + ' drops pending simulation requests');
+    f.setState('active');
+    for (const code of ['KeyE', 'KeyR']) { f.key('keydown', code); f.key('keydown', code, {repeat: true}); }
+    assert.equal(f.calls.item, 2, interrupt + ' cannot rearm held items');
+    f.key('keyup', 'KeyE'); f.key('keydown', 'KeyE'); assert.deepEqual(f.calls.itemSlots, [0, 1, 0]);
+    f.key('keyup', 'KeyR'); f.key('keydown', 'KeyR'); assert.deepEqual(f.calls.itemSlots, [0, 1, 0, 1]);
+    f.controls.dispose();
+  }
+});
+
+test('an initial repeat after focus recovery stays suppressed until keyup', () => {
+  const f = fixture();
+  f.key('keydown', 'KeyR', {repeat: true}); f.key('keydown', 'KeyR'); assert.equal(f.calls.item, 0);
+  f.key('keyup', 'KeyR'); f.key('keydown', 'KeyR'); assert.deepEqual(f.calls.itemSlots, [1]);
+  f.controls.dispose();
+});
+
+test('mobile E and R buttons route their fixed slots and reject empty or inactive clicks', () => {
+  const f = fixture(), primary = f.actions[2], secondary = f.actions[4];
+  fire(secondary, 'click'); fire(primary, 'click'); assert.deepEqual(f.calls.itemSlots, [1, 0]);
+  primary.disabled = true; fire(primary, 'click'); assert.equal(f.calls.item, 2);
+  secondary.disabled = true; fire(secondary, 'click'); assert.equal(f.calls.item, 2);
+  primary.disabled = false; secondary.disabled = false;
+  for (const state of ['paused', 'menu', 'finished', 'loading'] as RaceControlState[]) {
+    f.setState(state); fire(primary, 'click'); fire(secondary, 'click');
+  }
+  assert.equal(f.calls.item, 2); f.controls.dispose();
+  fire(primary, 'click'); fire(secondary, 'click'); assert.equal(f.calls.item, 2);
 });

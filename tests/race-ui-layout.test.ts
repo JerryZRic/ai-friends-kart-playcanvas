@@ -174,6 +174,7 @@ test('physical touch layout arithmetic keeps driving targets separate at represe
     '--mobile-bottom:12px;--mobile-edge:14px;--mobile-primary:60px',
     'var(--mobile-bottom) + 112px', 'var(--mobile-bottom) + 206px',
     'var(--mobile-bottom) + 290px', 'var(--mobile-bottom) + 360px',
+    'var(--mobile-primary) + 103px', 'var(--mobile-primary) + 29px',
   ]) assert.ok(css.includes(source), source);
   type Box = {name: string; x: number; y: number; w: number; h: number};
   for (const [width,height,insetX,insetBottom] of [[320,568,0,0],[375,667,0,0],[390,844,0,34],[640,360,0,0],[844,390,44,21],[1024,768,0,0]]) {
@@ -190,7 +191,8 @@ test('physical touch layout arithmetic keeps driving targets separate at represe
     add('throttle',width-right-primary,bottom+primary+14,primary);
     add('drift',width-right-primary-20-78,bottom+(portrait?112:0),78);
     add('brake',width-right-primary-(portrait?20:112)-60,bottom+(portrait?290:8),60);
-    add('item',width-right-primary-29-60,bottom+(portrait?206:94),60);
+    add('item-E',width-right-primary-103-60,bottom+(portrait?206:94),60);
+    add('item-R',width-right-primary-29-60,bottom+(portrait?206:94),60);
     for(let i=0;i<4;i++)add('utility'+i,width-right-4*48-3*10+i*58,bottom+(portrait?360:short?160:178),48);
     for(const box of boxes){
       assert.ok(box.w>=48&&box.h>=48,`${width}: ${box.name} physical target`);

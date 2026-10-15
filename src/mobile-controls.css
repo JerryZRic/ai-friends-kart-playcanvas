@@ -92,10 +92,14 @@ body.menu .mobile-controls,body.race-paused .mobile-controls{display:none}
   bottom:calc(var(--mobile-bottom) + 8px + env(safe-area-inset-bottom));width:60px;height:60px;
 }
 .mobile-controls .mobile-item {
-  right:calc(var(--mobile-edge) + var(--mobile-primary) + 29px + env(safe-area-inset-right));
+  right:calc(var(--mobile-edge) + var(--mobile-primary) + 103px + env(safe-area-inset-right));
   bottom:calc(var(--mobile-bottom) + 94px + env(safe-area-inset-bottom));width:60px;height:60px;
 }
-.mobile-item>span:first-child{font-size:24px;line-height:24px;color:var(--lime)}
+.mobile-controls .mobile-item-secondary{right:calc(var(--mobile-edge) + var(--mobile-primary) + 29px + env(safe-area-inset-right))}
+.mobile-item .mobile-item-symbol{font-size:24px;line-height:24px;color:var(--lime)}
+.mobile-item .mobile-item-image{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 1px 2px #031820)}
+.mobile-item .mobile-item-label{font-size:10px;line-height:14px;white-space:nowrap}
+.mobile-item [hidden]{display:none}
 .mobile-utilities {
   position:absolute;right:calc(var(--mobile-edge) + env(safe-area-inset-right));
   bottom:calc(var(--mobile-bottom) + 178px + env(safe-area-inset-bottom));display:flex;gap:10px;
@@ -105,7 +109,7 @@ body.menu .mobile-controls,body.race-paused .mobile-controls{display:none}
 .mobile-rotate-hint{display:none;pointer-events:none}
 body[data-input-mode='touch'] .look-hint{display:none}
 body[data-input-mode='touch'] .bottom{bottom:240px}
-body[data-input-mode='touch'] .bottom #item{visibility:hidden;pointer-events:none}
+body[data-input-mode='touch'] .bottom .item-slots,body[data-input-mode='touch'] .bottom #item{visibility:hidden;pointer-events:none}
 body[data-input-mode='touch'] .tools #camera,
 body[data-input-mode='touch'] .tools #pause{display:none}
 body[data-input-mode='touch'] .ui-viewport-notice{display:none}

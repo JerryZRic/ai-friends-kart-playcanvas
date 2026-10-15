@@ -1,6 +1,7 @@
+import {clearInventory,type ItemSlot} from './item-inventory';
 import {COAST_DRIFT,coastDriftReady,coastDriftBoost} from './coast-race-feedback';
 import {npcDriving,type NpcSkill} from './npc-difficulty';
-import {RULES,tickEffects,tickBrain,planLane,chooseItem,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup,type PickupReachability} from './npc-tactics';
+import {RULES,tickEffects,tickBrain,planLane,chooseItemSlot,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup,type PickupReachability} from './npc-tactics';
 import {advanceLapProgress,type LandTrack,type LandLapProgress} from './land-track';
 import {stepLandSpeed,landLookAheadBend,landSteeringGrip,landBankDrift,landRailScrape} from './land-driving';
 import type {createLandRaceRoute} from './land-race-route';
@@ -29,7 +30,7 @@ export interface LandCpuContext {
 export interface LandCpuFrame {dt:number;elapsed:number}
 export interface LandCpuFeedback {
   /** Overrides activation as well as feedback. Omit for normal CPU activation. */
-  useItem?:(actor:LandCpuActor,racers:readonly Combatant[])=>void;
+  useItem?:(actor:LandCpuActor,racers:readonly Combatant[],slot?:ItemSlot)=>void;
   finished?:(actor:LandCpuActor)=>void;
   /** Observes existing progress guards; never changes integration or lap credit. */
   rejectedStep?:(actor:LandCpuActor,reason:string)=>void;
@@ -46,8 +47,8 @@ export const landCpuFinished=(b:LandCpuActor,c:LandCpuContext)=>c.routes?!!c.rou
  * retain the browser's original same-frame effect/decision ordering. */
 export function tickLandCpu(b:LandCpuActor,dt:number) {tickEffects(b,dt);tickBrain(b,dt);}
 
-export function activateLandCpuItem(b:LandCpuActor,racers:readonly Combatant[],c:LandCpuContext) {
-  const result=activateItem(b,racers,c.length,c.routes?.interactions);
+export function activateLandCpuItem(b:LandCpuActor,racers:readonly Combatant[],c:LandCpuContext,slot:ItemSlot=0) {
+  const result=activateItem(b,racers,c.length,c.routes?.interactions,slot);
   if(result){b.uses++;b.cooldown=RULES.cooldown;if(result.item==='pulse')b.pulseFlash=.65;}
   return result;
 }
@@ -55,7 +56,7 @@ export function activateLandCpuItem(b:LandCpuActor,racers:readonly Combatant[],c
 /** Extracted from the normal game NPC decision loop without changing timings,
  * road sampling, lane planning or item decisions. */
 export function decideLandCpu(b:LandCpuActor,racers:readonly Combatant[],boxes:readonly RacingPickup[],c:LandCpuContext,{dt,elapsed}:LandCpuFrame,feedback:LandCpuFeedback={}) {
-  if(landCpuFinished(b,c)){b.finishedAt??=elapsed-dt;b.held=null;b.boost=b.shield=b.slow=b.pulseFlash=0;feedback.finished?.(b);return;}
+  if(landCpuFinished(b,c)){b.finishedAt??=elapsed-dt;clearInventory(b);b.boost=b.shield=b.slow=b.pulseFlash=0;feedback.finished?.(b);return;}
   const {routes,skill}=c;
   if(routes)routes.npcChoice(b.id);
   if(b.decisionIn<=0){
@@ -68,8 +69,9 @@ export function decideLandCpu(b:LandCpuActor,racers:readonly Combatant[],boxes:r
       observe:feedback.pickupReachability?(box:RacingPickup,estimate:PickupReachability)=>feedback.pickupReachability!(b,box,estimate):undefined,
     }:undefined;
     b.targetLane=clamp(planLane(b,racers,boxes,c.length,b.phase,bend,skill,routes?.interactions,pickupPlanning),-safeLane,safeLane);
-    if(chooseItem(b,racers,c.length,bend,skill,routes?.interactions)){
-      if(feedback.useItem)feedback.useItem(b,racers);else activateLandCpuItem(b,racers,c);
+    const itemSlot=chooseItemSlot(b,racers,c.length,bend,skill,routes?.interactions);
+    if(itemSlot!==null){
+      if(feedback.useItem)feedback.useItem(b,racers,itemSlot);else activateLandCpuItem(b,racers,c,itemSlot);
     }
   }
 }
@@ -99,7 +101,7 @@ export function advanceLandCpu(b:LandCpuActor,c:LandCpuContext,{dt,elapsed}:Land
     if(landCpuFinished(b,c))b.finishedAt=elapsed-dt+dt*(c.length*3-before)/Math.max(travel,1e-9);
     b.lateral=clamp(moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(c.track,b.total)),-actorLimit(b,c,.8),actorLimit(b,c,.8));
   }
-  if(landCpuFinished(b,c)){b.held=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;feedback.finished?.(b);}
+  if(landCpuFinished(b,c)){clearInventory(b);b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;feedback.finished?.(b);}
 }
 
 export function landActorsCollide(a:Combatant,b:Combatant,c:LandCpuContext) {

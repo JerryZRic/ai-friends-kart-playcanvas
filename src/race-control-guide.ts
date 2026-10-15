@@ -8,7 +8,8 @@ export const RACE_KEY_GUIDE = [
   {id: 'right', group: 'driving', codes: ['KeyD', 'ArrowRight'], keys: ['D', '→'], labels: ['D', '右方向键'], text: '向右转向'},
   {id: 'brake', group: 'driving', codes: ['Space'], keys: ['Space'], labels: ['空格键'], text: '刹车'},
   {id: 'drift', group: 'driving', codes: ['ShiftLeft', 'ShiftRight'], keys: ['Shift'], labels: ['左或右 Shift 键'], text: '手刹漂移', note: '左右 Shift 均可'},
-  {id: 'item', group: 'driving', codes: ['KeyE'], keys: ['E'], labels: ['E'], text: '使用持有道具'},
+  {id: 'item', group: 'driving', codes: ['KeyE'], keys: ['E'], labels: ['E'], text: '使用左侧道具'},
+  {id: 'item-secondary', group: 'driving', codes: ['KeyR'], keys: ['R'], labels: ['R'], text: '使用右侧道具', note: '两格独立 · 使用后不换位'},
   {id: 'camera', group: 'camera', codes: ['KeyZ', 'KeyC'], keys: ['Z', 'C'], labels: ['Z', 'C'], text: '切换高 / 低追逐视角'},
   {id: 'recenter', group: 'camera', codes: ['KeyQ'], keys: ['Q'], labels: ['Q'], text: '视角回正'},
   {id: 'pause', group: 'pause', codes: ['KeyP'], keys: ['P'], labels: ['P'], text: '暂停 / 继续比赛'},
@@ -51,7 +52,7 @@ const TOUCH_GUIDE_CONTENT = `
       <div class="loading-control-row"><dt>刹车 / 漂移</dt><dd>独立刹车 · <span id="loadingDriftHelp">手刹漂移</span>时配合转向</dd></div>
     </dl></section>
     <section class="loading-control-group"><h3>道具与视角</h3><dl>
-      <div class="loading-control-row"><dt>道具</dt><dd>拾取后点击使用</dd></div>
+      <div class="loading-control-row"><dt>E / R 道具</dt><dd>点击对应按钮使用<small>两格独立 · 使用后不换位</small></dd></div>
       <div class="loading-control-row"><dt>滑动画面</dt><dd>空白赛道区域拖动环顾</dd></div>
       <div class="loading-control-row"><dt>回看 / 回正</dt><dd>按住回看 · 点击回正</dd></div>
       <div class="loading-control-row"><dt>视角 / 暂停</dt><dd>切换追逐视角 · 暂停比赛</dd></div>

@@ -1,3 +1,4 @@
+import {itemAt,inventoryFull,inventoryHas,storeItem,takeItem,type ItemSlot} from './item-inventory';
 import { npcLine, type NpcSkill } from './npc-difficulty';
 import type { ItemKind } from './item-models';
 import { claimPickup, type PickupState } from './item-pickups';
@@ -7,7 +8,7 @@ import { PICKUP_LONGITUDINAL_HALF_RANGE, PICKUP_LATERAL_HALF_RANGE } from './pic
 export const RULES = Object.freeze({ boost: 3.3, shield: 6, slow: 3, slowFactor: .55, boostFactor: 1.34, pulseRange: 120, lateralSpeed: 4, reaction: .65, cooldown: 1.2 });
 export interface Combatant {
   id: string; total: number; lateral: number; speed: number;
-  held: ItemKind | null; boost: number; shield: number; slow: number;
+  held: ItemKind | null; heldSecond?: ItemKind | null; boost: number; shield: number; slow: number;
 }
 export interface Brain { bump: number; decisionIn: number; reaction: number; cooldown: number; targetLane: number; pulseFlash: number; pickups: number; uses: number }
 export interface RacingPickup extends PickupState { d: number; lateral: number; dynamic?: boolean; edgeId?: string; s?: number }
@@ -37,10 +38,10 @@ export function pulseTarget(actor: Combatant, racers: readonly Combatant[], leng
     .filter(t => t.gap > .1 + 1e-8 && t.gap < RULES.pulseRange - 1e-8).sort((a, b) => a.gap - b.gap || a.r.id.localeCompare(b.r.id))[0]?.r;
 }
 /** A shield stops the nearest incoming pulse; it never skips through to a rear target. */
-export function activateItem(actor: Combatant, racers: readonly Combatant[], length: number, routes?: RouteInteractions) {
-  const item = actor.held;
+export function activateItem(actor: Combatant, racers: readonly Combatant[], length: number, routes?: RouteInteractions, slot: ItemSlot = 0) {
+  const item = itemAt(actor,slot);
   if (!item) return null;
-  actor.held = null;
+  takeItem(actor,slot);
   let target: Combatant | undefined, blocked = false;
   if (item === 'boost') actor.boost = Math.max(actor.boost, RULES.boost);
   else if (item === 'shield') actor.shield = Math.max(actor.shield, RULES.shield);
@@ -55,12 +56,20 @@ export function chooseItem(actor: Combatant & Brain, racers: readonly Combatant[
   if (!actor.held || actor.reaction > 0 || actor.cooldown > 0) return null;
   const neighbors = racers.filter(r => r.id !== actor.id).map(r => ({ r, gap: racerGap(actor, r, length, routes) }));
   if (actor.held === 'shield') {
-    const threatened = neighbors.some(({ r, gap }) => (Math.abs(gap) < 10 && Math.abs(r.lateral - actor.lateral) < 2.3 && (Math.abs(gap) < 4 || (gap > 0 ? actor.speed > r.speed : r.speed > actor.speed))) || (gap < -.1 && gap > -60 && r.held === 'pulse'));
+    const threatened = neighbors.some(({ r, gap }) => (Math.abs(gap) < 10 && Math.abs(r.lateral - actor.lateral) < 2.3 && (Math.abs(gap) < 4 || (gap > 0 ? actor.speed > r.speed : r.speed > actor.speed))) || (gap < -.1 && gap > -60 && inventoryHas(r,'pulse')));
     return actor.shield <= 0 && threatened ? 'shield' : null;
   }
   if (actor.held === 'pulse') { const target = pulseTarget(actor, racers, length, routes); return target && target.shield <= 0 && target.slow < .5 ? 'pulse' : null; }
   const blocked = neighbors.some(({ r, gap }) => gap > 0 && gap < 24 && Math.abs(r.lateral - actor.lateral) < 2.3);
   return actor.boost <= 0 && actor.slow <= 0 && actor.speed > 12 && Math.abs(actor.lateral) < 5.3 && Math.abs(bend) < (skill?.boostBend ?? .3) && !blocked ? 'boost' : null;
+}
+/** Retain each ordinary item policy and shared cooldown; E wins equal choices. */
+export function chooseItemSlot(actor: Combatant & Brain, racers: readonly Combatant[], length: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions): ItemSlot | null {
+  for (const slot of [0,1] as const) {
+    const held=itemAt(actor,slot);
+    if (held && chooseItem({...actor,held},racers,length,bend,skill,routes)) return slot;
+  }
+  return null;
 }
 /** Local estimate only: preserves the existing longitudinal-speed heuristic and
  * 0.65 m allowance. It does not predict future grip, acceleration, bank drift,
@@ -83,7 +92,7 @@ export interface PickupPlanning {
 /** Local, bounded lane planning. Does not inspect pickups beyond 48 m or reverse. */
 export function planLane(actor: Combatant, racers: readonly Combatant[], boxes: readonly RacingPickup[], length: number, phase: number, bend: number, skill?: NpcSkill, routes?: RouteInteractions, pickupPlanning?: PickupPlanning) {
   let lane = skill ? npcLine(actor.total, phase, bend, skill) : Math.sin(actor.total / 90 + phase) * 2.6;
-  if (!actor.held && Math.abs(bend) < .5) {
+  if (!inventoryFull(actor) && Math.abs(bend) < .5) {
     const candidates = boxes.filter(b => b.cool <= 0 && b.mesh.enabled).map(box => ({ box, gap: routes?.pickupGap ? routeValue(routes.pickupGap(actor, box)) : forwardGap(actor.total, box.d, length) }))
       .filter(({ box, gap }) => gap >= 2 && gap <= (skill?.pickupLookAhead ?? 48) && Math.abs(box.lateral) <= 5.2)
       .filter(({ box, gap }) => {
@@ -114,7 +123,7 @@ export function collectPickups(racers: readonly PickupRacer[], boxes: readonly R
   boxes.forEach((box, index) => {
     if (box.cool > 0 || !box.mesh.enabled) return;
     for (const racer of racers) {
-      if (racer.actor.held) continue;
+      if (inventoryFull(racer.actor)) continue;
       if (contact) {
         const time = contact(racer, box);
         if (time !== null && Number.isFinite(time) && time >= 0 && time <= 1) claims.push({ racer, box, time, index });
@@ -136,7 +145,7 @@ export function collectPickups(racers: readonly PickupRacer[], boxes: readonly R
   });
   claims.sort((a, b) => a.time - b.time || a.racer.actor.id.localeCompare(b.racer.actor.id) || a.index - b.index);
   for (const { racer, box } of claims) {
-    const reward = claimPickup(box, racer.actor.held !== null, rng);
-    if (reward) { racer.actor.held = reward; racer.onPickup?.(reward); }
+    const reward = claimPickup(box, inventoryFull(racer.actor), rng);
+    if (reward) { storeItem(racer.actor,reward); racer.onPickup?.(reward); }
   }
 }

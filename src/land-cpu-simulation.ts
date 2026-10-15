@@ -1,3 +1,4 @@
+import {inventoryFull} from './item-inventory';
 /** Six equivalent CPU roles using the SAME exported NPC loop as game.ts.
  * IDs identify scenario seats, never characters: branches, tie breaks, phases,
  * processing order and starting positions rotate independently of profile stats. */
@@ -18,7 +19,7 @@ import type {LandSimulationCourse} from './land-simulation-course';
 export const CPU_CHARACTER_IDS=CHARACTER_PROFILES.map(p=>p.id);
 export type CpuMultipliers={acceleration:number;topSpeed:number;steering:number};
 export type CpuProfileOverrides=Partial<Record<CharacterId,CpuMultipliers>>;
-export type CpuSimulationOptions={seed:number;rotation?:number;difficulty?:Difficulty;equipment?:'equal'|'mixed';items?:boolean;timeoutSeconds?:number;profiles?:CpuProfileOverrides;identityControl?:boolean};
+export type CpuSimulationOptions={seed:number;itemCapacity?:1|2;rotation?:number;difficulty?:Difficulty;equipment?:'equal'|'mixed';items?:boolean;timeoutSeconds?:number;profiles?:CpuProfileOverrides;identityControl?:boolean};
 export function cpuSeed(domain:string,map:string,index:number) {let hash=2166136261;for(const char of `${domain}:${map}:${index}`)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;return hash;}
 function shuffle<T>(input:readonly T[],rng:()=>number):T[]{const result=[...input];for(let i=result.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function pickup(data:Partial<RacingPickup>):RacingPickup{return {d:0,lateral:0,cool:0,display:'mystery',mesh:{enabled:false},models:{boost:{enabled:false},shield:{enabled:false},pulse:{enabled:false},mystery:{enabled:false}},...data};}
@@ -26,7 +27,7 @@ export interface CpuRaceActor extends LandCpuActor {
  characterId:CharacterId;seat:number;build:Readonly<KartBuild>;lapTimes:number[];collisionCount:number;railContacts:number;slowSeconds:number;driftSeconds:number;maxObservedSpeed:number;invalidSteps:number;rejectionReasons:Record<string,number>;
 }
 export interface CpuRaceResult {
- map:string;seed:number;rotation:number;difficulty:Difficulty;equipment:string;items:boolean;elapsed:number;steps:number;complete:boolean;timeout:boolean;winner:CharacterId|null;
+ map:string;seed:number;rotation:number;itemCapacity:1|2;difficulty:Difficulty;equipment:string;items:boolean;elapsed:number;steps:number;complete:boolean;timeout:boolean;winner:CharacterId|null;
  racers:Array<{id:string;characterId:CharacterId;seat:number;phase:number;rank:number;finishedAt:number|null;dnf:boolean;total:number;laps:number;lapTimes:number[];branches:string[];pickups:number;uses:number;collisionCount:number;railContacts:number;slowSeconds:number;driftSeconds:number;maxObservedSpeed:number;invalidSteps:number;rejectionReasons:Record<string,number>;build:Readonly<KartBuild>}>;
 }
 export function createCpuRace(course:LandSimulationCourse,options:CpuSimulationOptions) {
@@ -41,7 +42,7 @@ export function createCpuRace(course:LandSimulationCourse,options:CpuSimulationO
  const grid=[{total:0,lateral:-2},...Array.from({length:5},(_,i)=>({total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2}))];
  const actors:CpuRaceActor[]=grid.map((start,seat)=>{
   const phase=phaseOrder[seat],characterId=characters[(seat+rotation)%6],build=equipment==='mixed'?recipes[seat]:defaultBuild;
-  return {id:`seat-${seat}`,characterId,seat,phase,build,...start,speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(phase,start.lateral),lapTimes:[],collisionCount:0,railContacts:0,slowSeconds:0,driftSeconds:0,maxObservedSpeed:0,invalidSteps:0,rejectionReasons:{}};
+  return {id:`seat-${seat}`,characterId,seat,phase,build,...start,...(options.itemCapacity===2?{heldSecond:null}:{}),speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(phase,start.lateral),lapTimes:[],collisionCount:0,railContacts:0,slowSeconds:0,driftSeconds:0,maxObservedSpeed:0,invalidSteps:0,rejectionReasons:{}};
  });
  const byId=new Map(actors.map(a=>[a.id,a])),compiled=new Map(actors.map(a=>[a.id,compileKartBuild(a.build)]));
  for(const actor of actors){routes?.init(actor.id,actor.total,actor.lateral);if(course.track&&!routes)progress.set(actor.id,createLapProgress(course.track,actor.total));}
@@ -79,14 +80,14 @@ export function createCpuRace(course:LandSimulationCourse,options:CpuSimulationO
   for(const actor of active){const before=actor.bump;collideLandCpu(actor,active,context);if(actor.bump>before)actor.collisionCount++;}
   collectPickups(previous.filter(p=>!landCpuFinished(p.actor,context)),boxes,course.length,rng,routes?.contact);
   for(const prior of previous){const count=laps(prior.actor);if(count>prior.lap){const fraction=prior.actor.finishedAt!==null?(prior.actor.finishedAt-elapsed+dt)/dt:(course.length*count-prior.previous)/Math.max(1e-9,prior.actor.total-prior.previous);const time=elapsed-dt+dt*Math.max(0,Math.min(1,fraction));prior.actor.lapTimes.push(time-(prior.actor.lapTimes.reduce((a,b)=>a+b,0)));}}
-  if(items)director.tick({dt,active:true,racers:actors.map(actor=>{const value=tuning(actor.id);return {id:actor.id,total:actor.total,lateral:actor.lateral,held:actor.held,travelSpeed:actor.speed,reactionSpeed:Math.abs(actor.speed),finished:landCpuFinished(actor,context),finishDistance:course.length*3,maxSpeed:value.maxSpeed*RULES.boostFactor*(course.track?1.06:1),acceleration:value.acceleration*RULES.boostFactor+(course.track?2:0)};}),staticBoxes});
+  if(items)director.tick({dt,active:true,racers:actors.map(actor=>{const value=tuning(actor.id);return {id:actor.id,total:actor.total,lateral:actor.lateral,held:inventoryFull(actor)?actor.held:null,travelSpeed:actor.speed,reactionSpeed:Math.abs(actor.speed),finished:landCpuFinished(actor,context),finishDistance:course.length*3,maxSpeed:value.maxSpeed*RULES.boostFactor*(course.track?1.06:1),acceleration:value.acceleration*RULES.boostFactor+(course.track?2:0)};}),staticBoxes});
   done=actors.every(actor=>landCpuFinished(actor,context));
   if(!done&&elapsed>=timeoutSeconds-1e-9){timeout=true;done=true;}
   if(done)director.finish();
  }
  function result():CpuRaceResult{
   const standings=coastStandings(actors),winner=standings[0]?.finishedAt!==null?byId.get(standings[0].id)!.characterId:null;
-  return {map:course.id,seed,rotation,difficulty,equipment,items,elapsed,steps,complete:actors.every(a=>landCpuFinished(a,context)),timeout,winner,racers:standings.map((standing,index)=>{const actor=byId.get(standing.id)!;return {id:actor.id,characterId:actor.characterId,seat:actor.seat,phase:actor.phase,rank:index+1,finishedAt:actor.finishedAt,dnf:!landCpuFinished(actor,context),total:actor.total,laps:laps(actor),lapTimes:[...actor.lapTimes],branches:routes?Object.values(routes.cursor(actor.id).choiceByLap):[],pickups:actor.pickups,uses:actor.uses,collisionCount:actor.collisionCount,railContacts:actor.railContacts,slowSeconds:actor.slowSeconds,driftSeconds:actor.driftSeconds,maxObservedSpeed:actor.maxObservedSpeed,invalidSteps:actor.invalidSteps,rejectionReasons:{...actor.rejectionReasons},build:actor.build};})};
+  return {map:course.id,seed,rotation,itemCapacity:options.itemCapacity??1,difficulty,equipment,items,elapsed,steps,complete:actors.every(a=>landCpuFinished(a,context)),timeout,winner,racers:standings.map((standing,index)=>{const actor=byId.get(standing.id)!;return {id:actor.id,characterId:actor.characterId,seat:actor.seat,phase:actor.phase,rank:index+1,finishedAt:actor.finishedAt,dnf:!landCpuFinished(actor,context),total:actor.total,laps:laps(actor),lapTimes:[...actor.lapTimes],branches:routes?Object.values(routes.cursor(actor.id).choiceByLap):[],pickups:actor.pickups,uses:actor.uses,collisionCount:actor.collisionCount,railContacts:actor.railContacts,slowSeconds:actor.slowSeconds,driftSeconds:actor.driftSeconds,maxObservedSpeed:actor.maxObservedSpeed,invalidSteps:actor.invalidSteps,rejectionReasons:{...actor.rejectionReasons},build:actor.build};})};
  }
  return {course,options,actors,boxes,routes,context,step,result,get elapsed(){return elapsed;},get done(){return done;},position:(actor:CpuRaceActor)=>routes?routes.sample(actor.id,actor.lateral).p:course.sample(actor.total,actor.lateral).p};
 }

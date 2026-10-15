@@ -22,9 +22,12 @@ export interface RaceHudSnapshot {
   chargeLabel?: string;
   chargeState?: 'idle' | 'charging' | 'ready' | 'full';
   itemHelp?: string;
+  itemHelpSecond?: string;
   boost?: number;
   shield?: number;
   held: ItemKind | null;
+  /** Fixed R slot; an empty E slot never pulls this item left. */
+  heldSecond?: ItemKind | null;
   slideLabel?: string;
   canUseItem?: boolean;
 }
@@ -165,10 +168,15 @@ export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceM
 
 export {RACE_SOUND_KEY,createRaceSound} from './race-sound';
 const ITEMS = Object.freeze({
-  boost: { name: 'ϟ 涡轮加速', alt: '涡轮加速模型', action: '使用涡轮加速' },
-  shield: { name: '◉ 能量护盾', alt: '能量护盾模型', action: '使用能量护盾' },
-  pulse: { name: '✦ 追踪脉冲', alt: '追踪脉冲模型', action: '使用追踪脉冲' },
+  boost: { shortName: '加速', name: 'ϟ 涡轮加速', alt: '涡轮加速模型', action: '使用涡轮加速' },
+  shield: { shortName: '护盾', name: '◉ 能量护盾', alt: '能量护盾模型', action: '使用能量护盾' },
+  pulse: { shortName: '脉冲', name: '✦ 追踪脉冲', alt: '追踪脉冲模型', action: '使用追踪脉冲' },
 });
+
+const ITEM_SLOTS = [
+  {button: 'item', image: 'itemImage', name: 'itemName', help: 'itemHelp', action: 'item', key: 'E'},
+  {button: 'item-secondary', image: 'itemImageSecondary', name: 'itemNameSecondary', help: 'itemHelpSecondary', action: 'item-secondary', key: 'R'},
+] as const;
 
 export interface RaceShellOptions extends RaceSoundOptions {
   music?: BackgroundMusic | null;
@@ -177,11 +185,37 @@ export interface RaceShellOptions extends RaceSoundOptions {
   track?: RaceMapTrack;
 }
 
+/** Extend the existing shared HUD without requiring a second map template. */
+function mountItemSlots(document: Document) {
+  const primary = document.getElementById('item') as HTMLButtonElement | null;
+  if (!primary) return;
+  primary.type = 'button'; primary.dataset.itemSlot = '0';
+  primary.setAttribute('aria-keyshortcuts', 'E'); primary.setAttribute('aria-label', 'E 道具槽 · 等待道具'); primary.disabled = true;
+  const label = primary.querySelector?.('.itemCopy > span');
+  if (label) label.textContent = '道具槽 E';
+  if (!primary.parentElement || !document.createElement) return;
+  let group = document.getElementById('raceItemSlots');
+  if (!group) {
+    group = document.createElement('div'); group.id = 'raceItemSlots'; group.className = 'item-slots';
+    group.setAttribute('role', 'group'); group.setAttribute('aria-label', '固定道具槽 E 和 R');
+    primary.parentElement.insertBefore(group, primary); group.appendChild(primary);
+  }
+  if (!document.getElementById('item-secondary')) {
+    const secondary = document.createElement('button');
+    secondary.id = 'item-secondary'; secondary.type = 'button'; secondary.className = 'item';
+    secondary.dataset.itemSlot = '1'; secondary.disabled = true;
+    secondary.setAttribute('aria-keyshortcuts', 'R'); secondary.setAttribute('aria-label', 'R 道具槽 · 等待道具');
+    secondary.innerHTML = '<img id="itemImageSecondary" width="80" height="80" alt="" hidden><div class="itemCopy"><span>道具槽 R</span><strong id="itemNameSecondary">◇ 等待道具</strong><span id="itemHelpSecondary">撞箱拾取 · 两格独立</span></div>';
+    group.appendChild(secondary);
+  }
+}
+
 /** DOM-only coordinator. It never owns physics, race elapsed time or standings. */
 export function createRaceShell(document: Document, canvas: HTMLCanvasElement, options: RaceShellOptions) {
-  const ids = ['rank', 'lap', 'timer', 'speed', 'charge', 'chargeLabel', 'item', 'itemImage', 'itemName', 'itemHelp', 'toast', 'count', 'pause', 'pausePanel', 'resumeRace', 'overlay', 'menu', 'title', 'subtitle', 'desc', 'results', 'start', 'startText', 'sound', 'raceChangeMap', 'raceChangeCharacter', 'raceMainMenu', 'change-driver', 'change-map', 'raceDriverIdentity'] as const;
+  mountItemSlots(document);
+  const ids = ['rank', 'lap', 'timer', 'speed', 'charge', 'chargeLabel', 'item', 'itemImage', 'itemName', 'itemHelp', 'item-secondary', 'itemImageSecondary', 'itemNameSecondary', 'itemHelpSecondary', 'toast', 'count', 'pause', 'pausePanel', 'resumeRace', 'overlay', 'menu', 'title', 'subtitle', 'desc', 'results', 'start', 'startText', 'sound', 'raceChangeMap', 'raceChangeCharacter', 'raceMainMenu', 'change-driver', 'change-map', 'raceDriverIdentity'] as const;
   const elements = Object.fromEntries(ids.map(id => [id, document.getElementById(id)])) as Record<typeof ids[number], HTMLElement | null>;
-  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = (id === 'chargeLabel' || id === 'itemHelp') && document.body?.dataset?.inputMode === 'touch' ? touchHint(value) : value; };
+  const text = (id: typeof ids[number], value: string) => { if (elements[id]) elements[id].textContent = (id === 'chargeLabel' || id === 'itemHelp' || id === 'itemHelpSecondary') && document.body?.dataset?.inputMode === 'touch' ? touchHint(value) : value; };
   const hidden = (id: typeof ids[number], value: boolean) => {
     const element = elements[id];
     if (element) element.classList[value ? 'add' : 'remove']('hidden');
@@ -213,7 +247,8 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
   const minimap = options.track ? createRaceMinimap(document.getElementById('map') as HTMLCanvasElement | null, options.track) : null;
   let mapId = options.map, phase: 'menu' | 'running' | 'paused' | 'finished' = 'menu';
   let raceMusicStarted = false, lastCount=-1, driftStage=0;
-  let toastRemaining = 0, shownItem: ItemKind | null | undefined, disposed = false;
+  let toastRemaining = 0, disposed = false;
+  const shownItems: Array<ItemKind | null | undefined> = [undefined, undefined];
   const portraits = new Map<ItemKind, string>();
   const focus = (element: HTMLElement | null) => element?.focus?.({ preventScroll: true });
 
@@ -252,6 +287,16 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     elements.pause?.setAttribute('aria-expanded', 'false');
   }
 
+  function disableItems() {
+    for (const id of ['item', 'item-secondary'] as const) {
+      if (elements[id]) (elements[id] as HTMLButtonElement).disabled = true;
+    }
+    for (const action of ['item', 'item-secondary']) {
+      const button = document.querySelector?.<HTMLButtonElement>(`[data-mobile-action="${action}"]`);
+      if (button) button.disabled = true;
+    }
+  }
+
   function clearToast() {
     toastRemaining = 0;
     if (elements.toast) elements.toast.style.opacity = '0';
@@ -279,29 +324,47 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       if (elements.charge) elements.charge.style.width = `${clamp(charge / positive(snapshot.chargeMax ?? 1.4,1.4) * 100, 0, 100)}%`;
       if (elements.charge) elements.charge.dataset.state = snapshot.chargeState || 'idle';
       text('chargeLabel', snapshot.chargeLabel ?? ((snapshot.boost ?? 0) > 0 ? '涡轮加速中！' : (snapshot.shield ?? 0) > 0 ? '能量护盾保护中' : charge >= .6 ? '松开 Shift，释放漂移加速' : Math.abs(speed) < .1 ? '按住 W 油门起步' : snapshot.slideLabel || '左 Shift + A / D 手刹漂移'));
-      const held = snapshot.held;
-      if (shownItem !== held) {
-        shownItem = held;
-        const image = elements.itemImage as HTMLImageElement | null;
-        if (image) {
-          image.hidden = !held;
-          if (held) {
-            if (!portraits.has(held)) portraits.set(held, itemImage(held));
-            image.src = portraits.get(held)!; image.alt = ITEMS[held].alt;
-          } else { image.removeAttribute('src'); image.alt = ''; }
+      // Index is identity: never filter, compact or shift an occupied R slot.
+      const heldSlots = [snapshot.held, snapshot.heldSecond ?? null] as const;
+      for (const [slot, ids] of ITEM_SLOTS.entries()) {
+        const held = heldSlots[slot], button = elements[ids.button] as HTMLButtonElement | null;
+        const label = `${ids.key} 道具槽 · ${held ? ITEMS[held].action : '等待道具'}`;
+        const disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
+        if (shownItems[slot] !== held) {
+          shownItems[slot] = held;
+          const image = elements[ids.image] as HTMLImageElement | null;
+          if (image) {
+            image.hidden = !held;
+            if (held) {
+              if (!portraits.has(held)) portraits.set(held, itemImage(held));
+              image.src = portraits.get(held)!; image.alt = ITEMS[held].alt;
+            } else { image.removeAttribute('src'); image.alt = ''; }
+          }
+          if (button) button.dataset.held = held || 'empty';
+          button?.setAttribute('aria-label', label);
         }
-        if (elements.item) elements.item.dataset.held = held || 'empty';
-        elements.item?.setAttribute('aria-label', held ? ITEMS[held].action : '等待道具');
-      }
-      text('itemName', held ? ITEMS[held].name : '◇ 等待道具');
-      text('itemHelp', held ? snapshot.itemHelp ?? '点击这里或按 E 使用' : '撞箱拾取 · 问号为随机道具');
-      if (elements.item) (elements.item as HTMLButtonElement).disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
-      const mobileItem = document.querySelector?.<HTMLButtonElement>('[data-mobile-action="item"]');
-      if (mobileItem) {
-        mobileItem.disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
-        mobileItem.setAttribute('aria-label', held ? ITEMS[held].action : '等待道具');
-        mobileItem.dataset.held = held || 'empty';
-        mobileItem.textContent = held ? ITEMS[held].name : '◇ 道具';
+        text(ids.name, held ? ITEMS[held].name : '◇ 等待道具');
+        const help = slot === 0 ? snapshot.itemHelp : snapshot.itemHelpSecond;
+        text(ids.help, held ? help ?? `点击这里或按 ${ids.key} 使用` : '撞箱拾取 · 两格独立');
+        if (button) button.disabled = disabled;
+        const mobileItem = document.querySelector?.<HTMLButtonElement>(`[data-mobile-action="${ids.action}"]`);
+        if (mobileItem) {
+          const changed = mobileItem.dataset.held !== (held || 'empty');
+          mobileItem.disabled = disabled; mobileItem.setAttribute('aria-label', label);
+          mobileItem.dataset.held = held || 'empty';
+          const image = mobileItem.querySelector<HTMLImageElement>('.mobile-item-image');
+          const symbol = mobileItem.querySelector<HTMLElement>('.mobile-item-symbol');
+          const name = mobileItem.querySelector<HTMLElement>('.mobile-item-label');
+          if (image && changed) {
+            image.hidden = !held;
+            if (held) {
+              if (!portraits.has(held)) portraits.set(held, itemImage(held));
+              image.src = portraits.get(held)!; image.alt = ITEMS[held].alt;
+            } else { image.removeAttribute('src'); image.alt = ''; }
+          }
+          if (symbol) symbol.hidden = !!held;
+          if (name) name.textContent = `${ids.key} ${held ? ITEMS[held].shortName : '道具'}`;
+        }
       }
     },
     start(countdown = 3) {
@@ -309,7 +372,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       sound.stop();sound.unlock();lastCount=-1;driftStage=0;raceMusicStarted = false; music?.silence();
       music?.setRaceUrl?.(raceMusicUrl(options.map));
       music?.preloadRace();
-      phase = 'running'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
+      phase = 'running'; disableItems(); document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.remove('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = false;
       hidden('overlay', true); hidden('menu', true); hidden('results', true);
@@ -323,7 +386,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
         phase = 'paused'; document.body.classList.add('race-paused'); text('count', '已暂停');
         elements.count?.classList.remove('waiting'); elements.count?.classList.add('paused');
         hidden('pausePanel', false); text('pause', '▶');
-        if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
+        disableItems();
         elements.pause?.setAttribute('aria-label', '继续比赛'); elements.pause?.setAttribute('aria-expanded', 'true');
         focus(elements.resumeRace);
       } else {
@@ -337,7 +400,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       phase = 'menu'; document.body.classList.remove('race-paused'); resetPause(); clearToast();
       document.body.classList.add('menu'); document.body.classList.remove('finished');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
-      if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
+      disableItems();
       hidden('overlay', false); hidden('menu', false); hidden('results', true); text('count', '');
     },
     finish(snapshot: RaceFinishSnapshot) {
@@ -354,7 +417,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       if (elements.results) elements.results.innerHTML = renderRaceResults(snapshot);
       text('startText', '再来一场');
       if (elements.pause) (elements.pause as HTMLButtonElement).disabled = true;
-      if (elements.item) (elements.item as HTMLButtonElement).disabled = true;
+      disableItems();
       focus(elements.start);
     },
     toast(message: string, seconds = 2.1) {
@@ -373,6 +436,6 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     tone(frequency = 500, duration = .1) { sound.tone(frequency, duration); },
     toggleSound() { if (!disposed) { sound.toggle(); updateSound(); sound.tone(); } return sound.muted; },
     get muted() { return sound.muted; },
-    dispose() { if (disposed) return; disposed = true; disposeMusicSettings();disposeSoundSettings();document.removeEventListener?.('pointerdown',unlockSound,true);document.removeEventListener?.('keydown',unlockSound,true);document.removeEventListener?.('visibilitychange',visibilitySound);document.defaultView?.removeEventListener('blur',stopSound); musicNavigation.dispose(); sound.dispose(); clearToast(); },
+    dispose() { if (disposed) return; disableItems(); disposed = true; disposeMusicSettings();disposeSoundSettings();document.removeEventListener?.('pointerdown',unlockSound,true);document.removeEventListener?.('keydown',unlockSound,true);document.removeEventListener?.('visibilitychange',visibilitySound);document.defaultView?.removeEventListener('blur',stopSound); musicNavigation.dispose(); sound.dispose(); clearToast(); },
   };
 }
