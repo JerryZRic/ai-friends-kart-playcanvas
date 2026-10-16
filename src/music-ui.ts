@@ -2,12 +2,31 @@ import {createBackgroundMusic} from './background-music';
 
 export type BackgroundMusic = ReturnType<typeof createBackgroundMusic>;
 
-/** Each full HTML page has one owner; audio never joins a required resource gate. */
-export const LAND_RACE_MUSIC = Object.freeze(Array.from({length: 6}, (_, i) => `./assets/music/dfy0${i + 1}.mp3`));
+/** Shared race-only pool. THEME stays menu-only; Love on Kart is reserved for a future ending. */
+export const RACE_MUSIC = Object.freeze([
+  './assets/music/dfy_fusion.mp3',
+  './assets/music/DFY-pop01.mp3',
+  './assets/music/dfy05.mp3',
+  './assets/music/dfy01.mp3',
+  './assets/music/dfy03.mp3',
+  './assets/music/dfy02.mp3',
+  './assets/music/dfy04.mp3',
+  './assets/music/DFY-pop02.mp3',
+  './assets/music/DFY-bossa_nova.mp3',
+  './assets/music/DFY-jazz01.mp3',
+  './assets/music/DFY-jazz02.mp3',
+  './assets/music/DFY-lofi_hip_hop.mp3',
+  './assets/music/DFY-neo_soul.mp3',
+  './assets/music/DFY-gospel.mp3',
+  './assets/music/DFY-synthwave.mp3',
+  './assets/music/DFY-neo_disco.mp3',
+  './assets/music/DFY-neo_house.mp3',
+]);
+/** Compatibility export: the pool is now shared by land and water. */
+export const LAND_RACE_MUSIC=RACE_MUSIC;
 /** Called once by the race shell at each new start/restart, never on resume. */
 export function raceMusicUrl(map?: string, random: () => number = Math.random): string {
-  if (map === 'waterpark') return './assets/music/dfy_water.mp3';
-  return LAND_RACE_MUSIC[Math.floor(random() * LAND_RACE_MUSIC.length)];
+  return RACE_MUSIC[Math.floor(random() * RACE_MUSIC.length)];
 }
 
 export function getDocumentMusic(document: Document, map?: string, preloadTheme = false): BackgroundMusic | null {

@@ -16,6 +16,18 @@ Covered music / 适用音乐
 - dfy06.mp3
 - dfy_bgm.mp3 (legacy alias of dfy06.mp3)
 - dfy_fusion.mp3 (legacy alias of dfy_water.mp3)
+- DFY-pop01.mp3
+- DFY-pop02.mp3
+- DFY-bossa_nova.mp3
+- DFY-jazz01.mp3
+- DFY-jazz02.mp3
+- DFY-lofi_hip_hop.mp3
+- DFY-neo_soul.mp3
+- DFY-gospel.mp3
+- DFY-synthwave.mp3
+- DFY-neo_disco.mp3
+- DFY-neo_house.mp3
+- DFY-Love_on_Kart.mp3
 This permission covers these musical works and recordings, including
 adaptations, only to the extent of rights held by JerryZRic.
 本许可适用于上述音乐作品与录音及其改编，仅限 JerryZRic 所持有的权利。
