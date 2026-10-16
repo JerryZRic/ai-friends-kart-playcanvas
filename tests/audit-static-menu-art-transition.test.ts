@@ -51,7 +51,7 @@ test('static title pins the exact published dev baseline and bounded source, ass
   assert.deepEqual(STATIC_MENU_ART_SOURCE_ADDITIONS, ['src/title-menu.css']);
   assert.ok(Object.keys(review.changes).every(path => !path.startsWith('tests/fixtures/') && !path.startsWith('docs/') && !path.startsWith('.github/')));
   assert.deepEqual(productionSources(walk('src')), staticMenuArtSourcePaths(previousSources()).sort(), 'Every current source is explicitly protected, changed or added');
-  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS].sort(), 'Only the explicitly reviewed title assets may be published');
+  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS,...postV100AddedPaths().filter(path=>path.startsWith('public/menu-art/'))].sort(), 'Only the explicitly reviewed title assets may be published');
   assert.ok(Object.keys(review.protectedProduction).length > 100);
   for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), musicHash(path, hash), path + ' exact music successor production bytes');
 });

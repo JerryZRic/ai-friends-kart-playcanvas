@@ -2,7 +2,7 @@
   "schema": "post-v100-successor-v1",
   "state": "independently-reviewed",
   "baselineTree": "f6d45e8684325c262f03c83c7aeab6ec05ea09e7",
-  "candidateContentTree": "c7f3c784ca863b8e28f1bc806726ce87cafa3c8d",
+  "candidateContentTree": "17d9bacf43134176dca3e7fab2264f02beb72901",
   "inventoryScope": {
     "kind": "complete-git-content-snapshot-excluding-explicit-audit-bootstrap",
     "excludedPaths": [
@@ -7016,7 +7016,7 @@
       ]
     },
     "tests/airfield-enrichment-inventory.test.ts": {
-      "currentSha256": "d22c6429625254151fab9478630d6f65def5d9d97395ad9fc42fabf186cdffe7",
+      "currentSha256": "5dcd11c45f577fe41d47b309fa9dfd9e2f74d303433d7379055014d92a907b0c",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -7032,12 +7032,27 @@
           "afterStart": 0,
           "removedLines": [],
           "insertedLines": [
+            "import {restorePostV100Buffer} from './helpers/post-v100-current';\n",
             "import {postV100PortableClosure} from './helpers/post-v100-current';\n"
           ]
         },
         {
+          "beforeStart": 15,
+          "afterStart": 17,
+          "removedLines": [
+            "test('Airfield original assertions change only by the approved independently certified native ownership classification',()=>{\n",
+            " const before=readFileSync('docs/scene-baselines/airfield-original/tests/airfield-gameplay.test.ts.txt','utf8');let expected=\"import {airfieldNativeBlockerComponents} from './helpers/airfield-enrichment-native-provenance';\\n\"+before;const start=expected.indexOf(' const componentRanges=new Map<any,any[]>();'),end=expected.indexOf('  let from=0;',start);assert.ok(start>=0&&end>start);expected=expected.slice(0,start)+\" const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=airfieldNativeBlockerComponents(geometry);\\n for(const solid of solids){\\n  const components=certifiedBlockerComponents.get(solid)!;\\n\"+expected.slice(end);assert.equal(readFileSync('tests/airfield-gameplay.test.ts','utf8'),expected);\n",
+            " for(const file of Object.keys(original.sourceInventory).filter(p=>/^tests\\/airfield-.*\\.test\\.ts$/.test(p)&&p!=='tests/airfield-gameplay.test.ts'))assert.equal(readFileSync(file,'utf8'),readFileSync('docs/scene-baselines/airfield-original/'+file+'.txt','utf8'),file+' all original assertions, budgets and loops byte-identical');\n"
+          ],
+          "insertedLines": [
+            "test('Airfield restored historical assertions change only by the approved independently certified native ownership classification',()=>{\n",
+            " const before=readFileSync('docs/scene-baselines/airfield-original/tests/airfield-gameplay.test.ts.txt','utf8');let expected=\"import {airfieldNativeBlockerComponents} from './helpers/airfield-enrichment-native-provenance';\\n\"+before;const start=expected.indexOf(' const componentRanges=new Map<any,any[]>();'),end=expected.indexOf('  let from=0;',start);assert.ok(start>=0&&end>start);expected=expected.slice(0,start)+\" const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=airfieldNativeBlockerComponents(geometry);\\n for(const solid of solids){\\n  const components=certifiedBlockerComponents.get(solid)!;\\n\"+expected.slice(end);assert.equal(restorePostV100Buffer('tests/airfield-gameplay.test.ts',readFileSync('tests/airfield-gameplay.test.ts')).toString('utf8'),expected);\n",
+            " for(const file of Object.keys(original.sourceInventory).filter(p=>/^tests\\/airfield-.*\\.test\\.ts$/.test(p)&&p!=='tests/airfield-gameplay.test.ts'))assert.equal(restorePostV100Buffer(file,readFileSync(file)).toString('utf8'),readFileSync('docs/scene-baselines/airfield-original/'+file+'.txt','utf8'),file+' all original assertions, budgets and loops byte-identical');\n"
+          ]
+        },
+        {
           "beforeStart": 36,
-          "afterStart": 37,
+          "afterStart": 38,
           "removedLines": [
             " for(const p of required)assert.ok(Object.hasOwn(m.finalFileSha256,p),p+' complete portable dependency');for(const [p,h]of Object.entries(m.finalFileSha256))assert.equal(sha(readFileSync(p)),menuPresentationHash(p,h),p+' final exact source identity');\n"
           ],
@@ -7292,6 +7307,53 @@
           ],
           "insertedLines": [
             "    const bytes = Object.hasOwn(review.changes, path) || (Object.hasOwn(qualityTierReview().changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? restoreCiBuildDeploymentBytes(path, read(path)) : restorePostV100Buffer(path,readFileSync(path));\n"
+          ]
+        }
+      ]
+    },
+    "tests/audit-geometry-runtime-portability.test.ts": {
+      "currentSha256": "76e477e108c68cb8610d975b76ce6c1ab15422a40786cbcc2d33ce05d82da3a1",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644",
+      "previousSha256": "84167cab3434fd4b9754c6bd71f85aa23ef9bbee3d4217284a9c37cca56a1213",
+      "previousMode": "100644",
+      "kind": "text",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {restorePostV100Buffer} from './helpers/post-v100-current';\n"
+          ]
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 49,
+          "removedLines": [
+            " const currentLock=JSON.parse(current),originalLock=JSON.parse(original);\n",
+            " assert.equal(currentLock.version,'1.0.0');assert.equal(currentLock.packages[''].version,'1.0.0');\n"
+          ],
+          "insertedLines": [
+            " const currentLock=JSON.parse(current),releaseLock=JSON.parse(restorePostV100Buffer(path,Buffer.from(current)).toString('utf8')),originalLock=JSON.parse(original);\n",
+            " assert.equal(currentLock.version,'1.1.0');assert.equal(currentLock.packages[''].version,'1.1.0');\n",
+            " assert.equal(releaseLock.version,'1.0.0');assert.equal(releaseLock.packages[''].version,'1.0.0');\n",
+            " const normalizedCurrent=structuredClone(currentLock);normalizedCurrent.version=releaseLock.version;normalizedCurrent.packages[''].version=releaseLock.packages[''].version;\n",
+            " assert.deepEqual(normalizedCurrent,releaseLock,'The successor changes only root release-version metadata');\n"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 59,
+          "removedLines": [
+            " for(const bytes of [original,current+' ',current.replace('\"version\": \"1.0.0\"','\"version\": \"1.0.1\"')])assert.throws(()=>verify(bytes),'Historical or altered lock bytes cannot substitute for the exact approved candidate');\n"
+          ],
+          "insertedLines": [
+            " for(const bytes of [original,current+' ',current.replace('\"version\": \"1.1.0\"','\"version\": \"1.1.1\"')])assert.throws(()=>verify(bytes),'Historical or altered lock bytes cannot substitute for the exact approved candidate');\n"
           ]
         }
       ]
@@ -7654,7 +7716,7 @@
       ]
     },
     "tests/audit-static-menu-art-transition.test.ts": {
-      "currentSha256": "c7425e68d90421816cd3c7cbad078b5c057d75514bef2fb1f179111e5a201847",
+      "currentSha256": "594f918bf11b4e2f679bd291a42f49fd57194083632ef077949a78bee0a2a2ec",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -7672,6 +7734,16 @@
           "insertedLines": [
             "import {postV100AddedPaths} from './helpers/post-v100-current';\n",
             "import {postV100Review} from './helpers/post-v100-current';\n"
+          ]
+        },
+        {
+          "beforeStart": 51,
+          "afterStart": 53,
+          "removedLines": [
+            "  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS].sort(), 'Only the explicitly reviewed title assets may be published');\n"
+          ],
+          "insertedLines": [
+            "  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS,...postV100AddedPaths().filter(path=>path.startsWith('public/menu-art/'))].sort(), 'Only the explicitly reviewed title assets may be published');\n"
           ]
         },
         {
@@ -9176,7 +9248,7 @@
       ]
     },
     "tests/harvest-enrichment-inventory.test.ts": {
-      "currentSha256": "14549ebf42eaa2ec9d373980ddc90b0f146f87badcaa0ab45a92fb72fd8ad315",
+      "currentSha256": "046afe17f781c36a7c754616cb3b275a6dfc3097057d2ba69734d469ef8ce373",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -9203,6 +9275,26 @@
           ],
           "insertedLines": [
             " const file='src/harvest-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(restorePostV100Buffer(file,readFileSync(file))));assert.equal(receipt.reviewedChanges[file].currentSHA256,review.currentSHA256);\n"
+          ]
+        },
+        {
+          "beforeStart": 41,
+          "afterStart": 42,
+          "removedLines": [
+            "test('Harvest only the four approved numeric budget literals may differ in original native tests',()=>{\n"
+          ],
+          "insertedLines": [
+            "test('Harvest restored historical tests differ only in the four approved numeric budget literals',()=>{\n"
+          ]
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 49,
+          "removedLines": [
+            " for(const {file,replacements}of changes){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file],'Complete original native test snapshot remains immutable');for(const [before,after]of replacements){assert.equal(original.split(before).length-1,1);original=original.replace(before,after);}assert.equal(readFileSync(file,'utf8'),original,file+' every route/camera/contact/grounding assertion remains byte-identical');}\n"
+          ],
+          "insertedLines": [
+            " for(const {file,replacements}of changes){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file],'Complete original native test snapshot remains immutable');for(const [before,after]of replacements){assert.equal(original.split(before).length-1,1);original=original.replace(before,after);}assert.equal(restorePostV100Buffer(file,readFileSync(file)).toString('utf8'),original,file+' every route/camera/contact/grounding assertion remains byte-identical');}\n"
           ]
         }
       ]
@@ -9575,6 +9667,48 @@
           ],
           "insertedLines": [
             "const report={sourceHashesBefore,sourceHashesAfter,stable:true,schema:'caldera-enrichment-geometry-v1',stage,sourceSha256,...historicalScope,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:2715,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Strong enrichment checks cover the exact historical 6bb9 core; current independent and polish tests remain current','CPU indexed geometry only; no current-polish whole-assembly, native pixels, GPU or FPS certification']};\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/desert-enrichment-geometry-worker.ts": {
+      "currentSha256": "3e509ed8366dfe959487b9879096fdf05cc4a248b0e4fd373f1236bed9760d24",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644",
+      "previousSha256": "9d3520951037e0e65ebd9de4cc274b2a243be4ad495b175a4aa86a5ab75e6b67",
+      "previousMode": "100644",
+      "kind": "text",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {postV100HistoricalScene} from './post-v100-historical-scene';\n"
+          ]
+        },
+        {
+          "beforeStart": 13,
+          "afterStart": 14,
+          "removedLines": [
+            "const {geometry:g,theme}=await desertSceneData(baseline,ledger),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));\n"
+          ],
+          "insertedLines": [
+            "const {geometry:g,theme,...historicalScope}=baseline?await desertSceneData(true,ledger):await postV100HistoricalScene('desert'),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));\n"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 31,
+          "removedLines": [
+            "const report={schema:'desert-enrichment-geometry-v1',stage,sourceSha256,budget:g.budget,protectedComponents:baseline?g.components.length:old.protection.prefixes.components.count,addedComponents,newTriangles,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Actual CPU indexed-source geometry audit; no native pixels,GPU orFPS certification']};\n"
+          ],
+          "insertedLines": [
+            "const report={schema:'desert-enrichment-geometry-v1',stage,sourceSha256,...historicalScope,budget:g.budget,protectedComponents:baseline?g.components.length:old.protection.prefixes.components.count,addedComponents,newTriangles,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Enrichment shell/support checks cover exact historical 6bb9 core; current independent and polish tests remain current','Actual CPU indexed-source geometry audit; no native pixels,GPU orFPS certification']};\n"
           ]
         }
       ]
@@ -9976,8 +10110,62 @@
         }
       ]
     },
+    "tests/helpers/garden-enrichment-contract.ts": {
+      "currentSha256": "06e06f13fb2e8dc6314ac31bb8ed07d63816302ef3bedf2cffb90361000480b2",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644",
+      "previousSha256": "c42d0131e8a9635d7af9e317c0801f227b76f36c78e1a8b55dc02022ffe50f9c",
+      "previousMode": "100644",
+      "kind": "text",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {assertCurrentGardenMaterial} from './current-garden-polish';\n"
+          ]
+        },
+        {
+          "beforeStart": 32,
+          "afterStart": 33,
+          "removedLines": [
+            "export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenRuntimeBaseline()){\n"
+          ],
+          "insertedLines": [
+            "export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenRuntimeBaseline(),historicalCore=false){\n"
+          ]
+        },
+        {
+          "beforeStart": 36,
+          "afterStart": 37,
+          "removedLines": [
+            "  const before=old.batches[i];assert.deepEqual(gardenMaterial(b),before.material,'Exact original material values and batch order');\n"
+          ],
+          "insertedLines": [
+            "  const before=old.batches[i];historicalCore?assert.deepEqual(gardenMaterial(b),before.material,'Exact historical core material'):assertCurrentGardenMaterial(i,gardenMaterial(b),before.material);\n"
+          ]
+        },
+        {
+          "beforeStart": 45,
+          "afterStart": 46,
+          "removedLines": [
+            "export function assertGardenPreservation(g:GardenSceneGeometry,theme:unknown,old:GardenBaselineContract){\n",
+            " assertGardenOriginalProjection(g,old);assert.deepEqual(theme,old.theme,'Exact original garden lighting/fog/sky/theme');\n"
+          ],
+          "insertedLines": [
+            "export function assertGardenPreservation(g:GardenSceneGeometry,theme:unknown,old:GardenBaselineContract,historicalCore=false){\n",
+            " assertGardenOriginalProjection(g,old,historicalCore);assert.deepEqual(theme,old.theme,'Exact original garden lighting/fog/sky/theme');\n"
+          ]
+        }
+      ]
+    },
     "tests/helpers/garden-enrichment-geometry-worker.ts": {
-      "currentSha256": "2b51fefba987eed842c929044f4223eaa1b23b81520632dbbcb8ea445c30ea22",
+      "currentSha256": "d6b69eb0f766b8c1ef6a398fa9581dc1359a6f8fe74e8188a1cc4b89c2636d6b",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -10007,13 +10195,112 @@
           ]
         },
         {
+          "beforeStart": 29,
+          "afterStart": 30,
+          "removedLines": [
+            " const added=assertGardenPreservation(g,theme,old.protection);assert.equal(textureHash,old.textureHash);addedComponents=added.length;\n"
+          ],
+          "insertedLines": [
+            " assert.ok('executedSourceSha256' in historicalScope,'Historical core execution must expose its exact source identity');\n",
+            " const added=assertGardenPreservation(g,theme,old.protection,true);assert.equal(textureHash,old.textureHash);addedComponents=added.length;\n"
+          ]
+        },
+        {
+          "beforeStart": 31,
+          "afterStart": 33,
+          "removedLines": [
+            " for(const field of ['positions','uvs','indices'] as const){const array=g.batches[0][field],original=array[0];array[0]=original+1;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection),undefined,'Changed original '+field+' must fail before projection');}finally{array[0]=original;}}\n",
+            " const appendedBatch=g.batches.find((b,i)=>b.indices.length>old.protection.batches[i].indices)!,appendAt=old.protection.batches[g.batches.indexOf(appendedBatch)].indices,originalIndex=appendedBatch.indices[appendAt];appendedBatch.indices[appendAt]=0;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection),undefined,'New triangles reusing original vertices must fail');}finally{appendedBatch.indices[appendAt]=originalIndex;}\n",
+            " assertGardenOriginalProjection(g,old.protection);\n",
+            " const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,g.components),physical=gardenPhysicalPieces(g,parts,added),addedSet=new Set(physical.pieces),terrainIds=new Set(mesh.triangles.filter(q=>['connected-contour-meadow-heightfield','connected-contour-fern-heightfield'].includes(parts.owner.get(q.id)!.kind)).map(q=>q.id));\n"
+          ],
+          "insertedLines": [
+            " for(const field of ['positions','uvs','indices'] as const){const array=g.batches[0][field],original=array[0];array[0]=original+1;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection,true),undefined,'Changed original '+field+' must fail before projection');}finally{array[0]=original;}}\n",
+            " const appendedBatch=g.batches.find((b,i)=>b.indices.length>old.protection.batches[i].indices)!,appendAt=old.protection.batches[g.batches.indexOf(appendedBatch)].indices,originalIndex=appendedBatch.indices[appendAt];appendedBatch.indices[appendAt]=0;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection,true),undefined,'New triangles reusing original vertices must fail');}finally{appendedBatch.indices[appendAt]=originalIndex;}\n",
+            " assertGardenOriginalProjection(g,old.protection,true);\n",
+            " const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,g.components),physical=gardenPhysicalPieces(g,parts,added,historicalScope.executedSourceSha256),addedSet=new Set(physical.pieces),terrainIds=new Set(mesh.triangles.filter(q=>['connected-contour-meadow-heightfield','connected-contour-fern-heightfield'].includes(parts.owner.get(q.id)!.kind)).map(q=>q.id));\n"
+          ]
+        },
+        {
           "beforeStart": 47,
-          "afterStart": 48,
+          "afterStart": 49,
           "removedLines": [
             "const report={status:baseline?'baseline-reproduced':selfIntersectionFailures.length===0&&coflush.exposed.length===0&&assembly.terrainIntrusions.length===0&&assembly.intrusions.length===0?'passed':'failed',sourceHashesBefore,sourceHashesAfter,stable:true,schema:'garden-enrichment-geometry-v1',stage,sourceSha256,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:1813,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['CPU actual indexed-source geometry only; no native pixels,GPU or FPS certification']};\n"
           ],
           "insertedLines": [
             "const report={status:baseline?'baseline-reproduced':selfIntersectionFailures.length===0&&coflush.exposed.length===0&&assembly.terrainIntrusions.length===0&&assembly.intrusions.length===0?'passed':'failed',sourceHashesBefore,sourceHashesAfter,stable:true,schema:'garden-enrichment-geometry-v1',stage,sourceSha256,...historicalScope,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:1813,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Strong enrichment checks cover the exact historical 6bb9 core; current independent and polish tests remain current','CPU indexed geometry only; no current-polish whole-assembly, native pixels, GPU or FPS certification']};\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/garden-enrichment-native-provenance.ts": {
+      "currentSha256": "d48a30e59c683a3fd01b0f1e7165749271f8c6e5b50990a10579008bed46755f",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644",
+      "previousSha256": "c25cf5e165edeef6aa60bf4cdc4f6c00bc5373a75be3425364e32c7c1d69a298",
+      "previousMode": "100644",
+      "kind": "text",
+      "hunks": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "removedLines": [],
+          "insertedLines": [
+            "import {assertCurrentGardenPolish} from './current-garden-polish';\n"
+          ]
+        },
+        {
+          "beforeStart": 8,
+          "afterStart": 9,
+          "removedLines": [],
+          "insertedLines": [
+            " const polish=assertCurrentGardenPolish(g);\n"
+          ]
+        },
+        {
+          "beforeStart": 15,
+          "afterStart": 17,
+          "removedLines": [],
+          "insertedLines": [
+            "  else if(polish.has(solid)){components=polish.get(solid)!;for(const part of components){assert.ok(added.includes(part));assert.ok(!owned.has(part));owned.add(part);}}\n"
+          ]
+        }
+      ]
+    },
+    "tests/helpers/garden-enrichment-piece-oracle.ts": {
+      "currentSha256": "788159f2b70a5fe625e6b7a9c5162025847ba5b99f3637a681dcb709e5a789a9",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644",
+      "previousSha256": "3cddae5f8461233530b6fcfc0369434dd7f33a35e453be4bd21927dcabc13e33",
+      "previousMode": "100644",
+      "kind": "text",
+      "hunks": [
+        {
+          "beforeStart": 5,
+          "afterStart": 5,
+          "removedLines": [
+            "export function gardenPhysicalPieces(g:any,parts:ComponentOracle,added:any[]){\n"
+          ],
+          "insertedLines": [
+            "export function gardenPhysicalPieces(g:any,parts:ComponentOracle,added:any[],executedSourceSha256=gardenSha(readFileSync('src/garden-scenery.ts'))){\n"
+          ]
+        },
+        {
+          "beforeStart": 11,
+          "afterStart": 11,
+          "removedLines": [
+            " assert.equal(recipes.sourceSha256,gardenSha(readFileSync('src/garden-scenery.ts')),'Reviewed new shell recipes bind exact current source');\n"
+          ],
+          "insertedLines": [
+            " assert.equal(recipes.sourceSha256,executedSourceSha256,'Reviewed shell recipes bind exact executed source, independently of current runtime source');\n"
           ]
         }
       ]
@@ -12697,7 +12984,7 @@
       "mode": "100644"
     },
     "docs/v1.1.0-certification-review.md": {
-      "currentSha256": "6298ffa8a18725f9bcd2c6497a8551f28ad542e4aa45a16770dbeebd491120ac",
+      "currentSha256": "60942a6e3bfc1856162f9f8758f1e85940cee5c9116d2918cdcc7e22d1dc77a0",
       "scope": "Release documentation or retained scoped diagnostic/asset provenance; no modification of frozen scene baselines or earlier transition records.",
       "evidence": [
         "docs/v1.1.0-certification-review.md"
@@ -16672,7 +16959,7 @@
       "mode": "100644"
     },
     "tests/current-route-inputs.test.ts": {
-      "currentSha256": "293872fcd550ef8f28dd8fb871e742500a8cca9555732507904c49690f981197",
+      "currentSha256": "cf1f228502ec996538a233c12a20c745d747db864854d10333abc7a10e90c58e",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -16727,6 +17014,15 @@
     },
     "tests/game-surface-guards.test.ts": {
       "currentSha256": "68d4289abea06c5788e69ad042d5a2114c636913d5ade85143b195baa811593f",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644"
+    },
+    "tests/garden-current-projection.test.ts": {
+      "currentSha256": "5edc87ad1fe0d6c986b9826827122156139469ff6a828e1cc050d40a4cf34d79",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -16797,8 +17093,17 @@
       ],
       "mode": "100644"
     },
+    "tests/helpers/current-garden-polish.ts": {
+      "currentSha256": "d8e2fe81da6472dba919ee440c5a2f0412601a7822bb4f52643bdd558cd41179",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644"
+    },
     "tests/helpers/current-route-inputs.ts": {
-      "currentSha256": "dd05a43814556fe540fee3befd574d6b68e2bab0098dabc3b000fefce668a6cb",
+      "currentSha256": "04e7a091edb32734cbde139dfcaea5e0a1a6c8a48b1553ea10056a1b2c5bc385",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -16826,6 +17131,15 @@
     },
     "tests/helpers/forest-reviewed-composition.ts": {
       "currentSha256": "f6951d0e7bb3817b6c216f44ade1437046cc4b49f23fc157aa0ea6dfc5983d3c",
+      "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
+      "evidence": [
+        "docs/v1.1.0-certification-review.md",
+        "scripts/prepare-reviewed-successor.py"
+      ],
+      "mode": "100644"
+    },
+    "tests/helpers/garden-current-polish.json": {
+      "currentSha256": "853811e8e5d58ff9f84ae6422070960cae2268256fb76f92c2cd8debe0cbc844",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -16879,7 +17193,7 @@
       "mode": "100644"
     },
     "tests/helpers/post-v100-historical-scene.ts": {
-      "currentSha256": "68341605532f7a02c2f9689d53b7a22587a73ef52b66aa83621fb7120b64069b",
+      "currentSha256": "b58cf25c7456866fe0e40d3239ecadb74f84f711b21cc43bd5c8675919fdcf4e",
       "scope": "Scoped regression/evidence repair: retain old frozen artifacts and exact historical numbers, exercise current behavior separately, reject unknown bytes, and keep original full-suite gates enabled. New records are bound to explicit source identities.",
       "evidence": [
         "docs/v1.1.0-certification-review.md",
@@ -17695,7 +18009,6 @@
     "tests/alpine-props.test.ts": "7f6f6fa99e872972a452800d37ac3d118dc0e527d9591b4db9e3b1caa1632216",
     "tests/asset-download.test.mjs": "3117fb5e9d4c19ba2ed5505288f43febad6392254c6410dd7ed9dc944365e36a",
     "tests/audit-fixture-publication.test.ts": "eb6ca483ec95dbc5b08fc00dbb35c56a302e8a68adcdbb9b5f5531b543e8db48",
-    "tests/audit-geometry-runtime-portability.test.ts": "84167cab3434fd4b9754c6bd71f85aa23ef9bbee3d4217284a9c37cca56a1213",
     "tests/audit-menu-presentation-transition.test.ts": "3fc7ab955d42a89049d468b4f8ca8b2109c8a10ea148b112c633c8c8c4cdc220",
     "tests/audit-stable-pages-repin-transition.test.ts": "23f0def680523bce12212ef54d31e6c0ea8731fceb2fe4dd97edbc10e922e9d5",
     "tests/bundled-drivers.test.mjs": "adbdbe6ae215999715d55bf0c0af8cca59193b27f6997f7b7ea097ceee4adff7",
@@ -17851,7 +18164,6 @@
     "tests/helpers/desert-enrichment-camera-frozen.json": "37cf96efe90686822099b3d377c815cee49580e6cf368f94ea913236bd7cb480",
     "tests/helpers/desert-enrichment-camera-worker.ts": "8c166e41c81fab2a92afb4118869d271f1c448188f9a53fdbbb5147da69d26ff",
     "tests/helpers/desert-enrichment-contract.ts": "e8d6172baa2026716c2ea2b9364635593b360a9b857669fc8c49a80fbef4b54d",
-    "tests/helpers/desert-enrichment-geometry-worker.ts": "9d3520951037e0e65ebd9de4cc274b2a243be4ad495b175a4aa86a5ab75e6b67",
     "tests/helpers/desert-enrichment-scene.ts": "8ff9795b97b794939c79e029bc12240a32c7d2ba19299047a23832d4deea2d11",
     "tests/helpers/desert-enrichment-solids.ts": "13db60319232f0f528ddc3f81525b78bd7c8e7c0d7f63fcfda3a60f2407f58a1",
     "tests/helpers/emitted-scene-oracle.ts": "925749e015a87cca08f6f1b2facbd8d70ed6313ce054ed53f86264ec6b3f3af9",
@@ -17879,10 +18191,7 @@
     "tests/helpers/garden-enrichment-camera-freeze.ts": "a79a3d254d96849f7d0f905ed00e373883cdf07bf79a66acac23c82e8e5fa4c3",
     "tests/helpers/garden-enrichment-camera-frozen.json": "06c49fb8e7e4161c2be0380f887246cc6539a5792e0440c4adfc0dc92fb2d598",
     "tests/helpers/garden-enrichment-camera-worker.ts": "94522c21b29723501babbc242c24129b39cffdf482e20da24ddb8fd85bdb9926",
-    "tests/helpers/garden-enrichment-contract.ts": "c42d0131e8a9635d7af9e317c0801f227b76f36c78e1a8b55dc02022ffe50f9c",
-    "tests/helpers/garden-enrichment-native-provenance.ts": "c25cf5e165edeef6aa60bf4cdc4f6c00bc5373a75be3425364e32c7c1d69a298",
     "tests/helpers/garden-enrichment-original-assemblies.ts": "0416d135854133424f18cb95a16dae422ab1aa4107a9b0598a3225d7fa1a6531",
-    "tests/helpers/garden-enrichment-piece-oracle.ts": "3cddae5f8461233530b6fcfc0369434dd7f33a35e453be4bd21927dcabc13e33",
     "tests/helpers/garden-enrichment-pose-worker.ts": "583b70ab8f340783726793a3f22cb95edf17299989c9467a7fa390e370ca234b",
     "tests/helpers/garden-enrichment-reviewed-revisions.ts": "f639192feed136fab5fd1d8267e92f385196e6987e5e488b5b444fae27d7b80a",
     "tests/helpers/garden-enrichment-scene.ts": "b89d49153f62ee45a36e81a6209ca359f85b44fec9a844ba97a75315de641469",
@@ -18593,7 +18902,6 @@
     "tests/alpine-props.test.ts": "100644",
     "tests/asset-download.test.mjs": "100644",
     "tests/audit-fixture-publication.test.ts": "100644",
-    "tests/audit-geometry-runtime-portability.test.ts": "100644",
     "tests/audit-menu-presentation-transition.test.ts": "100644",
     "tests/audit-stable-pages-repin-transition.test.ts": "100644",
     "tests/bundled-drivers.test.mjs": "100644",
@@ -18749,7 +19057,6 @@
     "tests/helpers/desert-enrichment-camera-frozen.json": "100644",
     "tests/helpers/desert-enrichment-camera-worker.ts": "100644",
     "tests/helpers/desert-enrichment-contract.ts": "100644",
-    "tests/helpers/desert-enrichment-geometry-worker.ts": "100644",
     "tests/helpers/desert-enrichment-scene.ts": "100644",
     "tests/helpers/desert-enrichment-solids.ts": "100644",
     "tests/helpers/emitted-scene-oracle.ts": "100644",
@@ -18777,10 +19084,7 @@
     "tests/helpers/garden-enrichment-camera-freeze.ts": "100644",
     "tests/helpers/garden-enrichment-camera-frozen.json": "100644",
     "tests/helpers/garden-enrichment-camera-worker.ts": "100644",
-    "tests/helpers/garden-enrichment-contract.ts": "100644",
-    "tests/helpers/garden-enrichment-native-provenance.ts": "100644",
     "tests/helpers/garden-enrichment-original-assemblies.ts": "100644",
-    "tests/helpers/garden-enrichment-piece-oracle.ts": "100644",
     "tests/helpers/garden-enrichment-pose-worker.ts": "100644",
     "tests/helpers/garden-enrichment-reviewed-revisions.ts": "100644",
     "tests/helpers/garden-enrichment-scene.ts": "100644",
@@ -19490,6 +19794,7 @@
         "tests/dual-item-inventory.test.ts",
         "tests/forest-visual-polish.test.ts",
         "tests/game-surface-guards.test.ts",
+        "tests/garden-current-projection.test.ts",
         "tests/garden-dev-polish.test.ts",
         "tests/harvest-visual-polish.test.ts",
         "tests/helpers/accepted-route-physics/README.md",
@@ -19499,10 +19804,12 @@
         "tests/helpers/ci-build-deployment-reviewed-revisions.ts",
         "tests/helpers/ci-build-deployment-transition.json",
         "tests/helpers/current-airfield-snow-polish.ts",
+        "tests/helpers/current-garden-polish.ts",
         "tests/helpers/current-route-inputs.ts",
         "tests/helpers/current-route-scenarios.ts",
         "tests/helpers/desert-reviewed-cosmetics.ts",
         "tests/helpers/forest-reviewed-composition.ts",
+        "tests/helpers/garden-current-polish.json",
         "tests/helpers/historical-npc-physics.ts",
         "tests/helpers/historical-preview-layout.ts",
         "tests/helpers/historical-route-physics.ts",
@@ -20251,6 +20558,7 @@
         "tests/airfield-preview-assets.test.ts",
         "tests/audit-camera-dependency-transition.test.ts",
         "tests/audit-ci-build-deployment-transition.test.ts",
+        "tests/audit-geometry-runtime-portability.test.ts",
         "tests/audit-input-mode-transition.test.ts",
         "tests/audit-loading-guide-transition.test.ts",
         "tests/audit-menu-presentation-transition.test.ts",
@@ -20330,6 +20638,7 @@
         "tests/free-mode-menu.test.ts",
         "tests/game-surface-guards.test.ts",
         "tests/garage-flow.test.ts",
+        "tests/garden-current-projection.test.ts",
         "tests/garden-dev-polish.test.ts",
         "tests/harvest-gameplay-balance.test.ts",
         "tests/harvest-independent-audit.test.ts",
@@ -20365,9 +20674,15 @@
         "tests/helpers/ci-build-deployment-reviewed-revisions.ts",
         "tests/helpers/ci-build-deployment-transition.json",
         "tests/helpers/current-airfield-snow-polish.ts",
+        "tests/helpers/current-garden-polish.ts",
         "tests/helpers/current-route-inputs.ts",
         "tests/helpers/current-route-scenarios.ts",
+        "tests/helpers/desert-enrichment-assemblies.ts",
         "tests/helpers/desert-enrichment-camera-frozen.json",
+        "tests/helpers/desert-enrichment-contract.ts",
+        "tests/helpers/desert-enrichment-geometry-worker.ts",
+        "tests/helpers/desert-enrichment-scene.ts",
+        "tests/helpers/desert-enrichment-solids.ts",
         "tests/helpers/desert-reviewed-cosmetics.ts",
         "tests/helpers/forest-enrichment-contract.ts",
         "tests/helpers/forest-enrichment-geometry-worker.ts",
@@ -20376,6 +20691,7 @@
         "tests/helpers/fork-driving-benchmark.ts",
         "tests/helpers/fork-npc-benchmark.ts",
         "tests/helpers/gameplay-scenario.ts",
+        "tests/helpers/garden-current-polish.json",
         "tests/helpers/geometry-runtime-portability.ts",
         "tests/helpers/harvest-enrichment-assemblies.ts",
         "tests/helpers/harvest-enrichment-camera-checks.ts",

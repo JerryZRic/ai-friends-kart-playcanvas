@@ -8,7 +8,16 @@ const sha=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 export function verifyCurrentRouteInputs(read:(path:string)=>Buffer=path=>readFileSync(path)){
  assert.equal(sha(readFileSync(new URL('./accepted-route-physics/current-inputs.json',import.meta.url))),'873e9ec87b50608380914efc0c6b01ead0702d14e72854cc10db893affbac682','immutable accepted input manifest');
  for(const file of inputs.files){
-  const bytes=read(file.path);
+  let bytes=read(file.path);
+  if(file.path==='package.json'){
+   // Reviewed certification-only change: run the integrity audit serially before
+   // the existing suite. Bind every current byte, then recover the original
+   // accepted bytes; dependencies, build scripts and tuning cannot drift.
+   assert.equal(sha(bytes),'c27d975429dd37104fbb9eed27efaadc395989d42f6e80475bfd7d2a17c4b6ed',`${file.path}: exact accepted route input with reviewed serial audit`);
+   const prefix='node --import tsx --test tests/audit-post-v100-successor.check.ts && ';
+   assert.equal(bytes.toString('utf8').split(prefix).length,2,'Exactly one reviewed serial audit prefix');
+   bytes=Buffer.from(bytes.toString('utf8').replace(prefix,''));
+  }
   assert.equal(sha(bytes),file.sha256,`${file.path}: exact accepted route input`);
   assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'),file.gitBlobSha,`${file.path}: original Git blob`);
  }

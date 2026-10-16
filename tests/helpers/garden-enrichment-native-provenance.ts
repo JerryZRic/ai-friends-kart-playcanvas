@@ -1,3 +1,4 @@
+import {assertCurrentGardenPolish} from './current-garden-polish';
 /** Native collision witnesses retain old source classification only after complete certification. */
 import assert from 'node:assert/strict';
 import {assertGardenOpaquePayload} from './garden-enrichment-assemblies';
@@ -6,6 +7,7 @@ import type {GardenSceneGeometry,GardenComponent} from '../../src/garden-scenery
 import {assertGardenOriginalProjection,gardenRuntimeBaseline} from './garden-enrichment-contract';
 export function gardenNativeBlockerComponents(g:GardenSceneGeometry){
  const old=gardenRuntimeBaseline(),original=assertGardenOriginalProjection(g,old),added=g.components.slice(original.length),result=new Map<any,GardenComponent[]>(),owned=new Set<GardenComponent>();
+ const polish=assertCurrentGardenPolish(g);
  const recipes=JSON.parse(readFileSync('tests/fixtures/garden-enrichment-assembly-recipes.json','utf8'));
  for(const solid of g.cameraObstacles.filter(o=>o.triangles?.length)){
   let components:GardenComponent[];
@@ -13,6 +15,7 @@ export function gardenNativeBlockerComponents(g:GardenSceneGeometry){
   else if(solid.kind==='garden-actual-open-arbor-triangles')components=original.filter(c=>c.kind.startsWith('arbor-'));
   else if(solid.kind==='garden-actual-other-source-triangles')components=original.filter(c=>!c.landmark&&!c.kind.startsWith('arbor-')&&c.role!=='terrain'&&c.role!=='road'&&c.kind!=='source-exact-layer-owned-shoulders');
   else if(original.some(c=>'garden-actual-'+c.landmark===solid.kind))components=original.filter(c=>'garden-actual-'+c.landmark===solid.kind);
+  else if(polish.has(solid)){components=polish.get(solid)!;for(const part of components){assert.ok(added.includes(part));assert.ok(!owned.has(part));owned.add(part);}}
   else {
    const recipe=recipes.assemblies.find((a:any)=>a.id+'-exact-triangles'===solid.kind);assert.ok(recipe,'Every new blocker has independently reviewed ownership');
    components=recipe.pieces.flatMap((item:any)=>item.componentRecords.map((record:any)=>{const part=g.components[record.componentIndex];assert.ok(part&&added.includes(part));assert.deepEqual(part,record.component,'Complete reviewed appended material patch');assert.ok(!owned.has(part),'New component cannot enter two blockers');owned.add(part);return part;}));

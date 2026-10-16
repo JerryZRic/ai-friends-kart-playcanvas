@@ -7,7 +7,7 @@ import {join,dirname,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {postV100Review,postV100CurrentHash,restorePostV100Buffer} from './post-v100-current';
 import {successorSha} from './post-v100-reviewed-revisions';
-type Scene='airfield'|'snow'|'forest'|'harvest'|'workshop'|'town'|'quarry'|'caldera'|'garden';
+type Scene='airfield'|'snow'|'forest'|'harvest'|'workshop'|'town'|'quarry'|'caldera'|'garden'|'desert';
 export async function postV100HistoricalScene(scene:Scene,instrumented=false){
  const review=postV100Review(),root=mkdtempSync(join(process.cwd(),'.historical-post-v100-'));
  const env=scene.toUpperCase()+'_ENRICHMENT_INSTRUMENT_MANIFEST',previousManifest=process.env[env];

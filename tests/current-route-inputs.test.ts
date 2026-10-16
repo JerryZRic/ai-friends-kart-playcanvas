@@ -14,3 +14,12 @@ test('accepted route provenance rejects a one-byte mutation of every source or d
 test('accepted current route observations retain their reviewed exact bytes',()=>{
  assert.equal(createHash('sha256').update(readFileSync(new URL('./helpers/accepted-route-physics/current-results.json',import.meta.url))).digest('hex'),'dd988a07b4aec1cb76432db7b6655ff4b102fe8d646e1866ba641178f2dd5a60');
 });
+
+// The certificate-only exception must not become a JSON-field allowlist.
+test('reviewed serial audit metadata rejects every individual package byte mutation',()=>{
+ const original=readFileSync('package.json');
+ for(let i=0;i<original.length;i++)assert.throws(()=>verifyCurrentRouteInputs(path=>{
+  if(path!=='package.json')return readFileSync(path);
+  const changed=Buffer.from(original);changed[i]^=1;return changed;
+ }),/exact accepted route input/,`package.json byte ${i}`);
+});

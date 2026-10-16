@@ -28,12 +28,13 @@ if(baseline){
  writeFileSync(join(run,'baseline-contract.json'),JSON.stringify({sourceSha256,protection,textureHash,runtimeCertification})+'\n');
 }else{
  assert.deepEqual(geometryOriginalBufferDigests(g,old.protection),old.runtimeCertification.originalBuffers,'Every original Float64 position, UV, index and computed normal is byte-identical to this runtime’s independently built original');runtimeCertification=old.runtimeCertification;
- const added=assertGardenPreservation(g,theme,old.protection);assert.equal(textureHash,old.textureHash);addedComponents=added.length;
+ assert.ok('executedSourceSha256' in historicalScope,'Historical core execution must expose its exact source identity');
+ const added=assertGardenPreservation(g,theme,old.protection,true);assert.equal(textureHash,old.textureHash);addedComponents=added.length;
  // Mutation sentinels exercise actual original arrays, then restore exactly.
- for(const field of ['positions','uvs','indices'] as const){const array=g.batches[0][field],original=array[0];array[0]=original+1;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection),undefined,'Changed original '+field+' must fail before projection');}finally{array[0]=original;}}
- const appendedBatch=g.batches.find((b,i)=>b.indices.length>old.protection.batches[i].indices)!,appendAt=old.protection.batches[g.batches.indexOf(appendedBatch)].indices,originalIndex=appendedBatch.indices[appendAt];appendedBatch.indices[appendAt]=0;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection),undefined,'New triangles reusing original vertices must fail');}finally{appendedBatch.indices[appendAt]=originalIndex;}
- assertGardenOriginalProjection(g,old.protection);
- const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,g.components),physical=gardenPhysicalPieces(g,parts,added),addedSet=new Set(physical.pieces),terrainIds=new Set(mesh.triangles.filter(q=>['connected-contour-meadow-heightfield','connected-contour-fern-heightfield'].includes(parts.owner.get(q.id)!.kind)).map(q=>q.id));
+ for(const field of ['positions','uvs','indices'] as const){const array=g.batches[0][field],original=array[0];array[0]=original+1;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection,true),undefined,'Changed original '+field+' must fail before projection');}finally{array[0]=original;}}
+ const appendedBatch=g.batches.find((b,i)=>b.indices.length>old.protection.batches[i].indices)!,appendAt=old.protection.batches[g.batches.indexOf(appendedBatch)].indices,originalIndex=appendedBatch.indices[appendAt];appendedBatch.indices[appendAt]=0;try{assert.throws(()=>assertGardenOriginalProjection(g,old.protection,true),undefined,'New triangles reusing original vertices must fail');}finally{appendedBatch.indices[appendAt]=originalIndex;}
+ assertGardenOriginalProjection(g,old.protection,true);
+ const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,g.components),physical=gardenPhysicalPieces(g,parts,added,historicalScope.executedSourceSha256),addedSet=new Set(physical.pieces),terrainIds=new Set(mesh.triangles.filter(q=>['connected-contour-meadow-heightfield','connected-contour-fern-heightfield'].includes(parts.owner.get(q.id)!.kind)).map(q=>q.id));
  for(const p of g.components)assert.deepEqual(parts.bounds.get(p),{min:p.min,max:p.max},p.kind+' full actual indexed bounds');
  for(const [i,b]of g.batches.entries()){
   const before=old.protection.batches[i],owners=added.filter(p=>p.batch===b.name).sort((a,b)=>a.indexStart-b.indexStart);let end=before.indices,vertexEnd=before.vertices;const used=new Set<number>();

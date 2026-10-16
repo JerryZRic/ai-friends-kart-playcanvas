@@ -40,12 +40,12 @@ test('Harvest final source preview and prior scene isolation consumers agree on 
 });
 
 
-test('Harvest only the four approved numeric budget literals may differ in original native tests',()=>{
+test('Harvest restored historical tests differ only in the four approved numeric budget literals',()=>{
  assert.deepEqual(receipt.historicalBudget,{trianglesExclusive:110000,verticesExclusive:200000,batches:21,sharedBatchCeiling:24});assert.equal(receipt.approvedHarvestBudget.trianglesExclusive,118000);assert.equal(receipt.approvedHarvestBudget.verticesExclusive,200000);assert.equal(receipt.approvedHarvestBudget.batches,22);assert.equal(receipt.approvedHarvestBudget.sharedBatchCeiling,24);
  const changes:{file:string;replacements:[string,string][]}[]=[
   {file:'tests/harvest-scene.test.ts',replacements:[['geometry.budget,{batches:21,triangles,vertices}','geometry.budget,{batches:22,triangles,vertices}'],['triangles<110000','triangles<118000']]},
   {file:'tests/harvest-independent-audit.test.ts',replacements:[['triangles<110000','triangles<118000']]},
   {file:'tests/harvest-preview-assets.test.ts',replacements:[['p.triangles<110000','p.triangles<118000']]},
  ];
- for(const {file,replacements}of changes){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file],'Complete original native test snapshot remains immutable');for(const [before,after]of replacements){assert.equal(original.split(before).length-1,1);original=original.replace(before,after);}assert.equal(readFileSync(file,'utf8'),original,file+' every route/camera/contact/grounding assertion remains byte-identical');}
+ for(const {file,replacements}of changes){let original=readFileSync('docs/scene-baselines/'+file.split('/').at(-1)+'.txt','utf8');assert.equal(sha(original),receipt.sourceInventory[file],'Complete original native test snapshot remains immutable');for(const [before,after]of replacements){assert.equal(original.split(before).length-1,1);original=original.replace(before,after);}assert.equal(restorePostV100Buffer(file,readFileSync(file)).toString('utf8'),original,file+' every route/camera/contact/grounding assertion remains byte-identical');}
 });
