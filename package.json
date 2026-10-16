@@ -1,6 +1,6 @@
 {
   "name": "ai-friends-kart-playcanvas",
-  "version": "1.0.2-alpha.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -28,3 +28,4 @@
     "vite": "8.3.3"
   }
 }
+

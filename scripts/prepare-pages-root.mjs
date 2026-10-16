@@ -7,7 +7,7 @@ import {pathToFileURL} from 'node:url';
 import {inventory} from './compose-pages-snapshot.mjs';
 import {validateConfig} from './verify-pages-snapshot.mjs';
 const REPOSITORY='JerryZRic/ai-friends-kart-playcanvas';
-const TAG='v1.0.2a';
+const TAG='v1.1.0';
 const RELEASE_URL=`https://github.com/${REPOSITORY}/releases/tag/${TAG}`;
 const SOURCE_URL=`https://github.com/${REPOSITORY}/releases/download/${TAG}/source.zip`;
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -17,9 +17,10 @@ export function redirectHtml(target,preserveLocation=false){
  const destination=JSON.stringify(target);
  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Friends Kart · Moved</title><meta http-equiv="refresh" content="0;url=${escape(target)}"><script>const target=new URL(${destination},location.href);${preserveLocation?'target.search=location.search;target.hash=location.hash;':''}location.replace(target.href);</script></head><body><p>This resource has moved. <a href="${escape(target)}">Continue / 继续</a></p>${preserveLocation?'<p>Your query parameters and page anchor are preserved when JavaScript is available.</p>':'<p>Corresponding source is available as a ZIP from the public GitHub Release.</p>'}</body></html>\n`;
 }
+export function diagnosticsHtml(){return `<!doctype html><meta charset="utf-8"><title>${TAG} offline diagnostics</title><h1>${TAG} offline diagnostics / 离线诊断工具</h1><p>This hosted runtime omits offline diagnostic datasets. Download and extract the complete ${TAG} HTML package to use these tools. 诊断工具请下载并解压完整 HTML 包。</p><a href="https://github.com/${REPOSITORY}/releases/download/${TAG}/ai-friends-kart-playcanvas-${TAG}-html.zip">Download ${TAG} complete HTML</a>`;}
 export function validateRootPublication(config,proof,currentSha,sourceRecord){
  validateConfig(config);assert.equal(config.target,'root');
- assert.deepEqual(config.rootPublication,{approved:true,mode:'release-source-and-dev-diagnostics',releaseTag:TAG,sourceAsset:'source.zip'},'Root migration needs explicit approval');
+ assert.deepEqual(config.rootPublication,{approved:true,mode:'release-source-and-offline-diagnostics',releaseTag:TAG,sourceAsset:'source.zip'},'Root migration needs explicit approval');
  assert.match(currentSha??'',/^[a-f0-9]{40}$/,'Missing exact source commit');
  assert.equal(proof.sourceCommit,currentSha,'Public release source commit differs from this build');
  assert.equal(proof.tag,TAG);assert.equal(proof.releaseUrl,RELEASE_URL);assert.equal(proof.sourceUrl,SOURCE_URL);
@@ -35,7 +36,7 @@ export async function prepareRoot(fullBuild,baseline,output,config,proof,current
  const before=await inventory(fullBuild);
  for(const name of ['dev','cover-preview'])assert.ok(!(await readdir(fullBuild)).includes(name),'Full build contains reserved preview tree');
  for(const file of ['index.html','source.html','source.zip','balance-lab.html','balance-report.html','balance-results/summary.json'])assert.ok(before.some(f=>f.path===file),`Missing complete build file: ${file}`);
- for(const file of ['dev/balance-lab.html','dev/balance-report.html','dev/balance-results/summary.json','dev/balance-results/artifact-index.json'])assert.ok((await lstat(join(baseline,file))).isFile(),`Missing preserved diagnostic target: ${file}`);
+
  const source=before.find(f=>f.path==='source.zip');validateRootPublication(config,proof,currentSha,source);
  const sourceHtml=await readFile(join(fullBuild,'source.html'),'utf8');
  assert.equal((sourceHtml.match(/href="source\.zip"/g)||[]).length,1,'Expected one corresponding-source link');
@@ -44,7 +45,7 @@ export async function prepareRoot(fullBuild,baseline,output,config,proof,current
  await mkdir(join(output,'source.zip'));
  await writeFile(join(output,'source.zip/index.html'),redirectHtml(SOURCE_URL));
  await writeFile(join(output,'source.html'),sourceHtml.replace('href="source.zip"',`href="${SOURCE_URL}"`).replace('</body>',`<p>Pages source download: <a href="${SOURCE_URL}">public GitHub Release ${TAG}</a>. Exact source commit: ${currentSha}. SHA-256: ${source.sha256}. The complete HTML download retains its local source ZIP and all diagnostic data.</p></body>`));
- for(const page of ['balance-lab.html','balance-report.html'])await writeFile(join(output,page),redirectHtml(`./dev/${page}`,true));
+ for(const page of ['balance-lab.html','balance-report.html'])await writeFile(join(output,page),diagnosticsHtml());
  const after=await inventory(output);
  const unchanged=f=>!['source.zip','source.html','balance-lab.html','balance-report.html'].includes(f.path)&&!f.path.startsWith('balance-results/')&&!f.path.startsWith('source.zip/');
  assert.deepEqual(after.filter(unchanged),before.filter(unchanged),'Unexpected change to runtime or legal bytes');

@@ -5,12 +5,12 @@ import {mkdtemp,mkdir,writeFile,readFile,rm,lstat} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import vm from 'node:vm';
-import {prepareRoot,redirectHtml,validateRootPublication} from '../scripts/prepare-pages-root.mjs';
+import {prepareRoot,redirectHtml,validateRootPublication,diagnosticsHtml} from '../scripts/prepare-pages-root.mjs';
 import {inventory} from '../scripts/compose-pages-snapshot.mjs';
 const current='b'.repeat(40),old='a'.repeat(40),source=Buffer.from('exact corresponding source ZIP fixture');
 const sourceRecord={bytes:source.length,sha256:createHash('sha256').update(source).digest('hex')};
-const config={schemaVersion:1,repository:'JerryZRic/ai-friends-kart-playcanvas',target:'root',sourceBranch:'main',baseline:{runId:12,artifactId:13,deploymentId:14,commit:old,branch:'dev',artifactDigest:'sha256:'+'c'.repeat(64)},expectedRefs:{main:'CURRENT',dev:old,'feature/home-portraits-live2d':old},rootPublication:{approved:true,mode:'release-source-and-dev-diagnostics',releaseTag:'v1.0.2a',sourceAsset:'source.zip'}};
-const proof={sourceCommit:current,tag:'v1.0.2a',releaseUrl:'https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.2a',sourceUrl:'https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/source.zip',sourceSha256:sourceRecord.sha256,sourceBytes:sourceRecord.bytes};
+const config={schemaVersion:1,repository:'JerryZRic/ai-friends-kart-playcanvas',target:'root',sourceBranch:'main',baseline:{runId:12,artifactId:13,deploymentId:14,commit:old,branch:'dev',artifactDigest:'sha256:'+'c'.repeat(64)},expectedRefs:{main:'CURRENT',dev:old,'feature/home-portraits-live2d':old},rootPublication:{approved:true,mode:'release-source-and-offline-diagnostics',releaseTag:'v1.1.0',sourceAsset:'source.zip'}};
+const proof={sourceCommit:current,tag:'v1.1.0',releaseUrl:'https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0',sourceUrl:'https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip',sourceSha256:sourceRecord.sha256,sourceBytes:sourceRecord.bytes};
 async function fixture(fn){
  const dir=await mkdtemp(join(tmpdir(),'pages-root-'));
  try{
@@ -30,7 +30,7 @@ test('approved Pages transformation keeps full build, legal/runtime bytes and di
  await assert.rejects(lstat(d+'/root/balance-results'),{code:'ENOENT'});
  assert.ok((await readFile(d+'/root/source.html','utf8')).includes(`href="${proof.sourceUrl}"`));
  assert.ok((await readFile(d+'/root/source.zip/index.html','utf8')).includes(proof.sourceUrl));
- for(const page of ['balance-lab.html','balance-report.html'])assert.ok((await readFile(d+'/root/'+page,'utf8')).includes('./dev/'+page));
+ for(const page of ['balance-lab.html','balance-report.html'])assert.ok((await readFile(d+'/root/'+page,'utf8')).includes('v1.1.0-html.zip'));
 }));
 test('migration rejects missing approval, wrong release, stale commit and mismatched corresponding source',()=>{
  for(const mutation of [c=>c.rootPublication.approved=false,c=>delete c.rootPublication,c=>c.target='dev']){const c=structuredClone(config);mutation(c);assert.throws(()=>validateRootPublication(c,proof,current,sourceRecord));}
@@ -39,15 +39,11 @@ test('migration rejects missing approval, wrong release, stale commit and mismat
 test('migration rejects overlapping/reused output and missing diagnostic redirect targets',()=>fixture(async d=>{
  await assert.rejects(prepareRoot(d+'/dist',d+'/baseline',d+'/dist/root',config,proof,current),/overlap/);
  await mkdir(d+'/root');await assert.rejects(prepareRoot(d+'/dist',d+'/baseline',d+'/root',config,proof,current));await rm(d+'/root',{recursive:true});
- await rm(d+'/baseline/dev/balance-results/summary.json');await assert.rejects(prepareRoot(d+'/dist',d+'/baseline',d+'/root',config,proof,current));
+ await rm(d+'/dist/balance-results/summary.json');await assert.rejects(prepareRoot(d+'/dist',d+'/baseline',d+'/root',config,proof,current));
  await assert.rejects(lstat(d+'/root'),{code:'ENOENT'});
 }));
-test('diagnostic redirects preserve query and fragment at nested project URLs',()=>{
- for(const page of ['balance-lab.html','balance-report.html']){
-  const html=redirectHtml('./dev/'+page,true),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];let redirected;
-  const location={href:`https://jerryzric.github.io/ai-friends-kart-playcanvas/${page}?map=coast&mode=cpu#results`,search:'?map=coast&mode=cpu',hash:'#results',replace:url=>redirected=url};
-  vm.runInNewContext(script,{URL,location});assert.equal(redirected,`https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/${page}?map=coast&mode=cpu#results`);
- }
+test('diagnostic stub links exact version without floating dev or automatic navigation',()=>{
+ const html=diagnosticsHtml();assert.match(html,/releases\/download\/v1\.1\.0\/ai-friends-kart-playcanvas-v1\.1\.0-html\.zip/);assert.doesNotMatch(html,/\.\/dev|location\.replace|http-equiv/);
 });
 test('legacy source URL redirects directly to the pinned public ZIP without forwarding visitor parameters',()=>{
  const script=redirectHtml(proof.sourceUrl).match(/<script>([\s\S]*?)<\/script>/)[1];let redirected;

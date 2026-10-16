@@ -5,20 +5,20 @@ import {DEFAULT_RACE_OPTIONS, parseRaceOptions, raceOptionsQuery} from '../src/r
 import {parseMenuState, menuQuery, raceEntry, garageEntry} from '../src/menu-state';
 import {raceNavigation} from '../src/race-shell';
 
-test('stack experiment requires the dev preview path or explicit Vite development environment', () => {
+test('stacking is available in stable, dev and desktop browser environments', () => {
   assert.equal(itemStackingExperimentAvailable(), false, 'Node has no implicit experiment availability');
   for (const pathname of ['/', '/ai-friends-kart-playcanvas/', '/coast.html', '/development/coast.html', '/dev-preview/coast.html']) {
-    assert.equal(itemStackingExperimentAvailable({pathname}), false, pathname);
+    assert.equal(itemStackingExperimentAvailable({pathname}), true, pathname);
   }
   for (const pathname of ['/dev/coast.html', '/ai-friends-kart-playcanvas/dev/waterpark.html']) {
     assert.equal(itemStackingExperimentAvailable({pathname}), true, pathname);
   }
   assert.equal(itemStackingExperimentAvailable({baseUrl: '/ai-friends-kart-playcanvas/dev/'}), true);
   assert.equal(itemStackingExperimentAvailable({development: true, pathname: '/coast.html'}), true);
-  assert.equal(itemStackingExperimentAvailable({development: false, baseUrl: './', pathname: '/coast.html'}), false);
+  assert.equal(itemStackingExperimentAvailable({development: false, baseUrl: './', pathname: '/coast.html'}), true);
 });
 
-test('dev stacking defaults on and only explicit zero opts out, while stable stays off', () => {
+test('available stacking defaults on and only explicit zero opts out; explicit unavailable mode remains compatible', () => {
   for (const search of ['', '?itemStacking=1', '?itemStacking=true', '?itemStacking=2', '?itemStacking=']) {
     assert.deepEqual(parseRaceOptions(search, true), {...DEFAULT_RACE_OPTIONS, itemStacking: true});
   }
@@ -37,7 +37,7 @@ test('dev stacking defaults on and only explicit zero opts out, while stable sta
   assert.deepEqual(parseRaceOptions(raceOptionsQuery(setup), false), {difficulty: 'hard', seed: 42});
 });
 
-test('dev default and explicit on or off survive race, menu and garage navigation', () => {
+test('stable and dev defaults and explicit flags survive race, menu and garage navigation', () => {
   const previous = globalThis.location;
   try {
     globalThis.location = {pathname: '/ai-friends-kart-playcanvas/dev/coast.html'} as Location;
@@ -53,7 +53,10 @@ test('dev default and explicit on or off survive race, menu and garage navigatio
       }
     }
     globalThis.location = {pathname: '/ai-friends-kart-playcanvas/coast.html'} as Location;
-    for (const search of ['', '?itemStacking=1', '?itemStacking=0']) assert.equal(parseMenuState(search).itemStacking, undefined);
+    for (const pathname of ['/ai-friends-kart-playcanvas/coast.html', '/C:/AI Friends Kart/resources/app/dist/coast.html']) {
+      globalThis.location = {pathname} as Location;
+      for (const search of ['', '?itemStacking=1', '?itemStacking=0']) assert.equal(parseMenuState(search).itemStacking, search !== '?itemStacking=0');
+    }
   } finally {
     if (previous === undefined) delete (globalThis as {location?: Location}).location; else globalThis.location = previous;
   }
@@ -92,13 +95,13 @@ function settingsFixture(href = 'https://example.test/game/dev/coast.html?driver
     before as unknown as HTMLElement, href => navigations.push(href), {pathname})};
 }
 
-test('dev pause setting is pending until explicit restart and cleans up its listener', () => {
+test('pause setting is pending until explicit restart and cleans up its listener', () => {
   const f = settingsFixture(), dispose = f.mount(), panel = f.parent.children[0];
   assert.equal(panel.dataset.itemExperimentSettings, 'true'); assert.equal(f.parent.children[1], f.before);
   const [label, hint, apply] = panel.children, checkbox = label.children[0];
-  assert.equal(label.children[1].textContent, ' 实验：三同类升级（下次比赛生效）');
+  assert.equal(label.children[1].textContent, ' 三同类升级（下次比赛生效）');
   assert.equal(checkbox.checked, true); assert.match(hint.textContent, /勾选不改变当前比赛/); assert.match(hint.textContent, /重新开始本场/);
-  assert.match(hint.textContent, /dev默认开启，可取消恢复双槽/);
+  assert.match(hint.textContent, /默认开启，可取消恢复普通双槽/);
   assert.match(hint.textContent, /同槽普通 ×2 每次用 1/); assert.match(hint.textContent, /第三枚变 super 1 次/); assert.match(hint.textContent, /满槽神秘箱不接收/);
   assert.match(hint.textContent, /super 后同类箱消耗但不强化、不填另一槽、不生成 Token/); assert.match(hint.textContent, /有空槽神秘箱照常抽取/);
   assert.equal(apply.textContent, '应用并重新开始');
@@ -112,12 +115,12 @@ test('dev pause setting is pending until explicit restart and cleans up its list
   apply.dispatchEvent(new Event('click')); assert.equal(f.navigations.length, 2, 'disposed shell cannot trigger a stale restart');
 });
 
-test('stable pause settings hide experiment even with a forged query, while dev reflects active mode', () => {
-  const stable = settingsFixture('https://example.test/game/coast.html?itemStacking=1');
-  const dispose = stable.mount(); assert.deepEqual(stable.parent.children, [stable.before]); dispose();
-  for (const [query, checked] of [['', true], ['?itemStacking=1', true], ['?itemStacking=0', false]] as const) {
-    const dev = settingsFixture('https://example.test/game/dev/waterpark.html' + query);
-    const disposeDev = dev.mount(); assert.equal(dev.parent.children[0].children[0].children[0].checked, checked);
-    disposeDev(); assert.deepEqual(dev.parent.children, [dev.before]);
+test('stable, dev and desktop pause settings reflect active mode', () => {
+  for (const base of ['https://example.test/game/coast.html', 'https://example.test/game/dev/waterpark.html', 'file:///C:/game/dist/coast.html']) {
+    for (const [query, checked] of [['', true], ['?itemStacking=1', true], ['?itemStacking=0', false]] as const) {
+      const fixture = settingsFixture(base + query), dispose = fixture.mount();
+      assert.equal(fixture.parent.children[0].children[0].children[0].checked, checked);
+      dispose(); assert.deepEqual(fixture.parent.children, [fixture.before]);
+    }
   }
 });
