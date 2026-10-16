@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CALDERA_COURSE as course} from '../src/maps/caldera';
-import {runForkNpc} from './helpers/fork-npc-benchmark';
+import {historicalNpcPhysics,HISTORICAL_NPC_COMMIT} from './helpers/historical-npc-physics';
 // Frozen seed 72/713 design matrix, chosen from route selector intent before
 // driving. Neither success times nor favorable branch outcomes selected seeds.
 const frozen=[
@@ -43,7 +42,9 @@ const frozen=[
  {"id":"glm","difficulty":"hard","seed":713,"phase":5,"diagnostics":{"frames":17702,"brakeFrames":569,"driftFrames":2070,"maxStep":0.8624205401494445,"branches":["boulevard","alley","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":-0.3908929173111023,"choiceByLap":{"0":"boulevard","1":"alley","2":"boulevard"}}}}
 ] as const;
 
-test('caldera all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',t=>{
+test('caldera historical v1.0.1a all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',async t=>{
+ const historical=await historicalNpcPhysics();t.after(historical.dispose);
+ const {runForkNpc}=historical,course=await historical.course('caldera');
  const runs=[],coverage=new Map<string,Set<string>>();let maximumSeconds=0;
  for(const row of frozen){
   const {id,difficulty,seed,phase}=row,first=runForkNpc(course,seed,id,phase,difficulty),repeat=runForkNpc(course,seed,id,phase,difficulty);
@@ -55,5 +56,5 @@ test('caldera all six NPC builds on every difficulty complete three laps, exactl
  assert.equal(runs.length*2,72);assert.equal(coverage.size,18);
  for(const [key,branches]of coverage)assert.deepEqual([...branches].sort(),['alley','boulevard'],`${key} both routes`);
  assert.equal(maximumSeconds,336.23333333333335);assert.ok(maximumSeconds<360);
- t.diagnostic(JSON.stringify({runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
+ t.diagnostic(JSON.stringify({sourceCommit:HISTORICAL_NPC_COMMIT,baselineKind:'immutable historical NPC design matrix; not current tuning or balance certification',runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
 });

@@ -20,23 +20,31 @@ test('composition is independently retryable and takes only this successful buil
   assert.match(compose, /needs: build/);
   assert.match(compose, /artifact-ids: \$\{\{ needs\.build\.outputs\.artifact-id \}\}/);
   assert.match(compose, /EXPECTED_PROVENANCE_SHA256: \$\{\{ needs\.build\.outputs\.provenance-sha256 \}\}/);
-  assert.ok(compose.indexOf('verified-build-artifact.mjs verify') < compose.indexOf('compose-dev-pages.mjs compose verified-build/dist'));
+  assert.ok(compose.indexOf('verified-build-artifact.mjs verify') < compose.indexOf('prepare-pages-dev.mjs verified-build/dist dist-dev'));
+  assert.ok(compose.indexOf('prepare-pages-dev.mjs verified-build/dist dist-dev') < compose.indexOf('compose-pages-snapshot.mjs baseline-pages dist-dev dist-pages dev'));
+  assert.match(compose, /download-pages-snapshot\.py/);
+  assert.match(compose, /verify-pages-snapshot\.mjs/);
   assert.doesNotMatch(compose, /npm test|npm ci|npm run build|run-id:|github-token:|contents: write/);
   assert.match(compose, /path: dist-pages/);
 });
 test('deployment remains strictly gated with shared concurrency and exact main and dev identity', () => {
   assert.match(deploy, /needs: \[build, compose\]/);
-  assert.match(deploy, /git ls-remote origin refs\/heads\/main/);
-  assert.match(deploy, /git ls-remote origin refs\/heads\/dev/);
-  assert.match(deploy, /test "\$actual" = "\$GITHUB_SHA"/);
+  assert.match(deploy, /node scripts\/verify-pages-snapshot\.mjs/);
+  const guard = readFileSync('scripts/verify-pages-snapshot.mjs', 'utf8');
+  assert.match(guard, /Object\.entries\(c\.expectedRefs\)/);
+  assert.match(guard, /'ls-remote','origin',`refs\/heads\/\$\{branch\}`/);
+  assert.match(guard, /pin==='CURRENT'\?current:pin/);
+  assert.match(guard, /verifyPublishedBaseline\(c,api,current\)/);
+  assert.ok(deploy.indexOf('verify-pages-snapshot.mjs') < deploy.indexOf('actions/deploy-pages@'));
   assert.match(workflow, /group: github-pages\n  cancel-in-progress: false/);
   assert.doesNotMatch(workflow, /continue-on-error|if:.*always\(|contents: write|actions: write|windows-latest/);
 });
 
 test('dev preview compiles without test gates while explicit stable requests certify fully', () => {
-  const stable = readFileSync('.github/workflows/pages-stable.yml', 'utf8');
-  assert.match(stable, /if: \$\{\{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' \}\}\n        run: npm run check && npm test && npm run build/);
-  assert.match(stable, /default: nonstable/);
+  const stable = readFileSync('.github/workflows/release-stable.yml', 'utf8');
+  assert.match(stable, /stable-release\.py validate-request/);
+  assert.match(stable, /run: npm test/);
+  assert.match(stable, /needs: \[certify, windows-smoke\]/);
   assert.match(stable, /npm run test:dist/);
   const focused = readFileSync('scripts/test-dev-preview.mjs', 'utf8');
   for (const file of ['background-music', 'music-integration', 'free-mode-menu-dom', 'portrait-packaging', 'audit-ci-build-deployment-transition', 'ci-build-artifact', 'ci-stable-retry']) assert.ok(focused.includes(file), file);

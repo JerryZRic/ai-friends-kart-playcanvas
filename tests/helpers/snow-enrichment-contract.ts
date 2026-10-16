@@ -1,3 +1,4 @@
+import {assertCurrentSceneMaterial} from './current-airfield-snow-polish';
 /** Immutable original indexed-prefix proof. No scenery labels define original membership. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -28,11 +29,11 @@ export function assertSnowOriginalComponents(components:SnowSceneGeometry['compo
  assert.deepEqual(original,old.components,'Every original component, order, kind, role, landmark and full indexed range must remain exact');
  assert.equal(snowDigest(original),old.prefixes.components.digest,'Immutable complete original component manifest');return original;
 }
-export function assertSnowOriginalProjection(g:SnowSceneGeometry,old:SnowBaselineContract=snowFrozenBaseline()){
+export function assertSnowOriginalProjection(g:SnowSceneGeometry,old:SnowBaselineContract=snowFrozenBaseline(),historicalCore=false){
  assert.deepEqual(old.budget,{batches:23,triangles:106286,vertices:155970});assert.equal(g.batches.length,23);
  const original=assertSnowOriginalComponents(g.components,old);
  for(const [i,b]of g.batches.entries()){
-  const before=old.batches[i];assert.deepEqual(snowMaterial(b),before.material,'Exact original material values and batch order');
+  const before=old.batches[i];historicalCore?assert.deepEqual(snowMaterial(b),before.material,'Exact historical core material'):assertCurrentSceneMaterial('snow',i,snowMaterial(b),before.material);
   assert.ok(b.positions.length/3>=before.vertices&&b.indices.length>=before.indices);
   assert.equal(snowDigest(b.positions.slice(0,before.vertices*3)),before.positions,b.name+' original positions');
   assert.equal(snowDigest(b.uvs.slice(0,before.vertices*2)),before.uvs,b.name+' original UVs');
@@ -41,8 +42,8 @@ export function assertSnowOriginalProjection(g:SnowSceneGeometry,old:SnowBaselin
  }
  return original;
 }
-export function assertSnowPreservation(g:SnowSceneGeometry,theme:unknown,old:SnowBaselineContract){
- assertSnowOriginalProjection(g,old);assert.deepEqual(theme,old.theme,'Exact original winter lighting/fog/sky/theme');
+export function assertSnowPreservation(g:SnowSceneGeometry,theme:unknown,old:SnowBaselineContract,historicalCore=false){
+ assertSnowOriginalProjection(g,old,historicalCore);assert.deepEqual(theme,old.theme,'Exact original winter lighting/fog/sky/theme');
  for(const [i,b]of g.batches.entries()){
   const before=old.batches[i],normals=pc.calculateNormals(b.positions,b.indices);
   assert.equal(snowDigest(normals.slice(0,before.vertices*3)),before.normals,b.name+' actual computed original normals');

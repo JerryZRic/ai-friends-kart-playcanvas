@@ -1,8 +1,13 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {SNOW_COURSE as course} from '../src/maps/snow';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('snow');
+
+
+
 
 // Read-only design pilots used the same helpers, seed, native 1/60s substeps,
 // throttle, starting lane -2 and ordinary steering deadband .35. These values
@@ -48,7 +53,7 @@ const measured60={
 const near=(actual:number,expected:number,label:string)=>assert.ok(Math.abs(actual-expected)<1e-7,`${label}: ${actual} versus private design ${expected}`);
 const pilot=(branch:'alley'|'boulevard',reaction=0,hz=60)=>benchmarkForkDriving(course,branch,true,1/hz,'whale',undefined,reaction,true);
 
-test('snow default clean physical routes reproduce 96.283s / 96.917s with zero rail contact',t=>{
+test('historical v1.0.1a: snow default clean physical routes reproduce 96.283s / 96.917s with zero rail contact',t=>{
   const runs=[],cut=pilot('alley'),sweep=pilot('boulevard');
   runs.push({branch:'alley',hz:60,...cut},{branch:'boulevard',hz:60,...sweep});
   near(cut.seconds,96.28333333333333,'cut');near(sweep.seconds,96.91666666666667,'sweep');
@@ -59,7 +64,7 @@ test('snow default clean physical routes reproduce 96.283s / 96.917s with zero r
   t.diagnostic(JSON.stringify({initialRuns:runs}));
 });
 
-test('snow all six character/build pairs complete both physical branches cleanly at 30/60/120/144/240Hz',t=>{
+test('historical v1.0.1a: snow all six character/build pairs complete both physical branches cleanly at 30/60/120/144/240Hz',t=>{
   const clean=[];
   for(const preset of getNpcPresets('coast',20261010))for(const hz of [30,60,120,144,240]){
     const cut=benchmarkForkDriving(course,'alley',true,1/hz,preset.characterId,preset.build,0,true);
@@ -92,7 +97,7 @@ test('snow all six character/build pairs complete both physical branches cleanly
   t.diagnostic(JSON.stringify({clean,staleBranchInput:error,scope:'Unchanged shared controls; finite, lane-clamped accepted physical progression; no traffic, items, arbitrary mixed parts, GPU or human-difficulty guarantee'}));
 });
 
-test('snow bounded branch-only steering delays report the actual default-build crossover',t=>{
+test('historical v1.0.1a: snow bounded branch-only steering delays report the actual default-build crossover',t=>{
   const results=[.4,.8,1.6,3].map(reaction=>({reaction,cut:pilot('alley',reaction),sweep:pilot('boulevard',reaction)}));
   for(const result of results){assert.equal(result.cut.choice,'alley');assert.equal(result.sweep.choice,'boulevard');}
   assert.equal(results[0].cut.railSeconds,0);assert.equal(results[0].sweep.railSeconds,0);

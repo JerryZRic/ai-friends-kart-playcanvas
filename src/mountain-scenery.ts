@@ -603,16 +603,21 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
     for(const side of [-1,1]){
       const shutter=put('polish-mountain-louvered-shutter',pine,x+side*1.48,4.05,z,.43,1.68,.16,'detail');
       contact('polish-shutter-wall-seat',shutter,upper,at(x+side*1.48,4.05,z));
-      for(const y of [3.49,3.77,4.05,4.33,4.61])put('polish-mountain-shutter-louver',pineTips,x+side*1.48,y,z+(z>0?.09:-.09),.43,.09,.09,'detail');
+      // Inset each louver side 1.5 cm: overlapping equal-width outer skins z-fight.
+      for(const y of [3.49,3.77,4.05,4.33,4.61])put('polish-mountain-shutter-louver',pineTips,x+side*1.48,y,z+(z>0?.09:-.09),.40,.09,.09,'detail');
     }
-    put('polish-mountain-window-crossbar',wood,x,4.05,z,2.19,.09,.19,'detail');
-    put('polish-mountain-window-mullion',wood,x,4.05,z,.09,1.49,.19,'detail');
+    const crossbar=put('polish-mountain-window-crossbar',wood,x,4.05,z,2.19,.09,.19,'detail');
+    // One-centimetre depth relief keeps the crossing bars from sharing an outer face.
+    const mullion=put('polish-mountain-window-mullion',wood,x,4.05,z,.09,1.49,.21,'detail');
+    contact('polish-window-crossbar-wall-seat',crossbar,upper,at(x,4.05,z));
+    contact('polish-window-mullion-wall-seat',mullion,upper,at(x,4.05,z));
   }
   // Broad, shallow courses give the asymmetrical roof a crafted tile rhythm.
   // Closed prisms overlap the existing solid roof by 2 cm instead of floating.
   for(const [left,right]of [[-9.12,-4.2],[-4.0,3.12]])for(let course=0;course<5;course++){
     const x0=left+(right-left)*course/5,x1=x0+(right-left)*.11;
-    prism('polish-mountain-roof-tile-course',coral,[[x0,roofHeight(x0)-.02],[x1,roofHeight(x1)-.02],[x1,roofHeight(x1)+.07],[x0,roofHeight(x0)+.07]],-5.91,5.96);
+    const tile=prism('polish-mountain-roof-tile-course',coral,[[x0,roofHeight(x0)-.02],[x1,roofHeight(x1)-.02],[x1,roofHeight(x1)+.07],[x0,roofHeight(x0)+.07]],-5.91,5.96);
+    contact('polish-tile-existing-roof-bearing',tile,left< -4.1?roofLeft:roofRight,at((x0+x1)/2,roofHeight((x0+x1)/2)-.01,0));
   }
   for(const x of [-6.6,-3,.6]){
     const trough=put('polish-mountain-balcony-flower-trough',wood,x,3.08,5.78,2.2,.42,.54,'detail');
@@ -635,7 +640,10 @@ export function buildMountainSceneGeometry(track:LandTrack):MountainSceneGeometr
   beam('polish-mountain-telescope-lens-hood',wood,at(8.4,2.59,.88),at(8.4,2.70,1.24),.63,.63,'detail');
   beam('polish-mountain-telescope-blue-lens',glass,at(8.4,2.695,1.225),at(8.4,2.712,1.28),.49,.49,'detail');
   // A seated limestone specimen bench occupies the back of the same landing.
-  for(const x of [5.3,8.1])put('polish-mountain-geology-bench-leg',stone,x,.99,-3.3,.62,.66,.66,'support');
+  for(const x of [5.3,8.1]){
+    const leg=put('polish-mountain-geology-bench-leg',stone,x,.99,-3.3,.62,.66,.66,'support');
+    contact('polish-geology-bench-landing-bearing',leg,canopyDeck,at(x,.66,-3.3));
+  }
   put('polish-mountain-geology-bench-seat',lightStone,6.7,1.38,-3.3,3.7,.23,1.08,'detail');
   for(const [x,h]of [[5.6,.42],[6.7,.68],[7.7,.48]])closedCone('polish-mountain-geology-display',x===6.7?lightStone:darkStone,at(x,1.48,-3.3),.38,h,x,5);
   assemblies.push({id:assembly,components:Array.from({length:components.length-polishFirst},(_,i)=>polishFirst+i),closed:false});assembly=undefined;

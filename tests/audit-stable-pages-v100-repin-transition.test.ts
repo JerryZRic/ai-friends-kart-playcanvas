@@ -1,3 +1,4 @@
+import {postV100Hash,restorePostV100Buffer,postV100AddedPaths} from './helpers/post-v100-current';
 import {validateManifest} from '../scripts/compose-dev-pages.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = Object.hasOwn(review.changes, path) ? Buffer.from(restoreStablePagesV100RepinBytes(path, read(path))) : readFileSync(path);
+    const bytes = Object.hasOwn(review.changes, path) ? Buffer.from(restoreStablePagesV100RepinBytes(path, read(path))) : restorePostV100Buffer(path,readFileSync(path));
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -25,16 +26,16 @@ function baselineGitTree() {
 }
 test('v1.0 publication repin reconstructs the complete certified stable endpoint and exact file inventory', () => {
   assert.equal(baselineGitTree(), STABLE_PAGES_V100_REPIN_BASELINE_TREE);
-  assert.deepEqual(readdirSync('.', {withFileTypes: true}).filter(entry => entry.isFile()).map(entry => entry.name).sort(), baselinePaths.filter(path => !path.includes('/')).sort(), 'Exact root-level source inventory');
+  assert.deepEqual(readdirSync('.', {withFileTypes: true}).filter(entry => entry.isFile()).map(entry => entry.name).sort(), [...baselinePaths,...postV100AddedPaths()].filter(path => !path.includes('/')).sort(), 'Exact root-level source inventory');
   for (const dir of ['.github', 'docs', 'models', 'public', 'scripts', 'src', 'tests']) {
     assert.deepEqual(walk(dir).sort(), [...baselinePaths, ...stablePagesV100RepinAddedPaths()].filter(path => path.startsWith(dir + '/')).sort());
   }
-  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), hash, path + ' exact protected byte identity');
-  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), row.sha256, path + ' exact explicitly added bytes');
+  for (const [path, hash] of Object.entries(review.protectedFiles)) assert.equal(sha(readFileSync(path)), postV100Hash(path,hash), path + ' exact protected byte identity');
+  for (const [path, row] of Object.entries(review.additions)) assert.equal(sha(readFileSync(path)), postV100Hash(path,row.sha256), path + ' exact explicitly added bytes');
 });
 test('each publication repin change has exact reversible hunks with negative mutation and identity tests', () => {
   for (const [path, row] of Object.entries(review.changes)) {
-    const current = read(path), previous = restoreStablePagesV100RepinBytes(path, current);
+    const raw = read(path), current = restorePostV100Buffer(path,Buffer.from(raw)).toString('utf8'), previous = restoreStablePagesV100RepinBytes(path,raw);
     assert.equal(sha(previous), row.previousSha256);
     const lines = previous.match(/[^\n]*\n|[^\n]+$/g) ?? [];
     for (const hunk of [...row.hunks].reverse()) {
@@ -42,8 +43,8 @@ test('each publication repin change has exact reversible hunks with negative mut
       lines.splice(hunk.beforeStart, hunk.removedLines.length, ...hunk.insertedLines);
     }
     assert.equal(lines.join(''), current);
-    assert.equal(stablePagesV100RepinHash(path, row.previousSha256), row.currentSha256);
-    for (const altered of [current + ' ', current.slice(1), previous]) assert.throws(() => restoreStablePagesV100RepinBytes(path, altered));
+    assert.equal(stablePagesV100RepinHash(path, row.previousSha256), postV100Hash(path,row.currentSha256));
+    for (const altered of [raw + ' ', raw.slice(1), previous]) assert.throws(() => restoreStablePagesV100RepinBytes(path, altered));
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => stablePagesV100RepinHash(path, incoming));
     for (const alias of ['./' + path, path + '/extra', path.replace('/', '//')].filter(alias => alias !== path)) {
       assert.equal(stablePagesV100RepinHash(alias, row.previousSha256), row.previousSha256);

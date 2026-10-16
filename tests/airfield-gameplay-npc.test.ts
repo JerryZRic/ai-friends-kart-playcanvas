@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {AIRFIELD_COURSE as course} from '../src/maps/airfield';
-import {runForkNpc} from './helpers/fork-npc-benchmark';
+import {historicalNpcPhysics,HISTORICAL_NPC_COMMIT} from './helpers/historical-npc-physics';
 // Frozen seed 72/713 design matrix, chosen from route selector intent before
 // driving. Neither success times nor favorable branch outcomes selected seeds.
 const frozen=[{"id":"whale","difficulty":"easy","seed":72,"phase":0,"diagnostics":{"frames":13659,"brakeFrames":2311,"driftFrames":0,"maxStep":0.7201933727445763,"branches":["boulevard","alley","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":2.510902308731536,"choiceByLap":{"0":"boulevard","1":"alley","2":"boulevard"}}}},
@@ -41,7 +40,9 @@ const frozen=[{"id":"whale","difficulty":"easy","seed":72,"phase":0,"diagnostics
  {"id":"glm","difficulty":"hard","seed":72,"phase":5,"diagnostics":{"frames":11979,"brakeFrames":813,"driftFrames":1752,"maxStep":1.079106368232182,"branches":["boulevard","alley","alley"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":0.8585334374396639,"choiceByLap":{"0":"boulevard","1":"alley","2":"alley"}}}},
  {"id":"glm","difficulty":"hard","seed":713,"phase":5,"diagnostics":{"frames":14650,"brakeFrames":844,"driftFrames":2240,"maxStep":0.8633665346561762,"branches":["boulevard","alley","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":0.5571027703870844,"choiceByLap":{"0":"boulevard","1":"alley","2":"boulevard"}}}}] as const;
 
-test('airfield all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',t=>{
+test('airfield historical v1.0.1a all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',async t=>{
+ const historical=await historicalNpcPhysics();t.after(historical.dispose);
+ const {runForkNpc}=historical,course=await historical.course('airfield');
  const runs=[],coverage=new Map<string,Set<string>>();let maximumSeconds=0;
  for(const row of frozen){
   const {id,difficulty,seed,phase}=row,first=runForkNpc(course,seed,id,phase,difficulty),repeat=runForkNpc(course,seed,id,phase,difficulty);
@@ -53,5 +54,5 @@ test('airfield all six NPC builds on every difficulty complete three laps, exact
  assert.equal(runs.length*2,72);assert.equal(coverage.size,18);
  for(const [key,branches]of coverage)assert.deepEqual([...branches].sort(),['alley','boulevard'],`${key} both routes`);
  assert.equal(maximumSeconds,277.8833333333333);assert.ok(maximumSeconds<360);
- t.diagnostic(JSON.stringify({runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS,v8HeapUsedMiB:process.memoryUsage().heapUsed/1048576,configuredOldSpaceMiB:384},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
+ t.diagnostic(JSON.stringify({sourceCommit:HISTORICAL_NPC_COMMIT,baselineKind:'immutable historical NPC design matrix; not current tuning or balance certification',runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS,v8HeapUsedMiB:process.memoryUsage().heapUsed/1048576,configuredOldSpaceMiB:384},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
 });

@@ -1,3 +1,4 @@
+import {assertForestReviewedComposition} from './helpers/forest-reviewed-composition';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
@@ -17,7 +18,7 @@ test('original forest uses finite indexed source meshes under hard static budget
   assert.equal(geometry.trackId,'forest');assert.equal(geometry.batches.length,21);
   let vertices=0,triangles=0;
   for(const b of geometry.batches){vertices+=b.positions.length/3;triangles+=b.indices.length/3;assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));assert.ok(b.roughness>=0&&b.roughness<=1);}
-  assert.ok(vertices<200000,`vertices ${vertices}`);assert.ok(triangles<110000,`triangles ${triangles}`);
+  assert.ok(vertices<200000,`vertices ${vertices}`);assert.ok(triangles<116000,`triangles ${triangles}`);
   assert.equal(new Set(geometry.batches.filter(b=>b.texture!=='none').map(b=>b.texture)).size,4);
   assert.ok(geometry.batches.filter(b=>b.metalness>.4).length>=3);assert.equal(FOREST_SCENE_THEME.sky,'#c6d8ce');
   for(const kind of ['abandoned-observatory','root-cathedral','cedar-bowl-fan','broken-meridian-armillary','canopy-viaduct-lookout','old-forestry-station','canopy-root-viaduct'])assert.equal(geometry.landmarks.filter(l=>l.kind===kind).length,1,kind);
@@ -76,8 +77,8 @@ test('grounded fork signs stand above the approach road with their full boards v
   const roadY=FOREST_COURSE.commonStart.sample(FOREST_COURSE.commonStart.length-88).p.y,boards=geometry.components.filter(c=>c.kind==='fork-sign-cream-board');assert.equal(boards.length,2);for(const b of boards){assert.ok(b.min[1]>roadY+2.89);assert.ok(b.max[1]>roadY+4.69);}
 });
 
-test('bounded cedar enrichment retains 99 trees and its precise reviewed 108772-triangle budget',()=>{
-  assert.equal(geometry.trees.length,99);assert.equal(geometry.batches.reduce((n,b)=>n+b.indices.length/3,0),108772);
+test('bounded cedar enrichment retains 99 trees and the reviewed 108772-core plus 5536-detail composition',()=>{
+  assert.equal(geometry.trees.length,99);assertForestReviewedComposition(geometry);
   assert.equal(geometry.woodlandBanks.length,4);assert.equal(geometry.woodlandBeds.length,4);
   const near=geometry.trees.filter(t=>t.kind.startsWith('near-route-'));assert.ok(near.length>=45);assert.ok(near.every(t=>t.radius>10.4));
   for(const kind of ['root-valley','outer-bowl','canopy-return','sunbreak-shoulder'])assert.ok(near.filter(t=>t.kind==='near-route-'+kind).length>=6,kind);

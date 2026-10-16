@@ -1,3 +1,4 @@
+import {restorePostV100Buffer} from './helpers/post-v100-current';
 import {mobileControlsHash} from './helpers/mobile-controls-reviewed-revisions';
 import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
@@ -30,7 +31,7 @@ test('Harvest exact five color edits and87 farm pieces are distinct from protect
 });
 test('Harvest final source preview and prior scene isolation consumers agree on the precise reviewed revision',()=>{
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
- const file='src/harvest-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(readFileSync(file)));assert.equal(receipt.reviewedChanges[file].currentSHA256,review.currentSHA256);
+ const file='src/harvest-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(restorePostV100Buffer(file,readFileSync(file))));assert.equal(receipt.reviewedChanges[file].currentSHA256,review.currentSHA256);
  const mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));assert.equal(mountain.isolatedSceneSources[file],review.previousSHA256);
  for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected','workshop-enrichment-protected']){const old=JSON.parse(readFileSync('tests/fixtures/'+name+'.json','utf8'));assert.equal(old.sourceInventory[file],review.previousSHA256);if(old.reviewedChanges)assert.equal(old.reviewedChanges[file].currentSHA256,review.currentSHA256);}
  const preview=JSON.parse(readFileSync('docs/harvest-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],review.currentSHA256);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));

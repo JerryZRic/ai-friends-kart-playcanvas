@@ -1,3 +1,4 @@
+import {postV100PortableClosure} from './helpers/post-v100-current';
 import {menuPresentationSourcePaths,menuPresentationHash,restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';
 /** Immutable history and explicit Airfield-only incoming/reviewed output identities. */
 import test from 'node:test';
@@ -34,7 +35,7 @@ test('Airfield final manifest lists every actual source,retained test,baseline s
  const excluded=(p:string)=>(p.startsWith('docs/qa/')&&/\.(png|jpg|webp)$/.test(p))||['public/assets/drivers/','public/assets/portraits/','public/models/food-karts/bundles/'].some(prefix=>p.startsWith(prefix));
  const exclusions=Object.fromEntries(Object.entries(original.sourceInventory).filter(([p])=>excluded(p)));assert.equal(Object.keys(exclusions).length,73);assert.deepEqual(m.excludedOriginalInputsSha256,exclusions);assert.deepEqual(m.originalInputCounts,{total:870,included:797,excluded:73});assert.deepEqual(m.portableOriginalSourceInputs,Object.keys(original.sourceInventory).filter(p=>!excluded(p)));for(const p of Object.keys(exclusions))assert.ok(!Object.hasOwn(m.finalFileSha256,p));for(const p of m.portableOriginalSourceInputs)assert.ok(Object.hasOwn(m.finalFileSha256,p));
  const required=[...walk('docs/scene-baselines/airfield-original'),...readdirSync('tests').filter(p=>p.startsWith('airfield-')&&p.endsWith('.test.ts')).map(p=>'tests/'+p),...readdirSync('tests/helpers').filter(p=>p.includes('airfield-enrichment')||p.startsWith('run-airfield-')).map(p=>'tests/helpers/'+p),...readdirSync('tests/fixtures').filter(p=>p.startsWith('airfield-enrichment-')).map(p=>'tests/fixtures/'+p),...readdirSync('scripts').filter(p=>p.includes('airfield-enrichment')||['verify-airfield-art-pixels.py','verify-airfield-visible-groups.py','verify-airfield-adjacent-pairs.py'].includes(p)).map(p=>'scripts/'+p)];
- for(const p of required)assert.ok(Object.hasOwn(m.finalFileSha256,p),p+' complete portable dependency');for(const [p,h]of Object.entries(m.finalFileSha256))assert.equal(sha(readFileSync(p)),menuPresentationHash(p,h),p+' final exact source identity');
+ postV100PortableClosure('airfield',m.finalFileSha256,required);for(const [p,h]of Object.entries(m.finalFileSha256))assert.equal(sha(readFileSync(p)),menuPresentationHash(p,h),p+' final exact source identity');
 });
 
 test('Airfield inherited consumers match the complete exact eleven-file transformation ledger',()=>{

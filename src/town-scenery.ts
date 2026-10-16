@@ -313,7 +313,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
     // reservation. No new street clutter or changes to the recessed shop bays.
     const polishFront=frontSide*(depth/2+.12),detail=(kind:string,b:Batch,x:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(kind,b,at(x,y,z),vec(w,h,d),yaw);
     detail('limestone-entry-lintel',paving,0,2.79,polishFront,2.17,.24,.28);
-    for(const x of [-.95,.95])detail('limestone-entry-jamb',paving,x,1.35,polishFront,.20,2.7,.28);
+    for(const x of [-.95,.95])detail('limestone-entry-jamb',paving,x,1.335,polishFront,.20,2.67,.28);
     detail('layered-eave-cornice',paving,0,height-.42,polishFront,width+.18,.20,.31);
     for(const x of [-width*.36,width*.36])detail('carved-eave-corbel',wood,x,height-.66,polishFront+frontSide*.04,.25,.35,.36);
     // A few more articulated facades form focal buildings within each row.
@@ -382,7 +382,7 @@ export function buildTownSceneGeometry(course: TownSceneryCourse): TownSceneGeom
       const detail=(kind:string,b:Batch,dx:number,y:number,z:number,w:number,h:number,d:number)=>polishBox(kind,b,at(x+dx,y,z),vec(w,h,d),yaw);
       detail('market-crate-floor',wood,0,1.34,.14,1.95,.08,1.26);
       for(const z of [-.49,.77])detail('market-crate-slat',wood,0,1.49,z,2.03,.28,.10);
-      for(const dx of [-.975,.975])detail('market-crate-end',wood,dx,1.49,.14,.10,.28,1.26);
+      for(const dx of [-.975,.975])detail('market-crate-end',wood,dx,1.49,.14,.10,.28,1.16);
     }
     put(plum,0,2.84,1.68,5.25,.34,.10);record('striped-market-stall',p,3.5,3.7);
   }

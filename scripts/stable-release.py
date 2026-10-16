@@ -107,6 +107,90 @@ def runtime_sha():
 
 CERT_BRANCH = 'release/v1.1.0-certification'
 REQUEST_PATH = 'docs/stable-release-request.json'
+WORKFLOW_PATH = '.github/workflows/release-stable.yml'
+WORKFLOW_NAME = 'Certify and publish v1.1.0 stable'
+FULL_SUITE_STEP = 'Run complete stable regression suite'
+WINDOWS_SMOKE_STEP = 'Start packaged native Windows window and renderer, then exit'
+
+
+def positive_integer(value):
+    return type(value) is int and value > 0
+
+
+def workflow_identity():
+    workflow = api('actions/workflows/release-stable.yml')
+    require(positive_integer(workflow.get('id')) and workflow.get('path') == WORKFLOW_PATH and
+            workflow.get('name') == WORKFLOW_NAME and workflow.get('state') == 'active',
+            'Unexpected release certification workflow identity')
+    return workflow['id']
+
+
+def validate_candidate_run(run, *, candidate, workflow_id):
+    require((run.get('repository') or {}).get('full_name') == REPOSITORY and
+            (run.get('head_repository') or {}).get('full_name') == REPOSITORY,
+            'Candidate certification repository or head repository differs')
+    require(run.get('workflow_id') == workflow_id and run.get('path') == WORKFLOW_PATH and
+            run.get('name') == WORKFLOW_NAME, 'Candidate certification workflow differs')
+    require(run.get('head_sha') == candidate and run.get('head_branch') == CERT_BRANCH and
+            run.get('event') == 'push', 'Candidate certification source/branch/event differs')
+    require(run.get('status') == 'completed' and run.get('conclusion') == 'success',
+            'Candidate certification workflow has not completed successfully')
+    require(positive_integer(run.get('id')) and positive_integer(run.get('run_attempt')),
+            'Candidate certification run identity is missing')
+    require(run.get('html_url') == f'https://github.com/{REPOSITORY}/actions/runs/{run["id"]}',
+            'Unexpected candidate certification run URL')
+
+
+def validate_candidate_jobs(response, *, candidate, run_id, attempt):
+    jobs = response.get('jobs', [])
+    require(response.get('total_count') == len(jobs), 'Incomplete candidate job evidence')
+    by_name = {}
+    for job in jobs:
+        require(job.get('run_id') == run_id and job.get('run_attempt') == attempt and
+                job.get('head_sha') == candidate and job.get('head_branch') == CERT_BRANCH and
+                job.get('workflow_name') == WORKFLOW_NAME, 'Candidate job source/run identity differs')
+        name = job.get('name')
+        require(name in ('certify', 'windows-smoke', 'publish') and name not in by_name,
+                'Unexpected or duplicate candidate certification job')
+        require(job.get('status') == 'completed' and
+                job.get('conclusion') == ('skipped' if name == 'publish' else 'success'),
+                'Candidate certification job has not completed successfully')
+        by_name[name] = job
+    for name, step_name in [('certify', FULL_SUITE_STEP), ('windows-smoke', WINDOWS_SMOKE_STEP)]:
+        require(name in by_name, 'Required candidate certification job is missing: ' + name)
+        steps = [step for step in by_name[name].get('steps', []) if step.get('name') == step_name]
+        require(len(steps) == 1 and steps[0].get('status') == 'completed' and
+                steps[0].get('conclusion') == 'success', 'Required candidate test step did not pass: ' + step_name)
+
+
+def certified_candidate(candidate, tree, run_reference=None):
+    workflow_id = workflow_identity()
+    if run_reference is None:
+        response = api('actions/workflows/release-stable.yml/runs?head_sha=' + candidate + '&per_page=100')
+        eligible = []
+        for run in response.get('workflow_runs', []):
+            try:
+                validate_candidate_run(run, candidate=candidate, workflow_id=workflow_id)
+            except ValueError:
+                continue
+            eligible.append(run)
+        require(eligible, 'Exact candidate has no successful full certification workflow')
+        run_reference = max(eligible, key=lambda run: (run['id'], run['run_attempt']))
+        run_id, attempt = run_reference['id'], run_reference['run_attempt']
+    else:
+        run_id, attempt = run_reference.get('runId'), run_reference.get('runAttempt')
+        require(positive_integer(run_id) and positive_integer(attempt), 'Invalid recorded certification run')
+    # Pin an attempt, not a mutable latest-rerun endpoint. Re-read the entire run and its jobs.
+    run = api(f'actions/runs/{run_id}/attempts/{attempt}')
+    validate_candidate_run(run, candidate=candidate, workflow_id=workflow_id)
+    require(run['id'] == run_id and run['run_attempt'] == attempt, 'Candidate run attempt differs')
+    validate_candidate_jobs(api(f'actions/runs/{run_id}/attempts/{attempt}/jobs?per_page=100'),
+                            candidate=candidate, run_id=run_id, attempt=attempt)
+    return dict(repository=REPOSITORY, headRepository=REPOSITORY, workflowId=workflow_id,
+                workflowPath=WORKFLOW_PATH, sourceBranch=CERT_BRANCH, event='push',
+                candidateCommit=candidate, candidateTree=tree, runId=run_id, runAttempt=attempt,
+                runUrl=run['html_url'], command='npm test', stepName=FULL_SUITE_STEP,
+                stepConclusion='success', workflowStatus='completed', workflowConclusion='success')
 
 
 def validate_request(request, *, sha, parents, repository, ref, event_name, event):
@@ -121,7 +205,7 @@ def validate_request(request, *, sha, parents, repository, ref, event_name, even
         require(ref == 'refs/heads/' + CERT_BRANCH, 'Unapproved certification branch')
 
 
-def check_request():
+def check_request(candidate_run=None):
     sha = runtime_sha()
     require(command(['git', 'rev-parse', 'HEAD']) == sha, 'Not the triggering commit')
     parents = command(['git', 'show', '-s', '--format=%P', 'HEAD']).split()
@@ -134,15 +218,62 @@ def check_request():
     require(REQUEST_PATH in command(['git', 'diff', '--name-only', PARENT, sha]).splitlines(),
             'No new explicit request')
     require(json.loads(Path('package.json').read_text())['version'] == VERSION, 'Wrong package version')
-    if os.environ['GITHUB_REF'] == 'refs/heads/main':
+    tree = command(['git', 'rev-parse', sha + '^{tree}'])
+    require(re.fullmatch('[0-9a-f]{40}', tree), 'Invalid source tree')
+    context = dict(sha=sha, tree=tree, ref=os.environ['GITHUB_REF'], parents=parents)
+    if context['ref'] == 'refs/heads/main':
         candidate = parents[1]
-        require(command(['git', 'rev-parse', candidate + '^{tree}']) ==
-                command(['git', 'rev-parse', sha + '^{tree}']), 'Main differs from the certified candidate tree')
-        runs = api('actions/workflows/release-stable.yml/runs?head_sha=' + candidate + '&per_page=100')['workflow_runs']
-        require(any(run['head_sha'] == candidate and run['head_branch'] == CERT_BRANCH and
-                    run['event'] == 'push' and run['status'] == 'completed' and run['conclusion'] == 'success'
-                    for run in runs), 'Exact candidate has no successful full certification workflow')
+        require(command(['git', 'rev-parse', candidate + '^{tree}']) == tree,
+                'Main differs from the certified candidate tree')
+        context['candidate'] = certified_candidate(candidate, tree, candidate_run)
     print('Validated stable request and immutable source', sha)
+    return context
+
+
+def regression_evidence(context, *, require_step_outcome=False):
+    sha, tree, ref = context['sha'], context['tree'], context['ref']
+    require(os.environ.get('GITHUB_WORKFLOW_REF') == REPOSITORY + '/' + WORKFLOW_PATH + '@' + ref and
+            os.environ.get('GITHUB_WORKFLOW_SHA') == sha,
+            'Current run must execute the exact source workflow')
+    run_id, attempt = os.environ.get('GITHUB_RUN_ID', ''), os.environ.get('GITHUB_RUN_ATTEMPT', '')
+    require(run_id.isdigit() and int(run_id) > 0 and attempt.isdigit() and int(attempt) > 0,
+            'Current workflow run identity is missing')
+    candidate_run = ref == 'refs/heads/' + CERT_BRANCH
+    require(candidate_run or ref == 'refs/heads/main', 'No full-suite reuse on this branch')
+    if require_step_outcome:
+        require(os.environ.get('FULL_SUITE_STEP_OUTCOME') == ('success' if candidate_run else 'skipped'),
+                'Full regression suite outcome differs from the exact certification path')
+    if candidate_run:
+        full_suite = dict(repository=REPOSITORY, headRepository=REPOSITORY, workflowId=workflow_identity(),
+            workflowPath=WORKFLOW_PATH, sourceBranch=CERT_BRANCH, event='push', candidateCommit=sha,
+            candidateTree=tree, runId=int(run_id), runAttempt=int(attempt),
+            runUrl=f'https://github.com/{REPOSITORY}/actions/runs/{run_id}', command='npm test',
+            stepName=FULL_SUITE_STEP, stepConclusion='success',
+            workflowStatus='in_progress', workflowConclusion=None)
+    else:
+        full_suite = context['candidate']
+    return dict(schemaVersion=1, mode='full-suite-this-run' if candidate_run else 'reused-identical-candidate',
+                sourceCommit=sha, sourceTree=tree, finalMainCommit=None if candidate_run else sha,
+                expectedMainParent=PARENT, currentRunId=int(run_id), currentRunAttempt=int(attempt),
+                fullSuitePassedInThisRun=candidate_run, fullSuite=full_suite)
+
+
+def verify_regression_evidence(manifest, *, require_main=False):
+    evidence = manifest.get('regressionCertification')
+    require(isinstance(evidence, dict), 'Missing full-suite certification evidence')
+    if require_main:
+        require(os.environ.get('GITHUB_REF') == 'refs/heads/main', 'Only final main may publish')
+    require(isinstance(evidence.get('fullSuite'), dict), 'Missing original full-suite run evidence')
+    context = check_request(candidate_run=evidence['fullSuite'])
+    require(evidence == regression_evidence(context), 'Full-suite certification evidence differs from verified source/run')
+    return evidence
+
+
+def verify_publication_certification(output=Path('release-stable')):
+    manifest = json.loads((Path(output) / MANIFEST_NAME).read_text())
+    require(manifest.get('sourceCommit') == runtime_sha(), 'Publication manifest is not the final source commit')
+    verify_regression_evidence(manifest, require_main=True)
+    print('Revalidated completed candidate workflow, original attempt, full-suite evidence and exact final-main tree')
 
 
 def excluded_source(path):
@@ -322,6 +453,7 @@ def package_windows(root, output):
 def make_package(root=Path('.'), output=Path('release-stable')):
     root, output = Path(root), Path(output)
     sha = runtime_sha()
+    evidence = regression_evidence(check_request(), require_step_outcome=True)
     require(command(['git', 'rev-parse', 'HEAD']) == sha, 'Checkout SHA changed')
     for path in expected_source(root):
         require(command(['git', 'hash-object', str(root / path)]) == command(['git', 'rev-parse', sha + ':' + path]),
@@ -342,7 +474,8 @@ def make_package(root=Path('.'), output=Path('release-stable')):
             records[path] = dict(bytes=source.stat().st_size, sha256=digest(source))
     manifest = dict(schemaVersion=1, version=VERSION, tag=TAG, repository=REPOSITORY,
                     sourceCommit=sha, expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT, channel='release', target='html+windows-x64',
-                    prerelease=False, latest=True, sourceFiles=source_count, files=records)
+                    prerelease=False, latest=True, sourceFiles=source_count, files=records,
+                    regressionCertification=evidence)
     shutil.copyfile(root / 'dist/source.zip', output / 'source.zip')
     manifest['windowsFiles'] = package_windows(root, output / WINDOWS_NAME)
     manifest['windowsValidation'] = 'structural/security/protocol; native startup smoke reported by separate CI job; GPU/gameplay unverified'
@@ -361,6 +494,7 @@ def verify_package(output=Path('release-stable')):
     require(all(manifest.get(key) == value for key, value in dict(schemaVersion=1, version=VERSION, tag=TAG,
             repository=REPOSITORY, sourceCommit=runtime_sha(), expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT,
             channel='release', target='html+windows-x64', prerelease=False, latest=True).items()), 'Release provenance mismatch')
+    verify_regression_evidence(manifest)
     source = output / 'source.zip'
     require(source.stat().st_size == manifest['files']['source.zip']['bytes'] and
             digest(source) == manifest['files']['source.zip']['sha256'], 'Standalone source archive differs from the HTML bundle source')
@@ -414,6 +548,7 @@ def find_release():
 
 def verify_remote(draft):
     current_head()
+    verify_publication_certification()
     ref = api('git/ref/tags/' + TAG)['object']
     require(ref['type'] == 'commit' and ref['sha'] == runtime_sha(), 'Release tag does not target the exact source commit')
     release = find_release()
@@ -510,7 +645,7 @@ def source_expectation(path=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['validate-request', 'package', 'verify', 'check-refs', 'check-source-release', 'check-public', 'wait-public', 'preflight', 'verify-draft', 'verify-published'])
+    parser.add_argument('command', choices=['validate-request', 'package', 'verify', 'verify-certification', 'check-refs', 'check-source-release', 'check-public', 'wait-public', 'preflight', 'verify-draft', 'verify-published'])
     parser.add_argument('--source-file', help='Local exact-build source.zip to verify before linking its public asset')
     args = parser.parse_args()
     action = args.command
@@ -520,6 +655,8 @@ def main():
         make_package()
     elif action == 'verify':
         verify_package()
+    elif action == 'verify-certification':
+        verify_publication_certification()
     elif action == 'check-refs':
         current_head()
     elif action in ('check-source-release', 'check-public', 'wait-public'):
@@ -528,6 +665,7 @@ def main():
         print(json.dumps(operation(expected_sha=expected_sha, expected_bytes=expected_bytes), sort_keys=True))
     elif action == 'preflight':
         current_head()
+        verify_publication_certification()
         absent('git/ref/tags/' + TAG)
         absent('releases/tags/' + TAG)
         require(find_release() is None, 'An existing draft or release already uses this tag')

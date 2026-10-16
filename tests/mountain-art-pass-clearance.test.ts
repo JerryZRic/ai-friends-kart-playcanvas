@@ -30,7 +30,11 @@ const report:any={startedAt,sourceHashes,checks:[],metrics:{},limitations:[
  'The inherited exact-pier unretracted-cylinder negative remains a negative',
 ]};
 const geometry=buildMountainSceneGeometry(track),mesh=new MeshOracle(geometry.batches),parts=new ComponentOracle(mesh,geometry.components);
-const selected=geometry.components.filter(mountainArtComponent),selectedSet=new Set<Provenance>(selected);
+// The reviewed October append is part of current safety coverage, while the
+// sealed first-pass family list and complement golden remain untouched.
+const polish=geometry.components.filter(c=>c.kind.startsWith('polish-mountain-'));
+const polishSet=new Set(polish);
+const selected=geometry.components.filter(c=>mountainArtComponent(c)||polishSet.has(c)),selectedSet=new Set<Provenance>(selected);
 const terrainIds=new Set(mesh.triangles.filter(q=>parts.owner.get(q.id)!.kind==='connected-contour-terrain').map(q=>q.id));
 const selectedFaceIds=new Set(selected.flatMap(c=>(parts.triangles.get(c)??[]).map(q=>q.id)));
 function audit(name:string,fn:(t:TestContext)=>void){test(name,t=>{try{fn(t);report.checks.push({name,status:'passed'});}catch(error){report.checks.push({name,status:'failed',error:String(error)});throw error;}});}
@@ -46,7 +50,8 @@ audit('Mountain second-pass selected families cover every changed or added emitt
  assert.equal(fixture.baselineCommit,'f42be1c415143089bbc0b6d8b6215e404d9ddf24');
  assert.equal(fixture.baselineBuilderSHA256,'847253b5accf6121ef086c6f111c82f8db93e6fe93a497c1bae287c2a3af9009');
  assert.deepEqual(fixture.selectedFamilies,mountainArtFamilies);
- const unchanged=mountainArtUnchangedContract(geometry);assert.deepEqual(unchanged,fixture.unchanged,'all non-selected component positions, normalized indices, UVs and identities must remain exactly first-pass; extend audited coverage rather than waiving a changed family');
+ assert.equal(polish.length,148);assert.equal(polish.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0),1704);assert.equal(polish.reduce((n,c)=>n+c.vertexEnd-c.vertexStart,0),3772);
+ const unchanged=mountainArtUnchangedContract({...geometry,components:geometry.components.filter(c=>!polishSet.has(c))});assert.deepEqual(unchanged,fixture.unchanged,'all non-selected component positions, normalized indices, UVs and identities must remain exactly first-pass; extend audited coverage rather than waiving a changed family');
  const byKind:Record<string,{components:number;faces:number}>={};
  for(const c of selected){const count=(c.indexEnd-c.indexStart)/3,r=byKind[c.kind]??={components:0,faces:0};r.components++;r.faces+=count;assert.ok(c.solid&&parts.closedShell(c),'every changed/new scenery component must be a closed emitted solid: '+c.kind);}
  for(const prefix of mountainArtFamilies)assert.ok(selected.some(c=>c.kind.startsWith(prefix)),prefix+' is included in target coverage');

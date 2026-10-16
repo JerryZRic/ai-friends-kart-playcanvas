@@ -1,3 +1,4 @@
+import {postV100Hash,postV100PathsWithin,restorePostV100Bytes,postV100AddedPaths,postV100AuditDependencies} from './post-v100-current';
 /** Exact post-v1.0 stable publication repin. Every runtime byte and historical proof stays frozen. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -75,12 +76,13 @@ export function assertStablePagesV100RepinReviewBytes(bytes: string): Review {
 }
 export function stablePagesV100RepinReview() { return assertStablePagesV100RepinReviewBytes(readFileSync(STABLE_PAGES_V100_REPIN_REVIEW_PATH, 'utf8')); }
 export function stablePagesV100RepinHash(path: string, incoming: unknown) {
-  const row = stablePagesV100RepinReview().changes[path]; if (!row) return incoming;
+  const row = stablePagesV100RepinReview().changes[path]; if (!row) return postV100Hash(path,incoming);
   assert.equal(incoming, row.previousSha256, path + ' exact certified-v1.0 incoming identity');
-  return row.currentSha256;
+  return postV100Hash(path,row.currentSha256);
 }
-export function stablePagesV100RepinPathsWithin(inventory: Record<string, unknown>) { return Object.keys(stablePagesV100RepinReview().changes).filter(path => Object.hasOwn(inventory, path)); }
+export function stablePagesV100RepinPathsWithin(inventory: Record<string, unknown>) { return [...new Set([...Object.keys(stablePagesV100RepinReview().changes).filter(path => Object.hasOwn(inventory, path)),...postV100PathsWithin(inventory)])]; }
 export function restoreStablePagesV100RepinBytes(path: string, current: string) {
+  current=restorePostV100Bytes(path,current);
   const row = stablePagesV100RepinReview().changes[path]; if (!row) return current;
   assert.equal(stablePagesV100RepinSha(current), row.currentSha256, path + ' exact candidate bytes before stable-repin inverse');
   const lines = current.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -91,5 +93,6 @@ export function restoreStablePagesV100RepinBytes(path: string, current: string) 
   const previous = lines.join('');
   assert.equal(stablePagesV100RepinSha(previous), row.previousSha256, path + ' every certified-v1.0 byte reconstructed'); return previous;
 }
-export function stablePagesV100RepinAddedPaths() { return [STABLE_PAGES_V100_REPIN_REVIEW_PATH, 'tests/helpers/stable-pages-v100-repin-reviewed-revisions.ts', ...Object.keys(stablePagesV100RepinReview().additions)]; }
-export function stablePagesV100RepinAuditDependencies() { return [...stablePagesV100RepinAddedPaths(), ...Object.keys(stablePagesV100RepinReview().changes)]; }
+export function stablePagesV100RepinAddedPaths() { return [STABLE_PAGES_V100_REPIN_REVIEW_PATH, 'tests/helpers/stable-pages-v100-repin-reviewed-revisions.ts', ...Object.keys(stablePagesV100RepinReview().additions),...postV100AddedPaths()]; }
+export function stablePagesV100RepinAuditDependencies() { return [...stablePagesV100RepinAddedPaths(), ...Object.keys(stablePagesV100RepinReview().changes),...postV100AuditDependencies()]; }
+

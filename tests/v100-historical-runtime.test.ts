@@ -1,3 +1,4 @@
+import {postV100Review} from './helpers/post-v100-current';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {cpSync,mkdtempSync,mkdirSync,readFileSync,readdirSync,writeFileSync,rmSync} from 'node:fs';
@@ -13,12 +14,12 @@ test('historical control graph restores every reviewed source and excludes every
  try {
   for(const [path,hash]of Object.entries(review.protectedFiles).filter(([path])=>path.startsWith('src/')))assert.equal(v100Sha(runtime.read(path)),hash,path);
   for(const [path,row]of Object.entries(review.changes).filter(([path])=>path.startsWith('src/')))assert.equal(v100Sha(runtime.read(path)),row.previousSha256,path);
-  for(const path of Object.keys(review.additions).filter(path=>path.startsWith('src/')))assert.throws(()=>runtime.read(path),{code:'ENOENT'},path+' cannot leak into historical dependency graph');
+  for(const path of [...Object.keys(review.additions),...Object.keys(postV100Review().additions)].filter(path=>path.startsWith('src/')))assert.throws(()=>runtime.read(path),{code:'ENOENT'},path+' cannot leak into historical dependency graph');
   assert.doesNotMatch(runtime.read('src/npc-tactics.ts'),/pickup-size/);
   assert.doesNotMatch(runtime.read('src/land-race-route.ts'),/pickup-size/);
   assert.doesNotMatch(runtime.read('src/pickup-visual.ts'),/pickup-size/);
   assert.equal(runtime.read('src/maps/mountain.ts'),readFileSync('src/maps/mountain.ts','utf8'));
-  assert.equal(runtime.read('src/mountain-scenery.ts'),readFileSync('src/mountain-scenery.ts','utf8'));
+  assert.equal(v100Sha(runtime.read('src/mountain-scenery.ts')),review.protectedFiles['src/mountain-scenery.ts'],'Historical scenery stays exactly at its original graph endpoint');
   assert.notEqual(runtime.read('src/game.ts'),readFileSync('src/game.ts','utf8'),'historical entry never retains current SPA behavior');
   assert.ok(fileURLToPath(runtime.directory).startsWith(parent));
  }finally{runtime.dispose();assert.deepEqual(readdirSync(parent),[]);rmSync(parent,{recursive:true});}

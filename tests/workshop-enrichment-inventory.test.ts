@@ -1,3 +1,4 @@
+import {restorePostV100Buffer} from './helpers/post-v100-current';
 import {menuPresentationSourcePaths} from './helpers/menu-presentation-reviewed-revisions';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash} from './helpers/airfield-enrichment-reviewed-revisions';
 /** Historical source inventories and geometry goldens remain immutable. */
@@ -23,7 +24,7 @@ test('Workshop protects573 exact original inputs and all nested historical sourc
 });
 test('Workshop final scene and preview identities are explicitly reviewed by Mountain Town Quarry and Forest',()=>{
  const all=JSON.parse(readFileSync('tests/fixtures/reviewed-scene-revisions.json','utf8'));assert.equal(all.schemaVersion,1);assert.equal(all.baseCommit,'9b3ba3b6a667d181c56bbf86dae5efb9d800db65');assert.deepEqual(Object.keys(all.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
- const file='src/workshop-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(readFileSync(file)));
+ const file='src/workshop-scenery.ts',review=all.revisions[file];assert.equal(review.previousSHA256,receipt.originalScenerySha256);assert.equal(review.currentSHA256,sha(restorePostV100Buffer(file,readFileSync(file))));
  const mountain=JSON.parse(readFileSync('tests/fixtures/mountain-source-baseline.json','utf8'));assert.equal(mountain.isolatedSceneSources[file],review.previousSHA256);
  for(const name of ['town-enrichment-protected','quarry-enrichment-source-inventory','forest-enrichment-protected']){const source=JSON.parse(readFileSync('tests/fixtures/'+name+'.json','utf8'));assert.equal(source.sourceInventory[file],review.previousSHA256);if(source.reviewedChanges)assert.equal(source.reviewedChanges[file].currentSHA256,review.currentSHA256);}
  const preview=JSON.parse(readFileSync('docs/workshop-preview-provenance.json','utf8'));assert.equal(preview.sourceHashes[file],review.currentSHA256);assert.equal(preview.menuAsset.sha256,sha(readFileSync(preview.menuAsset.file)));
