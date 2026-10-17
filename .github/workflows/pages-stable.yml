@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+env:
+  STABLE_RELEASE_MODE: v1.1.1-hotfix
 permissions:
   contents: read
   actions: read

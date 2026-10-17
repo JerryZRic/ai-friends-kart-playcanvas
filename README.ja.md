@@ -12,9 +12,13 @@
 
 > ゲームの UI は簡体字中国語で、ブランド名は英語表記です。上の言語リンクで切り替わるのはドキュメントのみです。コードとオリジナル素材（音楽を除く）には AGPL-3.0-only が適用され、6体のキャラクターモデルには別途、非商用の制限があります。[ライセンスとモデルの権利](#license-and-model-rights)をご確認ください。
 
-## v1.1.0 安定版
+## v1.1.1 ホーム画面のホットフィックス（正式安定版）
 
-**v1.1.0 は Web / HTML と Windows x64 向けの正式な安定版です。** 13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを引き続き収録。追加の陸上11コースにはシーン充実化の成果を含みます。公開ファイル、ソースのリビジョン、チェックサム、検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)をご確認ください。サイトのルートは main の公開先、`/dev/` は独立した開発プレビューです。
+**v1.1.1 は Web / HTML と Windows x64 向けの正式安定版ホットフィックスです（`prerelease=false`、`latest=true`）。** ホーム画面の描画制御の競合を修正し、ユーザーが dev コミット `73fbe76ba477b8595006e41998efdf83e5e2da1b` の修正を Firefox で確認しました。今回の限定的な修正の検証範囲は、対象を絞った回帰テスト、ビルド・パッケージ検査、ネイティブ Windows での起動です。具体的な結果と制限は [v1.1.1 リリースノート](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)をご確認ください。v1.1.1 では全 2,073 件のテストを再実行しておらず、v1.1.0 の全件テスト結果は同バージョンのみの過去の記録です。以下の推奨ホットフィックスのダウンロード先は v1.1.1 です。[従来の安定版 v1.1.0 も引き続き入手できます](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)。
+
+## v1.1.0 以前の安定版
+
+**v1.1.0 は Web / HTML と Windows x64 向けの以前の正式安定版です。** 13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを引き続き収録。追加の陸上11コースにはシーン充実化の成果を含みます。公開ファイル、ソースのリビジョン、チェックサム、検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)をご確認ください。サイトのルートは main の公開先、`/dev/` は独立した開発プレビューです。
 
 フリーモードには6人からランダムに選ぶアニメーション付きタイトル画面、回転するマッププレビュー、キャラクターの3D表示、車両選択、簡単 / 普通 / 難しいのレース設定と画面設定があります。タイトル画面は独自の PlayCanvas 2D メッシュアニメーションで、Cubism は使用していません。大肥鱼（WHALE）の選択確率は35%、残りの5人は65%を均等に分けます。ストーリーモードは開発中の案内です。[実装ノートと制限](docs/free-mode.md)。
 
@@ -65,15 +69,15 @@ ChatGPT へのログイン、モデルサービスのアカウント、実行時
 
 ## Web / HTML パッケージ
 
-[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip) を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、nginx などの HTTP(S) 静的サーバーで配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースをすべて保持してください。ルートやサブディレクトリへの配置の検証結果はリリースノートをご確認ください。相対パスの採用だけで実際の配布物の検証に代えることはできません。
+[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で [`ai-friends-kart-playcanvas-v1.1.1-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip) を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、nginx などの HTTP(S) 静的サーバーで配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースをすべて保持してください。ルートやサブディレクトリへの配置の検証結果はリリースノートをご確認ください。相対パスの採用だけで実際の配布物の検証に代えることはできません。
 
-正式な GitHub Pages サイトでは実行用ファイルを配信します。対応するソースは [v1.1.0 リリース](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)の独立した [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)から取得してください。完全な HTML ZIP には引き続き `source.zip` とすべての実行用素材が含まれます。過去のオフラインバランス報告とデータは `/dev/` に残します。v1.1.0 のタグは最終マージ後の `main` コミットから作成し、`dev` から直接公開しません。
+正式な GitHub Pages サイトでは実行用ファイルを配信します。対応するソースは [v1.1.1 リリース](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)の独立した [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/source.zip)から取得してください。完全な HTML ZIP には引き続き `source.zip` とすべての実行用素材が含まれます。過去のオフラインバランス報告とデータは `/dev/` に残します。v1.1.1 のタグは最終マージ後の `main` コミットから作成し、`dev` から直接公開しません。
 
-GitHub Pages のルートと Timewish のホスト版には、オフラインのバランス診断データセットを含めません。診断入口は固定バージョンの [v1.1.0 完全版 HTML パッケージ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)へリンクし、更新され続ける dev の診断ページへは転送しません。完全版 HTML ZIP にはデータセットと利用可能なオフライン診断を保持します。
+GitHub Pages のルートと Timewish のホスト版には、オフラインのバランス診断データセットを含めません。診断入口は固定バージョンの [v1.1.1 完全版 HTML パッケージ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)へリンクし、更新され続ける dev の診断ページへは転送しません。完全版 HTML ZIP にはデータセットと利用可能なオフライン診断を保持します。
 
 ## Windows x64 パッケージ
 
-ダウンロード [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+ダウンロード [`ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/SHA256SUMS)
 
 64ビット版 Windows 10/11 と WebGL2 対応 GPU が必要です。ZIP 全体を展開し、DLL、`resources`、`locales` フォルダーを一緒に保ったまま **AI Friends Kart.exe** を起動します。**F11** で全画面表示を切り替えます。Windows のセキュリティ保護を無効にしないでください。自動パッケージング、安全性、プロトコルの検査は、実機 Windows の GPU、性能、入力互換性の検証を意味しません。
 
@@ -135,7 +139,7 @@ npm run build
 
 ### GitHub Pages
 
-バージョン表示は正式版が `v1.1.0`、dev が実際のビルドコミットを使う `v1.1.0-dev.<sha6>`、コミット未指定のローカルビルドが `v1.1.0-dev.local` です。
+バージョン表示は正式安定版ホットフィックスが `v1.1.1`、dev が実際のビルドコミットを使う `v1.1.1-dev.<sha6>`、コミット未指定のローカルビルドが `v1.1.1-dev.local` です。
 
 開発版のバージョンには、実際の commit ハッシュの先頭6文字を付けます。リリースタグは `main` から作成し、配布物はそのタグのソースから生成します。dev の公開では main のサイトルートを保持してください。
 

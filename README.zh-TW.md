@@ -12,9 +12,13 @@
 
 > 遊戲介面採簡體中文，品牌名稱使用英文。上方語言連結僅切換說明文件。程式碼與原創資產（音樂除外）採 AGPL-3.0-only 授權；六個角色模型另受非商業使用限制。詳見[授權與模型權利](#license-and-model-rights)。
 
-## v1.1.0 穩定版
+## v1.1.1 首頁熱修復（正式穩定版）
 
-**v1.1.0 是 Web / HTML 與 Windows x64 正式穩定版。** 保留 13 張地圖、六名車手，以及 55 個主題 / 330 件零件的六槽食物車庫；11 張新增陸地地圖均包含場景豐富化成果。已發佈檔案、原始碼提交、校驗值與驗證說明以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。網站根目錄是 main 發佈入口，`/dev/` 是獨立開發預覽。
+**v1.1.1 是 Web / HTML 與 Windows x64 正式穩定熱修復版（`prerelease=false`、`latest=true`）。** 本次修復首頁渲染控制權問題；使用者已在 Firefox 中驗證 dev 提交 `73fbe76ba477b8595006e41998efdf83e5e2da1b` 的修復效果。本次小範圍熱修復的驗證範圍為針對性回歸、建置與封裝檢查及原生 Windows 啟動；具體結果與限制見 [v1.1.1 發行說明](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)。v1.1.1 未重新執行完整 2,073 項測試，v1.1.0 的全量測試結果僅作為該舊版本的歷史證據。下方建議的熱修復下載已更新為 v1.1.1；[上一穩定版 v1.1.0 仍可下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)。
+
+## v1.1.0 上一穩定版
+
+**v1.1.0 是 Web / HTML 與 Windows x64 上一正式穩定版。** 保留 13 張地圖、六名車手，以及 55 個主題 / 330 件零件的六槽食物車庫；11 張新增陸地地圖均包含場景豐富化成果。已發佈檔案、原始碼提交、校驗值與驗證說明以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)為準。網站根目錄是 main 發佈入口，`/dev/` 是獨立開發預覽。
 
 自由模式包含六角色隨機動態封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。封面使用自訂 PlayCanvas 2D 網格動畫，並非 Cubism；大肥魚（WHALE）的出現機率為 35%，其餘五位均分 65%。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。
 
@@ -65,15 +69,15 @@
 
 ## 網頁 / HTML 下載套件
 
-從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，並核對隨附的 SHA-256 校驗值。完整解壓縮後，透過 nginx 或其他 HTTP(S) 靜態伺服器部署；不支援以 `file://` 直接開啟 `index.html`。保留全部資產、授權聲明與對應原始碼檔案。根目錄與子目錄部署的驗證結果以發行說明為準，相對路徑設計不能取代對實際發行套件的驗證。
+從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 [`ai-friends-kart-playcanvas-v1.1.1-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)，並核對隨附的 SHA-256 校驗值。完整解壓縮後，透過 nginx 或其他 HTTP(S) 靜態伺服器部署；不支援以 `file://` 直接開啟 `index.html`。保留全部資產、授權聲明與對應原始碼檔案。根目錄與子目錄部署的驗證結果以發行說明為準，相對路徑設計不能取代對實際發行套件的驗證。
 
-正式 GitHub Pages 網站提供執行時檔案；對應原始碼請從 [v1.1.0 發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)下載獨立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 與全部執行時資源。歷史離線平衡報告及資料保留於 `/dev/`。v1.1.0 從最終合併後的 `main` 提交建立 tag，不直接從 `dev` 發佈。
+正式 GitHub Pages 網站提供執行時檔案；對應原始碼請從 [v1.1.1 發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)下載獨立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 與全部執行時資源。歷史離線平衡報告及資料保留於 `/dev/`。v1.1.1 從最終合併後的 `main` 提交建立 tag，不直接從 `dev` 發佈。
 
-GitHub Pages 根目錄與 Timewish 託管執行版不包含離線平衡診斷資料集；診斷入口連結至固定版本的 [v1.1.0 完整 HTML 套件](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，不會跳轉至隨 dev 更新的診斷頁。完整 HTML ZIP 保留資料集與可用的離線診斷。
+GitHub Pages 根目錄與 Timewish 託管執行版不包含離線平衡診斷資料集；診斷入口連結至固定版本的 [v1.1.1 完整 HTML 套件](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)，不會跳轉至隨 dev 更新的診斷頁。完整 HTML ZIP 保留資料集與可用的離線診斷。
 
 ## Windows x64 套件
 
-下載 [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+下載 [`ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/SHA256SUMS)
 
 需要 64 位元 Windows 10/11 與支援 WebGL2 的 GPU。完整解壓縮 ZIP，將 DLL、`resources` 和 `locales` 資料夾保留在一起，執行 **AI Friends Kart.exe**；按 **F11** 切換全螢幕。請勿停用 Windows 安全防護。自動封裝、安全及協定檢查不能證實原生 Windows GPU、效能或輸入相容性。
 
@@ -135,7 +139,7 @@ npm run build
 
 ### GitHub Pages
 
-版本標記：正式版 `v1.1.0`，dev 使用實際建置提交 `v1.1.0-dev.<sha6>`，未提供提交的本機建置為 `v1.1.0-dev.local`。
+版本標記：正式穩定熱修復版 `v1.1.1`，dev 使用實際建置提交 `v1.1.1-dev.<sha6>`，未提供提交的本機建置為 `v1.1.1-dev.local`。
 
 開發版版本號附加實際 commit 雜湊值的前六碼。發行版本從 `main` 建立 tag，套件必須使用該標籤對應的原始碼；dev 部署必須保留 main 網站根目錄。
 

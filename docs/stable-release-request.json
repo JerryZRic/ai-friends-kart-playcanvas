@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "version": "1.1.0",
-  "expectedParentSha": "0df2a42a1578551c018fc84675ff988632221220",
-  "expectedDevParentSha": "3baa3913acfc98d931e4b7208eb7c360828488a8",
+  "version": "1.1.1",
+  "expectedParentSha": "5bc2acb119646b71b3cb640362b246d4be38c250",
+  "expectedDevParentSha": "73fbe76ba477b8595006e41998efdf83e5e2da1b",
   "target": "html+windows-x64",
   "prerelease": false,
   "latest": true

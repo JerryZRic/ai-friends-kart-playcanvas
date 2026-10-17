@@ -1,19 +1,25 @@
 {
   "schemaVersion": 1,
   "repository": "JerryZRic/ai-friends-kart-playcanvas",
-  "target": "dev",
-  "sourceBranch": "dev",
+  "target": "root",
+  "sourceBranch": "main",
   "baseline": {
-    "runId": 39024518059,
-    "artifactId": 12098267213,
-    "deploymentId": 7138267656,
-    "commit": "5bc2acb119646b71b3cb640362b246d4be38c250",
-    "branch": "main",
-    "artifactDigest": "sha256:30590bd1627cfcd20a65de03b6f6da82be92058d8d8c5d6f314a5de447a9ea96"
+    "runId": 39028885735,
+    "artifactId": 12100060261,
+    "deploymentId": 7138918791,
+    "commit": "73fbe76ba477b8595006e41998efdf83e5e2da1b",
+    "branch": "dev",
+    "artifactDigest": "sha256:9ec5fb708a6361e86e0175f333d6d649bb99803caea3f647a1325f648a2a8ac3"
   },
   "expectedRefs": {
-    "main": "5bc2acb119646b71b3cb640362b246d4be38c250",
-    "dev": "CURRENT",
+    "main": "CURRENT",
+    "dev": "73fbe76ba477b8595006e41998efdf83e5e2da1b",
     "feature/home-portraits-live2d": "8b88928b52a6074e9d86bb487bad1b37cbb16dfd"
+  },
+  "rootPublication": {
+    "approved": true,
+    "mode": "release-source-and-offline-diagnostics",
+    "releaseTag": "v1.1.1",
+    "sourceAsset": "source.zip"
   }
 }

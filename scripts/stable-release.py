@@ -1,4 +1,4 @@
-"""One-shot v1.1.0 stable release, certified tree and exact final commit."""
+"""Pinned v1.1.0 stable or explicit v1.1.1 scoped hotfix, exact final commit."""
 import argparse
 import hashlib
 import json
@@ -15,13 +15,18 @@ from urllib.parse import unquote, urljoin, urlsplit
 import zipfile
 
 REPOSITORY = 'JerryZRic/ai-friends-kart-playcanvas'
-VERSION = '1.1.0'
+MODE = os.environ.get('STABLE_RELEASE_MODE', 'v1.1.0')
+if MODE not in ('v1.1.0', 'v1.1.1-hotfix'):
+    raise ValueError('Unapproved release mode')
+HOTFIX = MODE == 'v1.1.1-hotfix'
+VERSION = '1.1.1' if HOTFIX else '1.1.0'
+PRERELEASE, LATEST = False, True
 TAG = 'v' + VERSION
-PARENT = '0df2a42a1578551c018fc84675ff988632221220'
-DEV_PARENT = '3baa3913acfc98d931e4b7208eb7c360828488a8'
+PARENT = '5bc2acb119646b71b3cb640362b246d4be38c250' if HOTFIX else '0df2a42a1578551c018fc84675ff988632221220'
+DEV_PARENT = '73fbe76ba477b8595006e41998efdf83e5e2da1b' if HOTFIX else '3baa3913acfc98d931e4b7208eb7c360828488a8'
 EXPECTED_PARENTS = [PARENT, DEV_PARENT]
 REQUEST = dict(schemaVersion=1, version=VERSION, expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT,
-               target='html+windows-x64', prerelease=False, latest=True)
+               target='html+windows-x64', prerelease=PRERELEASE, latest=LATEST)
 ZIP_NAME = f'ai-friends-kart-playcanvas-{TAG}-html.zip'
 MANIFEST_NAME = 'RELEASE-MANIFEST.json'
 WINDOWS_NAME = f'ai-friends-kart-playcanvas-{TAG}-windows-x64.zip'
@@ -108,7 +113,9 @@ def runtime_sha():
 CERT_BRANCH = 'release/v1.1.0-certification'
 REQUEST_PATH = 'docs/stable-release-request.json'
 WORKFLOW_PATH = '.github/workflows/release-stable.yml'
-WORKFLOW_NAME = 'Certify and publish v1.1.0 stable'
+WORKFLOW_NAME = 'Validate and publish v1.1.1 hotfix' if HOTFIX else 'Certify and publish v1.1.0 stable'
+HOTFIX_STEP = 'Run scoped Firefox hotfix regression tests'
+HOTFIX_COMMAND = 'node --import tsx --test tests/application-ownership.test.ts tests/home-cover*.test.ts tests/menu-backdrop.test.ts tests/menu-boot.test.ts tests/menu-fixed-layout.test.ts tests/menu-spa-lifecycle.test.ts tests/title-menu.test.ts tests/build-version.test.ts tests/build-identity.test.ts tests/waterpark-reflection.test.ts tests/waterpark-water.test.ts'
 FULL_SUITE_STEP = 'Run complete stable regression suite'
 WINDOWS_SMOKE_STEP = 'Start packaged native Windows window and renderer, then exit'
 
@@ -194,7 +201,7 @@ def certified_candidate(candidate, tree, run_reference=None):
 
 
 def validate_request(request, *, sha, parents, repository, ref, event_name, event):
-    require(request == REQUEST, 'Request differs from the one-shot stable v1.1.0 approval')
+    require(request == REQUEST, 'Request differs from the pinned release approval')
     require(re.fullmatch('[0-9a-f]{40}', sha), 'Invalid exact source SHA')
     require(repository == REPOSITORY and event_name == 'push', 'Wrong repository/event')
     require(event.get('after') == sha, 'Push does not identify this checkout')
@@ -202,6 +209,7 @@ def validate_request(request, *, sha, parents, repository, ref, event_name, even
         require(len(parents) == 2 and parents[0] == PARENT, 'Unexpected final merge parents')
         require(event.get('before') == PARENT, 'Main changed since approval')
     else:
+        require(not HOTFIX, 'Hotfix requires final main; no candidate certification reuse')
         require(ref == 'refs/heads/' + CERT_BRANCH, 'Unapproved certification branch')
 
 
@@ -225,12 +233,65 @@ def check_request(candidate_run=None):
         candidate = parents[1]
         require(command(['git', 'rev-parse', candidate + '^{tree}']) == tree,
                 'Main differs from the certified candidate tree')
-        context['candidate'] = certified_candidate(candidate, tree, candidate_run)
+        if HOTFIX:
+            validate_hotfix_delta(sha)
+        else:
+            context['candidate'] = certified_candidate(candidate, tree, candidate_run)
     print('Validated stable request and immutable source', sha)
     return context
 
 
+# Only publication metadata/infrastructure may differ from the accepted Firefox fix.
+# Gameplay and home-cover source must be byte-identical to the accepted dev commit.
+HOTFIX_RELEASE_PATHS = {
+    'package.json', 'package-lock.json', 'scripts/desktop/package.json',
+    'src/build-version.ts',
+    'scripts/stable-release.py', 'scripts/package-server-runtime.py',
+    'tests/test_stable_release.py', 'tests/test_stable_release_hotfix.py',
+    'tests/test_server_runtime.py', 'docs/stable-release-request.json',
+    '.github/workflows/release-stable.yml', '.github/workflows/pages-stable.yml',
+    'scripts/build-identity.ts', 'tests/build-identity.test.ts', 'tests/build-version.test.ts',
+    'docs/pages-snapshot.json', 'scripts/prepare-pages-root.mjs', 'tests/pages-root.test.mjs',
+    'README.md', 'README.zh-CN.md', 'README.zh-TW.md', 'README.ja.md', 'README.ko.md', 'README.yue.md',
+}
+
+def validate_hotfix_delta(sha):
+    changed = set(command(['git', 'diff', '--name-only', DEV_PARENT, sha]).splitlines())
+    require(changed <= HOTFIX_RELEASE_PATHS,
+            'Unapproved changes beyond accepted Firefox source: ' + ', '.join(sorted(changed - HOTFIX_RELEASE_PATHS)))
+    for path, count in [('package.json', 1), ('package-lock.json', 2), ('scripts/desktop/package.json', 1),
+                        ('src/build-version.ts', -1), ('scripts/build-identity.ts', -1)]:
+        accepted = subprocess.check_output(['git', 'show', DEV_PARENT + ':' + path])
+        final = subprocess.check_output(['git', 'show', sha + ':' + path])
+        if path.endswith('.json'):
+            old, new = b'"version": "1.1.0"', b'"version": "1.1.1"'
+        else:
+            old, new = b'1.1.0', b'1.1.1'
+        require(old in accepted and final == accepted.replace(old, new, count),
+                'Hotfix version-only bytes differ from accepted source: ' + path)
+
+
+def hotfix_evidence(context, *, require_step_outcome=False):
+    sha, tree, ref = context['sha'], context['tree'], context['ref']
+    require(ref == 'refs/heads/main', 'Scoped hotfix tests must run on final main')
+    require(os.environ.get('GITHUB_WORKFLOW_REF') == REPOSITORY + '/' + WORKFLOW_PATH + '@' + ref and
+            os.environ.get('GITHUB_WORKFLOW_SHA') == sha, 'Hotfix workflow is not exact final source')
+    run_id, attempt = os.environ.get('GITHUB_RUN_ID', ''), os.environ.get('GITHUB_RUN_ATTEMPT', '')
+    require(run_id.isdigit() and int(run_id) > 0 and attempt.isdigit() and int(attempt) > 0,
+            'Current workflow run identity is missing')
+    if require_step_outcome:
+        require(os.environ.get('HOTFIX_STEP_OUTCOME') == 'success', 'Scoped hotfix tests have not passed')
+    return dict(schemaVersion=1, mode='scoped-hotfix-final-main', sourceCommit=sha, sourceTree=tree,
+                finalMainCommit=sha, expectedMainParent=PARENT, acceptedDevCommit=DEV_PARENT,
+                currentRunId=int(run_id), currentRunAttempt=int(attempt),
+                fullSuitePassedInThisRun=False, fullSuite=None,
+                scopedTests=dict(command=HOTFIX_COMMAND, stepName=HOTFIX_STEP, stepConclusion='success'),
+                limitation='Full regression suite was not rerun or reused for this changed tree')
+
+
 def regression_evidence(context, *, require_step_outcome=False):
+    if HOTFIX:
+        return hotfix_evidence(context, require_step_outcome=require_step_outcome)
     sha, tree, ref = context['sha'], context['tree'], context['ref']
     require(os.environ.get('GITHUB_WORKFLOW_REF') == REPOSITORY + '/' + WORKFLOW_PATH + '@' + ref and
             os.environ.get('GITHUB_WORKFLOW_SHA') == sha,
@@ -263,17 +324,50 @@ def verify_regression_evidence(manifest, *, require_main=False):
     require(isinstance(evidence, dict), 'Missing full-suite certification evidence')
     if require_main:
         require(os.environ.get('GITHUB_REF') == 'refs/heads/main', 'Only final main may publish')
+    if HOTFIX:
+        require(evidence == hotfix_evidence(check_request()), 'Scoped hotfix evidence differs from final source/run')
+        return evidence
     require(isinstance(evidence.get('fullSuite'), dict), 'Missing original full-suite run evidence')
     context = check_request(candidate_run=evidence['fullSuite'])
     require(evidence == regression_evidence(context), 'Full-suite certification evidence differs from verified source/run')
     return evidence
 
 
+def verify_hotfix_jobs():
+    """Publication needs successful scoped tests AND native startup on this run/attempt."""
+    run_id, attempt = int(os.environ['GITHUB_RUN_ID']), int(os.environ['GITHUB_RUN_ATTEMPT'])
+    run = api(f'actions/runs/{run_id}/attempts/{attempt}')
+    require(run.get('id') == run_id and run.get('run_attempt') == attempt and
+            run.get('head_sha') == runtime_sha() and run.get('head_branch') == 'main' and
+            run.get('event') == 'push' and run.get('path') == WORKFLOW_PATH and
+            run.get('name') == WORKFLOW_NAME and run.get('workflow_id') == workflow_identity() and
+            (run.get('repository') or {}).get('full_name') == REPOSITORY and
+            (run.get('head_repository') or {}).get('full_name') == REPOSITORY,
+            'Hotfix publication run/source identity differs')
+    response = api(f'actions/runs/{run_id}/attempts/{attempt}/jobs?per_page=100')
+    jobs = response.get('jobs', [])
+    require(response.get('total_count') == len(jobs), 'Incomplete hotfix job evidence')
+    for name, step_name in [('certify', HOTFIX_STEP), ('windows-smoke', WINDOWS_SMOKE_STEP)]:
+        matches = [job for job in jobs if job.get('name') == name]
+        require(len(matches) == 1, 'Missing or duplicate hotfix job: ' + name)
+        job = matches[0]
+        require(job.get('run_id') == run_id and job.get('run_attempt') == attempt and
+                job.get('head_sha') == runtime_sha() and job.get('head_branch') == 'main' and
+                job.get('workflow_name') == WORKFLOW_NAME and job.get('status') == 'completed' and
+                job.get('conclusion') == 'success', 'Hotfix job has not passed on exact final source: ' + name)
+        steps = [step for step in job.get('steps', []) if step.get('name') == step_name]
+        require(len(steps) == 1 and steps[0].get('status') == 'completed' and
+                steps[0].get('conclusion') == 'success', 'Hotfix required step has not passed: ' + step_name)
+
+
 def verify_publication_certification(output=Path('release-stable')):
     manifest = json.loads((Path(output) / MANIFEST_NAME).read_text())
     require(manifest.get('sourceCommit') == runtime_sha(), 'Publication manifest is not the final source commit')
     verify_regression_evidence(manifest, require_main=True)
-    print('Revalidated completed candidate workflow, original attempt, full-suite evidence and exact final-main tree')
+    if HOTFIX:
+        verify_hotfix_jobs()
+    print('Revalidated exact final-main source and scoped hotfix evidence' if HOTFIX else
+          'Revalidated completed candidate workflow, original attempt, full-suite evidence and exact final-main tree')
 
 
 def excluded_source(path):
@@ -368,7 +462,7 @@ def verify_dist(root, dist):
         path = music_dir / safe_path(record['name'])
         require(path.stat().st_size == record['size'] and digest(path) == record['sha256'], 'Music hash/size mismatch')
     runtime_js = [path.read_text() for path in (dist / 'assets').glob('*.js')]
-    require(any(re.search(r'''(["'`])v?1\.1\.0\1''', text) for text in runtime_js),
+    require(any(re.search(r'''(["'`])v?''' + re.escape(VERSION) + r'''\1''', text) for text in runtime_js),
             'Exact quoted release version or badge missing from compiled runtime')
     require(not any(VERSION + '-dev.' in text for text in runtime_js),
             'Dev-labelled JavaScript cannot be published as a release bundle')
@@ -435,7 +529,7 @@ def package_windows(root, output):
         sources['MUSIC-LICENSE.txt'] = root / 'dist/assets/music/LICENSE.txt'
         for name, path in sorted(sources.items()):
             with path.open('rb') as stream: add(name, stream)
-        instructions = ('AI Friends Kart v1.1.0 Windows x64 portable\n'
+        instructions = (f'AI Friends Kart {TAG} Windows x64 portable\n'
             'Extract the entire ZIP; run AI Friends Kart.exe beside its DLLs/resources/locales.\n'
             'Windows 10/11 x64, WebGL2-capable GPU drivers. F11 fullscreen.\n'
             'Unsigned portable build using official Electron 44.6.0. Keep OS security enabled.\n'
@@ -474,7 +568,7 @@ def make_package(root=Path('.'), output=Path('release-stable')):
             records[path] = dict(bytes=source.stat().st_size, sha256=digest(source))
     manifest = dict(schemaVersion=1, version=VERSION, tag=TAG, repository=REPOSITORY,
                     sourceCommit=sha, expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT, channel='release', target='html+windows-x64',
-                    prerelease=False, latest=True, sourceFiles=source_count, files=records,
+                    prerelease=PRERELEASE, latest=LATEST, sourceFiles=source_count, files=records,
                     regressionCertification=evidence)
     shutil.copyfile(root / 'dist/source.zip', output / 'source.zip')
     manifest['windowsFiles'] = package_windows(root, output / WINDOWS_NAME)
@@ -493,7 +587,7 @@ def verify_package(output=Path('release-stable')):
     manifest = json.loads((output / MANIFEST_NAME).read_text())
     require(all(manifest.get(key) == value for key, value in dict(schemaVersion=1, version=VERSION, tag=TAG,
             repository=REPOSITORY, sourceCommit=runtime_sha(), expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT,
-            channel='release', target='html+windows-x64', prerelease=False, latest=True).items()), 'Release provenance mismatch')
+            channel='release', target='html+windows-x64', prerelease=PRERELEASE, latest=LATEST).items()), 'Release provenance mismatch')
     verify_regression_evidence(manifest)
     source = output / 'source.zip'
     require(source.stat().st_size == manifest['files']['source.zip']['bytes'] and
@@ -553,7 +647,7 @@ def verify_remote(draft):
     require(ref['type'] == 'commit' and ref['sha'] == runtime_sha(), 'Release tag does not target the exact source commit')
     release = find_release()
     require(release is not None, 'Expected release does not exist')
-    require(release['tag_name'] == TAG and release['draft'] is draft and release['prerelease'] is False,
+    require(release['tag_name'] == TAG and release['draft'] is draft and release['prerelease'] is PRERELEASE,
             'Release draft/prerelease status mismatch')
     expected = sorted(RELEASE_ASSETS)
     require(sorted(asset['name'] for asset in release['assets']) == expected, 'Uploaded asset inventory mismatch')
@@ -564,7 +658,8 @@ def verify_remote(draft):
         # GitHub computes this digest from the uploaded bytes; never trust only filenames/sizes.
         require(asset.get('digest') == 'sha256:' + digest(local), f'Uploaded asset hash mismatch: {asset["name"]}')
     if not draft:
-        require(api('releases/latest')['id'] == release['id'], 'Stable release is not latest')
+        latest_id = api('releases/latest')['id']
+        require((latest_id == release['id']) is LATEST, 'Release latest status mismatch')
     print(f'Verified {"draft" if draft else "published"} stable release: {release["html_url"]}')
 
 
@@ -578,8 +673,8 @@ def public_source_release(*, expected_sha=None, expected_bytes=None):
     release = find_release()
     if release is None or release['draft']:
         raise ReleasePending('Expected public stable release is not ready')
-    require(release['prerelease'] is False, 'Expected stable release')
-    require(api('releases/latest')['id'] == release['id'], 'Expected stable release must be latest')
+    require(release['prerelease'] is PRERELEASE, 'Expected stable release')
+    require((api('releases/latest')['id'] == release['id']) is LATEST, 'Public release latest status mismatch')
     ref = api('git/ref/tags/' + TAG)['object']
     require(ref['type'] == 'commit' and ref['sha'] == runtime_sha(), 'Public release tag is not this exact main commit')
     assets = release['assets']
@@ -598,7 +693,7 @@ def public_source_release(*, expected_sha=None, expected_bytes=None):
     manifest = json.loads(manifest_bytes)
     require(all(manifest.get(key) == value for key, value in dict(schemaVersion=1, version=VERSION, tag=TAG,
             repository=REPOSITORY, sourceCommit=runtime_sha(), expectedParentSha=PARENT, expectedDevParentSha=DEV_PARENT,
-            channel='release', target='html+windows-x64', prerelease=False, latest=True).items()), 'Public source provenance mismatch')
+            channel='release', target='html+windows-x64', prerelease=PRERELEASE, latest=LATEST).items()), 'Public source provenance mismatch')
     source = by_name['source.zip']
     record = manifest['files']['source.zip']
     require(source['size'] == record['bytes'] and source['digest'] == 'sha256:' + record['sha256'],

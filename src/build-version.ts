@@ -1,6 +1,6 @@
 /** Release identity is persistent across every scene in this document. */
 declare const __GAME_BUILD_VERSION__: string;
-export const GAME_VERSION = typeof __GAME_BUILD_VERSION__ === 'string' ? __GAME_BUILD_VERSION__ : '1.1.0-dev.local';
+export const GAME_VERSION = typeof __GAME_BUILD_VERSION__ === 'string' ? __GAME_BUILD_VERSION__ : '1.1.1-dev.local';
 export function mountBuildVersion(doc: Document): HTMLElement {
  const existing=doc.getElementById('game-version');
  if(existing)return existing;
