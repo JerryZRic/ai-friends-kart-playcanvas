@@ -54,9 +54,9 @@ export function createWaterparkReflection(
   composition.push(layer);
   mainCamera.layers = [...mainCamera.layers, waterLayer.id];
 
-  const resources = new pc.Entity('Waterpark reflection resources');
+  const resources = new pc.Entity('Waterpark reflection resources', app);
   app.root.addChild(resources);
-  const reflectionCamera = new pc.Entity('Waterpark scenery reflection camera');
+  const reflectionCamera = new pc.Entity('Waterpark scenery reflection camera', app);
   reflectionCamera.addComponent('camera', {
     layers: [layer.id], priority: mainCamera.priority - 1,
     clearColor: mainCamera.clearColor.clone(),
@@ -125,7 +125,7 @@ export function createWaterparkReflection(
       light.layers = [...light.layers, waterLayer.id];
       mainOnlyLights.push(light);
     }
-    const copy = new pc.Entity(`${light.entity.name} (reflection, no shadows)`);
+    const copy = new pc.Entity(`${light.entity.name} (reflection, no shadows)`, app);
     copy.addComponent('light', {
       type: light.type, color: light.color.clone(), intensity: light.intensity,
       luminance: light.luminance, range: light.range,

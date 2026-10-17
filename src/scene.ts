@@ -80,11 +80,11 @@ class MeshBuilder {
     mesh.setNormals(pc.calculateNormals(this.positions, this.indices));
     mesh.setIndices(this.indices);
     mesh.update(pc.PRIMITIVE_TRIANGLES);
-    return meshEntity(name, mesh, mat, target, cast);
+    return meshEntity(app, name, mesh, mat, target, cast);
   }
 }
-export function meshEntity(name: string, mesh: pc.Mesh, mat: pc.Material, target: pc.Entity, cast = false) {
-  const entity = new pc.Entity(name);
+export function meshEntity(app: pc.AppBase, name: string, mesh: pc.Mesh, mat: pc.Material, target: pc.Entity, cast = false) {
+  const entity = new pc.Entity(name, app);
   entity.addComponent('render', { meshInstances: [new pc.MeshInstance(mesh, mat)], castShadows: cast, receiveShadows: true });
   target.addChild(entity);
   return entity;
@@ -105,7 +105,7 @@ export interface ItemBox extends PickupState { edgeId?:string; s?:number; d: num
 export interface Spark { p: pc.Vec3; v: pc.Vec3; t: number; max: number }
 
 export function createCoastScene(app: pc.Application, options: { preview?: boolean } = {}) {
-  const root = new pc.Entity('Sunset coast circuit');
+  const root = new pc.Entity('Sunset coast circuit', app);
   app.root.addChild(root);
   app.scene.ambientLight = color('#b8d9e8');
   app.scene.exposure = 1;
@@ -113,12 +113,12 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   app.scene.fog.color = color('#b6deec');
   app.scene.fog.start = 210;
   app.scene.fog.end = 650;
-  const camera = new pc.Entity('Chase camera');
+  const camera = new pc.Entity('Chase camera', app);
   camera.addComponent('camera', { fov: 53, nearClip: .1, farClip: 1500, clearColor: color('#bce4f2'), toneMapping: pc.TONEMAP_ACES, gammaCorrection: pc.GAMMA_SRGB });
   app.root.addChild(camera);
   camera.setPosition(30, 15, -150);
   camera.lookAt(0, 2, -140);
-  const sun = new pc.Entity('Warm coastal daylight');
+  const sun = new pc.Entity('Warm coastal daylight', app);
   sun.addComponent('light', { type: 'directional', color: color('#fff0d8'), intensity: 1.65, castShadows: true, shadowDistance: 130, shadowResolution: 2048, shadowBias: .15, normalOffsetBias: .08, numCascades: 2 });
   sun.setEulerAngles(53, -39, 0);
   app.root.addChild(sun);
@@ -133,8 +133,8 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   skyMaterial.cull = pc.CULLFACE_FRONT;
   skyMaterial.depthWrite = false;
   const skyMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 1100, latitudeBands: 20, longitudeBands: 32 }));
-  meshEntity('Gradient sky', skyMesh, skyMaterial, root);
-  const sunBall = meshEntity('Sun disc', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 38, latitudeBands: 20, longitudeBands: 32 })), material('#ffdda2', { unlit: true }), root);
+  meshEntity(app, 'Gradient sky', skyMesh, skyMaterial, root);
+  const sunBall = meshEntity(app, 'Sun disc', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 38, latitudeBands: 20, longitudeBands: 32 })), material('#ffdda2', { unlit: true }), root);
   sunBall.setPosition(-360, 115, -650);
   const oceanMaterial = new pc.ShaderMaterial({
     uniqueName: 'coast-water', attributes: { aPosition: pc.SEMANTIC_POSITION },
@@ -143,12 +143,12 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
   });
   oceanMaterial.cull = pc.CULLFACE_NONE;
   oceanMaterial.setParameter('time', 0);
-  const ocean = meshEntity('Animated ocean', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(1050, 1050), widthSegments: 130, lengthSegments: 130 })), oceanMaterial, root);
+  const ocean = meshEntity(app, 'Animated ocean', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(1050, 1050), widthSegments: 130, lengthSegments: 130 })), oceanMaterial, root);
   ocean.setPosition(0, -1.8, 0);
   const sand = material('#f2d9a4'), grass = material('#98c68b');
   function land(x: number, z: number, radius: number, sx: number, sz: number, heightOffset = 0) {
     for (const [r, y, h, m] of [[radius, -2, 4, sand], [radius * .94, -.4, 2, grass]] as const) {
-      const entity = meshEntity('Island', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.CylinderGeometry({ radius: r, height: h, capSegments: 64 })), m, root);
+      const entity = meshEntity(app, 'Island', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.CylinderGeometry({ radius: r, height: h, capSegments: 64 })), m, root);
       entity.setPosition(x, y + heightOffset, z); entity.setLocalScale(sx, 1, sz);
     }
   }
@@ -234,7 +234,7 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const materials = new Set<pc.Material>();
     eachMesh(root, instance => materials.add(instance.material));
     root.once('destroy', () => { for (const mat of materials) mat.destroy(); });
-    const shield = new pc.Entity('Unused preview shield'); shield.enabled = false; root.addChild(shield);
+    const shield = new pc.Entity('Unused preview shield', app); shield.enabled = false; root.addChild(shield);
     return { root, camera, sun, oceanMaterial, boxes: [] as ItemBox[], shield,
       flames: [] as { mesh: pc.Entity; side: number }[], particles: [] as pc.Entity[], buildProps };
   }
@@ -253,14 +253,14 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const visual = createPickupVisual(app, root); visual.mesh.setPosition(p); visual.mesh.enabled = false;
     boxes.push({ d: 0, lateral: 0, ...visual, cool: 0, base: p.y, display: 'mystery', dynamic: true });
   }
-  const shield = meshEntity('Energy shield', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 2.4, latitudeBands: 16, longitudeBands: 24 })), material('#84e8fa', { opacity: .18, roughness: .1, metalness: .2, emissive: '#123f45' }), root);
+  const shield = meshEntity(app, 'Energy shield', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: 2.4, latitudeBands: 16, longitudeBands: 24 })), material('#84e8fa', { opacity: .18, roughness: .1, metalness: .2, emissive: '#123f45' }), root);
   shield.enabled = false;
   const flameMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.ConeGeometry({ baseRadius: .22, peakRadius: 0, height: 1.5, capSegments: 7 }));
   const flameMat = material('#a6f9ff', { unlit: true, opacity: .8 });
-  const flames = [-1, 1].map(side => { const mesh = meshEntity('Turbo flame', flameMesh, flameMat, root); mesh.enabled = false; return { mesh, side }; });
+  const flames = [-1, 1].map(side => { const mesh = meshEntity(app, 'Turbo flame', flameMesh, flameMat, root); mesh.enabled = false; return { mesh, side }; });
   const sparkMesh = pc.Mesh.fromGeometry(app.graphicsDevice, new pc.SphereGeometry({ radius: .065, latitudeBands: 3, longitudeBands: 4 }));
   const sparkMat = material('#ffc36c', { unlit: true });
-  const particles = Array.from({ length: 160 }, () => { const entity = meshEntity('Drift spark', sparkMesh, sparkMat, root); entity.enabled = false; return entity; });
+  const particles = Array.from({ length: 160 }, () => { const entity = meshEntity(app, 'Drift spark', sparkMesh, sparkMat, root); entity.enabled = false; return entity; });
 
   function textMaterial(text: string, background: string, foreground: string) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 128;
@@ -269,14 +269,14 @@ export function createCoastScene(app: pc.Application, options: { preview?: boole
     const mat = new pc.StandardMaterial(); mat.diffuse.set(0, 0, 0); mat.emissive.set(1, 1, 1); mat.emissiveMap = texture; mat.useLighting = false; mat.cull = pc.CULLFACE_NONE; mat.update(); return mat;
   }
   function sign(target: pc.Entity, distance: number, lateral: number, height: number, width: number, h: number, mat: pc.Material) {
-    const e = meshEntity('Circuit sign', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(width / 2, h / 2) })), mat, target);
+    const e = meshEntity(app, 'Circuit sign', pc.Mesh.fromGeometry(app.graphicsDevice, new pc.PlaneGeometry({ halfExtents: new pc.Vec2(width / 2, h / 2) })), mat, target);
     const s = sample(distance, lateral); e.setPosition(s.p.x, s.p.y + height, s.p.z);
     e.setEulerAngles(90, degrees(Math.atan2(s.t.x, s.t.z)) + 180, 0); return e;
   }
   function buildProps(assets: Map<string, DriverAsset>) {
-    const props = new pc.Entity('Original course props');
+    const props = new pc.Entity('Original course props', app);
     let batchId: number | null = null;
-    const prop = (id: string) => { const mount = new pc.Entity(id + ' placement'); mount.addChild(instantiateRenderEntity(assets.get(id)!)); props.addChild(mount); return mount; };
+    const prop = (id: string) => { const mount = new pc.Entity(id + ' placement', app); mount.addChild(instantiateRenderEntity(assets.get(id)!)); props.addChild(mount); return mount; };
     try {
     for (const {index, position, scale} of coastPalmPlacements()) {
       const entity = prop('palm'); entity.setPosition(position); entity.setEulerAngles(0, degrees(index * 2.4), 0); entity.setLocalScale(scale, scale, scale);

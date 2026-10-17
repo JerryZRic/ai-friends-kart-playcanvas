@@ -7,7 +7,7 @@ import {pathToFileURL} from 'node:url';
 import {inventory} from './compose-pages-snapshot.mjs';
 import {validateConfig} from './verify-pages-snapshot.mjs';
 const REPOSITORY='JerryZRic/ai-friends-kart-playcanvas';
-const TAG='v1.1.0';
+const TAG='v1.1.1';
 const RELEASE_URL=`https://github.com/${REPOSITORY}/releases/tag/${TAG}`;
 const SOURCE_URL=`https://github.com/${REPOSITORY}/releases/download/${TAG}/source.zip`;
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');

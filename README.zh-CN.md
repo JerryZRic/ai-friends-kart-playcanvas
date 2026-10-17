@@ -12,9 +12,13 @@
 
 > 游戏界面为简体中文，搭配英文品牌文字。上方语言导航只切换文档。代码与原创资产（音乐除外）采用 AGPL-3.0-only；六个角色模型另有非商业限制，详见[许可与模型权利](#license-and-model-rights)。
 
-## v1.1.0 稳定版
+## v1.1.1 首页热修复（正式稳定版）
 
-**v1.1.0 是 Web / HTML 与 Windows x64 正式稳定版。** 保留 13 张地图、六名车手和 55 个主题 / 330 件零件的六槽食物车库，11 张新增陆地地图均包含场景丰富化成果。已发布文件、源码提交、校验值及验证说明以[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)为准。站点根目录为 main 发布入口，`/dev/` 是独立开发预览。
+**v1.1.1 是 Web / HTML 与 Windows x64 正式稳定热修复版（`prerelease=false`、`latest=true`）。** 本次修复首页渲染控制权问题；用户已在 Firefox 中验证 dev 提交 `73fbe76ba477b8595006e41998efdf83e5e2da1b` 的修复效果。本次小范围热修复的验证范围为针对性回归、构建与打包检查及原生 Windows 启动；具体结果及限制见 [v1.1.1 发布说明](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)。v1.1.1 未重跑完整 2,073 项测试，v1.1.0 的全量测试结果仅作为该旧版本的历史证据。下方推荐的热修复下载已更新为 v1.1.1；[上一稳定版 v1.1.0 仍可下载](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)。
+
+## v1.1.0 上一稳定版
+
+**v1.1.0 是 Web / HTML 与 Windows x64 上一正式稳定版。** 保留 13 张地图、六名车手和 55 个主题 / 330 件零件的六槽食物车库，11 张新增陆地地图均包含场景丰富化成果。已发布文件、源码提交、校验值及验证说明以[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)为准。站点根目录为 main 发布入口，`/dev/` 是独立开发预览。
 
 自由模式包含六角色随机动态封面、旋转地图预览、角色 3D 检视、车辆选择、简单 / 普通 / 困难比赛设置与画面设置。封面使用自定义 PlayCanvas 2D 网格动画，并非 Cubism；大肥鱼（WHALE）出现概率为 35%，其余五位均分 65%。故事模式仍显示开发中提示。[实现说明与限制](docs/free-mode.md)。
 
@@ -89,15 +93,15 @@
 
 ## 网页 / HTML 下载包
 
-从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)选择 [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，核对随附 SHA-256 校验值。完整解压后，通过 nginx 或其他 HTTP(S) 静态服务器部署；不支持以 `file://` 直接打开 `index.html`。保留全部资产、许可声明与对应源码文件。根目录和子目录部署的验证结果以发布说明为准，不能用相对路径设计代替对实际发布包的验证。
+从[发布页面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)选择 [`ai-friends-kart-playcanvas-v1.1.1-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)，核对随附 SHA-256 校验值。完整解压后，通过 nginx 或其他 HTTP(S) 静态服务器部署；不支持以 `file://` 直接打开 `index.html`。保留全部资产、许可声明与对应源码文件。根目录和子目录部署的验证结果以发布说明为准，不能用相对路径设计代替对实际发布包的验证。
 
-正式 GitHub Pages 站点提供运行文件；对应源码请从 [v1.1.0 发布页](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)下载独立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 和全部运行资源。历史离线平衡报告及数据保留在 `/dev/`。v1.1.0 从最终合并后的 `main` 提交打 tag，不直接从 `dev` 发布。
+正式 GitHub Pages 站点提供运行文件；对应源码请从 [v1.1.1 发布页](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)下载独立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 和全部运行资源。历史离线平衡报告及数据保留在 `/dev/`。v1.1.1 从最终合并后的 `main` 提交打 tag，不直接从 `dev` 发布。
 
-GitHub Pages 根目录和 Timewish 托管运行版不包含离线平衡诊断数据集；诊断入口链接到固定版本的 [v1.1.0 完整 HTML 包](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，不会跳转到随 dev 更新的诊断页。完整 HTML ZIP 保留数据集及可用的离线诊断。
+GitHub Pages 根目录和 Timewish 托管运行版不包含离线平衡诊断数据集；诊断入口链接到固定版本的 [v1.1.1 完整 HTML 包](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)，不会跳转到随 dev 更新的诊断页。完整 HTML ZIP 保留数据集及可用的离线诊断。
 
 ## Windows x64 包
 
-下载 [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+下载 [`ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/SHA256SUMS)
 
 需要 64 位 Windows 10/11 和支持 WebGL2 的 GPU。完整解压 ZIP，保持 DLL、`resources` 和 `locales` 文件夹在一起，运行 **AI Friends Kart.exe**；按 **F11** 切换全屏。不要关闭 Windows 安全防护。自动打包、安全及协议检查不能证明原生 Windows GPU、性能或输入兼容性。
 
@@ -159,7 +163,7 @@ npm run build
 
 ### GitHub Pages
 
-版本标记：正式版 `v1.1.0`，dev 使用实际构建提交 `v1.1.0-dev.<sha6>`，未提供提交的本地构建为 `v1.1.0-dev.local`。
+版本标记：正式稳定热修复版 `v1.1.1`，dev 使用实际构建提交 `v1.1.1-dev.<sha6>`，未提供提交的本地构建为 `v1.1.1-dev.local`。
 
 开发版版本号追加实际 commit 哈希的前六位。发布从 `main` 打 tag，发布包必须使用该标签对应源码；dev 部署必须保留 main 站点根目录。
 

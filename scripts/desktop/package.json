@@ -1,6 +1,6 @@
 {
   "name": "ai-friends-kart-desktop",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "AI Friends Kart offline Windows portable wrapper",
   "main": "main.cjs",
   "license": "AGPL-3.0-only"

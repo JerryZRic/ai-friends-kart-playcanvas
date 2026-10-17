@@ -32,7 +32,7 @@ export class WaterparkRefractionRenderer extends PlanarRenderer {
 
 export function createWaterparkRefraction(app: pc.AppBase, root: pc.Entity, main: pc.Entity,
   material: pc.Material, sceneryLayer: pc.Layer, fallback: pc.Texture, waterLevel: number) {
-  const camera = new pc.Entity('Waterpark underwater refraction camera');
+  const camera = new pc.Entity('Waterpark underwater refraction camera', app);
   camera.addComponent('camera', {layers: [sceneryLayer.id], priority: main.camera!.priority - 2,
     clearColor: new pc.Color(.03, .25, .3), clearDepthBuffer: true,
     toneMapping: main.camera!.toneMapping, gammaCorrection: main.camera!.gammaCorrection, fog: main.camera!.fog});

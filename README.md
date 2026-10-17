@@ -12,9 +12,13 @@ An arcade kart racer built with **PlayCanvas Engine, TypeScript and Vite**, with
 
 > The game UI is Simplified Chinese with English branding. The language links above switch the documentation only. Code and original assets (excluding music) use AGPL-3.0-only; the six character models have separate non-commercial restrictions. See [License and model rights](#license-and-model-rights).
 
-## v1.1.0 Stable release
+## v1.1.1 Homepage hotfix (stable release)
 
-**v1.1.0 is the stable release for Web / HTML and Windows x64.** It retains 13 maps, six drivers and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. Published assets, source revision, checksums and verification notes are listed on the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases). The site root is the main publication; `/dev/` is the separate development preview.
+**v1.1.1 is a Web / HTML and Windows x64 stable hotfix release (`prerelease=false`, `latest=true`).** It fixes homepage rendering ownership; the user validated the fix in Firefox on dev commit `73fbe76ba477b8595006e41998efdf83e5e2da1b`. Verification for this narrow hotfix is scoped to targeted regressions, build/package checks and native Windows startup; consult the [v1.1.1 release notes](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1) for the exact results and limits. The full 2,073-test suite was not rerun for v1.1.1; v1.1.0 full-suite results remain historical evidence for v1.1.0 only. The recommended hotfix downloads below are v1.1.1; [v1.1.0 remains available as the previous stable release](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0).
+
+## v1.1.0 Previous stable release
+
+**v1.1.0 is the previous stable release for Web / HTML and Windows x64.** It retains 13 maps, six drivers and the six-slot food garage with 55 themes / 330 parts. The 11 additional land courses include their scene-enrichment passes. Published assets, source revision, checksums and verification notes are listed on the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0). The site root is the main publication; `/dev/` is the separate development preview.
 
 Free mode includes a randomly selected animated cover featuring one of six characters, rotating map previews, selected-character 3D inspection, car selection, easy/normal/hard race setup and settings. The cover uses custom PlayCanvas 2D mesh animation, not Cubism: WHALE (大肥鱼) has a 35% selection chance and the other five share 65% equally. Story mode remains a development notice. [Implementation notes and limits](docs/free-mode.md).
 
@@ -89,15 +93,15 @@ No ChatGPT login, model-service account or runtime CDN is required. The game and
 
 ## Web / HTML package
 
-Choose the [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify its accompanying SHA-256 checksum. Extract the complete archive and serve it through nginx or another HTTP(S) static server. Opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together. Check the release verification notes for root/subdirectory deployment results; relative-path support is not a substitute for testing the published archive.
+Choose the [`ai-friends-kart-playcanvas-v1.1.1-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip) from the [release page](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases) and verify its accompanying SHA-256 checksum. Extract the complete archive and serve it through nginx or another HTTP(S) static server. Opening `index.html` directly with `file://` is not supported. Keep all assets, license notices and corresponding-source files together. Check the release verification notes for root/subdirectory deployment results; relative-path support is not a substitute for testing the published archive.
 
-The main GitHub Pages site serves runtime files; download its corresponding source as [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip) from the [v1.1.0 release](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0). The complete HTML ZIP still includes `source.zip` and all runtime assets. Historical offline balance reports and data remain under `/dev/`. v1.1.0 is tagged from the final merged `main` commit, not published directly from `dev`.
+The main GitHub Pages site serves runtime files; download its corresponding source as [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/source.zip) from the [v1.1.1 release](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1). The complete HTML ZIP still includes `source.zip` and all runtime assets. Historical offline balance reports and data remain under `/dev/`. v1.1.1 is tagged from the final merged `main` commit, not published directly from `dev`.
 
-GitHub Pages root and Timewish serve the hosted game without the offline balance diagnostic datasets. Their diagnostic entry links to the exact [v1.1.0 complete HTML package](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip), never to floating dev diagnostics. The complete HTML ZIP retains the datasets and functional offline diagnostics.
+GitHub Pages root and Timewish serve the hosted game without the offline balance diagnostic datasets. Their diagnostic entry links to the exact [v1.1.1 complete HTML package](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip), never to floating dev diagnostics. The complete HTML ZIP retains the datasets and functional offline diagnostics.
 
 ## Windows x64 package
 
-Download [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+Download [`ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/SHA256SUMS)
 
 Requires 64-bit Windows 10/11 and a WebGL2-capable GPU. Extract the entire ZIP, keep DLLs, `resources` and `locales` together, then run **AI Friends Kart.exe**; **F11** toggles fullscreen. Do not disable Windows security protections. Automated packaging, security and protocol checks do not establish native Windows GPU, performance or input compatibility.
 
@@ -159,7 +163,7 @@ The fetch script uses fixed public paths under this isolated `/dev/` preview and
 
 ### GitHub Pages
 
-Build labels are `v1.1.0` for release, `v1.1.0-dev.<sha6>` for dev using the actual build commit, and `v1.1.0-dev.local` without a supplied commit.
+Build labels are `v1.1.1` for the stable hotfix release, `v1.1.1-dev.<sha6>` for dev using the actual build commit, and `v1.1.1-dev.local` without a supplied commit.
 
 Development builds append the first six characters of their actual commit hash to the version. Release tags are created from `main`; release packages must use that tagged source. A dev deployment must preserve the main site root.
 

@@ -12,9 +12,13 @@
 
 > 게임 UI는 중국어 간체이며 브랜드명은 영어로 표시됩니다. 위의 언어 링크는 문서 언어만 전환합니다. 코드와 자체 제작 에셋(음악 제외)에는 AGPL-3.0-only가 적용되며, 캐릭터 모델 6종에는 별도의 비상업적 이용 제한이 있습니다. [라이선스 및 모델 권리](#license-and-model-rights)를 확인하세요.
 
-## v1.1.0 안정 버전
+## v1.1.1 홈 화면 핫픽스 (정식 안정 버전)
 
-**v1.1.0은 Web / HTML 및 Windows x64용 정식 안정 버전입니다.** 맵 13개, 드라이버 6명, 55개 테마 / 330개 부품의 6슬롯 음식 카트 차고를 유지하며 추가 육상 코스 11개에는 장면 보강 작업이 반영되어 있습니다. 공개 파일, 소스 리비전, 체크섬, 검증 결과는 [릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)를 확인하세요. 사이트 루트는 main 게시 위치이고 `/dev/`는 독립 개발 미리 보기입니다.
+**v1.1.1은 Web / HTML 및 Windows x64용 정식 안정 핫픽스 릴리스입니다(`prerelease=false`, `latest=true`).** 홈 화면 렌더링 제어권 문제를 수정했으며, 사용자가 Firefox에서 dev 커밋 `73fbe76ba477b8595006e41998efdf83e5e2da1b`의 수정 결과를 확인했습니다. 이번 제한적인 핫픽스의 검증 범위는 관련 회귀 테스트, 빌드·패키지 검사 및 네이티브 Windows 시작입니다. 구체적인 결과와 한계는 [v1.1.1 릴리스 설명](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)을 확인하세요. v1.1.1에서는 전체 2,073개 테스트를 다시 실행하지 않았으며, v1.1.0의 전체 테스트 결과는 해당 버전에만 적용되는 과거 기록입니다. 아래 권장 핫픽스 다운로드는 v1.1.1로 갱신했으며, [이전 안정 버전 v1.1.0도 계속 다운로드할 수 있습니다](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0).
+
+## v1.1.0 이전 안정 버전
+
+**v1.1.0은 Web / HTML 및 Windows x64용 이전 정식 안정 버전입니다.** 맵 13개, 드라이버 6명, 55개 테마 / 330개 부품의 6슬롯 음식 카트 차고를 유지하며 추가 육상 코스 11개에는 장면 보강 작업이 반영되어 있습니다. 공개 파일, 소스 리비전, 체크섬, 검증 결과는 [릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)를 확인하세요. 사이트 루트는 main 게시 위치이고 `/dev/`는 독립 개발 미리 보기입니다.
 
 자유 모드에는 캐릭터 6명 중 무작위로 선택되는 애니메이션 타이틀 화면, 회전하는 맵 미리 보기, 캐릭터 3D 보기, 차량 선택, 쉬움 / 보통 / 어려움 경주 설정과 화면 설정이 있습니다. 타이틀 화면은 Cubism이 아닌 자체 PlayCanvas 2D 메시 애니메이션을 사용합니다. 大肥鱼(WHALE)의 선택 확률은 35%이며 나머지 5명이 65%를 균등하게 나눕니다. 스토리 모드는 개발 중 안내만 표시합니다. [구현 설명 및 제한](docs/free-mode.md).
 
@@ -65,15 +69,15 @@ ChatGPT 로그인, 모델 서비스 계정, 런타임 CDN은 필요하지 않습
 
 ## 웹 / HTML 패키지
 
-[릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)에서 [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)을 선택하고 함께 제공되는 SHA-256 체크섬과 대조하세요. 전체 압축을 푼 뒤 nginx 또는 다른 HTTP(S) 정적 서버로 배포하세요. `file://`로 `index.html`을 직접 여는 방법은 지원하지 않습니다. 모든 에셋, 라이선스 고지와 대응 소스 파일을 함께 유지하세요. 루트 및 하위 디렉터리 배포 검증 결과는 릴리스 설명을 확인하세요. 상대 경로 설계가 실제 배포 압축 파일 검증을 대신하지는 않습니다.
+[릴리스 페이지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)에서 [`ai-friends-kart-playcanvas-v1.1.1-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)을 선택하고 함께 제공되는 SHA-256 체크섬과 대조하세요. 전체 압축을 푼 뒤 nginx 또는 다른 HTTP(S) 정적 서버로 배포하세요. `file://`로 `index.html`을 직접 여는 방법은 지원하지 않습니다. 모든 에셋, 라이선스 고지와 대응 소스 파일을 함께 유지하세요. 루트 및 하위 디렉터리 배포 검증 결과는 릴리스 설명을 확인하세요. 상대 경로 설계가 실제 배포 압축 파일 검증을 대신하지는 않습니다.
 
-정식 GitHub Pages 사이트는 실행 파일을 제공하며 대응 소스는 [v1.1.0 릴리스](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)의 별도 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)에서 다운로드하세요. 전체 HTML ZIP에는 여전히 `source.zip`과 모든 런타임 에셋이 포함됩니다. 이전 오프라인 밸런스 보고서와 데이터는 `/dev/`에 유지합니다. v1.1.0 태그는 최종 병합된 `main` 커밋에서 만들며 `dev`에서 직접 게시하지 않습니다.
+정식 GitHub Pages 사이트는 실행 파일을 제공하며 대응 소스는 [v1.1.1 릴리스](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.1)의 별도 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/source.zip)에서 다운로드하세요. 전체 HTML ZIP에는 여전히 `source.zip`과 모든 런타임 에셋이 포함됩니다. 이전 오프라인 밸런스 보고서와 데이터는 `/dev/`에 유지합니다. v1.1.1 태그는 최종 병합된 `main` 커밋에서 만들며 `dev`에서 직접 게시하지 않습니다.
 
-GitHub Pages 루트와 Timewish 호스팅 버전에는 오프라인 밸런스 진단 데이터셋이 포함되지 않습니다. 진단 진입점은 고정 버전인 [v1.1.0 전체 HTML 패키지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)로 연결되며, 계속 변경되는 dev 진단 페이지로 이동하지 않습니다. 전체 HTML ZIP에는 데이터셋과 작동하는 오프라인 진단이 유지됩니다.
+GitHub Pages 루트와 Timewish 호스팅 버전에는 오프라인 밸런스 진단 데이터셋이 포함되지 않습니다. 진단 진입점은 고정 버전인 [v1.1.1 전체 HTML 패키지](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-html.zip)로 연결되며, 계속 변경되는 dev 진단 페이지로 이동하지 않습니다. 전체 HTML ZIP에는 데이터셋과 작동하는 오프라인 진단이 유지됩니다.
 
 ## Windows x64 패키지
 
-다운로드 [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+다운로드 [`ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.1/SHA256SUMS)
 
 64비트 Windows 10/11과 WebGL2 지원 GPU가 필요합니다. ZIP 전체를 압축 해제하고 DLL, `resources`, `locales` 폴더를 함께 유지한 채 **AI Friends Kart.exe**를 실행하세요. **F11**로 전체 화면을 전환합니다. Windows 보안 기능을 끄지 마세요. 자동 패키징, 보안 및 프로토콜 검사가 실제 Windows GPU, 성능 또는 입력 호환성 검증을 의미하지는 않습니다.
 
@@ -135,7 +139,7 @@ npm run build
 
 ### GitHub Pages
 
-버전 표시는 정식 버전 `v1.1.0`, 실제 빌드 커밋을 사용하는 dev `v1.1.0-dev.<sha6>`, 커밋을 지정하지 않은 로컬 빌드 `v1.1.0-dev.local`입니다.
+버전 표시는 정식 안정 핫픽스 릴리스 `v1.1.1`, 실제 빌드 커밋을 사용하는 dev `v1.1.1-dev.<sha6>`, 커밋을 지정하지 않은 로컬 빌드 `v1.1.1-dev.local`입니다.
 
 개발 버전 번호에는 실제 commit 해시의 앞 6자리를 붙입니다. 릴리스 태그는 `main`에서 만들며 패키지는 해당 태그의 소스로 생성해야 합니다. dev 배포는 main 사이트 루트를 보존해야 합니다.
 

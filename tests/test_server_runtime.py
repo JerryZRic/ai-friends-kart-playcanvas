@@ -1,4 +1,5 @@
-import importlib.util,tempfile,unittest,zipfile
+import importlib.util,tempfile,unittest,zipfile,os
+from unittest.mock import patch
 from pathlib import Path
 p=Path(__file__).parents[1]/'scripts/package-server-runtime.py';s=importlib.util.spec_from_file_location('runtime',p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 class RuntimeTests(unittest.TestCase):
@@ -18,4 +19,15 @@ class RuntimeTests(unittest.TestCase):
   with self.assertRaises(ValueError):m.package(d,o,'a'*40)
  def test_opaque_is_narrow(self):
   self.assertTrue(m.allowed('assets/portraits/x.glb.gz'));self.assertFalse(m.allowed('evil.zip'));self.assertFalse(m.allowed('assets/drivers/deeper/x.glb.gz'))
+class RuntimeVersionTests(unittest.TestCase):
+ def test_both_pinned_versions_and_links(self):
+  for mode,version in [('v1.1.0','1.1.0'),('v1.1.1-hotfix','1.1.1')]:
+   spec=importlib.util.spec_from_file_location('runtime_version',p);module=importlib.util.module_from_spec(spec)
+   with patch.dict(os.environ,STABLE_RELEASE_MODE=mode):spec.loader.exec_module(module)
+   d,o=RuntimeTests().fixture();report=module.package(d,o,'a'*40)
+   self.assertIn('v'+version,report['archive']);self.assertIn('/v'+version+'/',report['sourceUrl'])
+   with zipfile.ZipFile(o/report['archive']) as z:self.assertIn('v'+version+' corresponding source',z.read('source.html').decode())
+ def test_future_version_rejected(self):
+  spec=importlib.util.spec_from_file_location('runtime_future',p);module=importlib.util.module_from_spec(spec)
+  with patch.dict(os.environ,STABLE_RELEASE_MODE='v1.1.2-hotfix'),self.assertRaises(ValueError):spec.loader.exec_module(module)
 if __name__=='__main__':unittest.main()

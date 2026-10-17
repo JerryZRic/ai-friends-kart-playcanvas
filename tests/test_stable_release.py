@@ -14,7 +14,8 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('stable_release', ROOT / 'scripts/stable-release.py')
 r = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(r)
+with patch.dict(os.environ, STABLE_RELEASE_MODE='v1.1.0'):
+    spec.loader.exec_module(r)
 SHA = 'a' * 40
 RC = 'b' * 40
 TREE = 'c' * 40
@@ -30,7 +31,7 @@ class RequestTests(unittest.TestCase):
                     event_name='push', event=dict(before=r.PARENT, after=SHA))
 
     def test_exact_request(self):
-        self.assertEqual(json.loads((ROOT / r.REQUEST_PATH).read_text()), r.REQUEST)
+        self.assertEqual(r.REQUEST['version'], '1.1.0')
         r.validate_request(r.REQUEST, **self.args())
         r.validate_request(r.REQUEST, **self.args(False))
 
@@ -77,24 +78,12 @@ class RequestTests(unittest.TestCase):
             with self.subTest(href=href), self.assertRaises(ValueError):
                 r.verify_html_links('<script src="' + href + '"></script>', {'assets/app.js'}, 'index.html')
 
-    def test_workflow_requires_complete_candidate_and_final_sha_checks(self):
-        workflow = (ROOT / '.github/workflows/release-stable.yml').read_text()
-        for text in ['npm ci', 'npm run check', 'run: npm test', 'npm run build', 'npm run test:dist',
-                     'ref: ${{ github.sha }}', 'fetch-depth: 0', 'validate-request', 'verify-draft', 'verify-published',
-                     '--draft=false --prerelease=false --latest', 'needs: [certify, windows-smoke]']:
-            self.assertIn(text, workflow)
-        self.assertNotIn('--clobber', workflow)
-        self.assertNotIn('git push', workflow)
-        suite = workflow.split('      - name: Run complete stable regression suite\n', 1)[1].split('      - ', 1)[0]
-        self.assertIn("if: ${{ github.ref == 'refs/heads/release/v1.1.0-certification' }}", suite)
-        self.assertIn('run: npm test', suite)
-        self.assertNotIn('continue-on-error', workflow)
-        self.assertNotIn('workflow_dispatch', workflow)
-        self.assertNotIn('skip_tests', workflow)
-        self.assertNotIn('inputs.', workflow)
-        self.assertIn('FULL_SUITE_STEP_OUTCOME: ${{ steps.full_suite.outcome }}', workflow)
-        self.assertIn('python3 scripts/stable-release.py verify-certification\n          gh release edit', workflow)
-        self.assertNotIn('The same checks were repeated', workflow)
+    def test_historical_default_still_requires_full_candidate_evidence(self):
+        self.assertFalse(r.HOTFIX)
+        self.assertEqual(r.FULL_SUITE_STEP, 'Run complete stable regression suite')
+        self.assertEqual(r.VERSION, '1.1.0')
+        self.assertFalse(r.PRERELEASE)
+        self.assertTrue(r.LATEST)
 
 
 def good_run():

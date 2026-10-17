@@ -1,16 +1,18 @@
-name: Certify and publish v1.1.0 stable
+name: Validate and publish v1.1.1 hotfix
 on:
   push:
-    branches: [main, release/v1.1.0-certification]
+    branches: [main]
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: stable-v1.1.0-${{ github.ref }}
+  group: hotfix-v1.1.1-${{ github.ref }}
   cancel-in-progress: false
+env:
+  STABLE_RELEASE_MODE: v1.1.1-hotfix
 jobs:
   certify:
-    if: ${{ github.repository == 'JerryZRic/ai-friends-kart-playcanvas' && (github.ref == 'refs/heads/release/v1.1.0-certification' || github.event.before == '0df2a42a1578551c018fc84675ff988632221220') }}
+    if: ${{ github.repository == 'JerryZRic/ai-friends-kart-playcanvas' && github.ref == 'refs/heads/main' && github.event.before == '5bc2acb119646b71b3cb640362b246d4be38c250' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -23,7 +25,7 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Verify one-shot request, ancestry and prior candidate certification on main
+      - name: Verify pinned hotfix request, accepted source and final main
         run: python3 scripts/stable-release.py validate-request
       - uses: actions/setup-node@v4
         with:
@@ -31,17 +33,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - name: Run complete stable regression suite
-        id: full_suite
-        # The certification branch always runs the complete suite. Only the final
-        # main merge can reuse its completed workflow, after validate-request has
-        # proved both parents, the entire identical tree, and the successful jobs.
-        if: ${{ github.ref == 'refs/heads/release/v1.1.0-certification' }}
-        run: npm test
+      - name: Run scoped Firefox hotfix regression tests
+        id: hotfix_suite
+        run: node --import tsx --test tests/application-ownership.test.ts tests/home-cover*.test.ts tests/menu-backdrop.test.ts tests/menu-boot.test.ts tests/menu-fixed-layout.test.ts tests/menu-spa-lifecycle.test.ts tests/title-menu.test.ts tests/build-version.test.ts tests/build-identity.test.ts tests/waterpark-reflection.test.ts tests/waterpark-water.test.ts
       - name: Exercise release failure guards
         run: |
           python3 tests/test_html_release.py -v
           python3 tests/test_stable_release.py -v
+          python3 tests/test_stable_release_hotfix.py -v
           python3 tests/test_prepare_reviewed_successor.py -v
           python3 tests/test_server_runtime.py -v
       - run: npm run build
@@ -58,7 +57,7 @@ jobs:
           echo '04d6071f8deca081044e1398f96f65e4c1550ffdb3f882504cd78528d821d422  electron-win32-x64.zip' | sha256sum --check --strict
       - name: Verify exact source and package identical HTML and Windows game files
         env:
-          FULL_SUITE_STEP_OUTCOME: ${{ steps.full_suite.outcome }}
+          HOTFIX_STEP_OUTCOME: ${{ steps.hotfix_suite.outcome }}
         run: |
           python3 scripts/stable-release.py package
           python3 scripts/stable-release.py verify
@@ -94,7 +93,7 @@ jobs:
       - name: Start packaged native Windows window and renderer, then exit
         shell: pwsh
         run: |
-          Expand-Archive release-stable/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip -DestinationPath portable
+          Expand-Archive release-stable/ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip -DestinationPath portable
           Copy-Item scripts/desktop/smoke-main.cjs portable/resources/app/smoke-main.cjs
           $env:KART_SMOKE_OUTPUT = Join-Path $pwd 'WINDOWS-STARTUP-SMOKE.json'
           # Change only this disposable extracted copy, never the published ZIP.
@@ -139,7 +138,7 @@ jobs:
         with:
           name: stable-release-${{ github.sha }}
           path: release-stable
-      - name: Revalidate source/certification and read back every archived byte
+      - name: Revalidate final source/scoped evidence and read back every archived byte
         run: |
           python3 scripts/stable-release.py validate-request
           python3 scripts/stable-release.py verify
@@ -147,27 +146,28 @@ jobs:
         run: |
           python3 scripts/stable-release.py preflight
           cat > release-notes.txt <<'NOTES'
-          v1.1.0 stable · HTML + Windows x64
+          v1.1.1 stable Firefox hotfix · HTML + Windows x64
 
-          The certification candidate passed the complete npm test suite and the entire release certification workflow, including native Windows startup smoke. The final main commit has exactly the same complete Git tree, with the approved main parent and certified candidate as its two parents. Only that full regression suite is reused. Typecheck, production build, corresponding-source rebuild, npm run test:dist, packaging checks and native Windows startup smoke run again on the exact final main commit. RELEASE-MANIFEST.json records the original full-suite run and attempt, candidate commit/tree, and final main commit.
+          Includes the user-accepted Firefox home loading and PlayCanvas application ownership fix from dev commit 73fbe76ba477b8595006e41998efdf83e5e2da1b. Scoped application ownership, home/menu, build identity and water reflection regression tests run on the exact final main commit. The complete regression suite was not rerun or reused for this changed tree. Typecheck, production build, corresponding-source verification, distribution checks, release failure guards, desktop security/protocol checks, and native Windows startup smoke run on the exact final main commit. RELEASE-MANIFEST.json records the scoped test command, run/attempt and final source/tree.
 
+          This is the user-approved stable hotfix release and is marked latest.
           Track posters are historical route previews. Current track layout is checked against the release source; the newest cosmetic details may differ from those posters.
 
-          HTML: download ai-friends-kart-playcanvas-v1.1.0-html.zip, extract completely, serve index.html over HTTP(S) at a root or subdirectory. Do not double-click file://. Serve .glb.gz as original compressed bytes without Content-Encoding:gzip; MP3 as audio/mpeg.
+          HTML: download ai-friends-kart-playcanvas-v1.1.1-html.zip, extract completely, serve index.html over HTTP(S) at a root or subdirectory. Do not double-click file://. Serve .glb.gz as original compressed bytes without Content-Encoding:gzip; MP3 as audio/mpeg.
 
-          Windows: download ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip, extract completely and run AI Friends Kart.exe. Keep adjacent DLL/resources/locales. Unsigned portable official Electron 44.6.0 x64. Windows 10/11 with WebGL2 GPU drivers; F11 fullscreen. Keep OS security enabled. Structural, security, local-protocol and packaging tests pass; A separate native Windows CI smoke opens the packaged window/renderer document and exits. GPU/gameplay/performance/pointer-lock validation has not been performed.
+          Windows: download ai-friends-kart-playcanvas-v1.1.1-windows-x64.zip, extract completely and run AI Friends Kart.exe. Keep adjacent DLL/resources/locales. Unsigned portable official Electron 44.6.0 x64. Windows 10/11 with WebGL2 GPU drivers; F11 fullscreen. Keep OS security enabled. Structural, security, local-protocol and packaging tests pass; A separate native Windows CI smoke opens the packaged window/renderer document and exits. GPU/gameplay/performance/pointer-lock validation has not been performed.
 
           Both archives contain identical game files and corresponding game source. Windows additionally contains Desktop-Source; complete packaging source is also in source.zip. Preserve LICENSE, NOTICE, SOURCE.txt, model/food/prop/third-party notices, and music license. Six character models retain separate noncommercial terms; this release grants no new model/IP rights. Original music remains separately licensed for this game/forks and noncommercial use; commercial use needs author permission.
 
           RELEASE-MANIFEST.json records exact source commit and every packaged file. Verify all five release assets using SHA256SUMS (the checksum file does not checksum itself). source.zip is also a standalone asset. Prior releases remain unchanged.
           NOTES
           printf '\nExact source commit: %s\nCertification: https://github.com/%s/actions/runs/%s\n' "$GITHUB_SHA" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> release-notes.txt
-          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/v1.1.0 -f sha="$GITHUB_SHA"
-          gh release create v1.1.0 release-stable/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --verify-tag --title 'v1.1.0 stable · HTML + Windows' --notes-file release-notes.txt --draft --latest=false
-      - name: Verify uploads then publish stable latest
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/v1.1.1 -f sha="$GITHUB_SHA"
+          gh release create v1.1.1 release-stable/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --verify-tag --title 'v1.1.1 stable Firefox hotfix · HTML + Windows' --notes-file release-notes.txt --draft --latest=false
+      - name: Verify uploads then publish stable hotfix latest
         run: |
           python3 scripts/stable-release.py verify-draft
           python3 scripts/stable-release.py check-refs
           python3 scripts/stable-release.py verify-certification
-          gh release edit v1.1.0 --repo "$GITHUB_REPOSITORY" --draft=false --prerelease=false --latest
+          gh release edit v1.1.1 --repo "$GITHUB_REPOSITORY" --draft=false --prerelease=false --latest
           python3 scripts/stable-release.py verify-published

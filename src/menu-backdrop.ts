@@ -110,7 +110,7 @@ function addCoastPalms(app: pc.Application, root: pc.Entity) {
   batches.forEach((batch, index) => {
     const mesh = new pc.Mesh(app.graphicsDevice);
     mesh.setPositions(batch.positions); mesh.setNormals(pc.calculateNormals(batch.positions, batch.indices)); mesh.setIndices(batch.indices); mesh.update();
-    meshEntity('Menu coastal palms', mesh, materials[index], root, index === 0);
+    meshEntity(app, 'Menu coastal palms', mesh, materials[index], root, index === 0);
   });
   root.once('destroy', () => { for (const mat of materials) mat.destroy(); });
 }
