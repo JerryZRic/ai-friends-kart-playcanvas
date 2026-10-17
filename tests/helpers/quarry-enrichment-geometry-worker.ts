@@ -1,3 +1,5 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
+import {restorePostV100Buffer} from './post-v100-current';
 /** Finite independent CPU audit of retained Quarry indexed geometry. */
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
@@ -16,24 +18,27 @@ const receipt=JSON.parse(readFileSync(new URL('../fixtures/quarry-enrichment-pre
 const auditPaths=['src/quarry-scenery.ts','src/maps/quarry.ts','src/land-mesh-builder.ts','tests/helpers/quarry-enrichment-geometry-worker.ts','tests/helpers/quarry-enrichment-geometry.ts','tests/helpers/quarry-enrichment-provenance.ts','tests/helpers/emitted-scene-oracle.ts','tests/helpers/town-enrichment-geometry.ts','tests/helpers/instrumented-source-files.ts','tests/helpers/bounded-test-process.ts','tests/quarry-enrichment-geometry.test.ts','tests/fixtures/quarry-enrichment-preservation.json'];
 const inputHashes=Object.fromEntries(auditPaths.map(path=>[path,fileSha(path)]));
 const report:any={inputs:inputHashes,schema:'quarry-independent-enrichment-geometry-v1',sourceHash,checks:[],metrics:{},limitations:['CPU indexed-source geometry only; no runtime pixels, GPU or FPS evidence','AABBs are broadphase or a rigorous disjointness proof, never proof of overlap or solid occupancy','Finite contact and open-aperture checks do not certify structural engineering or runtime vehicle collision']};
-function audit(name:string,fn:()=>void){test(name,()=>{try{fn();report.checks.push({name,status:'passed'});}catch(e){report.checks.push({name,status:'failed',error:String(e)});throw e;}});}
+function audit(name:string,fn:()=>void|Promise<void>){test(name,async()=>{try{await fn();report.checks.push({name,status:'passed'});}catch(e){report.checks.push({name,status:'failed',error:String(e)});throw e;}});}
 function clear(errors:unknown[],name:string){assert.equal(errors.length,0,name+' '+errors.length+'\n'+JSON.stringify(errors.slice(0,16),null,2));}
 const baseline=await instrumentQuarry(original),candidate=await instrumentQuarry(source),g=candidate.geometry,bg=baseline.geometry;
+assert.equal(digest(g),digest(buildQuarrySceneGeometry(QUARRY_COURSE)),'Current instrumentation preserves actual current buffers');
 const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,candidate.components),owner=(q:Triangle)=>parts.owner.get(q.id) as QuarryPrimitive;
 const changed=candidate.components.filter(c=>['extraction','scenery'].includes(c.phase)),changedSet=new Set(changed),changedTriangles=mesh.triangles.filter(q=>changedSet.has(owner(q)));
 const terrain='Quarry continuous dry working floor',roads=mesh.triangles.filter(q=>['Quarry compacted haul road','Quarry sawn pale shelf road'].includes(q.batch)),rocks=candidate.components.filter(c=>c.kind.startsWith('extraction-bench')).sort((a,b)=>Number(a.id.split('#')[1])-Number(b.id.split('#')[1]));
 const volumes=new Map<QuarryPrimitive,ConvexPlane[]>();for(const c of candidate.components){if(!changedSet.has(c)&&c.phase!=='machinery')continue;const planes=emittedConvexVolume(parts,c);if(planes)volumes.set(c,planes);}
 after(()=>{report.sourceHashAfter=fileSha('src/quarry-scenery.ts');report.inputHashesAfter=Object.fromEntries(auditPaths.map(path=>[path,fileSha(path)]));report.stable=report.sourceHashAfter===sourceHash&&digest(report.inputHashesAfter)===digest(inputHashes);report.seconds=(Date.now()-started)/1000;report.resources={maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1};if(process.env.QUARRY_ENRICHMENT_AUDIT_DIR){mkdirSync(process.env.QUARRY_ENRICHMENT_AUDIT_DIR,{recursive:true});writeFileSync(resolve(process.env.QUARRY_ENRICHMENT_AUDIT_DIR,'geometry-report.json'),JSON.stringify(report,null,2)+'\n');}assert.ok(report.stable,'source changed during audit');});
 
-audit('Quarry original protected indexed road retaining rail machinery fork and trestle geometry remains exact',()=>{
- assert.equal(sha(original),receipt.sourceHashes['src/quarry-scenery.ts']);assert.equal(digest(g),digest(buildQuarrySceneGeometry(QUARRY_COURSE)),'instrumentation must equal ordinary emitted geometry');
+audit('Quarry original protected indexed road retaining rail machinery fork and trestle geometry remains exact (historical 6bb9 core)',async()=>{
+ const historical=await postV100HistoricalScene('quarry',true),candidate=historical.instrumented,g=historical.geometry;
+ report.metrics.historicalProtectionScope={scope:historical.auditScope,executedSourceSha256:historical.executedSourceSha256};
+ assert.equal(sha(original),receipt.sourceHashes['src/quarry-scenery.ts']);assert.equal(digest(g),historical.ordinaryGeometrySha256,'instrumentation must equal ordinary emitted geometry');
  const spans:any[]=[];
  for(const phase of ['road','machinery','trestle','fork'])for(const batch of g.batches){
   const extract=(scene:typeof candidate)=>{const b=scene.geometry.batches.find(x=>x.name===batch.name)!,p=scene.components.filter(c=>c.phase===phase&&c.batch===b.name);return p.map(c=>({kind:c.kind,method:c.method,positions:b.positions.slice(c.vertexStart*3,c.vertexEnd*3),indices:b.indices.slice(c.indexStart,c.indexEnd).map(i=>i-c.vertexStart)}));};
   const before=extract(baseline),now=extract(candidate);assert.equal(digest(now),digest(before),phase+':'+batch.name);if(now.length)spans.push({phase,batch:batch.name,components:now.length,triangles:now.reduce((n,c)=>n+c.indices.length/3,0),sha256:digest(now)});
  }
  for(const [key,value]of Object.entries(receipt.geometryHashes))assert.equal(digest(g[key]),value,key);
- for(const [path,value]of Object.entries(receipt.preservationSourceHashes))assert.equal(fileSha(path),value,path);
+ for(const [path,value]of Object.entries(receipt.preservationSourceHashes))assert.equal(sha(restorePostV100Buffer(path,readFileSync(new URL(path,root)))),value,path+' exact historical protected source');
  const counts={batches:g.batches.length,vertices:g.batches.reduce((n,b)=>n+b.positions.length/3,0),triangles:g.batches.reduce((n,b)=>n+b.indices.length/3,0)};assert.equal(counts.batches,20);assert.ok(counts.vertices<200000&&counts.triangles<110000,JSON.stringify(counts));
  report.metrics.protection={spans,counts,baseline:{batches:20,vertices:165571,triangles:102692},protectedSourceCount:Object.keys(receipt.preservationSourceHashes).length};
 });

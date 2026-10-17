@@ -27,6 +27,7 @@ function garageMap(search:string){const profile=resolveMap(new URLSearchParams(s
 export function garageRaceEntry(driver: unknown, build: KartBuild, search = '') {
   const source = new URLSearchParams(search), options = parseRaceOptions(search);
   const params = new URLSearchParams({driver: resolveCharacter(driver).id, kart: JSON.stringify(resolveBuild(build)), difficulty: options.difficulty, seed: String(options.seed)});
+  if (options.itemStacking !== undefined) params.set('itemStacking', options.itemStacking ? '1' : '0');
   if (source.get('flow') === 'free') {
     params.set('flow', 'free'); params.set('screen', 'race-settings'); params.set('map', garageMap(search));
     return `./index.html?${params}`;
@@ -37,6 +38,7 @@ export function garageRaceEntry(driver: unknown, build: KartBuild, search = '') 
 export function garageBackEntry(driver: unknown, build: KartBuild, search = '') {
   const options = parseRaceOptions(search);
   const params = new URLSearchParams({screen: 'characters', map: garageMap(search), driver: resolveCharacter(driver).id, kart: JSON.stringify(resolveBuild(build)), difficulty: options.difficulty, seed: String(options.seed)});
+  if (options.itemStacking !== undefined) params.set('itemStacking', options.itemStacking ? '1' : '0');
   if (new URLSearchParams(search).get('flow') === 'free') params.set('flow', 'free');
   return `./index.html?${params}`;
 }

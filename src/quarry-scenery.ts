@@ -555,9 +555,9 @@ export function buildQuarrySceneGeometry(course:SceneryForkCourse):QuarrySceneGe
     // The front loading bays, service apron and their sightlines remain open.
     for(const [bin,x]of [-5,0,5].entries()){
       put('polish-quarry-aggregate-bin-floor',iron,x,.09,4.8,3.3,.18,1.7);
-      for(const side of [-1,1])put('polish-quarry-aggregate-bin-end',iron,x+side*1.61,.63,4.8,.12,1.12,1.7);
-      put('polish-quarry-aggregate-bin-back',iron,x,.63,5.61,3.3,1.12,.12);
-      put('polish-quarry-aggregate-bin-low-front',greyWood,x,.30,3.98,3.3,.42,.12);
+      for(const side of [-1,1])put('polish-quarry-aggregate-bin-end',iron,x+side*1.61,.63,4.795,.12,1.12,1.51);
+      put('polish-quarry-aggregate-bin-back',iron,x,.685,5.61,3.3,1.01,.12);
+      put('polish-quarry-aggregate-bin-low-front',greyWood,x,.345,3.98,3.3,.33,.12);
       for(let chip=0;chip<5;chip++)put('polish-quarry-sorted-aggregate',bin===1?shadowDust:bin===2?sandstone:pale,x+(chip%3-1)*.93,.18+(chip%2?.5:.32)/2,4.55+Math.floor(chip/3)*.6,.82,chip%2?.5:.32,.56);
       put('polish-quarry-aggregate-grade-badge',orange,x,.36,3.90,.8,.24,.06);
       for(let stripe=0;stripe<=bin;stripe++)put('polish-quarry-aggregate-grade-mark',belt,x-.22+stripe*.22,.36,3.86,.08,.14,.035);

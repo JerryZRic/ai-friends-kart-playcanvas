@@ -1,3 +1,4 @@
+import {postV100Review} from './helpers/post-v100-current';
 import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {staticMenuArtHash, staticMenuArtPathsWithin, restoreStaticMenuArtBytes} from './helpers/static-menu-art-reviewed-revisions';
 import test from 'node:test';
@@ -83,9 +84,10 @@ test('input-mode overlay rejects incorrect incoming identities, aliases and any 
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => inputModeHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(inputModeHash(alias, row.previousSha256), row.previousSha256);
   }
+  {const path='src/race-controls.ts',row=postV100Review().changes[path];assert.ok(row,'Exact accepted successor for formerly untouched source');assert.equal(inputModeHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>inputModeHash(path,'unchanged'));assert.equal(inputModeHash('./'+path,'unchanged'),'unchanged','Aliases still cannot claim a transition');}
   assert.throws(() => inputModeHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
   assert.throws(() => restoreInputModeBytes('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact current bytes');
-  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
+  for (const path of ['src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
     assert.equal(inputModeHash(path, 'unchanged'), 'unchanged'); assert.equal(restoreInputModeBytes(path, 'unchanged'), 'unchanged');
   }
   assert.throws(() => inputModeHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');

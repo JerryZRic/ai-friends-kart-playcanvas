@@ -1,4 +1,4 @@
-import {createItemRequests,inventoryFull,inventoryHas,type ItemSlot} from './item-inventory';
+import {createItemRequests,clearInventory,inventoryFull,inventoryHas,type ItemSlot} from './item-inventory';
 import {getDocumentMusic} from './music-ui';
 import {characterEmblem} from './character-identity.js';
 import * as pc from 'playcanvas';
@@ -17,7 +17,7 @@ import { createWaterparkLifetime as createRaceLifetime } from './waterpark-lifet
 import { createItemModel, itemImage, type ItemKind } from './item-models';
 import { advancePickup, resetPickup } from './item-pickups';
 import { createDynamicPickupDirector } from './dynamic-pickups';
-import { RULES, newBrain, activateItem, collectPickups, nearbyGap, type Combatant } from './npc-tactics';
+import { RULES, slowTime, slowMultiplier, tickItemExperiment, clearItemExperiment, newBrain, activateItem, collectPickups, nearbyGap, type Combatant } from './npc-tactics';
 import { keyCode, driveInput, lateralInput, steeringYaw } from './vehicle-controls.js';
 import { createOrbit, bindMouseLook } from './mouse-look.js';
 import {createRaceFrameClock} from './race-frame-clock';
@@ -157,6 +157,9 @@ const performancePanel=createPerformancePanel(canvas,()=>({quality:settings.qual
 defer(()=>performancePanel.dispose());
 const frameClock=createRaceFrameClock();
 const itemRequests=createItemRequests();
+const playerItemState:Partial<Combatant>={};
+function resetPlayerItemState(){for(const key of Object.keys(playerItemState))delete playerItemState[key];if(raceOptions.itemStacking)playerItemState.itemStacking=true;}
+resetPlayerItemState();
 let state = 'loading', ready = false, elapsed = 0, countdown = 3, pos = 0, lane = 0, speed = 0,
   charge = 0, boost = 0, shield = 0, hit = 0, slow = 0, held: ItemKind | null = null, heldSecond: ItemKind | null = null,
   drifting = false, steerVis = 0, finishRank = 0, playerFinishedAt = Infinity, view = 0, muted = shell.muted, clock = 0;
@@ -344,7 +347,7 @@ function setupRacers(){
   releaseRacers(); const order=raceOrder(selectedDriverId);
   try {
     player=racerFor(order[0]);
-    for (const [i,slot] of order.slice(1).entries()) bots.push({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,heldSecond:null,boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()});
+    for (const [i,slot] of order.slice(1).entries()) bots.push({id:slot.id,phase:i,color:slot.color,total:12+Math.floor(i/2)*5.2,lateral:(i%2?1:-1)*3.2,speed:0,driving:true,cornerPace:1,aiBend:0,driftCharge:0,driftCooldown:0,aiDrifting:false,held:null,heldSecond:null,...(raceOptions.itemStacking?{itemStacking:true}:{}),boost:0,shield:0,slow:0,finishedAt:null,...newBrain(i,(i%2?1:-1)*3.2),mesh:racerFor(slot),fx:createBotFX()});
     routes?.reset();routes?.init(selectedDriverId,pos,lane);for(const b of bots)routes?.init(b.id,b.total,b.lateral);
     playerProgress=course.track&&!routes?createLapProgress(course.track,pos):null;botProgress.clear();
     if(course.track&&!routes)for(const bot of bots)botProgress.set(bot.id,createLapProgress(course.track,bot.total));
@@ -359,7 +362,7 @@ if(initialCameraReturn){
   loadingUi.update({progress:1,status:'模型已就绪 · 镜头返回起点',busy:true,canRetry:false,canContinue:false});
   return;
 }
-frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=heldSecond=null;drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true}
+frameClock.reset();mouseLook.release();orbit.recenter(true);elapsed=0;countdown=3;pos=0;lane=-2;speed=charge=boost=shield=hit=slow=0;held=heldSecond=null;resetPlayerItemState();drifting=false;steerVis=0;finishRank=0;playerFinishedAt=Infinity;sparks=[];shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);particles.forEach(p=>p.enabled=false);clearInputs();raceRng=seededRandom(raceOptions.seed);boxes.filter(b=>!b.dynamic).forEach(b=>resetPickup(b,raceRng));dynamicPickups.reset();setupRacers();state='countdown';shell.start(countdown);updateDriverUI();canvas.focus?.({preventScroll:true});updateLookHint();updateHUD();snapCamera=true}
 const canImport=()=>!disposed&&ready&&!loadingBusy&&(state==='menu'||state==='finished');
 const localDrivers=createLocalDriverStore(app,{canImport,validate:validateModularDriverContract,onBusy:()=>{updateDriverUI();renderLoadingUI();},onChange:()=>{if(!disposed&&ready){setupRacers();updateDriverUI();}}});
 defer(()=>localDrivers.dispose());
@@ -404,10 +407,10 @@ $('pauseMenu').onclick=()=>navigate();
 $('pauseChangeMap').onclick=()=>navigate('maps');
 $('camera').onclick=()=>{if(state==='loading'||state==='menu'||state==='returning')return;view=(view+1)%2;orbit.recenter(true);toast(view?'高位追逐视角':'低位追逐视角');snapCamera=true};
 $('sound').onclick=()=>{shell.toggleSound();muted=shell.muted;};
-function playerCombatant(): Combatant { return { id: selectedDriverId, total: pos, lateral: lane, speed, held, heldSecond, boost, shield, slow }; }
-function applyPlayerCombatant(r: Combatant) { held = r.held; heldSecond = r.heldSecond??null; boost = r.boost; shield = r.shield; slow = r.slow; }
+function playerCombatant(): Combatant { return { ...playerItemState, id: selectedDriverId, total: pos, lateral: lane, speed, held, heldSecond, boost, shield, slow }; }
+function applyPlayerCombatant(r: Combatant) { held = r.held; heldSecond = r.heldSecond??null; boost = r.boost; shield = r.shield; slow = r.slow; for(const key of ['heldCount','heldSecondCount','heldUpgraded','heldSecondUpgraded','itemUseCooldown','pulseSlow','upgradedPulseSlow'] as const)if(r.itemStacking)playerItemState[key]=r[key] as never; }
 function useCombatItem(actor: Combatant, racers: readonly Combatant[],slot:ItemSlot=0) {
-  const result = activateItem(actor, racers, LENGTH,routes?.interactions,slot); if (!result) return;
+  const result = activateItem(actor, racers, LENGTH,routes?.interactions,slot); if (!result) return false;
   const bot = bots.find(b => b.id === actor.id);
   if (bot) { bot.uses++; bot.cooldown = RULES.cooldown; if (result.item === 'pulse') bot.pulseFlash = .65; }
   const sourceMesh = bot?.mesh || player;
@@ -420,13 +423,14 @@ function useCombatItem(actor: Combatant, racers: readonly Combatant[],slot:ItemS
     toast(result.item === 'boost' ? '涡轮加速！' : result.item === 'shield' ? '能量护盾 · 6 秒' : result.target ? result.blocked ? '前车护盾挡住了脉冲' : '脉冲命中前车！' : '前方无目标 · 转化为加速');
     shell.cue(result.item);if(result.target)shell.cue(result.blocked?'block':'hit');
   } else if (result.target?.id === selectedDriverId) { toast(result.blocked ? '护盾挡住了对手的脉冲！' : '被对手脉冲击中 · 短暂减速'); shell.cue(result.blocked?'block':'hit'); }
+  return true;
 }
 function useItem(slot:ItemSlot=0) {
   if (state === 'running') itemRequests.request(slot,playerCombatant());
 }
 function consumeItemRequest(){
   const human=playerCombatant();
-  itemRequests.drain(human,slot=>{useCombatItem(human,[human,...bots.filter(b=>!botFinished(b))],slot);return true;});
+  itemRequests.drain(human,slot=>useCombatItem(human,[human,...bots.filter(b=>!botFinished(b))],slot));
   applyPlayerCombatant(human);
 }
 $('item').onclick=()=>useItem(0);
@@ -454,18 +458,19 @@ function updateHUD(){
     // actual visible field so every fork presents its own route names.
     chargeLabel:forkHint??feedback.chargeLabel,
     rank:finishRank||rank(),lap:routes?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos,LENGTH),
-    elapsed,speed,charge,boost,shield,held,heldSecond,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
+    ...playerItemState,elapsed,speed,charge,boost,shield,held,heldSecond,slideLabel:forkHint??'左 Shift + A / D 手刹漂移',canUseItem:state==='running'});
 }
-function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=heldSecond=null;boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{b.held=b.heldSecond=null;b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI()}
+function finish(){dynamicPickups.finish();finishRank=rank();elapsed=playerFinishedAt;pos=LENGTH*3;state='finished';held=heldSecond=null;resetPlayerItemState();boost=shield=hit=slow=0;shieldMesh.enabled=false;flames.forEach(f=>f.mesh.enabled=false);sparks=[];particles.forEach(p=>p.enabled=false);bots.forEach(b=>{clearInventory(b);clearItemExperiment(b);b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;hideBotFX(b)});clearInputs();mouseLook.release();shell.finish({rank:finishRank,elapsed,selectedDriverId,racers:standings(),trackLength:LENGTH});updateDriverUI()}
 function emit(p: pc.Vec3, type = 'spark') {
   if (sparks.length >= 160) return;
   sparks.push({ p: p.clone(), v: new pc.Vec3((Math.random() - .5) * 4, 1 + Math.random() * 2, (Math.random() - .5) * 4), t: type === 'pulse' ? .8 : .45, max: .65 });
 }
 function update(dt){shell.tick(dt);if(state==='countdown'){let old=Math.ceil(countdown);countdown-=dt;let cur=Math.ceil(countdown);shell.renderCountdown(countdown);if(countdown<=0){const remaining=-countdown;countdown=0;state='running';$('count').textContent='';toast('按住 W 起步 · 空格刹车 · Shift 手刹漂移');if(remaining>0)update(remaining);}return}if(state!=='running')return;
 consumeItemRequest();
+{const human=playerCombatant();tickItemExperiment(human,dt);applyPlayerCombatant(human);}
 elapsed+=dt;boost=Math.max(0,boost-dt);shield=Math.max(0,shield-dt);hit=Math.max(0,hit-dt);slow=Math.max(0,slow-dt);const previousLane=lane;const botPrevious=bots.map(b=>({actor:b,previous:b.total,previousLane:b.lateral,priorRoute:routes?.get(b.id),onPickup:()=>{b.pickups++;b.reaction=skill.reaction+b.phase*.025}}));for(const box of boxes)if(!box.dynamic)advancePickup(box,dt,raceRng);const tuning=racerTuning(selectedDriverId,pos,speed),input=driveInput(keys),steer=input.steer;let now=actorSample(selectedDriverId,pos),next=routes?routes.sampleAhead(selectedDriverId,7):sample(pos+7);let curvature=now.t.x*next.t.z-now.t.z*next.t.x;
 let wantDrift=input.handbrake&&!!steer&&!input.brake&&!input.reverse&&speed>tuning.maxSpeed*.4;if(wantDrift){charge=Math.min(COAST_DRIFT.maxCharge,charge+dt);if(Math.random()<.8){let p=scaled(now.p.clone(),now.n,lane+steer*.85);p.y+=.35;emit(p)}}else if(drifting){if(coastDriftReady(charge)&&!input.brake&&!input.reverse){boost=Math.max(boost,coastDriftBoost(charge));toast('漂移加速！');shell.cue('release')}charge=0}drifting=wantDrift;
-const playerTrack=actorTrack(selectedDriverId,pos);speed=stepLandSpeed(playerTrack,pos,speed,input,dt,tuning,boost,Math.max(hit,slow),Math.abs(lane)>actorLimit(selectedDriverId,pos,.9));lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering*landSteeringGrip(playerTrack,pos)+curvature*speed*dt*.43+landBankDrift(playerTrack,pos,speed,dt);const rail=landRailScrape(speed,lane,actorLimit(selectedDriverId,pos),dt);if(routes){speed=rail.speed;if(rail.contact){emit(actorSample(selectedDriverId,pos,rail.lateral).p);}}lane=rail.lateral;steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
+const playerTrack=actorTrack(selectedDriverId,pos);speed=stepLandSpeed(playerTrack,pos,speed,input,dt,tuning,boost,Math.max(hit,slowTime(playerCombatant())),Math.abs(lane)>actorLimit(selectedDriverId,pos,.9),slowMultiplier(playerCombatant()));lane+=lateralInput(steer,speed,tuning.maxSpeed,drifting,dt)*tuning.multipliers.steering*landSteeringGrip(playerTrack,pos)+curvature*speed*dt*.43+landBankDrift(playerTrack,pos,speed,dt);const rail=landRailScrape(speed,lane,actorLimit(selectedDriverId,pos),dt);if(routes){speed=rail.speed;if(rail.contact){emit(actorSample(selectedDriverId,pos,rail.lateral).p);}}lane=rail.lateral;steerVis=damp(steerVis,steeringYaw(steer,speed,drifting),8,dt);
 let previous=pos;let routeFinish:number|undefined;
 if(routes){
   // Scalar totals are read-only ranking output; a debug/reset scalar jump cannot
@@ -584,7 +589,7 @@ function draw(dt: number) {
 function getState() {
   const stats = app.stats as any;
   return {
-    engine: 'PlayCanvas', map:mapId, validatedLaps:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).laps:playerProgress?.laps??null, checkpoints:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).nextGate:playerProgress?.passedCheckpoints??null, route:routes?.states.has(selectedDriverId)?routes.cursor(selectedDriverId):null, state, pos, lane, speed, elapsed, charge, boost, shield, slow, held, heldSecond, drifting, steerVis,
+    ...playerItemState, engine: 'PlayCanvas', map:mapId, validatedLaps:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).laps:playerProgress?.laps??null, checkpoints:routes?.states.has(selectedDriverId)?routes.get(selectedDriverId).nextGate:playerProgress?.passedCheckpoints??null, route:routes?.states.has(selectedDriverId)?routes.cursor(selectedDriverId):null, state, pos, lane, speed, elapsed, charge, boost, shield, slow, held, heldSecond, drifting, steerVis,
     bots: bots.map(({id,total,lateral,speed,held,heldSecond,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt})=>({id,total,lateral,speed,held,heldSecond,boost,shield,slow,reaction,cooldown,pickups,uses,finishedAt,route:routes?.cursor(id)})),
     lap: routes?.states.has(selectedDriverId)?Math.min(3,routes.get(selectedDriverId).laps+1):playerProgress?Math.min(3,playerProgress.laps+1):coastLap(pos, LENGTH), length: LENGTH, rank: finishRank || rank(), camera: view,
     muted, mouseLook: { ...orbit.get(), ...mouseLook.get() }, modelsLoaded: ready, allDriversLoaded: bundledDrivers.size === 6,

@@ -1,3 +1,4 @@
+import {postV100Hash} from './helpers/post-v100-current';
 import {restoreMenuPresentationBytes} from './helpers/menu-presentation-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -32,7 +33,7 @@ test('Garden camera records preserve every original archive and matrix assertion
 });
 
 test('Garden accepts only the exact reviewed Airfield incoming/current pair', () => {
-  assertGardenCameraDependency(transition.path, transition.previousSha256, transition.currentSha256);
+  assertGardenCameraDependency(transition.path, transition.previousSha256, postV100Hash(transition.path,transition.currentSha256) as string);
   for (const incoming of ['0'.repeat(64), transition.currentSha256, undefined]) {
     assert.throws(() => assertGardenCameraDependency(transition.path, incoming, transition.currentSha256));
   }
@@ -60,7 +61,7 @@ test('Garden cross-scene transition is bound to retained Airfield review and ori
   const review = JSON.parse(reviewText).changes[transition.path];
   assert.equal(review.previousSha256, transition.previousSha256);
   assert.equal(review.currentSha256, transition.currentSha256);
-  assert.equal(sha(readFileSync(transition.path)), transition.currentSha256);
+  assert.equal(sha(readFileSync(transition.path)), postV100Hash(transition.path,transition.currentSha256));
   assert.equal(sha(readFileSync('docs/scene-baselines/airfield-original/src/airfield-scenery.ts.txt')), transition.previousSha256);
   const originalText = read('tests/fixtures/airfield-enrichment-original-geometry.json');
   assert.equal(sha(originalText), '264433eb8a734047aea058f6bcc92be4f0f03cda65db545e3036b6d5c25b7f30');
@@ -69,7 +70,7 @@ test('Garden cross-scene transition is bound to retained Airfield review and ori
   assert.equal(original.protection.prefixes.components.count, 1585);
   assert.equal(original.protection.prefixes.cameraObstacles.count, 9);
   for (const path of ['src/maps/airfield.ts', 'src/land-road-mesh.ts', 'src/land-mesh-builder.ts', 'src/land-camera.ts', 'src/race-camera.ts']) {
-    assert.equal(sha(readFileSync(path)), original.sourceHashes[path], path + ' retained road/camera dependency');
+    assert.equal(sha(readFileSync(path)), postV100Hash(path,original.sourceHashes[path]), path + ' retained road/camera dependency');
     assert.equal(plan.protected[path], original.sourceHashes[path]);
   }
   assert.equal(sha(readFileSync('tests/fixtures/airfield-enrichment-camera-outputs.json')), '596e883062ddd1683ebae3f3aedfcdae4bf04e7faf8100af15003674a5b39f67');

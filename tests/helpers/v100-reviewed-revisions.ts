@@ -1,3 +1,4 @@
+import {postV100Hash,postV100SourcePaths} from './post-v100-current';
 import {stablePagesV100RepinHash, stablePagesV100RepinPathsWithin, restoreStablePagesV100RepinBytes, stablePagesV100RepinAddedPaths, stablePagesV100RepinAuditDependencies} from './stable-pages-v100-repin-reviewed-revisions';
 /** Exact v1.0 successor. Historical fixtures and every prior proof remain frozen. */
 import assert from 'node:assert/strict';
@@ -71,9 +72,9 @@ export function v100SourcePaths(previous: string[]) {
   const additions = Object.entries(v100Review().additions).filter(([path]) => path.startsWith('src/'));
   for (const [path, row] of additions) {
     assert.ok(!previous.includes(path), path + ' explicit v1.0 source addition');
-    assert.equal(v100Sha(readFileSync(path)), row.sha256, path + ' exact source addition bytes');
+    assert.equal(v100Sha(readFileSync(path)), postV100Hash(path,row.sha256), path + ' exact source addition bytes');
   }
-  return [...previous, ...additions.map(([path]) => path)];
+  return postV100SourcePaths([...previous, ...additions.map(([path]) => path)]);
 }
 export function v100AddedPaths() { return [V100_REVIEW_PATH, 'tests/helpers/v100-reviewed-revisions.ts', ...Object.keys(v100Review().additions), ...stablePagesV100RepinAddedPaths()]; }
 export function v100AuditDependencies() { return [...v100AddedPaths(), ...Object.keys(v100Review().changes), ...stablePagesV100RepinAuditDependencies()]; }

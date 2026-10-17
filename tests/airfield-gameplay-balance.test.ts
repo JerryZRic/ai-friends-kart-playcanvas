@@ -1,9 +1,14 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {AIRFIELD_COURSE as course} from '../src/maps/airfield';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
-import {raceKartBuild} from '../src/kart-race';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('airfield');
+
+
+
+
 // Frozen pre-production design observations. Every complete returned result is
 // compared exactly; these do not grant branch boosts or alter the shared pilot.
 // Character, build, physical branch, Hz, stale-input seconds, lap seconds,
@@ -96,7 +101,7 @@ const frozen:readonly (readonly [string,string,'alley'|'boulevard',number,number
  ["glm","balanced","alley",60,3,74.51666666666372,3.3333333333333264,11.249999999999364,3.3333333333333264],
  ["glm","balanced","boulevard",60,3,74.94999999999703,2.2666666666666635,11.666666666666007,2.2666666666666635]];
 
-test('airfield frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexamples',t=>{
+test('historical v1.0.1a: airfield frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexamples',t=>{
  const presets=getNpcPresets('coast',20261010),runs=[];
  for(const [character,preset,branch,hz,reaction,seconds,railSeconds,branchSeconds,branchRailSeconds]of frozen){
   const build=preset==='default'?raceKartBuild(''):presets.find(p=>p.characterId===character&&p.presetId===preset)!.build;

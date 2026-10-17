@@ -1,9 +1,14 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {CALDERA_COURSE as course} from '../src/maps/caldera';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
-import {raceKartBuild} from '../src/kart-race';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('caldera');
+
+
+
+
 // Frozen pre-production design observations. Every complete returned result is
 // compared exactly; these do not grant branch boosts or alter the shared pilot.
 // Character, build, physical branch, Hz, stale-input seconds, lap seconds,
@@ -97,7 +102,7 @@ const frozen:readonly (readonly [string,string,'alley'|'boulevard',number,number
  ["glm","balanced","boulevard",60,3,89.78333333332952,2.3166666666666633,13.233333333332581,2.3166666666666633]
 ];
 
-test('caldera frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexample',t=>{
+test('historical v1.0.1a: caldera frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexample',t=>{
  const presets=getNpcPresets('coast',20261010),runs=[];
  for(const [character,preset,branch,hz,reaction,seconds,railSeconds,branchSeconds,branchRailSeconds]of frozen){
   const build=preset==='default'?raceKartBuild(''):presets.find(p=>p.characterId===character&&p.presetId===preset)!.build;

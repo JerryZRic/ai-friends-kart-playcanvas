@@ -1,71 +1,81 @@
 [
   {
     "name": "dfy01.mp3",
+    "source_name": "DFY-city_pop.mp3",
     "size": 4800000,
     "sha256": "c0a2709ac36eb568dbc833ee9298c8aaccb0cc4acaaa96d3cbc623cbeb2ce9fa",
     "duration": 150.0,
+    "role": "land_water_random_pool",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
   {
     "name": "dfy02.mp3",
+    "source_name": "DFY-Chinese.mp3",
     "size": 6660096,
     "sha256": "4c80e8aeff796a4bf91e7fedc654fe5ffac1cee89eac125428d1d58985850613",
     "duration": 208.128,
+    "role": "land_water_random_pool",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
   {
     "name": "dfy03.mp3",
+    "source_name": "DFY-chiptune.mp3",
     "size": 4406784,
     "sha256": "14171bf819a29ebc8a9a537d39d1f324d8033f52e3cf6baad62799b7daa6278a",
     "duration": 137.712,
+    "role": "land_water_random_pool",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
   {
     "name": "dfy04.mp3",
+    "source_name": "DFY-fusion02.mp3",
     "size": 5638656,
     "sha256": "b73ec3184a02dad5c2079599f0df6070c28e4150d317d5ad572a3f869bac21b8",
     "duration": 176.208,
+    "role": "land_water_random_pool",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
   {
     "name": "dfy05.mp3",
+    "source_name": "DFY-rock.mp3",
     "size": 4623360,
     "sha256": "5ac9c7978ad26d9e2b554332e103e43bb52b0e6638dad1222392e61d20528af8",
     "duration": 144.48,
+    "role": "land_water_random_pool",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
@@ -85,15 +95,17 @@
   },
   {
     "name": "dfy_theme.mp3",
+    "source_name": "DFY-THEME.mp3",
     "size": 4727040,
     "sha256": "07fcbd78aaf0ea7e2f56c23dd3ee0b389baf84a1d4fabfc8f5c0288323fb151f",
     "duration": 147.72,
+    "role": "menu",
     "streams": [
       {
         "codec_name": "mp3",
-        "sample_rate": "48000",
+        "sample_rate": 48000,
         "channels": 2,
-        "bit_rate": "256000"
+        "bit_rate": 256000
       }
     ]
   },
@@ -108,6 +120,214 @@
         "sample_rate": "48000",
         "channels": 2,
         "bit_rate": "256000"
+      }
+    ]
+  },
+  {
+    "name": "dfy_fusion.mp3",
+    "source_name": "DFY-fusion01.mp3",
+    "size": 5968896,
+    "sha256": "5b06c0a3fcffafd09e7ad05012e2a22638b04763d629b53cf42b6c4dc47911e9",
+    "duration": 186.528,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-pop01.mp3",
+    "source_name": "DFY-pop01.mp3",
+    "size": 6234624,
+    "sha256": "f226089347cbb637982ed81c4f4ac9e3ead9888ef80671bccb5f1a7d87b32e7a",
+    "duration": 194.832,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-pop02.mp3",
+    "source_name": "DFY-pop02.mp3",
+    "size": 5053440,
+    "sha256": "f6f295d2e69168cce7788a03453ca366ac59850a94e68709ef566c8def8846ef",
+    "duration": 157.92,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-bossa_nova.mp3",
+    "source_name": "DFY-bossa_nova.mp3",
+    "size": 5089536,
+    "sha256": "25848152f54c87e6a4ab758d172dd0cb80042fb6fc391830b1dcf77fd3ccc86d",
+    "duration": 159.048,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-jazz01.mp3",
+    "source_name": "DFY-jazz01.mp3",
+    "size": 5080320,
+    "sha256": "fe6c7bb2c87b41e68e78ef9a62c040dc7be270f2553bbc42e7532ba3900ac45f",
+    "duration": 158.76,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-jazz02.mp3",
+    "source_name": "DFY-jazz02.mp3",
+    "size": 5199360,
+    "sha256": "0d1aedd996dda7293c15aafa92717c907a096443caa30c7b677bfe0f98f240ba",
+    "duration": 162.48,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-lofi_hip_hop.mp3",
+    "source_name": "DFY-lofi_hip_hop.mp3",
+    "size": 4894464,
+    "sha256": "06468bf03ef185762250d2ec99a8775d58c21727bcd691c4eab87235d3d844ef",
+    "duration": 152.952,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-neo_soul.mp3",
+    "source_name": "DFY-neo_soul.mp3",
+    "size": 6374400,
+    "sha256": "08df9913328bbeb927c2d24befe7fdd81d65df31c3c4f7c1344019034951d52e",
+    "duration": 199.2,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-gospel.mp3",
+    "source_name": "DFY-gospel.mp3",
+    "size": 5262336,
+    "sha256": "dc88c60795d7f92b5bc0eb4c4e5a8374fff0f4df513ea2032dbec00854dfb11a",
+    "duration": 164.448,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-synthwave.mp3",
+    "source_name": "DFY-synthwave.mp3",
+    "size": 6109440,
+    "sha256": "42c31aa29da18868fef9ea48275bc78ee49a2b26c7f559f0179343463d1c57c8",
+    "duration": 190.92,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-neo_disco.mp3",
+    "source_name": "DFY-neo_disco.mp3",
+    "size": 5374464,
+    "sha256": "2ac15a4ab940be600ac901368f283865d2a39fb32012234c886107ccdb308c97",
+    "duration": 167.952,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-neo_house.mp3",
+    "source_name": "DFY-neo_house.mp3",
+    "size": 5888256,
+    "sha256": "caf6145dd492154b0b7a56349231d2e8ee0cfe470c9399c7e193d05d8247b29d",
+    "duration": 184.008,
+    "role": "land_water_random_pool",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
+      }
+    ]
+  },
+  {
+    "name": "DFY-Love_on_Kart.mp3",
+    "source_name": "DFY-Love_on_Kart.mp3",
+    "size": 5597184,
+    "sha256": "a91ac344e8a1a41b637709ae7ab211f89352abb94d7701fc7c0e9a445d542df2",
+    "duration": 174.912,
+    "role": "reserved_story_ending",
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": 48000,
+        "channels": 2,
+        "bit_rate": 256000
       }
     ]
   }

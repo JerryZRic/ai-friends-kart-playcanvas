@@ -8,13 +8,13 @@
 
 **PlayCanvas Engine、TypeScript、Vite** で制作した、陸上12コースと水上1コースを楽しめるアーケードカートレースです。リグ付きキャラクター6人からドライバーを選び、残りの5人と対戦。ドリフトブースト、アイテム、自由に回り込める追従カメラに対応します。
 
-**[ブラウザー main 版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev プレビュー](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [HTML テスト版 / 過去の Windows 版](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
+**[ブラウザー main 版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [独立 dev プレビュー](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / HTML・Windows ダウンロード](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > ゲームの UI は簡体字中国語で、ブランド名は英語表記です。上の言語リンクで切り替わるのはドキュメントのみです。コードとオリジナル素材（音楽を除く）には AGPL-3.0-only が適用され、6体のキャラクターモデルには別途、非商用の制限があります。[ライセンスとモデルの権利](#license-and-model-rights)をご確認ください。
 
-## v1.0.2a プレリリース
+## v1.1.0 安定版
 
-**v1.0.2a はテスト用のプレリリースで、独立した Web / HTML 静的配信用 ZIP のみを提供します。新しい Windows パッケージは含みません。** 13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを引き続き収録。追加の陸上11コースにはシーン充実化の成果を含みます。公開ファイル、ソースのリビジョン、チェックサム、検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)をご確認ください。サイトのルートは main の公開先、`/dev/` は独立した開発プレビューです。
+**v1.1.0 は Web / HTML と Windows x64 向けの正式な安定版です。** 13マップ、6人のドライバー、55テーマ / 330パーツの6スロット食べ物カートガレージを引き続き収録。追加の陸上11コースにはシーン充実化の成果を含みます。公開ファイル、ソースのリビジョン、チェックサム、検証状況は[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)をご確認ください。サイトのルートは main の公開先、`/dev/` は独立した開発プレビューです。
 
 フリーモードには6人からランダムに選ぶアニメーション付きタイトル画面、回転するマッププレビュー、キャラクターの3D表示、車両選択、簡単 / 普通 / 難しいのレース設定と画面設定があります。タイトル画面は独自の PlayCanvas 2D メッシュアニメーションで、Cubism は使用していません。大肥鱼（WHALE）の選択確率は35%、残りの5人は65%を均等に分けます。ストーリーモードは開発中の案内です。[実装ノートと制限](docs/free-mode.md)。
 
@@ -46,7 +46,8 @@
 - **選べる6人のドライバー:** WHALE、GEMINI、GPT、CLAUDE、GROK、GLM。リグ付きキャラクターモデルを同梱
 - 陸上・水上コースで5人の AI と競う**3周レース**。衝突、周回数・順位表示、ミニマップに対応
 - **アーケード操作:** 手動アクセル、ブレーキ、後退、ハンドブレーキドリフト、ドリフトブースト
-- **位置が固定された2つのアイテムスロット:** 取得時は `E`、次に `R` の順に格納し、片方を使っても他方は移動しません。満杯のときはボックスを消費しません。NPC も同じく最大2個を所持でき、モバイルには各スロット専用のボタンがあります。
+- **固定 E/R スロットと同種3個の強化:** 安定版と dev ではスタックが標準で有効です。同じスロットの通常アイテム2個は1個ずつ使用し、3個目で1回分の super になります。super 所持後の同種ボックスは消費されますが、追加強化、他方のスロットへの格納、Token 生成は行いません。空きスロットがあるミステリーボックスは通常どおり抽選し、両方満杯なら受け取りません。E/R は1.2秒のクールダウンを共有します。ポーズ設定の変更は適用して再スタートすると反映されます。`itemStacking=0` で通常の2スロットに戻せます。プレイヤーと NPC のルールは共通で、スロット位置は移動しません。
+- **音楽:** 陸上・水上レースは共通の17曲からランダムに選曲します。メニューは THEME、Love は予約曲でレースには含めません。元の音質の MP3 を再エンコードせず保持し、音楽には個別の非商用ライセンスが適用されます。
 - **3種類のアイテム:** ターボブースト、エネルギーシールド、追尾パルス
 - **中身が見えるアイテム箱:** 半透明の箱にオリジナルの 3D アイテムを表示。25% は「？」のランダム箱です。取得すると即座に消え、レース進行時間で8秒後に再出現します。HUD の画像も同じモデルの投影から生成します。[詳細](docs/item-pickups.md)
 - **アイテムを使う NPC：** 相手も実際のボックスを拾い、安全な進路を選びながら加速・シールド・パルスを使います。所持アイテムと使用エフェクトを3Dで表示します。[仕様](docs/npc-tactics.md)
@@ -64,13 +65,17 @@ ChatGPT へのログイン、モデルサービスのアカウント、実行時
 
 ## Web / HTML パッケージ
 
-[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で [`ai-friends-kart-playcanvas-v1.0.2a-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/ai-friends-kart-playcanvas-v1.0.2a-html.zip) を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、nginx などの HTTP(S) 静的サーバーで配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースをすべて保持してください。ルートやサブディレクトリへの配置の検証結果はリリースノートをご確認ください。相対パスの採用だけで実際の配布物の検証に代えることはできません。
+[リリースページ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)で [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip) を選び、付属の SHA-256 チェックサムと照合してください。全体を展開し、nginx などの HTTP(S) 静的サーバーで配信します。`file://` で `index.html` を直接開く方法には対応しません。素材、ライセンス通知、対応するソースをすべて保持してください。ルートやサブディレクトリへの配置の検証結果はリリースノートをご確認ください。相対パスの採用だけで実際の配布物の検証に代えることはできません。
 
-正式な GitHub Pages サイトでは実行用ファイルを配信します。対応するソースは [v1.0.2a プレリリース](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.2a)の独立した [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/source.zip)から取得してください。完全な HTML ZIP には引き続き `source.zip` とすべての実行用素材が含まれます。過去のオフラインバランス報告とデータは `/dev/` に残します。v1.0.2a のタグは最終マージ後の `main` コミットから作成し、`dev` から直接公開しません。
+正式な GitHub Pages サイトでは実行用ファイルを配信します。対応するソースは [v1.1.0 リリース](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)の独立した [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)から取得してください。完全な HTML ZIP には引き続き `source.zip` とすべての実行用素材が含まれます。過去のオフラインバランス報告とデータは `/dev/` に残します。v1.1.0 のタグは最終マージ後の `main` コミットから作成し、`dev` から直接公開しません。
 
-## 過去の Windows パッケージ（v1.0.0）
+GitHub Pages のルートと Timewish のホスト版には、オフラインのバランス診断データセットを含めません。診断入口は固定バージョンの [v1.1.0 完全版 HTML パッケージ](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)へリンクし、更新され続ける dev の診断ページへは転送しません。完全版 HTML ZIP にはデータセットと利用可能なオフライン診断を保持します。
 
-**v1.0.2a に Windows ビルドはありません。** [v1.0.0 リリース](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.0)には過去の Windows 版を残していますが、今回のプレリリースの新機能は含まれません。ファイル名、チェックサム、手順はそのリリースに従ってください。64ビット版 Windows 10/11 と WebGL2 対応 GPU が必要です。ZIP 全体を展開し、DLL、`resources`、`locales` フォルダーを一緒に保ったまま **AI Friends Kart.exe** を起動します。**F11** で全画面表示を切り替えます。Windows のセキュリティ保護を無効にしないでください。パッケージ作成や自動チェックの成功は、実機 Windows の GPU、性能、入力互換性の検証を意味しません。
+## Windows x64 パッケージ
+
+ダウンロード [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+
+64ビット版 Windows 10/11 と WebGL2 対応 GPU が必要です。ZIP 全体を展開し、DLL、`resources`、`locales` フォルダーを一緒に保ったまま **AI Friends Kart.exe** を起動します。**F11** で全画面表示を切り替えます。Windows のセキュリティ保護を無効にしないでください。自動パッケージング、安全性、プロトコルの検査は、実機 Windows の GPU、性能、入力互換性の検証を意味しません。
 
 ## 操作方法
 
@@ -130,6 +135,8 @@ npm run build
 
 ### GitHub Pages
 
+バージョン表示は正式版が `v1.1.0`、dev が実際のビルドコミットを使う `v1.1.0-dev.<sha6>`、コミット未指定のローカルビルドが `v1.1.0-dev.local` です。
+
 開発版のバージョンには、実際の commit ハッシュの先頭6文字を付けます。リリースタグは `main` から作成し、配布物はそのタグのソースから生成します。dev の公開では main のサイトルートを保持してください。
 
 [Build and publish PlayCanvas game ワークフロー](.github/workflows/pages.yml)は、公開前に選択したソースをチェック、テスト、ビルドします。main 版はサイトのルート、独立プレビューは `/dev/` です。チェックアウトしたブランチの起動条件と公開オプションに従ってください。dev の公開ではmain のルートを保持し、配布パッケージには対応するリリースタグと同じソースを使用します。
@@ -161,8 +168,9 @@ npm run build
 
 **コードとオリジナルのゲーム素材（音楽を除く）:** AGPL-3.0-only。オリジナルの UI、サーキット、カート、小物、編集可能なソースを含みます。[LICENSE](LICENSE)、[NOTICE](NOTICE)、[THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)をご確認ください。PlayCanvas と fflate には引き続き MIT ライセンスが適用されます。
 
-**オリジナル音楽（© 2026 JerryZRic）:** [個別の音楽ライセンス](public/assets/music/LICENSE.txt)が適用されます。3曲の楽曲・録音とその翻案は、本ゲームとその fork の一部として、クレジットと通知を保持した非商用の利用・改変・配布が可能です。商用利用には JerryZRic の事前許可が必要です。無関係なプロジェクトや、ゲームと fork から独立した音楽の配布・販売は許可されません。コードの AGPL 条項は変更されません。
+**オリジナル音楽（© 2026 JerryZRic）:** [個別の音楽ライセンス](public/assets/music/LICENSE.txt)が適用されます。楽曲・録音とその翻案は、本ゲームとその fork の一部として、クレジットと通知を保持した非商用の利用・改変・配布が可能です。商用利用には JerryZRic の事前許可が必要です。無関係なプロジェクトや、ゲームと fork から独立した音楽の配布・販売は許可されません。コードの AGPL 条項は変更されません。
 
 **6体のキャラクターの運転モデルと立ち姿ポートレート:** 別個の権利が適用されます。プロジェクト所有者は、非商用の制限がある Tripo Free の出力物と説明していますが、正確な再配布条件は独立に確認されていません。ここへの収録は、新たなモデルライセンス、Creative Commons ライセンス、商用利用の許可を付与するものではありません。AGPL によってキャラクターのライセンスが変更されることもありません。再利用・再配布の前に適用される権利を確認し、必要な許可を取得してください。[MODEL-NOTICE.txt](MODEL-NOTICE.txt)をご確認ください。
 
 このプロジェクトに含まれるのは最終版のキャラクターランタイムファイルであり、キャラクターの Blender プロジェクトやハイポリゴンの制作ソースではありません。オリジナルのカート・小物の編集可能なファイルは、対応するソースとして引き続き同梱しています。デモには広告、決済、商用のモデル販売はありません。
+

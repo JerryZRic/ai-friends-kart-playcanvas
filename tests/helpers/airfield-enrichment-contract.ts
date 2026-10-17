@@ -1,3 +1,4 @@
+import {assertCurrentSceneMaterial} from './current-airfield-snow-polish';
 /** Immutable original indexed-prefix proof. No scenery labels define original membership. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -30,11 +31,11 @@ export function assertAirfieldOriginalComponents(components:AirfieldSceneGeometr
  assert.deepEqual(original,old.components,'Every original component, order, kind, role, landmark and full indexed range must remain exact');
  assert.equal(airfieldDigest(original),old.prefixes.components.digest,'Immutable complete original component manifest');return original;
 }
-export function assertAirfieldOriginalProjection(g:AirfieldSceneGeometry,old:AirfieldBaselineContract=airfieldFrozenBaseline()){
+export function assertAirfieldOriginalProjection(g:AirfieldSceneGeometry,old:AirfieldBaselineContract=airfieldFrozenBaseline(),historicalCore=false){
  assert.deepEqual(old.budget,{batches:20,triangles:94747,vertices:103278});assert.equal(g.batches.length,20);
  const original=assertAirfieldOriginalComponents(g.components,old);
  for(const [i,b]of g.batches.entries()){
-  const before=old.batches[i];assert.deepEqual(airfieldMaterial(b),before.material,'Exact original material values and batch order');
+  const before=old.batches[i];historicalCore?assert.deepEqual(airfieldMaterial(b),before.material,'Exact historical core material'):assertCurrentSceneMaterial('airfield',i,airfieldMaterial(b),before.material);
   assert.ok(b.positions.length/3>=before.vertices&&b.indices.length>=before.indices);
   assert.equal(airfieldDigest(b.positions.slice(0,before.vertices*3)),before.positions,b.name+' original positions');
   assert.equal(airfieldDigest(b.uvs.slice(0,before.vertices*2)),before.uvs,b.name+' original UVs');
@@ -43,8 +44,8 @@ export function assertAirfieldOriginalProjection(g:AirfieldSceneGeometry,old:Air
  }
  return original;
 }
-export function assertAirfieldPreservation(g:AirfieldSceneGeometry,theme:unknown,old:AirfieldBaselineContract){
- assertAirfieldOriginalProjection(g,old);assert.deepEqual(theme,old.theme,'Exact original airfield lighting/fog/sky/theme');
+export function assertAirfieldPreservation(g:AirfieldSceneGeometry,theme:unknown,old:AirfieldBaselineContract,historicalCore=false){
+ assertAirfieldOriginalProjection(g,old,historicalCore);assert.deepEqual(theme,old.theme,'Exact original airfield lighting/fog/sky/theme');
  for(const [i,b]of g.batches.entries()){
   const before=old.batches[i],normals=pc.calculateNormals(b.positions,b.indices);
   assert.equal(airfieldDigest(normals.slice(0,before.vertices*3)),before.normals,b.name+' actual computed original normals');

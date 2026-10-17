@@ -1,3 +1,5 @@
+import {postV100AddedPaths} from './helpers/post-v100-current';
+import {postV100Review} from './helpers/post-v100-current';
 import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
@@ -94,7 +96,7 @@ test('the v0.5.0 bridge only advances exact path and old-hash pairs and rejects 
     assert.throws(() => stablePagesV050RepinHash(path, 'unchanged'), undefined, 'Reviewed successor requires exact incoming identity');
     assert.throws(() => restoreStablePagesV050RepinBytes(path, 'unchanged'), undefined, 'Reviewed successor requires exact current bytes');
   }
-  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'scripts/package-source.mjs', 'public/source.html', 'docs/airfield-enrichment-qa-files.json']) {
+  for (const path of ['src/race-camera.ts', 'public/source.html', 'docs/airfield-enrichment-qa-files.json']) {
     assert.equal(stablePagesV050RepinHash(path, 'unchanged'), 'unchanged');
     assert.equal(restoreStablePagesV050RepinBytes(path, 'unchanged'), 'unchanged');
   }
@@ -135,7 +137,7 @@ test('all 988 baseline identities survive and every non-manifest JSON, productio
   }
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const baselineJson = baselinePaths.filter(path => path.endsWith('.json') && path.includes('/')).sort();
-  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort(), 'Every existing JSON retained with only the explicit successor reviews');
+  assert.deepEqual(currentJson, [...baselineJson, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH,...postV100AddedPaths().filter(path=>path.endsWith('.json')&&['docs/','tests/','models/','public/','src/'].some(prefix=>path.startsWith(prefix)))].sort(), 'Every existing JSON retained with only the explicit successor reviews');
   for (const path of baselineJson.filter(path => path !== stablePath)) assert.ok(Object.hasOwn(review.protectedFiles, path), path + ' historical JSON cannot change');
 });
 
@@ -185,4 +187,8 @@ test('both source-stability closures include every new proof and bounded bridge 
     for (const path of [...stablePagesV050RepinAuditDependencies(), ...staticMenuArtAuditDependencies()]) assert.equal(hashes[path], sha(readFileSync(path)), path + ' complete current closure');
     assert.equal(hashes[stablePath], stablePagesV100RepinHash(stablePath, review.changes[stablePath].currentSha256));
   }
+});
+
+test('stable-pages-v050-repin accepts only exact post-v100 pairs for formerly untouched inputs',()=>{
+ for(const path of ['src/race-controls.ts', 'scripts/package-source.mjs']){const row=postV100Review().changes[path];assert.ok(row);assert.equal(stablePagesV050RepinHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>stablePagesV050RepinHash(path,'unchanged'));assert.equal(stablePagesV050RepinHash('./'+path,'unchanged'),'unchanged');}
 });

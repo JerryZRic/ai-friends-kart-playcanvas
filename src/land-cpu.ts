@@ -1,7 +1,7 @@
 import {clearInventory,type ItemSlot} from './item-inventory';
 import {COAST_DRIFT,coastDriftReady,coastDriftBoost} from './coast-race-feedback';
 import {npcDriving,type NpcSkill} from './npc-difficulty';
-import {RULES,tickEffects,tickBrain,planLane,chooseItemSlot,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup,type PickupReachability} from './npc-tactics';
+import {RULES,slowTime,slowMultiplier,clearItemExperiment,tickEffects,tickBrain,planLane,chooseItemSlot,activateItem,moveLane,nearbyGap,type Combatant,type Brain,type RacingPickup,type PickupReachability} from './npc-tactics';
 import {advanceLapProgress,type LandTrack,type LandLapProgress} from './land-track';
 import {stepLandSpeed,landLookAheadBend,landSteeringGrip,landBankDrift,landRailScrape} from './land-driving';
 import type {createLandRaceRoute} from './land-race-route';
@@ -56,7 +56,7 @@ export function activateLandCpuItem(b:LandCpuActor,racers:readonly Combatant[],c
 /** Extracted from the normal game NPC decision loop without changing timings,
  * road sampling, lane planning or item decisions. */
 export function decideLandCpu(b:LandCpuActor,racers:readonly Combatant[],boxes:readonly RacingPickup[],c:LandCpuContext,{dt,elapsed}:LandCpuFrame,feedback:LandCpuFeedback={}) {
-  if(landCpuFinished(b,c)){b.finishedAt??=elapsed-dt;clearInventory(b);b.boost=b.shield=b.slow=b.pulseFlash=0;feedback.finished?.(b);return;}
+  if(landCpuFinished(b,c)){b.finishedAt??=elapsed-dt;clearInventory(b);clearItemExperiment(b);b.boost=b.shield=b.slow=b.pulseFlash=0;feedback.finished?.(b);return;}
   const {routes,skill}=c;
   if(routes)routes.npcChoice(b.id);
   if(b.decisionIn<=0){
@@ -83,12 +83,12 @@ export function advanceLandCpu(b:LandCpuActor,c:LandCpuContext,{dt,elapsed}:Land
   const {routes,skill}=c,tuning=c.tuning(b.id,b.total,b.speed),road=actorTrack(b,c);
   if(routes?.nearFork(b.id)){const selected=routes.npcChoice(b.id);b.targetLane=selected==='alley'?2.8:-2.8;}
   b.driftCooldown=Math.max(0,b.driftCooldown-dt);
-  const control=npcDriving(b.speed,tuning.maxSpeed*(b.boost>0?RULES.boostFactor:1)*(b.slow>0?RULES.slowFactor:1),b.aiBend,skill,b.driftCharge,b.targetLane-b.lateral);
+  const control=npcDriving(b.speed,tuning.maxSpeed*(b.boost>0?RULES.boostFactor:1)*(slowTime(b)>0?slowMultiplier(b):1),b.aiBend,skill,b.driftCharge,b.targetLane-b.lateral);
   control.handbrake=control.drift=control.drift&&b.driftCooldown===0;
   if(control.drift)b.driftCharge=Math.min(COAST_DRIFT.maxCharge,b.driftCharge+dt);
   else {if(b.aiDrifting){if(!control.brake&&coastDriftReady(b.driftCharge))b.boost=Math.max(b.boost,coastDriftBoost(b.driftCharge));b.driftCooldown=2;}b.driftCharge=0;}
   b.aiDrifting=control.drift;
-  if(b.driving)b.speed=stepLandSpeed(road,b.total,b.speed,control,dt,tuning,b.boost,b.slow,Math.abs(b.lateral)>actorLimit(b,c,.9));
+  if(b.driving)b.speed=stepLandSpeed(road,b.total,b.speed,control,dt,tuning,b.boost,slowTime(b),Math.abs(b.lateral)>actorLimit(b,c,.9),slowMultiplier(b));
   if(routes){
     const attempted=moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(road,b.total))+landBankDrift(road,b.total,b.speed,dt);
     const rail=landRailScrape(b.speed,attempted,actorLimit(b,c,.8),dt);b.speed=rail.speed;if(rail.contact)feedback.railContact?.(b,rail.lateral);b.lateral=rail.lateral;
@@ -101,7 +101,7 @@ export function advanceLandCpu(b:LandCpuActor,c:LandCpuContext,{dt,elapsed}:Land
     if(landCpuFinished(b,c))b.finishedAt=elapsed-dt+dt*(c.length*3-before)/Math.max(travel,1e-9);
     b.lateral=clamp(moveLane(b.lateral,b.targetLane,dt*tuning.multipliers.steering*landSteeringGrip(c.track,b.total)),-actorLimit(b,c,.8),actorLimit(b,c,.8));
   }
-  if(landCpuFinished(b,c)){clearInventory(b);b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;feedback.finished?.(b);}
+  if(landCpuFinished(b,c)){clearInventory(b);clearItemExperiment(b);b.boost=b.shield=b.slow=b.bump=b.reaction=b.cooldown=b.decisionIn=b.pulseFlash=0;feedback.finished?.(b);}
 }
 
 export function landActorsCollide(a:Combatant,b:Combatant,c:LandCpuContext) {

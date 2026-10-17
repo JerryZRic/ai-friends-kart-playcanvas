@@ -1,3 +1,4 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
 /** Additive preservation and architectural acceptance use final indexed buffers. */
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
@@ -14,7 +15,7 @@ const baseline=stage==='baseline',sha=(v:string|Buffer)=>createHash('sha256').up
 const receipt=JSON.parse(readFileSync('tests/fixtures/workshop-enrichment-protected.json','utf8'));
 const sourcePath=baseline?'docs/scene-baselines/workshop-scenery.ts.txt':'src/workshop-scenery.ts',sourceSha256=sha(readFileSync(sourcePath));
 if(baseline)assert.equal(sourceSha256,receipt.originalScenerySha256);
-const loaded=await workshopSceneData(baseline,ledger),g=loaded.geometry;
+const loaded=baseline?await workshopSceneData(true,ledger):await postV100HistoricalScene('workshop'),g=loaded.geometry;
 const immutableKeys=['version','trackId','roadSamples','routeRoadSamples','roadFaces','roadUndersideFaces','supportFaces','structures','landmarks','foundations','groundedDetails','gears','drawers','railMembers','bridgeMembers','sightlines','terrainGrid'] as const;
 const appendKeys=['components','props','cameraObstacles'] as const;
 const metadata={theme:digest(loaded.theme),...Object.fromEntries(immutableKeys.map(k=>[k,digest(g[k])]))};
@@ -146,6 +147,6 @@ if(baseline){
   }forwardVisibility.push({view:view.name,rows});
  }
  const unseenAssemblies=assemblies.filter(a=>!forwardVisibility.some(v=>v.rows.some((r:any)=>r.assembly===a.id&&r.visibleFaceCenterRays>0))).map(a=>a.id);
- const report={schema:'workshop-enrichment-geometry-v1',sourceSha256,baselineSourceSha256:before.sourceSha256,budget:g.budget,reviewedMaterialChanges:receipt.reviewedMaterialChanges,addedTriangles:changed.length,assemblies:assemblies.length,pieces:addedPieces.length,contacts,grounded,cameraFaces,roadPairs,bodyPoints,coflushPairs,wholePolygonBuriedCoflush:buriedCoflush,independentStructureIntersections:structuralIntersections.length,exactGroundedFloorTrimContacts:floorTrimContacts,forwardChaseVisibility:{scope:'Finite indexed face-center visibility in13 frozen actual forward-chase poses; not full silhouette or GPU proof',views:forwardVisibility,unseenAssemblies},exposedCoflush:coflush.length,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1}};
+ const report={auditScope:'Historical 6bb9 enrichment core; current geometry remains separately checked',schema:'workshop-enrichment-geometry-v1',sourceSha256,baselineSourceSha256:before.sourceSha256,budget:g.budget,reviewedMaterialChanges:receipt.reviewedMaterialChanges,addedTriangles:changed.length,assemblies:assemblies.length,pieces:addedPieces.length,contacts,grounded,cameraFaces,roadPairs,bodyPoints,coflushPairs,wholePolygonBuriedCoflush:buriedCoflush,independentStructureIntersections:structuralIntersections.length,exactGroundedFloorTrimContacts:floorTrimContacts,forwardChaseVisibility:{scope:'Finite indexed face-center visibility in13 frozen actual forward-chase poses; not full silhouette or GPU proof',views:forwardVisibility,unseenAssemblies},exposedCoflush:coflush.length,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1}};
  assert.equal(sha(readFileSync(sourcePath)),sourceSha256,'Source unchanged through audit');writeFileSync(join(run,'candidate-report.json'),JSON.stringify(report)+'\n');if(process.env.WORKSHOP_ENRICHMENT_GEOMETRY_AUDIT_DIR){const output=resolve(process.env.WORKSHOP_ENRICHMENT_GEOMETRY_AUDIT_DIR);mkdirSync(output,{recursive:true});writeFileSync(join(output,'geometry-report.json'),JSON.stringify(report,null,2)+'\n');}console.log(JSON.stringify({stage,sourceSha256,budget:g.budget,assemblies:assemblies.length,pieces:addedPieces.length,contacts,grounded,cameraFaces,coflushPairs,wholePolygonBuriedCoflushWitnesses:buriedCoflush.length,exposedCoflush:coflush.length,unseenAssemblies,durationSeconds:report.durationSeconds,resources:report.resources}));
 }

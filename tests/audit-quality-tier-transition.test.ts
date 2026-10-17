@@ -1,3 +1,4 @@
+import {restorePostV100Buffer,postV100AddedPaths} from './helpers/post-v100-current';
 import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import test from 'node:test';
@@ -31,7 +32,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = (Object.hasOwn(review.changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : readFileSync(path);
+    const bytes = (Object.hasOwn(review.changes, path) || (Object.hasOwn(v100Review().changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path))) ? Buffer.from(restoreQualityTierBytes(path, read(path))) : restorePostV100Buffer(path,readFileSync(path));
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);
@@ -53,7 +54,7 @@ test('quality tiers reconstruct the full exact compiled-preview dev baseline and
   for (const dir of ['.github', 'docs', 'models', 'public', 'scripts', 'src', 'tests']) {
     assert.deepEqual(walk(dir).sort(), [...baselinePaths, ...qualityTierAddedPaths()].filter(path => path.startsWith(dir + '/')).sort(), dir + ' complete exact baseline and addition inventory');
   }
-  assert.deepEqual(readdirSync('.', {withFileTypes: true}).filter(entry => entry.isFile()).map(entry => entry.name).sort(), baselinePaths.filter(path => !path.includes('/')).sort(), 'All project root files remain exact and no root additions are permitted');
+  assert.deepEqual(readdirSync('.', {withFileTypes: true}).filter(entry => entry.isFile()).map(entry => entry.name).sort(), [...baselinePaths,...postV100AddedPaths()].filter(path => !path.includes('/')).sort(), 'All project root files remain exact and no root additions are permitted');
 });
 
 test('each policy or audit bridge is exactly reversible and rejects altered bytes and wrong incoming identities', () => {
@@ -74,7 +75,7 @@ test('each policy or audit bridge is exactly reversible and rejects altered byte
       assert.equal(restoreQualityTierBytes(alias, 'unreviewed'), 'unreviewed', alias + ' cannot invoke an inverse');
     }
   }
-  assert.deepEqual(qualityTierPathsWithin({'.github/workflows/pages-stable.yml': 'old', './.github/workflows/pages-stable.yml': 'alias', '.github/workflows/pages.yml': 'unchanged', 'src/game.ts': 'unchanged'}), ['.github/workflows/pages-stable.yml', 'src/game.ts']);
+  assert.deepEqual(qualityTierPathsWithin({'.github/workflows/pages-stable.yml': 'old', './.github/workflows/pages-stable.yml': 'alias', '.github/workflows/pages.yml': 'unchanged', 'src/game.ts': 'unchanged'}), ['.github/workflows/pages-stable.yml', 'src/game.ts', '.github/workflows/pages.yml']);
 });
 
 test('the new release workflow, selector, documentation and regression tools have exact named bytes', () => {
@@ -95,7 +96,7 @@ test('all existing JSON, dev workflow, game bytes, assets, legal files and pinne
   const allOriginalJson = baselinePaths.filter(path => path.endsWith('.json'));
   assert.ok(allOriginalJson.every(path => Object.hasOwn(review.protectedFiles, path)), 'No prior proof, manifest or package JSON may change');
   const nestedJson = allOriginalJson.filter(path => path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...nestedJson, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH,...postV100AddedPaths().filter(path=>path.endsWith('.json')&&['docs/','tests/','models/','public/','src/'].some(prefix=>path.startsWith(prefix)))].sort());
   assert.equal(sha(read(CI_BUILD_DEPLOYMENT_REVIEW_PATH)), CI_BUILD_DEPLOYMENT_REVIEW_SHA256, 'Previous CI proof stays byte-for-byte frozen');
   const workflow = read('.github/workflows/pages.yml');
   assert.match(workflow, /- run: npm run build\n/);

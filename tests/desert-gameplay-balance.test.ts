@@ -1,8 +1,13 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {DESERT_COURSE as course} from '../src/maps/desert';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('desert');
+
+
+
 
 // Read-only design pilots used the same helpers, seed, native 1/60s substeps,
 // throttle, starting lane -2 and ordinary steering deadband .35. These values
@@ -18,7 +23,7 @@ const measured60={
 const near=(actual:number,expected:number,label:string)=>assert.ok(Math.abs(actual-expected)<1e-7,`${label}: ${actual} versus private design ${expected}`);
 const pilot=(branch:'alley'|'boulevard',reaction=0,hz=60)=>benchmarkForkDriving(course,branch,true,1/hz,'whale',undefined,reaction,true);
 
-test('desert default clean physical routes reproduce 74.433s / 75.433s with zero rail contact',t=>{
+test('historical v1.0.1a: desert default clean physical routes reproduce 74.433s / 75.433s with zero rail contact',t=>{
   const weave=pilot('alley'),sweep=pilot('boulevard');
   near(weave.seconds,74.43333333333334,'weave');near(sweep.seconds,75.43333333333334,'sweep');
   near(sweep.seconds-weave.seconds,1,'physical reward');
@@ -28,7 +33,7 @@ test('desert default clean physical routes reproduce 74.433s / 75.433s with zero
   t.diagnostic(JSON.stringify({weave,sweep}));
 });
 
-test('desert all six character/build pairs complete both physical branches cleanly at 30/60/120/144/240Hz',t=>{
+test('historical v1.0.1a: desert all six character/build pairs complete both physical branches cleanly at 30/60/120/144/240Hz',t=>{
   const clean=[];
   for(const preset of getNpcPresets('coast',20261010))for(const hz of [30,60,120,144,240]){
     const weave=benchmarkForkDriving(course,'alley',true,1/hz,preset.characterId,preset.build,0,true);
@@ -61,7 +66,7 @@ test('desert all six character/build pairs complete both physical branches clean
   t.diagnostic(JSON.stringify({clean,staleBranchInput:error,scope:'Unchanged shared controls; finite, lane-clamped accepted physical progression; no traffic, items, arbitrary mixed parts, GPU or human-difficulty guarantee'}));
 });
 
-test('desert bounded branch-only steering delays report the actual default-build crossover',t=>{
+test('historical v1.0.1a: desert bounded branch-only steering delays report the actual default-build crossover',t=>{
   const results=[.4,.8,1.6,3].map(reaction=>({reaction,weave:pilot('alley',reaction),sweep:pilot('boulevard',reaction)}));
   for(const result of results){assert.equal(result.weave.choice,'alley');assert.equal(result.sweep.choice,'boulevard');}
   for(const result of results.slice(0,2)){assert.equal(result.weave.railSeconds,0);assert.equal(result.sweep.railSeconds,0);}

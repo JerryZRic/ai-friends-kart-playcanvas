@@ -1,0 +1,396 @@
+{
+  "sourceSha256": "43b35df2e30310835d73cf5dfc341d3c69a048d7884a5351bf1f56e783742451",
+  "historicalMaterials": [
+    {
+      "name": "Garden connected sunlit meadow",
+      "color": "#95af6a",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden connected deep fern terraces",
+      "color": "#638e67",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden planted rich soil",
+      "color": "#695438",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden warm dressed garden paving",
+      "color": "#c1b99b",
+      "roughness": 0.96,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Garden graded gravel shoulder stitches",
+      "color": "#b6a989",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden whole footprint limestone foundations",
+      "color": "#a39576",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden pale limestone planter rims",
+      "color": "#ddd0a6",
+      "roughness": 0.94,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden opaque honey laminated timber",
+      "color": "#ba8b50",
+      "roughness": 0.9,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden opaque umber truss webs",
+      "color": "#86633d",
+      "roughness": 0.98,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden quiet bronze bearing hardware",
+      "color": "#a08640",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Garden emerald modeled leaf surfaces",
+      "color": "#37795d",
+      "roughness": 0.8,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden lime new modeled leaf surfaces",
+      "color": "#a4b755",
+      "roughness": 0.85,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden teal modeled leaf underside",
+      "color": "#4b8073",
+      "roughness": 0.92,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden warm ivory petal solids",
+      "color": "#eee0a8",
+      "roughness": 0.85,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden muted coral petal solids",
+      "color": "#d9947b",
+      "roughness": 0.83,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden amber petal and seed heart",
+      "color": "#d7b757",
+      "roughness": 0.78,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden continuous green stems and midribs",
+      "color": "#557845",
+      "roughness": 0.95,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden specimen board and bench oak",
+      "color": "#9c7851",
+      "roughness": 0.95,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden ivory inset route glyphs",
+      "color": "#f3e7ba",
+      "roughness": 0.91,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden seed section chestnut shell",
+      "color": "#906141",
+      "roughness": 0.94,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden seed section warm heartwood",
+      "color": "#d2af74",
+      "roughness": 0.93,
+      "texture": "wood",
+      "metalness": 0
+    }
+  ],
+  "materials": [
+    {
+      "name": "Garden connected sunlit meadow",
+      "color": "#afd285",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden connected deep fern terraces",
+      "color": "#7cac79",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden planted rich soil",
+      "color": "#806a52",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden warm dressed garden paving",
+      "color": "#e4d7b9",
+      "roughness": 0.96,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Garden graded gravel shoulder stitches",
+      "color": "#d6cbad",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden whole footprint limestone foundations",
+      "color": "#c7bd9e",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden pale limestone planter rims",
+      "color": "#f6edcf",
+      "roughness": 0.94,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden opaque honey laminated timber",
+      "color": "#e0c897",
+      "roughness": 0.9,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden opaque umber truss webs",
+      "color": "#a08b63",
+      "roughness": 0.98,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden quiet bronze bearing hardware",
+      "color": "#b5a472",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Garden emerald modeled leaf surfaces",
+      "color": "#418768",
+      "roughness": 0.8,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden lime new modeled leaf surfaces",
+      "color": "#bfd178",
+      "roughness": 0.85,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden teal modeled leaf underside",
+      "color": "#709b80",
+      "roughness": 0.92,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Garden warm ivory petal solids",
+      "color": "#f5d7df",
+      "roughness": 0.85,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden muted coral petal solids",
+      "color": "#eaa8c1",
+      "roughness": 0.83,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden amber petal and seed heart",
+      "color": "#eacb99",
+      "roughness": 0.78,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Garden continuous green stems and midribs",
+      "color": "#668b55",
+      "roughness": 0.95,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden specimen board and bench oak",
+      "color": "#bfa47b",
+      "roughness": 0.95,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden ivory inset route glyphs",
+      "color": "#fff4da",
+      "roughness": 0.91,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Garden seed section chestnut shell",
+      "color": "#a67d60",
+      "roughness": 0.94,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Garden seed section warm heartwood",
+      "color": "#e4c798",
+      "roughness": 0.93,
+      "texture": "wood",
+      "metalness": 0
+    }
+  ],
+  "componentCount": 86,
+  "payloadSha256": "a0bb9e754f25dc6b65a6eeb3dad463b724a52c7a4ead8f4e3683d1fc950a96ae",
+  "groups": [
+    {
+      "id": "garden-polish-nursery-fascia-and-rose-planters",
+      "componentIndices": [
+        2113,
+        2114,
+        2115,
+        2116,
+        2117,
+        2118,
+        2119,
+        2120,
+        2121,
+        2122,
+        2123,
+        2124,
+        2125,
+        2126,
+        2127,
+        2128,
+        2129,
+        2130,
+        2131,
+        2132,
+        2133,
+        2134,
+        2135,
+        2136,
+        2137,
+        2138,
+        2139,
+        2140,
+        2141,
+        2142,
+        2143,
+        2144,
+        2145,
+        2146,
+        2147,
+        2148,
+        2149,
+        2150,
+        2151,
+        2152,
+        2153,
+        2154,
+        2155,
+        2156,
+        2157,
+        2158,
+        2159,
+        2160,
+        2161,
+        2162,
+        2163,
+        2164,
+        2165,
+        2166,
+        2167,
+        2168,
+        2169,
+        2170,
+        2171,
+        2172,
+        2173,
+        2174,
+        2175,
+        2176,
+        2177,
+        2178,
+        2179,
+        2180,
+        2181,
+        2182,
+        2183,
+        2184,
+        2185,
+        2186,
+        2187,
+        2188,
+        2189,
+        2190,
+        2191,
+        2192,
+        2193,
+        2194,
+        2195,
+        2196,
+        2197,
+        2198
+      ]
+    }
+  ]
+}

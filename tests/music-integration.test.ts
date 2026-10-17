@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {createRaceShell} from '../src/race-shell';
 import type {MusicState} from '../src/background-music';
 import {MAP_PROFILES} from '../src/map-profiles';
-import {raceMusicUrl,bindMusicNavigation,bindMusicSettings,getDocumentMusic,type BackgroundMusic} from '../src/music-ui';
+import {RACE_MUSIC,raceMusicUrl,bindMusicNavigation,bindMusicSettings,getDocumentMusic,type BackgroundMusic} from '../src/music-ui';
 
 const read=(path:string)=>readFileSync(path,'utf8');
 function fakeMusic(){
@@ -94,17 +94,17 @@ test('newer Resume/Restart clicks cancel an exit before synchronous phase change
  nav.dispose();
 });
 
-test('waterpark has a fixed track while every land course selects from all six tracks',()=>{
- for(const map of Object.keys(MAP_PROFILES))assert.equal(raceMusicUrl(map,()=>0),map==='waterpark'?'./assets/music/dfy_water.mp3':'./assets/music/dfy01.mp3');
- assert.equal(raceMusicUrl(undefined,()=>0), './assets/music/dfy01.mp3');assert.match(read('src/race-shell.ts'),/getDocumentMusic\(document, options.map\)/);
+test('every race map including waterpark shares the same music pool',()=>{
+ for(const map of Object.keys(MAP_PROFILES))assert.equal(raceMusicUrl(map,()=>0),RACE_MUSIC[0]);
+ assert.equal(raceMusicUrl(undefined,()=>0), RACE_MUSIC[0]);assert.match(read('src/race-shell.ts'),/getDocumentMusic\(document, options.map\)/);
  const license=read('public/assets/music/LICENSE.txt');for(const name of ['dfy_theme.mp3','dfy_water.mp3',...Array.from({length:6},(_,i)=>`dfy0${i+1}.mp3`)])assert.ok(license.includes(name));
  assert.match(license,/Copyright © 2026 JerryZRic/);assert.match(license,/musical works and recordings/);assert.match(license,/Commercial use/);assert.match(license,/prior permission/);assert.match(license,/statutory exceptions/);assert.match(license,/AGPL-3.0-only terms are unchanged/);
 });
 
 
-test('each new land race draws once; countdown, pause, resume and GO never redraw',()=>{
+test('each new land or water race draws once; countdown, pause, resume and GO never redraw',()=>{
  const originalRandom=Math.random;let draws=0;
- Math.random=()=>((draws++ % 6)+.5)/6;
+ Math.random=()=>((draws++ % RACE_MUSIC.length)+.5)/RACE_MUSIC.length;
  try {
   for(const map of ['coast','waterpark'] as const){
    const {music}=fakeMusic();const selected:string[]=[];let preloads=0;
@@ -115,20 +115,26 @@ test('each new land race draws once; countdown, pause, resume and GO never redra
    const shell=createRaceShell(doc,el('canvas'),{map,driver:'whale',music,audioFactory:()=>null});
    assert.equal(preloads,0);assert.equal(selected.length,0);
    const before=draws;
-   for(let i=0;i<6;i++){
+   for(let i=0;i<RACE_MUSIC.length;i++){
     shell.start(3);assert.equal(preloads,i+1);assert.equal(selected.length,i+1);
-    assert.equal(selected[i],map==='waterpark'?'./assets/music/dfy_water.mp3':`./assets/music/dfy0${i+1}.mp3`);
+    assert.equal(selected[i],RACE_MUSIC[i]);
     shell.renderCountdown(2);shell.setPaused(true,2);shell.setPaused(false,2);shell.renderCountdown(0);shell.renderCountdown(0);shell.setPaused(true);shell.setPaused(false);
     assert.equal(selected.length,i+1,'resume and repeated GO preserve the selected source');
    }
-   assert.equal(draws-before,map==='waterpark'?0:6);shell.dispose();
+   assert.equal(draws-before,RACE_MUSIC.length);shell.dispose();
   }
  }finally {Math.random=originalRandom;}
 });
 
-test('all six land selection intervals and fixed water selection are exact',()=>{
- for(const map of Object.keys(MAP_PROFILES))for(let i=0;i<6;i++){
-  assert.equal(raceMusicUrl(map,()=>i/6),map==='waterpark'?'./assets/music/dfy_water.mp3':`./assets/music/dfy0${i+1}.mp3`);
+test('all race selection intervals are exact and the pool excludes menu music',()=>{
+ for(const map of Object.keys(MAP_PROFILES))for(let i=0;i<RACE_MUSIC.length;i++){
+  assert.equal(raceMusicUrl(map,()=>i/RACE_MUSIC.length),RACE_MUSIC[i]);
  }
- assert.equal(raceMusicUrl('coast',()=>.999999),'./assets/music/dfy06.mp3');
+ assert.equal(raceMusicUrl('coast',()=>.999999),RACE_MUSIC.at(-1));
+ assert.equal(RACE_MUSIC.length,17);
+ assert.equal(new Set(RACE_MUSIC).size,RACE_MUSIC.length);
+ assert.ok(!RACE_MUSIC.some(url=>/THEME|Love_on_Kart/i.test(url)));
+ assert.ok(RACE_MUSIC.includes('./assets/music/dfy02.mp3'));
+ for(const url of RACE_MUSIC)assert.ok(existsSync(new URL('../public/'+url.slice(2),import.meta.url)),url); 
+ assert.ok(!RACE_MUSIC.includes('./assets/music/dfy_theme.mp3')); 
 });

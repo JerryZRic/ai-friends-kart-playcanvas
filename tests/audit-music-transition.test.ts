@@ -1,3 +1,4 @@
+import {postV100AddedPaths} from './helpers/post-v100-current';
 import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100PathsWithin, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
@@ -22,7 +23,7 @@ test('music pins the exact dev baseline and complete bounded change and addition
   assert.equal(sha(read(MUSIC_REVIEW_PATH)), MUSIC_REVIEW_SHA256);
   assert.deepEqual(Object.keys(review.changes), [...MUSIC_PRODUCTION_PATHS, ...MUSIC_BRIDGE_PATHS, ...MUSIC_REGRESSION_PATHS, ...MUSIC_DOCUMENTATION_PATHS]);
   assert.deepEqual(Object.keys(review.additions), [...MUSIC_SOURCE_ADDITIONS, ...MUSIC_ASSET_ADDITIONS, ...MUSIC_OTHER_ADDITIONS]);
-  assert.deepEqual(walk('public/assets/music').sort(), [...MUSIC_ASSET_ADDITIONS].sort());
+  assert.deepEqual(walk('public/assets/music').sort(), [...MUSIC_ASSET_ADDITIONS,...postV100AddedPaths().filter(path=>path.startsWith('public/assets/music/'))].sort());
   const baseline = [...Object.keys(review.protectedFiles), ...Object.keys(review.changes), ...Object.keys(review.binaryChanges)];
   assert.equal(new Set(baseline).size, 991);
   for (const dir of ['.github', 'docs', 'models', 'public', 'scripts', 'tests']) assert.deepEqual(walk(dir).sort(), [...baseline, ...musicAddedPaths()].filter(path => path.startsWith(dir + '/')).sort(), dir + ' complete exact inventory');
@@ -65,7 +66,7 @@ test('all frozen evidence stays byte exact and only exact CI workflow and compos
   for (const path of ['docs/stable-pages-manifest.json', 'LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs', 'scripts/compose-dev-pages.mjs', '.github/workflows/pages.yml', '.github/workflows/pages-stable.yml', 'package.json', 'package-lock.json']) assert.ok(Object.hasOwn(review.protectedFiles, path), path);
   assert.ok(Object.keys(review.changes).every(path => !path.endsWith('.json') && !path.startsWith('.github/') && !path.startsWith('docs/') && !path.startsWith('scripts/')));
   const baselineJson = Object.keys(review.protectedFiles).filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort());
+  assert.deepEqual(['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort(), [...baselineJson, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH,...postV100AddedPaths().filter(path=>path.endsWith('.json')&&['docs/','tests/','models/','public/','src/'].some(prefix=>path.startsWith(prefix)))].sort());
   const stable = JSON.parse(restoreStablePagesV100RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')));
   assert.equal(stable.stableCommit, '16dd2d0540e300de6e85aa816e73ed94d4e796c0'); assert.equal(stable.files.length, 219);
   assert.equal(stable.files.reduce((sum: number, row: {bytes: number}) => sum + row.bytes, 0), 328819057);

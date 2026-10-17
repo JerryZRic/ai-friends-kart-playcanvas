@@ -1,10 +1,15 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {FOREST_COURSE as course} from '../src/maps/forest';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('forest');
 
-test('forest physical service path saves a modest 0.767s without hidden speed bonuses',t=>{
+
+
+
+test('historical v1.0.1a: forest physical service path saves a modest 0.767s without hidden speed bonuses',t=>{
   const rim=benchmarkForkDriving(course,'boulevard',true),service=benchmarkForkDriving(course,'alley',true);
   assert.ok(Math.abs(rim.seconds-service.seconds-46/60)<1/60+1e-8);
   assert.equal(rim.branchRailSeconds,0);assert.equal(service.branchRailSeconds,0);
@@ -12,7 +17,7 @@ test('forest physical service path saves a modest 0.767s without hidden speed bo
   t.diagnostic(JSON.stringify({rim,service}));
 });
 
-test('forest all six character/build pairs finish both physical branches at 30/60/120/144/240Hz',t=>{
+test('historical v1.0.1a: forest all six character/build pairs finish both physical branches at 30/60/120/144/240Hz',t=>{
   const results=[];
   for(const preset of getNpcPresets('coast',20261010))for(const hz of [30,60,120,144,240]){
     const service=benchmarkForkDriving(course,'alley',true,1/hz,preset.characterId,preset.build,0,true);
@@ -37,7 +42,7 @@ test('forest all six character/build pairs finish both physical branches at 30/6
   t.diagnostic(JSON.stringify({clean:results,staleBranchInput:errors}));
 });
 
-test('forest actual branch rail errors can erase the service-path reward under equal decision timing',t=>{
+test('historical v1.0.1a: forest actual branch rail errors can erase the service-path reward under equal decision timing',t=>{
   const results=[0,.4,.8,1.2,1.6,2,3].map(reaction=>({reaction,service:benchmarkForkDriving(course,'alley',true,1/60,'whale',undefined,reaction,true),rim:benchmarkForkDriving(course,'boulevard',true,1/60,'whale',undefined,reaction,true)}));
   assert.equal(results[0].service.branchRailSeconds,0);
   assert.ok(results[3].service.branchRailSeconds>.4);assert.equal(results[3].rim.branchRailSeconds,0);

@@ -1,0 +1,173 @@
+name: Certify and publish v1.1.0 stable
+on:
+  push:
+    branches: [main, release/v1.1.0-certification]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: stable-v1.1.0-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  certify:
+    if: ${{ github.repository == 'JerryZRic/ai-friends-kart-playcanvas' && (github.ref == 'refs/heads/release/v1.1.0-certification' || github.event.before == '0df2a42a1578551c018fc84675ff988632221220') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GAME_BUILD_CHANNEL: release
+      DEV_BUILD_SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify one-shot request, ancestry and prior candidate certification on main
+        run: python3 scripts/stable-release.py validate-request
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Run complete stable regression suite
+        id: full_suite
+        # The certification branch always runs the complete suite. Only the final
+        # main merge can reuse its completed workflow, after validate-request has
+        # proved both parents, the entire identical tree, and the successful jobs.
+        if: ${{ github.ref == 'refs/heads/release/v1.1.0-certification' }}
+        run: npm test
+      - name: Exercise release failure guards
+        run: |
+          python3 tests/test_html_release.py -v
+          python3 tests/test_stable_release.py -v
+          python3 tests/test_prepare_reviewed_successor.py -v
+          python3 tests/test_server_runtime.py -v
+      - run: npm run build
+      - name: Rebuild corresponding source and verify distribution
+        run: npm run test:dist
+      - name: Desktop wrapper security, exit and local protocol tests
+        run: |
+          node scripts/desktop/test-desktop-exit.cjs
+          node scripts/desktop/test-desktop-security.cjs .
+          node scripts/desktop/test-protocol.cjs .
+      - name: Fetch pinned official Windows Electron runtime
+        run: |
+          curl --fail --location --retry 2 --output electron-win32-x64.zip https://github.com/electron/electron/releases/download/v44.6.0/electron-v44.6.0-win32-x64.zip
+          echo '04d6071f8deca081044e1398f96f65e4c1550ffdb3f882504cd78528d821d422  electron-win32-x64.zip' | sha256sum --check --strict
+      - name: Verify exact source and package identical HTML and Windows game files
+        env:
+          FULL_SUITE_STEP_OUTCOME: ${{ steps.full_suite.outcome }}
+        run: |
+          python3 scripts/stable-release.py package
+          python3 scripts/stable-release.py verify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stable-release-${{ github.sha }}
+          path: release-stable/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Package bounded server runtime without changing full HTML distribution
+        run: python3 scripts/package-server-runtime.py dist server-runtime
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-runtime-${{ github.sha }}
+          path: server-runtime/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+  windows-smoke:
+    needs: certify
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: stable-release-${{ github.sha }}
+          path: release-stable
+      - name: Start packaged native Windows window and renderer, then exit
+        shell: pwsh
+        run: |
+          Expand-Archive release-stable/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip -DestinationPath portable
+          Copy-Item scripts/desktop/smoke-main.cjs portable/resources/app/smoke-main.cjs
+          $env:KART_SMOKE_OUTPUT = Join-Path $pwd 'WINDOWS-STARTUP-SMOKE.json'
+          # Change only this disposable extracted copy, never the published ZIP.
+          $packagePath = Join-Path $pwd 'portable/resources/app/package.json'
+          $package = Get-Content $packagePath -Raw | ConvertFrom-Json
+          $package.main = 'smoke-main.cjs'
+          $package | ConvertTo-Json | Set-Content $packagePath -Encoding utf8
+          $exe = Join-Path $pwd 'portable/AI Friends Kart.exe'
+          $process = Start-Process -FilePath $exe -PassThru
+          if (-not $process.WaitForExit(90000)) {
+            Stop-Process -Id $process.Id -Force
+            throw 'Native Windows startup exceeded 90 seconds'
+          }
+          if (-not (Test-Path $env:KART_SMOKE_OUTPUT)) { throw 'No native startup proof was produced' }
+          $proof = Get-Content $env:KART_SMOKE_OUTPUT -Raw | ConvertFrom-Json
+          if ($proof.status -ne 'passed' -or $proof.platform -ne 'win32' -or $proof.arch -ne 'x64' -or $proof.electron -ne '44.6.0') { throw 'Native startup smoke failed or wrong runtime' }
+          Get-Content $env:KART_SMOKE_OUTPUT
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-startup-smoke-${{ github.sha }}
+          path: WINDOWS-STARTUP-SMOKE.json
+          if-no-files-found: warn
+          retention-days: 30
+  publish:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [certify, windows-smoke]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: stable-release-${{ github.sha }}
+          path: release-stable
+      - name: Revalidate source/certification and read back every archived byte
+        run: |
+          python3 scripts/stable-release.py validate-request
+          python3 scripts/stable-release.py verify
+      - name: Create only a new exact-commit tag and verified draft
+        run: |
+          python3 scripts/stable-release.py preflight
+          cat > release-notes.txt <<'NOTES'
+          v1.1.0 stable · HTML + Windows x64
+
+          The certification candidate passed the complete npm test suite and the entire release certification workflow, including native Windows startup smoke. The final main commit has exactly the same complete Git tree, with the approved main parent and certified candidate as its two parents. Only that full regression suite is reused. Typecheck, production build, corresponding-source rebuild, npm run test:dist, packaging checks and native Windows startup smoke run again on the exact final main commit. RELEASE-MANIFEST.json records the original full-suite run and attempt, candidate commit/tree, and final main commit.
+
+          Track posters are historical route previews. Current track layout is checked against the release source; the newest cosmetic details may differ from those posters.
+
+          HTML: download ai-friends-kart-playcanvas-v1.1.0-html.zip, extract completely, serve index.html over HTTP(S) at a root or subdirectory. Do not double-click file://. Serve .glb.gz as original compressed bytes without Content-Encoding:gzip; MP3 as audio/mpeg.
+
+          Windows: download ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip, extract completely and run AI Friends Kart.exe. Keep adjacent DLL/resources/locales. Unsigned portable official Electron 44.6.0 x64. Windows 10/11 with WebGL2 GPU drivers; F11 fullscreen. Keep OS security enabled. Structural, security, local-protocol and packaging tests pass; A separate native Windows CI smoke opens the packaged window/renderer document and exits. GPU/gameplay/performance/pointer-lock validation has not been performed.
+
+          Both archives contain identical game files and corresponding game source. Windows additionally contains Desktop-Source; complete packaging source is also in source.zip. Preserve LICENSE, NOTICE, SOURCE.txt, model/food/prop/third-party notices, and music license. Six character models retain separate noncommercial terms; this release grants no new model/IP rights. Original music remains separately licensed for this game/forks and noncommercial use; commercial use needs author permission.
+
+          RELEASE-MANIFEST.json records exact source commit and every packaged file. Verify all five release assets using SHA256SUMS (the checksum file does not checksum itself). source.zip is also a standalone asset. Prior releases remain unchanged.
+          NOTES
+          printf '\nExact source commit: %s\nCertification: https://github.com/%s/actions/runs/%s\n' "$GITHUB_SHA" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> release-notes.txt
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/v1.1.0 -f sha="$GITHUB_SHA"
+          gh release create v1.1.0 release-stable/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --verify-tag --title 'v1.1.0 stable · HTML + Windows' --notes-file release-notes.txt --draft --latest=false
+      - name: Verify uploads then publish stable latest
+        run: |
+          python3 scripts/stable-release.py verify-draft
+          python3 scripts/stable-release.py check-refs
+          python3 scripts/stable-release.py verify-certification
+          gh release edit v1.1.0 --repo "$GITHUB_REPOSITORY" --draft=false --prerelease=false --latest
+          python3 scripts/stable-release.py verify-published

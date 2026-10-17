@@ -1,3 +1,4 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
 /** Disk-backed serial baseline/candidate audit,448MiB heap per process. */
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
@@ -11,7 +12,7 @@ import {desertSignedVolume,desertCoflushChecks} from './desert-enrichment-solids
 import {desertAssemblyChecks} from './desert-enrichment-assemblies';
 const [stage,run,ledger]=process.argv.slice(2),baseline=stage==='baseline',started=Date.now();assert.ok(['baseline','candidate'].includes(stage));
 const path=baseline?'docs/scene-baselines/desert-scenery.ts.txt':'src/desert-scenery.ts',sourceSha256=sha(readFileSync(path));
-const {geometry:g,theme}=await desertSceneData(baseline,ledger),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
+const {geometry:g,theme,...historicalScope}=baseline?await desertSceneData(true,ledger):await postV100HistoricalScene('desert'),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
 const textureHash=digest(Object.fromEntries((['stone','asphalt','wood','grass'] as const).map(k=>[k,[...landTexturePixels(k)]])));
 const sourceNormalAudit:any[]=[],actualBounds={min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};
 for(const b of g.batches){assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.positions.every(Number.isFinite)&&b.uvs.every(Number.isFinite));assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));const normals=pc.calculateNormals(b.positions,b.indices);assert.ok(normals.every(Number.isFinite));sourceNormalAudit.push({batch:b.name,vertices:normals.length/3,sha256:digest(normals),zeroLength:normals.filter((_,i)=>i%3===0&&Math.hypot(normals[i],normals[i+1],normals[i+2])<1e-8).length});for(const index of b.indices)for(let k=0;k<3;k++){actualBounds.min[k]=Math.min(actualBounds.min[k],b.positions[index*3+k]);actualBounds.max[k]=Math.max(actualBounds.max[k],b.positions[index*3+k]);}}
@@ -28,7 +29,7 @@ else{
  coflush=desertCoflushChecks(mesh,parts,addedSet,terrainIds);
 }
 assert.equal(sha(readFileSync(path)),sourceSha256,'Source did not change while audited');
-const report={schema:'desert-enrichment-geometry-v1',stage,sourceSha256,budget:g.budget,protectedComponents:baseline?g.components.length:old.protection.prefixes.components.count,addedComponents,newTriangles,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Actual CPU indexed-source geometry audit; no native pixels,GPU orFPS certification']};
+const report={schema:'desert-enrichment-geometry-v1',stage,sourceSha256,...historicalScope,budget:g.budget,protectedComponents:baseline?g.components.length:old.protection.prefixes.components.count,addedComponents,newTriangles,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Enrichment shell/support checks cover exact historical 6bb9 core; current independent and polish tests remain current','Actual CPU indexed-source geometry audit; no native pixels,GPU orFPS certification']};
 writeFileSync(join(run,stage+'-report.json'),JSON.stringify(report)+'\n');
 if(process.env.DESERT_ENRICHMENT_AUDIT_DIR){const output=resolve(process.env.DESERT_ENRICHMENT_AUDIT_DIR);mkdirSync(output,{recursive:true});writeFileSync(join(output,stage+'-geometry-report.json'),JSON.stringify(report,null,2)+'\n');if(baseline)writeFileSync(join(output,'baseline-indexed-contract.json'),readFileSync(join(run,'baseline-contract.json')));}
 console.log(JSON.stringify({...report,sourceNormalAudit:sourceNormalAudit.map(({batch,vertices,zeroLength})=>({batch,vertices,zeroLength})),assembly:assembly?{...assembly,groundWitnesses:assembly.groundWitnesses?.length,contacts:assembly.contacts?.length,intrusions:assembly.intrusions?.length}:null,coflush:coflush?{facePairs:coflush.facePairs,exposed:coflush.exposed.length,buried:coflush.buried.length,oppositeContactPatches:coflush.oppositeContactPatches}:null}));

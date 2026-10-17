@@ -1,3 +1,4 @@
+import {assertCurrentGardenMaterial} from './current-garden-polish';
 /** Immutable original indexed-prefix proof. No scenery labels define original membership. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -30,11 +31,11 @@ export function assertGardenOriginalComponents(components:GardenSceneGeometry['c
  assert.deepEqual(original,old.components,'Every original component, order, kind, role, landmark and full indexed range must remain exact');
  assert.equal(gardenDigest(original),old.prefixes.components.digest,'Immutable complete original component manifest');return original;
 }
-export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenRuntimeBaseline()){
+export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenBaselineContract=gardenRuntimeBaseline(),historicalCore=false){
  assert.deepEqual(old.budget,{batches:21,triangles:108557,vertices:117223});assert.equal(g.batches.length,21);
  const original=assertGardenOriginalComponents(g.components,old);
  for(const [i,b]of g.batches.entries()){
-  const before=old.batches[i];assert.deepEqual(gardenMaterial(b),before.material,'Exact original material values and batch order');
+  const before=old.batches[i];historicalCore?assert.deepEqual(gardenMaterial(b),before.material,'Exact historical core material'):assertCurrentGardenMaterial(i,gardenMaterial(b),before.material);
   assert.ok(b.positions.length/3>=before.vertices&&b.indices.length>=before.indices);
   assert.equal(gardenDigest(b.positions.slice(0,before.vertices*3)),before.positions,b.name+' original positions');
   assert.equal(gardenDigest(b.uvs.slice(0,before.vertices*2)),before.uvs,b.name+' original UVs');
@@ -43,8 +44,8 @@ export function assertGardenOriginalProjection(g:GardenSceneGeometry,old:GardenB
  }
  return original;
 }
-export function assertGardenPreservation(g:GardenSceneGeometry,theme:unknown,old:GardenBaselineContract){
- assertGardenOriginalProjection(g,old);assert.deepEqual(theme,old.theme,'Exact original garden lighting/fog/sky/theme');
+export function assertGardenPreservation(g:GardenSceneGeometry,theme:unknown,old:GardenBaselineContract,historicalCore=false){
+ assertGardenOriginalProjection(g,old,historicalCore);assert.deepEqual(theme,old.theme,'Exact original garden lighting/fog/sky/theme');
  for(const [i,b]of g.batches.entries()){
   const before=old.batches[i],normals=pc.calculateNormals(b.positions,b.indices);
   assert.equal(gardenDigest(normals.slice(0,before.vertices*3)),before.normals,b.name+' actual computed original normals');

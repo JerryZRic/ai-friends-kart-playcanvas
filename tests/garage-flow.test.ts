@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {garageRaceEntry, garageBackEntry, garageInitialBuild, garageCombinedStats, filterGarageParts} from '../src/kart-garage';
+import {garageRaceEntry, garageBackEntry, garageHomeEntry, garageInitialBuild, garageCombinedStats, filterGarageParts} from '../src/kart-garage';
 import {catalog, defaultBuild, KART_SLOTS, loadGarageState, saveGarageState, defaultGarageState, type KartBuild} from '../src/kart-build';
 import {kartPresets} from '../src/kart-presets';
 const parse = (path: string) => new URL(path, 'https://example.com/dev/');
@@ -117,4 +117,30 @@ test('garage home link retains driver, latest car and options after editing', as
  const source=readFileSync('src/kart-garage.ts','utf8');
  assert.match(source,/data-garage-home href="\$\{garageHomeEntry/);
  assert.match(source,/\[data-garage-home\].*garageHomeEntry/);
+});
+
+
+test('garage preserves accepted default-on and explicit opt-out across dev, stable and desktop navigation', () => {
+  const previous = globalThis.location;
+  try {
+    for (const pathname of ['/dev/garage.html', '/ai-friends-kart-playcanvas/garage.html', '/garage.html', '/C:/kart/garage.html']) {
+      globalThis.location = {pathname} as Location;
+      for (const entry of [garageRaceEntry, garageBackEntry, garageHomeEntry]) {
+        for (const flow of ['', '&flow=free']) {
+          const search = '?map=snow&difficulty=hard&seed=42' + flow;
+          assert.equal(parse(entry('grok', mixed, search)).searchParams.get('itemStacking'), '1');
+          const off = parse(entry('grok', mixed, search + '&itemStacking=0'));
+          assert.equal(off.searchParams.get('itemStacking'), '0');
+          assert.equal(parse(entry('grok', mixed, off.search)).searchParams.get('itemStacking'), '0', 'explicit opt-out survives repeated navigation');
+          const url = parse(entry('grok', mixed, search + '&itemStacking=1'));
+          assert.equal(url.searchParams.get('itemStacking'), '1');
+          assert.equal(url.searchParams.get('driver'), 'grok'); assert.equal(url.searchParams.get('map'), 'snow');
+          assert.equal(url.searchParams.get('difficulty'), 'hard'); assert.equal(url.searchParams.get('seed'), '42');
+          assert.deepEqual(JSON.parse(url.searchParams.get('kart')!), mixed);
+        }
+      }
+    }
+  } finally {
+    if (previous === undefined) delete (globalThis as {location?: Location}).location; else globalThis.location = previous;
+  }
 });

@@ -8,13 +8,13 @@
 
 以 **PlayCanvas Engine、TypeScript 與 Vite** 打造的街機風格卡丁車遊戲，包含 12 張陸地地圖與 1 張水上地圖。從六位綁定骨架的角色車手中選一位，與其餘五位對手較量，體驗漂移加速、道具與可自由環繞的追蹤鏡頭。
 
-**[瀏覽器 main 版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [HTML 測試版 / 歷史 Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
+**[瀏覽器 main 版](https://jerryzric.github.io/ai-friends-kart-playcanvas/) · [獨立 dev 預覽](https://jerryzric.github.io/ai-friends-kart-playcanvas/dev/) · [Web / HTML 與 Windows 下載](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)**
 
 > 遊戲介面採簡體中文，品牌名稱使用英文。上方語言連結僅切換說明文件。程式碼與原創資產（音樂除外）採 AGPL-3.0-only 授權；六個角色模型另受非商業使用限制。詳見[授權與模型權利](#license-and-model-rights)。
 
-## v1.0.2a 預發佈測試版
+## v1.1.0 穩定版
 
-**v1.0.2a 是供測試的 prerelease，僅提供獨立 Web / HTML 靜態部署 ZIP，不提供新的 Windows 套件。** 保留 13 張地圖、六名車手，以及 55 個主題 / 330 件零件的六槽食物車庫；11 張新增陸地地圖均包含場景豐富化成果。已發佈檔案、原始碼提交、校驗值與驗證說明以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。網站根目錄是 main 發佈入口，`/dev/` 是獨立開發預覽。
+**v1.1.0 是 Web / HTML 與 Windows x64 正式穩定版。** 保留 13 張地圖、六名車手，以及 55 個主題 / 330 件零件的六槽食物車庫；11 張新增陸地地圖均包含場景豐富化成果。已發佈檔案、原始碼提交、校驗值與驗證說明以[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)為準。網站根目錄是 main 發佈入口，`/dev/` 是獨立開發預覽。
 
 自由模式包含六角色隨機動態封面、旋轉地圖預覽、角色 3D 檢視、車輛選擇、簡單 / 普通 / 困難比賽設定與畫面設定。封面使用自訂 PlayCanvas 2D 網格動畫，並非 Cubism；大肥魚（WHALE）的出現機率為 35%，其餘五位均分 65%。故事模式仍顯示開發中提示。[實作說明與限制](docs/free-mode.md)。
 
@@ -46,7 +46,8 @@
 - **六位可選車手：** WHALE、GEMINI、GPT、CLAUDE、GROK 和 GLM，隨附已綁定骨架的角色模型
 - **三圈比賽：** 在陸地與水上地圖和五位 AI 對手競速，包含碰撞、圈數與名次追蹤，以及迷你地圖
 - **街機風格駕駛：** 手動油門、煞車、倒車、手煞車漂移與漂移加速
-- **固定雙道具槽：** 拾取時先填 `E`，再填 `R`；使用後另一槽不會移位。滿倉時不會消耗道具箱。NPC 同樣最多攜帶兩個道具，手機端提供兩個獨立道具按鈕。
+- **固定 E/R 雙槽與三同類升級：** 正式版與 dev 預設啟用堆疊。同槽兩個普通同類道具每次使用消耗一個，第三枚變成一次 super；已有 super 後，同類箱會被消耗，但不強化、不填另一槽、不產生 Token。有空槽時神秘箱照常抽取，雙槽滿時不接收。E/R 共用 1.2 秒冷卻。暫停設定中切換後須套用並重新開始；`itemStacking=0` 恢復普通雙槽。玩家與 NPC 使用相同規則，槽位固定不移位。
+- **音樂：** 所有陸地與水上比賽共用 17 首隨機曲池；選單播放 THEME，Love 保留且不進入比賽曲池。保留原音質 MP3，不轉碼；音樂適用獨立非商業授權。
 - **三種道具：** 渦輪加速、能量護盾與追蹤脈衝
 - **可視道具箱：** 半透明箱內展示原創 3D 道具，25% 為問號隨機箱；拾取後立即消失，比賽運行八秒後刷新。HUD 顯示由同一模型投影產生的道具圖片。[說明](docs/item-pickups.md)
 - **道具 NPC：** 對手會爭搶真實道具箱、安全調整路線，並擇機加速、開盾或脈衝攻擊玩家及其他 NPC；頭頂道具與使用特效清晰可見。[說明](docs/npc-tactics.md)
@@ -64,13 +65,17 @@
 
 ## 網頁 / HTML 下載套件
 
-從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 [`ai-friends-kart-playcanvas-v1.0.2a-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/ai-friends-kart-playcanvas-v1.0.2a-html.zip)，並核對隨附的 SHA-256 校驗值。完整解壓縮後，透過 nginx 或其他 HTTP(S) 靜態伺服器部署；不支援以 `file://` 直接開啟 `index.html`。保留全部資產、授權聲明與對應原始碼檔案。根目錄與子目錄部署的驗證結果以發行說明為準，相對路徑設計不能取代對實際發行套件的驗證。
+從[發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases)選擇 [`ai-friends-kart-playcanvas-v1.1.0-html.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，並核對隨附的 SHA-256 校驗值。完整解壓縮後，透過 nginx 或其他 HTTP(S) 靜態伺服器部署；不支援以 `file://` 直接開啟 `index.html`。保留全部資產、授權聲明與對應原始碼檔案。根目錄與子目錄部署的驗證結果以發行說明為準，相對路徑設計不能取代對實際發行套件的驗證。
 
-正式 GitHub Pages 網站提供執行時檔案；對應原始碼請從 [v1.0.2a 預發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.2a)下載獨立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.0.2a/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 與全部執行時資源。歷史離線平衡報告及資料保留於 `/dev/`。v1.0.2a 從最終合併後的 `main` 提交建立 tag，不直接從 `dev` 發佈。
+正式 GitHub Pages 網站提供執行時檔案；對應原始碼請從 [v1.1.0 發佈頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.1.0)下載獨立的 [`source.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/source.zip)。完整 HTML ZIP 仍包含 `source.zip` 與全部執行時資源。歷史離線平衡報告及資料保留於 `/dev/`。v1.1.0 從最終合併後的 `main` 提交建立 tag，不直接從 `dev` 發佈。
 
-## 歷史 Windows 套件（v1.0.0）
+GitHub Pages 根目錄與 Timewish 託管執行版不包含離線平衡診斷資料集；診斷入口連結至固定版本的 [v1.1.0 完整 HTML 套件](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-html.zip)，不會跳轉至隨 dev 更新的診斷頁。完整 HTML ZIP 保留資料集與可用的離線診斷。
 
-**v1.0.2a 不提供 Windows 建置。** [v1.0.0 發行頁面](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/tag/v1.0.0)保留歷史 Windows 下載，不包含本次預發佈的新功能。檔名、校驗值與操作說明以該版本為準。需要 64 位元 Windows 10/11 與支援 WebGL2 的 GPU。完整解壓縮 ZIP，將 DLL、`resources` 和 `locales` 資料夾保留在一起，執行 **AI Friends Kart.exe**；按 **F11** 切換全螢幕。請勿停用 Windows 安全防護。封裝與自動化檢查成功，不代表已驗證原生 Windows GPU、效能或輸入裝置相容性。
+## Windows x64 套件
+
+下載 [`ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip`](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/ai-friends-kart-playcanvas-v1.1.0-windows-x64.zip) · [SHA256SUMS](https://github.com/JerryZRic/ai-friends-kart-playcanvas/releases/download/v1.1.0/SHA256SUMS)
+
+需要 64 位元 Windows 10/11 與支援 WebGL2 的 GPU。完整解壓縮 ZIP，將 DLL、`resources` 和 `locales` 資料夾保留在一起，執行 **AI Friends Kart.exe**；按 **F11** 切換全螢幕。請勿停用 Windows 安全防護。自動封裝、安全及協定檢查不能證實原生 Windows GPU、效能或輸入相容性。
 
 ## 操作方式
 
@@ -130,6 +135,8 @@ npm run build
 
 ### GitHub Pages
 
+版本標記：正式版 `v1.1.0`，dev 使用實際建置提交 `v1.1.0-dev.<sha6>`，未提供提交的本機建置為 `v1.1.0-dev.local`。
+
 開發版版本號附加實際 commit 雜湊值的前六碼。發行版本從 `main` 建立 tag，套件必須使用該標籤對應的原始碼；dev 部署必須保留 main 網站根目錄。
 
 [Build and publish PlayCanvas game 工作流程](.github/workflows/pages.yml)會在發佈前檢查、測試及建置所選原始碼。main 版位於網站根目錄，獨立預覽位於 `/dev/`。請依目前分支的工作流程觸發條件與發佈選項操作；dev 部署必須保留main 根目錄。發行套件必須使用對應版本標籤的相同原始碼。
@@ -161,8 +168,9 @@ npm run build
 
 **程式碼與原創遊戲資產（音樂除外）：** 採 AGPL-3.0-only 授權，包括原創介面、賽道、卡丁車、場景物件及可編輯原始檔。詳見 [LICENSE](LICENSE)、[NOTICE](NOTICE) 和 [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。PlayCanvas 與 fflate 保留各自的 MIT 授權。
 
-**原創音樂（© 2026 JerryZRic）：** 適用[獨立音樂授權](public/assets/music/LICENSE.txt)。三首音樂作品與錄音及其改編可隨本遊戲與 fork 非商業使用、修改及散布，須署名並保留聲明；商用須事先取得 JerryZRic 同意。不因此授權無關專案或脫離遊戲及其 fork 單獨散布、銷售音樂。程式碼的 AGPL 條款不變。
+**原創音樂（© 2026 JerryZRic）：** 適用[獨立音樂授權](public/assets/music/LICENSE.txt)。音樂作品與錄音及其改編可隨本遊戲與 fork 非商業使用、修改及散布，須署名並保留聲明；商用須事先取得 JerryZRic 同意。不因此授權無關專案或脫離遊戲及其 fork 單獨散布、銷售音樂。程式碼的 AGPL 條款不變。
 
 **六個角色的駕駛與獨立站姿肖像模型：** 適用獨立的權利條件。專案擁有者表示，這些模型是 Tripo Free 方案產出，受非商業使用限制；確切的再散布條款尚未經獨立確認。本專案收錄模型不代表授予新的模型授權、Creative Commons 授權或商業使用許可。AGPL 不會為角色模型重新授權。重複使用或再散布之前，請確認適用的權利條件，並取得所有必要許可。詳見 [MODEL-NOTICE.txt](MODEL-NOTICE.txt)。
 
 本專案包含可供遊戲執行的最終角色檔案，不含角色的 Blender 專案或高多邊形製作原始檔。原創卡丁車／場景物件的可編輯檔案仍作為對應原始碼一併提供。本展示遊戲沒有廣告、付費功能或商業模型銷售。
+

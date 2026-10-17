@@ -1,0 +1,477 @@
+{
+  "sourceSha256": "5154e79c50baceb5ea860ff2e3afc3e5fc23a1032bbac26b0c29e3787ad8f97f",
+  "theme": {
+    "textureLabel": "original Copperwing Airfield concrete dry upland and opaque aircraft skins",
+    "ambient": "#d7e4ef",
+    "sky": "#e6f0f7",
+    "fogStart": 1250,
+    "fogEnd": 2650,
+    "cameraName": "Copperwing Airfield chase camera",
+    "sunName": "Copperwing Airfield warm late afternoon sunlight",
+    "sunColor": "#fff5e5",
+    "sunIntensity": 1.55,
+    "sunEuler": [
+      38,
+      -29,
+      0
+    ]
+  },
+  "budget": {
+    "batches": 20,
+    "triangles": 98507,
+    "vertices": 108752
+  },
+  "materials": [
+    {
+      "name": "Airfield connected dry ochre uplands",
+      "color": "#d3dfd1",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield connected muted sage banks",
+      "color": "#adc6b2",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield connected warm clay contours",
+      "color": "#c4cecf",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield charcoal runway and taxiway",
+      "color": "#8298ad",
+      "roughness": 0.97,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield full-width gravel shoulder stitches",
+      "color": "#c7d3dd",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield whole footprint warm concrete",
+      "color": "#dbe2e7",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield pale limestone edge and plaques",
+      "color": "#f2f3ee",
+      "roughness": 0.96,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield opaque blue steel structure",
+      "color": "#50789f",
+      "roughness": 0.65,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Airfield dark steel joints and webs",
+      "color": "#3b5575",
+      "roughness": 0.7,
+      "texture": "none",
+      "metalness": 0.5
+    },
+    {
+      "name": "Airfield muted copper dimensional panels",
+      "color": "#c3d2df",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Airfield cream closed fuselage skins",
+      "color": "#fafbf7",
+      "roughness": 0.72,
+      "texture": "none",
+      "metalness": 0.22
+    },
+    {
+      "name": "Airfield cool teal closed wing skins",
+      "color": "#94bfdb",
+      "roughness": 0.66,
+      "texture": "none",
+      "metalness": 0.35
+    },
+    {
+      "name": "Airfield shaded blue wing undersides",
+      "color": "#698bae",
+      "roughness": 0.79,
+      "texture": "none",
+      "metalness": 0.28
+    },
+    {
+      "name": "Airfield dark rubber closed tread",
+      "color": "#354451",
+      "roughness": 0.95,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield pale alloy hubs and bearing shoes",
+      "color": "#d3e2ed",
+      "roughness": 0.5,
+      "texture": "none",
+      "metalness": 0.6
+    },
+    {
+      "name": "Airfield warm brass spars and rib edges",
+      "color": "#e6bb67",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.42
+    },
+    {
+      "name": "Airfield muted terracotta tower fins",
+      "color": "#e9f0f5",
+      "roughness": 0.8,
+      "texture": "none",
+      "metalness": 0.2
+    },
+    {
+      "name": "Airfield deep teal museum signs",
+      "color": "#315575",
+      "roughness": 0.8,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield original ivory runway markings",
+      "color": "#fff7dd",
+      "roughness": 0.94,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield sparse grounded dry grass",
+      "color": "#b5c9a8",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    }
+  ],
+  "componentCount": 133,
+  "payloadSha256": "7100fcf5a7ad768c8982ccf3a57215a0021a5ed7d3d9400c57dadd2691647595",
+  "groups": [
+    {
+      "id": "airfield-polish-runway-terminal-framing",
+      "componentIndices": [
+        1713,
+        1714,
+        1715,
+        1716,
+        1717,
+        1718,
+        1719,
+        1720,
+        1721,
+        1722,
+        1723,
+        1724,
+        1725,
+        1726,
+        1727,
+        1728,
+        1729,
+        1730,
+        1731,
+        1732,
+        1733,
+        1734,
+        1735,
+        1736,
+        1737,
+        1738,
+        1739,
+        1740,
+        1741,
+        1742,
+        1743,
+        1744,
+        1745,
+        1746,
+        1747,
+        1748,
+        1749,
+        1750
+      ]
+    },
+    {
+      "id": "airfield-polish-control-deck-crown",
+      "componentIndices": [
+        1751,
+        1752,
+        1753,
+        1754,
+        1755,
+        1756,
+        1757,
+        1758,
+        1759,
+        1760,
+        1761,
+        1762,
+        1763,
+        1764,
+        1765,
+        1766,
+        1767,
+        1768,
+        1769,
+        1770,
+        1771,
+        1772
+      ]
+    },
+    {
+      "id": "airfield-polish-ground-service-train",
+      "componentIndices": [
+        1773,
+        1774,
+        1775,
+        1776,
+        1777,
+        1778,
+        1779,
+        1780,
+        1781,
+        1782,
+        1783,
+        1784,
+        1785,
+        1786,
+        1787,
+        1788,
+        1789,
+        1790,
+        1791,
+        1792,
+        1793,
+        1794,
+        1795,
+        1796,
+        1797,
+        1798,
+        1799,
+        1800,
+        1801,
+        1802,
+        1803,
+        1804,
+        1805,
+        1806,
+        1807,
+        1808,
+        1809,
+        1810,
+        1811,
+        1812,
+        1813,
+        1814,
+        1815,
+        1816,
+        1817,
+        1818,
+        1819,
+        1820,
+        1821,
+        1822,
+        1823,
+        1824,
+        1825,
+        1826,
+        1827,
+        1828,
+        1829,
+        1830,
+        1831,
+        1832,
+        1833,
+        1834,
+        1835,
+        1836,
+        1837,
+        1838,
+        1839,
+        1840,
+        1841,
+        1842,
+        1843,
+        1844,
+        1845
+      ]
+    }
+  ],
+  "historicalMaterials": [
+    {
+      "name": "Airfield connected dry ochre uplands",
+      "color": "#b8a66e",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield connected muted sage banks",
+      "color": "#8e9c78",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield connected warm clay contours",
+      "color": "#a9805c",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield charcoal runway and taxiway",
+      "color": "#626564",
+      "roughness": 0.97,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield full-width gravel shoulder stitches",
+      "color": "#b5aa89",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield whole footprint warm concrete",
+      "color": "#b6ad92",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield pale limestone edge and plaques",
+      "color": "#d9c8a1",
+      "roughness": 0.96,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield opaque blue steel structure",
+      "color": "#527782",
+      "roughness": 0.65,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Airfield dark steel joints and webs",
+      "color": "#455b62",
+      "roughness": 0.7,
+      "texture": "none",
+      "metalness": 0.5
+    },
+    {
+      "name": "Airfield muted copper dimensional panels",
+      "color": "#b37d55",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.45
+    },
+    {
+      "name": "Airfield cream closed fuselage skins",
+      "color": "#e6d6ab",
+      "roughness": 0.72,
+      "texture": "none",
+      "metalness": 0.22
+    },
+    {
+      "name": "Airfield cool teal closed wing skins",
+      "color": "#679394",
+      "roughness": 0.66,
+      "texture": "none",
+      "metalness": 0.35
+    },
+    {
+      "name": "Airfield shaded blue wing undersides",
+      "color": "#526b73",
+      "roughness": 0.79,
+      "texture": "none",
+      "metalness": 0.28
+    },
+    {
+      "name": "Airfield dark rubber closed tread",
+      "color": "#343b3c",
+      "roughness": 0.95,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield pale alloy hubs and bearing shoes",
+      "color": "#b9b9a9",
+      "roughness": 0.5,
+      "texture": "none",
+      "metalness": 0.6
+    },
+    {
+      "name": "Airfield warm brass spars and rib edges",
+      "color": "#bb9c58",
+      "roughness": 0.6,
+      "texture": "none",
+      "metalness": 0.42
+    },
+    {
+      "name": "Airfield muted terracotta tower fins",
+      "color": "#b7795b",
+      "roughness": 0.8,
+      "texture": "none",
+      "metalness": 0.2
+    },
+    {
+      "name": "Airfield deep teal museum signs",
+      "color": "#41616b",
+      "roughness": 0.8,
+      "texture": "none",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield original ivory runway markings",
+      "color": "#eee2b8",
+      "roughness": 0.94,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Airfield sparse grounded dry grass",
+      "color": "#a3a46f",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    }
+  ],
+  "historicalTheme": {
+    "textureLabel": "original Copperwing Airfield concrete dry upland and opaque aircraft skins",
+    "ambient": "#d1c7a9",
+    "sky": "#d7e5e4",
+    "fogStart": 1250,
+    "fogEnd": 2650,
+    "cameraName": "Copperwing Airfield chase camera",
+    "sunName": "Copperwing Airfield warm late afternoon sunlight",
+    "sunColor": "#ffedc7",
+    "sunIntensity": 1.55,
+    "sunEuler": [
+      38,
+      -29,
+      0
+    ]
+  },
+  "scope": "Exact current palette and appended indexed payload/ownership. Does not certify support graphs, exposed joints or absence of interpenetration."
+}

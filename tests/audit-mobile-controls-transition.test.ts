@@ -1,3 +1,4 @@
+import {postV100Review} from './helpers/post-v100-current';
 import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {inputModeSourcePaths} from './helpers/input-mode-reviewed-revisions';
 import {loadingGuideHash, loadingGuidePathsWithin, restoreLoadingGuideBytes} from './helpers/loading-guide-reviewed-revisions';
@@ -49,7 +50,7 @@ test('mobile overlay only accepts exact incoming pairs and rejects aliases, curr
     for (const alias of ['./' + path, path + '/extra']) assert.equal(mobileControlsHash(alias, row.previousSha256), row.previousSha256);
   }
   assert.throws(() => mobileControlsHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
-  for (const path of ['src/race-camera.ts', 'src/land-camera.ts', 'src/vehicle-controls.js']) assert.equal(mobileControlsHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/race-camera.ts', 'src/land-camera.ts']) assert.equal(mobileControlsHash(path, 'unchanged'), 'unchanged');
   assert.throws(() => mobileControlsHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
   assert.throws(() => assertMobileControlsReviewBytes(read(MOBILE_CONTROLS_REVIEW_PATH) + ' '));
   for (const mutate of [
@@ -78,4 +79,8 @@ test('source additions and camera stability closures include the exact mobile mo
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of mobileControlsAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path);
   }
+});
+
+test('mobile-controls accepts only exact post-v100 pairs for formerly untouched inputs',()=>{
+ for(const path of ['src/vehicle-controls.js']){const row=postV100Review().changes[path];assert.ok(row);assert.equal(mobileControlsHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>mobileControlsHash(path,'unchanged'));assert.equal(mobileControlsHash('./'+path,'unchanged'),'unchanged');}
 });

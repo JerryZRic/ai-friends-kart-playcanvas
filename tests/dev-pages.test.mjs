@@ -108,7 +108,8 @@ test('dev-only workflow shares stable concurrency and never uploads the dev buil
   assert.match(workflow, /group: github-pages/);
   assert.match(workflow, /cancel-in-progress: false/);
   assert.match(workflow, /path: dist-pages\s/);
-  assert.match(workflow, /node scripts\/compose-pages-snapshot\.mjs baseline-pages verified-build\/dist dist-pages dev/);
+  assert.match(workflow, /node scripts\/compose-pages-snapshot\.mjs baseline-pages dist-dev dist-pages dev/);
+  assert.match(workflow, /node scripts\/prepare-pages-dev\.mjs verified-build\/dist dist-dev/);
   assert.equal((workflow.match(/node scripts\/verify-pages-snapshot\.mjs/g) || []).length, 2);
   assert.match(workflow, /retention-days: 30/);
   assert.doesNotMatch(workflow, /preview: true|contents: write|windows-latest/);

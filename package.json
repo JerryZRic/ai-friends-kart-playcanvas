@@ -1,13 +1,13 @@
 {
   "name": "ai-friends-kart-playcanvas",
-  "version": "1.0.2-alpha.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "check": "tsc --noEmit",
-    "test": "node --import tsx --test --test-concurrency=2 tests/*.test.*",
+    "test": "node --import tsx --test tests/audit-post-v100-successor.check.ts && node --import tsx --test --test-concurrency=2 tests/*.test.*",
     "build": "npm run check && vite build && node scripts/package-source.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "models:fetch": "node scripts/fetch-runtime-models.mjs",
@@ -28,3 +28,4 @@
     "vite": "8.3.3"
   }
 }
+

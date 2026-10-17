@@ -1,3 +1,4 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
 /** All safety acceptance below reads actual final indexed triangles. */
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
@@ -11,14 +12,15 @@ const [stage,run,ledger]=process.argv.slice(2),started=Date.now();assert.ok(['ba
 const receipt=JSON.parse(readFileSync('tests/fixtures/forest-enrichment-protected.json','utf8'));
 const path=stage==='baseline'?'docs/scene-baselines/forest-scenery.ts.txt':'src/forest-scenery.ts',source=readFileSync(path,'utf8'),sourceSha256=forestFileDigest(source);
 if(stage==='baseline')assert.equal(sourceSha256,receipt.originalScenerySha256);
-const scene=await instrumentForest(source),g=scene.geometry,protection=forestProtectedContract(scene);
+const historical=stage==='baseline'?null:await postV100HistoricalScene('forest',true);
+const scene=historical?.instrumented??await instrumentForest(source),g=scene.geometry,protection=forestProtectedContract(scene);
 const identities=scene.components.map(c=>({id:c.id,phase:c.phase,hash:forestDigest(forestPrimitivePayload(scene,c))}));
 if(stage==='baseline'){
  writeFileSync(join(run,'baseline-contract.json'),JSON.stringify({sourceSha256,protection,identities}));
  console.log(JSON.stringify({stage,sourceSha256,protectedComponents:protection.protectedParts.length,emittedComponents:identities.length}));
 }else{
  const baseline=JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));assert.equal(baseline.sourceSha256,receipt.originalScenerySha256);assert.deepEqual(protection,baseline.protection,'road, terrain, original landmarks, bridge, fork, route, textures and shared scene inputs stay byte-for-number exact');
- assert.equal(forestDigest(g),forestDigest(buildForestSceneGeometry(FOREST_COURSE)),'instrumentation cannot alter runtime buffers');
+ assert.equal(forestDigest(g),historical!.ordinaryGeometrySha256,'instrumentation cannot alter runtime buffers');
  const remaining=new Map<string,number>();for(const p of baseline.identities)remaining.set(p.hash,(remaining.get(p.hash)??0)+1);
  const changed=scene.components.filter(c=>{const hash=forestDigest(forestPrimitivePayload(scene,c)),count=remaining.get(hash)??0;if(count){remaining.set(hash,count-1);return false;}return true;});
  assert.ok(changed.length>0,'candidate must have an actual geometry change');assert.ok(changed.every(c=>['foliage','lowmass'].includes(c.phase)),'only ordinary cedar and low-mass geometry may differ');assert.ok(changed.filter(c=>c.phase==='lowmass').every(c=>/^woodland-(bank|bed)-/.test(c.kind)),'additional changed understory needs explicit emitted ownership and support audit');
@@ -102,7 +104,7 @@ if(stage==='baseline'){
   if(exposed>1e-7)duplicates.push({face:q.id,other:other.id,component:parts.owner.get(q.id)?.kind,otherComponent:parts.owner.get(other.id)?.kind,exposed});
  }
  assert.deepEqual(duplicates.slice(0,12),[],'changed surfaces have positive-area exposed duplicate skins');
- const report={sourceSha256,baselineSourceSha256:baseline.sourceSha256,counts,protectedComponents:protection.protectedParts.length,emittedComponents:scene.components.length,changedComponents:changed.length,changedFaces:changedFaces.length,treeVertices,rootFootprints,cameraVertices,bankFootprints,bedFootprints,bankTerrainCells,bankCameraFaces,bedTopFaces,intentionalBedTreeContacts,intentionalBoundaryBaseContacts,coflushPairs,durationSeconds:(Date.now()-started)/1000,maxRSSKiB:process.resourceUsage().maxRSS,limitations:['CPU indexed source geometry; no GPU, browser, native vehicle or performance claim','Camera coverage uses conservative source blocker volumes; separate whole-boom checks use actual indexed triangles','Exact original protected geometry is unchanged; unrelated original contacts are not re-certified']};
+ const report={auditScope:historical!.auditScope,executedSourceSha256:historical!.executedSourceSha256,sourceSha256,baselineSourceSha256:baseline.sourceSha256,counts,protectedComponents:protection.protectedParts.length,emittedComponents:scene.components.length,changedComponents:changed.length,changedFaces:changedFaces.length,treeVertices,rootFootprints,cameraVertices,bankFootprints,bedFootprints,bankTerrainCells,bankCameraFaces,bedTopFaces,intentionalBedTreeContacts,intentionalBoundaryBaseContacts,coflushPairs,durationSeconds:(Date.now()-started)/1000,maxRSSKiB:process.resourceUsage().maxRSS,limitations:['CPU indexed source geometry; no GPU, browser, native vehicle or performance claim','Camera coverage uses conservative source blocker volumes; separate whole-boom checks use actual indexed triangles','Exact original protected geometry is unchanged; unrelated original contacts are not re-certified']};
  assert.equal(forestFileDigest(readFileSync(path)),sourceSha256,'source stayed stable during audit');writeFileSync(join(run,'candidate-report.json'),JSON.stringify(report));
  if(process.env.FOREST_ENRICHMENT_AUDIT_DIR){mkdirSync(process.env.FOREST_ENRICHMENT_AUDIT_DIR,{recursive:true});writeFileSync(join(process.env.FOREST_ENRICHMENT_AUDIT_DIR,'geometry-report.json'),JSON.stringify(report,null,2)+'\n');}
  console.log(JSON.stringify(report));

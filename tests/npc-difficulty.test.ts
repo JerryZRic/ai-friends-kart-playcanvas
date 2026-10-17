@@ -62,7 +62,7 @@ test('coast uses seeded gameplay, actual loadout templates and no phase speed ha
  assert.match(cpuSource,/road=actorTrack\(b,c\)/);
  assert.match(cpuSource,/stepLandSpeed\(road,b.total,b.speed,control,/);
  assert.match(source,/const actorTrack=.*routes\.view\(id,total\):course.track;/);
- assert.match(readFileSync(new URL('../src/land-driving.ts',import.meta.url),'utf8'),/stepRaceKartSpeed\(launchSpeed,input,dt,tuning,boost,slow,offroad\)/);
+ assert.match(readFileSync(new URL('../src/land-driving.ts',import.meta.url),'utf8'),/stepRaceKartSpeed\(launchSpeed,input,dt,tuning,boost,slow,offroad,slowFactor\)/);
  assert.doesNotMatch(source+cpuSource,/maxSpeed\*\(\.9\+b.phase/);
  assert.doesNotMatch(source,/mat\.emissive\.set/,'shared template materials stay immutable');
  const a=seededRandom(42),b=seededRandom(42),c=seededRandom(43);

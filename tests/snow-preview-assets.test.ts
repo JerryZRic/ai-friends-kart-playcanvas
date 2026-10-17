@@ -1,15 +1,16 @@
-import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';
+import {assertHistoricalPreviewInputs,assertCurrentPreviewLayout} from './helpers/historical-preview-layout';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {SNOW_COURSE} from '../src/maps/snow';
 const sha=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
-test('snow menu poster retains its exact reviewed source provenance and bounded successors with both physical branches framed',()=>{
+test('snow historical menu poster retains exact provenance and compatible current route/landmark framing',()=>{
  const p=JSON.parse(readFileSync('docs/snow-preview-provenance.json','utf8'));
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
- for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),menuPresentationHash(path,digest),path);
+ assertHistoricalPreviewInputs('docs/snow-preview-provenance.json',p);
+ assertCurrentPreviewLayout('snow',p);
  assert.ok(p.batches<=24&&p.triangles<120000&&p.vertices<200000);
  assert.deepEqual(Object.keys(p.views).sort(),['snow-overview','snow-topdown','snow-driver-reveal','snow-plow-depot','snow-clock-hall'].sort());
  assert.match(p.normalShading.shader,/Backfacing/);

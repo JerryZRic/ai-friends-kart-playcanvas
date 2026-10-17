@@ -1,9 +1,14 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {GARDEN_COURSE as course} from '../src/maps/garden';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
-import {raceKartBuild} from '../src/kart-race';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('garden');
+
+
+
+
 // Frozen pre-production design observations. Every complete returned result is
 // compared exactly; these do not grant branch boosts or alter the shared pilot.
 // Character, build, physical branch, Hz, stale-input seconds, lap seconds,
@@ -95,7 +100,7 @@ const frozen:readonly (readonly [string,string,'alley'|'boulevard',number,number
  ["glm","balanced","alley",60,3,69.1333333333307,5.016666666666654,12.349999999999298,5.016666666666654],
  ["glm","balanced","boulevard",60,3,68.73333333333072,2.2999999999999967,11.94999999999932,2.28333333333333]];
 
-test('garden frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexample',t=>{
+test('historical v1.0.1a: garden frozen 86 one-lap player runs preserve all 60 clean build × rate × route results and the honest stale-input counterexample',t=>{
  const presets=getNpcPresets('coast',20261010),runs=[];
  for(const [character,preset,branch,hz,reaction,seconds,railSeconds,branchSeconds,branchRailSeconds]of frozen){
   const build=preset==='default'?raceKartBuild(''):presets.find(p=>p.characterId===character&&p.presetId===preset)!.build;

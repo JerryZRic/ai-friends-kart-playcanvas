@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildAirfieldSceneGeometry,AIRFIELD_SCENE_THEME} from '../src/airfield-scenery';
+import {buildSnowSceneGeometry,SNOW_SCENE_THEME} from '../src/snow-scenery';
+import {AIRFIELD_COURSE} from '../src/maps/airfield';
+import {SNOW_COURSE} from '../src/maps/snow';
+import {assertAirfieldOriginalProjection,airfieldFrozenBaseline} from './helpers/airfield-enrichment-contract';
+import {assertSnowOriginalProjection,snowFrozenBaseline} from './helpers/snow-enrichment-contract';
+import {assertCurrentPolishPayload,assertCurrentSceneTheme} from './helpers/current-airfield-snow-polish';
+for(const scene of ['airfield','snow'] as const)test(scene+' preserves exact historical indexed geometry and explicitly verifies current palette and every polish blocker',()=>{
+ const g:any=scene==='airfield'?buildAirfieldSceneGeometry(AIRFIELD_COURSE):buildSnowSceneGeometry(SNOW_COURSE);
+ const old=scene==='airfield'?airfieldFrozenBaseline():snowFrozenBaseline();
+ const projection=()=>scene==='airfield'?assertAirfieldOriginalProjection(g,old as any):assertSnowOriginalProjection(g,old as any);
+ projection();assertCurrentSceneTheme(scene,scene==='airfield'?AIRFIELD_SCENE_THEME:SNOW_SCENE_THEME,old.theme);
+ const blockers=assertCurrentPolishPayload(scene,g);assert.equal(blockers.size,3);
+ const material=g.batches[0].color;g.batches[0].color='#123456';assert.throws(projection);g.batches[0].color=material;
+ const solid=[...blockers.keys()][0],value=solid.triangles[0][0][0];solid.triangles[0][0][0]+=0.125;assert.throws(()=>assertCurrentPolishPayload(scene,g));solid.triangles[0][0][0]=value;
+ const part=[...blockers.values()][0][0],end=part.indexEnd;part.indexEnd-=3;assert.throws(()=>assertCurrentPolishPayload(scene,g));part.indexEnd=end;
+ const first=g.batches[0].positions[0];g.batches[0].positions[0]+=0.125;assert.throws(projection);g.batches[0].positions[0]=first;
+ projection();assertCurrentPolishPayload(scene,g);
+});

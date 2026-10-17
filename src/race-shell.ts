@@ -6,6 +6,7 @@ import { itemImage, type ItemKind } from './item-models';
 import { resolveCharacter } from './character-profiles';
 import { resolveMap, type MapId } from './map-profiles';
 import {parseMenuState, menuQuery, type MenuScreen} from './menu-state';
+import {mountItemExperimentSettings} from './item-experiment-settings';
 
 /** Both maps keep their own simulation, but share every player-facing race flow. */
 export interface RaceHudSnapshot {
@@ -28,6 +29,13 @@ export interface RaceHudSnapshot {
   held: ItemKind | null;
   /** Fixed R slot; an empty E slot never pulls this item left. */
   heldSecond?: ItemKind | null;
+  /** Opt-in dev experiment; omitted/false preserves the original fixed slots. */
+  itemStacking?: boolean;
+  heldCount?: number;
+  heldSecondCount?: number;
+  heldUpgraded?: boolean;
+  heldSecondUpgraded?: boolean;
+  itemUseCooldown?: number;
   slideLabel?: string;
   canUseItem?: boolean;
 }
@@ -168,9 +176,9 @@ export function createRaceMinimap(canvas: HTMLCanvasElement | null, track: RaceM
 
 export {RACE_SOUND_KEY,createRaceSound} from './race-sound';
 const ITEMS = Object.freeze({
-  boost: { shortName: '加速', name: 'ϟ 涡轮加速', alt: '涡轮加速模型', action: '使用涡轮加速' },
-  shield: { shortName: '护盾', name: '◉ 能量护盾', alt: '能量护盾模型', action: '使用能量护盾' },
-  pulse: { shortName: '脉冲', name: '✦ 追踪脉冲', alt: '追踪脉冲模型', action: '使用追踪脉冲' },
+  boost: { shortName: '加速', name: 'ϟ 涡轮加速', alt: '涡轮加速模型', action: '使用涡轮加速', upgradedHelp: '高阶加速 6.6 秒' },
+  shield: { shortName: '护盾', name: '◉ 能量护盾', alt: '能量护盾模型', action: '使用能量护盾', upgradedHelp: '高阶护盾 6 秒 · 净化脉冲' },
+  pulse: { shortName: '脉冲', name: '✦ 追踪脉冲', alt: '追踪脉冲模型', action: '使用追踪脉冲', upgradedHelp: '强脉冲 3 秒' },
 });
 
 const ITEM_SLOTS = [
@@ -244,6 +252,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     pauseActions.style.maxHeight = 'calc(100% - 32px)'; pauseActions.style.overflowY = 'auto';
     disposeMusicSettings = bindMusicSettings(musicPanel, music);
   }
+  const disposeItemExperimentSettings = mountItemExperimentSettings(document, pauseActions ?? null, elements.resumeRace, musicNavigation.navigate);
   const minimap = options.track ? createRaceMinimap(document.getElementById('map') as HTMLCanvasElement | null, options.track) : null;
   let mapId = options.map, phase: 'menu' | 'running' | 'paused' | 'finished' = 'menu';
   let raceMusicStarted = false, lastCount=-1, driftStage=0;
@@ -326,10 +335,18 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
       text('chargeLabel', snapshot.chargeLabel ?? ((snapshot.boost ?? 0) > 0 ? '涡轮加速中！' : (snapshot.shield ?? 0) > 0 ? '能量护盾保护中' : charge >= .6 ? '松开 Shift，释放漂移加速' : Math.abs(speed) < .1 ? '按住 W 油门起步' : snapshot.slideLabel || '左 Shift + A / D 手刹漂移'));
       // Index is identity: never filter, compact or shift an occupied R slot.
       const heldSlots = [snapshot.held, snapshot.heldSecond ?? null] as const;
+      const stacking = snapshot.itemStacking === true;
+      const itemCounts = [snapshot.heldCount, snapshot.heldSecondCount];
+      const upgradedSlots = [snapshot.heldUpgraded, snapshot.heldSecondUpgraded];
+      const cooldown = stacking ? nonnegative(snapshot.itemUseCooldown ?? 0) : 0;
       for (const [slot, ids] of ITEM_SLOTS.entries()) {
         const held = heldSlots[slot], button = elements[ids.button] as HTMLButtonElement | null;
-        const label = `${ids.key} 道具槽 · ${held ? ITEMS[held].action : '等待道具'}`;
-        const disabled = !held || phase !== 'running' || snapshot.canUseItem === false;
+        const upgraded = stacking && upgradedSlots[slot] === true;
+        const amount = clamp(count(itemCounts[slot], 1), 1, 2);
+        const badge = stacking && held ? upgraded ? 'super' : `普通 ×${amount}` : '';
+        const shieldActive = stacking && held === 'shield' && (snapshot.shield ?? 0) > 0;
+        const label = `${ids.key} 道具槽 · ${held ? ITEMS[held].action : '等待道具'}${badge ? ` · ${badge}` : ''}`;
+        const disabled = !held || phase !== 'running' || snapshot.canUseItem === false || cooldown > 0 || shieldActive;
         if (shownItems[slot] !== held) {
           shownItems[slot] = held;
           const image = elements[ids.image] as HTMLImageElement | null;
@@ -341,11 +358,15 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
             } else { image.removeAttribute('src'); image.alt = ''; }
           }
           if (button) button.dataset.held = held || 'empty';
-          button?.setAttribute('aria-label', label);
         }
+        // A count or grade change must update accessibility even if the model is cached.
+        button?.setAttribute('aria-label', label);
+        const slotLabel = button?.querySelector?.<HTMLElement>('.itemCopy > span');
+        if (slotLabel) slotLabel.textContent = `道具槽 ${ids.key}${badge ? ` · ${badge}` : ''}`;
         text(ids.name, held ? ITEMS[held].name : '◇ 等待道具');
         const help = slot === 0 ? snapshot.itemHelp : snapshot.itemHelpSecond;
-        text(ids.help, held ? help ?? `点击这里或按 ${ids.key} 使用` : '撞箱拾取 · 两格独立');
+        text(ids.help, held ? cooldown > 0 ? `共用冷却 ${(Math.ceil(cooldown * 10) / 10).toFixed(1)} 秒`
+          : shieldActive ? '护盾生效中 · 暂不可使用' : upgraded ? ITEMS[held].upgradedHelp : help ?? `点击这里或按 ${ids.key} 使用` : '撞箱拾取 · 两格独立');
         if (button) button.disabled = disabled;
         const mobileItem = document.querySelector?.<HTMLButtonElement>(`[data-mobile-action="${ids.action}"]`);
         if (mobileItem) {
@@ -363,7 +384,7 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
             } else { image.removeAttribute('src'); image.alt = ''; }
           }
           if (symbol) symbol.hidden = !!held;
-          if (name) name.textContent = `${ids.key} ${held ? ITEMS[held].shortName : '道具'}`;
+          if (name) name.textContent = `${ids.key} ${held ? upgraded ? 'super' : ITEMS[held].shortName + (stacking ? `×${amount}` : '') : '道具'}`;
         }
       }
     },
@@ -436,6 +457,6 @@ export function createRaceShell(document: Document, canvas: HTMLCanvasElement, o
     tone(frequency = 500, duration = .1) { sound.tone(frequency, duration); },
     toggleSound() { if (!disposed) { sound.toggle(); updateSound(); sound.tone(); } return sound.muted; },
     get muted() { return sound.muted; },
-    dispose() { if (disposed) return; disableItems(); disposed = true; disposeMusicSettings();disposeSoundSettings();document.removeEventListener?.('pointerdown',unlockSound,true);document.removeEventListener?.('keydown',unlockSound,true);document.removeEventListener?.('visibilitychange',visibilitySound);document.defaultView?.removeEventListener('blur',stopSound); musicNavigation.dispose(); sound.dispose(); clearToast(); },
+    dispose() { if (disposed) return; disableItems(); disposed = true; disposeItemExperimentSettings(); disposeMusicSettings();disposeSoundSettings();document.removeEventListener?.('pointerdown',unlockSound,true);document.removeEventListener?.('keydown',unlockSound,true);document.removeEventListener?.('visibilitychange',visibilitySound);document.defaultView?.removeEventListener('blur',stopSound); musicNavigation.dispose(); sound.dispose(); clearToast(); },
   };
 }

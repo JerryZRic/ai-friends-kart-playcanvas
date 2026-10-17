@@ -74,7 +74,7 @@ jobs:
           EXPECTED_PROVENANCE_SHA256: ${{ needs.build.outputs.provenance-sha256 }}
         run: node scripts/verified-build-artifact.mjs verify
       - name: Test isolated replacement and stale-publication guards
-        run: node --test tests/pages-snapshot.test.mjs
+        run: node --test tests/pages-snapshot.test.mjs tests/pages-dev-source.test.mjs
       - name: Check exact refs and latest successful Pages identity
         env:
           GH_TOKEN: ${{ github.token }}
@@ -83,12 +83,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/download-pages-snapshot.py
+      - name: Link exact dev corresponding source without duplicating the archive in Pages
+        run: node scripts/prepare-pages-dev.mjs verified-build/dist dist-dev
       - name: Replace only dev and verify stable root and cover bytes unchanged
-        run: node scripts/compose-pages-snapshot.mjs baseline-pages verified-build/dist dist-pages dev
+        run: node scripts/compose-pages-snapshot.mjs baseline-pages dist-dev dist-pages dev
       - uses: actions/upload-artifact@v4
         with:
           name: pages-preservation-report
-          path: pages-preservation-report.json
+          path: |
+            pages-preservation-report.json
+            dev-source-migration-report.json
           retention-days: 30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

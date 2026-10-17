@@ -1,3 +1,4 @@
+import {reviewedDesertCosmetics} from './helpers/desert-reviewed-cosmetics';
 // Independent emitted-geometry audit. These tests use rendered positions/indices,
 // never planned volumes, camera height answers, scene-provided road faces or
 // claimed component bounds as proof. Source provenance identifies parts only.
@@ -19,7 +20,7 @@ type V=readonly number[];
 type Triangle={id:number;batch:string;vertices:readonly number[];a:V;b:V;c:V;min:V;max:V};
 const auditStage=process.env.DESERT_AUDIT_STAGE??'all';
 const auditDirectory=process.env.DESERT_AUDIT_DIR??resolve('../land-map-artifacts/desert-audit');
-const sourceFiles=['src/maps/desert.ts','src/desert-scenery.ts','src/land-course-pickups.ts','src/race-camera.ts','src/land-camera.ts','src/land-road-mesh.ts','src/land-driving.ts','src/land-routes.ts','src/open-road.ts','tests/desert-independent-audit.test.ts'];
+const sourceFiles=['src/maps/desert.ts','src/desert-scenery.ts','src/land-course-pickups.ts','src/race-camera.ts','src/land-camera.ts','src/land-road-mesh.ts','src/land-driving.ts','src/land-routes.ts','src/open-road.ts','tests/desert-independent-audit.test.ts','tests/helpers/desert-reviewed-cosmetics.ts'];
 const sourceHashes=()=>Object.fromEntries(sourceFiles.map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));
 const hashesBefore=sourceHashes(),started=Date.now();
 const report:{stage:string;startedAt:string;sourceHashesBefore:Record<string,string>;sourceHashesAfter?:Record<string,string>;stable?:boolean;durationSeconds?:number;metrics:Record<string,unknown>;checks:{name:string;status:string;error?:string}[];limitations:string[]}={stage:auditStage,startedAt:new Date().toISOString(),sourceHashesBefore:hashesBefore,metrics:{},checks:[],limitations:['CPU emitted-source geometry audit only; no native game pixels, GPU, or FPS certification','Original blueprint volumes are locating and acceptance inputs only, never actual-mesh proof']};
@@ -501,13 +502,28 @@ audit('every desert pickup has physical mesh-clear approach rays and default fra
 });
 
 audit('desert camera mesh broadphase covers actual local triangles without unbounded source scans or whole-arch boxes','camera',t=>{
+  const cosmetics=reviewedDesertCosmetics(geometry);
+  // Exclusion is conditional on exact reviewed topology, preserved camera
+  // payloads, road reservation and current real rendered-face boom clearance.
+  const cosmeticIds=new Set(mesh.triangles.filter(triangle=>cosmetics.has(componentOf.get(triangle.id)!)).map(triangle=>triangle.id));
+  assert.equal(cosmeticIds.size,2840);
+  let cosmeticClearancePoses=0;
+  for(const edge of Object.values(DESERT_COURSE.edges))for(let s=0;s<edge.length;s+=35)for(const side of [-1,0,1])for(const view of [0,1])for(const orientation of allViews){
+    const {yaw,pitch,rearView}=orientation,frame=edge.sample(s,side*edge.laneLimitAt(s)),anchor=anchorAt(frame);
+    const desired=chaseCamera({position:frame.p,tangent:frame.t,view,rearView,orbit:{yaw,pitch}}).position;
+    const safe=safeLandCamera(anchor,desired,geometry.cameraObstacles),a=tuple(anchor),b=tuple(safe);
+    for(const face of mesh.query(a,b,.3))if(cosmeticIds.has(face.id))assert.ok(segmentTriangleDistance(a,b,face)>=.3-1e-7,`reviewed cosmetic face ${face.id} entered current camera boom`);
+    cosmeticClearancePoses++;
+  }
+  assert.ok(cosmeticClearancePoses>10000);
+  reportMetric('reviewedCosmeticExclusion',{triangles:cosmeticIds.size,components:cosmetics.size,cosmeticClearancePoses,strictMargin:.3});
   const triangleKey=(points:readonly V[])=>points.map(shapeKey).sort().join('|'),actualKeys=new Set(mesh.triangles.map(t=>triangleKey([t.a,t.b,t.c])));
   const payloads=geometry.cameraObstacles.filter(b=>b.triangles).map(b=>({kind:b.kind,triangles:b.triangles!,bounds:b.triangles!.map(points=>boundsOf(points))}));let totalTriangles=0,queries=0,maxCandidates=0;
   for(const blocker of geometry.cameraObstacles){assert.ok(blocker.triangles||blocker.heightfield,`${blocker.kind} is a broad solid box which may fill real architectural void`);}
   for(const payload of payloads){totalTriangles+=payload.triangles.length;for(const triangle of payload.triangles)assert.ok(actualKeys.has(triangleKey(triangle)),`${payload.kind} camera mesh invents a non-rendered face`);}
   const payloadKeys=new Set(payloads.flatMap(p=>p.triangles.map(triangleKey)));
   let requiredFaces=0,wayfindingFaces=0;
-  for(const triangle of mesh.triangles){const component=componentOf.get(triangle.id);if(!component||component.batch===terrainName||component.role==='road')continue;requiredFaces++;if(/sign|wayfind|icon|board/.test(component.kind))wayfindingFaces++;assert.ok(payloadKeys.has(triangleKey([triangle.a,triangle.b,triangle.c])),`runtime camera omitted actual ${component.kind} triangle ${triangle.id}`);}
+  for(const triangle of mesh.triangles){const component=componentOf.get(triangle.id);if(!component||component.batch===terrainName||component.role==='road'||cosmetics.has(component))continue;requiredFaces++;if(/sign|wayfind|icon|board/.test(component.kind))wayfindingFaces++;assert.ok(payloadKeys.has(triangleKey([triangle.a,triangle.b,triangle.c])),`runtime camera omitted actual ${component.kind} triangle ${triangle.id}`);}
   assert.ok(wayfindingFaces>0,'actual wayfinding boards/posts/icons remain physical camera obstacles');
   reportMetric('runtimeMeshCorrespondence',{requiredFaces,wayfindingFaces,payloadFaces:payloadKeys.size});
   const fields=geometry.cameraObstacles.filter(b=>b.heightfield);assert.equal(fields.length,1,'one exact source-connected terrain field');const field=fields[0].heightfield!;let fieldFaces=0;

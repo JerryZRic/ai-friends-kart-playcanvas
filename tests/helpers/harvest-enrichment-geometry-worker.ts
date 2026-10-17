@@ -1,3 +1,4 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
 /** Serial, independent Harvest preservation/contact/coflush audit. */
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
@@ -13,7 +14,7 @@ import {MeshOracle,ComponentOracle,area,area3D,cross2,boundsOf,height,hullXZ,pro
 const [stage,run,ledger]=process.argv.slice(2),baseline=stage==='baseline',started=Date.now();assert.ok(['baseline','candidate'].includes(stage));
 const receipt=JSON.parse(readFileSync('tests/fixtures/harvest-enrichment-protected.json','utf8'));
 const path=baseline?'docs/scene-baselines/harvest-scenery.ts.txt':'src/harvest-scenery.ts',sourceSha256=sha(readFileSync(path));
-const loaded=await harvestSceneData(baseline,ledger),g=loaded.geometry,originalCounts={components:g.components.length,foundations:g.foundations.length,props:g.props.length,cameraObstacles:g.cameraObstacles.length},provenance=harvestParts(g),protection=harvestProtection(g,provenance,loaded.theme);
+const loaded=baseline?await harvestSceneData(true,ledger):await postV100HistoricalScene('harvest'),g=loaded.geometry,originalCounts={components:g.components.length,foundations:g.foundations.length,props:g.props.length,cameraObstacles:g.cameraObstacles.length},provenance=harvestParts(g),protection=harvestProtection(g,provenance,loaded.theme);
 const identities=provenance.map(p=>({kind:p.kind,scope:p.scope,hash:digest(harvestPartPayload(g,p))}));
 const textureHash=digest(Object.fromEntries((['stone','asphalt','wood','grass'] as const).map(k=>[k,[...landTexturePixels(k)]])));
 const before=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
@@ -93,7 +94,7 @@ const landscape=harvestLandscapeChecks(g,mesh,parts,provenance,receipt,baseline)
 const assembly=harvestAssemblyChecks(g,mesh,parts,provenance,receipt,baseline);
 if(!baseline){assert.equal(g.components.length,before.originalCounts.components+assembly.pieces+landscape.components,'All original components remain and every new component is reviewed');assert.equal(g.foundations.length,before.originalCounts.foundations+assembly.assemblies);assert.deepEqual(g.foundations.slice(0,before.originalCounts.foundations),before.protection.foundations,'Original foundations stay exact ordered prefix');assert.equal(g.props.length,before.originalCounts.props+assembly.assemblies+landscape.trees);assert.equal(g.cameraObstacles.length,before.originalCounts.cameraObstacles+27+assembly.assemblies+landscape.cameraPayloads,'Only27 real orchard payloads and exact independent groups are added');}
 const camera=harvestCameraChecks(g,mesh,baseline,before?.camera);
-const report={schema:'harvest-enrichment-geometry-v1',stage,sourceSha256,budget:g.budget,camera,assembly,landscape,protectedParts:provenance.filter(p=>p.scope==='protected').length,changedParts:changed.length,changedKinds:[...new Set(changed.map(p=>p.kind))].sort(),inspectedFaces:inspectedFaces.length,cropFaces,cropRootVertices,cropTopVertices,cropTerrainIntersections,treeVertices,rootFootprints,treeContacts,roadPairs,cameraFaces,exposedCoflush:coflushWitnesses,newExposedCoflush:newCoflush,buriedCoflush,intentionalOppositeContacts,degenerateTopology,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1}};
+const report={auditScope:'Historical 6bb9 enrichment core; current geometry remains separately checked',schema:'harvest-enrichment-geometry-v1',stage,sourceSha256,budget:g.budget,camera,assembly,landscape,protectedParts:provenance.filter(p=>p.scope==='protected').length,changedParts:changed.length,changedKinds:[...new Set(changed.map(p=>p.kind))].sort(),inspectedFaces:inspectedFaces.length,cropFaces,cropRootVertices,cropTopVertices,cropTerrainIntersections,treeVertices,rootFootprints,treeContacts,roadPairs,cameraFaces,exposedCoflush:coflushWitnesses,newExposedCoflush:newCoflush,buriedCoflush,intentionalOppositeContacts,degenerateTopology,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1}};
 assert.equal(sha(readFileSync(path)),sourceSha256,'Source unchanged during independent audit');
 writeFileSync(join(run,stage+'-report.json'),JSON.stringify(report)+'\n');
 if(baseline)writeFileSync(join(run,'baseline-contract.json'),JSON.stringify({sourceSha256,protection,identities,originalCounts,materials:g.batches.map(harvestMaterial),textureHash,coflush,degenerateTopology,camera})+'\n');

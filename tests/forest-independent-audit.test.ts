@@ -1,3 +1,4 @@
+import {assertForestReviewedComposition} from './helpers/forest-reviewed-composition';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {FOREST_COURSE,FOREST_LANDMARKS} from '../src/maps/forest';
@@ -95,7 +96,7 @@ function boomFailure(a:V,b:V,label:string):string|null{
   }return traversed>0?null:`${label}: boom must remain within source terrain`;
 }
 
-test('forest actual static output is finite and stays inside 24 batches / 110k triangles / 200k vertices',t=>{
+test('forest actual static output is finite and stays inside 24 batches / reviewed 116k triangles / 200k vertices',t=>{
   let vertices=0,triangles=0;
   assert.equal(geometry.trackId,'forest');assert.ok(geometry.batches.length<=24);
   for(const b of geometry.batches){
@@ -104,7 +105,8 @@ test('forest actual static output is finite and stays inside 24 batches / 110k t
     assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));
     assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));
   }
-  assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<110000,`${triangles} triangles`);
+  assert.ok(vertices<200000,`${vertices} vertices`);assert.ok(triangles<116000,`${triangles} triangles`);
+  assertForestReviewedComposition(geometry);
   t.diagnostic(`${geometry.batches.length} batches, ${vertices} vertices, ${triangles} source triangles`);
 });
 

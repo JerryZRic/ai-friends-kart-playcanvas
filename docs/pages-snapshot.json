@@ -4,22 +4,22 @@
   "target": "root",
   "sourceBranch": "main",
   "baseline": {
-    "runId": 38730764556,
-    "artifactId": 11971320123,
-    "deploymentId": 7091895135,
-    "commit": "09c29711d79571848d7b8aa2f902c4c142cae8bc",
+    "runId": 38942400345,
+    "artifactId": 12063872979,
+    "deploymentId": 7125830868,
+    "commit": "3baa3913acfc98d931e4b7208eb7c360828488a8",
     "branch": "dev",
-    "artifactDigest": "sha256:8419964d2af1d6674403e83210ff665dc4866f564a79b6e86a3934087c885dcc"
+    "artifactDigest": "sha256:e1d3f4cae35b9229643a1c0bbd1b7b0dd4825fcad44c3dbd2d0d34ff8d715469"
   },
   "expectedRefs": {
     "main": "CURRENT",
-    "dev": "09c29711d79571848d7b8aa2f902c4c142cae8bc",
+    "dev": "3baa3913acfc98d931e4b7208eb7c360828488a8",
     "feature/home-portraits-live2d": "8b88928b52a6074e9d86bb487bad1b37cbb16dfd"
   },
   "rootPublication": {
     "approved": true,
-    "mode": "release-source-and-dev-diagnostics",
-    "releaseTag": "v1.0.2a",
+    "mode": "release-source-and-offline-diagnostics",
+    "releaseTag": "v1.1.0",
     "sourceAsset": "source.zip"
   }
 }
