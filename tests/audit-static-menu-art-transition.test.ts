@@ -1,3 +1,5 @@
+import {postV100AddedPaths} from './helpers/post-v100-current';
+import {postV100Review} from './helpers/post-v100-current';
 import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import {V100_REVIEW_PATH, v100Review, v100Hash, v100SourcePaths, restoreV100Bytes} from './helpers/v100-reviewed-revisions';
 import {QUALITY_TIER_REVIEW_PATH} from './helpers/quality-tier-reviewed-revisions';
@@ -49,7 +51,7 @@ test('static title pins the exact published dev baseline and bounded source, ass
   assert.deepEqual(STATIC_MENU_ART_SOURCE_ADDITIONS, ['src/title-menu.css']);
   assert.ok(Object.keys(review.changes).every(path => !path.startsWith('tests/fixtures/') && !path.startsWith('docs/') && !path.startsWith('.github/')));
   assert.deepEqual(productionSources(walk('src')), staticMenuArtSourcePaths(previousSources()).sort(), 'Every current source is explicitly protected, changed or added');
-  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS].sort(), 'Only the explicitly reviewed title assets may be published');
+  assert.deepEqual(walk('public/menu-art').sort(), [...STATIC_MENU_ART_ASSET_ADDITIONS,...postV100AddedPaths().filter(path=>path.startsWith('public/menu-art/'))].sort(), 'Only the explicitly reviewed title assets may be published');
   assert.ok(Object.keys(review.protectedProduction).length > 100);
   for (const [path, hash] of Object.entries(review.protectedProduction)) assert.equal(sha(readFileSync(path)), musicHash(path, hash), path + ' exact music successor production bytes');
 });
@@ -104,7 +106,7 @@ test('static-title overlay rejects wrong incoming identities, aliases and modifi
   assert.throws(() => restoreStaticMenuArtBytes('src/mobile-controls.ts', 'unchanged'), undefined, 'V1.0 successor requires exact candidate bytes');
   assert.throws(() => staticMenuArtHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
   assert.throws(() => restoreStaticMenuArtBytes('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact current bytes');
-  for (const path of ['src/race-controls.ts', 'src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
+  for (const path of ['src/control-mode.ts', 'src/race-camera.ts', 'src/land-camera.ts', 'public/source.html']) {
     assert.equal(staticMenuArtHash(path, 'unchanged'), 'unchanged'); assert.equal(restoreStaticMenuArtBytes(path, 'unchanged'), 'unchanged');
   }
   assert.throws(() => staticMenuArtHash('docs/stable-pages-manifest.json', 'unchanged'), undefined, 'Repinned manifest requires its exact historical identity');
@@ -162,7 +164,7 @@ test('all frozen geometry, legal and historical proof bytes and all 216 stable p
   const historicalPaths = [...new Set([...Object.keys(review.protectedProduction), ...Object.keys(review.protectedLegal), ...Object.keys(review.protectedEvidence)])];
   const currentJson = ['docs', 'tests', 'models', 'public', 'src'].flatMap(walk).filter(path => path.endsWith('.json')).sort();
   const historicalJson = historicalPaths.filter(path => path.endsWith('.json') && path.includes('/'));
-  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
+  assert.deepEqual(currentJson, [...historicalJson, STATIC_MENU_ART_REVIEW_PATH, STABLE_PAGES_V050_REPIN_REVIEW_PATH, MUSIC_REVIEW_PATH, CI_BUILD_DEPLOYMENT_REVIEW_PATH, QUALITY_TIER_REVIEW_PATH, V100_REVIEW_PATH, STABLE_PAGES_V100_REPIN_REVIEW_PATH,...postV100AddedPaths().filter(path=>path.endsWith('.json')&&['docs/','tests/','models/','public/','src/'].some(prefix=>path.startsWith(prefix)))].sort(), 'Every historical JSON stays pinned and only the explicit successor transition JSONs are added');
   assert.deepEqual(walk('docs/scene-baselines').sort(), historicalPaths.filter(path => path.startsWith('docs/scene-baselines/')).sort(), 'Every archived source baseline remains present and immutable');
   const stableBytes = restoreStablePagesV050RepinBytes('docs/stable-pages-manifest.json', read('docs/stable-pages-manifest.json')), manifest = JSON.parse(stableBytes);
   assert.equal(sha(stableBytes), '5387aa54b2f677be0e912ff83e0e5237954d967b837e82f02ad7c172fa711add');
@@ -179,4 +181,8 @@ test('all new modules, art, regression, audit and legal dependencies join both s
     for (const path of staticMenuArtAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' explicit current static-title audit closure');
     for (const path of inputModeAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' retained input-mode audit closure');
   }
+});
+
+test('static-menu-art accepts only exact post-v100 pairs for formerly untouched inputs',()=>{
+ for(const path of ['src/race-controls.ts']){const row=postV100Review().changes[path];assert.ok(row);assert.equal(staticMenuArtHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>staticMenuArtHash(path,'unchanged'));assert.equal(staticMenuArtHash('./'+path,'unchanged'),'unchanged');}
 });

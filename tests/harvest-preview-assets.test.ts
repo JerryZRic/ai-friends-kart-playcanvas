@@ -1,14 +1,16 @@
+import {assertHistoricalPreviewInputs,assertCurrentPreviewLayout} from './helpers/historical-preview-layout';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {HARVEST_COURSE} from '../src/maps/harvest';
 const sha=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
-test('harvest menu poster derives from current original runtime geometry with both physical branches framed',()=>{
+test('harvest historical menu poster retains exact provenance and compatible current route/landmark framing',()=>{
  const p=JSON.parse(readFileSync('docs/harvest-preview-provenance.json','utf8'));
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
- for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);
+ assertHistoricalPreviewInputs('docs/harvest-preview-provenance.json',p);
+ assertCurrentPreviewLayout('harvest',p);
  assert.ok(p.batches<=24&&p.triangles<118000);
  const image=readFileSync(p.menuAsset.file);
  assert.equal(sha(p.menuAsset.file),p.menuAsset.sha256);

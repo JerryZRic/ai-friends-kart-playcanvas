@@ -1,15 +1,16 @@
-import {menuPresentationHash} from './helpers/menu-presentation-reviewed-revisions';
+import {assertHistoricalPreviewInputs,assertCurrentPreviewLayout} from './helpers/historical-preview-layout';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {DESERT_COURSE} from '../src/maps/desert';
 const sha=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
-test('desert menu poster retains its exact reviewed source provenance and bounded successors with both physical branches framed',()=>{
+test('desert historical menu poster retains exact provenance and compatible current route/landmark framing',()=>{
  const p=JSON.parse(readFileSync('docs/desert-preview-provenance.json','utf8'));
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
- for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),menuPresentationHash(path,digest),path);
+ assertHistoricalPreviewInputs('docs/desert-preview-provenance.json',p);
+ assertCurrentPreviewLayout('desert',p);
  assert.ok(p.batches<=24&&p.triangles<125000&&p.vertices<200000);
  assert.deepEqual(Object.keys(p.views).sort(),['desert-overview','desert-topdown','desert-driver-reveal','desert-arch-passage','desert-caravan-detail'].sort());
  assert.match(p.normalShading.shader,/Backfacing/);

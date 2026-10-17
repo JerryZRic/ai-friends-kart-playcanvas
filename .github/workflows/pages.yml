@@ -33,6 +33,8 @@ jobs:
       - run: npm ci
       - name: Test commit-derived version identity
         run: node --import tsx --test tests/build-identity.test.ts tests/build-version.test.ts
+      - name: Test independent home graphics ownership and lifecycle
+        run: node --import tsx --test tests/application-ownership.test.ts tests/home-cover.test.ts tests/menu-backdrop.test.ts
       - run: npm run build
         env:
           DEV_BUILD_SHA: ${{ github.sha }}

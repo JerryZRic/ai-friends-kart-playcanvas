@@ -1,0 +1,505 @@
+{
+  "sourceSha256": "bf4014ed5022fc24b3e6158ee1e9fe1e5617e8c5c52c71a5aa4ff2442899f224",
+  "theme": {
+    "textureLabel": "frostloop original snow slate and depot textures",
+    "ambient": "#d1e6f2",
+    "sky": "#d9effa",
+    "fogStart": 980,
+    "fogEnd": 2200,
+    "cameraName": "Frostloop Depot chase camera",
+    "sunName": "Frostloop low winter sun",
+    "sunColor": "#fff0d5",
+    "sunIntensity": 1.55,
+    "sunEuler": [
+      39,
+      -32,
+      0
+    ]
+  },
+  "budget": {
+    "batches": 23,
+    "triangles": 116436,
+    "vertices": 175088
+  },
+  "materials": [
+    {
+      "name": "Snow connected wind sculpted terrain",
+      "color": "#f0f8fc",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Snow connected blue slate ribs",
+      "color": "#81a9bf",
+      "roughness": 0.98,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow compressed leeside strata",
+      "color": "#badbea",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow exact road shoulder and support",
+      "color": "#c6e4ee",
+      "roughness": 1,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow packed racing ribbon",
+      "color": "#bed7e2",
+      "roughness": 1,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Snow service paving and edge stones",
+      "color": "#89afc2",
+      "roughness": 0.98,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow foundation and platform stone",
+      "color": "#a4c8d8",
+      "roughness": 0.99,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow warm pale station masonry",
+      "color": "#f5f0df",
+      "roughness": 0.98,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow recessed masonry and mortar",
+      "color": "#789cb0",
+      "roughness": 0.98,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow teal structural painted timber",
+      "color": "#4989a6",
+      "roughness": 0.95,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Snow aged structural timber",
+      "color": "#8e7160",
+      "roughness": 0.97,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Snow worn cart and bench boards",
+      "color": "#c5a57e",
+      "roughness": 0.97,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Snow thick slate roof planes",
+      "color": "#557f9a",
+      "roughness": 0.96,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow seated roof caps",
+      "color": "#ffffff",
+      "roughness": 1,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Snow clock and signal bronze",
+      "color": "#d4ac67",
+      "roughness": 0.48,
+      "texture": "none",
+      "metalness": 0.64
+    },
+    {
+      "name": "Snow recessed cool window glass",
+      "color": "#70bfdc",
+      "roughness": 0.32,
+      "texture": "none",
+      "metalness": 0.1
+    },
+    {
+      "name": "Snow static rails axles and ironwork",
+      "color": "#67747a",
+      "roughness": 0.5,
+      "texture": "none",
+      "metalness": 0.68
+    },
+    {
+      "name": "Snow oxide plow steel",
+      "color": "#d77654",
+      "roughness": 0.76,
+      "texture": "none",
+      "metalness": 0.46
+    },
+    {
+      "name": "Snow dark wheel treads",
+      "color": "#303e45",
+      "roughness": 0.91,
+      "texture": "asphalt",
+      "metalness": 0
+    },
+    {
+      "name": "Snow sparse rooted fir boughs",
+      "color": "#5a9b9c",
+      "roughness": 0.97,
+      "texture": "grass",
+      "metalness": 0
+    },
+    {
+      "name": "Snow route marker ivory relief",
+      "color": "#eee3c4",
+      "roughness": 0.93,
+      "texture": "stone",
+      "metalness": 0
+    },
+    {
+      "name": "Snow tied yard cargo",
+      "color": "#d6c4a5",
+      "roughness": 1,
+      "texture": "wood",
+      "metalness": 0
+    },
+    {
+      "name": "Snow warm window and signal inserts",
+      "color": "#ffd497",
+      "roughness": 0.54,
+      "texture": "none",
+      "metalness": 0
+    }
+  ],
+  "componentCount": 119,
+  "payloadSha256": "c5c44bf02ca741bab0122c288a38740fa84d502892be8f8769117e34c8f92556",
+  "groups": [
+    {
+      "id": "snow-polish-ridge-signal-house-roof-and-utilities",
+      "componentIndices": [
+        6504,
+        6505,
+        6506,
+        6507,
+        6508,
+        6509,
+        6510,
+        6511,
+        6512,
+        6513,
+        6514,
+        6515,
+        6516,
+        6517,
+        6518,
+        6519,
+        6520,
+        6521,
+        6522,
+        6523,
+        6524,
+        6525,
+        6526,
+        6527,
+        6528,
+        6529,
+        6530,
+        6531,
+        6532,
+        6533,
+        6534,
+        6535,
+        6536
+      ]
+    },
+    {
+      "id": "snow-polish-depot-clock-hall-roof-and-utilities",
+      "componentIndices": [
+        6537,
+        6538,
+        6539,
+        6540,
+        6541,
+        6542,
+        6543,
+        6544,
+        6545,
+        6546,
+        6547,
+        6548,
+        6549,
+        6550,
+        6551,
+        6552,
+        6553,
+        6554,
+        6555,
+        6556,
+        6557,
+        6558,
+        6559,
+        6560,
+        6561,
+        6562,
+        6563,
+        6564,
+        6565,
+        6566,
+        6567,
+        6568,
+        6569
+      ]
+    },
+    {
+      "id": "snow-polish-annex-rescue-platform",
+      "componentIndices": [
+        6570,
+        6571,
+        6572,
+        6573,
+        6574,
+        6575,
+        6576,
+        6577,
+        6578,
+        6579,
+        6580,
+        6581,
+        6582,
+        6583,
+        6584,
+        6585,
+        6586,
+        6587,
+        6588,
+        6589,
+        6590,
+        6591,
+        6592,
+        6593,
+        6594,
+        6595,
+        6596,
+        6597,
+        6598,
+        6599,
+        6600,
+        6601,
+        6602,
+        6603,
+        6604,
+        6605,
+        6606,
+        6607,
+        6608,
+        6609,
+        6610,
+        6611,
+        6612,
+        6613,
+        6614,
+        6615,
+        6616,
+        6617,
+        6618,
+        6619,
+        6620,
+        6621,
+        6622
+      ]
+    }
+  ],
+  "historicalMaterials": [
+    {
+      "name": "Snow connected wind sculpted terrain",
+      "color": "#dbe9ed",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "grass"
+    },
+    {
+      "name": "Snow connected blue slate ribs",
+      "color": "#4c697d",
+      "roughness": 0.98,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow compressed leeside strata",
+      "color": "#a9c4d0",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow exact road shoulder and support",
+      "color": "#afcbd5",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow packed racing ribbon",
+      "color": "#bdced3",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "asphalt"
+    },
+    {
+      "name": "Snow service paving and edge stones",
+      "color": "#7a939b",
+      "roughness": 0.98,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow foundation and platform stone",
+      "color": "#859ba4",
+      "roughness": 0.99,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow warm pale station masonry",
+      "color": "#d4cfb8",
+      "roughness": 0.98,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow recessed masonry and mortar",
+      "color": "#677d86",
+      "roughness": 0.98,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow teal structural painted timber",
+      "color": "#496d73",
+      "roughness": 0.95,
+      "metalness": 0,
+      "texture": "wood"
+    },
+    {
+      "name": "Snow aged structural timber",
+      "color": "#785a40",
+      "roughness": 0.97,
+      "metalness": 0,
+      "texture": "wood"
+    },
+    {
+      "name": "Snow worn cart and bench boards",
+      "color": "#a38157",
+      "roughness": 0.97,
+      "metalness": 0,
+      "texture": "wood"
+    },
+    {
+      "name": "Snow thick slate roof planes",
+      "color": "#405b70",
+      "roughness": 0.96,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow seated roof caps",
+      "color": "#e4eff0",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "grass"
+    },
+    {
+      "name": "Snow clock and signal bronze",
+      "color": "#b99757",
+      "roughness": 0.48,
+      "metalness": 0.64,
+      "texture": "none"
+    },
+    {
+      "name": "Snow recessed cool window glass",
+      "color": "#668c9b",
+      "roughness": 0.32,
+      "metalness": 0.1,
+      "texture": "none"
+    },
+    {
+      "name": "Snow static rails axles and ironwork",
+      "color": "#67747a",
+      "roughness": 0.5,
+      "metalness": 0.68,
+      "texture": "none"
+    },
+    {
+      "name": "Snow oxide plow steel",
+      "color": "#805b4d",
+      "roughness": 0.76,
+      "metalness": 0.46,
+      "texture": "none"
+    },
+    {
+      "name": "Snow dark wheel treads",
+      "color": "#303e45",
+      "roughness": 0.91,
+      "metalness": 0,
+      "texture": "asphalt"
+    },
+    {
+      "name": "Snow sparse rooted fir boughs",
+      "color": "#426a68",
+      "roughness": 0.97,
+      "metalness": 0,
+      "texture": "grass"
+    },
+    {
+      "name": "Snow route marker ivory relief",
+      "color": "#eee3c4",
+      "roughness": 0.93,
+      "metalness": 0,
+      "texture": "stone"
+    },
+    {
+      "name": "Snow tied yard cargo",
+      "color": "#ae9673",
+      "roughness": 1,
+      "metalness": 0,
+      "texture": "wood"
+    },
+    {
+      "name": "Snow warm window and signal inserts",
+      "color": "#e7ba77",
+      "roughness": 0.54,
+      "metalness": 0,
+      "texture": "none"
+    }
+  ],
+  "historicalTheme": {
+    "textureLabel": "frostloop original snow slate and depot textures",
+    "ambient": "#bccfda",
+    "sky": "#c3d9e4",
+    "fogStart": 980,
+    "fogEnd": 2200,
+    "cameraName": "Frostloop Depot chase camera",
+    "sunName": "Frostloop low winter sun",
+    "sunColor": "#fff0d5",
+    "sunIntensity": 1.55,
+    "sunEuler": [
+      39,
+      -32,
+      0
+    ]
+  },
+  "scope": "Exact current palette and appended indexed payload/ownership. Does not certify support graphs, exposed joints or absence of interpenetration."
+}

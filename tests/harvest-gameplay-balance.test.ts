@@ -1,10 +1,15 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {HARVEST_COURSE as course} from '../src/maps/harvest';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('harvest');
 
-test('harvest physical barn path saves a modest 1.733s without hidden speed bonuses',t=>{
+
+
+
+test('historical v1.0.1a: harvest physical barn path saves a modest 1.733s without hidden speed bonuses',t=>{
   const contour=benchmarkForkDriving(course,'boulevard',true),barn=benchmarkForkDriving(course,'alley',true);
   assert.ok(Math.abs(contour.seconds-barn.seconds-104/60)<1/60+1e-8);
   assert.equal(contour.branchRailSeconds,0);assert.equal(barn.branchRailSeconds,0);
@@ -12,7 +17,7 @@ test('harvest physical barn path saves a modest 1.733s without hidden speed bonu
   t.diagnostic(JSON.stringify({contour,barn}));
 });
 
-test('harvest all six character/build pairs finish both physical branches at 30/60/120/144/240Hz',t=>{
+test('historical v1.0.1a: harvest all six character/build pairs finish both physical branches at 30/60/120/144/240Hz',t=>{
   const results=[];
   for(const preset of getNpcPresets('coast',20261010))for(const hz of [30,60,120,144,240]){
     const barn=benchmarkForkDriving(course,'alley',true,1/hz,preset.characterId,preset.build,0,true);
@@ -38,7 +43,7 @@ test('harvest all six character/build pairs finish both physical branches at 30/
   t.diagnostic(JSON.stringify({clean:results,staleBranchInput:errors}));
 });
 
-test('harvest bounded branch-only steering errors lose to a clean contour without inventing a universal equal-error reversal',t=>{
+test('historical v1.0.1a: harvest bounded branch-only steering errors lose to a clean contour without inventing a universal equal-error reversal',t=>{
   const results=[0,.8,1.6,2.4,3].map(reaction=>({reaction,barn:benchmarkForkDriving(course,'alley',true,1/60,'whale',undefined,reaction,true),contour:benchmarkForkDriving(course,'boulevard',true,1/60,'whale',undefined,reaction,true)}));
   assert.equal(results[0].barn.branchRailSeconds,0);assert.equal(results[0].contour.branchRailSeconds,0);
   for(const result of results){assert.equal(result.barn.choice,'alley');assert.equal(result.contour.choice,'boulevard');}

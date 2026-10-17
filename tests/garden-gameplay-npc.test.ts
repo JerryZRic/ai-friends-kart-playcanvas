@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GARDEN_COURSE as course} from '../src/maps/garden';
-import {runForkNpc} from './helpers/fork-npc-benchmark';
+import {historicalNpcPhysics,HISTORICAL_NPC_COMMIT} from './helpers/historical-npc-physics';
 // Frozen seed 72/713 design matrix, chosen from route selector intent before
 // driving. Neither success times nor favorable branch outcomes selected seeds.
 const frozen=[{"id":"whale","difficulty":"easy","seed":72,"phase":0,"diagnostics":{"frames":12684,"brakeFrames":3173,"driftFrames":0,"maxStep":0.7249560958097473,"branches":["boulevard","alley","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":-1.4233926380242008,"choiceByLap":{"0":"boulevard","1":"alley","2":"boulevard"}}}},
@@ -41,7 +40,9 @@ const frozen=[{"id":"whale","difficulty":"easy","seed":72,"phase":0,"diagnostics
  {"id":"glm","difficulty":"hard","seed":72,"phase":5,"diagnostics":{"frames":11230,"brakeFrames":1173,"driftFrames":2645,"maxStep":1.0794703407607673,"branches":["boulevard","alley","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":-0.11628559086924366,"choiceByLap":{"0":"boulevard","1":"alley","2":"boulevard"}}}},
  {"id":"glm","difficulty":"hard","seed":713,"phase":5,"diagnostics":{"frames":13365,"brakeFrames":1018,"driftFrames":3045,"maxStep":0.8629278394497172,"branches":["alley","boulevard","boulevard"],"finish":{"lap":3,"edgeId":"start","s":0,"lateral":-0.10653261884501947,"choiceByLap":{"0":"alley","1":"boulevard","2":"boulevard"}}}}] as const;
 
-test('garden all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',t=>{
+test('garden historical v1.0.1a all six NPC builds on every difficulty complete three laps, exactly match design, and replay the complete result with seeds 72/713',async t=>{
+ const historical=await historicalNpcPhysics();t.after(historical.dispose);
+ const {runForkNpc}=historical,course=await historical.course('garden');
  const runs=[],coverage=new Map<string,Set<string>>();let maximumSeconds=0;
  for(const row of frozen){
   const {id,difficulty,seed,phase}=row,first=runForkNpc(course,seed,id,phase,difficulty),repeat=runForkNpc(course,seed,id,phase,difficulty);
@@ -53,5 +54,5 @@ test('garden all six NPC builds on every difficulty complete three laps, exactly
  assert.equal(runs.length*2,72);assert.equal(coverage.size,18);
  for(const [key,branches]of coverage)assert.deepEqual([...branches].sort(),['alley','boulevard'],`${key} both routes`);
  assert.equal(maximumSeconds,255.05);assert.ok(maximumSeconds<360);
- t.diagnostic(JSON.stringify({runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
+ t.diagnostic(JSON.stringify({sourceCommit:HISTORICAL_NPC_COMMIT,baselineKind:'immutable historical NPC design matrix; not current tuning or balance certification',runs,races:72,lapsPerRun:3,maximumSeconds,seeds:[72,713],resources:{maxRSSKiB:process.resourceUsage().maxRSS},scope:'Unchanged 360s helper bound; full result replay including every frame count, braking/drift count, max position step, branch ledger and final physical cursor. Isolated controls exclude models, items, traffic, DOM and GPU.'}));
 });

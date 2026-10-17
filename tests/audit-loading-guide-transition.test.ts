@@ -1,3 +1,4 @@
+import {postV100Review} from './helpers/post-v100-current';
 import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {touchOpacityHash, restoreTouchOpacityBytes} from './helpers/touch-opacity-reviewed-revisions';
 import test from 'node:test';
@@ -48,8 +49,9 @@ test('loading-guide overlay rejects wrong incoming pairs, aliases and modified r
     for (const incoming of [undefined, '', '0'.repeat(64), row.currentSha256]) assert.throws(() => loadingGuideHash(path, incoming), undefined, path);
     for (const alias of ['./' + path, path + '/extra']) assert.equal(loadingGuideHash(alias, row.previousSha256), row.previousSha256);
   }
+  {const path='src/race-controls.ts',row=postV100Review().changes[path];assert.ok(row,'Exact accepted successor for formerly untouched source');assert.equal(loadingGuideHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>loadingGuideHash(path,'unchanged'));assert.equal(loadingGuideHash('./'+path,'unchanged'),'unchanged','Aliases still cannot claim a transition');}
   assert.throws(() => loadingGuideHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
-  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'src/land-camera.ts']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/race-camera.ts', 'src/land-camera.ts']) assert.equal(loadingGuideHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = mobileControlsReview().additions[mobilePath].sha256;
   assert.equal(sha(restoreTouchOpacityBytes(mobilePath, read(mobilePath))), mobilePin, 'Exact formerly unchanged mobile source survives the input-mode inverse');
   assert.equal(loadingGuideHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Only the new exact input-mode pair advances this source');

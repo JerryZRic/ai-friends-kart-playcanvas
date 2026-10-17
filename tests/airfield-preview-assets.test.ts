@@ -1,14 +1,16 @@
+import {assertHistoricalPreviewInputs,assertCurrentPreviewLayout} from './helpers/historical-preview-layout';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {AIRFIELD_COURSE} from '../src/maps/airfield';
 const sha=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
-test('airfield menu poster derives from current original runtime geometry with both physical branches framed',()=>{
+test('airfield historical menu poster retains exact provenance and compatible current route/landmark framing',()=>{
  const p=JSON.parse(readFileSync('docs/airfield-preview-provenance.json','utf8'));
  assert.equal(p.kind,'offline-native-geometry-render');
  assert.match(p.renderer,/No gameplay\/GPU or FPS claim/);
- for(const [path,digest] of Object.entries({...p.sourceHashes,...p.generatorHashes}))assert.equal(sha(path),digest,path);
+ assertHistoricalPreviewInputs('docs/airfield-preview-provenance.json',p);
+ assertCurrentPreviewLayout('airfield',p);
  assert.ok(p.batches<=24&&p.triangles<110000&&p.vertices<200000);
  assert.deepEqual(Object.keys(p.views).sort(),['airfield-overview','airfield-topdown','airfield-driver-reveal','airfield-hangar-architecture','airfield-rotor-detail'].sort());
  assert.match(p.normalShading.shader,/Backfacing/);

@@ -4,15 +4,15 @@
   "target": "dev",
   "sourceBranch": "dev",
   "baseline": {
-    "runId": 38739052395,
-    "artifactId": 11976285199,
-    "deploymentId": 7093308394,
-    "commit": "ad845fcb409a8bd35fb2e4641fa08183022f3f5d",
-    "branch": "dev",
-    "artifactDigest": "sha256:74b172ef3b4e6f46d1de9d77c3bd00386f2a6e9c971f2141376bdfc3a9121284"
+    "runId": 39024518059,
+    "artifactId": 12098267213,
+    "deploymentId": 7138267656,
+    "commit": "5bc2acb119646b71b3cb640362b246d4be38c250",
+    "branch": "main",
+    "artifactDigest": "sha256:30590bd1627cfcd20a65de03b6f6da82be92058d8d8c5d6f314a5de447a9ea96"
   },
   "expectedRefs": {
-    "main": "0df2a42a1578551c018fc84675ff988632221220",
+    "main": "5bc2acb119646b71b3cb640362b246d4be38c250",
     "dev": "CURRENT",
     "feature/home-portraits-live2d": "8b88928b52a6074e9d86bb487bad1b37cbb16dfd"
   }

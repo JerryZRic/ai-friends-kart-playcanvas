@@ -120,20 +120,20 @@ test('garage home link retains driver, latest car and options after editing', as
 });
 
 
-test('garage preserves dev default-on and explicit opt-out without enabling stable', () => {
+test('garage preserves accepted default-on and explicit opt-out across dev, stable and desktop navigation', () => {
   const previous = globalThis.location;
   try {
-    for (const pathname of ['/dev/garage.html', '/ai-friends-kart-playcanvas/garage.html']) {
+    for (const pathname of ['/dev/garage.html', '/ai-friends-kart-playcanvas/garage.html', '/garage.html', '/C:/kart/garage.html']) {
       globalThis.location = {pathname} as Location;
       for (const entry of [garageRaceEntry, garageBackEntry, garageHomeEntry]) {
         for (const flow of ['', '&flow=free']) {
           const search = '?map=snow&difficulty=hard&seed=42' + flow;
-          assert.equal(parse(entry('grok', mixed, search)).searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '1' : null);
+          assert.equal(parse(entry('grok', mixed, search)).searchParams.get('itemStacking'), '1');
           const off = parse(entry('grok', mixed, search + '&itemStacking=0'));
-          assert.equal(off.searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '0' : null);
-          assert.equal(parse(entry('grok', mixed, off.search)).searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '0' : null, 'explicit opt-out survives repeated navigation');
+          assert.equal(off.searchParams.get('itemStacking'), '0');
+          assert.equal(parse(entry('grok', mixed, off.search)).searchParams.get('itemStacking'), '0', 'explicit opt-out survives repeated navigation');
           const url = parse(entry('grok', mixed, search + '&itemStacking=1'));
-          assert.equal(url.searchParams.get('itemStacking'), pathname.startsWith('/dev/') ? '1' : null);
+          assert.equal(url.searchParams.get('itemStacking'), '1');
           assert.equal(url.searchParams.get('driver'), 'grok'); assert.equal(url.searchParams.get('map'), 'snow');
           assert.equal(url.searchParams.get('difficulty'), 'hard'); assert.equal(url.searchParams.get('seed'), '42');
           assert.deepEqual(JSON.parse(url.searchParams.get('kart')!), mixed);

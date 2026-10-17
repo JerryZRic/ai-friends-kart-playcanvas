@@ -1,0 +1,180 @@
+{
+  "commit": "4d9b345f0cb938af092b57e4231396b03ff64858",
+  "files": [
+    {
+      "path": "src/character-identity.js",
+      "gitBlobSha": "98c759dfda1449e394237ec4584e40763f9f5d26",
+      "sha256": "c5806dcb49a21e157ffcbd5d09df99c55c7cc52534583bdbc5778de9640f5527"
+    },
+    {
+      "path": "src/character-profiles.ts",
+      "gitBlobSha": "06833d63885b155f70815046c8d403e70bb12762",
+      "sha256": "2ac87946624bcb4d21fb4330225c4dfb32c5268a219dd55475e1f0ca59ea2e07"
+    },
+    {
+      "path": "src/closed-circuit.ts",
+      "gitBlobSha": "bdbd4c4bad4fcf8a89c69d8a31f447dd37eb5c4e",
+      "sha256": "40237d2a99f5f0d62deb2c0cfc73f6560809588be9f875967309631ed138e484"
+    },
+    {
+      "path": "src/item-experiment-settings.ts",
+      "gitBlobSha": "8b0cc43cd10cbbb78e910675fa6c70102f17c9c7",
+      "sha256": "d56bec4b86393702ace45ac8bdfbede7dd8598f7ee8e044a5588c6ff14c49b22"
+    },
+    {
+      "path": "src/item-inventory.ts",
+      "gitBlobSha": "2690a52627d460dde07f078630abc55e0eb74225",
+      "sha256": "e71c8355e3fd26010df513be3377466d2ec5405fad8a7995cfc70520fb1df535"
+    },
+    {
+      "path": "src/item-models.ts",
+      "gitBlobSha": "985e398764e9a809a75957f4987428d8aa2db06d",
+      "sha256": "0d63264651616c2e6408f733ae4032618d5b4e6f5232d060e9322d5498afe061"
+    },
+    {
+      "path": "src/item-pickups.ts",
+      "gitBlobSha": "1a26c33c106f410961717c4f574018e113940091",
+      "sha256": "d068f11e624ee3a454051ae0ff7d80c8c5075d08b61d648c2697db57868b6d39"
+    },
+    {
+      "path": "src/kart-build.ts",
+      "gitBlobSha": "005d4495dc09a8e63c2c6bba1c47bdbc72de1650",
+      "sha256": "4eb71d82b4085372a1526d243182a65058a372ef541f72518106c7f4111527f2"
+    },
+    {
+      "path": "src/kart-catalog.json",
+      "gitBlobSha": "c2ad40a2207f6846bfb55bd6c76596a0b02b09e3",
+      "sha256": "8d67b16f77aeb8667823b604d61b3fd802a2f68ba23c775f3f9c5fcf226d0ba9"
+    },
+    {
+      "path": "src/kart-presets.ts",
+      "gitBlobSha": "50918e525f046c1eba33ea0f576e3d5846157edd",
+      "sha256": "36365b69d836fcdbbbce8b4c94ce1e0e8a039e394b70a243cfb947d3d09f02eb"
+    },
+    {
+      "path": "src/kart-race.ts",
+      "gitBlobSha": "4bcb0ae3e814126785e7014ea6a5f691d1cca92a",
+      "sha256": "f192c49e39df751c998c67634db3b4f23cda78529d540744844fbbdd88f51a74"
+    },
+    {
+      "path": "src/land-driving.ts",
+      "gitBlobSha": "94bd7a4699e2a3f2f6a6643dbfa000274bbfb71c",
+      "sha256": "12649c0b2a7531d3e236bf0bc6ecf88e2cfd5ad3fdaf7709fa837398769ff7cc"
+    },
+    {
+      "path": "src/land-race-route.ts",
+      "gitBlobSha": "5818536baa004878555c831ff4245a7f7f9ef528",
+      "sha256": "d898a6664fe241021ee991fd6e8ddb9ca8319bbbe61e891f231de0729c1a9f20"
+    },
+    {
+      "path": "src/land-routes.ts",
+      "gitBlobSha": "091cf43d1f1f46938b348d678154ce42ee304b5f",
+      "sha256": "8c285d37e61e6b3c10ec9fba9c8b49911626bf7c730b3b357167ffbb1263adde"
+    },
+    {
+      "path": "src/land-track.ts",
+      "gitBlobSha": "d60f3b15593b7efa04c43ccd54e180b018598527",
+      "sha256": "56f547698523d6f03f113d7e0608d56e0cab33342949cf111fe028caf92f965d"
+    },
+    {
+      "path": "src/map-profiles.ts",
+      "gitBlobSha": "5059c1df51103b317e971fa740169c85e5babb39",
+      "sha256": "ca3c81e08883d36bbb2c73c8e17e8920e61c5e6ea23b26e0f3b7ace574b3a911"
+    },
+    {
+      "path": "src/maps/desert.ts",
+      "gitBlobSha": "4f206b727fc15a1a886aa14752424d7401721e07",
+      "sha256": "2fb40002f1660550e104861e0213fb878cb6577b1f0bb69f3ffdd15668125636"
+    },
+    {
+      "path": "src/maps/forest.ts",
+      "gitBlobSha": "ebe2e8a93e52abd61a49d1a33459a6047fea9bbd",
+      "sha256": "b4f35664a854986e96876ba4bb7455f684a3e5df12ae39e8bb3e3e6fb9e94e45"
+    },
+    {
+      "path": "src/maps/harvest.ts",
+      "gitBlobSha": "09138a703106805d5afd98702c8ac035bf45058a",
+      "sha256": "a3b22a85803e6268e4b4f6a36bfeddff29cc42bcbc6c43e3cd511027f98fe32e"
+    },
+    {
+      "path": "src/maps/quarry.ts",
+      "gitBlobSha": "47e196bc5a5b3ae94d6966c77720b85c5a430d9c",
+      "sha256": "6637048a92adf46375c77cc154a8bd13ce4865d56015d5794dc0f5bc6c3350b9"
+    },
+    {
+      "path": "src/maps/workshop.ts",
+      "gitBlobSha": "9f843cbd4c29dbcbb8ef517236c17bd8ae904d36",
+      "sha256": "6a286f68be2456c0f7de1e30d5dd162083f2fde4d17706db63879732bc47e806"
+    },
+    {
+      "path": "src/npc-difficulty.ts",
+      "gitBlobSha": "004329c9559cb802e62ef7c57695c758b7eb39c7",
+      "sha256": "5a1e9ecc0186b3a3dc8b37de43544232c2fcbd6ef5e084bf31f16fc898c4d4cf"
+    },
+    {
+      "path": "src/npc-tactics.ts",
+      "gitBlobSha": "8dd3f20b61beb5726136c9903a8c413c1eaae7b2",
+      "sha256": "23c636034235e25d76de8e379a02d277e2fd68f0796922ab98e35f241ce40fd2"
+    },
+    {
+      "path": "src/open-road.ts",
+      "gitBlobSha": "333f9bb6c7ef5a74df5fa922d86af37b51fd0663",
+      "sha256": "4756c1c466f35da87c637778da550f78ff836e4e598af78dd1404af3b93a83ab"
+    },
+    {
+      "path": "src/pickup-size.ts",
+      "gitBlobSha": "04b4e501dea69e45abcfa0fe72e881d39d6315cb",
+      "sha256": "b2bbd4f7410c1b1942332f7e21003675572dc6b8561b7722ca6bc8bba0663320"
+    },
+    {
+      "path": "src/race-options.ts",
+      "gitBlobSha": "4c9d4108719c05438044f4fdb1ea3b91332521ed",
+      "sha256": "a8ec63a83c1359a0fb26a30f9e0f1c5d359578407bbe00796713acd8088e86c2"
+    },
+    {
+      "path": "src/track.ts",
+      "gitBlobSha": "f1a26f3f1f5a16d08033cb62196830367261690e",
+      "sha256": "ef353834cc6fe31771f5d3085e87c86469bab54280ec3d5f01084489580b2f6e"
+    },
+    {
+      "path": "src/vehicle-controls.js",
+      "gitBlobSha": "9401575c0583e0ffaa2e7cf17b6a80c4bf1f12ab",
+      "sha256": "a851ddd31bbb00335fe98476a48e13aa90d4cf16861a7c658bbf48b050ffb7e7"
+    },
+    {
+      "path": "tests/helpers/fork-driving-benchmark.ts",
+      "gitBlobSha": "b6f433768bdf8320464f608cf9bd490a1a53f085",
+      "sha256": "ba0ff646aaa363bf8ddd22b0185e0a80a2d982b66e1ec8b3f19cd49839cea3da"
+    },
+    {
+      "path": "src/maps/snow.ts",
+      "gitBlobSha": "59a1c400be0a32895914b666f1cc0666020fe85c",
+      "sha256": "9b3be7d1cd69bffe788533e9ab86b1d22123c27821a7dca261929d3041636268"
+    },
+    {
+      "path": "src/maps/airfield.ts",
+      "gitBlobSha": "c2b2640bd19f69348a464d3c60958185bfb3d772",
+      "sha256": "3b43a8f1de12908d6f16693a702d7286c37d1b2f106aa34c4803733c66f79d5c"
+    },
+    {
+      "path": "src/maps/caldera.ts",
+      "gitBlobSha": "d86b5b6a04f4db48203163ec26f4f437f4735971",
+      "sha256": "a89a509c325bd0483201b94ee952d93a936f1dfdfd1801ca0caedce1cb257c85"
+    },
+    {
+      "path": "src/maps/garden.ts",
+      "gitBlobSha": "a290dd03d1b781a26428136add88b22c891392ba",
+      "sha256": "0087f27e444a2d9c17ca7d52d662b7ad1f4842cde0fc430068349c37eff59022"
+    },
+    {
+      "path": "package.json",
+      "gitBlobSha": "ff16018aeedfb63031b6e08a381fe70924852526",
+      "sha256": "617b865b40d9c5b990125d29fd124aa9e06ab714d34efb63398d0db607d9b74a"
+    },
+    {
+      "path": "package-lock.json",
+      "gitBlobSha": "e72e9f208ac51d45fbc0ca0f9f8c913a9c0ff112",
+      "sha256": "36adc53e5b311eaa653654abd1006cb769dff7a0c034d12a5f2763e929394c50"
+    }
+  ]
+}

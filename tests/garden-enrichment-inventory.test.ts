@@ -1,3 +1,4 @@
+import {postV100PortableClosure,restorePostV100Bytes} from './helpers/post-v100-current';
 import {airfieldReviewedHash,airfieldReviewedPathsWithin} from './helpers/airfield-enrichment-reviewed-revisions';
 import {gardenIndependentCompatibility} from './helpers/garden-enrichment-original-assemblies';
 /** Immutable original evidence and exact separately reviewed current identities. */
@@ -26,18 +27,18 @@ test('Garden portable manifest contains every retained runner, baseline snapshot
  const manifest=JSON.parse(readFileSync('docs/garden-enrichment-qa-files.json','utf8'));assert.equal(manifest.state,'Final source and QA dependencies frozen');assert.ok(Object.keys(manifest.finalFileSha256).length>0,'Final dependencies cannot be an empty or partial preliminary map');
  const walk=(dir:string):string[]=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(dir+'/'+e.name):[dir+'/'+e.name]);
  const required=[...walk('docs/scene-baselines/garden-original'),...readdirSync('tests').filter(p=>/^garden-.*\.test\.ts$/.test(p)).map(p=>'tests/'+p),...readdirSync('tests/helpers').filter(p=>p.includes('garden-enrichment')||p==='run-garden-retained-audit.ts'||p==='run-garden-final-audit.ts').map(p=>'tests/helpers/'+p),...readdirSync('tests/fixtures').filter(p=>p.startsWith('garden-enrichment')).map(p=>'tests/fixtures/'+p),...readdirSync('scripts').filter(p=>p.includes('garden-enrichment')||['verify-garden-art-pixels.py','verify-garden-visible-groups.py'].includes(p)).map(p=>'scripts/'+p)];
- const included=new Set([...manifest.newQaFiles,...manifest.unchangedSharedHelperDependencies,...manifest.retainedTestFiles,...manifest.baselineSnapshots,...manifest.artDependencies]);for(const p of required)assert.ok(included.has(p),p+' portable dependency omitted');for(const p of included)assert.ok(Object.hasOwn(manifest.finalFileSha256,p as string),p+' listed dependency lacks final identity');
+ const included=new Set([...manifest.newQaFiles,...manifest.unchangedSharedHelperDependencies,...manifest.retainedTestFiles,...manifest.baselineSnapshots,...manifest.artDependencies]);postV100PortableClosure('garden',manifest.finalFileSha256,required);for(const p of included)assert.ok(Object.hasOwn(manifest.finalFileSha256,p as string),p+' listed dependency lacks final identity');
  for(const [file,hash]of Object.entries(manifest.finalFileSha256))assert.equal(sha(readFileSync(file)),airfieldReviewedHash(file,hash),file+' final portable identity');
 });
 
 test('Garden retained safety source changes are exactly the approved cap and native ownership transformations',()=>{
  for(const file of ['garden-scene.test.ts','garden-independent-audit.test.ts','garden-preview-assets.test.ts']){
-  const before=readFileSync('docs/scene-baselines/garden-original/tests/'+file+'.txt','utf8'),current=readFileSync('tests/'+file,'utf8');assert.equal(current,file==='garden-independent-audit.test.ts'?gardenIndependentCompatibility(before):before.replaceAll('<110000','<120000').replace('batches110k','batches120k'),file+' no other retained safety weakening');
+  const before=readFileSync('docs/scene-baselines/garden-original/tests/'+file+'.txt','utf8'),current=restorePostV100Bytes('tests/'+file,readFileSync('tests/'+file,'utf8'));assert.equal(current,file==='garden-independent-audit.test.ts'?gardenIndependentCompatibility(before):before.replaceAll('<110000','<120000').replace('batches110k','batches120k'),file+' no other retained safety weakening');
  }
  const before=readFileSync('docs/scene-baselines/garden-original/tests/garden-gameplay.test.ts.txt','utf8');let expected="import {gardenNativeBlockerComponents} from './helpers/garden-enrichment-native-provenance';\n"+before;
  const start=expected.indexOf(' const componentRanges=new Map<any,any[]>();'),end=expected.indexOf('  let from=0;',start);assert.ok(start>=0&&end>start);
  expected=expected.slice(0,start)+" const componentRanges=new Map<any,any[]>(),certifiedBlockerComponents=gardenNativeBlockerComponents(geometry);\n for(const solid of solids){\n  const components=certifiedBlockerComponents.get(solid)!;\n"+expected.slice(end);
- assert.equal(readFileSync('tests/garden-gameplay.test.ts','utf8'),expected,'Only certified source classification changes; every native safety loop and exact face-coverage count remains');
+ assert.equal(restorePostV100Bytes('tests/garden-gameplay.test.ts',readFileSync('tests/garden-gameplay.test.ts','utf8')),expected,'Only certified source classification changes; every native safety loop and exact face-coverage count remains');
 });
 
 test('Garden exact review overlay rejects wrong incoming hashes, unlisted paths and tampered replacements',async()=>{

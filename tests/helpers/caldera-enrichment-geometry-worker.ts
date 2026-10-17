@@ -1,3 +1,4 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
 /** One serial 448MiB worker; immutable original build is compared before new solids. */
 import assert from 'node:assert/strict';
 import * as pc from 'playcanvas';
@@ -13,7 +14,7 @@ import {calderaAssemblyChecks} from './caldera-enrichment-assemblies';
 import {calderaAuditHashes} from './caldera-enrichment-source-stability';
 const sourceHashesBefore=calderaAuditHashes();
 const [stage,run,ledger]=process.argv.slice(2),baseline=stage==='baseline',started=Date.now();assert.ok(['baseline','candidate'].includes(stage));
-const path=baseline?'docs/scene-baselines/caldera-scenery.ts.txt':'src/caldera-scenery.ts',sourceSha256=sha(readFileSync(path)),{geometry:g,theme}=await calderaSceneData(baseline,ledger),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
+const path=baseline?'docs/scene-baselines/caldera-scenery.ts.txt':'src/caldera-scenery.ts',sourceSha256=sha(readFileSync(path)),{geometry:g,theme,...historicalScope}=baseline?await calderaSceneData(true,ledger):await postV100HistoricalScene('caldera'),old=baseline?null:JSON.parse(readFileSync(join(run,'baseline-contract.json'),'utf8'));
 const textureHash=digest(Object.fromEntries((['stone','asphalt','wood','grass'] as const).map(k=>[k,[...landTexturePixels(k)]])));
 let runtimeCertification:any=null;
 const sourceNormalAudit:any[]=[],actualBounds={min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};
@@ -44,7 +45,7 @@ if(baseline){
 }
 assert.equal(sha(readFileSync(path)),sourceSha256,'Source stable for full audit');
 const sourceHashesAfter=calderaAuditHashes();assert.deepEqual(sourceHashesAfter,sourceHashesBefore,'All original inputs and QA dependencies remained stable');
-const report={sourceHashesBefore,sourceHashesAfter,stable:true,schema:'caldera-enrichment-geometry-v1',stage,sourceSha256,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:2715,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['CPU actual indexed-source geometry only; no native pixels,GPU or FPS certification']};
+const report={sourceHashesBefore,sourceHashesAfter,stable:true,schema:'caldera-enrichment-geometry-v1',stage,sourceSha256,...historicalScope,runtimeProfile:runtimeCertification.profile,budget:g.budget,protectedComponents:2715,addedComponents,newTriangles,originalBufferMutationSentinels:baseline?0:4,closedShells,selfIntersectionPairs,selfIntersectionFailures,sourceNormalAudit,textureHash,assembly,coflush,durationSeconds:(Date.now()-started)/1000,resources:{maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1},limitations:['Strong enrichment checks cover the exact historical 6bb9 core; current independent and polish tests remain current','CPU indexed geometry only; no current-polish whole-assembly, native pixels, GPU or FPS certification']};
 writeFileSync(join(run,stage+'-report.json'),JSON.stringify(report)+'\n');
 if(process.env.CALDERA_ENRICHMENT_AUDIT_DIR){const output=resolve(process.env.CALDERA_ENRICHMENT_AUDIT_DIR);mkdirSync(output,{recursive:true});writeFileSync(join(output,stage+'-geometry-report.json'),JSON.stringify(report,null,2)+'\n');if(baseline)writeFileSync(join(output,'baseline-indexed-contract.json'),readFileSync(join(run,'baseline-contract.json')));}
 console.log(JSON.stringify({...report,sourceHashesBefore:undefined,sourceHashesAfter:undefined,sourceNormalAudit:sourceNormalAudit.map(({batch,vertices,zeroLength})=>({batch,vertices,zeroLength})),assembly:assembly?{assemblies:assembly.assemblies,pieces:assembly.pieces,cameraFaces:assembly.cameraFaces,seatedFaces:assembly.seatedFaces,groundWitnesses:assembly.groundWitnesses.length,contacts:assembly.contacts.length,openings:assembly.openings.length,exposedSurfaces:assembly.visibility.length,intentionalJoins:assembly.intentionalJoins.length,buriedJoints:assembly.buriedJoints.length,intrusions:assembly.intrusions.length,terrainIntrusions:assembly.terrainIntrusions.length,minimumNonRootTerrainGap:assembly.minimumNonRootTerrainGap}:null,coflush:coflush?{facePairs:coflush.facePairs,exposed:coflush.exposed.length,buried:coflush.buried.length,oppositeContactPatches:coflush.oppositeContactPatches}:null}));

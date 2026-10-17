@@ -1,3 +1,4 @@
+import {restorePostV100Buffer} from './helpers/post-v100-current';
 import {STABLE_PAGES_V100_REPIN_REVIEW_PATH, stablePagesV100RepinReview, stablePagesV100RepinHash, restoreStablePagesV100RepinBytes} from './helpers/stable-pages-v100-repin-reviewed-revisions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,7 @@ function baselineGitTree() {
   const root: Tree = {};
   const object = (kind: string, bytes: Buffer) => createHash('sha1').update(kind + ' ' + bytes.length + '\0').update(bytes).digest();
   for (const path of baselinePaths) {
-    const bytes = (Object.hasOwn(review.changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path)) ? Buffer.from(restoreV100Bytes(path, read(path))) : readFileSync(path);
+    const bytes = (Object.hasOwn(review.changes, path) || Object.hasOwn(stablePagesV100RepinReview().changes, path)) ? Buffer.from(restoreV100Bytes(path, read(path))) : restorePostV100Buffer(path,readFileSync(path));
     const parts = path.split('/'); let dir = root;
     for (const part of parts.slice(0, -1)) dir = (dir[part] ??= {}) as Tree;
     dir[parts.at(-1)!] = object('blob', bytes);

@@ -1,0 +1,18 @@
+Desktop wrapper and packaging source (AGPL-3.0-only)
+
+The complete game/source.zip contains scripts/stable-release.py and these files.
+From that repository with Node 22 and Python 3:
+  npm ci
+  npm run check
+  npm test
+  GAME_BUILD_CHANNEL=release DEV_BUILD_SHA=<exact-commit> npm run build
+  GAME_BUILD_CHANNEL=release DEV_BUILD_SHA=<exact-commit> npm run test:dist
+  node scripts/desktop/test-desktop-exit.cjs
+  node scripts/desktop/test-desktop-security.cjs .
+  node scripts/desktop/test-protocol.cjs .
+Download electron-v44.6.0-win32-x64.zip from the official electron/electron GitHub release.
+Its SHA-256 must be 04d6071f8deca081044e1398f96f65e4c1550ffdb3f882504cd78528d821d422.
+Then GITHUB_SHA=<exact-commit> ELECTRON_ZIP=<download> python3 scripts/stable-release.py package.
+Packaging verifies every game/source/license byte, every official runtime file and the executable PE AMD64 header.
+Tests use mocks/local protocol requests; they do not certify native Windows launch, gameplay, GPU, performance or pointer lock.
+Do not remove the Electron/Chromium licenses. Models and music retain separate terms.

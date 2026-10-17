@@ -1,3 +1,5 @@
+import {postV100Review} from './helpers/post-v100-current';
+import {postV100Hash} from './helpers/post-v100-current';
 import {stablePagesV050RepinHash} from './helpers/stable-pages-v050-repin-reviewed-revisions';
 import {inputModeHash, inputModePathsWithin, inputModeSourcePaths, restoreInputModeBytes} from './helpers/input-mode-reviewed-revisions';
 import test from 'node:test';
@@ -94,7 +96,7 @@ test('touch overlay rejects wrong incoming identities, aliases, modified evidenc
     for (const alias of ['./' + path, path + '/extra']) assert.equal(touchOpacityHash(alias, row.previousSha256), row.previousSha256);
   }
   assert.throws(() => touchOpacityHash('src/game.ts', 'unchanged'), undefined, 'Music successor requires exact pre-music identity');
-  for (const path of ['src/race-controls.ts', 'src/race-camera.ts', 'public/source.html']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
+  for (const path of ['src/race-camera.ts', 'public/source.html']) assert.equal(touchOpacityHash(path, 'unchanged'), 'unchanged');
   const mobilePath = 'src/mobile-controls.ts', mobilePin = review.protectedProduction[mobilePath];
   assert.equal(touchOpacityHash(mobilePath, mobilePin), sha(read(mobilePath)), 'Exact protected mobile source advances only through the new input-mode layer');
   assert.throws(() => touchOpacityHash(mobilePath, 'unchanged'));
@@ -145,7 +147,7 @@ test('legal visibility delta is exactly menu shortcut restoration and dedicated-
     type: 'rule', selector: '#raceUi ~ #source-license', nodes: [{type: 'decl', prop: 'display', value: 'none', important: false}],
   }]);
   for (const path of ['LICENSE', 'NOTICE', 'MODEL-NOTICE.txt', 'FOOD-ASSET-NOTICE.txt', 'ALPINE-PROP-NOTICE.txt', 'THIRD-PARTY-NOTICES.txt', 'SOURCE.txt', 'public/source.html', 'scripts/package-source.mjs']) assert.ok(Object.hasOwn(review.protectedLegal, path));
-  for (const [path, hash] of Object.entries(review.protectedLegal)) assert.equal(sha(readFileSync(path)), hash, path + ' unchanged license/source and packaging bytes');
+  for (const [path, hash] of Object.entries(review.protectedLegal)) assert.equal(sha(readFileSync(path)), postV100Hash(path,hash), path + ' exact historical or reviewed successor license/source and packaging bytes');
 });
 
 test('all historical proofs, geometry and stable publication evidence remain byte-exact', () => {
@@ -169,4 +171,8 @@ test('all new audit dependencies and legal bytes join both current source-stabil
   for (const hashes of [gardenAuditHashes(), airfieldAuditHashes()]) {
     for (const path of touchOpacityAuditDependencies()) assert.equal(hashes[path], sha(readFileSync(path)), path + ' explicit current audit closure');
   }
+});
+
+test('touch-opacity accepts only exact post-v100 pairs for formerly untouched inputs',()=>{
+ for(const path of ['src/race-controls.ts']){const row=postV100Review().changes[path];assert.ok(row);assert.equal(touchOpacityHash(path,row.previousSha256),row.currentSha256);assert.throws(()=>touchOpacityHash(path,'unchanged'));assert.equal(touchOpacityHash('./'+path,'unchanged'),'unchanged');}
 });

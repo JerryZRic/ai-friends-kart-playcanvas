@@ -11,8 +11,8 @@ test('dev remains compile-only F5 and never invokes a regression or dist certifi
   assert.match(workflow, /needs: \[build, compose\]/);
 });
 
-test('main and release default to nonstable while full certification requires explicit stable dispatch', () => {
-  for (const path of ['.github/workflows/pages-stable.yml', '.github/workflows/release-quality.yml']) {
+test('generic release validation stays nonstable; stable certification has an explicit immutable request', () => {
+  for (const path of ['.github/workflows/release-quality.yml']) {
     const workflow = read(path);
     assert.match(workflow, /options: \[nonstable, stable\]\n        default: nonstable/);
     assert.match(workflow, /if: \$\{\{ github.event_name == 'workflow_dispatch' && inputs.quality == 'stable' \}\}\n        run: npm run check && npm test && npm run build/);
@@ -21,6 +21,14 @@ test('main and release default to nonstable while full certification requires ex
     assert.match(workflow, /npm run test:dist/);
     assert.doesNotMatch(workflow, /tags:|if:.*prerelease|if:.*tag_name|continue-on-error|contents: write|actions: write/);
   }
+  const stable = read('.github/workflows/release-stable.yml');
+  const request = JSON.parse(read('docs/stable-release-request.json'));
+  assert.equal(request.version, '1.1.0'); assert.equal(request.prerelease, false); assert.equal(request.latest, true);
+  assert.match(request.expectedParentSha, /^[0-9a-f]{40}$/); assert.match(request.expectedDevParentSha, /^[0-9a-f]{40}$/);
+  assert.match(stable, /stable-release\.py validate-request/);
+  assert.match(stable, /run: npm test/); assert.match(stable, /npm run test:dist/);
+  assert.match(stable, /needs: \[certify, windows-smoke\]/);
+  assert.doesNotMatch(stable, /continue-on-error|workflow_dispatch/);
   const release = read('.github/workflows/release-quality.yml');
   assert.match(release, /release:\n    types: \[published\]/);
   assert.doesNotMatch(release, /deploy-pages|upload-release|gh release|pages: write|id-token: write/);

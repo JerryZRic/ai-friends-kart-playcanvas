@@ -1,10 +1,15 @@
-import test from 'node:test';
+import {historicalRoutePhysics} from './helpers/historical-route-physics';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {QUARRY_COURSE as course} from '../src/maps/quarry';
-import {benchmarkForkDriving} from './helpers/fork-driving-benchmark';
-import {getNpcPresets} from '../src/kart-presets';
+const historical=await historicalRoutePhysics();
+after(()=>historical.dispose());
+const {benchmarkForkDriving,getNpcPresets,raceKartBuild}=historical;
+const course=await historical.course('quarry');
 
-test('quarry physical shelf saves 0.650s in the measured mixed build without hidden speed bonuses',t=>{
+
+
+
+test('historical v1.0.1a: quarry physical shelf saves 0.650s in the measured mixed build without hidden speed bonuses',t=>{
   const haul=benchmarkForkDriving(course,'boulevard',true),shelf=benchmarkForkDriving(course,'alley',true);
   const uncorrectedShelf=benchmarkForkDriving(course,'alley',false),uncorrectedHaul=benchmarkForkDriving(course,'boulevard',false);
   assert.ok(Math.abs(haul.seconds-shelf.seconds-.650)<1/60+1e-8);
@@ -15,7 +20,7 @@ test('quarry physical shelf saves 0.650s in the measured mixed build without hid
   t.diagnostic(JSON.stringify({haul,shelf,uncorrectedShelf,uncorrectedHaul}));
 });
 
-test('all six character/build pairs finish both real quarry branches at 30/60/120/144/240Hz',t=>{
+test('historical v1.0.1a: all six character/build pairs finish both real quarry branches at 30/60/120/144/240Hz',t=>{
   const results=[];
   for(const preset of getNpcPresets('coast',20261010))for(const hz of [30,60,120,144,240]){
     const shelf=benchmarkForkDriving(course,'alley',true,1/hz,preset.characterId,preset.build,0,true);
@@ -32,7 +37,7 @@ test('all six character/build pairs finish both real quarry branches at 30/60/12
   t.diagnostic(JSON.stringify(results));
 });
 
-test('held branch steering decisions expose less shelf recovery room under identical input timing',t=>{
+test('historical v1.0.1a: held branch steering decisions expose less shelf recovery room under identical input timing',t=>{
   const results=[0,.2,.4,.6,.8,1,1.2].map(reaction=>({reaction,shelf:benchmarkForkDriving(course,'alley',true,1/60,'whale',undefined,reaction),haul:benchmarkForkDriving(course,'boulevard',true,1/60,'whale',undefined,reaction)}));
   assert.equal(results[0].shelf.branchRailSeconds,0);
   assert.ok(results[4].shelf.branchRailSeconds>.4);assert.equal(results[4].haul.branchRailSeconds,0);

@@ -245,8 +245,15 @@ for(const scenario of ['full-race','manual-ready','context-loss-loading','contex
     assert.ok(Math.abs(controls.orbit.get().yaw)<1e-4&&Math.abs(controls.orbit.get().pitch)<1e-4,'Q recenters the water camera');
     const itemPlayer=g.__waterparkRace.racers[0];itemPlayer.held='shield';step(1,0);
     assert.equal(element('item').disabled,false);
+    const itemUsesBefore=itemPlayer.uses;
     key('keydown','KeyE');key('keyup','KeyE');step(1,0);
-    assert.equal(itemPlayer.held,null);assert.equal(itemPlayer.shield,6);assert.equal(element('item').disabled,true,'E consumes the water inventory through the real entry');
+    assert.equal(itemPlayer.held,'shield','a zero-duration render cannot consume a queued item');
+    assert.equal(itemPlayer.shield,0);assert.equal(itemPlayer.uses,itemUsesBefore);
+    step(1,1/60);
+    assert.equal(itemPlayer.held,null);assert.equal(itemPlayer.uses,itemUsesBefore+1);
+    // The accepted physics tick consumes the item, then advances its timer.
+    assert.ok(Math.abs(itemPlayer.shield-(6-1/60))<1e-12,'shield timer advances by the accepted tick');
+    assert.equal(element('item').disabled,true,'E consumes the water inventory through the real entry');
     element('perf-start').click();assert.equal(element('perf-result').textContent,'');
     element('perf-start').click(); // A duplicate click on the disabled control is harmless.
     element('perf-toggle').click();assert.equal(element('perf-body').hidden,true);

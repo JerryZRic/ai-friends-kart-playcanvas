@@ -1,3 +1,5 @@
+import {postV100HistoricalScene} from './post-v100-historical-scene';
+import {restorePostV100Buffer} from './post-v100-current';
 import {airfieldAfterGardenHash as gardenReviewedHash,airfieldAfterGardenPathsWithin as gardenReviewedPathsWithin,airfieldReviewedHash,airfieldReviewedPathsWithin} from './airfield-enrichment-reviewed-revisions';
 /** Bounded, independent CPU audit of actual emitted Town architecture. */
 import test,{after} from 'node:test';
@@ -20,9 +22,10 @@ const source=readFileSync(new URL('../../src/town-scenery.ts',import.meta.url),'
 const inventoryHashes=()=>Object.fromEntries([...Object.keys(contract.sourceInventory),...Object.keys(contract.reviewedArtifactRevisions)].map(path=>[path,sha(readFileSync(new URL(path,root)))]));
 const inventoryBefore=inventoryHashes();
 const report:any={sourceHash,startedAt:new Date().toISOString(),metrics:{},checks:[],limitations:['CPU indexed-source geometry only; no GPU, gameplay pixels or frame-rate certification','Broadphase bounds only locate candidates; geometry acceptance uses actual indexed triangles','Road prism is 0.1 to 3.2m above actual banked road planes; not native six-driver vehicle clearance']};
-function audit(name:string,fn:()=>void){test(name,()=>{try{fn();report.checks.push({name,status:'passed'});}catch(error){report.checks.push({name,status:'failed',error:String(error)});throw error;}});}
+function audit(name:string,fn:()=>void|Promise<void>){test(name,async()=>{try{await fn();report.checks.push({name,status:'passed'});}catch(error){report.checks.push({name,status:'failed',error:String(error)});throw error;}});}
 function noFailures(errors:unknown[],label:string){assert.equal(errors.length,0,`${label}: ${errors.length}\n${JSON.stringify(errors.slice(0,12),null,2)}`);}
 const candidate=await instrumentTown(source),baseline=await instrumentTown(baselineSource),g=candidate.geometry,bg=baseline.geometry;
+assert.equal(digest(g),digest(buildTownSceneGeometry(TOWN_COURSE)),'Current instrumentation preserves actual current buffers');
 const mesh=new MeshOracle(g.batches),parts=new ComponentOracle(mesh,candidate.components),baselineMesh=new MeshOracle(bg.batches),baselineParts=new ComponentOracle(baselineMesh,baseline.components);
 const owned=(q:Triangle)=>parts.owner.get(q.id) as TownPrimitive;
 const terrainIds=new Set(mesh.triangles.filter(q=>/^Town garden earth/.test(q.batch)).map(q=>q.id));
@@ -32,7 +35,10 @@ const byBatch=(scene:typeof g,name:string)=>scene.batches.find(b=>b.name===name)
 const convex=new Map<TownPrimitive,ConvexPlane[]>();for(const c of candidate.components){if(c.method!=='box')continue;const p=convexPlanes(parts,c);if(p)convex.set(c,p);}
 after(()=>{report.sourceHashAfter=sha(readFileSync(new URL('../../src/town-scenery.ts',import.meta.url)));report.inventoryDigestBefore=digest(inventoryBefore);report.inventoryDigestAfter=digest(inventoryHashes());report.stable=report.sourceHashAfter===sourceHash&&report.inventoryDigestBefore===report.inventoryDigestAfter;report.durationSeconds=(Date.now()-started)/1000;report.resources={maxRSSKiB:process.resourceUsage().maxRSS,heapCapMiB:448,concurrency:1};if(process.env.TOWN_ENRICHMENT_AUDIT_DIR){mkdirSync(process.env.TOWN_ENRICHMENT_AUDIT_DIR,{recursive:true});writeFileSync(resolve(process.env.TOWN_ENRICHMENT_AUDIT_DIR,'geometry-report.json'),JSON.stringify(report,null,2)+'\n');}assert.ok(report.stable,'Town source changed during audit');});
 
-audit('Town exact original source route road bridge terrain texture protection and fixed budget',()=>{
+audit('Town exact original source route road bridge terrain texture protection and fixed budget (historical 6bb9 core)',async()=>{
+ const historical=await postV100HistoricalScene('town',true),candidate=historical.instrumented,g=historical.geometry;
+ report.metrics.historicalProtectionScope={scope:historical.auditScope,executedSourceSha256:historical.executedSourceSha256};
+ const sourceHash=historical.executedSourceSha256,TOWN_SCENE_THEME=historical.theme;
  assert.equal(sha(baselineSource),contract.originalScenerySha256);
  const revisionPath='tests/fixtures/reviewed-scene-revisions.json',reviewed=JSON.parse(readFileSync(new URL(revisionPath,root),'utf8'));
  assert.deepEqual(Object.keys(reviewed.revisions).sort(),['src/caldera-scenery.ts','src/desert-scenery.ts','src/forest-scenery.ts','src/garden-scenery.ts','src/harvest-scenery.ts','src/quarry-scenery.ts','src/snow-scenery.ts','src/town-scenery.ts','src/workshop-scenery.ts']);
@@ -40,7 +46,7 @@ audit('Town exact original source route road bridge terrain texture protection a
   assert.equal(revision.previousSHA256,contract.sourceInventory[path],path+' original source golden remains exact');
   assert.equal(sha(readFileSync(new URL(path,root))),airfieldReviewedHash(path,revision.currentSHA256),path+' separately reviewed scene revision and bounded successors');
  }
- for(const path of airfieldReviewedPathsWithin(contract.sourceInventory))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,contract.reviewedTestContractChanges[path]??reviewed.revisions[path]?.currentSHA256??contract.sourceInventory[path]),path+' exact subsequent Airfield review');
+ for(const path of airfieldReviewedPathsWithin(contract.sourceInventory))assert.equal(sha(readFileSync(new URL(path,root))),(reviewed.revisions[path]?airfieldReviewedHash(path,reviewed.revisions[path].currentSHA256):gardenReviewedHash(path,contract.reviewedTestContractChanges[path]??contract.sourceInventory[path])),path+' exact subsequent Airfield review');
  const changedInventory=Object.entries(contract.sourceInventory).filter(([path,hash])=>sha(readFileSync(new URL(path,root)))!==hash).map(([path])=>path);
  assert.deepEqual(changedInventory.sort(),[...new Set([...Object.keys(reviewed.revisions),...Object.keys(contract.reviewedTestContractChanges),...gardenReviewedPathsWithin(contract.sourceInventory)])].sort());
  for(const [path,hash] of Object.entries(contract.reviewedTestContractChanges))assert.equal(sha(readFileSync(new URL(path,root))),gardenReviewedHash(path,hash),path+' reviewed test contract changed');
@@ -58,7 +64,7 @@ audit('Town exact original source route road bridge terrain texture protection a
  }
  report.metrics.reviewedArtifactRevisions=contract.reviewedArtifactRevisions;
  // Instrumentation must produce exactly the ordinary production buffers.
- assert.equal(digest(g),digest(buildTownSceneGeometry(TOWN_COURSE)));
+ assert.equal(digest(g),historical.ordinaryGeometrySha256);
  for(const key of ['roadSamples','routeRoadSamples','roadFaces','structures','landmarks'])assert.equal(digest(g[key]),contract.geometryComponentHashes[key],key);
  assert.equal(digest(TOWN_SCENE_THEME),contract.themeSha256);
  const textures=Object.fromEntries((['stone','asphalt','wood','grass'] as const).map(kind=>[kind,{width:64,height:64,pixels:[...landTexturePixels(kind)]}]));
@@ -66,7 +72,7 @@ audit('Town exact original source route road bridge terrain texture protection a
  report.metrics.textureBytes=Object.fromEntries(Object.entries(textures).map(([k,t])=>[k,{width:t.width,height:t.height,rgbaSha256:sha(Uint8Array.from(t.pixels))}]));
  const edges=TOWN_ROAD_EDGES.map(edge=>{const count=Math.ceil(edge.length/1.5);return{id:edge.id,length:edge.length,samples:Array.from({length:count+1},(_,i)=>{const s=edge.length*i/count,f=edge.sample(s),w=edge.halfWidthAt(s);return{s,p:f.p.toArray(),t:f.t.toArray(),n:f.n.toArray(),halfWidth:w,left:edge.sample(s,-w).p.toArray(),right:edge.sample(s,w).p.toArray()};})};});
  const route={label:TOWN_TRACK.label,tag:TOWN_TRACK.tag,canonicalLength:TOWN_COURSE.canonicalLength,alleyLapLength:TOWN_COURSE.commonStart.length+TOWN_COURSE.alternates.alley.length+TOWN_COURSE.commonFinish.length,boulevardLapLength:TOWN_COURSE.canonicalLength,edges,landmarks:TOWN_LANDMARKS,checkpointGates:TOWN_COURSE.checkpointGates};assert.equal(digest(route),contract.routeSha256);
- const normals=new Map(g.batches.map(b=>[b.name,pc.calculateNormals(b.positions,b.indices)])),bnormals=new Map(bg.batches.map(b=>[b.name,pc.calculateNormals(b.positions,b.indices)]));
+ const normals=new Map<string,number[]>(g.batches.map(b=>[b.name,pc.calculateNormals(b.positions,b.indices)])),bnormals=new Map(bg.batches.map(b=>[b.name,pc.calculateNormals(b.positions,b.indices)]));
  const ranges:any[]=[];
  function compare(name:string,oldRange:[number,number],newRange:[number,number],label=name){
   const extract=(scene:typeof g,range:[number,number],normal:Map<string,number[]>)=>{const b=byBatch(scene,name),indices:number[]=[];for(let i=0;i<b.indices.length;i+=3){const tri=b.indices.slice(i,i+3),inside=tri.map(j=>j>=range[0]&&j<range[1]);if(inside.some(Boolean)){assert.ok(inside.every(Boolean),label+' split primitive');indices.push(...tri.map(j=>j-range[0]));}}return {positions:b.positions.slice(range[0]*3,range[1]*3),normals:Array.from(normal.get(name)!).slice(range[0]*3,range[1]*3),indices};};

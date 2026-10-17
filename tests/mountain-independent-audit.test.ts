@@ -32,9 +32,19 @@ function boomFailure(a:V,b:V,label:string){
  for(const q of mesh.query(a,b))if(terrainIds.has(q.id)){const interval=projectedInterval(q,a,b);if(!interval)continue;for(const f of interval){const p=lerp(a,b,f),gap=p[1]-height(q,p[0],p[2]);if(gap<.3-1e-7)return{label,triangle:q.id,batch:q.batch,gap,anchor:a,camera:b};}}
  return null;
 }
-audit('Mountain all emitted data is finite and original 24 batch/110k triangle/190k vertex budget holds','structural',()=>{
+audit('Mountain all emitted data is finite and reviewed 24 batch/112k total with 109990-core plus 1704-detail triangles holds','structural',()=>{
  const failures:unknown[]=[];let vertices=0,triangles=0;for(const b of geometry.batches){vertices+=b.positions.length/3;triangles+=b.indices.length/3;assert.equal(b.positions.length%3,0);assert.equal(b.indices.length%3,0);assert.ok(b.positions.every(Number.isFinite));assert.ok(b.uvs.every(Number.isFinite));assert.equal(b.uvs.length,b.positions.length/3*2);assert.ok(b.indices.every(i=>Number.isInteger(i)&&i>=0&&i<b.positions.length/3));}
- if(vertices>=190000||triangles>=110000||geometry.batches.length>24)failures.push({vertices,triangles,batches:geometry.batches.length});report.metrics.mesh={vertices,triangles,batches:geometry.batches.length,terrainTriangles:terrain.length,components:components.length,failures};verify(failures,'mesh budget');
+ // Historical baseline mode records its own original budget without successor assertions.
+ if(!baseline){
+ const added=components.filter(c=>c.kind.startsWith('polish-mountain-'));
+ const appendTriangles=added.reduce((n,c)=>n+(c.indexEnd-c.indexStart)/3,0),appendVertices=added.reduce((n,c)=>n+c.vertexEnd-c.vertexStart,0);
+ assert.equal(appendTriangles,1704,'documented 9b14df95 visual append');assert.equal(appendVertices,3772);
+ assert.equal(triangles-appendTriangles,109990);assert.equal(vertices-appendVertices,180757);
+ for(const batch of geometry.batches){const ranges=added.filter(c=>c.batch===batch.name).sort((a,b)=>a.indexStart-b.indexStart);let end=ranges[0]?.indexStart??batch.indices.length;
+  for(const c of ranges){assert.equal(c.indexStart,end);assert.ok(batch.indices.slice(c.indexStart,c.indexEnd).every(i=>i>=c.vertexStart&&i<c.vertexEnd));end=c.indexEnd;}
+  assert.equal(end,batch.indices.length,'cosmetic faces remain an append-only suffix');}
+ }
+ if(vertices>=190000||(baseline?triangles>=110000:triangles>112000)||geometry.batches.length>24)failures.push({vertices,triangles,batches:geometry.batches.length});report.metrics.mesh={vertices,triangles,batches:geometry.batches.length,terrainTriangles:terrain.length,components:components.length,failures};verify(failures,'mesh budget');
 });
 audit('Mountain independent oracle catches vertical faces endpoint and strict clearance failures','structural',()=>{
  const q:Triangle={id:-1,batch:'negative vertical test',vertices:[],a:[0,0,-1],b:[0,4,-1],c:[0,0,1],min:[0,0,-1],max:[0,4,1]};
